@@ -21,6 +21,7 @@ import java.awt.event.FocusListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueModel;
+import org.springframework.util.Assert;
 
 public class FocusLostTextValueSetter extends AbstractValueSetter implements
         FocusListener {
@@ -33,6 +34,7 @@ public class FocusLostTextValueSetter extends AbstractValueSetter implements
     public FocusLostTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
         super(valueModel);
+        Assert.notNull(component);
         this.component = component;
         this.component.addFocusListener(this);
     }

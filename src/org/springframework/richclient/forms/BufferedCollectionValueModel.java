@@ -300,6 +300,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             if (! hasChangeBuffered()) {
                 updateListListModelFromWrappedCollection();
             }
+            super.fireValueChanged();
         }
     }
 }

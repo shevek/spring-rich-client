@@ -20,6 +20,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueModel;
+import org.springframework.util.Assert;
 
 public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
         DocumentListener {
@@ -29,14 +30,13 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
     private boolean settingText;
 
     protected AsYouTypeTextValueSetter(JTextComponent component) {
-        super(null);
-        this.component = component;
-        this.component.getDocument().addDocumentListener(this);
+        this(component, null);
     }
 
     public AsYouTypeTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
         super(valueModel);
+        Assert.notNull(component);
         this.component = component;
         this.component.getDocument().addDocumentListener(this);
     }
