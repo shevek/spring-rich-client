@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry output="target/test-classes" kind="src" path="test"/>
+	<classpathentry output="target/sandbox/classes" kind="src" path="sandbox/src"/>
+	<classpathentry output="target/sandbox/test-classes" kind="src" path="sandbox/test"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/src"/>
 	<classpathentry output="samples/petclinic/target/tests" kind="src" path="samples/petclinic/test"/>
@@ -21,5 +23,7 @@
 	<classpathentry kind="lib" path="lib/caucho/hessian-2.1.12.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb/hsqldb-1.7.2-rc6d.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit.jar"/>
+	<classpathentry kind="lib" path="lib/j2ee/servlet.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-mock-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

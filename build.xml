@@ -181,15 +181,18 @@
 		</zip>
 	</target>
 
- 	<target name="compiletestattr" depends="build">
+ 	<target name="compiletestattr" depends="build"> 		
+<!-- XXX: This is broken 	
 		<taskdef resource="org/apache/commons/attributes/anttasks.properties">
 		  <classpath refid="attribute-compiler-classpath"/>
 		</taskdef>
-
+-->		
 	 	<!-- Compile to a temp directory: Commons Attributes will place Java Source here. -->
+<!--  		
 		<attribute-compiler destdir="${commons.attributes.tempdir.test}">
 			<fileset dir="${test.dir}" includes="**/validator/*.java"/>
 		</attribute-compiler>
+-->			
  	</target>
 
 	<!--
@@ -205,7 +208,7 @@
 			deprecation="false" optimize="false" failonerror="true">
 			<src path="${test.dir}"/>
 			<!-- Include Commons Attributes generated Java sources -->
-			<src path="${commons.attributes.tempdir.test}"/>
+<!--			<src path="${commons.attributes.tempdir.test}"/> -->
 			<classpath refid="all-libs"/>
 			<classpath location="${target.classes.dir}"/>
 		</javac>
@@ -394,4 +397,107 @@
 
 	<target name="refdoc" depends="dochtml,dochtmlsingle,docpdf" description="Generate and copy reference documentation"/>
 
+	<target name="build-sandbox" description="Compile sandbox source tree java files into class files">
+
+		<echo message="WARNING: To keep things speedy, there's no Ant-dependency on the build-target"/>
+		<mkdir dir="${sandbox.target.classes.dir}"/>
+
+		<javac destdir="${sandbox.target.classes.dir}" target="1.4" debug="${debug}"
+				deprecation="false" optimize="false" failonerror="true">
+			<src path="${sandbox.src.dir}"/>
+			<classpath refid="all-libs"/>
+			<classpath location="${target.classes.dir}"/>
+		</javac>
+
+		<copy todir="${sandbox.target.classes.dir}" preservelastmodified="true">
+			<fileset dir="${sandbox.src.dir}">
+				<include name="**/*.xml"/>
+				<include name="**/*.dtd"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+
+	<target name="buildtests-sandbox" depends="buildtests"
+			description="Compile test source tree Java files into class files">
+
+		<mkdir dir="${sandbox.target.testclasses.dir}"/>
+
+		<javac destdir="${sandbox.target.testclasses.dir}" target="1.4" debug="${debug}"
+				deprecation="false" optimize="false" failonerror="true">
+			<src path="${sandbox.test.dir}"/>
+			<classpath refid="all-libs"/>
+			<classpath location="${target.classes.dir}"/>
+			<classpath location="${sandbox.target.classes.dir}"/>
+			<classpath location="${target.testclasses.dir}"/>
+		</javac>
+
+		<!-- Pick up logging config from test directory -->
+		<copy todir="${sandbox.target.testclasses.dir}" preservelastmodified="true">
+			<fileset dir="${sandbox.test.dir}">
+				<include name="**/*.properties"/>
+			</fileset>
+			<fileset dir="${sandbox.test.dir}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+
+	<!--
+		Run test suite. This and Clover test target take their includes and excludes
+		from build.properties. However it's possible to run specific tests by passing in
+		the test.includes and (optionally) test.excludes properties through the command line, as below:
+			ant tests -Dtest.includes=org/springframework/jdbc/**/*Test*
+	-->
+	<target name="tests-sandbox" depends="build-sandbox,buildtests-sandbox" description="Run tests">
+
+		<property name="sandbox.reports.dir" value="${sandbox.target.junit.reports.dir}"/>
+
+		<mkdir dir="${sandbox.reports.dir}"/>
+
+		<junit printsummary="yes" haltonfailure="no" haltonerror="no">
+
+			<!-- Must go first to ensure any jndi.properties files etc take precedence  -->
+			<classpath location="${sandbox.target.testclasses.dir}"/>
+			<classpath location="${sandbox.target.classes.dir}"/>
+			<classpath location="${target.testclasses.dir}"/>
+
+			<!-- Need files loaded as resources -->
+			<classpath location="${sandbox.test.dir}"/>
+
+			<classpath refid="all-libs"/>
+			<classpath location="${target.classes.dir}"/>
+
+			<formatter type="plain" usefile="false"/>
+			<formatter type="xml"/>
+
+			<batchtest fork="yes" todir="${sandbox.reports.dir}">
+				<fileset dir="${sandbox.target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
+			</batchtest>
+
+		</junit>
+
+	</target>
+
+
+	<target name="sandboxjar" depends="build,build-sandbox,initdist" description="Create jar with sandbox classes">
+
+		<delete file="${dist.dir}/spring-rcp-sandbox.jar"/>
+
+		<jar jarfile="${dist.dir}/spring-rcp-sandbox.jar">
+			<fileset dir="${sandbox.target.classes.dir}">
+				<include name="META-INF/**"/>
+				<include name="org/springframework/**"/>
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${spring-title}"/>
+				<attribute name="Implementation-Version" value="${spring-version}"/>
+				<attribute name="Spring-Version" value="${spring-version}"/>
+			</manifest>
+		</jar>
+
+	</target>
 </project>
