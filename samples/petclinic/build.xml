@@ -3,7 +3,7 @@
  * $Id$
 -->
 
-<project name="petclinic-rcp" basedir="." default="usage">
+<project name="petclinic-rich" basedir="." default="usage">
 
 	<property file="build.properties" />
 	<property file="project.properties" />
@@ -22,18 +22,18 @@
 
 	<target name="usage">
 		<echo message="" />
-		<echo message="Petclinic RCP sample application build file" />
+		<echo message="Petclinic Rich sample application build file" />
 		<echo message="------------------------------------------------------" />
 		<echo message="" />
 		<echo message="Available targets are:" />
 		<echo message="" />
 		<echo message="clean    --> Clean output dirs" />
 		<echo message="build    --> Compile main Java sources and copy libraries" />
+		<echo message="build-standalone   --> Compile standalone main Java sources and copy libraries" />
 		<echo message="warfile  --> Create WAR deployment units" />
 		<echo message="javadoc  --> Create API documentation" />
 		<echo message="" />
 	</target>
-
 
 	<target name="clean" description="Clean output dirs (build, dist)">
 		<delete dir="${build.dir}" />
@@ -41,59 +41,45 @@
 		<delete dir="${war.dir}/WEB-INF/lib" />
 	</target>
 
-
-	<target name="build"
-	        description="Compile main source tree java files into class files">
+	<target name="compile" description="Compile main source tree java files into class files">
 		<mkdir dir="${build.dir}" />
 
-		<javac destdir="${build.dir}"
-		       debug="true"
-		       deprecation="false"
-		       optimize="false"
-		       failonerror="true">
+		<javac destdir="${build.dir}" debug="true" deprecation="false" optimize="false" failonerror="true">
 			<src path="${src.dir}" />
 			<classpath refid="spring-richclient-jars" />
 		</javac>
 
+	</target>
+
+	<target name="build-dependencies" depends="compile" description="Build jar dist dependencies">
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}/lib" />
 		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-standalone.bat" />
-		<copy todir="${dist.dir}"
-		      file="${bin.dir}/petclinic-clientserver.bat" />
-		<copy todir="${dist.dir}/lib"
-		      file="${dist.lib.dir}/spring-richclient.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${dist.lib.dir}/spring-richclient-sandbox.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${dist.lib.dir}/spring-richclient-resources.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/acegisecurity/acegi-security.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/aopalliance/aopalliance.jar" />
+		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-clientserver.bat" />
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient.jar" />
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-sandbox.jar" />
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-resources.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/acegisecurity/acegi-security.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/aopalliance/aopalliance.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/burlap.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/concurrent/concurrent.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/concurrent/concurrent.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/hessian.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/hsqldb/hsqldb.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/jakarta-commons/commons-codec.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/jakarta-commons/commons-logging.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-codec.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-logging.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/javahelp/javahelp.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/jgoodies/forms.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/jgoodies/looks.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/forms.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/looks.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-core.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-context.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-aop.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-dao.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-orm.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/spring/spring-sandbox.jar" />
-		<copy todir="${dist.dir}/lib"
-		      file="${lib.dir}/spring/spring-petclinic.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-sandbox.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-petclinic.jar" />
+	</target>
 
+	<target name="build-standalone" depends="build-dependencies" description="Build standalone version">
 		<jar jarfile="${dist.dir}/petclinic-standalone.jar">
 			<fileset dir="${build.dir}">
 				<include name="**/*" />
@@ -106,13 +92,14 @@
 				<include name="**/*" />
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class"
-				           value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
-				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
+	</target>
+
+	<target name="build-clientserver" depends="build-dependencies" description="Build client server version">
 		<jar jarfile="${dist.dir}/petclinic-clientserver.jar">
 			<fileset dir="${build.dir}">
 				<include name="**/*" />
@@ -125,10 +112,8 @@
 				<include name="**/*" />
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class"
-				           value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
-				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
@@ -157,23 +142,19 @@
 		</jar>
 
 		<!-- Will not re-sign already signed JARs due to lazy=true (causes JWS issues if >1 signature) -->
-		<signjar lazy="true"
-		         alias="${signature.alias}"
-		         storepass="${signature.storepass}"
-		         keystore="${signature.keystore}">
+		<signjar lazy="true" alias="${signature.alias}" storepass="${signature.storepass}" keystore="${signature.keystore}">
 			<fileset dir="${dist.dir}">
 				<include name="**/**.jar" />
 			</fileset>
-		</signjar> 
+		</signjar>
 
 		<delete dir="${tmp.dir}" />
 
 	</target>
 
-
-	<target name="warfile"
-	        depends="build"
-	        description="Build the web application archives">
+	<target name="build" depends="build-standalone,build-clientserver" description="Build standalone and clientserver versions"/>
+	
+	<target name="warfile" depends="build" description="Build the web application archives">
 
 		<mkdir dir="${dist.dir}" />
 		<delete file="${dist.dir}/petclinic-server.war" />
@@ -208,8 +189,7 @@
 				<include name="business-layer-context.xml" />
 			</fileset>
 		</copy>
-		<war warfile="${dist.dir}/petclinic-server.war"
-		     webxml="${tmp.dir}/WEB-INF/web.xml">
+		<war warfile="${dist.dir}/petclinic-server.war" webxml="${tmp.dir}/WEB-INF/web.xml">
 			<!-- Include the files which are not under WEB-INF -->
 			<fileset dir="${tmp.dir}">
 				<exclude name="WEB-INF/**" />
@@ -234,13 +214,7 @@
 	<target name="javadoc" description="Generate Javadocs.">
 		<mkdir dir="${javadocs.dir}" />
 
-		<javadoc sourcepath="src"
-		         destdir="${javadocs.dir}"
-		         windowtitle="Petclinic RCP Sample Application"
-		         defaultexcludes="yes"
-		         author="true"
-		         version="true"
-		         use="true">
+		<javadoc sourcepath="src" destdir="${javadocs.dir}" windowtitle="Petclinic RCP Sample Application" defaultexcludes="yes" author="true" version="true" use="true">
 			<doctitle>
 				<![CDATA[<h1>Petclinic RCP Sample</h1>]]></doctitle>
 		<bottom>
