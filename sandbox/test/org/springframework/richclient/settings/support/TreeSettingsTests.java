@@ -21,8 +21,10 @@ import javax.swing.tree.DefaultTreeModel;
 
 import junit.framework.TestCase;
 
+import org.springframework.richclient.settings.Settings;
+import org.springframework.richclient.settings.TransientSettings;
+
 /**
- * TODO change TreeSettings and this test to use Settings
  * @author Peter De Bruycker
  */
 public class TreeSettingsTests extends TestCase {
@@ -30,16 +32,22 @@ public class TreeSettingsTests extends TestCase {
     private JTree tree;
 
     public void testSaveSelectionState() {
-        String pref = TreeSettings.saveSelectionState(tree);
-        assertEquals("", pref);
+        TransientSettings settings = new TransientSettings();
+
+        TreeSettings.saveSelectionState(settings, "tree", tree);
+        assertFalse(settings.contains("tree.selectedRows"));
 
         tree.setSelectionRows(new int[] { 0, 2, 3 });
-        pref = TreeSettings.saveSelectionState(tree);
-        assertEquals("0,2,3", pref);
+        TreeSettings.saveSelectionState(settings, "tree", tree);
+        assertTrue(settings.contains("tree.selectedRows"));
+        assertEquals("0,2-3", settings.getString("tree.selectedRows"));
     }
 
     public void testRestoreSelectionState() {
-        TreeSettings.restoreSelectionState(tree, "0,2,3");
+        Settings settings = new TransientSettings();
+
+        settings.setString("tree.selectedRows", "0,2-3");
+        TreeSettings.restoreSelectionState(settings, "tree", tree);
 
         assertEquals(5, tree.getRowCount());
         assertTrue(tree.isRowSelected(0));
@@ -49,26 +57,26 @@ public class TreeSettingsTests extends TestCase {
         assertFalse(tree.isRowSelected(4));
     }
 
-    public void testRestoreSelectionStateWithInvalidSettingsPref() {
-        TreeSettings.restoreSelectionState(tree, "invalidPref");
-
-        assertEquals(5, tree.getRowCount());
-        assertEquals(0, tree.getSelectionCount());
-    }
-
     public void testSaveExpansionState() {
-        String pref = TreeSettings.saveExpansionState(tree);
-        assertEquals("1,0,0,0,0", pref);
+        Settings settings = new TransientSettings();
+
+        TreeSettings.saveExpansionState(settings, "tree", tree);
+        assertTrue(settings.contains("tree.expansionState"));
+        assertEquals("1,0,0,0,0", settings.getString("tree.expansionState"));
 
         // expand child2
         tree.expandRow(2);
 
-        pref = TreeSettings.saveExpansionState(tree);
-        assertEquals("1,0,1,0,0,0,0", pref);
+        TreeSettings.saveExpansionState(settings, "tree", tree);
+        assertTrue(settings.contains("tree.expansionState"));
+        assertEquals("1,0,1,0,0,0,0", settings.getString("tree.expansionState"));
     }
 
     public void testRestoreExpansionState() {
-        TreeSettings.restoreExpansionState(tree, "1,0,1,0,0,0,0");
+        Settings settings = new TransientSettings();
+        settings.setString("tree.expansionState", "1,0,1,0,0,0,0");
+
+        TreeSettings.restoreExpansionState(settings, "tree", tree);
 
         assertEquals(7, tree.getRowCount());
         assertTrue(tree.isExpanded(0));
@@ -81,7 +89,10 @@ public class TreeSettingsTests extends TestCase {
     }
 
     public void testRestoreExpansionStateWithInvalidSettingsString() {
-        TreeSettings.restoreExpansionState(tree, "invalidPref");
+        Settings settings = new TransientSettings();
+        settings.setString("key.expansionState", "invalidPref");
+
+        TreeSettings.restoreExpansionState(settings, "tree", tree);
 
         assertEquals(5, tree.getRowCount());
         assertTrue(tree.isExpanded(0));

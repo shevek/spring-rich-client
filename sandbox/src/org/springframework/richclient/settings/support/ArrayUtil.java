@@ -15,11 +15,18 @@
  */
 package org.springframework.richclient.settings.support;
 
+import java.util.Arrays;
+
 /**
  * Utility class for converting a String array to an int array
+ * 
  * @author Peter De Bruycker
  */
 public class ArrayUtil {
+
+    private ArrayUtil() {
+
+    }
 
     public static int[] toIntArray(String[] stringArray) throws IllegalArgumentException {
         int result[] = new int[stringArray.length];
@@ -29,5 +36,27 @@ public class ArrayUtil {
         return result;
     }
 
-}
+    public static String asIntervalString(int[] array) {
+        Arrays.sort(array);
+        StringBuffer sb = new StringBuffer();
+        int i = 0;
+        while (i < array.length) {
+            sb.append(array[i]);
+            if (i < array.length - 1) {
+                if (array[i] == array[i + 1] - 1) {
+                    while (i < array.length - 1 && array[i] == array[i + 1] - 1) {
+                        i++;
+                    }
+                    sb.append("-");
+                    sb.append(array[i]);
+                }
+                if (i < array.length - 1) {
+                    sb.append(",");
+                }
+            }
+            i++;
+        }
+        return sb.toString();
+    }
 
+}
