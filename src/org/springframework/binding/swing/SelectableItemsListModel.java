@@ -48,30 +48,31 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A {@link ValueModel} that represents a selection in a list of objects. The
+ * A {@link ValueModel}that represents a selection in a list of objects. The
  * list, the selection, and the selection index are exposed using
  * <code>ValueModel</code>s, so others can observe changes in the list and
  * selection.
  * <p>
  * 
- * This class also implements the {@link ListModel} interface that allows API
+ * This class also implements the {@link ListModel}interface that allows API
  * users to observe fine grained changes in the structure and contents of the
  * list. Hence instances of this class can be used directly as model of a
- * <code>JList</code>. If you want to use a <code>SelectableItemsListModel</code>
- * with a <code>JComboBox</code> or <code>JTable</code>, you can convert
- * the <code>SelectableItemsListModel</code> to the associated component model
- * interfaces using the classes {@link ComboBoxModelAdapter} and
- * {@link AbstractTableModelAdapter} respectively.
+ * <code>JList</code>. If you want to use a
+ * <code>SelectableItemsListModel</code> with a <code>JComboBox</code> or
+ * <code>JTable</code>, you can convert the
+ * <code>SelectableItemsListModel</code> to the associated component model
+ * interfaces using the classes {@link ComboBoxModelAdapter}and
+ * {@link AbstractTableModelAdapter}respectively.
  * <p>
  * 
- * The <code>SelectableItemsListModel</code> supports two list types as content of its
- * list holder: <code>List</code> and <code>ListModel</code>. The two modes
- * differ in how precise this class can fire events about changes to the content
- * and structure of the list. If you use a <code>List</code>, this class can
- * only report that the list changes completely; this is done by emitting a
- * <code>valueChanged()</code> for the <em>list</em> property. Also, a
- * <code>ListDataEvent</code> is fired that reports a complete change. In
- * contrast, if you use a <code>ListModel</code> it will report the same
+ * The <code>SelectableItemsListModel</code> supports two list types as
+ * content of its list holder: <code>List</code> and <code>ListModel</code>.
+ * The two modes differ in how precise this class can fire events about changes
+ * to the content and structure of the list. If you use a <code>List</code>,
+ * this class can only report that the list changes completely; this is done by
+ * emitting a <code>valueChanged()</code> for the <em>list</em> property.
+ * Also, a <code>ListDataEvent</code> is fired that reports a complete change.
+ * In contrast, if you use a <code>ListModel</code> it will report the same
  * <code>valueChanged()</code>. But fine grained changes in the list model
  * will be fired by this class to notify observes about changes in the content,
  * added and removed elements.
@@ -87,16 +88,17 @@ import org.springframework.util.ObjectUtils;
  * <p>
  * 
  * An example for using a <code>ListModel</code> in a
- * <code>SelectableItemsListModel</code> is the asynchronous transport of list elements
- * from a server to a client. Let's say you transport the list elements in
- * portions of 10 elements to improve the application's responsiveness. The user
- * can then select and work with the <code>SelectableItemsListModel</code> as soon as
- * the <code>ListModel</code> gets populated. If at a later time new elements
- * are added to the list model, the <code>SelectableItemsListModel</code> can retain
- * the selection index (and selection) and will just report a
- * <code>ListDataEvent</code> about the interval added. <code>JList</code>,
- * <code>JTable</code> and <code>JComboBox</code> will then just add the new
- * elements at the end of the list presentation.
+ * <code>SelectableItemsListModel</code> is the asynchronous transport of list
+ * elements from a server to a client. Let's say you transport the list elements
+ * in portions of 10 elements to improve the application's responsiveness. The
+ * user can then select and work with the <code>SelectableItemsListModel</code>
+ * as soon as the <code>ListModel</code> gets populated. If at a later time
+ * new elements are added to the list model, the
+ * <code>SelectableItemsListModel</code> can retain the selection index (and
+ * selection) and will just report a <code>ListDataEvent</code> about the
+ * interval added. <code>JList</code>,<code>JTable</code> and
+ * <code>JComboBox</code> will then just add the new elements at the end of
+ * the list presentation.
  * <p>
  * 
  * If you want to combine <code>List</code> operations and the
@@ -113,11 +115,11 @@ import org.springframework.util.ObjectUtils;
  * instance. It is easy to violate this constraint, just because the
  * <code>PropertyChangeSupport</code> helper class that is used by many beans
  * checks a changed instance via <code>#equals</code>,<code>==</code>.
- * For example, if you change the SelectableItemsListModel's list model from an empty
- * list <code>L1</code> to another empty list instance <code>L2</code>, the
- * PropertyChangeSupport won't generate a PropertyChangeEvent, and so, the
- * SelectableItemsListModel won't know about the change, which may lead to unexpected
- * behavior.
+ * For example, if you change the SelectableItemsListModel's list model from an
+ * empty list <code>L1</code> to another empty list instance <code>L2</code>,
+ * the PropertyChangeSupport won't generate a PropertyChangeEvent, and so, the
+ * SelectableItemsListModel won't know about the change, which may lead to
+ * unexpected behavior.
  * <p>
  * 
  * <strong>Constraints: </strong> The list holder holds instances of
@@ -179,8 +181,8 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     /**
      * Holds a copy of the listHolder's value. Used as the old list when the
      * listHolder's value changes. Required because a ValueModel may use
-     * <code>null</code> as old value, but the SelectableItemsListModel must know about
-     * the old and the new list.
+     * <code>null</code> as old value, but the SelectableItemsListModel must
+     * know about the old and the new list.
      */
     private Object list;
 
@@ -230,18 +232,17 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     private int oldSelectionIndex;
 
     /**
-     * Constructs a <code>SelectableItemsListModel</code> on the given list using
-     * defaults for the selection holder and selection index holder.
+     * Constructs a <code>SelectableItemsListModel</code> on the given list
+     * using defaults for the selection holder and selection index holder.
      * <p>
      * 
      * <strong>Note: </strong> Favor <code>ListModel</code> over
-     * <code>List</code> when working with the SelectableItemsListModel. Why? The
-     *  can work with both types. What's the difference?
-     * ListModel provides all list access features required by the
-     * 's. In addition it reports more fine grained change
-     * events, instances of <code>ListDataEvents</code>. In contrast
-     * developer often create Lists and operate on them and the ListModel may be
-     * inconvenient for these operations.
+     * <code>List</code> when working with the SelectableItemsListModel. Why?
+     * The can work with both types. What's the difference? ListModel provides
+     * all list access features required by the 's. In addition it reports more
+     * fine grained change events, instances of <code>ListDataEvents</code>.
+     * In contrast developer often create Lists and operate on them and the
+     * ListModel may be inconvenient for these operations.
      * <p>
      * 
      * A convenient solution for this situation is to use the
@@ -257,9 +258,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code></code> on the given item array using
-     * defaults for the selection holder and selection index holder. The
-     * specified array will be converted to a List.
+     * Constructs a <code></code> on the given item array using defaults for
+     * the selection holder and selection index holder. The specified array will
+     * be converted to a List.
      * <p>
      * 
      * Changes to the list "write through" to the array, and changes to the
@@ -277,8 +278,8 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code></code> on the given list model using
-     * defaults for the selection holder and selection index holder.
+     * Constructs a <code></code> on the given list model using defaults for
+     * the selection holder and selection index holder.
      * 
      * @param listModel
      *            the initial list model
@@ -288,8 +289,8 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code></code> on the given list holder
-     * using defaults for the selection holder and selection index holder.
+     * Constructs a <code></code> on the given list holder using defaults for
+     * the selection holder and selection index holder.
      * 
      * @param selectableItemsHolder
      *            holds the list or list model
@@ -301,8 +302,8 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code></code> on the given list holder,
-     * selection holder and selection index holder.
+     * Constructs a <code></code> on the given list holder, selection holder
+     * and selection index holder.
      * 
      * @param selectableItemsHolder
      *            holds the list or list model
@@ -317,8 +318,8 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code></code> on the given list holder,
-     * selection holder and selection index holder.
+     * Constructs a <code></code> on the given list holder, selection holder
+     * and selection index holder.
      * 
      * @param selectableItemsHolder
      *            holds the list or list model
@@ -333,7 +334,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     public SelectableItemsListModel(ValueModel selectableItemsHolder, ValueModel selectionHolder,
             ValueModel selectionIndexHolder) {
         this.selectableItemsHolder = selectableItemsHolder;
-        this.selectionHolder = (BoundValueModel)selectionHolder;
+        this.selectionHolder = (BoundValueModel) selectionHolder;
         this.selectionIndexHolder = selectionIndexHolder;
         initSelectionIndex();
 
@@ -349,7 +350,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
         // If the ValueModel holds a ListModel observe list data changes too.
         this.list = selectableItemsHolder.getValue();
         if (this.list != null && (this.list instanceof ListModel)) {
-            ((ListModel)this.list).addListDataListener(listDataChangeHandler);
+            ((ListModel) this.list).addListDataListener(listDataChangeHandler);
         }
     }
 
@@ -362,8 +363,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
         Object selectionValue = selectionHolder.getValue();
         if (selectionValue != null) {
             setSelectionIndex(indexOf(selectionValue));
-        }
-        else {
+        } else {
             oldSelectionIndex = getSelectionIndex();
         }
     }
@@ -421,9 +421,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             throw new NullPointerException("The list contents is null.");
         }
         if (aList instanceof ListModel) {
-            return ((ListModel)aList).getElementAt(index);
+            return ((ListModel) aList).getElementAt(index);
         }
-        return ((List)aList).get(index);
+        return ((List) aList).get(index);
     }
 
     private Object getElementAtSafely(int index) {
@@ -439,9 +439,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             return 0;
         }
         if (list instanceof ListModel) {
-            return ((ListModel)list).getSize();
+            return ((ListModel) list).getSize();
         }
-        return ((List)list).size();
+        return ((List) list).size();
     }
 
     public boolean isEmpty() {
@@ -454,9 +454,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             return EMPTY_LIST_MODEL;
         }
         if (aList instanceof ListModel) {
-            return (ListModel)aList;
+            return (ListModel) aList;
         }
-        return new ListModelAdapter((List)aList);
+        return new ListModelAdapter((List) aList);
     }
 
     public void setListModel(ListModel newListModel) {
@@ -491,7 +491,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      *             if the selection index holder has a null Object set
      */
     public int getSelectionIndex() {
-        return ((Integer)getSelectionIndexHolder().getValue()).intValue();
+        return ((Integer) getSelectionIndexHolder().getValue()).intValue();
     }
 
     /**
@@ -548,11 +548,11 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             return EMPTY_SELECTION_INDEX;
         }
         if (list instanceof List) {
-            return ((List)list).indexOf(element);
+            return ((List) list).indexOf(element);
         }
 
         // Search the first occurrence of element in the list model.
-        ListModel listModel = (ListModel)list;
+        ListModel listModel = (ListModel) list;
         int size = listModel.getSize();
         for (int index = 0; index < size; index++) {
             if (element.equals(listModel.getElementAt(index)))
@@ -588,7 +588,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     public ListDataListener[] getListDataListeners() {
-        return (ListDataListener[])listenerList.getListeners(ListDataListener.class);
+        return (ListDataListener[]) listenerList.getListeners(ListDataListener.class);
     }
 
     private void fireContentsChanged(int index0, int index1) {
@@ -599,7 +599,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
                 if (e == null) {
                     e = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, index0, index1);
                 }
-                ((ListDataListener)listeners[i + 1]).contentsChanged(e);
+                ((ListDataListener) listeners[i + 1]).contentsChanged(e);
             }
         }
     }
@@ -612,7 +612,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
                 if (e == null) {
                     e = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index0, index1);
                 }
-                ((ListDataListener)listeners[i + 1]).intervalAdded(e);
+                ((ListDataListener) listeners[i + 1]).intervalAdded(e);
             }
         }
     }
@@ -625,12 +625,13 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
                 if (e == null) {
                     e = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index0, index1);
                 }
-                ((ListDataListener)listeners[i + 1]).intervalRemoved(e);
+                ((ListDataListener) listeners[i + 1]).intervalRemoved(e);
             }
         }
     }
 
     private static class EmptyListModel extends AbstractListModel {
+
         public int getSize() {
             return 0;
         }
@@ -642,6 +643,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
 
     // Converts a List to ListModel by wrapping the underlying list.
     private static class ListModelAdapter extends AbstractListModel {
+
         private final List list;
 
         ListModelAdapter(List list) {
@@ -661,6 +663,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      * Handles changes of the list model.
      */
     private class SelectableItemsChangeHandler implements ValueChangeListener {
+
         public void valueChanged() {
             Object oldList = list;
             updateList(oldList, selectableItemsHolder.getValue());
@@ -679,10 +682,10 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
          */
         private void updateList(Object oldList, Object newList) {
             if (oldList != null && (oldList instanceof ListModel)) {
-                ((ListModel)oldList).removeListDataListener(listDataChangeHandler);
+                ((ListModel) oldList).removeListDataListener(listDataChangeHandler);
             }
             if (newList != null && (newList instanceof ListModel)) {
-                ((ListModel)newList).addListDataListener(listDataChangeHandler);
+                ((ListModel) newList).addListDataListener(listDataChangeHandler);
             }
             list = newList;
             updateSelectionIndex(newList);
@@ -696,22 +699,38 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      * Listens to changes of the selection.
      */
     private class SelectionChangeHandler implements PropertyChangeListener {
+
+        /*
+         * public void propertyChange(PropertyChangeEvent evt) { Object
+         * oldSelection = evt.getOldValue(); Object newSelection =
+         * evt.getNewValue(); int newSelectionIndex = indexOf(newSelection);
+         * firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection);
+         * fireValueChanged(); firePropertyChange(SELECTION_EMPTY_PROPERTY,
+         * oldSelectionIndex == EMPTY_SELECTION_INDEX, newSelectionIndex ==
+         * EMPTY_SELECTION_INDEX); if (newSelectionIndex == oldSelectionIndex) {
+         * return; } oldSelectionIndex = newSelectionIndex;
+         * selectionIndexHolder.removeValueChangeListener(selectionIndexChangeHandler);
+         * selectionIndexHolder.setValue(new Integer(newSelectionIndex));
+         * selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
+         * firePropertyChange(SELECTION_INDEX_PROPERTY, oldSelectionIndex,
+         * newSelectionIndex); }
+         */
         public void propertyChange(PropertyChangeEvent evt) {
             Object oldSelection = evt.getOldValue();
             Object newSelection = evt.getNewValue();
             int newSelectionIndex = indexOf(newSelection);
+            if (newSelectionIndex != oldSelectionIndex) {
+                selectionIndexHolder.removeValueChangeListener(selectionIndexChangeHandler);
+                selectionIndexHolder.setValue(new Integer(newSelectionIndex));
+                selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
+            }
+            int theOldSelectionIndex = oldSelectionIndex;
+            oldSelectionIndex = newSelectionIndex;
+            firePropertyChange(SELECTION_INDEX_PROPERTY, theOldSelectionIndex, newSelectionIndex);
+            firePropertyChange(SELECTION_EMPTY_PROPERTY, theOldSelectionIndex == EMPTY_SELECTION_INDEX,
+                    newSelectionIndex == EMPTY_SELECTION_INDEX);
             firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection);
             fireValueChanged();
-            firePropertyChange(SELECTION_EMPTY_PROPERTY, oldSelectionIndex == EMPTY_SELECTION_INDEX,
-                    newSelectionIndex == EMPTY_SELECTION_INDEX);
-            if (newSelectionIndex == oldSelectionIndex) {
-                return;
-            }
-            oldSelectionIndex = newSelectionIndex;
-            selectionIndexHolder.removeValueChangeListener(selectionIndexChangeHandler);
-            selectionIndexHolder.setValue(new Integer(newSelectionIndex));
-            selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
-            firePropertyChange(SELECTION_INDEX_PROPERTY, oldSelectionIndex, newSelectionIndex);
         }
     }
 
@@ -719,20 +738,35 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      * Listens to changes of the selection index.
      */
     private class SelectionIndexChangeHandler implements ValueChangeListener {
+
+        /*
+         * public void valueChanged() { int newSelectionIndex =
+         * getSelectionIndex(); firePropertyChange(SELECTION_INDEX_PROPERTY,
+         * oldSelectionIndex, newSelectionIndex);
+         * firePropertyChange(SELECTION_EMPTY_PROPERTY, oldSelectionIndex ==
+         * EMPTY_SELECTION_INDEX, newSelectionIndex == EMPTY_SELECTION_INDEX);
+         * fireValueChanged(); Object oldSelection =
+         * getElementAtSafely(oldSelectionIndex); Object newSelection =
+         * getElementAtSafely(newSelectionIndex); oldSelectionIndex =
+         * newSelectionIndex; if (selectionHolder == null ||
+         * ObjectUtils.nullSafeEquals(oldSelection, newSelection)) { return; }
+         * updateSelectionHolderSilently(newSelection);
+         * firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection); }
+         */
         public void valueChanged() {
             int newSelectionIndex = getSelectionIndex();
-            firePropertyChange(SELECTION_INDEX_PROPERTY, oldSelectionIndex, newSelectionIndex);
-            firePropertyChange(SELECTION_EMPTY_PROPERTY, oldSelectionIndex == EMPTY_SELECTION_INDEX,
-                    newSelectionIndex == EMPTY_SELECTION_INDEX);
-            fireValueChanged();
             Object oldSelection = getElementAtSafely(oldSelectionIndex);
             Object newSelection = getElementAtSafely(newSelectionIndex);
-            oldSelectionIndex = newSelectionIndex;
-            if (selectionHolder == null || ObjectUtils.nullSafeEquals(oldSelection, newSelection)) {
-                return;
+            if (selectionHolder != null && !ObjectUtils.nullSafeEquals(oldSelection, newSelection)) {
+                updateSelectionHolderSilently(newSelection);
             }
-            updateSelectionHolderSilently(newSelection);
+            int theOldSelectionIndex = oldSelectionIndex;
+            oldSelectionIndex = newSelectionIndex;
+            firePropertyChange(SELECTION_INDEX_PROPERTY, theOldSelectionIndex, newSelectionIndex);
+            firePropertyChange(SELECTION_EMPTY_PROPERTY, theOldSelectionIndex == EMPTY_SELECTION_INDEX,
+                    newSelectionIndex == EMPTY_SELECTION_INDEX);
             firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection);
+            fireValueChanged();
         }
 
         private void updateSelectionHolderSilently(Object newSelection) {
@@ -746,6 +780,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      * Handles ListDataEvents in the list model.
      */
     private class ListDataChangeHandler implements ListDataListener {
+
         public void intervalAdded(ListDataEvent evt) {
             int index0 = evt.getIndex0();
             int index1 = evt.getIndex1();
@@ -753,8 +788,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             fireIntervalAdded(index0, index1);
             if (index < index0) {
                 // The added elements are after the index; do nothing.
-            }
-            else {
+            } else {
                 setSelectionIndex(index + (index1 - index0 + 1));
             }
         }
@@ -766,11 +800,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             fireIntervalRemoved(index0, index1);
             if (index < index0) {
                 // The removed elements are after the index; do nothing.
-            }
-            else if (index <= index1) {
+            } else if (index <= index1) {
                 setSelectionIndex(EMPTY_SELECTION_INDEX);
-            }
-            else {
+            } else {
                 setSelectionIndex(index - (index1 - index0 + 1));
             }
         }
