@@ -33,7 +33,7 @@ public interface ProgressMonitor {
      * should use the UNKNOWN value if they don't know the total amount of
      * work units. 
      */
-    public abstract void taskStarted(String name, int totalWork);
+    public void taskStarted(String name, int totalWork);
     
     /**
      * Notifies that a subtask of the main task is beginning.
@@ -42,7 +42,7 @@ public interface ProgressMonitor {
      * @param name
      *          the name (or description) of the subtask
      */
-    public abstract void subTaskStarted(String name);
+    public void subTaskStarted(String name);
     
     /**
      * Notifies that a percentage of the work has been completed.  This
@@ -52,7 +52,7 @@ public interface ProgressMonitor {
      * @param work
      *              the percentage complete (0..100)
      */
-    public abstract void worked(int work);
+    public void worked(int work);
 
     /**
      * Notifies that the work is done; that is, either the main task is
@@ -61,19 +61,19 @@ public interface ProgressMonitor {
      * done() can be called more than once; an implementation should be
      * prepared to handle this case.
      */
-    public abstract void done();
+    public void done();
     
     /**
      * Returns true if the user does some UI action to cancel this operation.
      * (like hitting the Cancel button on the progress dialog).
      * The long running operation typically polls isCanceled().
      */
-    public abstract boolean isCanceled();
+    public boolean isCanceled();
 
     /**
      * Attempts to cancel the monitored task.
      */
-    public abstract void setCanceled(boolean b);
+    public void setCanceled(boolean b);
 
     
 }
