@@ -29,6 +29,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.context.support.ApplicationObjectSupport;
@@ -176,6 +177,12 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
     
     public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
         return new PatchedJFormattedTextField(formatterFactory);
+    }
+    
+    public JTextField createTextField() {
+        JTextField tf = new JTextField();
+        tf.setColumns(25);
+        return tf;
     }
 
     public JTextArea createTextArea() {

@@ -36,7 +36,6 @@ public class FileChooserUtils {
         String defaultExtension,     
         String approveButtonName,
         String fileTypeDescription) {
-        String fileName = null;
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
         }
@@ -46,6 +45,7 @@ public class FileChooserUtils {
         fileChooser.setFileFilter(filter);
         int returnVal =
             fileChooser.showDialog(parent, approveButtonName);
+        String fileName = null;
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             fileName = fileChooser.getSelectedFile().getAbsolutePath();
         }

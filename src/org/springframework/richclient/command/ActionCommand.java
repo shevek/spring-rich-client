@@ -30,6 +30,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JRootPane;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.util.Assert;
@@ -149,6 +150,20 @@ public abstract class ActionCommand extends AbstractCommand {
         JButton button = (JButton)getButtonIn(rootPane);
         if (button != null) {
             rootPane.setDefaultButton(button);
+        }
+    }
+    
+    public void setFirstButtonAsDefault() {
+        Iterator it = buttonIterator();
+        while (it.hasNext()) {
+            Object o = it.next();
+            if (o instanceof JButton) {
+                JButton button = (JButton)o;
+                JRootPane pane = SwingUtilities.getRootPane(button);
+                if (pane != null) {
+                    pane.setDefaultButton(button);
+                }
+            }
         }
     }
 

@@ -27,6 +27,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
@@ -56,6 +57,7 @@ import org.springframework.rules.values.MetaAspectAccessStrategy;
 import org.springframework.rules.values.MutableAspectAccessStrategy;
 import org.springframework.rules.values.MutableFormModel;
 import org.springframework.rules.values.NestingFormModel;
+import org.springframework.rules.values.TypeConverter;
 import org.springframework.rules.values.ValidatingFormModel;
 import org.springframework.rules.values.ValidationListener;
 import org.springframework.rules.values.ValueHolder;
@@ -97,7 +99,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             boolean bufferChanges) {
         ValidatingFormModel formModel = new ValidatingFormModel(formObject);
         formModel.setRulesSource(Application.services());
-        formModel.setBufferChanges(bufferChanges);
+        formModel.setBufferChangesDefault(bufferChanges);
         return new SwingFormModel(formModel);
     }
 
@@ -117,14 +119,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public void registerCustomEditor(Class clazz,
             PropertyEditor customPropertyEditor) {
         formModel.getAspectAccessStrategy().registerCustomEditor(clazz,
-            customPropertyEditor);
+                customPropertyEditor);
     }
 
     public void registerCustomEditor(String domainObjectProperty,
             PropertyEditor customPropertyEditor) {
         formModel.getAspectAccessStrategy().registerCustomEditor(
-            getMetaAspectAccessor().getAspectClass(domainObjectProperty),
-            domainObjectProperty, customPropertyEditor);
+                getMetaAspectAccessor().getAspectClass(domainObjectProperty),
+                domainObjectProperty, customPropertyEditor);
     }
 
     public void addValidationListener(ValidationListener listener) {
@@ -151,8 +153,16 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return formModel.getFormObjectHolder();
     }
 
+    public String getDisplayValue(String formProperty) {
+        return formModel.getDisplayValue(formProperty);
+    }
+
     public Object getValue(String formProperty) {
         return formModel.getValue(formProperty);
+    }
+
+    public ValueModel getDisplayValueModel(String formProperty) {
+        return formModel.getDisplayValueModel(formProperty);
     }
 
     public ValueModel getValueModel(String formProperty) {
@@ -185,6 +195,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public boolean isDirty() {
         return formModel.isDirty();
+    }
+
+    public boolean getBufferChanges() {
+        return formModel.getBufferChanges();
     }
 
     public void commit() {
@@ -245,48 +259,72 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
     }
 
-    public JFormattedTextField createBoundTextField(String formProperty) {
-        return createBoundTextField(formProperty, new FormatterFactory(
-                valueCommitPolicy));
+    public JFormattedTextField createBoundFormattedTextField(String formProperty) {
+        Class valueClass = getMetaAspectAccessor().getAspectClass(formProperty);
+        return createBoundFormattedTextField(formProperty,
+                new FormatterFactory(valueClass, valueCommitPolicy));
     }
 
-    public JFormattedTextField createBoundTextField(String formProperty,
-            AbstractFormatterFactory formatterFactory) {
-        ValueModel valueModel = getOrCreateValueModel(formProperty);
-        JFormattedTextField textField = createNewTextField(formatterFactory);
-        new JFormatedTextFieldValueSetter(textField, valueModel);
-        textField.setValue(valueModel.get());
+    public JFormattedTextField createBoundFormattedTextField(
+            String formProperty, AbstractFormatterFactory formatterFactory) {
+        ValueModel valueModel = new AspectAdapter(formModel
+                .getAspectAccessStrategy(), formProperty);
+        if (formModel.getBufferChanges()) {
+            valueModel = new BufferedValueModel(valueModel);
+        }
+        JFormattedTextField textField = createNewFormattedTextField(formatterFactory);
+        TypeConverter typeConverter = new TypeConverter(valueModel, textField);
+        ValueModel validatingModel = formModel.add(formProperty, typeConverter);
         textField.setEditable(isWriteable(formProperty));
+        textField.setValue(valueModel.get());
+        if (textField.isEditable()) {
+            new JFormattedTextFieldValueSetter(textField, validatingModel,
+                    valueCommitPolicy);
+        }
         return textField;
     }
 
-    protected JFormattedTextField createNewTextField(
+    protected JFormattedTextField createNewFormattedTextField(
             AbstractFormatterFactory formatterFactory) {
         return getComponentFactory().createFormattedTextField(formatterFactory);
+    }
+
+    public JTextField createBoundTextField(String formProperty) {
+        return (JTextField)bind(createNewTextField(), formProperty);
+    }
+
+    public JTextField createBoundTextField(String formProperty,
+            ValueCommitPolicy commitPolicy) {
+        return (JTextField)bind(createNewTextField(), formProperty,
+                commitPolicy);
+    }
+
+    protected JTextField createNewTextField() {
+        return getComponentFactory().createTextField();
     }
 
     private JComponent bindCustomEditor(PropertyEditor propertyEditor,
             String formProperty) {
         Assert
                 .isTrue(propertyEditor.supportsCustomEditor(),
-                    "The propertyEditor to bind must provide a customEditor component.");
+                        "The propertyEditor to bind must provide a customEditor component.");
         final Component customEditor = propertyEditor.getCustomEditor();
         Assert.notNull(customEditor,
-            "The customEditor property cannot be null.");
+                "The customEditor property cannot be null.");
         Assert.isTrue(customEditor instanceof JComponent,
-            "customEditors must be JComponents; however, you have provided a "
-                    + customEditor.getClass());
+                "customEditors must be JComponents; however, you have provided a "
+                        + customEditor.getClass());
         ValueModel valueModel = getOrCreateValueModel(formProperty);
         new PropertyEditorValueSetter(propertyEditor, valueModel);
         propertyEditor.setValue(valueModel.get());
         return (JComponent)customEditor;
     }
 
-    public JComponent bind(JTextComponent component, String formProperty) {
+    public JTextComponent bind(JTextComponent component, String formProperty) {
         return bind(component, formProperty, valueCommitPolicy);
     }
 
-    public JComponent bind(JTextComponent component, String formProperty,
+    public JTextComponent bind(JTextComponent component, String formProperty,
             ValueCommitPolicy valueCommitPolicy) {
         final ValueModel valueModel = getOrCreateValueModel(formProperty);
         component.setText((String)valueModel.get());
@@ -333,7 +371,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             String parentProperty, String childPropertyToDisplay) {
         ValueModel value = getOrCreateValueModel(parentProperty);
         final ValueModel nestedAccessor = newNestedAspectAdapter(value,
-            childPropertyToDisplay);
+                childPropertyToDisplay);
         component.setText((String)nestedAccessor.get());
         nestedAccessor.addValueListener(new ValueListener() {
             public void valueChanged() {
@@ -376,7 +414,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
         ValueModel itemsValueModel = getOrCreateValueModel(selectableItemsProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
-            itemsValueModel, renderedItemProperty);
+                itemsValueModel, renderedItemProperty);
         return comboBox;
     }
 
@@ -384,7 +422,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             ValueModel selectableItemsHolder, String renderedItemProperty) {
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
-            selectableItemsHolder, renderedItemProperty);
+                selectableItemsHolder, renderedItemProperty);
         return comboBox;
     }
 
@@ -394,7 +432,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 renderedProperty)
                 : null);
         JComboBox comboBox = bind(createNewComboBox(), selectedItemHolder,
-            selectableItemsHolder, comparator);
+                selectableItemsHolder, comparator);
         if (renderedProperty != null) {
             comboBox.setRenderer(new BeanPropertyValueListRenderer(
                     renderedProperty));
@@ -405,9 +443,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComboBox createBoundComboBoxFromEnum(String selectionFormProperty) {
         JComboBox comboBox = createNewComboBox();
         getComponentFactory().configureForEnum(comboBox,
-            getEnumType(selectionFormProperty));
+                getEnumType(selectionFormProperty));
         return bind(comboBox, selectionFormProperty, (List)comboBox.getModel(),
-            AbstractCodedEnum.DEFAULT_ORDER);
+                AbstractCodedEnum.DEFAULT_ORDER);
     }
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty,
@@ -535,7 +573,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 renderedProperty)
                 : null);
         JList list = bind(createNewList(), selectionFormProperty,
-            selectableItemsHolder, itemsComparator);
+                selectableItemsHolder, itemsComparator);
         if (renderedProperty != null) {
             list.setCellRenderer(new BeanPropertyValueListRenderer(
                     renderedProperty));
@@ -552,7 +590,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JList bind(JList list, String selectionFormProperty,
             ValueModel selectableItemsHolder, Comparator itemsComparator) {
         return bind(list, getOrCreateValueModel(selectionFormProperty),
-            selectableItemsHolder, itemsComparator);
+                selectableItemsHolder, itemsComparator);
     }
 
     public JList bind(JList list, ValueModel selectedItemHolder,
@@ -592,7 +630,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                     if (selectedValueModel.get() != null) {
                         if (!updating) {
                             list.setSelectedValue(selectedValueModel.get(),
-                                true);
+                                    true);
                         }
                     }
                     else {
@@ -620,13 +658,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             columns = 25;
         }
         return (JTextArea)bind(getComponentFactory().createTextArea(rows,
-            columns), formProperty, valueCommitPolicy);
+                columns), formProperty, valueCommitPolicy);
     }
 
     public ValidationListener createSingleLineResultsReporter(
             Guarded guardedComponent, MessageAreaPane messageAreaPane) {
         return createSingleLineResultsReporter(this, guardedComponent,
-            messageAreaPane);
+                messageAreaPane);
     }
 
     public static ValidationListener createSingleLineResultsReporter(

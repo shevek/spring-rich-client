@@ -59,6 +59,7 @@ public class ApplicationPage {
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
+        // todo - views are always being recreated when swithced...we should cache open views...
         View view = viewDescriptor.createView();
         view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
                 .getDisplayName(), this));

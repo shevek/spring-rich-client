@@ -21,10 +21,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.rules.values.ValueModel;
 
-
-public class AsYouTypeTextValueSetter
-extends AbstractValueSetter
-implements DocumentListener {
+public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
+        DocumentListener {
     private JTextComponent component;
 
     protected AsYouTypeTextValueSetter(JTextComponent component) {
@@ -32,22 +30,18 @@ implements DocumentListener {
         this.component = component;
         this.component.getDocument().addDocumentListener(this);
     }
-    
+
     public AsYouTypeTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
         super(valueModel);
         this.component = component;
         this.component.getDocument().addDocumentListener(this);
     }
-    
+
     protected void setComponentValue(Object value) {
-        component.setText((String) value);
+        component.setText((String)value);
     }
-	
-	private void componentValueChanged() {
-	    componentValueChanged(component.getText());
-	}
-    
+
     public void removeUpdate(DocumentEvent e) {
         componentValueChanged();
     }
@@ -59,4 +53,9 @@ implements DocumentListener {
     public void changedUpdate(DocumentEvent e) {
         componentValueChanged();
     }
+    
+    private void componentValueChanged() {
+        componentValueChanged(component.getText());
+    }
+
 }

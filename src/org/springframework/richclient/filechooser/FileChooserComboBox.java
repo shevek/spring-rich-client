@@ -22,9 +22,9 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
@@ -50,7 +50,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
 
     private String fileChooserLabel = "fileChooserLabel";
 
-    private JFormattedTextField fileNameSelector;
+    private JTextField fileNameField;
 
     private JButton browseButton;
 
@@ -99,14 +99,14 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     public void setEnabled(boolean enabled) {
-        fileNameSelector.setEnabled(enabled);
+        fileNameField.setEnabled(enabled);
         browseButton.setEnabled(false);
     }
 
     protected JComponent createControl() {
-        this.fileNameSelector = formModel.createBoundTextField(formProperty);
+        this.fileNameField = formModel.createBoundTextField(formProperty);
         JLabel fileToProcess = getComponentFactory().createLabelFor(
-                fileChooserLabel, fileNameSelector);
+                fileChooserLabel, fileNameField);
         this.browseButton = getComponentFactory().createButton("button.browse");
         browseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -119,7 +119,8 @@ public class FileChooserComboBox extends AbstractControlFactory {
                 int returnVal = fileChooser.showOpenDialog(SwingUtilities
                         .getWindowAncestor(browseButton));
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fileNameSelector.setValue(fileChooser.getSelectedFile());
+                    fileNameField.setText(fileChooser.getSelectedFile()
+                            .getAbsolutePath());
                 }
             }
         });
@@ -128,7 +129,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
         JPanel panel = new JPanel(layout);
         CellConstraints cc = new CellConstraints();
         panel.add(fileToProcess, cc.xyw(1, 1, 3));
-        panel.add(fileNameSelector, cc.xy(1, 3));
+        panel.add(fileNameField, cc.xy(1, 3));
         panel.add(browseButton, cc.xy(3, 3));
         return panel;
     }

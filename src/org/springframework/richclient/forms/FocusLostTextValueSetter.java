@@ -22,11 +22,13 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.rules.values.ValueModel;
 
-
-public class FocusLostTextValueSetter 
-extends AbstractValueSetter 
-implements FocusListener {
+public class FocusLostTextValueSetter extends AbstractValueSetter implements
+        FocusListener {
     private JTextComponent component;
+
+    public FocusLostTextValueSetter(JTextComponent component) {
+        this(component, null);
+    }
 
     public FocusLostTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
@@ -34,15 +36,16 @@ implements FocusListener {
         this.component = component;
         this.component.addFocusListener(this);
     }
-    
+
     protected void setComponentValue(Object value) {
-        component.setText((String) value);
+        component.setText((String)value);
     }
 
     public void focusLost(FocusEvent e) {
         componentValueChanged(component.getText());
     }
 
-    public void focusGained(FocusEvent e) {        
-    }        
+    public void focusGained(FocusEvent e) {
+
+    }
 }

@@ -25,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.richclient.util.Alignment;
@@ -139,14 +140,15 @@ public interface ComponentFactory {
     public JComboBox createComboBox();
 
     /**
-     * Create a combo box using this component factory, to be populated by the list of
-     * all enums of the specified type, resolved using this factory's enum resolver.
+     * Create a combo box using this component factory, to be populated by the
+     * list of all enums of the specified type, resolved using this factory's
+     * enum resolver.
      * 
      * @return The new combo box.
      */
     public JComboBox createComboBox(String enumType);
 
-     /**
+    /**
      * Configure a combo box to be populated with all enums of the specified
      * enumeration type. The type must be resolvable by this factory's enum
      * resolver.
@@ -175,14 +177,23 @@ public interface ComponentFactory {
      * @return The checkbox.
      */
     public JCheckBox createCheckBox(String labelKey);
-        
+
     /**
+     * Create a formatted text field using this component factory.
+     * 
      * @param formatterFactory
-     * 				AbstractFormatterFactory used for formatting.
+     *            AbstractFormatterFactory used for formatting.
      * @return The new formatted text field
      */
-    public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory);
-    
+    public JFormattedTextField createFormattedTextField(
+            AbstractFormatterFactory formatterFactory);
+
+    /**
+     * Create a standard text field using this component factory.
+     * 
+     * @return the new text field.
+     */
+    public JTextField createTextField();
 
     /**
      * Create a text area using this component factory.
@@ -224,5 +235,5 @@ public interface ComponentFactory {
      * @param tabComponent
      */
     public void addConfiguredTab(JTabbedPane tabbedPane, String labelKey,
-            JComponent tabComponent);   
+            JComponent tabComponent);
 }

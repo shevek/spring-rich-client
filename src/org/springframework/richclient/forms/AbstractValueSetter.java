@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.forms;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.rules.values.ValueListener;
 import org.springframework.rules.values.ValueModel;
 
@@ -22,29 +24,45 @@ import org.springframework.rules.values.ValueModel;
  * @author oliverh
  */
 public abstract class AbstractValueSetter implements ValueListener {
-    protected ValueModel valueModel;
+    protected final Log logger = LogFactory.getLog(getClass());
+
+    private ValueModel valueModel;
 
     private boolean updating;
 
     public AbstractValueSetter(ValueModel valueModel) {
         this.valueModel = valueModel;
-        this.valueModel.addValueListener(this);
-    }
-
-    protected abstract void setComponentValue(Object value);
-
-    protected void componentValueChanged(Object newValue) {
-        try {
-            updating = true;
-            valueModel.set(newValue);
-        } finally {
-            updating = false;
+        if (this.valueModel != null) {
+            this.valueModel.addValueListener(this);
         }
     }
+
+    protected ValueModel getValueModel() {
+        return valueModel;
+    }
     
+    protected boolean isUpdating() {
+        return updating;
+    }
+
+    protected void componentValueChanged(Object newValue) {
+        if (valueModel != null) {
+            try {
+                updating = true;
+                valueModel.set(newValue);
+            }
+            finally {
+                updating = false;
+            }
+        }
+    }
+
     public void valueChanged() {
         if (!updating) {
             setComponentValue(valueModel.get());
         }
     }
+
+    protected abstract void setComponentValue(Object value);
+
 }
