@@ -460,11 +460,11 @@
 		<javac destdir="${sandbox.target.testclasses.dir}" target="1.4" source="1.4" debug="${debug}"
 				deprecation="false" optimize="false" failonerror="true">
 			<src path="${sandbox.test.dir}"/>
+			<src path="${commons.attributes.tempdir.sandbox.test}"/>
 			<classpath refid="all-libs"/>
 			<classpath location="${target.classes.dir}"/>
 			<classpath location="${sandbox.target.classes.dir}"/>
 			<classpath location="${target.testclasses.dir}"/>
-			<classpath location="${commons.attributes.tempdir.sandbox.test}"/>
 		</javac>
 
 		<!-- Pick up logging config from test directory -->
