@@ -26,6 +26,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.ActionCommandInterceptor;
 import org.springframework.richclient.command.CommandDelegate;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandGroupFactoryBean;
@@ -187,6 +188,16 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         }
         configure(command, faceConfigurationKey);
         registerCommand(command);
+    }
+
+    public void addCommandInterceptor(String commandId,
+            ActionCommandInterceptor interceptor) {
+        getActionCommand(commandId).addCommandInterceptor(interceptor);
+    }
+
+    public void removeCommandInterceptor(String commandId,
+            ActionCommandInterceptor interceptor) {
+        getActionCommand(commandId).removeCommandInterceptor(interceptor);
     }
 
     public void registerCommand(AbstractCommand command) {

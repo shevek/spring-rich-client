@@ -31,4 +31,10 @@ public interface CommandManager extends CommandServices, CommandRegistry,
     public void addNewCommand(AbstractCommand command,
             String faceConfigurationKey);
 
+    public void addCommandInterceptor(String commandId,
+            ActionCommandInterceptor interceptor);
+
+    public void removeCommandInterceptor(String commandId,
+            ActionCommandInterceptor interceptor);
+
 }
