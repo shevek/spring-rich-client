@@ -21,7 +21,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.core.Message;
-import org.springframework.richclient.util.ListenerListHelper;
+import org.springframework.util.EventListenerListHelper;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -38,7 +38,7 @@ public class DefaultMessageAreaModel implements Messagable {
 
     private Message message = Message.EMPTY_MESSAGE;
 
-    private ListenerListHelper listenerList = new ListenerListHelper(PropertyChangeListener.class);
+    private EventListenerListHelper listenerList = new EventListenerListHelper(PropertyChangeListener.class);
 
     public DefaultMessageAreaModel() {
         this.delegate = this;

@@ -27,11 +27,11 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
-import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.rules.reporting.ValidationResults;
+import org.springframework.util.EventListenerListHelper;
 
 /**
  * @author oliverh
@@ -69,10 +69,10 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
             update(propertyName);
         }
 
-        private ListenerListHelper getGuards(String propertyName) {
-            ListenerListHelper guards = (ListenerListHelper)propertyGuarded.get(propertyName);
+        private EventListenerListHelper getGuards(String propertyName) {
+            EventListenerListHelper guards = (EventListenerListHelper)propertyGuarded.get(propertyName);
             if (guards == null) {
-                guards = new ListenerListHelper(Guarded.class);
+                guards = new EventListenerListHelper(Guarded.class);
                 propertyGuarded.put(propertyName, guards);
             }
             return guards;
@@ -83,10 +83,10 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
             update(propertyName);
         }
 
-        private ListenerListHelper getMessageReceivers(String propertyName) {
-            ListenerListHelper messageReceivers = (ListenerListHelper)propertyMessage.get(propertyName);
+        private EventListenerListHelper getMessageReceivers(String propertyName) {
+            EventListenerListHelper messageReceivers = (EventListenerListHelper)propertyMessage.get(propertyName);
             if (messageReceivers == null) {
-                messageReceivers = new ListenerListHelper(Messagable.class);
+                messageReceivers = new EventListenerListHelper(Messagable.class);
                 propertyMessage.put(propertyName, messageReceivers);
             }
             return messageReceivers;

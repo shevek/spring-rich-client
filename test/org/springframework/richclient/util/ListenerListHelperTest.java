@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.springframework.util.EventListenerListHelper;
 import org.springframework.util.closure.Closure;
 
 /**
@@ -28,7 +29,7 @@ import org.springframework.util.closure.Closure;
  */
 public class ListenerListHelperTest extends TestCase {
 
-    private ListenerListHelper llh;
+    private EventListenerListHelper llh;
 
     private TestListener l1;
 
@@ -37,7 +38,7 @@ public class ListenerListHelperTest extends TestCase {
     private TestListener l3;
 
     public void setUp() {
-        llh = new ListenerListHelper(TestListener.class);
+        llh = new EventListenerListHelper(TestListener.class);
         l1 = new TestListener();
         l2 = new TestListener();
         l3 = new TestListener();
@@ -45,7 +46,7 @@ public class ListenerListHelperTest extends TestCase {
 
     public void testConstructor() {
         try {
-            new ListenerListHelper(null);
+            new EventListenerListHelper(null);
             fail();
         }
         catch (IllegalArgumentException e) {

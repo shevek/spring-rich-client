@@ -23,7 +23,7 @@ import java.util.List;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.forms.Form;
-import org.springframework.richclient.util.ListenerListHelper;
+import org.springframework.util.EventListenerListHelper;
 
 /**
  * Helper implementation of the wizard interface.
@@ -43,7 +43,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessor impleme
 
     private WizardContainer container;
 
-    private ListenerListHelper listeners = new ListenerListHelper(WizardListener.class);
+    private EventListenerListHelper listeners = new EventListenerListHelper(WizardListener.class);
 
     private boolean autoConfigureChildPages = true;
 

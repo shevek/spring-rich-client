@@ -44,9 +44,9 @@ import org.springframework.richclient.application.config.ApplicationWindowConfig
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
-import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.richclient.util.Memento;
 import org.springframework.util.Assert;
+import org.springframework.util.EventListenerListHelper;
 
 /**
  * Provides a default implementation of {@link ApplicationWindow}
@@ -74,7 +74,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private WindowManager windowManager;
 
-    private ListenerListHelper pageListeners = new ListenerListHelper(PageListener.class);
+    private EventListenerListHelper pageListeners = new EventListenerListHelper(PageListener.class);
 
     public DefaultApplicationWindow() {
         this(Application.instance().getWindowManager().size());

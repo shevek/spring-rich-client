@@ -31,8 +31,8 @@ import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
-import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.util.Assert;
+import org.springframework.util.EventListenerListHelper;
 import org.springframework.util.closure.support.AbstractConstraint;
 
 /**
@@ -44,7 +44,7 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 
     private ApplicationWindow window;
 
-    private ListenerListHelper pageComponentListeners = new ListenerListHelper(PageComponentListener.class);
+    private EventListenerListHelper pageComponentListeners = new EventListenerListHelper(PageComponentListener.class);
 
     public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
         setApplicationWindow(window);

@@ -21,11 +21,12 @@ import java.util.Iterator;
 
 import javax.swing.event.EventListenerList;
 
+import org.springframework.util.EventListenerListHelper;
 import org.springframework.util.StopWatch;
 import org.springframework.util.closure.Closure;
 
 /**
- * Some benchmarking of ListenerListHelper
+ * Some benchmarking of EventListenerListHelper
  * 
  * @author oliverh
  */
@@ -152,7 +153,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Reflection - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -172,7 +173,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Reflection - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -192,7 +193,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Closure - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -219,7 +220,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Closure - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -242,7 +243,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Iterator - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -260,7 +261,7 @@ public abstract class ListenerListHelperPerformanceTests {
             super("Iterator - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
+        private final EventListenerListHelper listenerList = new EventListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
