@@ -10,15 +10,15 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
-import org.springframework.richclient.application.ApplicationPageDescriptor;
-import org.springframework.richclient.application.ApplicationPageLayoutBuilder;
+import org.springframework.richclient.application.PageDescriptor;
+import org.springframework.richclient.application.PageLayoutBuilder;
 import org.springframework.richclient.application.ViewDescriptor;
 
-public class SingleViewApplicationPageDescriptor implements ApplicationPageDescriptor {
+public class SingleViewPageDescriptor implements PageDescriptor {
 
     private ViewDescriptor viewDescriptor;
 
-    public SingleViewApplicationPageDescriptor(ViewDescriptor viewDescriptor) {
+    public SingleViewPageDescriptor(ViewDescriptor viewDescriptor) {
         super();
         this.viewDescriptor = viewDescriptor;
     }
@@ -47,7 +47,7 @@ public class SingleViewApplicationPageDescriptor implements ApplicationPageDescr
         return viewDescriptor.getImage();
     }
 
-    public void buildInitialLayout(ApplicationPageLayoutBuilder layout) {
+    public void buildInitialLayout(PageLayoutBuilder layout) {
         layout.addView(viewDescriptor.getId());
     }
 

@@ -13,32 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application.support;
+package org.springframework.richclient.application;
 
-import org.springframework.richclient.application.View;
-import org.springframework.richclient.application.ViewListener;
+import org.springframework.richclient.core.Dirtyable;
+import org.springframework.richclient.core.Saveable;
 
-public abstract class AbstractViewListener implements ViewListener {
-    private View activeView;
-
-    protected View getActiveView() {
-        return activeView;
-    }
-
-    public void viewOpened(View view) {
-
-    }
-
-    public void viewFocusGained(View view) {
-        this.activeView = view;
-    }
-
-    public void viewFocusLost(View view) {
-        this.activeView = null;
-    }
-
-    public void viewClosed(View view) {
-
-    }
+public interface Editor extends PageComponent, Dirtyable, Saveable {
 
 }

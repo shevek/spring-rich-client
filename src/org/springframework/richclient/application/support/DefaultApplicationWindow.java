@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
-import org.springframework.richclient.application.ApplicationPageDescriptor;
+import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageListener;
@@ -154,7 +154,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     protected final ApplicationPage createPage(ApplicationWindow window,
             String pageDescriptorId) {
-        ApplicationPageDescriptor descriptor = getPageDescriptor(pageDescriptorId);
+        PageDescriptor descriptor = getPageDescriptor(pageDescriptorId);
         return createPage(descriptor);
     }
 
@@ -166,7 +166,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
      *            The page descriptor
      * @return The window's page
      */
-    protected ApplicationPage createPage(ApplicationPageDescriptor descriptor) {
+    protected ApplicationPage createPage(PageDescriptor descriptor) {
         try {
             DefaultApplicationPage page = (DefaultApplicationPage)getServices()
                     .getBean(DEFAULT_APPLICATION_PAGE_BEAN_ID,
@@ -181,14 +181,14 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     }
 
-    protected ApplicationPageDescriptor getPageDescriptor(
+    protected PageDescriptor getPageDescriptor(
             String pageDescriptorId) {
         Object desc = getServices().getBean(pageDescriptorId);
-        if (desc instanceof ApplicationPageDescriptor) {
-            return (ApplicationPageDescriptor)desc;
+        if (desc instanceof PageDescriptor) {
+            return (PageDescriptor)desc;
         }
         else if (desc instanceof ViewDescriptor) {
-            return new SingleViewApplicationPageDescriptor((ViewDescriptor)desc);
+            return new SingleViewPageDescriptor((ViewDescriptor)desc);
         }
         else {
             throw new IllegalArgumentException("Page id '" + pageDescriptorId

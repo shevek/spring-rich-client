@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
+import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.ViewDescriptor;
@@ -32,10 +33,17 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractView extends AbstractControlFactory implements
         View {
+    private ViewDescriptor descriptor;
+
     private ViewContext context;
 
+    public void setDescriptor(ViewDescriptor viewDescriptor) {
+        this.descriptor = viewDescriptor;
+    }
+
     public final void initialize(ViewContext context) {
-        Assert.notNull(context, "The View context must be non-null");
+        Assert.notNull(context,
+                "This view's page component context is required");
         this.context = context;
         registerLocalCommandExecutors(context);
     }
@@ -45,10 +53,10 @@ public abstract class AbstractView extends AbstractControlFactory implements
     }
 
     public ViewDescriptor getDescriptor() {
-        return context.getViewDescriptor();
+        return descriptor;
     }
 
-    public ViewContext getContext() {
+    public PageComponentContext getContext() {
         return context;
     }
 
@@ -73,15 +81,15 @@ public abstract class AbstractView extends AbstractControlFactory implements
     }
 
     protected final Window getWindowControl() {
-        return getContext().getApplicationWindow().getControl();
+        return getContext().getWindow().getControl();
     }
 
     protected final CommandManager getWindowCommandManager() {
-        return context.getApplicationWindow().getCommandManager();
+        return context.getWindow().getCommandManager();
     }
 
     protected final StatusBarCommandGroup getStatusBar() {
-        return context.getApplicationWindow().getStatusBar();
+        return context.getWindow().getStatusBar();
     }
 
     protected abstract JComponent createControl();

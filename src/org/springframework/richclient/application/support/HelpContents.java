@@ -26,7 +26,7 @@ import javax.swing.JFrame;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
+import org.springframework.richclient.application.ApplicationDescriptor;
 
 /**
  * A simple implementation of a help contents frame for an application using
@@ -35,7 +35,7 @@ import org.springframework.richclient.application.ApplicationInfo;
  * @author Keith Donald
  */
 public class HelpContents {
-    private ApplicationInfo applicationInfo;
+    private ApplicationDescriptor applicationInfo;
 
     private Resource helpSetPath = new ClassPathResource("help/helpset.hs");
 

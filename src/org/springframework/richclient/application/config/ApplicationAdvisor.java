@@ -21,11 +21,12 @@ import java.util.Properties;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
+import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
@@ -38,7 +39,7 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     private Application application;
 
-    private ApplicationInfo applicationInfo;
+    private ApplicationDescriptor applicationDescriptor;
 
     private ApplicationWindow managedWindow;
 
@@ -87,8 +88,8 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         }
     }
 
-    public void setApplicationInfo(ApplicationInfo info) {
-        this.applicationInfo = info;
+    public void setApplicationDescriptor(ApplicationDescriptor info) {
+        this.applicationDescriptor = info;
     }
 
     protected final Application getApplication() {
@@ -96,8 +97,9 @@ public abstract class ApplicationAdvisor implements InitializingBean {
     }
 
     public String getApplicationName() {
-        if (applicationInfo != null) {
-            return applicationInfo.getDisplayName();
+        if (applicationDescriptor != null
+                && StringUtils.hasText(applicationDescriptor.getDisplayName())) {
+            return applicationDescriptor.getDisplayName();
         }
         else {
             return "Spring Rich Client Application";
@@ -105,8 +107,9 @@ public abstract class ApplicationAdvisor implements InitializingBean {
     }
 
     public Image getApplicationImage() {
-        if (applicationInfo != null) {
-            return applicationInfo.getImage();
+        if (applicationDescriptor != null
+                && applicationDescriptor.getImage() != null) {
+            return applicationDescriptor.getImage();
         }
         else {
             return Application.services().getImage(

@@ -25,13 +25,16 @@ import javax.swing.JPanel;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
-import org.springframework.richclient.application.ApplicationPageDescriptor;
-import org.springframework.richclient.application.ApplicationPageLayoutBuilder;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.PageComponent;
+import org.springframework.richclient.application.PageComponentListener;
+import org.springframework.richclient.application.PageComponentPane;
+import org.springframework.richclient.application.PageDescriptor;
+import org.springframework.richclient.application.PageLayoutBuilder;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
-import org.springframework.richclient.application.ViewListener;
+import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.util.Assert;
 import org.springframework.util.closure.support.AbstractConstraint;
 
@@ -39,9 +42,9 @@ import org.springframework.util.closure.support.AbstractConstraint;
  * Provides a standard implementation of {@link ApplicationPage}
  */
 public class DefaultApplicationPage implements ApplicationPage,
-        ApplicationPageLayoutBuilder {
+        PageLayoutBuilder {
 
-    private ApplicationPageDescriptor descriptor;
+    private PageDescriptor descriptor;
 
     private JComponent control;
 
@@ -50,17 +53,18 @@ public class DefaultApplicationPage implements ApplicationPage,
     private ViewDescriptorRegistry viewDescriptorRegistry = Application
             .services().getViewDescriptorRegistry();
 
-    private Set viewPanes = new LinkedHashSet();
+    private Set pageComponents = new LinkedHashSet();
 
-    private Set viewListeners = new LinkedHashSet();
+    private ListenerListHelper pageComponentListeners = new ListenerListHelper(
+            PageComponentListener.class);
 
-    private ViewPane activeView;
+    private PageComponent activeComponent;
 
     protected DefaultApplicationPage() {
     }
 
     public DefaultApplicationPage(ApplicationWindow window,
-            ApplicationPageDescriptor pageDescriptor) {
+            PageDescriptor pageDescriptor) {
         setApplicationWindow(window);
         setDescriptor(pageDescriptor);
     }
@@ -71,10 +75,10 @@ public class DefaultApplicationPage implements ApplicationPage,
                 .state(this.window == null,
                         "Page window already set: it should only be set once, during initialization");
         this.window = window;
-        addViewListener(new SharedCommandTargeter(this.window));
+        addPageComponentListener(new SharedCommandTargeter(this.window));
     }
 
-    public void setDescriptor(ApplicationPageDescriptor descriptor) {
+    public void setDescriptor(PageDescriptor descriptor) {
         Assert.notNull(descriptor, "The page's descriptor is required");
         Assert
                 .state(
@@ -95,19 +99,28 @@ public class DefaultApplicationPage implements ApplicationPage,
         if (control == null) {
             this.control = new JPanel(new BorderLayout());
             this.descriptor.buildInitialLayout(this);
-            setActiveView();
+            setActiveComponent();
         }
         return control;
     }
 
-    private void setActiveView() {
-        if (viewPanes.size() > 0) {
-            activeView = (ViewPane)viewPanes.iterator().next();
-            fireViewFocusGained(activeView.getView());
+    private void setActiveComponent() {
+        if (pageComponents.size() > 0) {
+            setActiveComponent((PageComponent)pageComponents.iterator().next());
         }
-        else {
-            activeView = null;
+    }
+
+    private void setActiveComponent(PageComponent pageComponent) {
+        if (this.activeComponent != null) {
+            fireFocusLost(this.activeComponent);
         }
+        giveFocusTo(pageComponent.getContext().getPane());
+        this.activeComponent = pageComponent;
+        fireFocusGained(this.activeComponent);
+    }
+
+    public PageComponent getActiveComponent() {
+        return activeComponent;
     }
 
     public void showView(String viewDescriptorId) {
@@ -115,50 +128,41 @@ public class DefaultApplicationPage implements ApplicationPage,
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
-        ViewPane viewPane = findViewPane(viewDescriptor.getId());
-        if (viewPane != null) {
-            giveFocusTo(viewPane);
+        PageComponent component = findView(viewDescriptor.getId());
+        if (component == null) {
+            component = createView(viewDescriptor);
         }
-        else {
-            viewPane = createViewPane(viewDescriptor);
-            giveFocusTo(viewPane);
-        }
-        if (this.activeView != null) {
-            fireViewFocusLost(this.activeView.getView());
-        }
-        this.activeView = viewPane;
-        fireViewFocusGained(this.activeView.getView());
+        setActiveComponent(component);
     }
 
-    private ViewPane findViewPane(final String viewDescriptorId) {
-        return (ViewPane)new AbstractConstraint() {
+    private View findView(final String viewDescriptorId) {
+        return (View)new AbstractConstraint() {
             public boolean test(Object arg) {
-                return ((ViewPane)arg).getView().getId().equals(
-                        viewDescriptorId);
+                if (arg instanceof View) {
+                    return ((View)arg).getId().equals(viewDescriptorId);
+                }
+                else {
+                    return false;
+                }
             }
-        }.findFirst(viewPanes);
+        }.findFirst(pageComponents);
     }
 
-    protected boolean giveFocusTo(ViewPane viewPane) {
+    protected boolean giveFocusTo(PageComponentPane pane) {
         this.control.removeAll();
-        this.control.add(viewPane.getControl());
+        this.control.add(pane.getControl());
         this.control.validate();
         this.control.repaint();
-        viewPane.requestFocusInWindow();
+        pane.requestFocusInWindow();
         return true;
-    }
-
-    private ViewPane createViewPane(ViewDescriptor viewDescriptor) {
-        View view = createView(viewDescriptor);
-        ViewPane viewPane = new ViewPane(view);
-        this.viewPanes.add(viewPane);
-        return viewPane;
     }
 
     protected View createView(ViewDescriptor viewDescriptor) {
         View view = viewDescriptor.createView();
-        view.initialize(new DefaultViewContext(viewDescriptor, this));
-        fireViewCreated(view);
+        view.initialize(new DefaultViewContext(this,
+                new PageComponentPane(view)));
+        pageComponents.add(view);
+        fireOpened(view);
         return view;
     }
 
@@ -166,62 +170,46 @@ public class DefaultApplicationPage implements ApplicationPage,
         return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
     }
 
-    public View getActiveView() {
-        return activeView.getView();
+    public void addPageComponentListener(PageComponentListener listener) {
+        pageComponentListeners.add(listener);
     }
 
-    public void addViewListener(ViewListener listener) {
-        viewListeners.add(listener);
+    public void removePageComponentListener(PageComponentListener listener) {
+        pageComponentListeners.remove(listener);
     }
 
-    public void removeViewListener(ViewListener listener) {
-        viewListeners.remove(listener);
+    protected void fireOpened(PageComponent component) {
+        pageComponentListeners.fire("componentOpened", component);
     }
 
-    protected void fireViewFocusGained(View view) {
-        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
-            ViewListener l = (ViewListener)i.next();
-            l.viewFocusGained(view);
-        }
+    protected void fireFocusGained(PageComponent component) {
+        pageComponentListeners.fire("componentFocusGained", component);
     }
 
-    protected void fireViewFocusLost(View view) {
-        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
-            ViewListener l = (ViewListener)i.next();
-            l.viewFocusLost(view);
-        }
+    protected void fireFocusLost(PageComponent component) {
+        pageComponentListeners.fire("componentFocusLost", component);
     }
 
-    protected void fireViewCreated(View view) {
-        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
-            ViewListener l = (ViewListener)i.next();
-            l.viewOpened(view);
-        }
-    }
-
-    protected void fireViewDisposed(View view) {
-        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
-            ViewListener l = (ViewListener)i.next();
-            l.viewClosed(view);
-        }
+    protected void fireClosed(PageComponent component) {
+        pageComponentListeners.fire("componentClosed", component);
     }
 
     // Initial Application Page Layout Builder methods
 
     public void addView(String viewDescriptorId) {
-        ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
-        this.control.add(viewPane.getControl());
+        View view = createView(getViewDescriptor(viewDescriptorId));
+        this.control.add(view.getContext().getPane().getControl());
     }
 
     public void close() {
-        if (activeView != null) {
-            fireViewFocusLost(activeView.getView());
+        if (activeComponent != null) {
+            fireFocusLost(activeComponent);
         }
-        Iterator it = viewPanes.iterator();
+        Iterator it = pageComponents.iterator();
         while (it.hasNext()) {
-            View view = ((ViewPane)it.next()).getView();
-            view.dispose();
-            fireViewDisposed(view);
+            PageComponent component = (PageComponent)it.next();
+            component.dispose();
+            fireClosed(component);
         }
     }
 }

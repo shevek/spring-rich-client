@@ -15,6 +15,14 @@
  */
 package org.springframework.richclient.application;
 
-public interface ApplicationPageLayoutBuilder {
-    public void addView(String viewDescriptorId);
+import org.springframework.binding.value.PropertyChangePublisher;
+import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.VisualizedElement;
+import org.springframework.richclient.factory.ControlFactory;
+
+public interface PageComponent extends PropertyChangePublisher,
+        DescribedElement, VisualizedElement, ControlFactory {
+    public PageComponentContext getContext();
+    
+    public void dispose();
 }

@@ -18,8 +18,8 @@ package org.springframework.richclient.application.support;
 import java.util.Iterator;
 
 import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.View;
-import org.springframework.richclient.application.ViewContext;
+import org.springframework.richclient.application.PageComponent;
+import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.util.Assert;
 
@@ -29,22 +29,23 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class SharedCommandTargeter extends AbstractViewListener {
+public class SharedCommandTargeter extends PageComponentListenerAdapter {
     private ApplicationWindow window;
 
     public SharedCommandTargeter(ApplicationWindow window) {
-        Assert.notNull(window,
-                "The application window with shared commands is required");
+        Assert
+                .notNull(window,
+                        "The application window containing targetable shared commands is required");
         this.window = window;
     }
 
-    public void viewFocusGained(View view) {
-        super.viewFocusGained(view);
-        ViewContext viewContext = view.getContext();
+    public void componentFocusGained(PageComponent component) {
+        super.componentFocusGained(component);
+        PageComponentContext context = component.getContext();
         for (Iterator i = window.getSharedCommands(); i.hasNext();) {
             TargetableActionCommand globalCommand = (TargetableActionCommand)i
                     .next();
-            globalCommand.setCommandExecutor(viewContext
+            globalCommand.setCommandExecutor(context
                     .getLocalCommandExecutor(globalCommand.getId()));
         }
     }

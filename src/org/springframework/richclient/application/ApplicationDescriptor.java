@@ -22,14 +22,14 @@ import org.springframework.richclient.core.LabeledObjectSupport;
  * 
  * @author Keith Donald
  */
-public class ApplicationInfo extends LabeledObjectSupport {
+public class ApplicationDescriptor extends LabeledObjectSupport {
     /** The version of the application */
     private String version;
 
     /** The build identifier associated with this build of the application */
     private String buildId;
 
-    public ApplicationInfo() {
+    public ApplicationDescriptor() {
     }
 
     public String getBuildId() {

@@ -7,15 +7,15 @@ public interface ApplicationPage extends ControlFactory {
 
     public ApplicationWindow getApplicationWindow();
 
-    public void addViewListener(ViewListener listener);
+    public void addPageComponentListener(PageComponentListener listener);
 
-    public void removeViewListener(ViewListener listener);
+    public void removePageComponentListener(PageComponentListener listener);
 
-    public View getActiveView();
-    
+    public PageComponent getActiveComponent();
+
     public void showView(String viewDescriptorId);
 
     public void showView(ViewDescriptor viewDescriptor);
-    
+
     public void close();
 }

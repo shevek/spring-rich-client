@@ -53,7 +53,7 @@ import javax.swing.text.html.ImageView;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
+import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CloseAction;
@@ -66,7 +66,7 @@ import org.springframework.util.FileCopyUtils;
  */
 public class AboutBox {
 
-    private ApplicationInfo applicationInfo;
+    private ApplicationDescriptor applicationInfo;
 
     private Resource aboutTextPath;
 

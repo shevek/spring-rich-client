@@ -15,11 +15,6 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.binding.value.PropertyChangePublisher;
-import org.springframework.richclient.core.DescribedElement;
-import org.springframework.richclient.core.VisualizedElement;
-import org.springframework.richclient.factory.ControlFactory;
-
 /**
  * A view is a panel-like component displayed within an area on the page
  * associated with an application window. There can be multiple views per page;
@@ -33,14 +28,12 @@ import org.springframework.richclient.factory.ControlFactory;
  * 
  * @author Keith Donald
  */
-public interface View extends PropertyChangePublisher, DescribedElement,
-        VisualizedElement, ControlFactory {
-
+public interface View extends PageComponent {
     public String getId();
 
     public void initialize(ViewContext context);
 
-    public ViewContext getContext();
-
     public void dispose();
+    
+    public void setDescriptor(ViewDescriptor viewDescriptor);
 }

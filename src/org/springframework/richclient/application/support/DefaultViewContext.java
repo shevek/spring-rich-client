@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.PageComponentPane;
 import org.springframework.richclient.application.ViewContext;
-import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.util.Assert;
 
@@ -35,30 +35,28 @@ import org.springframework.util.Assert;
  */
 public class DefaultViewContext implements ViewContext {
 
-    private ViewDescriptor viewDescriptor;
+    private PageComponentPane pane;
 
     private ApplicationPage page;
 
     private Map sharedCommandExecutors;
 
-    public DefaultViewContext(ViewDescriptor viewDescriptor,
-            ApplicationPage page) {
-        Assert.notNull(viewDescriptor, "The view descriptor is required");
+    public DefaultViewContext(ApplicationPage page, PageComponentPane pane) {
         Assert.notNull(page, "Views must be scoped relative to a page");
-        this.viewDescriptor = viewDescriptor;
         this.page = page;
+        this.pane = pane;
     }
 
-    public ApplicationPage getApplicationPage() {
-        return page;
-    }
-
-    public ApplicationWindow getApplicationWindow() {
+    public ApplicationWindow getWindow() {
         return page.getApplicationWindow();
     }
 
-    public ViewDescriptor getViewDescriptor() {
-        return viewDescriptor;
+    public ApplicationPage getPage() {
+        return page;
+    }
+
+    public PageComponentPane getPane() {
+        return pane;
     }
 
     public ActionCommandExecutor getLocalCommandExecutor(String commandId) {
@@ -68,8 +66,7 @@ public class DefaultViewContext implements ViewContext {
                 .get(commandId);
     }
 
-    public void register(String commandId,
-            ActionCommandExecutor executor) {
+    public void register(String commandId, ActionCommandExecutor executor) {
         Assert.notNull(commandId, "The command id is required");
         Assert
                 .notNull(

@@ -87,6 +87,7 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
         View view = (View)o;
+        view.setDescriptor(this);
         if (view instanceof ApplicationListener
                 && getApplicationEventMulticaster() != null) {
             if (logger.isDebugEnabled()) {

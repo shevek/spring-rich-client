@@ -13,8 +13,8 @@
 	
 	<bean id="applicationAdvisor" 
 		class="org.springframework.richclient.samples.petclinic.PetClinicApplicationAdvisor">
-		<property name="applicationInfo">
-			<ref bean="applicationInfo"/>
+		<property name="applicationDescriptor">
+			<ref bean="applicationDescriptor"/>
 		</property>
 		<property name="commandFactoryResource">
 			<value>org/springframework/richclient/samples/petclinic/ui/commands-context.xml</value>
@@ -24,13 +24,13 @@
 		</property>
 	</bean>
 	
-	<bean id="applicationInfo" 
-		class="org.springframework.richclient.application.ApplicationInfo">
+	<bean id="applicationDescriptor" 
+		class="org.springframework.richclient.application.ApplicationDescriptor">
 		<property name="version">
 			<value>1.0</value>
 		</property>
 		<property name="buildId">
-			<value>20040704001</value>
+			<value>20041025001</value>
 		</property>
 	</bean>
 	

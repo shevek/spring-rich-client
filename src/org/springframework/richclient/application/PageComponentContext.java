@@ -15,6 +15,17 @@
  */
 package org.springframework.richclient.application;
 
-public interface ViewContext extends PageComponentContext {
+import org.springframework.richclient.command.ActionCommandExecutor;
+
+public interface PageComponentContext {
+    public ApplicationWindow getWindow();
+
+    public ApplicationPage getPage();
+
+    public PageComponentPane getPane();
+    
+    public ActionCommandExecutor getLocalCommandExecutor(String commandId);
+
+    public void register(String commandId, ActionCommandExecutor localExecutor);
 
 }
