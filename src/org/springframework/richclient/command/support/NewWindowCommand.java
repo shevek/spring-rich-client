@@ -26,10 +26,8 @@ public class NewWindowCommand extends ApplicationWindowAwareCommand {
     }
 
     protected void doExecuteCommand() {
-        final ViewRegistry viewRegistry = Application.services().getViewRegistry();
         final View view = getApplicationWindow().getView();
-        final String viewName = view.getContext().getViewName();
-        final ViewDescriptor viewDescriptor = viewRegistry.getViewDescriptor(viewName);
+        final ViewDescriptor viewDescriptor = view.getViewDescriptor();
         Application.instance().openWindow(viewDescriptor);
     }
 
