@@ -197,7 +197,12 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected JButton getDefaultButton() {
-        return SwingUtilities.getRootPane(getControl()).getDefaultButton();
+        if (isControlCreated()) {
+            return SwingUtilities.getRootPane(getControl()).getDefaultButton();
+        }
+        else {
+            return null;
+        }
     }
 
     protected void setDefaultButton(JButton button) {

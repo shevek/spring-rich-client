@@ -258,10 +258,21 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return formModel.getValueModel(formProperty);
     }
 
-    private ValueModel getOrCreateValueModel(String domainObjectProperty) {
-        ValueModel model = formModel.getValueModel(domainObjectProperty);
+    private ValueModel getOrCreateDisplayValueModel(String domainObjectProperty) {
+        ValueModel model = formModel.getDisplayValueModel(domainObjectProperty);
         if (model == null) {
+            if (domainObjectProperty.equals("integerCode")) {
+                System.out.println("Creating form value model for " + domainObjectProperty + model);
+            }
+
             model = createFormValueModel(domainObjectProperty);
+        } else {
+            Thread.dumpStack();
+            if (domainObjectProperty.equals("integerCode")) {
+                System.out.println("Returning form value model for " + domainObjectProperty + model);
+            }
+
+
         }
         return model;
     }
@@ -442,7 +453,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JSpinner createBoundSpinner(String formProperty) {
-        final ValueModel model = getOrCreateValueModel(formProperty);
+        final ValueModel model = getOrCreateDisplayValueModel(formProperty);
         final JSpinner spinner = createNewSpinner();
         if (getMetadataAccessStrategy().isDate(formProperty)) {
             spinner.setModel(new SpinnerDateModel());
@@ -486,8 +497,18 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JTextComponent bind(final JTextComponent component,
             String formProperty, ValueCommitPolicy valueCommitPolicy) {
-        final ValueModel valueModel = getOrCreateValueModel(formProperty);
-        component.setText((String)valueModel.getValue());
+        final ValueModel valueModel = getOrCreateDisplayValueModel(formProperty);
+        System.out.println("formProperty: " + formProperty + "; "
+                + valueModel.getClass());
+        try {
+            component.setText((String)valueModel.getValue());
+        }
+        catch (ClassCastException e) {
+            IllegalArgumentException ex = new IllegalArgumentException(
+                    "Class cast exception converting value to string - did you install a type converter?");
+            ex.initCause(e);
+            throw ex;
+        }
         if (isWriteable(formProperty)) {
             component.setEditable(true);
             if (valueCommitPolicy == ValueCommitPolicy.AS_YOU_TYPE
@@ -520,7 +541,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     protected JTextComponent bindAsLabel(final JTextComponent component,
             String formProperty) {
-        final ValueModel value = getOrCreateValueModel(formProperty);
+        final ValueModel value = getOrCreateDisplayValueModel(formProperty);
         component.setText((String)value.getValue());
         component.setEditable(false);
         value.addValueChangeListener(new ValueChangeListener() {
@@ -534,7 +555,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     // @TODO better support for nested properties...
     public JTextComponent bindAsLabel(final JTextComponent component,
             String parentProperty, String childPropertyToDisplay) {
-        ValueModel value = getOrCreateValueModel(parentProperty);
+        ValueModel value = getOrCreateDisplayValueModel(parentProperty);
         final ValueModel nestedAccessor = newNestedAspectAdapter(value,
                 childPropertyToDisplay);
         component.setText((String)nestedAccessor.getValue());
@@ -561,7 +582,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
-        ValueModel valueModel = getOrCreateValueModel(formProperty);
+        ValueModel valueModel = getOrCreateDisplayValueModel(formProperty);
         checkBox.setModel(new SelectableButtonValueModel(valueModel));
         return (JCheckBox)bindControl(checkBox, formProperty);
     }
@@ -577,7 +598,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox createBoundComboBox(String selectionFormProperty,
             Object[] selectableItems) {
-        ValueModel selectionValueModel = getOrCreateValueModel(selectionFormProperty);
+        ValueModel selectionValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         ComboBoxModelAdapter comboBoxModel = new ComboBoxModelAdapter(
                 new SelectableItemsListModel(selectableItems,
                         selectionValueModel));
@@ -585,15 +606,15 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty) {
-        ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
+        ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         comboBox.setModel(new DynamicComboBoxListModel(selectedValueModel));
         return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty,
             String selectableItemsProperty, String renderedItemProperty) {
-        ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
-        ValueModel itemsValueModel = getOrCreateValueModel(selectableItemsProperty);
+        ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
+        ValueModel itemsValueModel = getOrCreateDisplayValueModel(selectableItemsProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
                 itemsValueModel, renderedItemProperty);
         return (JComboBox)bindControl(comboBox, selectionFormProperty);
@@ -601,7 +622,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox createBoundComboBox(String selectionFormProperty,
             ValueModel selectableItemsHolder, String renderedItemProperty) {
-        ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
+        ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
                 selectableItemsHolder, renderedItemProperty);
         return (JComboBox)bindControl(comboBox, selectionFormProperty);
@@ -645,7 +666,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty,
             List selectableItems, Comparator itemsComparator) {
-        ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
+        ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         final ValueHolder valueHolder = new ValueHolder(selectableItems);
         final JComboBox boundCombo = bind(comboBox, selectedValueModel,
                 valueHolder, itemsComparator);
@@ -755,7 +776,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JList bind(JList list, String selectionFormProperty,
             ValueModel selectableItemsHolder, Comparator itemsComparator) {
         return (JList)bindControl(bind(list,
-                getOrCreateValueModel(selectionFormProperty),
+                getOrCreateDisplayValueModel(selectionFormProperty),
                 selectableItemsHolder, itemsComparator), selectionFormProperty);
     }
 
