@@ -103,6 +103,7 @@ public class InputApplicationDialog extends ApplicationDialog {
             this.reporter = new DefaultMessageAreaPane();
             if (this.formModel != null) {
                 new SimpleValidationResultsReporter(formModel, this, this.reporter);
+                formModel.validate();
             }
         }
         return reporter;
@@ -174,6 +175,18 @@ public class InputApplicationDialog extends ApplicationDialog {
         if (finishAction != null) {
             finishAction.call(inputValue);
         }
+    }
+
+    public SwingFormModel getFormModel() {
+        return formModel;
+    }
+    
+    
+    /**
+     * @return Returns the inputField.
+     */
+    public JComponent getInputField() {
+        return inputField;
     }
 
 }
