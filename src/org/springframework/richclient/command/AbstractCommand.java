@@ -174,7 +174,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
                             + " has no set id; note: anonymous commands cannot be used in registries.");
         }
         Assert.notNull(commandServices,
-            "The commandServices property must be set and non-null.");
+                "The commandServices property must be set and non-null.");
         if (this instanceof ActionCommand && faceDescriptor == null) {
             logger
                     .warn("The face descriptor property is not yet set for action command '"
@@ -194,7 +194,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     public void setEnabled(boolean enabled) {
-        if (this.enabled != enabled) {
+        if (hasChanged(this.enabled, enabled)) {
             this.enabled = enabled;
             Iterator it = buttonIterator();
             while (it.hasNext()) {
