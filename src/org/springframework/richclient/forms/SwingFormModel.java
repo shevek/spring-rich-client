@@ -43,9 +43,9 @@ import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
@@ -357,8 +357,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * @return The labeled field array
      */
     public JComponent[] createBoundLabeledControl(String formPropertyPath) {
-        JLabel label = getComponentFactory().createLabel(formPropertyPath);
         JComponent editorControl = createBoundControl(formPropertyPath);
+        JLabel label = getComponentFactory().createLabelFor(
+                new String[] { "label." + formPropertyPath, formPropertyPath },
+                editorControl);
         label.setLabelFor(editorControl);
         return new JComponent[] { label, editorControl };
     }

@@ -301,9 +301,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     };
 
     protected void handleEnabledChange(boolean enabled) {
-        
+
     }
-    
+
     protected ActionCommand getNewFormObjectCommand() {
         return newFormObjectCommand;
     }
@@ -350,6 +350,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         if (editableFormObjects != null) {
             if (editingNewFormObject) {
                 editableFormObjects.add(formObject);
+                editingFormObjectIndexHolder.setValue(new Integer(
+                        editableFormObjects.size() - 1));
             }
             else {
                 IndexAdapter adapter = editableFormObjects
