@@ -28,17 +28,17 @@ import org.springframework.util.ToStringCreator;
 public class DefaultApplicationWindowConfigurer implements
         ApplicationWindowConfigurer {
 
-    String title = "New Application Window";
+    private String title = "New Application Window";
 
-    Image image;
+    private Image image;
 
-    boolean showMenuBar = true;
+    private boolean showMenuBar = true;
 
-    boolean showToolBar = true;
+    private boolean showToolBar = true;
 
-    boolean showStatusBar = true;
+    private boolean showStatusBar = true;
 
-    Dimension initialSize = new Dimension(800, 600);
+    private Dimension initialSize = new Dimension(800, 600);
 
     private ApplicationWindow window;
 
@@ -77,16 +77,10 @@ public class DefaultApplicationWindowConfigurer implements
 
     public void setTitle(String title) {
         this.title = title;
-        if (window.isControlCreated()) {
-            window.getControl().setTitle(title);
-        }
     }
 
     public void setImage(Image image) {
         this.image = image;
-        if (window.isControlCreated()) {
-            window.getControl().setIconImage(image);
-        }
     }
 
     public void setInitialSize(Dimension initialSize) {
@@ -97,23 +91,14 @@ public class DefaultApplicationWindowConfigurer implements
 
     public void setShowMenuBar(boolean showMenuBar) {
         this.showMenuBar = showMenuBar;
-        if (window.isControlCreated()) {
-            window.getMenuBar().setVisible(showMenuBar);
-        }
     }
 
     public void setShowToolBar(boolean showToolBar) {
         this.showToolBar = showToolBar;
-        if (window.isControlCreated()) {
-            window.getToolBar().setVisible(showToolBar);
-        }
     }
 
     public void setShowStatusBar(boolean showStatusBar) {
         this.showStatusBar = showStatusBar;
-        if (window.isControlCreated()) {
-            window.getStatusBar().setVisible(showStatusBar);
-        }
     }
 
     public String toString() {

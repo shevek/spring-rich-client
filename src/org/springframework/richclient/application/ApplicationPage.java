@@ -2,22 +2,20 @@ package org.springframework.richclient.application;
 
 import java.beans.PropertyChangeListener;
 
-import javax.swing.*;
+import org.springframework.richclient.factory.ControlFactory;
 
-public interface ApplicationPage extends PropertyChangeListener {
+public interface ApplicationPage extends ControlFactory, PropertyChangeListener {
 
-    void setParentWindow(ApplicationWindow parentWindow);
+    public ApplicationWindow getParentWindow();
 
-    ApplicationWindow getParentWindow();
+    public void addViewListener(ViewListener listener);
 
-    JComponent getControl();
+    public void removeViewListener(ViewListener listener);
 
-    void addViewListener(ViewListener listener);
+    public void showView(String viewDescriptorId);
 
-    void showView(String viewName);
+    public void showView(ViewDescriptor viewDescriptor);
 
-    void showView(ViewDescriptor viewDescriptor);
-
-    View getView();
+    public View getActiveView();
 
 }

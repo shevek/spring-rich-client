@@ -15,12 +15,10 @@
  */
 package org.springframework.richclient.application;
 
-import java.util.Map;
-import java.awt.*;
+import java.awt.Image;
 
-import javax.swing.*;
+import javax.swing.Icon;
 
-import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.core.ManagedElement;
@@ -31,34 +29,18 @@ import org.springframework.richclient.core.ManagedElement;
  * of a given view when requested, typically by a requesting application page. A
  * view descriptor can also produce a command which launches a view for display
  * on the page within the current active window.
- *
+ * 
  * @author Keith Donald
  */
 public interface ViewDescriptor extends ManagedElement {
 
-    /**
-     * Sets the class that is the implementation of the View described by this
-     * descriptor.
-     *
-     * @param viewClass
-     */
-    void setViewClass(Class viewClass);
+    public String getId();
 
-    /**
-     * Sets the map of properties to inject when new view instances are
-     * instantiated by this descriptor.
-     */
-    void setViewProperties(Map viewProperties);
+    public Image getImage();
 
-    /**
-     * Lookup and return the event multicaster (broadcaster) stored within the
-     * application context (service registry) of this application. If no
-     * multicaster, bean is defined, null is returned, and View instances
-     * created by this ViewDescriptor will not be wired as ApplicationListeners.
-     *
-     * @return The event multicaster
-     */
-    ApplicationEventMulticaster getApplicationEventMulticaster();
+    public CommandButtonLabelInfo getLabel();
+
+    public Icon getImageIcon();
 
     /**
      * Factory method that produces a new instance of the View described by this
@@ -68,24 +50,19 @@ public interface ViewDescriptor extends ManagedElement {
      * ApplicationListener, and an ApplicationEventMulticaster is configured in
      * this application's ApplicationContext, the view is registered as an
      * ApplicationListener.
-     *
+     * 
      * @return The new view prototype
      */
-    View createView();
+    public View createView();
 
     /**
      * Create a command that when executed, will attempt to show the view
      * described by this descriptor in the provided application window.
-     *
-     * @param window The window
+     * 
+     * @param window
+     *            The window
      * @return The show view command.
      */
-    ActionCommand createActionCommand(ApplicationWindow window);
-
-    Image getImage();
-
-    CommandButtonLabelInfo getLabel();
-
-    Icon getImageIcon();
+    public ActionCommand createShowViewCommand(ApplicationWindow window);
 
 }

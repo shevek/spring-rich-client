@@ -47,7 +47,7 @@ public class ShowViewMenu extends CommandGroup implements
                 .getViewDescriptors();
         for (int i = 0; i < views.length; i++) {
             ViewDescriptor view = views[i];
-            addInternal(view.createActionCommand(window));
+            addInternal(view.createShowViewCommand(window));
         }
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.application;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
@@ -27,32 +27,24 @@ import org.springframework.richclient.util.PersistableElement;
  * single page (content pane), and status bar.
  */
 public interface ApplicationWindow extends PersistableElement {
-    int getNumber();
+    public int getNumber();
 
-    CommandManager getCommandManager();
+    public ApplicationPage getPage();
 
-    CommandGroup getMenuBar();
+    public CommandManager getCommandManager();
 
-    CommandGroup getToolBar();
+    public CommandGroup getMenuBar();
 
-    StatusBarCommandGroup getStatusBar();
+    public CommandGroup getToolBar();
 
-    void setWindowManager(WindowManager windowManager);
+    public StatusBarCommandGroup getStatusBar();
 
-    void openPage(ViewDescriptor viewDescriptor);
+    public JFrame getControl();
 
-    void open();
+    public void showPage(String pageDescriptorId);
 
-    void showViewOnPage(String viewName);
+    public boolean close();
 
-    void showViewOnPage(ViewDescriptor viewDescriptor);
-
-    View getView();
-
-    JFrame getControl();
-
-    boolean isControlCreated();
-
-    boolean close();
+    public void setWindowManager(WindowManager windowManager);
 
 }

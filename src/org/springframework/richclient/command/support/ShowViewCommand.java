@@ -47,7 +47,7 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
     }
 
     protected void doExecuteCommand() {
-        getApplicationWindow().showViewOnPage(viewDescriptor);
+        getApplicationWindow().getPage().showView(viewDescriptor);
     }
 
 }

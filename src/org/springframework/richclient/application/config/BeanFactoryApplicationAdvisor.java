@@ -15,7 +15,10 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -56,13 +59,13 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
         this.commandFactoryResource = resource;
     }
 
-    public ViewDescriptor getStartingViewDescriptor() {
+    public String getStartingPageId() {
         if (this.startingViewDescriptor == null) {
             this.startingViewDescriptor = (ViewDescriptor)this.beanFactory
                     .getBean(startingViewDescriptorBeanName,
                             ViewDescriptor.class);
         }
-        return this.startingViewDescriptor;
+        return this.startingViewDescriptor.getId();
     }
 
     public void setStartingViewDescriptor(ViewDescriptor startingViewDescriptor) {

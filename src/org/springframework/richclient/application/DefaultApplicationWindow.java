@@ -15,11 +15,15 @@
  */
 package org.springframework.richclient.application;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
+import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +33,6 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.Memento;
-import org.springframework.beans.BeansException;
 
 /**
  * Provides a default implementation of {@link ApplicationWindow}
@@ -53,7 +56,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private JFrame control;
 
-    private ApplicationPage activePage;
+    private ApplicationPage currentPage;
 
     private WindowManager windowManager;
 
@@ -72,8 +75,16 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return number;
     }
 
+    public ApplicationPage getPage() {
+        return currentPage;
+    }
+
     protected final ApplicationAdvisor getApplicationAdvisor() {
         return getApplication().getApplicationAdvisor();
+    }
+
+    protected final Application getApplication() {
+        return Application.instance();
     }
 
     protected final ApplicationWindowConfigurer getWindowConfigurer() {
@@ -103,40 +114,26 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return statusBarCommandGroup;
     }
 
-    protected final Application getApplication() {
-        return Application.instance();
-    }
-
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
 
-    public void openPage(ViewDescriptor viewDescriptor) {
-        if (this.activePage == null) {
-            ApplicationPage page;
-            try {
-                page = (ApplicationPage)getApplication().
-                        getApplicationContext().
-                        getBean(APPLICATION_PAGE, ApplicationPage.class);
-            }
-            catch (BeansException e) {
-                logger.warn("Did not find a bean named '" + APPLICATION_PAGE +
-                        "'", e);
-                page = new DefaultApplicationPage();
-            }
-            page.setParentWindow(this);
-            final GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
+    public void showPage(String pageId) {
+        if (this.currentPage == null) {
+            ApplicationPage page = createPage(this);
+            GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
                     getCommandManager());
             page.addViewListener(commandTargeter);
-            page.showView(viewDescriptor);
-            this.activePage = page;
+            page.showView(pageId);
+            this.currentPage = page;
+            configureWindow();
         }
         else {
-            Application.instance().openWindow(viewDescriptor);
+            currentPage.showView(pageId);
         }
     }
 
-    public void open() {
+    private void configureWindow() {
         this.control = createWindowControl();
         getApplicationAdvisor().onWindowCreated(this);
         getApplicationAdvisor().showIntroComponentIfNecessary(this);
@@ -144,16 +141,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         getApplicationAdvisor().onWindowOpened(this);
     }
 
-    public void showViewOnPage(String viewName) {
-        activePage.showView(viewName);
-    }
-
-    public void showViewOnPage(ViewDescriptor viewDescriptor) {
-        activePage.showView(viewDescriptor);
-    }
-
-    public View getView() {
-        return this.activePage.getView();
+    protected ApplicationPage createPage(ApplicationWindow window) {
+        return new DefaultApplicationPage(window);
     }
 
     public JFrame getControl() {
@@ -174,7 +163,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
         control.getContentPane().setLayout(new BorderLayout());
         control.getContentPane().add(createToolBar(), BorderLayout.NORTH);
-        control.getContentPane().add(this.activePage.getControl(),
+        control.getContentPane().add(this.currentPage.getControl(),
                 BorderLayout.CENTER);
         control.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
         control.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

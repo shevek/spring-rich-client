@@ -127,13 +127,12 @@ public class Application extends ApplicationObjectSupport {
     }
 
     void openFirstTimeApplicationWindow() {
-        openWindow(getApplicationAdvisor().getStartingViewDescriptor());
+        openWindow(getApplicationAdvisor().getStartingPageId());
     }
 
-    public void openWindow(ViewDescriptor viewDescriptor) {
+    public void openWindow(String pageId) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
-        newWindow.openPage(viewDescriptor);
-        newWindow.open();
+        newWindow.showPage(pageId);
         // @TODO track active window...
         this.activeWindow = newWindow;
     }

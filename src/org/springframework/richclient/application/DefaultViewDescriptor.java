@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
@@ -32,14 +33,29 @@ import org.springframework.util.Assert;
 
 /**
  * Provides a standard implementation of {@link ViewDescriptor}.
- *
+ * 
  * @author Keith Donald
  */
 public class DefaultViewDescriptor extends LabeledObjectSupport implements
-        InitializingBean, ViewDescriptor {
+        InitializingBean, ViewDescriptor, BeanNameAware {
+    private String id;
+
     private Class viewClass;
 
     private Map viewProperties;
+
+    public void setBeanName(String beanName) {
+        setId(beanName);
+    }
+
+    public void setId(String id) {
+        Assert.notNull("id is required");
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public void setViewClass(Class viewClass) {
         this.viewClass = viewClass;
@@ -52,10 +68,8 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements
     public ApplicationEventMulticaster getApplicationEventMulticaster() {
         if (getApplicationContext() != null) {
             final String beanName = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME;
-            if (getApplicationContext().containsBean(beanName)) {
-                return (ApplicationEventMulticaster)getApplicationContext()
-                    .getBean(beanName);
-            }
+            if (getApplicationContext().containsBean(beanName)) { return (ApplicationEventMulticaster)getApplicationContext()
+                    .getBean(beanName); }
         }
         return null;
     }
@@ -97,7 +111,7 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements
         return view;
     }
 
-    public ActionCommand createActionCommand(ApplicationWindow window) {
+    public ActionCommand createShowViewCommand(ApplicationWindow window) {
         return new ShowViewCommand(this, window);
     }
 

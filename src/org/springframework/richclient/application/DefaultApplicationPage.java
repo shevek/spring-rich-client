@@ -15,13 +15,14 @@
  */
 package org.springframework.richclient.application;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.springframework.richclient.control.SimpleInternalFrame;
 
@@ -69,6 +70,10 @@ public class DefaultApplicationPage implements ApplicationPage {
         viewListeners.add(listener);
     }
 
+    public void removeViewListener(ViewListener listener) {
+        viewListeners.remove(listener);
+    }
+
     public void showView(String viewName) {
         ViewDescriptor descriptor = viewRegistry.getViewDescriptor(viewName);
         if (descriptor != null) {
@@ -92,7 +97,7 @@ public class DefaultApplicationPage implements ApplicationPage {
         fireViewActivated(view);
     }
 
-    public View getView() {
+    public View getActiveView() {
         return view;
     }
 

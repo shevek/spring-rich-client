@@ -20,7 +20,9 @@ import java.util.Properties;
 
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.richclient.application.*;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationInfo;
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.support.DefaultCommandManager;
@@ -126,10 +128,10 @@ public abstract class ApplicationAdvisor implements InitializingBean {
     }
 
     /**
-     * Returns the {@link ViewDescriptor} that is the default view when the
-     * application is started.
+     * Returns the id for the default page to load when the application is
+     * started.
      */
-    public abstract ViewDescriptor getStartingViewDescriptor();
+    public abstract String getStartingPageId();
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         this.managedWindow = configurer.getWindow();
