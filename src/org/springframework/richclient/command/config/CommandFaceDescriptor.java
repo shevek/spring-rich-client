@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.command.config;
 
+import java.awt.Image;
+
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -23,7 +25,9 @@ import javax.swing.KeyStroke;
 
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.DescriptionConfigurable;
+import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ToStringCreator;
@@ -32,13 +36,19 @@ import org.springframework.util.ToStringCreator;
  * @author Keith Donald
  */
 public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
-        implements CommandLabelConfigurable, DescriptionConfigurable, CommandIconConfigurable {
+        implements DescribedElement, VisualizedElement,
+        CommandLabelConfigurable, DescriptionConfigurable,
+        CommandIconConfigurable {
 
     public static final String BUTTON_LABEL_INFO_PROPERTY = "buttonLabelInfo";
 
     public static final String BUTTON_ICON_INFO_PROPERTY = "iconInfo";
 
-    public static final String CAPTION_PROPERTY = "caption";
+    public static final String BUTTON_LARGE_ICON_INFO_PROPETY = "largeIconInfo";
+
+    public static final String BUTTON_ICON_PROPERTY = "iconInfo";
+
+    public static final String BUTTON_LARGE_ICON_PROPETY = "largeIconInfo";
 
     private String caption;
 
@@ -46,9 +56,9 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
 
     private CommandButtonLabelInfo labelInfo;
 
-    private CommandButtonIconInfo iconInfo = CommandButtonIconInfo.BLANK_SMALL_ICON_INFO;
+    private CommandButtonIconInfo iconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
 
-    private CommandButtonIconInfo largeIconInfo = CommandButtonIconInfo.BLANK_LARGE_ICON_INFO;
+    private CommandButtonIconInfo largeIconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
 
     public CommandFaceDescriptor(String encodedLabel) {
         this(encodedLabel, null, null);
@@ -79,6 +89,10 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
         return labelInfo.getText();
     }
 
+    public String getDisplayName() {
+        return getText();
+    }
+
     public String getCaption() {
         return caption;
     }
@@ -93,6 +107,10 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
 
     public int getMnemonicIndex() {
         return labelInfo.getMnemonicIndex();
+    }
+
+    public Image getImage() {
+        return iconInfo.getImage();
     }
 
     public Icon getIcon() {
@@ -116,84 +134,72 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
     }
 
     public void setCaption(String shortDescription) {
-        if (hasChanged(this.caption, shortDescription)) {
-            String old = this.caption;
-            this.caption = shortDescription;
-            firePropertyChange(CAPTION_PROPERTY, old, this.caption);
-        }
+        String old = this.caption;
+        this.caption = shortDescription;
+        firePropertyChange(DescribedElement.CAPTION_PROPERTY, old, this.caption);
     }
 
     public void setDescription(String longDescription) {
+        String old = this.description;
         this.description = longDescription;
+        firePropertyChange(DescribedElement.DESCRIPTION_PROPERTY, old,
+                this.description);
     }
 
     public void setButtonLabelInfo(String encodedLabelInfo) {
-        setLabelInfo(LabelInfoFactory
-                .createButtonLabelInfo(encodedLabelInfo));
+        setLabelInfo(LabelInfoFactory.createButtonLabelInfo(encodedLabelInfo));
     }
 
     public void setLabelInfo(CommandButtonLabelInfo labelInfo) {
-        if (hasChanged(this.labelInfo, labelInfo)) {
-            if (labelInfo == null) {
-                labelInfo = LabelInfoFactory.BLANK_BUTTON_LABEL;
-            }
-            CommandButtonLabelInfo old = this.labelInfo;
-            this.labelInfo = labelInfo;
-            firePropertyChange(BUTTON_LABEL_INFO_PROPERTY, old, this.labelInfo);
+        if (labelInfo == null) {
+            labelInfo = LabelInfoFactory.BLANK_BUTTON_LABEL;
         }
+        CommandButtonLabelInfo old = this.labelInfo;
+        this.labelInfo = labelInfo;
+        firePropertyChange(BUTTON_LABEL_INFO_PROPERTY, old, this.labelInfo);
     }
 
     public void setIconInfo(CommandButtonIconInfo iconInfo) {
-        if (hasChanged(this.iconInfo, iconInfo)) {
-            if (iconInfo == null) {
-                iconInfo = CommandButtonIconInfo.BLANK_SMALL_ICON_INFO;
-            }
-            CommandButtonIconInfo old = this.iconInfo;
-            this.iconInfo = iconInfo;
-            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
+        if (iconInfo == null) {
+            iconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
         }
+        CommandButtonIconInfo old = this.iconInfo;
+        this.iconInfo = iconInfo;
+        firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
     }
 
     public void setLargeIconInfo(CommandButtonIconInfo largeIconInfo) {
-        if (hasChanged(this.largeIconInfo, largeIconInfo)) {
-            if (largeIconInfo == null) {
-                iconInfo = CommandButtonIconInfo.BLANK_LARGE_ICON_INFO;
-            }
-            CommandButtonIconInfo old = this.largeIconInfo;
-            this.largeIconInfo = largeIconInfo;
-            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
+        if (largeIconInfo == null) {
+            iconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
         }
+        CommandButtonIconInfo old = this.largeIconInfo;
+        this.largeIconInfo = largeIconInfo;
+        firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
     }
 
     public void setIcon(Icon icon) {
-        if (iconInfo == CommandButtonIconInfo.BLANK_SMALL_ICON_INFO) {
+        if (iconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
                 setIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {
             Icon old = iconInfo.getIcon();
-            if (hasChanged(old, icon)) {
-                this.iconInfo.setIcon(icon);
-                firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old,
-                        this.iconInfo);
-            }
+            this.iconInfo.setIcon(icon);
+            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, icon);
         }
     }
 
     public void setLargeIcon(Icon icon) {
-        if (largeIconInfo == CommandButtonIconInfo.BLANK_LARGE_ICON_INFO) {
+        if (largeIconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
                 setLargeIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {
             Icon old = largeIconInfo.getIcon();
-            if (hasChanged(old, icon)) {
-                this.largeIconInfo.setIcon(icon);
-                firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old,
-                        this.largeIconInfo);
-            }
+            this.largeIconInfo.setIcon(icon);
+            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, icon);
         }
     }
 
@@ -216,10 +222,12 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
 
     public void configure(AbstractButton button, AbstractCommand command,
             CommandButtonConfigurer strategy) {
+        Assert.notNull(strategy, "The button configurer strategy is required");
         strategy.configure(button, command, this);
     }
 
     public void configure(Action action) {
+        Assert.notNull(action, "The swing action to configure is required");
         action.putValue(AbstractAction.NAME, getText());
         action
                 .putValue(AbstractAction.MNEMONIC_KEY, new Integer(

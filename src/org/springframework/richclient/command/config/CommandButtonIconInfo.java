@@ -15,11 +15,15 @@
  */
 package org.springframework.richclient.command.config;
 
+import java.awt.Image;
+
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.util.Assert;
 import org.springframework.util.ToStringCreator;
@@ -27,12 +31,9 @@ import org.springframework.util.ToStringCreator;
 /**
  * @author Keith Donald
  */
-public class CommandButtonIconInfo implements ButtonConfigurer {
-
-    public static final CommandButtonIconInfo BLANK_SMALL_ICON_INFO = new CommandButtonIconInfo(
-            null);
-
-    public static final CommandButtonIconInfo BLANK_LARGE_ICON_INFO = new CommandButtonIconInfo(
+public class CommandButtonIconInfo implements ButtonConfigurer,
+        VisualizedElement {
+    public static final CommandButtonIconInfo BLANK_ICON_INFO = new CommandButtonIconInfo(
             null);
 
     private Icon icon;
@@ -93,12 +94,18 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
         return button;
     }
 
-    public Icon getDisabledIcon() {
-        return disabledIcon;
+    public Image getImage() {
+        Assert.isTrue(getIcon() instanceof ImageIcon,
+                "Only image icons convert to images");
+        return ((ImageIcon)getIcon()).getImage();
     }
 
     public Icon getIcon() {
         return icon;
+    }
+
+    public Icon getDisabledIcon() {
+        return disabledIcon;
     }
 
     public Icon getPressedIcon() {
@@ -113,12 +120,12 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
         return selectedIcon;
     }
 
-    public void setDisabledIcon(Icon disabledIcon) {
-        this.disabledIcon = disabledIcon;
-    }
-
     public void setIcon(Icon icon) {
         this.icon = icon;
+    }
+
+    public void setDisabledIcon(Icon disabledIcon) {
+        this.disabledIcon = disabledIcon;
     }
 
     public void setPressedIcon(Icon pressedIcon) {
