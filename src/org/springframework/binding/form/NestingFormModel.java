@@ -48,7 +48,7 @@ public interface NestingFormModel extends FormModel {
      * @param childFormModelName
      * @return The child for model.
      */
-    public SingleConfigurableFormModel createChild(String childFormModelName);
+    public ConfigurableFormModel createChild(String childFormModelName);
 
     /**
      * Create a child form model nested by this form model identified by the
@@ -59,7 +59,7 @@ public interface NestingFormModel extends FormModel {
      * @param childFormObjectPropertyPath
      * @return The child form model
      */
-    public SingleConfigurableFormModel createChild(String childFormModelName,
+    public ConfigurableFormModel createChild(String childFormModelName,
             String childFormObjectPropertyPath);
 
     /**
@@ -83,7 +83,7 @@ public interface NestingFormModel extends FormModel {
      * @param childFormObjectHolder
      * @return The child form model
      */
-    public SingleConfigurableFormModel createChild(String childFormModelName,
+    public ConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder);
 
     /**

@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
-import org.springframework.binding.form.SingleConfigurableFormModel;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueModel;
@@ -32,7 +32,7 @@ import org.springframework.binding.value.support.CommitTrigger;
  * @author Keith Donald
  */
 public class DefaultFormModel extends AbstractFormModel implements
-        SingleConfigurableFormModel {
+        ConfigurableFormModel {
     public static final String HAS_ERRORS_PROPERTY = "hasErrors";
 
     private CommitTrigger commitTrigger = new CommitTrigger();

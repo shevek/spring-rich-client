@@ -27,7 +27,7 @@ import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.SingleConfigurableFormModel;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueChangeListener;
@@ -73,7 +73,7 @@ public class CompoundFormModel extends AbstractFormModel implements
         setBufferChangesDefault(bufferChanges);
     }
 
-    public SingleConfigurableFormModel createChild(String childFormModelName) {
+    public ConfigurableFormModel createChild(String childFormModelName) {
         ValidatingFormModel childModel = new ValidatingFormModel(
                 getPropertyAccessStrategy(), getBufferChangesDefault());
         childModel.setRulesSource(getRulesSource());
@@ -81,9 +81,9 @@ public class CompoundFormModel extends AbstractFormModel implements
         return childModel;
     }
 
-    public SingleConfigurableFormModel createChild(String childFormModelName,
+    public ConfigurableFormModel createChild(String childFormModelName,
             String childFormObjectPath) {
-        return (SingleConfigurableFormModel)createChildInternal(
+        return (ConfigurableFormModel)createChildInternal(
                 new ValidatingFormModel(), childFormModelName,
                 childFormObjectPath);
     }
@@ -135,7 +135,7 @@ public class CompoundFormModel extends AbstractFormModel implements
         }
     }
 
-    public SingleConfigurableFormModel createChild(String childFormModelName,
+    public ConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder) {
         return createChild(childFormModelName, childFormObjectHolder, true);
     }
@@ -146,9 +146,9 @@ public class CompoundFormModel extends AbstractFormModel implements
                 true);
     }
 
-    public SingleConfigurableFormModel createChild(String childFormModelName,
+    public ConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder, boolean enabled) {
-        return (SingleConfigurableFormModel)createChildInternal(
+        return (ConfigurableFormModel)createChildInternal(
                 new ValidatingFormModel(), childFormModelName,
                 childFormObjectHolder, enabled);
     }
@@ -264,7 +264,7 @@ public class CompoundFormModel extends AbstractFormModel implements
 
     protected void handleEnabledChange() {
         new Block() {
-            public void handle(Object childFormModel) {
+            protected void handle(Object childFormModel) {
                 ((FormModel)childFormModel).setEnabled(isEnabled());
             }
         }.forEach(childFormModels.values());
@@ -306,14 +306,14 @@ public class CompoundFormModel extends AbstractFormModel implements
     public void commit() {
         if (preEditCommit()) {
             new Block() {
-                public void handle(Object childFormModel) {
+                protected void handle(Object childFormModel) {
                     ((FormModel)childFormModel).commit();
                 }
             }.forEach(childFormModels.values());
 
             if (getBufferChangesDefault()) {
                 new Block() {
-                    public void handle(Object bufferedValueModel) {
+                    protected void handle(Object bufferedValueModel) {
                         ((BufferedValueModel)bufferedValueModel).commit();
                     }
                 }.forEach(childFormObjectBuffers);
@@ -324,7 +324,7 @@ public class CompoundFormModel extends AbstractFormModel implements
 
     public void revert() {
         new Block() {
-            public void handle(Object childFormModel) {
+            protected void handle(Object childFormModel) {
                 ((FormModel)childFormModel).revert();
             }
         }.forEach(childFormModels.values());

@@ -45,7 +45,7 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.SingleConfigurableFormModel;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
@@ -86,11 +86,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     private static final String CHECK_BOX_LABEL_SUFFIX = "checkBox";
 
-    private SingleConfigurableFormModel formModel;
+    private ConfigurableFormModel formModel;
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
 
-    public SwingFormModel(SingleConfigurableFormModel formModel) {
+    public SwingFormModel(ConfigurableFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
     }
