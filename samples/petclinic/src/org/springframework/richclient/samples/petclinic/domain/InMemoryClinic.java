@@ -15,6 +15,9 @@
  */
 package org.springframework.richclient.samples.petclinic.domain;
 
+import java.util.Collection;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.samples.petclinic.jdbc.HsqlJdbcClinic;
 
@@ -24,7 +27,7 @@ import org.springframework.samples.petclinic.jdbc.HsqlJdbcClinic;
  * <P>Leverages HSQL database's in-memory option and uses the 
  * Spring-supplied <code>HsqlJdbcClinic</code>. This class simply
  * inserts the schema and base data into the in-memory instance
- * at startup time.
+ * at startup time. It also inserts data required for security.
  * 
  * @author Ben Alex
  */
@@ -34,7 +37,7 @@ public class InMemoryClinic extends HsqlJdbcClinic {
 		super.initDao();
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
-		// Schema
+		// Schema: Petclinic
 		template.execute("CREATE TABLE vets (id INT NOT NULL IDENTITY PRIMARY KEY, first_name VARCHAR(30), last_name VARCHAR(30))");
 		template.execute("CREATE TABLE specialties (id INT NOT NULL IDENTITY PRIMARY KEY, name VARCHAR(80))");
 		
@@ -52,7 +55,12 @@ public class InMemoryClinic extends HsqlJdbcClinic {
 		template.execute("CREATE TABLE visits (id INT NOT NULL IDENTITY PRIMARY KEY, pet_id INT NOT NULL, visit_date DATE, description VARCHAR(255))");
 		template.execute("alter table visits add constraint fk_visits_pets foreign key (pet_id) references pets(id)");
 		
-		// Data
+		// Schema: Acegi Security
+		template.execute("CREATE TABLE users (username VARCHAR(50) NOT NULL PRIMARY KEY, password VARCHAR(50) NOT NULL, enabled BIT NOT NULL)");
+		template.execute("CREATE TABLE authorities (username VARCHAR(50) NOT NULL, authority VARCHAR(50) NOT NULL)");
+		template.execute("alter table authorities add constraint fk_authorities_users foreign key (username) references users(username)");
+
+		// Data: Petclinic
 		template.execute("INSERT INTO vets VALUES (1, 'James', 'Carter')");
 		template.execute("INSERT INTO vets VALUES (2, 'Helen', 'Leary')");
 		template.execute("INSERT INTO vets VALUES (3, 'Linda', 'Douglas')");
@@ -83,8 +91,8 @@ public class InMemoryClinic extends HsqlJdbcClinic {
 		template.execute("INSERT INTO owners VALUES (4, 'Harold', 'Davis', '563 Friendly St.', 'Windsor', '6085553198');");
 		template.execute("INSERT INTO owners VALUES (5, 'Peter', 'McTavish', '2387 S. Fair Way', 'Madison', '6085552765');");
 		template.execute("INSERT INTO owners VALUES (6, 'Jean', 'Coleman', '105 N. Lake St.', 'Monona', '6085552654');");
-		template.execute("INSERT INTO owners VALUES (7, 'Jeff', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387');");
-		template.execute("INSERT INTO owners VALUES (8, 'Maria', 'Escobito', '345 Maple St.', 'Madison', '6085557683');");
+		template.execute("INSERT INTO owners VALUES (7, 'Peter', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387');");
+		template.execute("INSERT INTO owners VALUES (8, 'Scott', 'Escobito', '345 Maple St.', 'Madison', '6085557683');");
 		template.execute("INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435');");
 		template.execute("INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487');");
 		
@@ -107,5 +115,26 @@ public class InMemoryClinic extends HsqlJdbcClinic {
 		template.execute("INSERT INTO visits VALUES (3, 8, '1996-06-04', 'neutered')");
 		template.execute("INSERT INTO visits VALUES (4, 7, '1996-09-04', 'spayed')");
 		
+		// Data: Acegi Security
+		template.execute("INSERT INTO users VALUES ('dianne', 'emu', true)");
+		template.execute("INSERT INTO users VALUES ('marissa', 'koala', true)");
+		template.execute("INSERT INTO users VALUES ('peter', 'opal', false)");
+		template.execute("INSERT INTO users VALUES ('scott', 'wombat', true)");
+		template.execute("INSERT INTO authorities VALUES ('marissa', 'ROLE_CLINIC_STAFF')");
+		template.execute("INSERT INTO authorities VALUES ('dianne', 'ROLE_CLINIC_STAFF')");
+		template.execute("INSERT INTO authorities VALUES ('peter', 'ROLE_CLINIC_CUSTOMER')");
+		template.execute("INSERT INTO authorities VALUES ('scott', 'ROLE_CLINIC_CUSTOMER')");
+	}
+	
+	public Collection findOwners(String arg0) throws DataAccessException {
+		Collection result = super.findOwners(arg0);
+		logger.debug("Finding Owners matching: " + arg0 + "; found: " + result.size());
+		return result;
+	}
+	
+	public Collection getVets() throws DataAccessException {
+		Collection result = super.getVets();
+		logger.debug("Finding vets; found: " + result.size());
+		return result;
 	}
 }

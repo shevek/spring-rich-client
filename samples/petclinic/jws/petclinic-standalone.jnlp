@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+<jnlp
+  spec="1.0+"
+  codebase="http://localhost:8080/petclinic-server/jws"
+  href="petclinic-standalone.jnlp">
+  <information>
+    <title>Petclinic RCP, Standalone Edition</title>
+    <vendor>The Spring RCP Team</vendor>
+    <homepage href="index.html"/>
+    <icon href="images/petclinic.jpg"/>
+    <icon kind="splash" href="images/splash.gif"/>
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+"/>
+    <jar href="petclinic-standalone.jar"/>
+    <jar href="lib/acegi-security.jar"/>
+    <jar href="lib/aopalliance.jar"/>
+    <jar href="lib/burlap.jar"/>
+    <jar href="lib/commons-codec.jar"/>
+    <jar href="lib/commons-logging.jar"/>
+    <jar href="lib/concurrent.jar"/>
+    <jar href="lib/forms.jar"/>
+    <jar href="lib/hessian.jar"/>
+    <jar href="lib/hsqldb.jar"/>
+    <jar href="lib/jh.jar"/>
+    <jar href="lib/looks.jar"/>
+    <jar href="lib/spring.jar"/>
+    <jar href="lib/spring-sandbox.jar"/>
+    <jar href="lib/spring-petclinic.jar"/>
+    <jar href="lib/spring-richclient.jar"/>
+    <jar href="lib/spring-richclient-resources.jar"/>
+  </resources>
+  <application-desc main-class="org.springframework.richclient.samples.petclinic.PetClinicStandalone"/>
+</jnlp>

@@ -1,2 +1,5 @@
 dist
 target
+*.keystore
+build.properties
+classes

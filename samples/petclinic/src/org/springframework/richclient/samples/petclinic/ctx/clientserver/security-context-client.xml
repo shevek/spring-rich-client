@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - $Id$
+  -->
+
+<beans>
+
+	<bean id="remoteAuthenticationProvider" class="net.sf.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
+  		<property name="remoteAuthenticationManager"><ref bean="remoteAuthenticationManager"/></property>
+	</bean>
+	
+	<bean id="authenticationManager" class="net.sf.acegisecurity.providers.ProviderManager">
+		<property name="providers">
+		  <list>
+		    <ref bean="remoteAuthenticationProvider"/>
+		  </list>
+		</property>
+	</bean>
+
+	<bean id="remotingSecurityConfigurer" class="org.springframework.richclient.security.RemotingSecurityConfigurer"/>
+	<bean id="secureCommandConfigurer" class="org.springframework.richclient.security.SecureCommandConfigurer"/>
+
+	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
+	
+	<bean id="roleVoter" class="net.sf.acegisecurity.vote.RoleVoter"/>
+
+	<bean id="accessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+   		<property name="allowIfAllAbstainDecisions"><value>false</value></property>
+		<property name="decisionVoters">
+		  <list>
+		    <ref bean="roleVoter"/>
+		  </list>
+		</property>
+	</bean>
+
+</beans>

@@ -47,6 +47,9 @@
         <list>
           <ref bean="newMenu"/>
           <value>separator</value>
+		  <ref bean="loginCommand"/>
+		  <ref bean="logoutCommand"/>
+          <value>separator</value>
           <value>saveAsCommand</value>
           <value>separator</value>
           <value>propertiesCommand</value>   
@@ -119,5 +122,13 @@
     	</property>
     </bean>
     
+    <bean id="loginCommand" class="org.springframework.richclient.security.LoginCommand">
+    	<property name="authenticationManager">
+	       	<ref bean="authenticationManager"/>
+    	</property>
+    </bean>
+
+    <bean id="logoutCommand" class="org.springframework.richclient.security.LogoutCommand"/>
+
 
 </beans>

@@ -20,12 +20,14 @@ import org.springframework.richclient.application.startup.ApplicationLauncher;
 /**
  * Main driver that starts the pet clinic rich client sample application.
  */
-public class PetClinic {
+public class PetClinicClientServer {
     public static void main(String[] args) {
         try {
             new ApplicationLauncher(
-                    "/org/springframework/richclient/samples/petclinic/startup-context.xml",
-                    "/org/springframework/richclient/samples/petclinic/application-context.xml");
+                    "/org/springframework/richclient/samples/petclinic/ctx/common/rcp-startup-context.xml",
+					new String[] {"/org/springframework/richclient/samples/petclinic/ctx/common/rcp-application-context.xml", 
+                    	"/org/springframework/richclient/samples/petclinic/ctx/clientserver/client-context.xml",
+                    	"/org/springframework/richclient/samples/petclinic/ctx/clientserver/security-context-client.xml"});
         }
         catch (Exception e) {
             System.exit(1);

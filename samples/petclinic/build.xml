@@ -1,26 +1,213 @@
 <?xml version="1.0"?>
+<!--
+ * $Id$
+-->
 
-<project name="Pet Clinic Rich Client" default="usage" basedir=".">
-    <property file="build.properties"/>
-    <property file="${common.build.properties}"/>
-	<import file="${common.build.xml}"/>
- 
-    <!-- Construct compile classpath -->
-    <path id="project.compile.classpath">
-    	<pathelement path="${spring-rcp.resources.dir}"/>
-    	<fileset dir="${spring-rcp.dist.dir}">
-   			<include name="spring-richclient.jar"/>
-    	</fileset>
-		<fileset dir="${spring-rcp.lib.dir}">
-			<include name="**/*.jar"/>
+<project name="petclinic-rcp" basedir="." default="usage">
+
+	<property file="build.properties"/>
+	<property file="project.properties"/>
+
+	<path id="qa-portalpath">
+		<fileset dir="${dist.lib.dir}">
+			<include name="spring-richclient.jar"/>
 		</fileset>
-    	<fileset dir="${spring.lib.dir}">
-    		<include name="**/*.jar"/>
-   		</fileset>
-    </path>
+		<fileset dir="${lib.dir}">
+			<include name="**/**.jar"/>
+		</fileset>
+	</path>
 
-	<target name="copy-dist-dependencies">
+	<target name="usage">
+		<echo message=""/>
+		<echo message="Petclinic RCP sample application build file"/>
+		<echo message="------------------------------------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are:"/>
+		<echo message=""/>
+		<echo message="clean    --> Clean output dirs"/>
+		<echo message="build    --> Compile main Java sources and copy libraries"/>
+		<echo message="warfile  --> Create WAR deployment units"/>
+		<echo message="javadoc  --> Create API documentation"/>
+		<echo message=""/>
+	</target>
+
+
+	<target name="clean" description="Clean output dirs (build, dist)">
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${war.dir}/WEB-INF/lib"/>
+	</target>
+
+
+	<target name="build" description="Compile main source tree java files into class files">
+		<mkdir dir="${build.dir}"/>
+
+		<javac destdir="${build.dir}" target="1.3" debug="true" deprecation="false"
+			  optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="qa-portalpath"/>
+		</javac>
+		
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}/lib"/>
+		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-standalone.bat"/>
+		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-clientserver.bat"/>
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient.jar"/>
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-resources.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/acegisecurity/acegi-security.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/aopalliance/aopalliance.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/burlap.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/concurrent/concurrent.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/hessian.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/hsqldb/hsqldb.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-codec.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-logging.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/javahelp/jh.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies-forms/forms.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies-looks/looks.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-sandbox.jar"/>
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-petclinic.jar"/>
+	
+		<jar jarfile="${dist.dir}/petclinic-standalone.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/*"/>
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*"/>
+				<exclude name="**/**.java"/>
+			</fileset>
+			<fileset dir="${resources.dir}">
+				<include name="**/*"/>
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicStandalone"/>
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar"/>
+			</manifest>
+		</jar>
+		
+		<jar jarfile="${dist.dir}/petclinic-clientserver.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/*"/>
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*"/>
+				<exclude name="**/**.java"/>
+			</fileset>
+			<fileset dir="${resources.dir}">
+				<include name="**/*"/>
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicClientServer"/>
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar"/>
+			</manifest>
+		</jar>
+
+		<!-- Remove signatures from externally signed JARs (causes JWS issues if >1 signature) -->
+
+		<!-- Remove signature from Acegi Security System for Spring -->
+		<delete dir="${tmp.dir}"/>
+        <mkdir dir="${tmp.dir}"/>
+		<unjar src="${dist.dir}/lib/acegi-security.jar" dest="${tmp.dir}"/>
+		<jar update="false" jarfile="${dist.dir}/lib/acegi-security.jar">
+			<fileset dir="${tmp.dir}">
+				<include name="**/*"/>
+				<exclude name="META-INF/*"/>
+			</fileset>
+		</jar>
+
+   		<!-- Remove signature from Javahelp -->
+		<delete dir="${tmp.dir}"/>
+        <mkdir dir="${tmp.dir}"/>
+		<unjar src="${dist.dir}/lib/jh.jar" dest="${tmp.dir}"/>
+		<jar update="false" jarfile="${dist.dir}/lib/jh.jar">
+			<fileset dir="${tmp.dir}">
+				<include name="**/*"/>
+				<exclude name="META-INF/*"/>
+			</fileset>
+		</jar>
+		
+		<!-- Will not re-sign already signed JARs due to lazy=true (causes JWS issues if >1 signature) -->
+		<signjar lazy="true" alias="${signature.alias}" storepass="${signature.storepass}" keystore="${signature.keystore}">
+			<fileset dir="${dist.dir}">
+				<include name="**/**.jar"/>
+			</fileset>
+		</signjar>
+
+		<delete dir="${tmp.dir}"/>
 
 	</target>
+
+
+   <target name="warfile" depends="build" description="Build the web application archives">
+
+		<mkdir dir="${dist.dir}"/>
+        <delete file="${dist.dir}/petclinic-server.war"/>
+
+   		<delete dir="${tmp.dir}"/>
+        <mkdir dir="${tmp.dir}"/>
+		
+		<copy todir="${tmp.dir}/jws">
+			<fileset dir="${dist.dir}">
+				<include name="**/**"/>
+				<exclude name="**/**.bat"/>
+			</fileset>
+			<fileset dir="${jws.dir}">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp.dir}">
+			<fileset dir="${src.dir}/org/springframework/richclient/samples/petclinic/ctx/clientserver">
+				<include name="*.html"/>
+			</fileset>
+			<fileset dir="${jws.dir}">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp.dir}/WEB-INF">
+			<fileset dir="${src.dir}/org/springframework/richclient/samples/petclinic/ctx/clientserver">
+				<include name="web.xml"/>
+				<include name="ws-servlet.xml"/>
+				<include name="security-context-server.xml"/>
+			</fileset>
+			<fileset dir="${src.dir}/org/springframework/richclient/samples/petclinic/ctx/common">
+				<include name="business-layer-context.xml"/>
+			</fileset>
+		</copy>
+		<war warfile="${dist.dir}/petclinic-server.war" webxml="${tmp.dir}/WEB-INF/web.xml">
+			<!-- Include the files which are not under WEB-INF -->
+			<fileset dir="${tmp.dir}">
+				<exclude name="WEB-INF/**"/>
+				<exclude name="classes/**"/>
+			</fileset>
+
+			<!-- Bring in various XML configuration files -->
+			<webinf dir="${tmp.dir}/WEB-INF">
+				<exclude name="web.xml"/>
+			</webinf>
+
+			<!-- Include the compiled classes for web services operation -->
+			<classes dir="${build.dir}"/>
+
+			<!-- Include required libraries for web services operation -->
+			<lib dir="${dist.dir}/lib" includes="*.jar"/>
+		</war>
+		<delete dir="${tmp.dir}"/>
+
+   </target>
+
+   <target name="javadoc" description="Generate Javadocs.">
+		<mkdir dir="${javadocs.dir}"/>
+
+		<javadoc sourcepath="src" destdir="${javadocs.dir}" windowtitle="Petclinic RCP Sample Application"
+			defaultexcludes="yes"	author="true" version="true" use="true">
+			<doctitle><![CDATA[<h1>Petclinic RCP Sample</h1>]]></doctitle>
+			<bottom><![CDATA[<A HREF="http://www.springframework.org">Spring Framework Project]]></bottom>
+			<classpath refid="qa-portalpath"/>
+			<packageset dir="${src.dir}">
+				<include name="sample/petclinic/**"/>
+			</packageset>
+		</javadoc>
+   </target>
 
 </project>

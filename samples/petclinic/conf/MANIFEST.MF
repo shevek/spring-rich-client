@@ -1,7 +1,0 @@
-Manifest-version: 1.0
-Extension-Name: org.springframework.rcp.samples.petclinic
-Specification-Vendor: The Spring Framework
-Specification-Version: 1.0
-Implementation-Vendor-Id: spring
-Implementation-Vendor: The Spring Framework
-Implementation-Version: 1.0.0

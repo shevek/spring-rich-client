@@ -8,18 +8,26 @@ $Id$
 INTRODUCTION:
 ============
 
+This sample aims to demonstrate:
 
-CHANGES:
-========
+- Spring RCP generally
+- Java Web Start usage (inc JAR signing issues associated with it)
+- Client-server usage
+- Security integration
 
+USAGE:
+======
 
-NEW FEATURES:
-============
+Once built (ant warfile), there are three ways of running Pet Clinic RCP.
 
+- FROM A WEB BROWSER: After deploying dist/petclinic-server.war to your
+  servlet container, visit http://localhost:8080/petclinic-server and click
+  the link. This will deploy via Java Web Start.
 
-BUG REPORTS ADDRESSED:
-=====================
+- FROM A COMMAND PROMPT: Go into the dist directory and run the BATch file.
+  The JARs in the dist/lib directory are included via the JAR's manifest.
+  This allows you to run the sample with java -jar petclinic-standalone.jar
 
+- FROM ECLIPSE: Simply run 
+  org.springframework.richclient.samples.petclinic.PetClinicStandalone
 
-DEPRECATED
-==========
