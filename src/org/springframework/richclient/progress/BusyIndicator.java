@@ -53,15 +53,14 @@ public class BusyIndicator {
     /**
      * Runs the given <code>Runnable</code> while providing busy feedback
      * using this busy indicator.
-     * 
-     * @param the
-     *            display on which the busy feedback should be displayed. If the
-     *            display is null, the Display for the current thread will be
-     *            used. If there is no Display for the current thread, the
-     *            runnable code will be executed and no busy feedback will be
-     *            displayed.
-     * @param the
-     *            runnable for which busy feedback is to be shown
+     *
+     * @param component the display on which the busy feedback should be displayed. If the
+     *                  display is null, the Display for the current thread will be
+     *                  used. If there is no Display for the current thread, the
+     *                  runnable code will be executed and no busy feedback will be
+     *                  displayed.
+     * @param runnable  the runnable for which busy feedback is to be shown
+     *
      * @see #showWhile
      */
     public static void showWhile(Component component, Runnable runnable) {
