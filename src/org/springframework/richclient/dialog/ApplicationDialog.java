@@ -556,7 +556,7 @@ public abstract class ApplicationDialog extends
             exceptionMessage = e.getLocalizedMessage();
         }
         if (!StringUtils.hasText(exceptionMessage)) {
-            String defaultMessage = "Unable to finish; an application exception occured.\n Please contact your administrator.";
+            String defaultMessage = "Unable to finish; an application exception occured.\nPlease contact your administrator.";
             exceptionMessage = getMessageSourceAccessor().getMessage(
                     "applicationDialog.defaultFinishException", defaultMessage);
         }
