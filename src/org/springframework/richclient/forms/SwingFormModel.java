@@ -132,7 +132,6 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      *            groupingModel
      * @param parentPropertyFormObjectPath
      *            the path into the groupingModel that the SwingFormModel is for
-     * 
      * @return The child form model
      */
     public static SwingFormModel createChildPageFormModel(
@@ -298,7 +297,6 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     /**
      * Create a bound control for the given form property.
      * <p />
-     * 
      * The strategy used for determining the control to bind to is:
      * <ol>
      * <li>See if one is registered specificly against this FormModel
@@ -308,9 +306,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * 
      * @param formProperty
      *            the property to get the control for
-     * 
      * @return a bound control; never null
-     * 
      * @see PropertyEditorRegistry#setPropertyEditor(Class, Class)
      * @see PropertyEditorRegistry#setPropertyEditor(Class, String, Class)
      * @see SwingFormModel#registerCustomEditor(Class, PropertyEditor)
@@ -319,9 +315,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComponent createBoundControl(String formProperty) {
         PropertyEditor propertyEditor = formModel.getPropertyAccessStrategy()
                 .findCustomEditor(formProperty);
-        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
-            return bindCustomEditor(propertyEditor, formProperty);
-        }
+        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) { return bindCustomEditor(
+                propertyEditor, formProperty); }
 
         final ApplicationServices applicationServices = Application.services();
         final PropertyEditorRegistry propertyEditorRegistry = applicationServices
@@ -517,7 +512,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     protected JCheckBox createNewCheckBox(String labelKey) {
-        return getComponentFactory().createCheckBox(labelKey+"."+CHECK_BOX_LABEL_SUFFIX);
+        return getComponentFactory().createCheckBox(
+                labelKey + "." + CHECK_BOX_LABEL_SUFFIX);
     }
 
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
@@ -641,14 +637,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     /**
      * Bind the specified form property, which must be a backed by a
-     * <code>java.util.List</code> to a ListModel. What this does is ensure
-     * when items are added or removed to/from the list model, the property's
-     * list is also updated. Validation also occurs against the property when it
-     * changes, etc.
-     * 
-     * Changes to the list managed by the list model are buffered before being
-     * committed to the underlying bean property. This prevents the domain
-     * object from having to worry about returning a non-null List instance.
+     * <code>java.util.Collection</code> or an array to a ListModel. What this
+     * does is ensure when items are added or removed to/from the list model,
+     * the property's collection is also updated. Validation also occurs against
+     * the property when it changes, etc. Changes to the collection managed by
+     * the list model are buffered before being committed to the underlying bean
+     * property. This prevents the domain object from having to worry about
+     * returning a non-null instance.
      * 
      * @param formProperty
      * @return The bound list model.
@@ -658,7 +653,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         if (valueModel == null) {
             PropertyAdapter adapter = new PropertyAdapter(formModel
                     .getPropertyAccessStrategy(), formProperty);
-            valueModel = new BufferedListValueModel(adapter);
+            valueModel = new BufferedCollectionValueModel(adapter,
+                    getMetadataAccessStrategy().getPropertyType(formProperty));
             formModel.add(formProperty, valueModel);
         }
         return (ListModel)valueModel.get();
