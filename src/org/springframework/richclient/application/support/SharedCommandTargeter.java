@@ -24,8 +24,8 @@ import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.util.Assert;
 
 /**
- * Retargets global command when the active View associated with an
- * ApplicationPage changes.
+ * Retargets window-scoped, shared commands when the active View associated with
+ * an ApplicationPage changes.
  * 
  * @author Keith Donald
  */
