@@ -15,13 +15,19 @@
  */
 package org.springframework.richclient.util;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 
@@ -51,7 +57,7 @@ import org.springframework.richclient.factory.ComponentFactory;
  * @see #setComponentFactory(ComponentFactory)
  */
 public class GridBagLayoutBuilder {
-  private static final Logger LOG = Logger.getLogger(GridBagLayoutBuilder.class);
+  private static final Log LOG = LogFactory.getLog(GridBagLayoutBuilder.class);
 
   private Insets defaultInsets = new Insets(0, 0, 4, 4);
   private boolean showGuidelines = false;
