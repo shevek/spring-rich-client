@@ -29,12 +29,15 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.Memento;
+import org.springframework.beans.BeansException;
 
 /**
  * Provides a default implementation of {@link ApplicationWindow}
  */
 public class DefaultApplicationWindow implements ApplicationWindow {
     protected Log logger = LogFactory.getLog(getClass());
+
+    private static final String APPLICATION_PAGE = "applicationPage";
 
     private int number;
 
@@ -110,7 +113,18 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public void openPage(ViewDescriptor viewDescriptor) {
         if (this.activePage == null) {
-            ApplicationPage page = new DefaultApplicationPage(this);
+            ApplicationPage page;
+            try {
+                page = (ApplicationPage)getApplication().
+                        getApplicationContext().
+                        getBean(APPLICATION_PAGE, ApplicationPage.class);
+            }
+            catch (BeansException e) {
+                logger.warn("Did not find a bean named '" + APPLICATION_PAGE +
+                        "'", e);
+                page = new DefaultApplicationPage();
+            }
+            page.setParentWindow(this);
             final GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
                     getCommandManager());
             page.addViewListener(commandTargeter);

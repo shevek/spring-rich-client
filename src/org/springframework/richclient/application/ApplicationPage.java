@@ -6,6 +6,8 @@ import javax.swing.*;
 
 public interface ApplicationPage extends PropertyChangeListener {
 
+    void setParentWindow(ApplicationWindow parentWindow);
+
     ApplicationWindow getParentWindow();
 
     JComponent getControl();
