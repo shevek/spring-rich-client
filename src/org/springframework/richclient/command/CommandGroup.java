@@ -87,50 +87,6 @@ public class CommandGroup extends AbstractCommand {
 		super(id, encodedLabel, icon, caption);
 	}
 
-	protected void addInternal(AbstractCommand command) {
-		this.memberList.add(new SimpleGroupMember(this, command));
-	}
-
-	protected void addInlinedInternal(CommandGroup group) {
-		this.memberList.add(new InlinedGroupMember(this, group));
-	}
-
-	protected void addLazyInternal(String commandId, boolean inlinedGroup) {
-		this.memberList.add(new LazyGroupMember(this, commandId, inlinedGroup));
-	}
-
-	protected void addSeparatorInternal() {
-		this.memberList.add(new SeparatorGroupMember());
-	}
-
-	protected void addGlueInternal() {
-		this.memberList.add(new GlueGroupMember());
-	}
-
-	public void setCommandRegistry(CommandRegistry registry) {
-		if (!ObjectUtils.nullSafeEquals(this.commandRegistry, registry)) {
-
-			//@TODO should groups listen to command registration events if
-			// they've
-			//got lazy members that haven't been instantiated? Or are
-			// targetable
-			//commands lightweight enough?
-			if (logger.isDebugEnabled()) {
-				logger.debug("Setting registry " + registry + " for command group '" + getId() + "'");
-			}
-			this.commandRegistry = registry;
-		}
-	}
-
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-	}
-
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		getMemberList().setContainersVisible(visible);
-	}
-
 	/**
 	 * Creates a command group with a single command member.
 	 * 
@@ -186,6 +142,46 @@ public class CommandGroup extends AbstractCommand {
 		return groupFactory.getCommandGroup();
 	}
 
+	protected void addInternal(AbstractCommand command) {
+		this.memberList.add(new SimpleGroupMember(this, command));
+	}
+
+	protected void addLazyInternal(String commandId) {
+		this.memberList.add(new LazyGroupMember(this, commandId));
+	}
+
+	protected void addSeparatorInternal() {
+		this.memberList.add(new SeparatorGroupMember());
+	}
+
+	protected void addGlueInternal() {
+		this.memberList.add(new GlueGroupMember());
+	}
+
+	public void setCommandRegistry(CommandRegistry registry) {
+		if (!ObjectUtils.nullSafeEquals(this.commandRegistry, registry)) {
+
+			//@TODO should groups listen to command registration events if
+			// they've
+			//got lazy members that haven't been instantiated? Or are
+			// targetable
+			//commands lightweight enough?
+			if (logger.isDebugEnabled()) {
+				logger.debug("Setting registry " + registry + " for command group '" + getId() + "'");
+			}
+			this.commandRegistry = registry;
+		}
+	}
+
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+	}
+
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		getMemberList().setContainersVisible(visible);
+	}
+
 	protected CommandRegistry getCommandRegistry() {
 		return commandRegistry;
 	}
@@ -230,10 +226,8 @@ public class CommandGroup extends AbstractCommand {
 		if (command == null) {
 			return;
 		}
-
 		ExpansionPointGroupMember expansionPoint = getMemberList().getExpansionPoint();
 		GroupMember member = expansionPoint.getMemberFor(command.getId());
-
 		if (member != null) {
 			expansionPoint.remove(member);
 			rebuildIfNecessary(rebuild);

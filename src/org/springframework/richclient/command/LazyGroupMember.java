@@ -21,113 +21,87 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.util.Assert;
 
 public class LazyGroupMember extends GroupMember {
-    private CommandGroup parentGroup;
+	private CommandGroup parentGroup;
 
-    private String lazyCommandId;
+	private String lazyCommandId;
 
-    private boolean inlinedGroup;
+	private boolean addedLazily;
 
-    private boolean addedLazily;
+	private GroupMember loadedMember;
 
-    private GroupMember loadedMember;
+	public LazyGroupMember(CommandGroup parentGroup, String lazyCommandId) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Lazy group member '" + lazyCommandId + "' instantiated for group '" + parentGroup.getId() + "'");
+		}
+		this.parentGroup = parentGroup;
+		this.lazyCommandId = lazyCommandId;
+	}
 
-    public LazyGroupMember(CommandGroup parentGroup, String lazyCommandId) {
-        this(parentGroup, lazyCommandId, false);
-    }
+	public void setEnabled(boolean enabled) {
+		if (loadedMember != null) {
+			loadedMember.setEnabled(enabled);
+		}
+	}
 
-    public LazyGroupMember(CommandGroup parentGroup, String lazyCommandId,
-            boolean inlinedGroup) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Lazy group member '" + lazyCommandId
-                    + "' instantiated for group '" + parentGroup.getId() + "'");
-        }
-        this.parentGroup = parentGroup;
-        this.lazyCommandId = lazyCommandId;
-        this.inlinedGroup = inlinedGroup;
-    }
+	protected void fill(GroupContainerPopulator parentContainerPopulator, Object controlFactory,
+			CommandButtonConfigurer buttonConfigurer, List previousButtons) {
+		if (lazyLoaded()) {
+			loadedMember.fill(parentContainerPopulator, controlFactory, buttonConfigurer, previousButtons);
+		}
+	}
 
-    public void setEnabled(boolean enabled) {
-        if (loadedMember != null) {
-            loadedMember.setEnabled(enabled);
-        }
-    }
+	private boolean lazyLoaded() {
+		if (loadedMember != null) {
+			return true;
+		}
+		doLazyLoad();
+		return loadedMember != null;
+	}
 
-    protected void fill(GroupContainerPopulator parentContainerPopulator,
-            Object controlFactory, CommandButtonConfigurer buttonConfigurer,
-            List previousButtons) {
-        if (lazyLoaded()) {
-            loadedMember.fill(parentContainerPopulator, controlFactory,
-                    buttonConfigurer, previousButtons);
-        }
-    }
+	private void doLazyLoad() {
+		CommandRegistry commandRegistry = parentGroup.getCommandRegistry();
 
-    private boolean lazyLoaded() {
-        if (loadedMember != null) { return true; }
-        doLazyLoad();
-        return loadedMember != null;
-    }
+		Assert.isTrue(parentGroup.getCommandRegistry() != null, "Command registry must be set for group '"
+				+ parentGroup.getId() + "' in order to load lazy command '" + lazyCommandId + "'.");
 
-    private void doLazyLoad() {
-        CommandRegistry commandRegistry = parentGroup.getCommandRegistry();
+		if (commandRegistry.containsCommandGroup(lazyCommandId)) {
+			CommandGroup group = commandRegistry.getCommandGroup(lazyCommandId);
+			loadedMember = new SimpleGroupMember(parentGroup, group);
+		}
+		else if (commandRegistry.containsActionCommand(lazyCommandId)) {
+			ActionCommand command = commandRegistry.getActionCommand(lazyCommandId);
+			loadedMember = new SimpleGroupMember(parentGroup, command);
+		}
+		else {
+			logger.warn("Lazy command '" + lazyCommandId
+					+ "' was asked to display; however, no backing command instance exists in registry.");
+		}
 
-        Assert.isTrue(parentGroup.getCommandRegistry() != null,
-                "Command registry must be set for group '"
-                        + parentGroup.getId()
-                        + "' in order to load lazy command '" + lazyCommandId
-                        + "'.");
+		if (addedLazily && loadedMember != null) {
+			loadedMember.onAdded();
+		}
+	}
 
-        if (commandRegistry.containsCommandGroup(lazyCommandId)) {
-            CommandGroup group = commandRegistry.getCommandGroup(lazyCommandId);
-            Assert.notNull(group);
-            if (inlinedGroup) {
-                loadedMember = new InlinedGroupMember(parentGroup, group);
-            }
-            else {
-                loadedMember = new SimpleGroupMember(parentGroup, group);
-            }
-        }
-        else if (commandRegistry.containsActionCommand(lazyCommandId)) {
-            ActionCommand command = commandRegistry
-                    .getActionCommand(lazyCommandId);
-            Assert.notNull(command);
-            loadedMember = new SimpleGroupMember(parentGroup, command);
-        }
-        else {
-            logger
-                    .warn("Lazy command '"
-                            + lazyCommandId
-                            + "' was asked to display; however, no backing command instance exists in registry.");
-        }
+	public boolean managesCommand(String commandId) {
+		return this.lazyCommandId.equals(commandId);
+	}
 
-        if (addedLazily && loadedMember != null) {
-            loadedMember.onAdded();
-        }
-    }
+	protected void onAdded() {
+		if (loadedMember != null) {
+			loadedMember.onAdded();
+		}
+		else {
+			addedLazily = true;
+		}
+	}
 
-    public boolean managesCommand(String commandId) {
-        return this.lazyCommandId.equals(commandId);
-    }
-
-    public boolean managesCommandDirectly(String commandId) {
-        return managesCommand(commandId);
-    }
-
-    protected void onAdded() {
-        if (loadedMember != null) {
-            loadedMember.onAdded();
-        }
-        else {
-            addedLazily = true;
-        }
-    }
-
-    protected void onRemoved() {
-        if (loadedMember != null) {
-            loadedMember.onRemoved();
-        }
-        else {
-            addedLazily = false;
-        }
-    }
+	protected void onRemoved() {
+		if (loadedMember != null) {
+			loadedMember.onRemoved();
+		}
+		else {
+			addedLazily = false;
+		}
+	}
 
 }

@@ -74,10 +74,6 @@ public class SimpleGroupMember extends GroupMember {
         return this.command.getId().equals(commandId);
     }
 
-    public boolean managesCommandDirectly(String commandId) {
-        return managesCommand(commandId);
-    }
-
     public AbstractCommand getCommand() {
         return command;
     }
