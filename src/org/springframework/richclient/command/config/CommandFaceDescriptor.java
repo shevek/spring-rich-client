@@ -44,10 +44,6 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
 
     public static final String BUTTON_LARGE_ICON_INFO_PROPETY = "largeIconInfo";
 
-    public static final String BUTTON_ICON_PROPERTY = "iconInfo";
-
-    public static final String BUTTON_LARGE_ICON_PROPETY = "largeIconInfo";
-
     public static final CommandFaceDescriptor BLANK_FACE_DESCRIPTOR = new CommandFaceDescriptor();
 
     private String caption;
