@@ -91,7 +91,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
         String description = getMessage(formModel, formPropertyPath, DESCRIPTION_PROPERTY);
         String encodedLabel = getMessage(formModel, formPropertyPath, ENCODED_LABEL_PROPERTY);
         Icon icon = getIconSource().getIcon(getMessage(formModel, formPropertyPath, ICON_PROPERTY));
-        return new FormPropertyFaceDescriptor(displayName, caption, description, encodedLabel, icon);
+        return new DefaultFormPropertyFaceDescriptor(displayName, caption, description, encodedLabel, icon);
     }
 
     /**

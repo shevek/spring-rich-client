@@ -197,7 +197,6 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String formPropertyPath) {
-        assertValueModelNotNull(getDisplayValueModel(formPropertyPath), formPropertyPath);
         return getFormPropertyFaceDescriptorSource().getFormPropertyFaceDescriptor(this, formPropertyPath);
     }
 

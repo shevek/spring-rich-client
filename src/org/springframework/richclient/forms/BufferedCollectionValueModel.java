@@ -45,20 +45,21 @@ import org.springframework.util.ObjectUtils;
  * <code>ListListModel</code>. The list model acts as a buffer for changes to
  * and a representation of the state of the underlying collection.
  * <p>
- * On commit the folowing steps occur: <br>
+ * On commit the following steps occur: <br>
  * 1) a new instance of the backing collection type is created <br>
  * 2) the contents of the list model is inserted into this new collection <br>
- * 3) the new collecton is saved into the underlying collection's value model
+ * 3) the new collection is saved into the underlying collection's value model
  * <br>
  * 4) the structure of the list model is compared to the structure of the <br>
  * new underlying collection and if they differ the list model is updated to
  * reflect the new structure.
  * </p>
  * <p>
- * NOTE: Between calls to commit the list model adhers to the contract defined
+ * NOTE: Between calls to commit the list model adheres to the contract defined
  * in <code>java.util.List</code> NOT the contract of the underlying
  * collection's type. This can result in the list model representing a state
- * that is not possible for the underlying collection.
+ * that is not possible for the underlying collection. e.g. Duplicates in a Set or
+ * an order which does not conform to the underlying collection ordering. 
  * </p>
  * 
  * @author oliverh
@@ -141,7 +142,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
 
     /*
      * Checks if the structure of the ListListModel is the same as the wrapped
-     * collecton. "same stucture" is defined as having the same elements in the
+     * collection. "same structure" is defined as having the same elements in the
      * same order with the one exception that NULL == empty list.
      */
     private boolean hasSameStructure() {
