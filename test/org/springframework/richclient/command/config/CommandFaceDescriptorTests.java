@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JButton;
 
 import junit.framework.TestCase;
@@ -94,8 +95,8 @@ public class CommandFaceDescriptorTests extends TestCase {
         assertFalse(descriptor.isBlank());
         assertNull(descriptor.getDescription());
         assertEquals("caption", descriptor.getCaption());
-        assertFalse(CommandButtonIconInfo.BLANK_ICON_INFO
-                .equals(descriptor.getButtonIconInfo()));
+        assertFalse(CommandButtonIconInfo.BLANK_ICON_INFO.equals(descriptor
+                .getButtonIconInfo()));
         assertEquals(EmptyIcon.SMALL, descriptor.getButtonIconInfo().getIcon());
     }
 
@@ -134,15 +135,14 @@ public class CommandFaceDescriptorTests extends TestCase {
     }
 
     public void testSetIcon() {
-        CommandButtonIconInfo oldIconInfo = descriptor.getButtonIconInfo();
+        Icon oldIcon = descriptor.getIcon();
         descriptor.setIcon(EmptyIcon.LARGE);
         assertEquals(EmptyIcon.LARGE, descriptor.getIcon());
 
         assertTrue(propertyChangeListener.changed);
         assertEquals(descriptor, propertyChangeListener.source);
-        assertEquals(oldIconInfo, propertyChangeListener.oldValue);
-        assertEquals(descriptor.getButtonIconInfo(),
-                propertyChangeListener.newValue);
+        assertEquals(oldIcon, propertyChangeListener.oldValue);
+        assertEquals(descriptor.getIcon(), propertyChangeListener.newValue);
         assertEquals(CommandFaceDescriptor.BUTTON_ICON_INFO_PROPERTY,
                 propertyChangeListener.propertyName);
 

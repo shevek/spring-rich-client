@@ -95,9 +95,12 @@ public class CommandButtonIconInfo implements ButtonConfigurer,
     }
 
     public Image getImage() {
-        Assert.isTrue(getIcon() instanceof ImageIcon,
-                "Only image icons convert to images");
-        return ((ImageIcon)getIcon()).getImage();
+        if (getIcon() instanceof ImageIcon) {
+            return ((ImageIcon)getIcon()).getImage();
+        }
+        else {
+            return null;
+        }
     }
 
     public Icon getIcon() {
