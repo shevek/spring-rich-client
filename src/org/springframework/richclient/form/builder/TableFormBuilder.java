@@ -34,8 +34,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     private boolean skipRow;
 
-    public TableFormBuilder(SwingFormModel formModel,
-            FormComponentInterceptor extensionStrategy) {
+    public TableFormBuilder(SwingFormModel formModel) {
         super(formModel);
         this.builder = new TablePanelBuilder(new JPanel());
     }
