@@ -22,5 +22,5 @@ import javax.swing.JComponent;
  * @author Keith Donald
  */
 public interface ControlFactory {
-	public JComponent getControl();
+    public JComponent getControl();
 }

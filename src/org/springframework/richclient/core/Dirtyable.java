@@ -16,7 +16,7 @@
 package org.springframework.richclient.core;
 
 public interface Dirtyable {
-	public static final String DIRTY_PROPERTY = "dirty";
+    public static final String DIRTY_PROPERTY = "dirty";
 
-	public boolean isDirty();
+    public boolean isDirty();
 }

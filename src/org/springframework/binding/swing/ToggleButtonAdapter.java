@@ -35,87 +35,87 @@ import org.springframework.util.Assert;
  */
 public final class ToggleButtonAdapter extends JToggleButton.ToggleButtonModel {
 
-	/**
-	 * Refers to the underlying ValueModel that is used to read and write
-	 * values.
-	 */
-	private final ValueModel valueModel;
+    /**
+     * Refers to the underlying ValueModel that is used to read and write
+     * values.
+     */
+    private final ValueModel valueModel;
 
-	/**
-	 * The value that represents the selected state.
-	 */
-	private final Object selectedValue;
+    /**
+     * The value that represents the selected state.
+     */
+    private final Object selectedValue;
 
-	/**
-	 * The value that represents the deselected state.
-	 */
-	private final Object deselectedValue;
+    /**
+     * The value that represents the deselected state.
+     */
+    private final Object deselectedValue;
 
-	private final ValueChangeListener valueChangeHandler;
+    private final ValueChangeListener valueChangeHandler;
 
-	/**
-	 * Constructs a <code>ToggleButtonAdapter</code> on the given subject.
-	 * 
-	 * @param valueModel
-	 *            the subject that holds the value
-	 * @throws NullPointerException
-	 *             if the subject is <code>null</code>
-	 */
-	public ToggleButtonAdapter(ValueModel valueModel) {
-		this(valueModel, Boolean.TRUE, Boolean.FALSE);
-	}
+    /**
+     * Constructs a <code>ToggleButtonAdapter</code> on the given subject.
+     * 
+     * @param valueModel
+     *            the subject that holds the value
+     * @throws NullPointerException
+     *             if the subject is <code>null</code>
+     */
+    public ToggleButtonAdapter(ValueModel valueModel) {
+        this(valueModel, Boolean.TRUE, Boolean.FALSE);
+    }
 
-	/**
-	 * Constructs a <code>ToggleButtonAdapter</code> on the given subject.
-	 * 
-	 * @param valueModel
-	 *            the subject that holds the value
-	 * @param selectedValue
-	 *            the value that will be set if this is selected
-	 * @param deselectedValue
-	 *            the value that will be set if this is deselected
-	 * 
-	 * @throws NullPointerException
-	 *             if the subject is <code>null</code>
-	 */
-	public ToggleButtonAdapter(ValueModel valueModel, Object selectedValue, Object deselectedValue) {
-		Assert.notNull(valueModel, "The subject value model is required.");
-		this.valueModel = valueModel;
-		this.selectedValue = selectedValue;
-		this.deselectedValue = deselectedValue;
-		this.valueChangeHandler = new ValueChangeHandler();
-		valueModel.addValueChangeListener(valueChangeHandler);
-	}
+    /**
+     * Constructs a <code>ToggleButtonAdapter</code> on the given subject.
+     * 
+     * @param valueModel
+     *            the subject that holds the value
+     * @param selectedValue
+     *            the value that will be set if this is selected
+     * @param deselectedValue
+     *            the value that will be set if this is deselected
+     * 
+     * @throws NullPointerException
+     *             if the subject is <code>null</code>
+     */
+    public ToggleButtonAdapter(ValueModel valueModel, Object selectedValue, Object deselectedValue) {
+        Assert.notNull(valueModel, "The subject value model is required.");
+        this.valueModel = valueModel;
+        this.selectedValue = selectedValue;
+        this.deselectedValue = deselectedValue;
+        this.valueChangeHandler = new ValueChangeHandler();
+        valueModel.addValueChangeListener(valueChangeHandler);
+    }
 
-	// Handles changes in the subject's value.
-	private class ValueChangeHandler implements ValueChangeListener {
-		public void valueChanged() {
-			setSelected(isSelected(), false);
-		}
-	}
+    // Handles changes in the subject's value.
+    private class ValueChangeHandler implements ValueChangeListener {
+        public void valueChanged() {
+            setSelected(isSelected(), false);
+        }
+    }
 
-	public boolean isSelected() {
-		return selectedValue.equals(valueModel.getValue());
-	}
+    public boolean isSelected() {
+        return selectedValue.equals(valueModel.getValue());
+    }
 
-	public void setSelected(boolean selected) {
-		setSelected(selected, true);
-	}
+    public void setSelected(boolean selected) {
+        setSelected(selected, true);
+    }
 
-	private void setSelected(boolean selected, boolean updateValueModel) {
-		if (isSelected() == selected) {
-			return;
-		}
-		if (updateValueModel) {
-			updateValueModelSilently(selected);
-		}
-		super.setSelected(selected);
-	}
+    private void setSelected(boolean selected, boolean updateValueModel) {
+        if (isSelected() == selected) {
+            return;
+        }
+        if (updateValueModel) {
+            updateValueModelSilently(selected);
+        }
+        super.setSelected(selected);
+    }
 
-	private void updateValueModelSilently(boolean selected) {
-		Object newValue = selected ? selectedValue : deselectedValue;
-		valueModel.removeValueChangeListener(valueChangeHandler);
-		valueModel.setValue(newValue);
-		valueModel.addValueChangeListener(valueChangeHandler);
-	}
+    private void updateValueModelSilently(boolean selected) {
+        Object newValue = selected ? selectedValue : deselectedValue;
+        valueModel.removeValueChangeListener(valueChangeHandler);
+        valueModel.setValue(newValue);
+        valueModel.addValueChangeListener(valueChangeHandler);
+    }
 }

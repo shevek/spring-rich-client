@@ -25,62 +25,62 @@ import javax.swing.MenuElement;
 import org.springframework.richclient.image.EmptyIcon;
 
 public class MenuElementUtils {
-	private MenuElementUtils() {
-	}
+    private MenuElementUtils() {
+    }
 
-	/**
-	 * Return whether there are any icons at the moment.
-	 * 
-	 * @return whether there are any icons at the moment
-	 */
-	private static boolean hasIcons(MenuElement menuElement) {
-		MenuElement[] elements = menuElement.getSubElements();
-		for (int i = 0; i < elements.length; i++) {
-			MenuElement element = elements[i];
-			if (element instanceof JMenuItem && (((JMenuItem)element).getIcon() != null)) {
-				return true;
-			}
-			if (element instanceof JPopupMenu) {
-				return hasIcons(element);
-			}
-		}
-		return false;
-	}
+    /**
+     * Return whether there are any icons at the moment.
+     * 
+     * @return whether there are any icons at the moment
+     */
+    private static boolean hasIcons(MenuElement menuElement) {
+        MenuElement[] elements = menuElement.getSubElements();
+        for (int i = 0; i < elements.length; i++) {
+            MenuElement element = elements[i];
+            if (element instanceof JMenuItem && (((JMenuItem)element).getIcon() != null)) {
+                return true;
+            }
+            if (element instanceof JPopupMenu) {
+                return hasIcons(element);
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Fill in icons (if there is no icon, put in an empty icon).
-	 */
-	private static void fillInIcons(MenuElement menuElement) {
-		MenuElement[] elements = menuElement.getSubElements();
-		for (int i = 0; i < elements.length; i++) {
-			MenuElement element = elements[i];
-			if (element instanceof JMenuItem) {
-				JMenuItem menu = (JMenuItem)element;
-				if (menu.getIcon() == null) {
-					menu.setIcon(EmptyIcon.SMALL);
-				}
-			}
-			if (element instanceof JPopupMenu) {
-				fillInIcons(element);
-			}
-		}
-	}
+    /**
+     * Fill in icons (if there is no icon, put in an empty icon).
+     */
+    private static void fillInIcons(MenuElement menuElement) {
+        MenuElement[] elements = menuElement.getSubElements();
+        for (int i = 0; i < elements.length; i++) {
+            MenuElement element = elements[i];
+            if (element instanceof JMenuItem) {
+                JMenuItem menu = (JMenuItem)element;
+                if (menu.getIcon() == null) {
+                    menu.setIcon(EmptyIcon.SMALL);
+                }
+            }
+            if (element instanceof JPopupMenu) {
+                fillInIcons(element);
+            }
+        }
+    }
 
-	/**
-	 * Align the icons.
-	 */
-	public static void alignIcons(MenuElement menuElement) {
-		// We fill in a blank icon to align the menu items
-		if (hasIcons(menuElement)) {
-			fillInIcons(menuElement);
-		}
-	}
+    /**
+     * Align the icons.
+     */
+    public static void alignIcons(MenuElement menuElement) {
+        // We fill in a blank icon to align the menu items
+        if (hasIcons(menuElement)) {
+            fillInIcons(menuElement);
+        }
+    }
 
-	public static void showButtonPopupMenu(AbstractButton button, JPopupMenu popup) {
-		if (!popup.isVisible()) {
-			Dimension size = button.getSize();
-			popup.show(button, 0, size.height);
-		}
-	}
+    public static void showButtonPopupMenu(AbstractButton button, JPopupMenu popup) {
+        if (!popup.isVisible()) {
+            Dimension size = button.getSize();
+            popup.show(button, 0, size.height);
+        }
+    }
 
 }

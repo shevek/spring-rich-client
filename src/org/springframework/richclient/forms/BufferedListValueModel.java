@@ -26,80 +26,80 @@ import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
 
 class BufferedListValueModel extends BufferedValueModel {
-	private ListListModel itemsBuffer;
+    private ListListModel itemsBuffer;
 
-	private boolean updating;
+    private boolean updating;
 
-	public BufferedListValueModel(ValueModel wrappedModel) {
-		super(wrappedModel);
-	}
+    public BufferedListValueModel(ValueModel wrappedModel) {
+        super(wrappedModel);
+    }
 
-	public Object getValue() {
-		if (!hasChangeBuffered()) {
-			super.setValue(internalGet());
-		}
-		return super.getValue();
-	}
+    public Object getValue() {
+        if (!hasChangeBuffered()) {
+            super.setValue(internalGet());
+        }
+        return super.getValue();
+    }
 
-	/**
-	 * Gets the list value associated with this value model, creating a list
-	 * model buffer containing its contents, suitable for manipulation.
-	 * 
-	 * @return The list model buffer
-	 */
-	protected Object internalGet() {
-		List itemsList = (List)getWrappedModel().getValue();
-		if (this.itemsBuffer == null) {
-			this.itemsBuffer = new ListListModel(itemsList);
-			this.itemsBuffer.addListDataListener(new ListDataListener() {
-				public void contentsChanged(ListDataEvent e) {
-					fireValueChanged();
-				}
+    /**
+     * Gets the list value associated with this value model, creating a list
+     * model buffer containing its contents, suitable for manipulation.
+     * 
+     * @return The list model buffer
+     */
+    protected Object internalGet() {
+        List itemsList = (List)getWrappedModel().getValue();
+        if (this.itemsBuffer == null) {
+            this.itemsBuffer = new ListListModel(itemsList);
+            this.itemsBuffer.addListDataListener(new ListDataListener() {
+                public void contentsChanged(ListDataEvent e) {
+                    fireValueChanged();
+                }
 
-				public void intervalAdded(ListDataEvent e) {
-					fireValueChanged();
-				}
+                public void intervalAdded(ListDataEvent e) {
+                    fireValueChanged();
+                }
 
-				public void intervalRemoved(ListDataEvent e) {
-					fireValueChanged();
-				}
-			});
-		}
-		else {
-			try {
-				updating = true;
-				this.itemsBuffer.clear();
-				if (itemsList != null) {
-					this.itemsBuffer.addAll(itemsList);
-				}
-			}
-			finally {
-				updating = false;
-			}
-		}
-		return this.itemsBuffer;
-	}
+                public void intervalRemoved(ListDataEvent e) {
+                    fireValueChanged();
+                }
+            });
+        }
+        else {
+            try {
+                updating = true;
+                this.itemsBuffer.clear();
+                if (itemsList != null) {
+                    this.itemsBuffer.addAll(itemsList);
+                }
+            }
+            finally {
+                updating = false;
+            }
+        }
+        return this.itemsBuffer;
+    }
 
-	/**
-	 * Overriden to make a defensive copy of the list model contents before
-	 * setting. This is not needed if the target object makes the copy; but this
-	 * method assumes users are lazy and often forget to do that.
-	 */
-	protected void doBufferedValueCommit(Object bufferedValue) {
-		List list = (List)bufferedValue;
-		getWrappedModel().setValue(new ArrayList(list));
-	}
+    /**
+     * Overriden to make a defensive copy of the list model contents before
+     * setting. This is not needed if the target object makes the copy; but this
+     * method assumes users are lazy and often forget to do that.
+     */
+    protected void doBufferedValueCommit(Object bufferedValue) {
+        List list = (List)bufferedValue;
+        getWrappedModel().setValue(new ArrayList(list));
+    }
 
-	protected void fireValueChanged() {
-		if (!updating) {
-			super.fireValueChanged();
-		}
-	}
+    protected void fireValueChanged() {
+        if (!updating) {
+            super.fireValueChanged();
+        }
+    }
 
-	protected void onWrappedValueChanged() {
-		if (!updating) {
-			super.setValue(internalGet());
-		}
-	}
+    protected void onWrappedValueChanged() {
+        if (!updating) {
+            super.setValue(internalGet());
+        }
+    }
 
 }

@@ -25,24 +25,24 @@ import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class OwnerAddressForm extends AbstractForm {
-	public static final String ADDRESS_FORM_PAGE = "addressPage";
+    public static final String ADDRESS_FORM_PAGE = "addressPage";
 
-	private JComponent address;
+    private JComponent address;
 
-	public OwnerAddressForm(FormModel formModel) {
-		super(formModel, ADDRESS_FORM_PAGE);
-	}
+    public OwnerAddressForm(FormModel formModel) {
+        super(formModel, ADDRESS_FORM_PAGE);
+    }
 
-	protected JComponent createFormControl() {
-		FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-		BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
-		this.address = formBuilder.add("address")[1];
-		formBuilder.add("city");
-		return formBuilder.getForm();
-	}
+    protected JComponent createFormControl() {
+        FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
+        BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+        this.address = formBuilder.add("address")[1];
+        formBuilder.add("city");
+        return formBuilder.getForm();
+    }
 
-	public boolean requestFocusInWindow() {
-		return address.requestFocusInWindow();
-	}
+    public boolean requestFocusInWindow() {
+        return address.requestFocusInWindow();
+    }
 
 }

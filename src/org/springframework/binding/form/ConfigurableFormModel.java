@@ -23,15 +23,15 @@ import org.springframework.binding.value.ValueModel;
  * @author Keith Donald
  */
 public interface ConfigurableFormModel extends NestableFormModel {
-	public void setFormProperties(String[] formPropertyPaths);
+    public void setFormProperties(String[] formPropertyPaths);
 
-	public MutablePropertyAccessStrategy getPropertyAccessStrategy();
+    public MutablePropertyAccessStrategy getPropertyAccessStrategy();
 
-	public PropertyMetadataAccessStrategy getMetadataAccessStrategy();
+    public PropertyMetadataAccessStrategy getMetadataAccessStrategy();
 
-	public ValueModel add(String formPropertyPath);
+    public ValueModel add(String formPropertyPath);
 
-	public ValueModel add(String formPropertyPath, boolean bufferChanges);
+    public ValueModel add(String formPropertyPath, boolean bufferChanges);
 
-	public ValueModel add(String formPropertyPath, ValueModel valueModel);
+    public ValueModel add(String formPropertyPath, ValueModel valueModel);
 }

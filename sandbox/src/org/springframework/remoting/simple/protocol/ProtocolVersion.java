@@ -26,9 +26,9 @@ import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
  * @author oliverh
  */
 public class ProtocolVersion {
-        
+
     private static final String PROTOCOL_MAGIC = "simple";
-    
+
     private String protocol;
 
     private int majorVersion;
@@ -52,31 +52,28 @@ public class ProtocolVersion {
     public int getMinorVersion() {
         return minorVersion;
     }
-    
+
     public String toString() {
         return protocol + " v" + majorVersion + "." + minorVersion;
     }
 
-    public static void write(ProtocolVersion version, DataOutputStream dos)
-            throws IOException {
+    public static void write(ProtocolVersion version, DataOutputStream dos) throws IOException {
         dos.writeUTF(PROTOCOL_MAGIC);
         dos.writeUTF(version.getProtocol());
         dos.writeInt(version.getMajorVersion());
         dos.writeInt(version.getMinorVersion());
     }
 
-    public static ProtocolVersion read(DataInputStream dis,
-            Recoverable recoverable) {        
+    public static ProtocolVersion read(DataInputStream dis, Recoverable recoverable) {
         try {
             if (!dis.readUTF().equals(PROTOCOL_MAGIC)) {
-                throw new SimpleRemotingException(recoverable,
-                        "InputStream returned incorrect magic number. "
-                                + "Check Protocol is configured correctly.");
+                throw new SimpleRemotingException(recoverable, "InputStream returned incorrect magic number. "
+                        + "Check Protocol is configured correctly.");
             }
-        } catch (IOException e) {
-            throw new SimpleRemotingException(recoverable,
-                    "Unable to read magic number. "
-                            + "Check Protocol is configured correctly.", e);
+        }
+        catch (IOException e) {
+            throw new SimpleRemotingException(recoverable, "Unable to read magic number. "
+                    + "Check Protocol is configured correctly.", e);
         }
 
         try {
@@ -85,9 +82,9 @@ public class ProtocolVersion {
             int minorVersion = dis.readInt();
 
             return new ProtocolVersion(protocol, majorVersion, minorVersion);
-        } catch (IOException e) {
-            throw new SimpleRemotingException(recoverable,
-                    "Unable to read protocol version.", e);
+        }
+        catch (IOException e) {
+            throw new SimpleRemotingException(recoverable, "Unable to read protocol version.", e);
         }
     }
 }

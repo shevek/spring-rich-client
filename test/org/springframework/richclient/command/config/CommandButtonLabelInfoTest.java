@@ -43,14 +43,13 @@ public class CommandButtonLabelInfoTest extends TestCase {
         super.setUp();
         labelInfo = new LabelInfo("Test", 'T', 3);
         accelerator = KeyStroke.getKeyStroke("ctrl T");
-        
+
         // make sure the keystroke did get parsed
         assertNotNull(accelerator);
     }
 
     public void testConstructorLabelInfo() {
-        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo,
-                accelerator);
+        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo, accelerator);
 
         assertEquals(labelInfo.getText(), info.getText());
         assertEquals(labelInfo.getMnemonic(), info.getMnemonic());
@@ -59,8 +58,7 @@ public class CommandButtonLabelInfoTest extends TestCase {
     }
 
     public void testConstructorLabelInfoNoAccelerator() {
-        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo,
-                null);
+        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo, null);
 
         assertEquals(labelInfo.getText(), info.getText());
         assertEquals(labelInfo.getMnemonic(), info.getMnemonic());
@@ -81,7 +79,8 @@ public class CommandButtonLabelInfoTest extends TestCase {
         try {
             new CommandButtonLabelInfo(null, accelerator);
             fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
     }
@@ -91,14 +90,14 @@ public class CommandButtonLabelInfoTest extends TestCase {
         try {
             info.configure(null);
             fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
     }
 
     public void testConfigureJButton() {
-        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo,
-                accelerator);
+        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo, accelerator);
 
         // try a button
         JButton button = new JButton();
@@ -106,13 +105,11 @@ public class CommandButtonLabelInfoTest extends TestCase {
 
         assertEquals(info.getText(), button.getText());
         assertEquals(info.getMnemonic(), button.getMnemonic());
-        assertEquals(info.getMnemonicIndex(), button
-                .getDisplayedMnemonicIndex());
+        assertEquals(info.getMnemonicIndex(), button.getDisplayedMnemonicIndex());
     }
 
     public void testConfigureJMenuItem() {
-        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo,
-                accelerator);
+        CommandButtonLabelInfo info = new CommandButtonLabelInfo(labelInfo, accelerator);
 
         // try a menu item
         JMenuItem button = new JMenuItem();
@@ -120,8 +117,7 @@ public class CommandButtonLabelInfoTest extends TestCase {
 
         assertEquals(info.getText(), button.getText());
         assertEquals(info.getMnemonic(), button.getMnemonic());
-        assertEquals(info.getMnemonicIndex(), button
-                .getDisplayedMnemonicIndex());
+        assertEquals(info.getMnemonicIndex(), button.getDisplayedMnemonicIndex());
         assertEquals(accelerator, button.getAccelerator());
     }
 

@@ -22,5 +22,5 @@ package org.springframework.richclient.util;
  * @author Keith Donald
  */
 public interface PersistableElement {
-	public void saveState(Memento memento);
+    public void saveState(Memento memento);
 }

@@ -28,40 +28,40 @@ import org.springframework.richclient.forms.SwingFormModel;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class LoginForm extends AbstractForm {
-	private SessionDetails sessionDetails;
+    private SessionDetails sessionDetails;
 
-	private JComponent usernameField;
+    private JComponent usernameField;
 
-	public LoginForm(AuthenticationManager manager) {
-		super("general");
-		this.sessionDetails = createSessionDetails();
-		setFormModel(SwingFormModel.createFormModel(this.sessionDetails));
-		setAuthenticationManager(manager);
-	}
+    public LoginForm(AuthenticationManager manager) {
+        super("general");
+        this.sessionDetails = createSessionDetails();
+        setFormModel(SwingFormModel.createFormModel(this.sessionDetails));
+        setAuthenticationManager(manager);
+    }
 
-	protected SessionDetails createSessionDetails() {
-		return new SessionDetails();
-	}
+    protected SessionDetails createSessionDetails() {
+        return new SessionDetails();
+    }
 
-	public void setAuthenticationManager(AuthenticationManager manager) {
-		sessionDetails.setAuthenticationManager(manager);
-	}
+    public void setAuthenticationManager(AuthenticationManager manager) {
+        sessionDetails.setAuthenticationManager(manager);
+    }
 
-	protected JComponent createFormControl() {
-		FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-		BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
-		this.usernameField = formBuilder.add(SessionDetails.PROPERTY_USERNAME)[1];
-		formBuilder.addPasswordField(SessionDetails.PROPERTY_PASSWORD);
-		return formBuilder.getForm();
-	}
+    protected JComponent createFormControl() {
+        FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
+        BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+        this.usernameField = formBuilder.add(SessionDetails.PROPERTY_USERNAME)[1];
+        formBuilder.addPasswordField(SessionDetails.PROPERTY_PASSWORD);
+        return formBuilder.getForm();
+    }
 
-	public void commit() throws AuthenticationException {
-		super.commit();
-		sessionDetails.login();
-	}
+    public void commit() throws AuthenticationException {
+        super.commit();
+        sessionDetails.login();
+    }
 
-	public boolean requestFocusInWindow() {
-		return usernameField.requestFocusInWindow();
-	}
+    public boolean requestFocusInWindow() {
+        return usernameField.requestFocusInWindow();
+    }
 
 }

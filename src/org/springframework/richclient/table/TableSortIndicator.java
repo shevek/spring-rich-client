@@ -39,144 +39,145 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class TableSortIndicator {
-	public static final ArrowIcon STANDARD_UP_ARROW = new ArrowIcon(ArrowIcon.Direction.UP, 4,
-			SystemColor.controlDkShadow);
+    public static final ArrowIcon STANDARD_UP_ARROW = new ArrowIcon(ArrowIcon.Direction.UP, 4,
+            SystemColor.controlDkShadow);
 
-	public static final ArrowIcon STANDARD_DOWN_ARROW = new ArrowIcon(ArrowIcon.Direction.DOWN, 4,
-			SystemColor.controlDkShadow);
+    public static final ArrowIcon STANDARD_DOWN_ARROW = new ArrowIcon(ArrowIcon.Direction.DOWN, 4,
+            SystemColor.controlDkShadow);
 
-	private JTable table;
+    private JTable table;
 
-	private Icon ascendingIcon;
+    private Icon ascendingIcon;
 
-	private Icon descendingIcon;
+    private Icon descendingIcon;
 
-	private ColumnSortList sortList;
+    private ColumnSortList sortList;
 
-	public TableSortIndicator(JTable table) {
-		this(table, STANDARD_UP_ARROW, STANDARD_DOWN_ARROW);
-	}
+    public TableSortIndicator(JTable table) {
+        this(table, STANDARD_UP_ARROW, STANDARD_DOWN_ARROW);
+    }
 
-	public TableSortIndicator(JTable table, Icon ascendingIcon, Icon descendingIcon) {
-		Assert.notNull(table);
-		Assert.notNull(ascendingIcon);
-		Assert.notNull(descendingIcon);
-		this.table = table;
-		this.ascendingIcon = ascendingIcon;
-		this.descendingIcon = descendingIcon;
-		sortList = new ColumnSortList();
-		initHeaderRenderers();
-		addHeaderMouseListener();
-	}
+    public TableSortIndicator(JTable table, Icon ascendingIcon, Icon descendingIcon) {
+        Assert.notNull(table);
+        Assert.notNull(ascendingIcon);
+        Assert.notNull(descendingIcon);
+        this.table = table;
+        this.ascendingIcon = ascendingIcon;
+        this.descendingIcon = descendingIcon;
+        sortList = new ColumnSortList();
+        initHeaderRenderers();
+        addHeaderMouseListener();
+    }
 
-	public ColumnSortList getColumnSortList() {
-		return sortList;
-	}
+    public ColumnSortList getColumnSortList() {
+        return sortList;
+    }
 
-	private void initHeaderRenderers() {
-		for (int i = 0; i < table.getColumnCount(); i++) {
-			TableColumn col = table.getColumnModel().getColumn(i);
-			col.setHeaderRenderer(new HeaderRenderer(table.getTableHeader()));
-			col.setPreferredWidth(TableUtils.calculatePreferredColumnWidth(table, col));
-			col.setWidth(col.getPreferredWidth());
-		}
-	}
+    private void initHeaderRenderers() {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            TableColumn col = table.getColumnModel().getColumn(i);
+            col.setHeaderRenderer(new HeaderRenderer(table.getTableHeader()));
+            col.setPreferredWidth(TableUtils.calculatePreferredColumnWidth(table, col));
+            col.setWidth(col.getPreferredWidth());
+        }
+    }
 
-	private static final class HeaderRenderer extends DefaultTableCellRenderer {
-		private JTableHeader tableHeader;
+    private static final class HeaderRenderer extends DefaultTableCellRenderer {
+        private JTableHeader tableHeader;
 
-		public HeaderRenderer(JTableHeader header) {
-			setForeground(header.getForeground());
-			setBackground(header.getBackground());
-			setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-			setIconTextGap(UIConstants.TWO_SPACES);
-			setHorizontalTextPosition(JLabel.LEFT);
-			this.tableHeader = header;
-		}
+        public HeaderRenderer(JTableHeader header) {
+            setForeground(header.getForeground());
+            setBackground(header.getBackground());
+            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            setIconTextGap(UIConstants.TWO_SPACES);
+            setHorizontalTextPosition(JLabel.LEFT);
+            this.tableHeader = header;
+        }
 
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean iSelected, boolean hasFocus,
-				int row, int column) {
-			setText((value == null) ? "" : value.toString());
-			setFont(tableHeader.getFont());
-			return this;
-		}
-	}
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean iSelected, boolean hasFocus,
+                int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            setFont(tableHeader.getFont());
+            return this;
+        }
+    }
 
-	private void addHeaderMouseListener() {
-		this.table.getTableHeader().addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.isMetaDown()) {
-					return;
-				}
-				int columnView = table.getColumnModel().getColumnIndexAtX(e.getX());
-				if (columnView == -1) {
-					return;
-				}
-				int column = table.convertColumnIndexToModel(columnView);
-				int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
-				ColumnToSort columnToSort = sortList.getSortLevel(column);
-				if (columnToSort != null) {
-					if (shiftPressed == 1) {
-						sortList.toggleSortOrder(column);
-						displayRendererIcon(column, columnToSort.getSortOrder());
-					}
-					else {
-						SortOrder order;
-						if (sortList.size() > 1) {
-							order = SortOrder.ASCENDING;
-						}
-						else {
-							order = columnToSort.getSortOrder().flip();
-						}
-						sortList.setSingleSortLevel(column, order);
-						removeRendererIcons();
-						displayRendererIcon(columnView, order);
-					}
-				}
-				else {
-					if (shiftPressed == 1) {
-						try {
-							sortList.addSortLevel(column, SortOrder.ASCENDING);
-							displayRendererIcon(columnView, SortOrder.ASCENDING);
-						}
-						catch (IllegalArgumentException ex) {
-							JOptionPane.showMessageDialog(table.getTopLevelAncestor(), "Maximum number of sort levels reached.",
-									"Table Sorter", JOptionPane.WARNING_MESSAGE);
-							return;
-						}
-					}
-					else {
-						sortList.setSingleSortLevel(column, SortOrder.ASCENDING);
-						removeRendererIcons();
-						displayRendererIcon(columnView, SortOrder.ASCENDING);
-					}
-				}
-				table.getTableHeader().resizeAndRepaint();
-			}
-		});
-	}
+    private void addHeaderMouseListener() {
+        this.table.getTableHeader().addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.isMetaDown()) {
+                    return;
+                }
+                int columnView = table.getColumnModel().getColumnIndexAtX(e.getX());
+                if (columnView == -1) {
+                    return;
+                }
+                int column = table.convertColumnIndexToModel(columnView);
+                int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
+                ColumnToSort columnToSort = sortList.getSortLevel(column);
+                if (columnToSort != null) {
+                    if (shiftPressed == 1) {
+                        sortList.toggleSortOrder(column);
+                        displayRendererIcon(column, columnToSort.getSortOrder());
+                    }
+                    else {
+                        SortOrder order;
+                        if (sortList.size() > 1) {
+                            order = SortOrder.ASCENDING;
+                        }
+                        else {
+                            order = columnToSort.getSortOrder().flip();
+                        }
+                        sortList.setSingleSortLevel(column, order);
+                        removeRendererIcons();
+                        displayRendererIcon(columnView, order);
+                    }
+                }
+                else {
+                    if (shiftPressed == 1) {
+                        try {
+                            sortList.addSortLevel(column, SortOrder.ASCENDING);
+                            displayRendererIcon(columnView, SortOrder.ASCENDING);
+                        }
+                        catch (IllegalArgumentException ex) {
+                            JOptionPane.showMessageDialog(table.getTopLevelAncestor(),
+                                    "Maximum number of sort levels reached.", "Table Sorter",
+                                    JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                    }
+                    else {
+                        sortList.setSingleSortLevel(column, SortOrder.ASCENDING);
+                        removeRendererIcons();
+                        displayRendererIcon(columnView, SortOrder.ASCENDING);
+                    }
+                }
+                table.getTableHeader().resizeAndRepaint();
+            }
+        });
+    }
 
-	private void displayRendererIcon(int column, SortOrder order) {
-		HeaderRenderer rend = getRenderer(column);
-		if (order == SortOrder.ASCENDING) {
-			rend.setIcon(this.ascendingIcon);
-		}
-		else {
-			rend.setIcon(this.descendingIcon);
-		}
-	}
+    private void displayRendererIcon(int column, SortOrder order) {
+        HeaderRenderer rend = getRenderer(column);
+        if (order == SortOrder.ASCENDING) {
+            rend.setIcon(this.ascendingIcon);
+        }
+        else {
+            rend.setIcon(this.descendingIcon);
+        }
+    }
 
-	private void removeRendererIcons() {
-		TableColumnModel colModel = table.getColumnModel();
-		for (int i = 0; i < colModel.getColumnCount(); i++) {
-			HeaderRenderer rend = (HeaderRenderer)colModel.getColumn(i).getHeaderRenderer();
-			rend.setIcon(null);
-		}
-	}
+    private void removeRendererIcons() {
+        TableColumnModel colModel = table.getColumnModel();
+        for (int i = 0; i < colModel.getColumnCount(); i++) {
+            HeaderRenderer rend = (HeaderRenderer)colModel.getColumn(i).getHeaderRenderer();
+            rend.setIcon(null);
+        }
+    }
 
-	private HeaderRenderer getRenderer(int columnIndex) {
-		TableColumn column = table.getColumnModel().getColumn(columnIndex);
-		return (HeaderRenderer)column.getHeaderRenderer();
-	}
+    private HeaderRenderer getRenderer(int columnIndex) {
+        TableColumn column = table.getColumnModel().getColumn(columnIndex);
+        return (HeaderRenderer)column.getHeaderRenderer();
+    }
 
 }

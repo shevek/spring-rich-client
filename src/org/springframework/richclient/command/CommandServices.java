@@ -23,15 +23,15 @@ import org.springframework.richclient.factory.MenuFactory;
  * @author Keith Donald
  */
 public interface CommandServices {
-	public ButtonFactory getButtonFactory();
+    public ButtonFactory getButtonFactory();
 
-	public MenuFactory getMenuFactory();
+    public MenuFactory getMenuFactory();
 
-	public CommandButtonConfigurer getDefaultButtonConfigurer();
+    public CommandButtonConfigurer getDefaultButtonConfigurer();
 
-	public CommandButtonConfigurer getToolBarButtonConfigurer();
+    public CommandButtonConfigurer getToolBarButtonConfigurer();
 
-	public CommandButtonConfigurer getMenuItemButtonConfigurer();
+    public CommandButtonConfigurer getMenuItemButtonConfigurer();
 
-	public CommandButtonConfigurer getPullDownMenuButtonConfigurer();
+    public CommandButtonConfigurer getPullDownMenuButtonConfigurer();
 }

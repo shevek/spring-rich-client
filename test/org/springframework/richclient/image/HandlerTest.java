@@ -38,7 +38,6 @@ public class HandlerTest extends TestCase {
     public void testHandler() throws MalformedURLException, IOException {
         URL url;
 
-        
         // make sure a handler is not installed
         try {
             url = new URL("image:test");
@@ -49,10 +48,8 @@ public class HandlerTest extends TestCase {
         }
 
         // test install       
-        Handler
-                .installImageUrlHandler((ImageSource)new ClassPathXmlApplicationContext(
-                        "org/springframework/richclient/image/application-context.xml")
-                        .getBean("imageSource"));
+        Handler.installImageUrlHandler((ImageSource)new ClassPathXmlApplicationContext(
+                "org/springframework/richclient/image/application-context.xml").getBean("imageSource"));
         try {
             url = new URL("image:test");
         }
@@ -69,7 +66,7 @@ public class HandlerTest extends TestCase {
         catch (NoSuchImageResourceException e) {
             // expected
         }
-        
+
         // test valid key
         url = new URL("image:test.image.key");
         url.openConnection();

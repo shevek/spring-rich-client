@@ -63,12 +63,12 @@ public class ListSelectionListenerSupport implements ListSelectionListener {
 
             itemsSelected = indexList.size();
             if (itemsSelected == 1) {
-                onSingleSelection(((Integer) indexList.get(0)).intValue());
+                onSingleSelection(((Integer)indexList.get(0)).intValue());
             }
             else {
                 int[] indexes = new int[indexList.size()];
                 for (int i = 0; i < indexList.size(); i++) {
-                    indexes[i] = ((Integer) indexList.get(i)).intValue();
+                    indexes[i] = ((Integer)indexList.get(i)).intValue();
                 }
                 onMultiSelection(indexes);
             }
@@ -88,15 +88,14 @@ public class ListSelectionListenerSupport implements ListSelectionListener {
      * @return the <code>ListSelectionModel</code>
      */
     private ListSelectionModel getListSelectionModel(ListSelectionEvent e) {
-        if(e.getSource() instanceof JList)
-        {
+        if (e.getSource() instanceof JList) {
             // we're coming from a JList
             return ((JList)e.getSource()).getSelectionModel();
         }
-        
+
         Assert.isTrue(e.getSource() instanceof ListSelectionModel, "Unsupported source in ListSelectionEvent");
 
-        return (ListSelectionModel) e.getSource();
+        return (ListSelectionModel)e.getSource();
     }
 
     /**

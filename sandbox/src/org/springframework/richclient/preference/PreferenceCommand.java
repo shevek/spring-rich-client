@@ -27,7 +27,7 @@ public class PreferenceCommand extends ActionCommand {
     public PreferenceCommand() {
         super("preferenceCommand");
     }
-    
+
     public void doExecuteCommand() {
         preferenceManager.createDialog().showDialog();
     }

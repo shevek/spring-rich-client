@@ -44,24 +44,21 @@ public class HttpTransport extends AbstractTransport {
         this.useAuthenticator = useAuthenticator;
     }
 
-    protected HttpURLConnection openConnection(Request request,
-            Authentication authentication) throws IOException {
+    protected HttpURLConnection openConnection(Request request, Authentication authentication) throws IOException {
         URLConnection conn = serviceUrl.openConnection();
         if (!(conn instanceof HttpURLConnection)) {
-            throw new UnsupportedOperationException("URL [" + serviceUrl
-                    + "] is not a vaild HTTP URL.");
+            throw new UnsupportedOperationException("URL [" + serviceUrl + "] is not a vaild HTTP URL.");
         }
         conn.setDoOutput(true);
         authenticate(conn, authentication);
-        return (HttpURLConnection) conn;
+        return (HttpURLConnection)conn;
     }
 
     /*
      * Generate a BASIC authentication header. Borrowed from code in Hessian,
      * thanks to Scott Ferguson.
      */
-    protected void authenticate(URLConnection conn,
-            Authentication authentication) {
+    protected void authenticate(URLConnection conn, Authentication authentication) {
         if (authentication != null) {
             String userName = String.valueOf(authentication.getPrincipal());
             String password = String.valueOf(authentication.getCredentials());
@@ -70,53 +67,52 @@ public class HttpTransport extends AbstractTransport {
         }
     }
 
-    protected Reply invokeInternal(Request request,
-            Authentication authentication, ProgressTracker tracker) {
+    protected Reply invokeInternal(Request request, Authentication authentication, ProgressTracker tracker) {
         try {
             tracker.start();
             HttpURLConnection conn = doRequest(request, authentication, tracker);
             return doResponse(conn, tracker);
-        } finally {
+        }
+        finally {
             tracker.finish();
         }
     }
 
-    private HttpURLConnection doRequest(Request request,
-            Authentication authentication, ProgressTracker tracker) {
+    private HttpURLConnection doRequest(Request request, Authentication authentication, ProgressTracker tracker) {
         OutputStream os = null;
         try {
             tracker.startSending(-1);
             HttpURLConnection conn = openConnection(request, authentication);
-            conn.setRequestProperty("Content-Type",
-                    "application/x-java-serialized-object");
+            conn.setRequestProperty("Content-Type", "application/x-java-serialized-object");
             os = tracker.getProgressOutputStream(conn.getOutputStream());
             getProtocol().writeRequest(os, request);
             os.flush();
             int responseCode = conn.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
-                        "Error connecting to server. HTTP response code ["
-                                + responseCode + "], response message ["
+                        "Error connecting to server. HTTP response code [" + responseCode + "], response message ["
                                 + conn.getResponseMessage() + "].");
             }
 
             return conn;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             SimpleRemotingException.Recoverable recoverable;
             if (e instanceof ConnectException) {
                 recoverable = SimpleRemotingException.YES;
-            } else {
-                recoverable  = SimpleRemotingException.MAYBE;
             }
-            throw new SimpleRemotingException(recoverable,
-                    "Error attempting to connect to server", e);
-        } finally {
+            else {
+                recoverable = SimpleRemotingException.MAYBE;
+            }
+            throw new SimpleRemotingException(recoverable, "Error attempting to connect to server", e);
+        }
+        finally {
             if (os != null) {
                 try {
                     os.close();
-                } catch (IOException e) {
-                    logger.warn(
-                            "Ignoring exception when closing output stream", e);
+                }
+                catch (IOException e) {
+                    logger.warn("Ignoring exception when closing output stream", e);
                 }
             }
             tracker.finishSending();
@@ -129,16 +125,17 @@ public class HttpTransport extends AbstractTransport {
             tracker.startReceiving(-1);
             is = tracker.getProgressInputStream(conn.getInputStream());
             return getProtocol().readReply(is, SimpleRemotingException.MAYBE);
-        } catch (IOException e) {
-            throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
-                    "Error reading response from server", e);
-        } finally {
+        }
+        catch (IOException e) {
+            throw new SimpleRemotingException(SimpleRemotingException.MAYBE, "Error reading response from server", e);
+        }
+        finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException e) {
-                    logger.warn("Ignoring exception when closing input stream",
-                            e);
+                }
+                catch (IOException e) {
+                    logger.warn("Ignoring exception when closing input stream", e);
                 }
             }
             tracker.finishReceiving();
@@ -154,9 +151,9 @@ public class HttpTransport extends AbstractTransport {
 
         int i = 0;
         for (i = 0; i + 2 < value.length(); i += 3) {
-            long chunk = (int) value.charAt(i);
-            chunk = (chunk << 8) + (int) value.charAt(i + 1);
-            chunk = (chunk << 8) + (int) value.charAt(i + 2);
+            long chunk = (int)value.charAt(i);
+            chunk = (chunk << 8) + (int)value.charAt(i + 1);
+            chunk = (chunk << 8) + (int)value.charAt(i + 2);
 
             cb.append(encode(chunk >> 18));
             cb.append(encode(chunk >> 12));
@@ -165,16 +162,17 @@ public class HttpTransport extends AbstractTransport {
         }
 
         if (i + 1 < value.length()) {
-            long chunk = (int) value.charAt(i);
-            chunk = (chunk << 8) + (int) value.charAt(i + 1);
+            long chunk = (int)value.charAt(i);
+            chunk = (chunk << 8) + (int)value.charAt(i + 1);
             chunk <<= 8;
 
             cb.append(encode(chunk >> 18));
             cb.append(encode(chunk >> 12));
             cb.append(encode(chunk >> 6));
             cb.append('=');
-        } else if (i < value.length()) {
-            long chunk = (int) value.charAt(i);
+        }
+        else if (i < value.length()) {
+            long chunk = (int)value.charAt(i);
             chunk <<= 16;
 
             cb.append(encode(chunk >> 18));
@@ -189,14 +187,18 @@ public class HttpTransport extends AbstractTransport {
     public char encode(long d) {
         d &= 0x3f;
         if (d < 26) {
-            return (char) (d + 'A');
-        } else if (d < 52) {
-            return (char) (d + 'a' - 26);
-        } else if (d < 62) {
-            return (char) (d + '0' - 52);
-        } else if (d == 62) {
+            return (char)(d + 'A');
+        }
+        else if (d < 52) {
+            return (char)(d + 'a' - 26);
+        }
+        else if (d < 62) {
+            return (char)(d + '0' - 52);
+        }
+        else if (d == 62) {
             return '+';
-        } else {
+        }
+        else {
             return '/';
         }
     }

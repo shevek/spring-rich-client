@@ -24,45 +24,45 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class IconSize {
-	private String name;
+    private String name;
 
-	private int pixels;
+    private int pixels;
 
-	/**
-	 * The standard 16 pixel "small" icon.
-	 */
-	public static final IconSize SMALL = new IconSize("small", 16);
+    /**
+     * The standard 16 pixel "small" icon.
+     */
+    public static final IconSize SMALL = new IconSize("small", 16);
 
-	/**
-	 * The standard 24 pixel "large" icon.
-	 */
-	public static final IconSize LARGE = new IconSize("large", 24);
+    /**
+     * The standard 24 pixel "large" icon.
+     */
+    public static final IconSize LARGE = new IconSize("large", 24);
 
-	private IconSize(String name, int value) {
-		Assert.isTrue(StringUtils.hasText(name));
-		this.name = name;
-		this.pixels = value;
-	}
+    private IconSize(String name, int value) {
+        Assert.isTrue(StringUtils.hasText(name));
+        this.name = name;
+        this.pixels = value;
+    }
 
-	/**
-	 * Returns the icon size name.
-	 * 
-	 * @return The logical name of the icon size.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the icon size name.
+     * 
+     * @return The logical name of the icon size.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns the size value in pixels.
-	 * 
-	 * @return The value in pixels.
-	 */
-	public int getValue() {
-		return pixels;
-	}
+    /**
+     * Returns the size value in pixels.
+     * 
+     * @return The value in pixels.
+     */
+    public int getValue() {
+        return pixels;
+    }
 
-	public String toString() {
-		return "[IconSize name = '" + getName() + "', value = " + getValue() + "]";
-	}
+    public String toString() {
+        return "[IconSize name = '" + getName() + "', value = " + getValue() + "]";
+    }
 }

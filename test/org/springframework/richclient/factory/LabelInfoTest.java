@@ -25,122 +25,126 @@ import junit.framework.TestCase;
  * @author Peter De Bruycker
  */
 public class LabelInfoTest extends TestCase {
-	
-	public void testConstructor() {
-		LabelInfo info = new LabelInfo("test");
-		assertEquals("test", info.getText());
-		assertEquals(0, info.getMnemonic());
-		assertEquals(0, info.getMnemonicIndex());
 
-		info = new LabelInfo("test", 't');
-		assertEquals("test", info.getText());
-		assertEquals('t', info.getMnemonic());
-		assertEquals(0, info.getMnemonicIndex());
+    public void testConstructor() {
+        LabelInfo info = new LabelInfo("test");
+        assertEquals("test", info.getText());
+        assertEquals(0, info.getMnemonic());
+        assertEquals(0, info.getMnemonicIndex());
 
-		info = new LabelInfo("test", 't', 3);
-		assertEquals("test", info.getText());
-		assertEquals('t', info.getMnemonic());
-		assertEquals(3, info.getMnemonicIndex());
-	}
+        info = new LabelInfo("test", 't');
+        assertEquals("test", info.getText());
+        assertEquals('t', info.getMnemonic());
+        assertEquals(0, info.getMnemonicIndex());
 
-	public void testConstructorEmptyText() {
-		LabelInfo info = new LabelInfo("", 'a', 5);
-		assertEquals("", info.getText());
-		assertEquals('a', info.getMnemonic());
-		assertEquals(-1, info.getMnemonicIndex());
-	}
+        info = new LabelInfo("test", 't', 3);
+        assertEquals("test", info.getText());
+        assertEquals('t', info.getMnemonic());
+        assertEquals(3, info.getMnemonicIndex());
+    }
 
-	public void testConstructorNullText() {
-		try {
-			new LabelInfo(null);
-			fail("no null text");
-		} catch (IllegalArgumentException e) {
-			pass();
-		}
-	}
+    public void testConstructorEmptyText() {
+        LabelInfo info = new LabelInfo("", 'a', 5);
+        assertEquals("", info.getText());
+        assertEquals('a', info.getMnemonic());
+        assertEquals(-1, info.getMnemonicIndex());
+    }
 
-	public void testConstructorNegativeMnemonic() {
-		try {
-			new LabelInfo("test", -5);
-			fail("No negative mnemonics");
-		} catch (IllegalArgumentException e) {
-			pass();
-		}
-	}
-
-	public void testConfigureLabel() {
-		JLabel label = new JLabel();
-		LabelInfo info = new LabelInfo("Save As", 'A', 5);
-		info.configureLabel(label);
-
-		assertEquals("Save As", label.getText());
-		assertEquals('A', label.getDisplayedMnemonic());
-		assertEquals(5, label.getDisplayedMnemonicIndex());
-	}
-	
-	public void testConfigureLabelNull() {
-	    LabelInfo info = new LabelInfo("Test");
-	    try {
-            info.configureLabel(null);
-            fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+    public void testConstructorNullText() {
+        try {
+            new LabelInfo(null);
+            fail("no null text");
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
-	}
+    }
 
-	public void testConfigureLabelFor() {
-		JTextField field = new JTextField();
-		JLabel label = new JLabel();
-		LabelInfo info = new LabelInfo("Name", 'N');
-		info.configureLabelFor(label, field);
+    public void testConstructorNegativeMnemonic() {
+        try {
+            new LabelInfo("test", -5);
+            fail("No negative mnemonics");
+        }
+        catch (IllegalArgumentException e) {
+            pass();
+        }
+    }
 
-		assertEquals("LabelInfo must add colon if none present", "Name:", label
-				.getText());
-		assertEquals('N', label.getDisplayedMnemonic());
-		assertEquals(field, label.getLabelFor());
-	}
+    public void testConfigureLabel() {
+        JLabel label = new JLabel();
+        LabelInfo info = new LabelInfo("Save As", 'A', 5);
+        info.configureLabel(label);
 
-	public void testConfigureLabelForWithColon() {
-		JTextField field = new JTextField();
-		JLabel label = new JLabel();
-		LabelInfo info = new LabelInfo("Name:", 'N');
-		info.configureLabelFor(label, field);
+        assertEquals("Save As", label.getText());
+        assertEquals('A', label.getDisplayedMnemonic());
+        assertEquals(5, label.getDisplayedMnemonicIndex());
+    }
 
-		assertEquals("Name:", label.getText());
-		assertEquals('N', label.getDisplayedMnemonic());
-		assertEquals(field, label.getLabelFor());
-	}
+    public void testConfigureLabelNull() {
+        LabelInfo info = new LabelInfo("Test");
+        try {
+            info.configureLabel(null);
+            fail("Should throw IllegalArgumentException");
+        }
+        catch (IllegalArgumentException e) {
+            pass();
+        }
+    }
 
-	public void testConfigureLabelForJPanel() {
-		JPanel panel = new JPanel();
-		JLabel label = new JLabel();
-		LabelInfo info = new LabelInfo("Name", 'N');
-		info.configureLabelFor(label, panel);
+    public void testConfigureLabelFor() {
+        JTextField field = new JTextField();
+        JLabel label = new JLabel();
+        LabelInfo info = new LabelInfo("Name", 'N');
+        info.configureLabelFor(label, field);
 
-		assertEquals("No colon for panel", "Name", label.getText());
-		assertEquals('N', label.getDisplayedMnemonic());
-		assertEquals(panel, label.getLabelFor());
-	}
+        assertEquals("LabelInfo must add colon if none present", "Name:", label.getText());
+        assertEquals('N', label.getDisplayedMnemonic());
+        assertEquals(field, label.getLabelFor());
+    }
 
-	public void testConstructorMnemonicIndexGreaterThanLength() {
-		try {
-			new LabelInfo("test", 't', 15);
-			fail("Mnemonic index < text.length()");
-		} catch (IllegalArgumentException e) {
-			pass();
-		}
-	}
+    public void testConfigureLabelForWithColon() {
+        JTextField field = new JTextField();
+        JLabel label = new JLabel();
+        LabelInfo info = new LabelInfo("Name:", 'N');
+        info.configureLabelFor(label, field);
 
-	public void testConstructorNegativeMnemonicIndex() {
-		try {
-			new LabelInfo("test", 't', -2);
-			fail("index must be >= -1");
-		} catch (IllegalArgumentException e) {
-			pass();
-		}
-	}
+        assertEquals("Name:", label.getText());
+        assertEquals('N', label.getDisplayedMnemonic());
+        assertEquals(field, label.getLabelFor());
+    }
 
-	public static final void pass() {
-		// test passes
-	}
+    public void testConfigureLabelForJPanel() {
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel();
+        LabelInfo info = new LabelInfo("Name", 'N');
+        info.configureLabelFor(label, panel);
+
+        assertEquals("No colon for panel", "Name", label.getText());
+        assertEquals('N', label.getDisplayedMnemonic());
+        assertEquals(panel, label.getLabelFor());
+    }
+
+    public void testConstructorMnemonicIndexGreaterThanLength() {
+        try {
+            new LabelInfo("test", 't', 15);
+            fail("Mnemonic index < text.length()");
+        }
+        catch (IllegalArgumentException e) {
+            pass();
+        }
+    }
+
+    public void testConstructorNegativeMnemonicIndex() {
+        try {
+            new LabelInfo("test", 't', -2);
+            fail("index must be >= -1");
+        }
+        catch (IllegalArgumentException e) {
+            pass();
+        }
+    }
+
+    public static final void pass() {
+        // test passes
+    }
 }

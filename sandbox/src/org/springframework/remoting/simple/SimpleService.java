@@ -30,13 +30,14 @@ public class SimpleService {
     private Map methodMap;
 
     public SimpleService(Object serviceObject, Class serviceInterface) {
-        if (!serviceInterface.isInterface()) { throw new IllegalArgumentException(
-                "serviceInterface [" + serviceInterface.getName()
-                        + "] must be an interface."); }
-        if (!serviceInterface.isInstance(serviceObject)) { throw new IllegalArgumentException(
-                "serviceInterface [" + serviceInterface.getName()
-                        + "] needs to be implemented by service ["
-                        + serviceObject + "]."); }
+        if (!serviceInterface.isInterface()) {
+            throw new IllegalArgumentException("serviceInterface [" + serviceInterface.getName()
+                    + "] must be an interface.");
+        }
+        if (!serviceInterface.isInstance(serviceObject)) {
+            throw new IllegalArgumentException("serviceInterface [" + serviceInterface.getName()
+                    + "] needs to be implemented by service [" + serviceObject + "].");
+        }
         this.serviceObject = serviceObject;
         this.serviceInterface = serviceInterface;
         populateMethodMap();
@@ -51,10 +52,11 @@ public class SimpleService {
     }
 
     public Method getServiceMethod(String methodDesc) {
-        Method method = (Method) methodMap.get(methodDesc);
-        if (method == null) { throw new SimpleRemotingException("Service ["
-                + serviceInterface.getName() + "] does not implement method ["
-                + methodDesc + "]."); }
+        Method method = (Method)methodMap.get(methodDesc);
+        if (method == null) {
+            throw new SimpleRemotingException("Service [" + serviceInterface.getName()
+                    + "] does not implement method [" + methodDesc + "].");
+        }
         return method;
     }
 
@@ -65,15 +67,13 @@ public class SimpleService {
         for (int i = 0; i < interfaceMethods.length; i++) {
             Method interfaceMethod = interfaceMethods[i];
             try {
-                Method serviceMethod = serviceObjectClass.getMethod(
-                        interfaceMethod.getName(), interfaceMethod
-                                .getParameterTypes());
+                Method serviceMethod = serviceObjectClass.getMethod(interfaceMethod.getName(), interfaceMethod
+                        .getParameterTypes());
                 String methodDesc = interfaceMethod.toString();
                 methodMap.put(methodDesc, serviceMethod);
             }
             catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException("Service object ["
-                        + serviceObject + "] does not implement method ["
+                throw new IllegalArgumentException("Service object [" + serviceObject + "] does not implement method ["
                         + interfaceMethod + "].");
             }
         }

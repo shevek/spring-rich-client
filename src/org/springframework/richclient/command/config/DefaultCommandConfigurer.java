@@ -28,57 +28,57 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class DefaultCommandConfigurer implements CommandConfigurer {
-	private final Log logger = LogFactory.getLog(getClass());
+    private final Log logger = LogFactory.getLog(getClass());
 
-	private CommandServices commandServices;
+    private CommandServices commandServices;
 
-	private ApplicationObjectConfigurer objectConfigurer;
+    private ApplicationObjectConfigurer objectConfigurer;
 
-	public DefaultCommandConfigurer() {
-	}
+    public DefaultCommandConfigurer() {
+    }
 
-	public DefaultCommandConfigurer(CommandServices commandServices) {
-		setCommandServices(commandServices);
-	}
+    public DefaultCommandConfigurer(CommandServices commandServices) {
+        setCommandServices(commandServices);
+    }
 
-	public void setApplicationObjectConfigurer(ApplicationObjectConfigurer configurer) {
-		this.objectConfigurer = configurer;
-	}
+    public void setApplicationObjectConfigurer(ApplicationObjectConfigurer configurer) {
+        this.objectConfigurer = configurer;
+    }
 
-	public void setCommandServices(CommandServices services) {
-		this.commandServices = services;
-	}
+    public void setCommandServices(CommandServices services) {
+        this.commandServices = services;
+    }
 
-	public AbstractCommand configure(AbstractCommand command) {
-		return configure(command, getObjectConfigurer());
-	}
+    public AbstractCommand configure(AbstractCommand command) {
+        return configure(command, getObjectConfigurer());
+    }
 
-	protected ApplicationObjectConfigurer getObjectConfigurer() {
-		if (objectConfigurer == null) {
-			return Application.services();
-		}
-		return objectConfigurer;
-	}
+    protected ApplicationObjectConfigurer getObjectConfigurer() {
+        if (objectConfigurer == null) {
+            return Application.services();
+        }
+        return objectConfigurer;
+    }
 
-	public AbstractCommand configure(AbstractCommand command, ApplicationObjectConfigurer configurer) {
-		command.setCommandServices(getCommandServices());
-		Assert.state(!command.isAnonymous(), "A command must have an id to be auto configured");
-		if (logger.isDebugEnabled()) {
-			logger.debug("Configuring faces (aka visual appearance descriptors) for " + command);
-		}
-		CommandFaceDescriptor face = new CommandFaceDescriptor();
-		command.setFaceDescriptor((CommandFaceDescriptor)configurer.configure(face, command.getId()));
-		if (face.isBlank()) {
-			face.setButtonLabelInfo("&" + command.getId());
-		}
-		return command;
-	}
+    public AbstractCommand configure(AbstractCommand command, ApplicationObjectConfigurer configurer) {
+        command.setCommandServices(getCommandServices());
+        Assert.state(!command.isAnonymous(), "A command must have an id to be auto configured");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Configuring faces (aka visual appearance descriptors) for " + command);
+        }
+        CommandFaceDescriptor face = new CommandFaceDescriptor();
+        command.setFaceDescriptor((CommandFaceDescriptor)configurer.configure(face, command.getId()));
+        if (face.isBlank()) {
+            face.setButtonLabelInfo("&" + command.getId());
+        }
+        return command;
+    }
 
-	protected CommandServices getCommandServices() {
-		if (commandServices == null) {
-			return DefaultCommandServices.instance();
-		}
-		return commandServices;
-	}
+    protected CommandServices getCommandServices() {
+        if (commandServices == null) {
+            return DefaultCommandServices.instance();
+        }
+        return commandServices;
+    }
 
 }

@@ -52,8 +52,7 @@ public class CommandButtonIconInfoTest extends TestCase {
     }
 
     public void testConstructor2() {
-        CommandButtonIconInfo info = new CommandButtonIconInfo(icon,
-                selectedIcon);
+        CommandButtonIconInfo info = new CommandButtonIconInfo(icon, selectedIcon);
         assertEquals(icon, info.getIcon());
         assertEquals(selectedIcon, info.getSelectedIcon());
         assertNull(info.getRolloverIcon());
@@ -62,8 +61,7 @@ public class CommandButtonIconInfoTest extends TestCase {
     }
 
     public void testConstructor3() {
-        CommandButtonIconInfo info = new CommandButtonIconInfo(icon,
-                selectedIcon, rolloverIcon);
+        CommandButtonIconInfo info = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon);
         assertEquals(icon, info.getIcon());
         assertEquals(selectedIcon, info.getSelectedIcon());
         assertEquals(rolloverIcon, info.getRolloverIcon());
@@ -72,50 +70,50 @@ public class CommandButtonIconInfoTest extends TestCase {
     }
 
     public void testConstructor4() {
-        CommandButtonIconInfo info = new CommandButtonIconInfo(icon,
-                selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
+        CommandButtonIconInfo info = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon,
+                pressedIcon);
         assertEquals(icon, info.getIcon());
         assertEquals(selectedIcon, info.getSelectedIcon());
         assertEquals(rolloverIcon, info.getRolloverIcon());
         assertEquals(disabledIcon, info.getDisabledIcon());
         assertEquals(pressedIcon, info.getPressedIcon());
     }
-    
+
     public void testConfigureWithNullButton() {
         CommandButtonIconInfo info = new CommandButtonIconInfo(icon);
         try {
             info.configure(null);
             fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
     }
-    
+
     public void testConfigureWithJButton() {
         JButton button = new JButton("Test");
-        JButton result = (JButton) completeInfo.configure(button);
+        JButton result = (JButton)completeInfo.configure(button);
         assertSame(button, result);
-        
+
         assertEquals(icon, button.getIcon());
         assertEquals(selectedIcon, button.getSelectedIcon());
         assertEquals(rolloverIcon, button.getRolloverIcon());
         assertEquals(disabledIcon, button.getDisabledIcon());
         assertEquals(pressedIcon, button.getPressedIcon());
     }
-    
-    
+
     public void testConfigureWithJMenuItem() {
         JMenuItem button = new JMenuItem("Test");
-        JMenuItem result = (JMenuItem) completeInfo.configure(button);
+        JMenuItem result = (JMenuItem)completeInfo.configure(button);
         assertSame(button, result);
-        
+
         assertEquals(icon, button.getIcon());
         assertNull(button.getSelectedIcon());
         assertNull(button.getRolloverIcon());
         assertEquals(disabledIcon, button.getDisabledIcon());
         assertNull(button.getPressedIcon());
     }
-    
+
     public void testConfigureWithJMenu() {
         JMenu button = new JMenu("Test");
         button.setIcon(icon);
@@ -123,22 +121,21 @@ public class CommandButtonIconInfoTest extends TestCase {
         button.setRolloverIcon(rolloverIcon);
         button.setDisabledIcon(disabledIcon);
         button.setPressedIcon(pressedIcon);
-        
-        JMenuItem result = (JMenuItem) completeInfo.configure(button);
+
+        JMenuItem result = (JMenuItem)completeInfo.configure(button);
         assertSame(button, result);
-        
+
         assertNull(button.getIcon());
         assertNull(button.getSelectedIcon());
         assertNull(button.getRolloverIcon());
         assertNull(button.getDisabledIcon());
         assertNull(button.getPressedIcon());
     }
-    
-    private static void pass()
-    {
+
+    private static void pass() {
         // test passes
     }
-    
+
     private static class TestIcon implements Icon {
 
         /*
@@ -182,9 +179,8 @@ public class CommandButtonIconInfoTest extends TestCase {
         rolloverIcon = new TestIcon();
         disabledIcon = new TestIcon();
         pressedIcon = new TestIcon();
-        
-        completeInfo = new CommandButtonIconInfo(icon,
-                selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
+
+        completeInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
 
     }
 

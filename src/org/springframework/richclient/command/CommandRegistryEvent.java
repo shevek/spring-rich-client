@@ -19,14 +19,14 @@ import java.util.EventObject;
 
 public class CommandRegistryEvent extends EventObject {
 
-	private AbstractCommand command;
+    private AbstractCommand command;
 
-	public CommandRegistryEvent(Object source, AbstractCommand command) {
-		super(source);
-		this.command = command;
-	}
+    public CommandRegistryEvent(Object source, AbstractCommand command) {
+        super(source);
+        this.command = command;
+    }
 
-	public AbstractCommand getCommand() {
-		return command;
-	}
+    public AbstractCommand getCommand() {
+        return command;
+    }
 }

@@ -38,124 +38,124 @@ import org.springframework.util.Assert;
  */
 public class DefaultCommandServices implements CommandServices {
 
-	private static DefaultCommandServices INSTANCE = new DefaultCommandServices();
+    private static DefaultCommandServices INSTANCE = new DefaultCommandServices();
 
-	private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, SystemColor.BLACK);
+    private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, SystemColor.BLACK);
 
-	private ButtonFactory buttonFactory = DefaultButtonFactory.instance();
+    private ButtonFactory buttonFactory = DefaultButtonFactory.instance();
 
-	private MenuFactory menuFactory = DefaultMenuFactory.instance();
+    private MenuFactory menuFactory = DefaultMenuFactory.instance();
 
-	private CommandButtonConfigurer defaultButtonConfigurer;
+    private CommandButtonConfigurer defaultButtonConfigurer;
 
-	private CommandButtonConfigurer toolBarButtonConfigurer;
+    private CommandButtonConfigurer toolBarButtonConfigurer;
 
-	private CommandButtonConfigurer menuItemButtonConfigurer;
+    private CommandButtonConfigurer menuItemButtonConfigurer;
 
-	private CommandButtonConfigurer pullDownMenuButtonConfigurer;
+    private CommandButtonConfigurer pullDownMenuButtonConfigurer;
 
-	public static DefaultCommandServices instance() {
-		return INSTANCE;
-	}
+    public static DefaultCommandServices instance() {
+        return INSTANCE;
+    }
 
-	public static void load(DefaultCommandServices instance) {
-		Assert.notNull(instance, "The sole default command services instance is required");
-		INSTANCE = instance;
-	}
+    public static void load(DefaultCommandServices instance) {
+        Assert.notNull(instance, "The sole default command services instance is required");
+        INSTANCE = instance;
+    }
 
-	public void setButtonFactory(ButtonFactory buttonFactory) {
-		this.buttonFactory = buttonFactory;
-	}
+    public void setButtonFactory(ButtonFactory buttonFactory) {
+        this.buttonFactory = buttonFactory;
+    }
 
-	public void setMenuFactory(MenuFactory menuFactory) {
-		this.menuFactory = menuFactory;
-	}
+    public void setMenuFactory(MenuFactory menuFactory) {
+        this.menuFactory = menuFactory;
+    }
 
-	public void setDefaultButtonConfigurer(CommandButtonConfigurer defaultButtonConfigurer) {
-		this.defaultButtonConfigurer = defaultButtonConfigurer;
-	}
+    public void setDefaultButtonConfigurer(CommandButtonConfigurer defaultButtonConfigurer) {
+        this.defaultButtonConfigurer = defaultButtonConfigurer;
+    }
 
-	public void setToolBarButtonConfigurer(CommandButtonConfigurer toolBarButtonConfigurer) {
-		this.toolBarButtonConfigurer = toolBarButtonConfigurer;
-	}
+    public void setToolBarButtonConfigurer(CommandButtonConfigurer toolBarButtonConfigurer) {
+        this.toolBarButtonConfigurer = toolBarButtonConfigurer;
+    }
 
-	public void setMenuItemButtonConfigurer(CommandButtonConfigurer menuItemButtonConfigurer) {
-		this.menuItemButtonConfigurer = menuItemButtonConfigurer;
-	}
+    public void setMenuItemButtonConfigurer(CommandButtonConfigurer menuItemButtonConfigurer) {
+        this.menuItemButtonConfigurer = menuItemButtonConfigurer;
+    }
 
-	public void setPullDownMenuButtonConfigurer(CommandButtonConfigurer pullDownMenuButtonConfigurer) {
-		this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
-	}
+    public void setPullDownMenuButtonConfigurer(CommandButtonConfigurer pullDownMenuButtonConfigurer) {
+        this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
+    }
 
-	public ButtonFactory getButtonFactory() {
-		return buttonFactory;
-	}
+    public ButtonFactory getButtonFactory() {
+        return buttonFactory;
+    }
 
-	public MenuFactory getMenuFactory() {
-		return menuFactory;
-	}
+    public MenuFactory getMenuFactory() {
+        return menuFactory;
+    }
 
-	public CommandButtonConfigurer getDefaultButtonConfigurer() {
-		if (defaultButtonConfigurer == null) {
-			defaultButtonConfigurer = createDefaultButtonConfigurer();
-		}
-		return defaultButtonConfigurer;
-	}
+    public CommandButtonConfigurer getDefaultButtonConfigurer() {
+        if (defaultButtonConfigurer == null) {
+            defaultButtonConfigurer = createDefaultButtonConfigurer();
+        }
+        return defaultButtonConfigurer;
+    }
 
-	public CommandButtonConfigurer getToolBarButtonConfigurer() {
-		if (toolBarButtonConfigurer == null) {
-			toolBarButtonConfigurer = createToolBarButtonConfigurer();
-		}
-		return toolBarButtonConfigurer;
-	}
+    public CommandButtonConfigurer getToolBarButtonConfigurer() {
+        if (toolBarButtonConfigurer == null) {
+            toolBarButtonConfigurer = createToolBarButtonConfigurer();
+        }
+        return toolBarButtonConfigurer;
+    }
 
-	public CommandButtonConfigurer getMenuItemButtonConfigurer() {
-		if (menuItemButtonConfigurer == null) {
-			menuItemButtonConfigurer = createMenuItemButtonConfigurer();
-		}
-		return menuItemButtonConfigurer;
-	}
+    public CommandButtonConfigurer getMenuItemButtonConfigurer() {
+        if (menuItemButtonConfigurer == null) {
+            menuItemButtonConfigurer = createMenuItemButtonConfigurer();
+        }
+        return menuItemButtonConfigurer;
+    }
 
-	public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
-		if (pullDownMenuButtonConfigurer == null) {
-			pullDownMenuButtonConfigurer = createPullDownMenuButtonConfigurer();
-		}
-		return pullDownMenuButtonConfigurer;
-	}
+    public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
+        if (pullDownMenuButtonConfigurer == null) {
+            pullDownMenuButtonConfigurer = createPullDownMenuButtonConfigurer();
+        }
+        return pullDownMenuButtonConfigurer;
+    }
 
-	protected CommandButtonConfigurer createDefaultButtonConfigurer() {
-		return new DefaultCommandButtonConfigurer();
-	}
+    protected CommandButtonConfigurer createDefaultButtonConfigurer() {
+        return new DefaultCommandButtonConfigurer();
+    }
 
-	protected CommandButtonConfigurer createToolBarButtonConfigurer() {
-		return new DefaultCommandButtonConfigurer() {
-			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-				super.configure(button, command, faceDescriptor);
-				if (button.getIcon() != null) {
-					button.setText("");
-				}
-				button.setMargin(new Insets(2, 5, 2, 5));
-			}
-		};
-	}
+    protected CommandButtonConfigurer createToolBarButtonConfigurer() {
+        return new DefaultCommandButtonConfigurer() {
+            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
+                super.configure(button, command, faceDescriptor);
+                if (button.getIcon() != null) {
+                    button.setText("");
+                }
+                button.setMargin(new Insets(2, 5, 2, 5));
+            }
+        };
+    }
 
-	protected CommandButtonConfigurer createMenuItemButtonConfigurer() {
-		return new DefaultCommandButtonConfigurer() {
-			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-				super.configure(button, command, faceDescriptor);
-				button.setToolTipText(null);
-			}
-		};
-	}
+    protected CommandButtonConfigurer createMenuItemButtonConfigurer() {
+        return new DefaultCommandButtonConfigurer() {
+            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
+                super.configure(button, command, faceDescriptor);
+                button.setToolTipText(null);
+            }
+        };
+    }
 
-	protected CommandButtonConfigurer createPullDownMenuButtonConfigurer() {
-		return new DefaultCommandButtonConfigurer() {
-			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-				super.configure(button, command, faceDescriptor);
-				button.setIcon(PULL_DOWN_ICON);
-				button.setHorizontalTextPosition(SwingConstants.LEADING);
-			}
-		};
-	}
+    protected CommandButtonConfigurer createPullDownMenuButtonConfigurer() {
+        return new DefaultCommandButtonConfigurer() {
+            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
+                super.configure(button, command, faceDescriptor);
+                button.setIcon(PULL_DOWN_ICON);
+                button.setHorizontalTextPosition(SwingConstants.LEADING);
+            }
+        };
+    }
 
 }

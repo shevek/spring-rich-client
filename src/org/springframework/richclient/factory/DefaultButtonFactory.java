@@ -18,44 +18,44 @@ import javax.swing.JToggleButton;
  */
 public class DefaultButtonFactory implements ButtonFactory {
 
-	private static final ButtonFactory INSTANCE = new DefaultButtonFactory();
+    private static final ButtonFactory INSTANCE = new DefaultButtonFactory();
 
-	public static final ButtonFactory instance() {
-		return INSTANCE;
-	}
+    public static final ButtonFactory instance() {
+        return INSTANCE;
+    }
 
-	/**
-	 * @see org.springframework.richclient.factory.ButtonFactory#createButton()
-	 */
-	public JButton createButton() {
-		return new JButton();
-	}
+    /**
+     * @see org.springframework.richclient.factory.ButtonFactory#createButton()
+     */
+    public JButton createButton() {
+        return new JButton();
+    }
 
-	/**
-	 * @see org.springframework.richclient.factory.ButtonFactory#createMenuItem()
-	 */
-	public JMenuItem createMenuItem() {
-		return new JMenuItem();
-	}
+    /**
+     * @see org.springframework.richclient.factory.ButtonFactory#createMenuItem()
+     */
+    public JMenuItem createMenuItem() {
+        return new JMenuItem();
+    }
 
-	/**
-	 * @see org.springframework.richclient.factory.ButtonFactory#createCheckBox()
-	 */
-	public JCheckBox createCheckBox() {
-		return new JCheckBox();
-	}
+    /**
+     * @see org.springframework.richclient.factory.ButtonFactory#createCheckBox()
+     */
+    public JCheckBox createCheckBox() {
+        return new JCheckBox();
+    }
 
-	/**
-	 * @see org.springframework.richclient.factory.ButtonFactory#createToggleButton()
-	 */
-	public JToggleButton createToggleButton() {
-		return new JToggleButton();
-	}
+    /**
+     * @see org.springframework.richclient.factory.ButtonFactory#createToggleButton()
+     */
+    public JToggleButton createToggleButton() {
+        return new JToggleButton();
+    }
 
-	/**
-	 * @see org.springframework.richclient.factory.ButtonFactory#createRadioButton()
-	 */
-	public JRadioButton createRadioButton() {
-		return new JRadioButton();
-	}
+    /**
+     * @see org.springframework.richclient.factory.ButtonFactory#createRadioButton()
+     */
+    public JRadioButton createRadioButton() {
+        return new JRadioButton();
+    }
 }

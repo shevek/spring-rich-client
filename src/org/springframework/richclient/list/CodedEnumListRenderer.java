@@ -30,29 +30,29 @@ import org.springframework.enums.CodedEnum;
  * @author Keith Donald
  */
 public class CodedEnumListRenderer extends DefaultListCellRenderer {
-	private MessageSource messages;
+    private MessageSource messages;
 
-	public CodedEnumListRenderer() {
+    public CodedEnumListRenderer() {
 
-	}
+    }
 
-	public CodedEnumListRenderer(MessageSource messages) {
-		this.messages = messages;
-	}
+    public CodedEnumListRenderer(MessageSource messages) {
+        this.messages = messages;
+    }
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-		if (value == null) {
-			return this;
-		}
-		if (messages != null) {
-			setText(messages.getMessage((CodedEnum)value, Locale.getDefault()));
-		}
-		else {
-			setText(((CodedEnum)value).getLabel());
-		}
-		return this;
-	}
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (value == null) {
+            return this;
+        }
+        if (messages != null) {
+            setText(messages.getMessage((CodedEnum)value, Locale.getDefault()));
+        }
+        else {
+            setText(((CodedEnum)value).getLabel());
+        }
+        return this;
+    }
 
 }

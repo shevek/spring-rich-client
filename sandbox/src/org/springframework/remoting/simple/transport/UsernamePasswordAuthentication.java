@@ -18,17 +18,17 @@ package org.springframework.remoting.simple.transport;
 /**
  * @author  oliverh
  */
-public class UsernamePasswordAuthentication 
-implements Authentication {
-    
+public class UsernamePasswordAuthentication implements Authentication {
+
     private String username;
+
     private String password;
-    
+
     public UsernamePasswordAuthentication(String username, String password) {
         this.username = username;
         this.password = password;
     }
-    
+
     public Object getPrincipal() {
         return username;
     }

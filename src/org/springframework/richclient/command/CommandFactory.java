@@ -19,9 +19,9 @@ package org.springframework.richclient.command;
  * @author Keith Donald
  */
 public interface CommandFactory {
-	public TargetableActionCommand createTargetableActionCommand(String commandId, ActionCommandExecutor commandExecutor);
+    public TargetableActionCommand createTargetableActionCommand(String commandId, ActionCommandExecutor commandExecutor);
 
-	public CommandGroup createCommandGroup(String groupId, Object[] members);
+    public CommandGroup createCommandGroup(String groupId, Object[] members);
 
-	public ExclusiveCommandGroup createExclusiveCommandGroup(String groupId, Object[] members);
+    public ExclusiveCommandGroup createExclusiveCommandGroup(String groupId, Object[] members);
 }

@@ -21,5 +21,5 @@ import javax.swing.Icon;
  * @author Keith Donald
  */
 public interface IconConfigurable {
-	public void setIcon(Icon icon);
+    public void setIcon(Icon icon);
 }

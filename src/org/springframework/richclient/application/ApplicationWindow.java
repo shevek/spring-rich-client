@@ -29,29 +29,29 @@ import org.springframework.richclient.util.PersistableElement;
  * single page (content pane), and status bar.
  */
 public interface ApplicationWindow extends PersistableElement {
-	public int getNumber();
+    public int getNumber();
 
-	public ApplicationPage getPage();
+    public ApplicationPage getPage();
 
-	public CommandManager getCommandManager();
+    public CommandManager getCommandManager();
 
-	public Iterator getSharedCommands();
+    public Iterator getSharedCommands();
 
-	public CommandGroup getMenuBar();
+    public CommandGroup getMenuBar();
 
-	public CommandGroup getToolBar();
+    public CommandGroup getToolBar();
 
-	public StatusBarCommandGroup getStatusBar();
+    public StatusBarCommandGroup getStatusBar();
 
-	public JFrame getControl();
+    public JFrame getControl();
 
-	public void showPage(String pageDescriptorId);
+    public void showPage(String pageDescriptorId);
 
-	public boolean close();
+    public boolean close();
 
-	public void setWindowManager(WindowManager windowManager);
+    public void setWindowManager(WindowManager windowManager);
 
-	public void addPageListener(PageListener listener);
+    public void addPageListener(PageListener listener);
 
-	public void removePageListener(PageListener listener);
+    public void removePageListener(PageListener listener);
 }

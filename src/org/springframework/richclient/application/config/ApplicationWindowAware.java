@@ -18,5 +18,5 @@ package org.springframework.richclient.application.config;
 import org.springframework.richclient.application.ApplicationWindow;
 
 public interface ApplicationWindowAware {
-	public void setApplicationWindow(ApplicationWindow window);
+    public void setApplicationWindow(ApplicationWindow window);
 }

@@ -13,5 +13,5 @@ import javax.swing.AbstractButton;
  * @author Keith Donald
  */
 public interface ButtonConfigurer {
-	public AbstractButton configure(AbstractButton button);
+    public AbstractButton configure(AbstractButton button);
 }

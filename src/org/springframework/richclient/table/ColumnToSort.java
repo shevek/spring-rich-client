@@ -19,46 +19,46 @@ package org.springframework.richclient.table;
  * @author Keith Donald
  */
 public class ColumnToSort {
-	private int level;
+    private int level;
 
-	private int columnIndex;
+    private int columnIndex;
 
-	private SortOrder sortOrder;
+    private SortOrder sortOrder;
 
-	public ColumnToSort(int level, int columnIndex) {
-		this.level = level;
-		this.columnIndex = columnIndex;
-		this.sortOrder = SortOrder.ASCENDING;
-	}
+    public ColumnToSort(int level, int columnIndex) {
+        this.level = level;
+        this.columnIndex = columnIndex;
+        this.sortOrder = SortOrder.ASCENDING;
+    }
 
-	public ColumnToSort(int level, int columnIndex, SortOrder sortOrder) {
-		this.level = level;
-		this.columnIndex = columnIndex;
-		this.sortOrder = sortOrder;
-	}
+    public ColumnToSort(int level, int columnIndex, SortOrder sortOrder) {
+        this.level = level;
+        this.columnIndex = columnIndex;
+        this.sortOrder = sortOrder;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public int getColumnIndex() {
-		return this.columnIndex;
-	}
+    public int getColumnIndex() {
+        return this.columnIndex;
+    }
 
-	public SortOrder getSortOrder() {
-		return this.sortOrder;
-	}
+    public SortOrder getSortOrder() {
+        return this.sortOrder;
+    }
 
-	void setSortOrder(SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
-	}
+    void setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 
-	public void toggleSortOrder() {
-		setSortOrder(getSortOrder().flip());
-	}
+    public void toggleSortOrder() {
+        setSortOrder(getSortOrder().flip());
+    }
 
-	public String toString() {
-		return new StringBuffer("[ColumnToSort level=").append(level).append(", index=").append(columnIndex).append(
-				", sortOrder=").append(sortOrder).append("]").toString();
-	}
+    public String toString() {
+        return new StringBuffer("[ColumnToSort level=").append(level).append(", index=").append(columnIndex).append(
+                ", sortOrder=").append(sortOrder).append("]").toString();
+    }
 }

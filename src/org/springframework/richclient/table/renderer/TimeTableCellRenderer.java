@@ -27,20 +27,20 @@ import org.springframework.richclient.text.TimeFormat;
  * @author Keith Donald
  */
 public class TimeTableCellRenderer extends OptimizedTableCellRenderer {
-	public TimeFormat formatter;
+    public TimeFormat formatter;
 
-	public TimeTableCellRenderer() {
-		formatter = TimeFormat.getDaysInstance();
-	}
+    public TimeTableCellRenderer() {
+        formatter = TimeFormat.getDaysInstance();
+    }
 
-	public TimeTableCellRenderer(TimeFormat formatter) {
-		this.formatter = formatter;
-	}
+    public TimeTableCellRenderer(TimeFormat formatter) {
+        this.formatter = formatter;
+    }
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		doPrepareRenderer(table, isSelected, hasFocus, row, column);
-		setValue(formatter.format(((Number)value).longValue()));
-		return this;
-	}
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        doPrepareRenderer(table, isSelected, hasFocus, row, column);
+        setValue(formatter.format(((Number)value).longValue()));
+        return this;
+    }
 }

@@ -35,45 +35,45 @@ import org.springframework.util.Assert;
  */
 public class DefaultViewContext implements ViewContext {
 
-	private PageComponentPane pane;
+    private PageComponentPane pane;
 
-	private ApplicationPage page;
+    private ApplicationPage page;
 
-	private Map sharedCommandExecutors;
+    private Map sharedCommandExecutors;
 
-	public DefaultViewContext(ApplicationPage page, PageComponentPane pane) {
-		Assert.notNull(page, "Views must be scoped relative to a page");
-		this.page = page;
-		this.pane = pane;
-	}
+    public DefaultViewContext(ApplicationPage page, PageComponentPane pane) {
+        Assert.notNull(page, "Views must be scoped relative to a page");
+        this.page = page;
+        this.pane = pane;
+    }
 
-	public ApplicationWindow getWindow() {
-		return page.geWindow();
-	}
+    public ApplicationWindow getWindow() {
+        return page.geWindow();
+    }
 
-	public ApplicationPage getPage() {
-		return page;
-	}
+    public ApplicationPage getPage() {
+        return page;
+    }
 
-	public PageComponentPane getPane() {
-		return pane;
-	}
+    public PageComponentPane getPane() {
+        return pane;
+    }
 
-	public ActionCommandExecutor getLocalCommandExecutor(String commandId) {
-		Assert.notNull(commandId, "The commandId is required");
-		if (this.sharedCommandExecutors == null) {
-			return null;
-		}
-		return (ActionCommandExecutor)this.sharedCommandExecutors.get(commandId);
-	}
+    public ActionCommandExecutor getLocalCommandExecutor(String commandId) {
+        Assert.notNull(commandId, "The commandId is required");
+        if (this.sharedCommandExecutors == null) {
+            return null;
+        }
+        return (ActionCommandExecutor)this.sharedCommandExecutors.get(commandId);
+    }
 
-	public void register(String commandId, ActionCommandExecutor executor) {
-		Assert.notNull(commandId, "The command id is required");
-		Assert.notNull(executor, "The command's executor is required: if you're setting to null, delete the statement");
-		if (this.sharedCommandExecutors == null) {
-			this.sharedCommandExecutors = new HashMap();
-		}
-		this.sharedCommandExecutors.put(commandId, executor);
-	}
+    public void register(String commandId, ActionCommandExecutor executor) {
+        Assert.notNull(commandId, "The command id is required");
+        Assert.notNull(executor, "The command's executor is required: if you're setting to null, delete the statement");
+        if (this.sharedCommandExecutors == null) {
+            this.sharedCommandExecutors = new HashMap();
+        }
+        this.sharedCommandExecutors.put(commandId, executor);
+    }
 
 }

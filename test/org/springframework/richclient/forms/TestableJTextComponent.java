@@ -61,8 +61,7 @@ public class TestableJTextComponent extends JFormattedTextField {
         Document doc = getDocument();
         for (int i = 0; i < text.length(); i++) {
             try {
-                doc.insertString(getCaretPosition(), new String(text.substring(
-                        i, i + 1)), null);
+                doc.insertString(getCaretPosition(), new String(text.substring(i, i + 1)), null);
                 setCaretPosition(getCaretPosition() + 1);
             }
             catch (BadLocationException e) {

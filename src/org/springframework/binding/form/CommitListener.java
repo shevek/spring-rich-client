@@ -16,7 +16,7 @@
 package org.springframework.binding.form;
 
 public interface CommitListener {
-	public boolean preEditCommitted(Object formObject);
+    public boolean preEditCommitted(Object formObject);
 
-	public void postEditCommitted(Object formObject);
+    public void postEditCommitted(Object formObject);
 }

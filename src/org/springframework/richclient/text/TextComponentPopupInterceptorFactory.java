@@ -31,51 +31,51 @@ import org.springframework.richclient.form.builder.support.AbstractFormComponent
  */
 public class TextComponentPopupInterceptorFactory implements FormComponentInterceptorFactory {
 
-	public TextComponentPopupInterceptorFactory() {
-	}
+    public TextComponentPopupInterceptorFactory() {
+    }
 
-	public FormComponentInterceptor getInterceptor(FormModel formModel) {
-		return new TextComponentPopupInterceptor(formModel);
-	}
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        return new TextComponentPopupInterceptor(formModel);
+    }
 
-	private class TextComponentPopupInterceptor extends AbstractFormComponentInterceptor {
-		private CommitTrigger resetTrigger;
+    private class TextComponentPopupInterceptor extends AbstractFormComponentInterceptor {
+        private CommitTrigger resetTrigger;
 
-		protected TextComponentPopupInterceptor(FormModel formModel) {
-			super(formModel);
-		}
+        protected TextComponentPopupInterceptor(FormModel formModel) {
+            super(formModel);
+        }
 
-		public void processComponent(String propertyName, JComponent component) {
-			JComponent innerComp = getInnerComponent(component);
-			if (innerComp instanceof JTextComponent) {
-				TextComponentPopup.attachPopup((JTextComponent)innerComp, getResetTrigger());
-			}
-		}
+        public void processComponent(String propertyName, JComponent component) {
+            JComponent innerComp = getInnerComponent(component);
+            if (innerComp instanceof JTextComponent) {
+                TextComponentPopup.attachPopup((JTextComponent)innerComp, getResetTrigger());
+            }
+        }
 
-		private CommitTrigger getResetTrigger() {
-			if (resetTrigger == null) {
-				resetTrigger = new CommitTrigger();
-				registerListeners();
-			}
-			return resetTrigger;
-		}
+        private CommitTrigger getResetTrigger() {
+            if (resetTrigger == null) {
+                resetTrigger = new CommitTrigger();
+                registerListeners();
+            }
+            return resetTrigger;
+        }
 
-		private void registerListeners() {
-			FormModel formModel = getFormModel();
-			formModel.addCommitListener(new CommitListener() {
-				public boolean preEditCommitted(Object formObject) {
-					return true;
-				}
+        private void registerListeners() {
+            FormModel formModel = getFormModel();
+            formModel.addCommitListener(new CommitListener() {
+                public boolean preEditCommitted(Object formObject) {
+                    return true;
+                }
 
-				public void postEditCommitted(Object formObject) {
-					resetTrigger.commit();
-				}
-			});
-			formModel.addFormObjectChangeListener(new ValueChangeListener() {
-				public void valueChanged() {
-					resetTrigger.commit();
-				}
-			});
-		}
-	}
+                public void postEditCommitted(Object formObject) {
+                    resetTrigger.commit();
+                }
+            });
+            formModel.addFormObjectChangeListener(new ValueChangeListener() {
+                public void valueChanged() {
+                    resetTrigger.commit();
+                }
+            });
+        }
+    }
 }

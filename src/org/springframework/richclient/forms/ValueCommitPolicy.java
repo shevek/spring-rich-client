@@ -24,36 +24,36 @@ import org.springframework.enums.ShortCodedEnum;
  * @author Keith Donald
  */
 public abstract class ValueCommitPolicy extends ShortCodedEnum {
-	public static final ValueCommitPolicy AS_YOU_TYPE = new ValueCommitPolicy(0) {
-		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
-			textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
-			formatter.setOverwriteMode(false);
-			formatter.setAllowsInvalid(true);
-			formatter.setCommitsOnValidEdit(true);
-		}
-	};
+    public static final ValueCommitPolicy AS_YOU_TYPE = new ValueCommitPolicy(0) {
+        public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
+            textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
+            formatter.setOverwriteMode(false);
+            formatter.setAllowsInvalid(true);
+            formatter.setCommitsOnValidEdit(true);
+        }
+    };
 
-	public static final ValueCommitPolicy FOCUS_LOST = new ValueCommitPolicy(1) {
-		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
-			textField.setFocusLostBehavior(JFormattedTextField.COMMIT);
-			formatter.setOverwriteMode(false);
-			formatter.setAllowsInvalid(true);
-			formatter.setCommitsOnValidEdit(false);
-		}
-	};
+    public static final ValueCommitPolicy FOCUS_LOST = new ValueCommitPolicy(1) {
+        public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
+            textField.setFocusLostBehavior(JFormattedTextField.COMMIT);
+            formatter.setOverwriteMode(false);
+            formatter.setAllowsInvalid(true);
+            formatter.setCommitsOnValidEdit(false);
+        }
+    };
 
-	public static final ValueCommitPolicy ON_SUBMIT = new ValueCommitPolicy(2) {
-		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
-			textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
-			formatter.setOverwriteMode(false);
-			formatter.setAllowsInvalid(true);
-			formatter.setCommitsOnValidEdit(false);
-		}
-	};
+    public static final ValueCommitPolicy ON_SUBMIT = new ValueCommitPolicy(2) {
+        public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
+            textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
+            formatter.setOverwriteMode(false);
+            formatter.setAllowsInvalid(true);
+            formatter.setCommitsOnValidEdit(false);
+        }
+    };
 
-	private ValueCommitPolicy(int value) {
-		super(value);
-	}
+    private ValueCommitPolicy(int value) {
+        super(value);
+    }
 
-	public abstract void configure(JFormattedTextField textField, DefaultFormatter formatter);
+    public abstract void configure(JFormattedTextField textField, DefaultFormatter formatter);
 }

@@ -40,113 +40,113 @@ import com.jgoodies.forms.factories.FormFactory;
  * error message.
  */
 public class TitleAreaPane extends AbstractControlFactory implements MessageAreaPane, TitleConfigurable,
-		ImageConfigurable {
+        ImageConfigurable {
 
-	/**
-	 * Image source key for banner image (value <code>dialog_title_banner</code>).
-	 */
-	public static final String DEFAULT_TITLE_IMAGE = "titledDialog.icon";
+    /**
+     * Image source key for banner image (value <code>dialog_title_banner</code>).
+     */
+    public static final String DEFAULT_TITLE_IMAGE = "titledDialog.icon";
 
-	private JComponent titleArea;
+    private JComponent titleArea;
 
-	private JLabel titleLabel;
+    private JLabel titleLabel;
 
-	private JLabel iconLabel;
+    private JLabel iconLabel;
 
-	private Image image;
+    private Image image;
 
-	private MessageAreaPane messageAreaPane;
+    private MessageAreaPane messageAreaPane;
 
-	public TitleAreaPane() {
-		this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
-	}
+    public TitleAreaPane() {
+        this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
+    }
 
-	public TitleAreaPane(int linesToDisplay) {
-		this.messageAreaPane = new DefaultMessageAreaPane(linesToDisplay, this);
-	}
+    public TitleAreaPane(int linesToDisplay) {
+        this.messageAreaPane = new DefaultMessageAreaPane(linesToDisplay, this);
+    }
 
-	public void setTitle(String newTitle) {
-		if (newTitle == null) {
-			newTitle = "";
-		}
-		createControlIfNecessary();
-		titleLabel.setText(newTitle);
-	}
+    public void setTitle(String newTitle) {
+        if (newTitle == null) {
+            newTitle = "";
+        }
+        createControlIfNecessary();
+        titleLabel.setText(newTitle);
+    }
 
-	public void setImage(Image titleImage) {
-		this.image = titleImage;
-		if (isControlCreated()) {
-			iconLabel.setIcon(getIcon());
-		}
-	}
+    public void setImage(Image titleImage) {
+        this.image = titleImage;
+        if (isControlCreated()) {
+            iconLabel.setIcon(getIcon());
+        }
+    }
 
-	protected JComponent createControl() {
-		titleLabel = new JLabel();
-		titleLabel.setOpaque(false);
-		titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-		titleLabel.setText(" ");
+    protected JComponent createControl() {
+        titleLabel = new JLabel();
+        titleLabel.setOpaque(false);
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+        titleLabel.setText(" ");
 
-		iconLabel = new JLabel();
-		iconLabel.setBackground(getBackgroundColor());
-		iconLabel.setIcon(getIcon());
+        iconLabel = new JLabel();
+        iconLabel.setBackground(getBackgroundColor());
+        iconLabel.setIcon(getIcon());
 
-		JPanel panel = new JPanel();
-		panel.setBackground(getBackgroundColor());
-		TableLayoutBuilder table = new TableLayoutBuilder(panel);
-		table.row(FormFactory.LINE_GAP_ROWSPEC);
-		table.gapCol();
-		table.cell(titleLabel);
-		table.gapCol();
-		table.cell(iconLabel, "rowspan=2 colspec=pref");
-		table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
-		table.cell(messageAreaPane.getControl());
-		table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
-		return table.getPanel();
-	}
+        JPanel panel = new JPanel();
+        panel.setBackground(getBackgroundColor());
+        TableLayoutBuilder table = new TableLayoutBuilder(panel);
+        table.row(FormFactory.LINE_GAP_ROWSPEC);
+        table.gapCol();
+        table.cell(titleLabel);
+        table.gapCol();
+        table.cell(iconLabel, "rowspan=2 colspec=pref");
+        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
+        table.cell(messageAreaPane.getControl());
+        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
+        return table.getPanel();
+    }
 
-	private Icon getIcon() {
-		return new ImageIcon(getImage());
-	}
+    private Icon getIcon() {
+        return new ImageIcon(getImage());
+    }
 
-	private Image getImage() {
-		if (image != null) {
-			return image;
-		}
-		else {
-			return getImageSource().getImage(DEFAULT_TITLE_IMAGE);
-		}
-	}
+    private Image getImage() {
+        if (image != null) {
+            return image;
+        }
+        else {
+            return getImageSource().getImage(DEFAULT_TITLE_IMAGE);
+        }
+    }
 
-	private Color getBackgroundColor() {
-		Color c = UIManager.getLookAndFeel().getDefaults().getColor("primaryControlHighlight");
-		if (c == null) {
-			c = UIManager.getColor("controlLtHighlight");
-		}
-		return c;
-	}
+    private Color getBackgroundColor() {
+        Color c = UIManager.getLookAndFeel().getDefaults().getColor("primaryControlHighlight");
+        if (c == null) {
+            c = UIManager.getColor("controlLtHighlight");
+        }
+        return c;
+    }
 
-	public boolean messageShowing() {
-		return messageAreaPane.messageShowing();
-	}
+    public boolean messageShowing() {
+        return messageAreaPane.messageShowing();
+    }
 
-	public void setMessage(String errorMessage, Severity severity) {
-		messageAreaPane.setMessage(errorMessage, severity);
-	}
+    public void setMessage(String errorMessage, Severity severity) {
+        messageAreaPane.setMessage(errorMessage, severity);
+    }
 
-	public void setErrorMessage(String errorMessage) {
-		messageAreaPane.setErrorMessage(errorMessage);
-	}
+    public void setErrorMessage(String errorMessage) {
+        messageAreaPane.setErrorMessage(errorMessage);
+    }
 
-	public void setMessage(String newMessage) {
-		messageAreaPane.setMessage(newMessage);
-	}
+    public void setMessage(String newMessage) {
+        messageAreaPane.setMessage(newMessage);
+    }
 
-	public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-		messageAreaPane.addMessageAreaChangeListener(messageListener);
-	}
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageAreaPane.addMessageAreaChangeListener(messageListener);
+    }
 
-	public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-		messageAreaPane.removeMessageAreaChangeListener(messageListener);
-	}
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageAreaPane.removeMessageAreaChangeListener(messageListener);
+    }
 
 }

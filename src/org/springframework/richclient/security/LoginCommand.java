@@ -28,63 +28,63 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
  * @author Ben Alex
  */
 public class LoginCommand extends ApplicationWindowAwareCommand {
-	private static final String ID = "loginCommand";
+    private static final String ID = "loginCommand";
 
-	private AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
-	private boolean displayFinishSuccessMessage = true;
+    private boolean displayFinishSuccessMessage = true;
 
-	public LoginCommand() {
-		super(ID);
-	}
+    public LoginCommand() {
+        super(ID);
+    }
 
-	/**
-	 * The command requires an authentication manager which can attempt to
-	 * authenticate the user.
-	 * 
-	 * @param authenticationManager
-	 *            the authentication manager to use to authenticate the user
-	 */
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-	}
+    /**
+     * The command requires an authentication manager which can attempt to
+     * authenticate the user.
+     * 
+     * @param authenticationManager
+     *            the authentication manager to use to authenticate the user
+     */
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
-	/**
-	 * Indicates whether an information message is displayed to the user upon
-	 * successful authentication. Defaults to true.
-	 * 
-	 * @param displaySuccess
-	 *            displays an information message upon successful login if true,
-	 *            otherwise false
-	 */
-	public void setDisplaySuccess(boolean displaySuccess) {
-		this.displayFinishSuccessMessage = displaySuccess;
-	}
+    /**
+     * Indicates whether an information message is displayed to the user upon
+     * successful authentication. Defaults to true.
+     * 
+     * @param displaySuccess
+     *            displays an information message upon successful login if true,
+     *            otherwise false
+     */
+    public void setDisplaySuccess(boolean displaySuccess) {
+        this.displayFinishSuccessMessage = displaySuccess;
+    }
 
-	public void afterPropertiesSet() {
-		super.afterPropertiesSet();
-		if (this.authenticationManager == null) {
-			throw new IllegalArgumentException("authenticationManager must be defined");
-		}
-	}
+    public void afterPropertiesSet() {
+        super.afterPropertiesSet();
+        if (this.authenticationManager == null) {
+            throw new IllegalArgumentException("authenticationManager must be defined");
+        }
+    }
 
-	protected void doExecuteCommand() {
-		CompositeDialogPage tabbedPage = new TabbedDialogPage("loginForm");
+    protected void doExecuteCommand() {
+        CompositeDialogPage tabbedPage = new TabbedDialogPage("loginForm");
 
-		final LoginForm loginForm = new LoginForm(authenticationManager);
-		tabbedPage.addForm(loginForm);
+        final LoginForm loginForm = new LoginForm(authenticationManager);
+        tabbedPage.addForm(loginForm);
 
-		ApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage) {
-			protected boolean onFinish() {
-				loginForm.commit();
-				return true;
-			}
+        ApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage) {
+            protected boolean onFinish() {
+                loginForm.commit();
+                return true;
+            }
 
-			protected ActionCommand getCallingCommand() {
-				return LoginCommand.this;
-			}
-		};
-		dialog.setDisplayFinishSuccessMessage(displayFinishSuccessMessage);
-		dialog.showDialog();
-	}
+            protected ActionCommand getCallingCommand() {
+                return LoginCommand.this;
+            }
+        };
+        dialog.setDisplayFinishSuccessMessage(displayFinishSuccessMessage);
+        dialog.showDialog();
+    }
 }

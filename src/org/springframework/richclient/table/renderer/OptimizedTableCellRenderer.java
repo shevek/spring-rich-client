@@ -30,83 +30,83 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author Keith Donald
  */
 public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
-	protected Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
+    protected Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
 
-	protected Color background = UIManager.getColor("Table.focusCellForeground");
+    protected Color background = UIManager.getColor("Table.focusCellForeground");
 
-	protected Color foreground = UIManager.getColor("Table.focusCellBackground");
+    protected Color foreground = UIManager.getColor("Table.focusCellBackground");
 
-	protected Color editableForeground;
+    protected Color editableForeground;
 
-	protected Color editableBackground;
+    protected Color editableBackground;
 
-	protected void doPrepareRenderer(JTable table, boolean isSelected, boolean hasFocus, int row, int column) {
-		if (isSelected) {
-			setForeground(table.getSelectionForeground());
-			setBackground(table.getSelectionBackground());
-		}
-		else {
-			setForeground(table.getForeground());
-			setBackground(table.getBackground());
-		}
-		// NOTICE that we do NOT set the font here, because CTTable knows
-		// about us, it will set the font as appropriate.
-		if (hasFocus) {
-			setBorder(focusBorder);
-			if (table.isCellEditable(row, column)) {
-				//setForeground(editableForeground);
-				//setBackground(editableBackground);
-			}
-		}
-		else {
-			setBorder(noFocusBorder);
-		}
-	}
+    protected void doPrepareRenderer(JTable table, boolean isSelected, boolean hasFocus, int row, int column) {
+        if (isSelected) {
+            setForeground(table.getSelectionForeground());
+            setBackground(table.getSelectionBackground());
+        }
+        else {
+            setForeground(table.getForeground());
+            setBackground(table.getBackground());
+        }
+        // NOTICE that we do NOT set the font here, because CTTable knows
+        // about us, it will set the font as appropriate.
+        if (hasFocus) {
+            setBorder(focusBorder);
+            if (table.isCellEditable(row, column)) {
+                //setForeground(editableForeground);
+                //setBackground(editableBackground);
+            }
+        }
+        else {
+            setBorder(noFocusBorder);
+        }
+    }
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		doPrepareRenderer(table, isSelected, hasFocus, row, column);
-		setValue(value);
-		return this;
-	}
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        doPrepareRenderer(table, isSelected, hasFocus, row, column);
+        setValue(value);
+        return this;
+    }
 
-	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-		// As long as you don't have any HTML text, this override is ok.
-	}
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        // As long as you don't have any HTML text, this override is ok.
+    }
 
-	// This override is only appropriate if this will never contain any
-	// children AND the Graphics is not clobbered during painting.
-	public void paint(Graphics g) {
-		ui.update(g, this);
-	}
+    // This override is only appropriate if this will never contain any
+    // children AND the Graphics is not clobbered during painting.
+    public void paint(Graphics g) {
+        ui.update(g, this);
+    }
 
-	public void setBackground(Color c) {
-		this.background = c;
-	}
+    public void setBackground(Color c) {
+        this.background = c;
+    }
 
-	public Color getBackground() {
-		return background;
-	}
+    public Color getBackground() {
+        return background;
+    }
 
-	public void setForeground(Color c) {
-		this.foreground = c;
-	}
+    public void setForeground(Color c) {
+        this.foreground = c;
+    }
 
-	public Color getForeground() {
-		return foreground;
-	}
+    public Color getForeground() {
+        return foreground;
+    }
 
-	public boolean isOpaque() {
-		return (background != null);
-	}
+    public boolean isOpaque() {
+        return (background != null);
+    }
 
-	// This is generally ok for non-Composite components (like Labels)
-	public void invalidate() {
+    // This is generally ok for non-Composite components (like Labels)
+    public void invalidate() {
 
-	}
+    }
 
-	// Can be ignored, we don't exist in the containment hierarchy.
-	public void repaint() {
+    // Can be ignored, we don't exist in the containment hierarchy.
+    public void repaint() {
 
-	}
+    }
 }

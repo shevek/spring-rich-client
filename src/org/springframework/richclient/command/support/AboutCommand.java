@@ -22,20 +22,20 @@ import org.springframework.richclient.application.support.AboutBox;
  * @author Keith Donald
  */
 public class AboutCommand extends ApplicationWindowAwareCommand {
-	private static final String ID = "aboutCommand";
+    private static final String ID = "aboutCommand";
 
-	private AboutBox aboutBox = new AboutBox();
+    private AboutBox aboutBox = new AboutBox();
 
-	public AboutCommand() {
-		super(ID);
-	}
+    public AboutCommand() {
+        super(ID);
+    }
 
-	public void setAboutTextPath(Resource path) {
-		this.aboutBox.setAboutTextPath(path);
-	}
+    public void setAboutTextPath(Resource path) {
+        this.aboutBox.setAboutTextPath(path);
+    }
 
-	protected void doExecuteCommand() {
-		aboutBox.display(getApplicationWindow().getControl());
-	}
+    protected void doExecuteCommand() {
+        aboutBox.display(getApplicationWindow().getControl());
+    }
 
 }

@@ -36,20 +36,19 @@ public class Progress {
 
     protected long totalTimeSpent;
 
-    public Progress(boolean complete, long bytesSent, long bytesToSend,
-            long bytesReceived, long bytesToReceive, long timeSpentSending,
-            long timeSpentReceiving, long totalTimeSpent) {
+    public Progress(boolean complete, long bytesSent, long bytesToSend, long bytesReceived, long bytesToReceive,
+            long timeSpentSending, long timeSpentReceiving, long totalTimeSpent) {
 
         this.complete = complete;
         this.bytesSent = bytesSent;
         this.bytesToSend = bytesToSend;
         this.bytesReceived = bytesReceived;
         this.bytesToReceive = bytesToReceive;
-        this.timeSpentSending = timeSpentSending;        
+        this.timeSpentSending = timeSpentSending;
         this.timeSpentReceiving = timeSpentReceiving;
-        this.totalTimeSpent = totalTimeSpent;   
+        this.totalTimeSpent = totalTimeSpent;
     }
-    
+
     public boolean isComplete() {
         return complete;
     }
@@ -57,27 +56,27 @@ public class Progress {
     public long getBytesSent() {
         return bytesSent;
     }
-    
+
     public long getBytesToSend() {
         return bytesToSend;
     }
-      
+
     public long getBytesReceived() {
         return bytesReceived;
     }
-       
+
     public long getBytesToReceive() {
         return bytesToReceive;
     }
-    
+
     public long getTimeSpentSending() {
         return timeSpentSending;
     }
-    
+
     public long getTimeSpentReceiving() {
         return timeSpentReceiving;
     }
-    
+
     public long getTotalTimeSpent() {
         return totalTimeSpent;
     }

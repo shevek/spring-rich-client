@@ -34,9 +34,7 @@ import org.springframework.remoting.simple.protocol.DefaultProtocol;
 /**
  * @author oliverh
  */
-public abstract class AbstractTransport
-extends AbstractInvoker
-implements Transport {
+public abstract class AbstractTransport extends AbstractInvoker implements Transport {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -63,8 +61,7 @@ implements Transport {
         return protocol;
     }
 
-    public void setRetryDecisionManager(
-            RetryDecisionManager retryDecisionManager) {
+    public void setRetryDecisionManager(RetryDecisionManager retryDecisionManager) {
         this.retryDecisionManager = retryDecisionManager;
     }
 
@@ -72,8 +69,7 @@ implements Transport {
         return retryDecisionManager;
     }
 
-    public void setAuthenticationCallback(
-            AuthenticationCallback authenticationCallback) {
+    public void setAuthenticationCallback(AuthenticationCallback authenticationCallback) {
         this.authenticationCallback = authenticationCallback;
     }
 
@@ -96,12 +92,11 @@ implements Transport {
         progressListeners.remove(progressListener);
     }
 
-    public Object invokeRemoteMethod(Class serviceInterface, Method method,
-            Object[] args) throws Throwable {
+    public Object invokeRemoteMethod(Class serviceInterface, Method method, Object[] args) throws Throwable {
         Request request = new Request(serviceInterface, method, args);
 
-        Authentication authentication = authenticationCallback == null ? null
-                : authenticationCallback.authenticate(request);
+        Authentication authentication = authenticationCallback == null ? null : authenticationCallback
+                .authenticate(request);
         firePreInvocation(request);
         Object result = null;
         ProgressTracker tracker = new ProgressTracker(request);
@@ -111,41 +106,44 @@ implements Transport {
                 ++tries;
                 try {
                     result = invokeInternal(request, authentication, tracker);
-                } catch (SimpleRemotingException e) {
+                }
+                catch (SimpleRemotingException e) {
                     if (!shouldRetry(request, tries, e)) {
                         throw e;
                     }
                 }
-            } while (result == null);
-            if (result instanceof SimpleRemotingException) {
-                SimpleRemotingException serverEx = (SimpleRemotingException) result;
-                result = new SimpleRemotingException(serverEx.isRecoverable(),
-                        "Received exception from server", serverEx);
             }
-        } catch (Throwable t) {
+            while (result == null);
+            if (result instanceof SimpleRemotingException) {
+                SimpleRemotingException serverEx = (SimpleRemotingException)result;
+                result = new SimpleRemotingException(serverEx.isRecoverable(), "Received exception from server",
+                        serverEx);
+            }
+        }
+        catch (Throwable t) {
             result = t;
         }
         firePostInvocation(request, result);
         if (result instanceof Throwable) {
-            throw (Throwable) result;
+            throw (Throwable)result;
         }
         if (result instanceof Reply) {
-            return ((Reply) result).getResult();
-        } else {
-            throw new SimpleRemotingException("Result is of unexpected type ["
-                    + result == null ? "null" : result.getClass() + "]");
+            return ((Reply)result).getResult();
+        }
+        else {
+            throw new SimpleRemotingException("Result is of unexpected type [" + result == null ? "null" : result
+                    .getClass()
+                    + "]");
         }
     }
 
-    protected abstract Reply invokeInternal(Request request,
-            Authentication authentication, ProgressTracker tracker);
+    protected abstract Reply invokeInternal(Request request, Authentication authentication, ProgressTracker tracker);
 
     /**
      * Subclasses my overide this method to provide additional retry options if
      * the retryDecisionManager do not suit their needs.
      */
-    protected boolean shouldRetry(Request request, int tries,
-            SimpleRemotingException e) {
+    protected boolean shouldRetry(Request request, int tries, SimpleRemotingException e) {
         if (retryDecisionManager == null) {
             return false;
         }
@@ -205,8 +203,7 @@ implements Transport {
             if (sendStart == 0) {
                 return 0;
             }
-            long endTime = (sendEnd == 0) ? System.currentTimeMillis()
-                    : sendEnd;
+            long endTime = (sendEnd == 0) ? System.currentTimeMillis() : sendEnd;
             return endTime - sendStart;
         }
 
@@ -214,14 +211,12 @@ implements Transport {
             if (receiveStart == 0) {
                 return 0;
             }
-            long endTime = (receiveEnd == 0) ? System.currentTimeMillis()
-                    : receiveEnd;
+            long endTime = (receiveEnd == 0) ? System.currentTimeMillis() : receiveEnd;
             return endTime - receiveStart;
         }
 
         public long getTotalTimeSpent() {
-            long endTime = (finishTime == 0) ? System.currentTimeMillis()
-                    : finishTime;
+            long endTime = (finishTime == 0) ? System.currentTimeMillis() : finishTime;
             return endTime - startTime;
         }
 
@@ -253,8 +248,7 @@ implements Transport {
                     os.write(b);
                 }
 
-                public void write(byte[] b, int off, int len)
-                        throws IOException {
+                public void write(byte[] b, int off, int len) throws IOException {
                     bytesSent += len;
                     os.write(b, off, len);
                 }
@@ -327,7 +321,7 @@ implements Transport {
                 return;
             }
             for (Iterator i = progressListeners.iterator(); i.hasNext();) {
-                ((ProgressListener) i.next()).updateProgress(request, this);
+                ((ProgressListener)i.next()).updateProgress(request, this);
             }
         }
     }

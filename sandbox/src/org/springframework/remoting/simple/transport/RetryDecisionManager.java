@@ -18,7 +18,6 @@ package org.springframework.remoting.simple.transport;
 import org.springframework.remoting.simple.SimpleRemotingException;
 import org.springframework.remoting.simple.protocol.Request;
 
-
 /**
  * @author  oliverh
  * @version $Revision$ $Date$
@@ -32,6 +31,6 @@ public interface RetryDecisionManager {
      * @return
      */
     public boolean shouldRetry(Request request, int retryNumber, SimpleRemotingException e);
-    
+
 }
 

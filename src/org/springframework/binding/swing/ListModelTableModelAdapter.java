@@ -69,98 +69,98 @@ import org.springframework.util.Assert;
  */
 public abstract class ListModelTableModelAdapter extends AbstractTableModel {
 
-	/**
-	 * Refers to the <code>ListModel</code> that holds the table row elements
-	 * and reports changes in the structure and content. The elements of the
-	 * list model can be requested using <code>#getRow(int)</code>. A typical
-	 * subclass will use the elements to implement the <code>TableModel</code>
-	 * method <code>#getValueAt(int, int)</code>.
-	 * 
-	 * @see #getRow(int)
-	 * @see #getRowCount()
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	private final ListModel listModel;
+    /**
+     * Refers to the <code>ListModel</code> that holds the table row elements
+     * and reports changes in the structure and content. The elements of the
+     * list model can be requested using <code>#getRow(int)</code>. A typical
+     * subclass will use the elements to implement the <code>TableModel</code>
+     * method <code>#getValueAt(int, int)</code>.
+     * 
+     * @see #getRow(int)
+     * @see #getRowCount()
+     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     */
+    private final ListModel listModel;
 
-	/**
-	 * Holds an optional array of column names that is used by the default
-	 * implementation of the <code>TableModel</code> methods
-	 * <code>#getColumnCount()</code> and <code>#getColumnName(int)</code>.
-	 * 
-	 * @see #getColumnCount()
-	 * @see #getColumnName(int)
-	 */
-	private final String[] columnNames;
+    /**
+     * Holds an optional array of column names that is used by the default
+     * implementation of the <code>TableModel</code> methods
+     * <code>#getColumnCount()</code> and <code>#getColumnName(int)</code>.
+     * 
+     * @see #getColumnCount()
+     * @see #getColumnName(int)
+     */
+    private final String[] columnNames;
 
-	/**
-	 * Constructs a <code>TableAdapter</code> on the given
-	 * <code>ListModel</code>.
-	 * 
-	 * @param listModel
-	 *            the <code>ListModel</code> that holds the row elements
-	 * @throws NullPointerException
-	 *             if the list model is <code>null</code>
-	 */
-	public ListModelTableModelAdapter(ListModel listModel) {
-		this(listModel, null);
-	}
+    /**
+     * Constructs a <code>TableAdapter</code> on the given
+     * <code>ListModel</code>.
+     * 
+     * @param listModel
+     *            the <code>ListModel</code> that holds the row elements
+     * @throws NullPointerException
+     *             if the list model is <code>null</code>
+     */
+    public ListModelTableModelAdapter(ListModel listModel) {
+        this(listModel, null);
+    }
 
-	/**
-	 * Constructs a <code>TableAdapter</code> on the given
-	 * <code>ListModel</code>.
-	 * 
-	 * @param listModel
-	 *            the <code>ListModel</code> that holds the row elements
-	 * @param columnNames
-	 *            an optional array of column names
-	 * @throws NullPointerException
-	 *             if the list model is <code>null</code>
-	 */
-	public ListModelTableModelAdapter(ListModel listModel, String[] columnNames) {
-		Assert.notNull(listModel, "The listModel property is required");
-		this.listModel = listModel;
-		this.columnNames = columnNames;
-		listModel.addListDataListener(createChangeHandler());
-	}
+    /**
+     * Constructs a <code>TableAdapter</code> on the given
+     * <code>ListModel</code>.
+     * 
+     * @param listModel
+     *            the <code>ListModel</code> that holds the row elements
+     * @param columnNames
+     *            an optional array of column names
+     * @throws NullPointerException
+     *             if the list model is <code>null</code>
+     */
+    public ListModelTableModelAdapter(ListModel listModel, String[] columnNames) {
+        Assert.notNull(listModel, "The listModel property is required");
+        this.listModel = listModel;
+        this.columnNames = columnNames;
+        listModel.addListDataListener(createChangeHandler());
+    }
 
-	public int getColumnCount() {
-		return columnNames.length;
-	}
+    public int getColumnCount() {
+        return columnNames.length;
+    }
 
-	public String getColumnName(int columnIndex) {
-		return columnNames[columnIndex];
-	}
+    public String getColumnName(int columnIndex) {
+        return columnNames[columnIndex];
+    }
 
-	public final int getRowCount() {
-		return listModel.getSize();
-	}
+    public final int getRowCount() {
+        return listModel.getSize();
+    }
 
-	protected final Object getRow(int index) {
-		return listModel.getElementAt(index);
-	}
+    protected final Object getRow(int index) {
+        return listModel.getElementAt(index);
+    }
 
-	protected ListDataListener createChangeHandler() {
-		return new ListDataChangeHandler();
-	}
+    protected ListDataListener createChangeHandler() {
+        return new ListDataChangeHandler();
+    }
 
-	/*
-	 * Listens to subject changes and fires a contents change event.
-	 */
-	private class ListDataChangeHandler implements ListDataListener {
-		public void intervalAdded(ListDataEvent evt) {
-			fireTableRowsInserted(evt.getIndex0(), evt.getIndex1());
-		}
+    /*
+     * Listens to subject changes and fires a contents change event.
+     */
+    private class ListDataChangeHandler implements ListDataListener {
+        public void intervalAdded(ListDataEvent evt) {
+            fireTableRowsInserted(evt.getIndex0(), evt.getIndex1());
+        }
 
-		public void intervalRemoved(ListDataEvent evt) {
-			fireTableRowsDeleted(evt.getIndex0(), evt.getIndex1());
-		}
+        public void intervalRemoved(ListDataEvent evt) {
+            fireTableRowsDeleted(evt.getIndex0(), evt.getIndex1());
+        }
 
-		public void contentsChanged(ListDataEvent evt) {
-			int firstRow = evt.getIndex0();
-			int lastRow = evt.getIndex1();
-			fireTableRowsUpdated(firstRow, lastRow);
-		}
+        public void contentsChanged(ListDataEvent evt) {
+            int firstRow = evt.getIndex0();
+            int lastRow = evt.getIndex1();
+            fireTableRowsUpdated(firstRow, lastRow);
+        }
 
-	}
+    }
 
 }

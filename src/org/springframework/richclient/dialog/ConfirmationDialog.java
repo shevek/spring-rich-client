@@ -26,81 +26,81 @@ import javax.swing.UIManager;
 import org.springframework.util.Assert;
 
 public abstract class ConfirmationDialog extends ApplicationDialog {
-	private static final String NO_KEY = "noCommand";
+    private static final String NO_KEY = "noCommand";
 
-	private static final String YES_KEY = "yesCommand";
+    private static final String YES_KEY = "yesCommand";
 
-	private static final String CONFIRMATION_DIALOG_ICON = "confirmationDialog.icon";
+    private static final String CONFIRMATION_DIALOG_ICON = "confirmationDialog.icon";
 
-	private MessageAreaPane messageAreaPane;
+    private MessageAreaPane messageAreaPane;
 
-	private String confirmationMessage;
+    private String confirmationMessage;
 
-	public ConfirmationDialog() {
-		this("Confirmation Required", null, "Are you sure you wish to perform this action?");
-	}
+    public ConfirmationDialog() {
+        this("Confirmation Required", null, "Are you sure you wish to perform this action?");
+    }
 
-	public ConfirmationDialog(String title, String message) {
-		this(title, null, message);
-	}
+    public ConfirmationDialog(String title, String message) {
+        this(title, null, message);
+    }
 
-	public ConfirmationDialog(String title, Window parent, String message) {
-		super(title, parent);
-		setConfirmationMessage(message);
-	}
+    public ConfirmationDialog(String title, Window parent, String message) {
+        super(title, parent);
+        setConfirmationMessage(message);
+    }
 
-	public void setConfirmationMessage(String message) {
-		Assert.hasText(message, "The confirmation message is required");
-		this.confirmationMessage = message;
-	}
+    public void setConfirmationMessage(String message) {
+        Assert.hasText(message, "The confirmation message is required");
+        this.confirmationMessage = message;
+    }
 
-	protected String getFinishFaceConfigurationKey() {
-		return YES_KEY;
-	}
+    protected String getFinishFaceConfigurationKey() {
+        return YES_KEY;
+    }
 
-	protected String getCancelFaceConfigurationKey() {
-		return NO_KEY;
-	}
+    protected String getCancelFaceConfigurationKey() {
+        return NO_KEY;
+    }
 
-	protected void registerDefaultCommand() {
-		registerCancelCommandAsDefault();
-	}
+    protected void registerDefaultCommand() {
+        registerCancelCommandAsDefault();
+    }
 
-	protected void onInitialized() {
-		setupKeyBindings();
-	}
+    protected void onInitialized() {
+        setupKeyBindings();
+    }
 
-	private void setupKeyBindings() {
-		addActionKeyBinding(KeyStroke.getKeyStroke(getYesKey(), 0), getFinishCommand().getId());
-		addActionKeyBinding(KeyStroke.getKeyStroke(getNoKey(), 0), getCancelCommand().getId());
-	}
+    private void setupKeyBindings() {
+        addActionKeyBinding(KeyStroke.getKeyStroke(getYesKey(), 0), getFinishCommand().getId());
+        addActionKeyBinding(KeyStroke.getKeyStroke(getNoKey(), 0), getCancelCommand().getId());
+    }
 
-	protected int getYesKey() {
-		return KeyEvent.VK_Y;
-	}
+    protected int getYesKey() {
+        return KeyEvent.VK_Y;
+    }
 
-	protected int getNoKey() {
-		return KeyEvent.VK_N;
-	}
+    protected int getNoKey() {
+        return KeyEvent.VK_N;
+    }
 
-	protected JComponent createDialogContentPane() {
-		DefaultMessageAreaPane pane = new DefaultMessageAreaPane(5);
-		Icon icon = getIconSource().getIcon(CONFIRMATION_DIALOG_ICON);
-		if (icon == null) {
-			icon = UIManager.getIcon("OptionPane.questionIcon");
-		}
-		pane.setDefaultIcon(icon);
-		this.messageAreaPane = pane;
-		this.messageAreaPane.setMessage(confirmationMessage, null);
-		JComponent control = messageAreaPane.getControl();
-		return control;
-	}
+    protected JComponent createDialogContentPane() {
+        DefaultMessageAreaPane pane = new DefaultMessageAreaPane(5);
+        Icon icon = getIconSource().getIcon(CONFIRMATION_DIALOG_ICON);
+        if (icon == null) {
+            icon = UIManager.getIcon("OptionPane.questionIcon");
+        }
+        pane.setDefaultIcon(icon);
+        this.messageAreaPane = pane;
+        this.messageAreaPane.setMessage(confirmationMessage, null);
+        JComponent control = messageAreaPane.getControl();
+        return control;
+    }
 
-	protected final boolean onFinish() {
-		onConfirm();
-		return true;
-	}
+    protected final boolean onFinish() {
+        onConfirm();
+        return true;
+    }
 
-	protected abstract void onConfirm();
+    protected abstract void onConfirm();
 
 }

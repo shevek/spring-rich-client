@@ -56,25 +56,25 @@ public class DefaultCommandRegistryTest extends TestCase {
         assertTrue("registry not removed from parent", parent.removedListeners.contains(registry));
         assertEquals("registry not added to parent", 1, parent2.addedListeners.size());
         assertTrue("registry not added to parent", parent2.addedListeners.contains(registry));
-        
+
         // set same parent, nothing should happen
         registry.setParent(parent2);
         assertEquals("registry added twice to same parent", 1, parent2.addedListeners.size());
         assertTrue("registry removed from same parent", parent2.removedListeners.isEmpty());
-        
+
         parent2.reset();
-        
+
         // set parent to null
         registry.setParent(null);
         assertNull("parent not set to null", registry.getParent());
         assertEquals("registry not removed from parent", 1, parent2.removedListeners.size());
     }
-    
+
     public void testRegisterCommand() {
-        DefaultCommandRegistry registry= new DefaultCommandRegistry();
+        DefaultCommandRegistry registry = new DefaultCommandRegistry();
         TestableRegistryListener listener = new TestableRegistryListener();
         registry.addCommandRegistryListener(listener);
-        
+
         try {
             registry.registerCommand(null);
             fail("Should throw IllegalArgumentException");
@@ -82,7 +82,7 @@ public class DefaultCommandRegistryTest extends TestCase {
         catch (IllegalArgumentException e) {
             pass();
         }
-        
+
         try {
             registry.registerCommand(new TestCommand());
             fail("Should throw IllegalArgumentException");
@@ -90,38 +90,37 @@ public class DefaultCommandRegistryTest extends TestCase {
         catch (IllegalArgumentException e) {
             pass();
         }
-        
+
         TestCommand command1 = new TestCommand("testCommand");
         // command1 and command2 have same id's
         TestCommand command2 = new TestCommand("testCommand");
-        
+
         registry.registerCommand(command1);
         assertTrue("command1 not registered", registry.containsActionCommand("testCommand"));
         assertEquals("command1 not registered", command1, registry.getActionCommand("testCommand"));
         assertEquals("event not fired", command1, listener.registeredCommand);
-        
+
         registry.registerCommand(command2);
         assertTrue(registry.containsActionCommand("testCommand"));
         assertEquals("command1 not overridden", command2, registry.getActionCommand("testCommand"));
         assertEquals("event not fired", command2, listener.registeredCommand);
     }
-    
+
     public void testRegisterCommandGroup() {
-        DefaultCommandRegistry registry= new DefaultCommandRegistry();
-        
+        DefaultCommandRegistry registry = new DefaultCommandRegistry();
+
         CommandGroup commandGroup = new CommandGroup("testCommandGroup");
         registry.registerCommand(commandGroup);
-        
+
         assertTrue("commandgroup not registered", registry.containsCommandGroup("testCommandGroup"));
         assertEquals("commandgroup not registered", commandGroup, registry.getCommandGroup("testCommandGroup"));
     }
-    
+
     private static void pass() {
         // test passes
     }
 
-    public static class TestableRegistryListener implements CommandRegistryListener
-    {
+    public static class TestableRegistryListener implements CommandRegistryListener {
 
         private AbstractCommand registeredCommand;
 
@@ -135,6 +134,7 @@ public class DefaultCommandRegistryTest extends TestCase {
 
     public static class TestCommandRegistry implements CommandRegistry {
         private List addedListeners = new ArrayList();
+
         private List removedListeners = new ArrayList();
 
         public ActionCommand getActionCommand(String commandId) {
@@ -156,9 +156,7 @@ public class DefaultCommandRegistryTest extends TestCase {
         public void registerCommand(AbstractCommand command) {
         }
 
-        public void setTargetableActionCommandExecutor(
-            String targetableCommandId,
-            ActionCommandExecutor commandExecutor) {
+        public void setTargetableActionCommandExecutor(String targetableCommandId, ActionCommandExecutor commandExecutor) {
         }
 
         public void addCommandRegistryListener(CommandRegistryListener l) {

@@ -40,12 +40,9 @@ import org.springframework.util.closure.Closure;
 public class FormModelTest extends TestCase {
 
     static {
-        Application application = new Application(new BeanFactoryApplicationAdvisor(),
-            new ApplicationServices());
-        Application.services().setPropertyEditorRegistry(
-                new DefaultPropertyEditorRegistry());
-        Application.services().setApplicationContext(
-                new StaticApplicationContext());
+        Application application = new Application(new BeanFactoryApplicationAdvisor(), new ApplicationServices());
+        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
+        Application.services().setApplicationContext(new StaticApplicationContext());
     }
 
     public static class Employee implements PropertyEditorProvider {
@@ -106,12 +103,13 @@ public class FormModelTest extends TestCase {
         }
 
         public PropertyEditor getPropertyEditor(String domainProperty) {
-            return (PropertyEditor) editors.get(domainProperty);
+            return (PropertyEditor)editors.get(domainProperty);
         }
 
         public String toString() {
             return new ToStringCreator(this).appendProperties().toString();
-        }    }
+        }
+    }
 
     public static class Address {
         private String streetAddress1;
@@ -226,11 +224,9 @@ public class FormModelTest extends TestCase {
 
     public void testCompoundFormModel() {
         CompoundFormModel formModel = new CompoundFormModel(new Employee());
-        ConfigurableFormModel supervisorModel = formModel.createChild(
-                "supervisorPage", "supervisor");
+        ConfigurableFormModel supervisorModel = formModel.createChild("supervisorPage", "supervisor");
         SwingFormModel supervisorPage = new SwingFormModel(supervisorModel);
-        JTextField field = (JTextField)supervisorPage
-                .createBoundControl("name");
+        JTextField field = (JTextField)supervisorPage.createBoundControl("name");
         assertTrue(field.getText().equals(""));
         field.setText("Don");
         ValueModel name = supervisorPage.getValueModel("name");
@@ -243,10 +239,8 @@ public class FormModelTest extends TestCase {
 
     public void testNestedCompoundFormModel() {
         CompoundFormModel formModel = new CompoundFormModel(new Employee());
-        NestingFormModel address = formModel.createCompoundChild("AddressForm",
-                "address");
-        SwingFormModel countryPage = new SwingFormModel(address.createChild(
-                "CountryForm", "country"));
+        NestingFormModel address = formModel.createCompoundChild("AddressForm", "address");
+        SwingFormModel countryPage = new SwingFormModel(address.createChild("CountryForm", "country"));
         JTextField field = (JTextField)countryPage.createBoundControl("name");
         assertTrue(field.getText().equals(""));
         field.setText("USA");
@@ -260,15 +254,12 @@ public class FormModelTest extends TestCase {
     }
 
     public void testPageFormModel() {
-        SwingFormModel employeePage = SwingFormModel
-                .createFormModel(new Employee());
-        JTextField field = (JTextField)employeePage
-                .createBoundControl("address.streetAddress1");
+        SwingFormModel employeePage = SwingFormModel.createFormModel(new Employee());
+        JTextField field = (JTextField)employeePage.createBoundControl("address.streetAddress1");
         field.setText("12345 Some Lane");
         employeePage.commit();
         Employee emp = (Employee)employeePage.getFormObject();
-        assertTrue(emp.getAddress().getStreetAddress1().equals(
-                "12345 Some Lane"));
+        assertTrue(emp.getAddress().getStreetAddress1().equals("12345 Some Lane"));
     }
 
     // this fails right now - we can't exactly instantiate supervisor employee
@@ -276,10 +267,8 @@ public class FormModelTest extends TestCase {
     public void testOptionalPageFormModel() {
         fail("this fails right now - we can't exactly instantiate supervisor employee abitrarily by default on all employees - stack overflow!");
 
-        SwingFormModel employeePage = SwingFormModel
-                .createFormModel(new Employee());
-        JTextField field = (JTextField)employeePage
-                .createBoundControl("supervisor.name");
+        SwingFormModel employeePage = SwingFormModel.createFormModel(new Employee());
+        JTextField field = (JTextField)employeePage.createBoundControl("supervisor.name");
         field.setText("Don");
         employeePage.commit();
         Employee emp = (Employee)employeePage.getFormObject();
@@ -287,8 +276,8 @@ public class FormModelTest extends TestCase {
     }
 
     public void testCustomPropertyEditorRegistration() {
-        DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application
-                .services().getPropertyEditorRegistry();
+        DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application.services()
+                .getPropertyEditorRegistry();
         Employee employee = new Employee();
         ValidatingFormModel fm = new ValidatingFormModel(employee);
         ValueModel vm = fm.add("age");
@@ -320,15 +309,15 @@ public class FormModelTest extends TestCase {
     }
 
     private void assertHasNoPropertyEditor(ValueModel vm) {
-        ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
+        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
         assertTrue(wrappedModel instanceof BufferedValueModel);
     }
 
     private PropertyEditor getPropertyEditor(ValueModel vm) {
-        ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
+        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
         assertTrue(wrappedModel instanceof TypeConverter);
-        Closure c = (Closure) getFieldValue(wrappedModel, "convertFrom");
-        PropertyEditor pe = (PropertyEditor) getFieldValue(c, "val$propertyEditor");
+        Closure c = (Closure)getFieldValue(wrappedModel, "convertFrom");
+        PropertyEditor pe = (PropertyEditor)getFieldValue(c, "val$propertyEditor");
         return pe;
     }
 
@@ -338,7 +327,8 @@ public class FormModelTest extends TestCase {
         do {
             try {
                 field = clazz.getDeclaredField(fieldName);
-            } catch(NoSuchFieldException e) {
+            }
+            catch (NoSuchFieldException e) {
                 clazz = clazz.getSuperclass();
             }
         }

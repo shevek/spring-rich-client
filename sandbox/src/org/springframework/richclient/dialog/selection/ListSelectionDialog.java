@@ -104,9 +104,7 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
         }
     }
 
-    private static class SelectionFilterConstraint
-        extends Observable
-        implements Constraint, DocumentListener {
+    private static class SelectionFilterConstraint extends Observable implements Constraint, DocumentListener {
         private String text;
 
         private SelectionFilter filter;

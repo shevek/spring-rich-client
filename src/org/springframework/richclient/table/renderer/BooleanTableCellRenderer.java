@@ -27,15 +27,15 @@ import org.springframework.util.StringUtils;
  */
 public class BooleanTableCellRenderer extends OptimizedTableCellRenderer implements TableCellRenderer {
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		this.setText(StringUtils.capitalize(((Boolean)value).toString()));
-		return this;
-	}
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        this.setText(StringUtils.capitalize(((Boolean)value).toString()));
+        return this;
+    }
 
-	public BooleanTableCellRenderer() {
-		super();
-	}
+    public BooleanTableCellRenderer() {
+        super();
+    }
 
 }

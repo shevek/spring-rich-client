@@ -24,52 +24,52 @@ import org.springframework.richclient.factory.ControlFactory;
 
 public class StatusBarCommandGroup extends CommandGroup implements ControlFactory {
 
-	private StatusBar statusBar;
+    private StatusBar statusBar;
 
-	public StatusBarCommandGroup() {
-		super();
-	}
+    public StatusBarCommandGroup() {
+        super();
+    }
 
-	public StatusBarCommandGroup(String groupId) {
-		super(groupId);
-	}
+    public StatusBarCommandGroup(String groupId) {
+        super(groupId);
+    }
 
-	public StatusBarCommandGroup(String groupId, CommandRegistry commandRegistry) {
-		super(groupId, commandRegistry);
-	}
+    public StatusBarCommandGroup(String groupId, CommandRegistry commandRegistry) {
+        super(groupId, commandRegistry);
+    }
 
-	public JComponent getControl() {
-		if (statusBar == null) {
-			this.statusBar = createStatusBar();
-		}
-		return statusBar;
-	}
+    public JComponent getControl() {
+        if (statusBar == null) {
+            this.statusBar = createStatusBar();
+        }
+        return statusBar;
+    }
 
-	protected StatusBar createStatusBar() {
-		return new StatusBar();
-	}
+    protected StatusBar createStatusBar() {
+        return new StatusBar();
+    }
 
-	protected StatusBar getStatusBar() {
-		return statusBar;
-	}
+    protected StatusBar getStatusBar() {
+        return statusBar;
+    }
 
-	public ProgressMonitor getProgressMonitor() {
-		return getStatusBar();
-	}
+    public ProgressMonitor getProgressMonitor() {
+        return getStatusBar();
+    }
 
-	public void setMessage(String message) {
-		getStatusBar().setMessage(message);
-	}
+    public void setMessage(String message) {
+        getStatusBar().setMessage(message);
+    }
 
-	public void setMessage(ImageIcon icon, String message) {
-		getStatusBar().setMessage(icon, message);
-	}
+    public void setMessage(ImageIcon icon, String message) {
+        getStatusBar().setMessage(icon, message);
+    }
 
-	public void setErrorMessage(String message) {
-		getStatusBar().setMessage(message);
-	}
+    public void setErrorMessage(String message) {
+        getStatusBar().setMessage(message);
+    }
 
-	public void setErrorMessage(ImageIcon icon, String message) {
-		getStatusBar().setErrorMessage(icon, message);
-	}
+    public void setErrorMessage(ImageIcon icon, String message) {
+        getStatusBar().setErrorMessage(icon, message);
+    }
 }

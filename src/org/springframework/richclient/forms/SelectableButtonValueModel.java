@@ -27,79 +27,79 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 final class SelectableButtonValueModel extends DefaultButtonModel implements ValueChangeListener {
-	private ValueModel valueModel;
+    private ValueModel valueModel;
 
-	public SelectableButtonValueModel(ValueModel valueModel) {
-		this.valueModel = valueModel;
-		this.valueModel.addValueChangeListener(this);
-	}
+    public SelectableButtonValueModel(ValueModel valueModel) {
+        this.valueModel = valueModel;
+        this.valueModel.addValueChangeListener(this);
+    }
 
-	public void valueChanged() {
-		fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this, this.isSelected() ? ItemEvent.SELECTED
-				: ItemEvent.DESELECTED));
-	}
+    public void valueChanged() {
+        fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this,
+                this.isSelected() ? ItemEvent.SELECTED : ItemEvent.DESELECTED));
+    }
 
-	public void setPressed(boolean b) {
-		if ((isPressed() == b) || !isEnabled()) {
-			return;
-		}
+    public void setPressed(boolean b) {
+        if ((isPressed() == b) || !isEnabled()) {
+            return;
+        }
 
-		if (b == false && isArmed()) {
-			setSelected(!this.isSelected());
-		}
+        if (b == false && isArmed()) {
+            setSelected(!this.isSelected());
+        }
 
-		if (b) {
-			stateMask |= PRESSED;
-		}
-		else {
-			stateMask &= ~PRESSED;
-		}
+        if (b) {
+            stateMask |= PRESSED;
+        }
+        else {
+            stateMask &= ~PRESSED;
+        }
 
-		fireStateChanged();
+        fireStateChanged();
 
-		if (!isPressed() && isArmed()) {
-			int modifiers = 0;
-			AWTEvent currentEvent = EventQueue.getCurrentEvent();
-			if (currentEvent instanceof InputEvent) {
-				modifiers = ((InputEvent)currentEvent).getModifiers();
-			}
-			else if (currentEvent instanceof ActionEvent) {
-				modifiers = ((ActionEvent)currentEvent).getModifiers();
-			}
-			fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(), EventQueue
-					.getMostRecentEventTime(), modifiers));
-		}
-	}
+        if (!isPressed() && isArmed()) {
+            int modifiers = 0;
+            AWTEvent currentEvent = EventQueue.getCurrentEvent();
+            if (currentEvent instanceof InputEvent) {
+                modifiers = ((InputEvent)currentEvent).getModifiers();
+            }
+            else if (currentEvent instanceof ActionEvent) {
+                modifiers = ((ActionEvent)currentEvent).getModifiers();
+            }
+            fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(), EventQueue
+                    .getMostRecentEventTime(), modifiers));
+        }
+    }
 
-	public boolean isSelected() {
-		Boolean selected = (Boolean)valueModel.getValue();
-		if (selected == null) {
-			return false;
-		}
-		return selected.booleanValue();
-	}
+    public boolean isSelected() {
+        Boolean selected = (Boolean)valueModel.getValue();
+        if (selected == null) {
+            return false;
+        }
+        return selected.booleanValue();
+    }
 
-	public void setSelected(boolean b) {
-		if (isSelected() == b) {
-			return;
-		}
+    public void setSelected(boolean b) {
+        if (isSelected() == b) {
+            return;
+        }
 
-		if (b) {
-			stateMask |= SELECTED;
-		}
-		else {
-			stateMask &= ~SELECTED;
-		}
+        if (b) {
+            stateMask |= SELECTED;
+        }
+        else {
+            stateMask &= ~SELECTED;
+        }
 
-		fireStateChanged();
+        fireStateChanged();
 
-		if (b) {
-			valueModel.setValue(Boolean.TRUE);
-		}
-		else {
-			valueModel.setValue(Boolean.FALSE);
-		}
+        if (b) {
+            valueModel.setValue(Boolean.TRUE);
+        }
+        else {
+            valueModel.setValue(Boolean.FALSE);
+        }
 
-	}
+    }
 }
 

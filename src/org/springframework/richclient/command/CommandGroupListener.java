@@ -18,5 +18,5 @@ package org.springframework.richclient.command;
 import java.util.EventListener;
 
 public interface CommandGroupListener extends EventListener {
-	public void membersChanged(CommandGroupEvent e);
+    public void membersChanged(CommandGroupEvent e);
 }

@@ -22,5 +22,5 @@ package org.springframework.richclient.command.config;
  * @author Keith Donald
  */
 public interface CommandLabelConfigurable {
-	public void setLabelInfo(CommandButtonLabelInfo labelInfo);
+    public void setLabelInfo(CommandButtonLabelInfo labelInfo);
 }

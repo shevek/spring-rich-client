@@ -24,49 +24,49 @@ import org.springframework.util.closure.Constraint;
  * @author Keith Donald
  */
 public class ValidationEvent {
-	private FormModel formModel;
+    private FormModel formModel;
 
-	private Constraint constraint;
+    private Constraint constraint;
 
-	private ValidationResults results;
+    private ValidationResults results;
 
-	public ValidationEvent(FormModel formModel, Constraint constraint) {
-		this(formModel, constraint, null);
-	}
+    public ValidationEvent(FormModel formModel, Constraint constraint) {
+        this(formModel, constraint, null);
+    }
 
-	public ValidationEvent(FormModel formModel, Constraint constraint, ValidationResults results) {
-		Assert.notNull(formModel, "The form model property is required");
-		Assert.notNull(constraint, "The constraint property is required");
-		this.formModel = formModel;
-		this.constraint = constraint;
-		this.results = results;
-	}
+    public ValidationEvent(FormModel formModel, Constraint constraint, ValidationResults results) {
+        Assert.notNull(formModel, "The form model property is required");
+        Assert.notNull(constraint, "The constraint property is required");
+        this.formModel = formModel;
+        this.constraint = constraint;
+        this.results = results;
+    }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof ValidationEvent)) {
-			return false;
-		}
-		ValidationEvent e = (ValidationEvent)o;
-		return formModel.equals(e.formModel) && constraint.equals(e.constraint);
-	}
+    public boolean equals(Object o) {
+        if (!(o instanceof ValidationEvent)) {
+            return false;
+        }
+        ValidationEvent e = (ValidationEvent)o;
+        return formModel.equals(e.formModel) && constraint.equals(e.constraint);
+    }
 
-	public int hashCode() {
-		return formModel.hashCode() + constraint.hashCode();
-	}
+    public int hashCode() {
+        return formModel.hashCode() + constraint.hashCode();
+    }
 
-	public FormModel getFormModel() {
-		return formModel;
-	}
+    public FormModel getFormModel() {
+        return formModel;
+    }
 
-	public Constraint getConstraint() {
-		return constraint;
-	}
+    public Constraint getConstraint() {
+        return constraint;
+    }
 
-	public ValidationResults getResults() {
-		return results;
-	}
+    public ValidationResults getResults() {
+        return results;
+    }
 
-	public String toString() {
-		return new ToStringCreator(this).appendProperties().toString();
-	}
+    public String toString() {
+        return new ToStringCreator(this).appendProperties().toString();
+    }
 }

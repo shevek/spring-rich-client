@@ -22,12 +22,12 @@ import org.springframework.richclient.application.Application;
  */
 public class ExitCommand extends ApplicationWindowAwareCommand {
 
-	public ExitCommand() {
-		super("exitCommand");
-	}
+    public ExitCommand() {
+        super("exitCommand");
+    }
 
-	protected void doExecuteCommand() {
-		Application.instance().close();
-	}
+    protected void doExecuteCommand() {
+        Application.instance().close();
+    }
 
 }

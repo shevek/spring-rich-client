@@ -20,17 +20,19 @@ import java.io.Serializable;
 
 public class Reply implements Serializable {
     private Object returnedValue;
+
     private Throwable returnedException;
-    
+
     public Reply(Object returnedValue, Throwable returnedException) {
         this.returnedValue = returnedValue;
         this.returnedException = returnedException;
     }
-    
+
     public Object getResult() throws Throwable {
         if (returnedException != null) {
             throw returnedException;
-        } else {
+        }
+        else {
             return returnedValue;
         }
     }

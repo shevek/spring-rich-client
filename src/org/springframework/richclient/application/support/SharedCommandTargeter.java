@@ -30,20 +30,20 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class SharedCommandTargeter extends PageComponentListenerAdapter {
-	private ApplicationWindow window;
+    private ApplicationWindow window;
 
-	public SharedCommandTargeter(ApplicationWindow window) {
-		Assert.notNull(window, "The application window containing targetable shared commands is required");
-		this.window = window;
-	}
+    public SharedCommandTargeter(ApplicationWindow window) {
+        Assert.notNull(window, "The application window containing targetable shared commands is required");
+        this.window = window;
+    }
 
-	public void componentFocusGained(PageComponent component) {
-		super.componentFocusGained(component);
-		PageComponentContext context = component.getContext();
-		for (Iterator i = window.getSharedCommands(); i.hasNext();) {
-			TargetableActionCommand globalCommand = (TargetableActionCommand)i.next();
-			globalCommand.setCommandExecutor(context.getLocalCommandExecutor(globalCommand.getId()));
-		}
-	}
+    public void componentFocusGained(PageComponent component) {
+        super.componentFocusGained(component);
+        PageComponentContext context = component.getContext();
+        for (Iterator i = window.getSharedCommands(); i.hasNext();) {
+            TargetableActionCommand globalCommand = (TargetableActionCommand)i.next();
+            globalCommand.setCommandExecutor(context.getLocalCommandExecutor(globalCommand.getId()));
+        }
+    }
 
 }

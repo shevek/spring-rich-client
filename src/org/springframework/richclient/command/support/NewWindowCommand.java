@@ -19,14 +19,14 @@ import org.springframework.richclient.application.Application;
 
 public class NewWindowCommand extends ApplicationWindowAwareCommand {
 
-	private static final String ID = "newWindowCommand";
+    private static final String ID = "newWindowCommand";
 
-	public NewWindowCommand() {
-		super(ID);
-	}
+    public NewWindowCommand() {
+        super(ID);
+    }
 
-	protected void doExecuteCommand() {
-		Application.instance().openWindow(getApplicationWindow().getPage().getId());
-	}
+    protected void doExecuteCommand() {
+        Application.instance().openWindow(getApplicationWindow().getPage().getId());
+    }
 
 }

@@ -16,7 +16,7 @@
 package org.springframework.richclient.command;
 
 public interface ActionCommandInterceptor {
-	public boolean preExecution(ActionCommand command);
+    public boolean preExecution(ActionCommand command);
 
-	public void postExecution(ActionCommand command);
+    public void postExecution(ActionCommand command);
 }

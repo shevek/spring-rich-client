@@ -43,70 +43,71 @@ import org.springframework.rules.reporting.Severity;
  */
 public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory {
 
-	private int textCompHeight;
+    private int textCompHeight;
 
-	public OverlayValidationInterceptorFactory() {
-		textCompHeight = new JTextField().getPreferredSize().height;
-	}
+    public OverlayValidationInterceptorFactory() {
+        textCompHeight = new JTextField().getPreferredSize().height;
+    }
 
-	public FormComponentInterceptor getInterceptor(FormModel formModel) {
-		return new OverlayValidationInterceptor(formModel);
-	}
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        return new OverlayValidationInterceptor(formModel);
+    }
 
-	public class OverlayValidationInterceptor extends ValidationInterceptor {
+    public class OverlayValidationInterceptor extends ValidationInterceptor {
 
-		public OverlayValidationInterceptor(FormModel formModel) {
-			super(formModel);
-		}
+        public OverlayValidationInterceptor(FormModel formModel) {
+            super(formModel);
+        }
 
-		public void processComponent(String propertyName, JComponent component) {
-			ErrorReportingOverlay overlay = new ErrorReportingOverlay();
+        public void processComponent(String propertyName, JComponent component) {
+            ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
-			int yOffset = component.getPreferredSize().height;
+            int yOffset = component.getPreferredSize().height;
 
-			OverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset, textCompHeight));
+            OverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
+                    textCompHeight));
 
-			registerErrorGuarded(propertyName, overlay);
-			registerErrorMessageReceiver(propertyName, overlay);
-		}
-	}
+            registerErrorGuarded(propertyName, overlay);
+            registerErrorMessageReceiver(propertyName, overlay);
+        }
+    }
 
-	private class ErrorReportingOverlay extends JLabel implements MessageAreaModel, Guarded {
+    private class ErrorReportingOverlay extends JLabel implements MessageAreaModel, Guarded {
 
-		private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
+        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
 
-		public ErrorReportingOverlay() {
-		}
+        public ErrorReportingOverlay() {
+        }
 
-		public boolean isEnabled() {
-			return true;
-		}
+        public boolean isEnabled() {
+            return true;
+        }
 
-		public void setEnabled(boolean enabled) {
-			setVisible(!enabled);
-		}
+        public void setEnabled(boolean enabled) {
+            setVisible(!enabled);
+        }
 
-		public void setMessage(String newMessage) {
-			setMessage(newMessage, Severity.INFO);
-		}
+        public void setMessage(String newMessage) {
+            setMessage(newMessage, Severity.INFO);
+        }
 
-		public void setMessage(String newMessage, Severity severity) {
-			messageBuffer.setMessage(newMessage, severity);
-			setToolTipText(messageBuffer.getMessage());
-			setIcon(Application.services().getIcon("severity." + severity.getShortCode() + ".overlay"));
-		}
+        public void setMessage(String newMessage, Severity severity) {
+            messageBuffer.setMessage(newMessage, severity);
+            setToolTipText(messageBuffer.getMessage());
+            setIcon(Application.services().getIcon("severity." + severity.getShortCode() + ".overlay"));
+        }
 
-		public void setErrorMessage(String errorMessage) {
-			setMessage(errorMessage, Severity.ERROR);
-		}
+        public void setErrorMessage(String errorMessage) {
+            setMessage(errorMessage, Severity.ERROR);
+        }
 
-		public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-			messageBuffer.addMessageAreaChangeListener(messageListener);
-		}
+        public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+            messageBuffer.addMessageAreaChangeListener(messageListener);
+        }
 
-		public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-			messageBuffer.removeMessageAreaChangeListener(messageListener);
-		}
-	}
+        public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+            messageBuffer.removeMessageAreaChangeListener(messageListener);
+        }
+    }
 
 }

@@ -27,65 +27,65 @@ import javax.swing.table.TableModel;
  * identified by the event is visible.
  */
 public class VisibleTableModelEvent extends TableModelEvent {
-	private Point tmpPoint;
+    private Point tmpPoint;
 
-	// This implementation caches the information for one JTable, it is
-	// certainly possible to cache it for more than one should
-	// you have this need.
-	private boolean valid;
+    // This implementation caches the information for one JTable, it is
+    // certainly possible to cache it for more than one should
+    // you have this need.
+    private boolean valid;
 
-	private int firstVisRow;
+    private int firstVisRow;
 
-	private int lastVisRow;
+    private int lastVisRow;
 
-	private int firstVisCol;
+    private int firstVisCol;
 
-	private int lastVisCol;
+    private int lastVisCol;
 
-	public VisibleTableModelEvent(TableModel source) {
-		super(source, 0, 0, 0, UPDATE);
-		tmpPoint = new Point();
-	}
+    public VisibleTableModelEvent(TableModel source) {
+        super(source, 0, 0, 0, UPDATE);
+        tmpPoint = new Point();
+    }
 
-	/**
-	 * Resets the underlying fields of the TableModelEvent. This assumes no ONE
-	 * is going to cache the TableModelEvent.
-	 */
-	public void set(int row, int col) {
-		firstRow = row;
-		lastRow = row;
-		column = col;
-	}
+    /**
+     * Resets the underlying fields of the TableModelEvent. This assumes no ONE
+     * is going to cache the TableModelEvent.
+     */
+    public void set(int row, int col) {
+        firstRow = row;
+        lastRow = row;
+        column = col;
+    }
 
-	/**
-	 * Invoked to indicate the visible rows/columns need to be recalculated
-	 * again.
-	 */
-	public void reset() {
-		valid = false;
-	}
+    /**
+     * Invoked to indicate the visible rows/columns need to be recalculated
+     * again.
+     */
+    public void reset() {
+        valid = false;
+    }
 
-	public boolean isVisible(JTable table) {
-		if (!valid) {
-			// Determine the visible region of the table.
-			Rectangle visRect = table.getVisibleRect();
+    public boolean isVisible(JTable table) {
+        if (!valid) {
+            // Determine the visible region of the table.
+            Rectangle visRect = table.getVisibleRect();
 
-			tmpPoint.x = visRect.x;
-			tmpPoint.y = visRect.y;
-			firstVisCol = table.columnAtPoint(tmpPoint);
-			firstVisRow = table.rowAtPoint(tmpPoint);
+            tmpPoint.x = visRect.x;
+            tmpPoint.y = visRect.y;
+            firstVisCol = table.columnAtPoint(tmpPoint);
+            firstVisRow = table.rowAtPoint(tmpPoint);
 
-			tmpPoint.x += visRect.width;
-			tmpPoint.y += visRect.height;
-			lastVisCol = table.columnAtPoint(tmpPoint);
-			if (lastVisCol == -1) {
-				lastVisCol = table.getColumnCount() - 1;
-			}
-			if ((lastVisRow = table.rowAtPoint(tmpPoint)) == -1) {
-				lastVisRow = table.getRowCount();
-			}
-			valid = true;
-		}
-		return (firstRow >= firstVisRow && firstRow <= lastVisRow && column >= firstVisCol && column <= lastVisCol);
-	}
+            tmpPoint.x += visRect.width;
+            tmpPoint.y += visRect.height;
+            lastVisCol = table.columnAtPoint(tmpPoint);
+            if (lastVisCol == -1) {
+                lastVisCol = table.getColumnCount() - 1;
+            }
+            if ((lastVisRow = table.rowAtPoint(tmpPoint)) == -1) {
+                lastVisRow = table.getRowCount();
+            }
+            valid = true;
+        }
+        return (firstRow >= firstVisRow && firstRow <= lastVisRow && column >= firstVisCol && column <= lastVisCol);
+    }
 }

@@ -24,28 +24,28 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
 
 public class FocusLostTextValueSetter extends AbstractValueSetter implements FocusListener {
-	private JTextComponent control;
+    private JTextComponent control;
 
-	public FocusLostTextValueSetter(JTextComponent component) {
-		this(component, null);
-	}
+    public FocusLostTextValueSetter(JTextComponent component) {
+        this(component, null);
+    }
 
-	public FocusLostTextValueSetter(JTextComponent component, ValueModel valueModel) {
-		super(valueModel);
-		Assert.notNull(component);
-		this.control = component;
-		this.control.addFocusListener(this);
-	}
+    public FocusLostTextValueSetter(JTextComponent component, ValueModel valueModel) {
+        super(valueModel);
+        Assert.notNull(component);
+        this.control = component;
+        this.control.addFocusListener(this);
+    }
 
-	protected void setControlValue(Object value) {
-		control.setText((String)value);
-	}
+    protected void setControlValue(Object value) {
+        control.setText((String)value);
+    }
 
-	public void focusLost(FocusEvent e) {
-		componentValueChanged(control.getText());
-	}
+    public void focusLost(FocusEvent e) {
+        componentValueChanged(control.getText());
+    }
 
-	public void focusGained(FocusEvent e) {
+    public void focusGained(FocusEvent e) {
 
-	}
+    }
 }

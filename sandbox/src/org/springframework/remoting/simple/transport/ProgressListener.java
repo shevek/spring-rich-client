@@ -21,6 +21,6 @@ import org.springframework.remoting.simple.protocol.Request;
  * @author  oliverh
  */
 public interface ProgressListener {
- 
+
     public void updateProgress(Request request, Progress progress);
 }

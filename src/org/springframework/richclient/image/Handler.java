@@ -36,65 +36,65 @@ import org.springframework.util.StringUtils;
  */
 public class Handler extends URLStreamHandler {
 
-	private static final Log logger = LogFactory.getLog(Handler.class);
+    private static final Log logger = LogFactory.getLog(Handler.class);
 
-	private static ImageSource urlHandlerImageSource;
+    private static ImageSource urlHandlerImageSource;
 
-	/**
-	 * Installs this class as a handler for the "image:" protocol. Images will
-	 * be resolved from the provided image source.
-	 */
-	public static void installImageUrlHandler(ImageSource urlHandlerImageSource) {
-		Assert.notNull(urlHandlerImageSource);
+    /**
+     * Installs this class as a handler for the "image:" protocol. Images will
+     * be resolved from the provided image source.
+     */
+    public static void installImageUrlHandler(ImageSource urlHandlerImageSource) {
+        Assert.notNull(urlHandlerImageSource);
 
-		Handler.urlHandlerImageSource = urlHandlerImageSource;
+        Handler.urlHandlerImageSource = urlHandlerImageSource;
 
-		try {
-			String packagePrefixList = System.getProperty("java.protocol.handler.pkgs");
-			if (packagePrefixList != "") {
-				packagePrefixList = packagePrefixList + "|";
-			}
-			packagePrefixList = packagePrefixList + "org.springframework.richclient";
-			System.setProperty("java.protocol.handler.pkgs", packagePrefixList);
-		}
-		catch (SecurityException e) {
-			logger.warn("Unable to install image URL handler", e);
-			Handler.urlHandlerImageSource = null;
-		}
-	}
+        try {
+            String packagePrefixList = System.getProperty("java.protocol.handler.pkgs");
+            if (packagePrefixList != "") {
+                packagePrefixList = packagePrefixList + "|";
+            }
+            packagePrefixList = packagePrefixList + "org.springframework.richclient";
+            System.setProperty("java.protocol.handler.pkgs", packagePrefixList);
+        }
+        catch (SecurityException e) {
+            logger.warn("Unable to install image URL handler", e);
+            Handler.urlHandlerImageSource = null;
+        }
+    }
 
-	/**
-	 * Creates an instance of <code>Handeler</code>.
-	 */
-	public Handler() {
-	}
+    /**
+     * Creates an instance of <code>Handeler</code>.
+     */
+    public Handler() {
+    }
 
-	protected URLConnection openConnection(URL url) throws IOException {
-		if (!StringUtils.hasText(url.getPath())) {
-			throw new MalformedURLException("must provide an image key.");
-		}
-		else if (StringUtils.hasText(url.getHost())) {
-			throw new MalformedURLException("host part should be empty.");
-		}
-		else if (url.getPort() != -1) {
-			throw new MalformedURLException("port part should be empty.");
-		}
-		else if (StringUtils.hasText(url.getQuery())) {
-			throw new MalformedURLException("query part should be empty.");
-		}
-		else if (StringUtils.hasText(url.getRef())) {
-			throw new MalformedURLException("ref part should be empty.");
-		}
-		else if (StringUtils.hasText(url.getUserInfo())) {
-			throw new MalformedURLException("user info part should be empty.");
-		}
-		urlHandlerImageSource.getImage(url.getPath());
-		Resource image = urlHandlerImageSource.getImageResource(url.getPath());
-		if (image != null) {
-			return image.getURL().openConnection();
-		}
-		else {
-			throw new IOException("null image returned for key [" + url.getFile() + "].");
-		}
-	}
+    protected URLConnection openConnection(URL url) throws IOException {
+        if (!StringUtils.hasText(url.getPath())) {
+            throw new MalformedURLException("must provide an image key.");
+        }
+        else if (StringUtils.hasText(url.getHost())) {
+            throw new MalformedURLException("host part should be empty.");
+        }
+        else if (url.getPort() != -1) {
+            throw new MalformedURLException("port part should be empty.");
+        }
+        else if (StringUtils.hasText(url.getQuery())) {
+            throw new MalformedURLException("query part should be empty.");
+        }
+        else if (StringUtils.hasText(url.getRef())) {
+            throw new MalformedURLException("ref part should be empty.");
+        }
+        else if (StringUtils.hasText(url.getUserInfo())) {
+            throw new MalformedURLException("user info part should be empty.");
+        }
+        urlHandlerImageSource.getImage(url.getPath());
+        Resource image = urlHandlerImageSource.getImageResource(url.getPath());
+        if (image != null) {
+            return image.getURL().openConnection();
+        }
+        else {
+            throw new IOException("null image returned for key [" + url.getFile() + "].");
+        }
+    }
 }

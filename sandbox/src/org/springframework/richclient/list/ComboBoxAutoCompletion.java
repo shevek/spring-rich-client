@@ -49,40 +49,47 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             // Highlight whole text when gaining focus
             highlightCompletedText(0);
         }
+
         public void focusLost(FocusEvent e) {
             // Workaround for Bug 5100422 - Hide Popup on focus loss
             if (hidePopupOnFocusLoss)
                 ComboBoxAutoCompletion.this.comboBox.setPopupVisible(false);
         }
     }
+
     private final class KeyHandler extends KeyAdapter {
         // Highlight whole text when user hits enter
         // Register when user hits backspace
         public void keyPressed(KeyEvent e) {
             hitBackspace = false;
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_ENTER :
-                    highlightCompletedText(0);
-                    break;
-                    // determine if the pressed key is backspace (needed by the remove method)
-                case KeyEvent.VK_BACK_SPACE :
-                    hitBackspace = true;
-                    hitBackspaceOnSelection =
-                        editor.getSelectionStart() != editor.getSelectionEnd();
-                    break;
-                    // ignore delete key
-                case KeyEvent.VK_DELETE :
-                    e.consume();
-                    ComboBoxAutoCompletion.this.comboBox.getToolkit().beep();
-                    break;
+            case KeyEvent.VK_ENTER:
+                highlightCompletedText(0);
+                break;
+            // determine if the pressed key is backspace (needed by the remove method)
+            case KeyEvent.VK_BACK_SPACE:
+                hitBackspace = true;
+                hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
+                break;
+            // ignore delete key
+            case KeyEvent.VK_DELETE:
+                e.consume();
+                ComboBoxAutoCompletion.this.comboBox.getToolkit().beep();
+                break;
             }
         }
     }
+
     private JComboBox comboBox;
+
     private JTextComponent editor;
+
     boolean hitBackspace;
+
     boolean hitBackspaceOnSelection;
+
     private Map item2string = new HashMap();
+
     private ComboBoxModel model;
 
     /**
@@ -92,15 +99,14 @@ public class ComboBoxAutoCompletion extends PlainDocument {
     public ComboBoxAutoCompletion(JComboBox comboBox) {
         Assert.notNull(comboBox, "The ComboBox cannot be null.");
         Assert.isTrue(!comboBox.isEditable(), "The ComboBox must not be editable.");
-        Assert.isTrue(
-            comboBox.getEditor().getEditorComponent() instanceof JTextComponent,
-            "Only ComboBoxes with JTextComponent as editor are supported.");
+        Assert.isTrue(comboBox.getEditor().getEditorComponent() instanceof JTextComponent,
+                "Only ComboBoxes with JTextComponent as editor are supported.");
 
         this.comboBox = comboBox;
         comboBox.setEditable(true);
 
         model = comboBox.getModel();
-        editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+        editor = (JTextComponent)comboBox.getEditor().getEditorComponent();
 
         fillItem2StringMap();
 
@@ -117,7 +123,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
     }
 
     private void fillItem2StringMap() {
-        JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+        JTextComponent editor = (JTextComponent)comboBox.getEditor().getEditorComponent();
 
         // get current item of editor
         Object currentItem = comboBox.getEditor().getItem();
@@ -131,7 +137,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
     }
 
     private String getStringFor(Object item) {
-        return (String) item2string.get(item);
+        return (String)item2string.get(item);
     }
 
     private void highlightCompletedText(int start) {
@@ -148,9 +154,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             return;
         // check offset position
         if (offs < 0 || offs > getLength())
-            throw new BadLocationException(
-                "Invalid offset - must be >= 0 and <= " + getLength(),
-                offs);
+            throw new BadLocationException("Invalid offset - must be >= 0 and <= " + getLength(), offs);
 
         // construct the resulting string
         String currentText = getText(0, getLength());

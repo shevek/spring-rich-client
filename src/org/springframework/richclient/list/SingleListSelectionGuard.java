@@ -20,24 +20,24 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 
 public class SingleListSelectionGuard implements ValueChangeListener {
-	private ValueModel selectionIndexHolder;
+    private ValueModel selectionIndexHolder;
 
-	private Guarded guarded;
+    private Guarded guarded;
 
-	public SingleListSelectionGuard(ValueModel selectionIndexHolder, Guarded guarded) {
-		this.selectionIndexHolder = selectionIndexHolder;
-		this.selectionIndexHolder.addValueChangeListener(this);
-		this.guarded = guarded;
-		valueChanged();
-	}
+    public SingleListSelectionGuard(ValueModel selectionIndexHolder, Guarded guarded) {
+        this.selectionIndexHolder = selectionIndexHolder;
+        this.selectionIndexHolder.addValueChangeListener(this);
+        this.guarded = guarded;
+        valueChanged();
+    }
 
-	public void valueChanged() {
-		Integer value = (Integer)selectionIndexHolder.getValue();
-		if (value == null || value.intValue() == -1) {
-			guarded.setEnabled(false);
-		}
-		else {
-			guarded.setEnabled(true);
-		}
-	}
+    public void valueChanged() {
+        Integer value = (Integer)selectionIndexHolder.getValue();
+        if (value == null || value.intValue() == -1) {
+            guarded.setEnabled(false);
+        }
+        else {
+            guarded.setEnabled(true);
+        }
+    }
 }

@@ -18,11 +18,11 @@ package org.springframework.binding.form.support;
 import org.springframework.binding.form.CommitListener;
 
 public abstract class CommitListenerAdapter implements CommitListener {
-	public boolean preEditCommitted(Object formObject) {
-		return true;
-	}
+    public boolean preEditCommitted(Object formObject) {
+        return true;
+    }
 
-	public void postEditCommitted(Object formObject) {
-	}
+    public void postEditCommitted(Object formObject) {
+    }
 
 }

@@ -38,10 +38,7 @@ import javax.swing.text.html.ImageView;
 /**
  * @author Oliver Hutchison
  */
-public class HtmlFormHelper extends DefaultCaret
-        implements
-            HyperlinkListener,
-            MouseListener {
+public class HtmlFormHelper extends DefaultCaret implements HyperlinkListener, MouseListener {
 
     private boolean inLink;
 
@@ -60,10 +57,9 @@ public class HtmlFormHelper extends DefaultCaret
 
     public static void installLaFStyleSheet(HTMLDocument doc) {
         Font defaultFont = UIManager.getFont("Button.font");
-        String stylesheet = "body {  font-family: " + defaultFont.getName()
-                + "; font-size: " + defaultFont.getSize() + "pt;  }"
-                + "a, p, li { font-family: " + defaultFont.getName()
-                + "; font-size: " + defaultFont.getSize() + "pt;  }";
+        String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
+                + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: "
+                + defaultFont.getSize() + "pt;  }";
         try {
             doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
         }
@@ -103,8 +99,7 @@ public class HtmlFormHelper extends DefaultCaret
         }
         else if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
             if (e.getDescription().startsWith("#")) {
-                ((JTextPane)e.getSource()).scrollToReference(e.getDescription()
-                        .substring(1));
+                ((JTextPane)e.getSource()).scrollToReference(e.getDescription().substring(1));
             }
         }
     }

@@ -21,5 +21,5 @@ import java.awt.Image;
  * @author Keith Donald
  */
 public interface ImageConfigurable {
-	public void setImage(Image image);
+    public void setImage(Image image);
 }

@@ -38,222 +38,222 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class WizardDialog extends TitledApplicationDialog implements WizardContainer, MessageAreaChangeListener,
-		PropertyChangeListener {
-	private static final String NEXT_MESSAGE_CODE = "wizard.next";
+        PropertyChangeListener {
+    private static final String NEXT_MESSAGE_CODE = "wizard.next";
 
-	private static final String BACK_MESSAGE_CODE = "wizard.back";
+    private static final String BACK_MESSAGE_CODE = "wizard.back";
 
-	private Wizard wizard;
+    private Wizard wizard;
 
-	private ActionCommand nextCommand;
+    private ActionCommand nextCommand;
 
-	private ActionCommand backCommand;
+    private ActionCommand backCommand;
 
-	private WizardPage currentPage;
+    private WizardPage currentPage;
 
-	private int largestPageWidth;
+    private int largestPageWidth;
 
-	private int largestPageHeight;
+    private int largestPageHeight;
 
-	public WizardDialog() {
-		this(null);
-	}
+    public WizardDialog() {
+        this(null);
+    }
 
-	public WizardDialog(Wizard wizard) {
-		super();
-		setWizard(wizard);
-		setResizable(true);
-	}
+    public WizardDialog(Wizard wizard) {
+        super();
+        setWizard(wizard);
+        setResizable(true);
+    }
 
-	public void setWizard(Wizard wizard) {
-		if (this.wizard != wizard) {
-			if (this.wizard != null) {
-				this.wizard.setContainer(null);
-			}
-			this.wizard = wizard;
-			if (this.wizard != null) {
-				this.wizard.setContainer(this);
-				this.setTitle(wizard.getTitle());
-			}
-		}
-	}
+    public void setWizard(Wizard wizard) {
+        if (this.wizard != wizard) {
+            if (this.wizard != null) {
+                this.wizard.setContainer(null);
+            }
+            this.wizard = wizard;
+            if (this.wizard != null) {
+                this.wizard.setContainer(this);
+                this.setTitle(wizard.getTitle());
+            }
+        }
+    }
 
-	protected String getFinishFaceConfigurationKey() {
-		return "finishCommand";
-	}
+    protected String getFinishFaceConfigurationKey() {
+        return "finishCommand";
+    }
 
-	protected JComponent createTitledDialogContentPane() {
-		wizard.addPages();
-		createPageControls();
-		WizardPage startPage = wizard.getStartingPage();
-		Assert.notNull(startPage, "No starting page returned; unable to show wizard.");
-		JComponent control = startPage.getControl();
-		control.setPreferredSize(getLargestPageSize());
-		return control;
-	}
+    protected JComponent createTitledDialogContentPane() {
+        wizard.addPages();
+        createPageControls();
+        WizardPage startPage = wizard.getStartingPage();
+        Assert.notNull(startPage, "No starting page returned; unable to show wizard.");
+        JComponent control = startPage.getControl();
+        control.setPreferredSize(getLargestPageSize());
+        return control;
+    }
 
-	private Dimension getLargestPageSize() {
-		return new Dimension(largestPageWidth + UIConstants.ONE_SPACE, largestPageHeight + UIConstants.ONE_SPACE);
-	}
+    private Dimension getLargestPageSize() {
+        return new Dimension(largestPageWidth + UIConstants.ONE_SPACE, largestPageHeight + UIConstants.ONE_SPACE);
+    }
 
-	protected Object[] getCommandGroupMembers() {
-		if (!wizard.needsPreviousAndNextButtons()) {
-			return super.getCommandGroupMembers();
-		}
-		nextCommand = new ActionCommand("nextCommand") {
-			public void doExecuteCommand() {
-				onNext();
-			}
-		};
-		backCommand = new ActionCommand("backCommand") {
-			public void doExecuteCommand() {
-				onBack();
-			}
-		};
-		backCommand.setEnabled(false);
-		return new AbstractCommand[] { backCommand, nextCommand, getFinishCommand(), getCancelCommand() };
-	}
+    protected Object[] getCommandGroupMembers() {
+        if (!wizard.needsPreviousAndNextButtons()) {
+            return super.getCommandGroupMembers();
+        }
+        nextCommand = new ActionCommand("nextCommand") {
+            public void doExecuteCommand() {
+                onNext();
+            }
+        };
+        backCommand = new ActionCommand("backCommand") {
+            public void doExecuteCommand() {
+                onBack();
+            }
+        };
+        backCommand.setEnabled(false);
+        return new AbstractCommand[] { backCommand, nextCommand, getFinishCommand(), getCancelCommand() };
+    }
 
-	protected void onAboutToShow() {
-		showPage(wizard.getStartingPage());
-		super.onAboutToShow();
-	}
+    protected void onAboutToShow() {
+        showPage(wizard.getStartingPage());
+        super.onAboutToShow();
+    }
 
-	/**
-	 * Allow the wizard's pages to pre-create their page controls. This allows
-	 * the wizard dialog to open to the correct size.
-	 */
-	private void createPageControls() {
-		WizardPage[] pages = wizard.getPages();
-		for (int i = 0; i < pages.length; i++) {
-			JComponent c = pages[i].getControl();
-			GuiStandardUtils.attachDialogBorder(c);
-			Dimension size = c.getPreferredSize();
-			if (size.width > largestPageWidth) {
-				largestPageWidth = size.width;
-			}
-			if (size.height > largestPageHeight) {
-				largestPageHeight = size.height;
-			}
-		}
-	}
+    /**
+     * Allow the wizard's pages to pre-create their page controls. This allows
+     * the wizard dialog to open to the correct size.
+     */
+    private void createPageControls() {
+        WizardPage[] pages = wizard.getPages();
+        for (int i = 0; i < pages.length; i++) {
+            JComponent c = pages[i].getControl();
+            GuiStandardUtils.attachDialogBorder(c);
+            Dimension size = c.getPreferredSize();
+            if (size.width > largestPageWidth) {
+                largestPageWidth = size.width;
+            }
+            if (size.height > largestPageHeight) {
+                largestPageHeight = size.height;
+            }
+        }
+    }
 
-	public void showPage(WizardPage page) {
-		if (this.currentPage != page) {
-			if (this.currentPage != null) {
-				this.currentPage.removeMessageAreaChangeListener(this);
-				this.currentPage.removePropertyChangeListener(this);
-			}
-			this.currentPage = page;
-			this.currentPage.addMessageAreaChangeListener(this);
-			this.currentPage.addPropertyChangeListener(this);
-			updateDialog();
-			setContentPane(page.getControl());
-		}
-		this.currentPage.onAboutToShow();
-		this.currentPage.setVisible(true);
-	}
+    public void showPage(WizardPage page) {
+        if (this.currentPage != page) {
+            if (this.currentPage != null) {
+                this.currentPage.removeMessageAreaChangeListener(this);
+                this.currentPage.removePropertyChangeListener(this);
+            }
+            this.currentPage = page;
+            this.currentPage.addMessageAreaChangeListener(this);
+            this.currentPage.addPropertyChangeListener(this);
+            updateDialog();
+            setContentPane(page.getControl());
+        }
+        this.currentPage.onAboutToShow();
+        this.currentPage.setVisible(true);
+    }
 
-	public WizardPage getCurrentPage() {
-		return currentPage;
-	}
+    public WizardPage getCurrentPage() {
+        return currentPage;
+    }
 
-	protected void onBack() {
-		WizardPage newPage = currentPage.getPreviousPage();
-		if (newPage == null || newPage == currentPage) {
-			throw new IllegalStateException("No such page.");
-		}
-		showPage(newPage);
-	}
+    protected void onBack() {
+        WizardPage newPage = currentPage.getPreviousPage();
+        if (newPage == null || newPage == currentPage) {
+            throw new IllegalStateException("No such page.");
+        }
+        showPage(newPage);
+    }
 
-	protected void onNext() {
-		WizardPage newPage = currentPage.getNextPage();
-		if (newPage == null || newPage == currentPage) {
-			throw new IllegalStateException("No such page.");
-		}
-		showPage(newPage);
-	}
+    protected void onNext() {
+        WizardPage newPage = currentPage.getNextPage();
+        if (newPage == null || newPage == currentPage) {
+            throw new IllegalStateException("No such page.");
+        }
+        showPage(newPage);
+    }
 
-	protected boolean onFinish() {
-		return wizard.performFinish();
-	}
+    protected boolean onFinish() {
+        return wizard.performFinish();
+    }
 
-	protected void onCancel() {
-		if (wizard.performCancel()) {
-			super.onCancel();
-		}
-	}
+    protected void onCancel() {
+        if (wizard.performCancel()) {
+            super.onCancel();
+        }
+    }
 
-	/**
-	 * Updates this dialog's controls to reflect the current page.
-	 */
-	protected void updateDialog() {
-		if (!isControlCreated()) {
-			throw new IllegalStateException("Container controls not initialized - update not allowed.");
-		}
+    /**
+     * Updates this dialog's controls to reflect the current page.
+     */
+    protected void updateDialog() {
+        if (!isControlCreated()) {
+            throw new IllegalStateException("Container controls not initialized - update not allowed.");
+        }
 
-		// Update the title bar
-		updateTitleBar();
+        // Update the title bar
+        updateTitleBar();
 
-		// Update the message line
-		updateMessage();
+        // Update the message line
+        updateMessage();
 
-		// Update the buttons
-		updateButtons();
-	}
+        // Update the buttons
+        updateButtons();
+    }
 
-	/**
-	 * Updates the title bar (title, description, and image) to reflect the
-	 * state of the currently active page in this container.
-	 */
-	protected void updateTitleBar() {
-		setTitleAreaText(currentPage.getTitle());
-		setTitleAreaImage(currentPage.getImage());
-		setDescription(currentPage.getDescription());
-	}
+    /**
+     * Updates the title bar (title, description, and image) to reflect the
+     * state of the currently active page in this container.
+     */
+    protected void updateTitleBar() {
+        setTitleAreaText(currentPage.getTitle());
+        setTitleAreaImage(currentPage.getImage());
+        setDescription(currentPage.getDescription());
+    }
 
-	/**
-	 * Updates the message (or error message) shown in the message line to
-	 * reflect the state of the currently active page in this container.
-	 */
-	protected void updateMessage() {
-		String errorMessage = currentPage.getErrorMessage();
-		if (StringUtils.hasText(errorMessage)) {
-			setErrorMessage(errorMessage);
-		}
-		else {
-			setMessage(currentPage.getMessage());
-		}
-	}
+    /**
+     * Updates the message (or error message) shown in the message line to
+     * reflect the state of the currently active page in this container.
+     */
+    protected void updateMessage() {
+        String errorMessage = currentPage.getErrorMessage();
+        if (StringUtils.hasText(errorMessage)) {
+            setErrorMessage(errorMessage);
+        }
+        else {
+            setMessage(currentPage.getMessage());
+        }
+    }
 
-	private void updateButtons() {
-		if (wizard.needsPreviousAndNextButtons()) {
-			backCommand.setEnabled(currentPage.getPreviousPage() != null);
-			nextCommand.setEnabled(canFlipToNextPage());
-		}
-		setFinishEnabled(wizard.canFinish());
-		if (canFlipToNextPage() && !wizard.canFinish()) {
-			registerDefaultCommand(nextCommand);
-		}
-		else {
-			registerDefaultCommand();
-		}
-	}
+    private void updateButtons() {
+        if (wizard.needsPreviousAndNextButtons()) {
+            backCommand.setEnabled(currentPage.getPreviousPage() != null);
+            nextCommand.setEnabled(canFlipToNextPage());
+        }
+        setFinishEnabled(wizard.canFinish());
+        if (canFlipToNextPage() && !wizard.canFinish()) {
+            registerDefaultCommand(nextCommand);
+        }
+        else {
+            registerDefaultCommand();
+        }
+    }
 
-	private boolean canFlipToNextPage() {
-		return currentPage.canFlipToNextPage();
-	}
+    private boolean canFlipToNextPage() {
+        return currentPage.canFlipToNextPage();
+    }
 
-	public void messageUpdated(MessageAreaModel source) {
-		updateMessage();
-	}
+    public void messageUpdated(MessageAreaModel source) {
+        updateMessage();
+    }
 
-	public void propertyChange(PropertyChangeEvent e) {
-		if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
-			updateButtons();
-		}
-		else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
-			updateTitleBar();
-		}
-	}
+    public void propertyChange(PropertyChangeEvent e) {
+        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+            updateButtons();
+        }
+        else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
+            updateTitleBar();
+        }
+    }
 }

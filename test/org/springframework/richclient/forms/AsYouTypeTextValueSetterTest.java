@@ -28,13 +28,13 @@ import org.springframework.binding.value.support.ValueHolder;
 public class AsYouTypeTextValueSetterTest extends TestCase {
 
     private ValueModel valueModel;
-    
+
     private TestableValueChangeListener valueListener;
 
     private TestableJTextComponent comp;
 
     private AsYouTypeTextValueSetter valueSetter;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         valueModel = new ValueHolder("originalValue");
@@ -71,18 +71,18 @@ public class AsYouTypeTextValueSetterTest extends TestCase {
         comp.typeText("a");
         assertEquals(valueModel.getValue(), "a");
         assertEquals(valueListener.getEventCount(), 1);
-        
+
         valueListener.reset();
         comp.typeText("bc");
         assertEquals(valueModel.getValue(), "abc");
         assertEquals(valueListener.getEventCount(), 2);
-        
+
         valueListener.reset();
         comp.setCaretPosition(1);
         comp.typeText("d");
         assertEquals(valueModel.getValue(), "adbc");
         assertEquals(valueListener.getEventCount(), 1);
-        
+
         valueListener.reset();
         comp.setCaretPosition(1);
         comp.typeBackSpace();

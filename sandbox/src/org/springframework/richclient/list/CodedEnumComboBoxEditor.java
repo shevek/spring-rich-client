@@ -78,10 +78,10 @@ public class CodedEnumComboBoxEditor implements ComboBoxEditor {
     public void setItem(Object anObject) {
         current = anObject;
         if (messages != null) {
-            inner.setItem(messages.getMessage((CodedEnum) anObject, Locale.getDefault()));
+            inner.setItem(messages.getMessage((CodedEnum)anObject, Locale.getDefault()));
         }
         else {
-            inner.setItem(((CodedEnum) anObject).getLabel());
+            inner.setItem(((CodedEnum)anObject).getLabel());
         }
     }
 }

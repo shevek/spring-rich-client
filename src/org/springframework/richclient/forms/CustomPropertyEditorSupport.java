@@ -29,36 +29,36 @@ import org.springframework.util.ObjectUtils;
  */
 public abstract class CustomPropertyEditorSupport extends PropertyEditorSupport {
 
-	public void setValue(Object value) {
-		Object old = getValue();
-		if (!ObjectUtils.nullSafeEquals(old, value)) {
-			super.setValue(value);
-		}
-	}
+    public void setValue(Object value) {
+        Object old = getValue();
+        if (!ObjectUtils.nullSafeEquals(old, value)) {
+            super.setValue(value);
+        }
+    }
 
-	public final Component getCustomEditor() {
-		return createCustomEditorControl();
-	}
+    public final Component getCustomEditor() {
+        return createCustomEditorControl();
+    }
 
-	protected abstract JComponent createCustomEditorControl();
+    protected abstract JComponent createCustomEditorControl();
 
-	public boolean supportsCustomEditor() {
-		return true;
-	}
+    public boolean supportsCustomEditor() {
+        return true;
+    }
 
-	public JComponent bind(JTextComponent component, PropertyEditor customPropertyEditor) {
-		return bind(component, customPropertyEditor, ValueCommitPolicy.AS_YOU_TYPE);
-	}
+    public JComponent bind(JTextComponent component, PropertyEditor customPropertyEditor) {
+        return bind(component, customPropertyEditor, ValueCommitPolicy.AS_YOU_TYPE);
+    }
 
-	public JComponent bind(JTextComponent component, final PropertyEditor customPropertyEditor, ValueCommitPolicy policy) {
-		if (policy == ValueCommitPolicy.AS_YOU_TYPE) {
-			new AsYouTypeTextValueSetter(component) {
-				protected void componentValueChanged(Object newValue) {
-					customPropertyEditor.setAsText((String)newValue);
-				}
-			};
-		}
-		return component;
-	}
+    public JComponent bind(JTextComponent component, final PropertyEditor customPropertyEditor, ValueCommitPolicy policy) {
+        if (policy == ValueCommitPolicy.AS_YOU_TYPE) {
+            new AsYouTypeTextValueSetter(component) {
+                protected void componentValueChanged(Object newValue) {
+                    customPropertyEditor.setAsText((String)newValue);
+                }
+            };
+        }
+        return component;
+    }
 
 }

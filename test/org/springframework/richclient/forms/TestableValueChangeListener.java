@@ -25,22 +25,22 @@ import org.springframework.binding.value.ValueChangeListener;
 public class TestableValueChangeListener implements ValueChangeListener {
 
     private int eventCount = 0;
-    
+
     /**
      * Resets the event count back to zero.
      */
     public void reset() {
         eventCount = 0;
     }
-    
+
     /**
      * Gets the number of events this listener has reveived.
      */
     public int getEventCount() {
         return eventCount;
     }
-    
+
     public void valueChanged() {
         eventCount++;
-    } 
+    }
 }

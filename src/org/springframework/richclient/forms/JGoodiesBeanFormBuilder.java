@@ -30,47 +30,47 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements BeanFormBuilder {
 
-	private JGoodiesFormBuilder formBuilder;
+    private JGoodiesFormBuilder formBuilder;
 
-	public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout) {
-		this(formModel, formLayout, Application.services().getComponentFactory());
-	}
+    public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout) {
+        this(formModel, formLayout, Application.services().getComponentFactory());
+    }
 
-	public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout, ComponentFactory componentFactory) {
-		super(formModel);
-		this.formBuilder = new JGoodiesFormBuilder(formLayout, componentFactory);
-		setComponentFactory(componentFactory);
-	}
+    public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout, ComponentFactory componentFactory) {
+        super(formModel);
+        this.formBuilder = new JGoodiesFormBuilder(formLayout, componentFactory);
+        setComponentFactory(componentFactory);
+    }
 
-	public JGoodiesFormBuilder getWrappedFormBuilder() {
-		return formBuilder;
-	}
+    public JGoodiesFormBuilder getWrappedFormBuilder() {
+        return formBuilder;
+    }
 
-	public DefaultFormBuilder getDefaultFormBuilder() {
-		return formBuilder.getDefaultFormBuilder();
-	}
+    public DefaultFormBuilder getDefaultFormBuilder() {
+        return formBuilder.getDefaultFormBuilder();
+    }
 
-	public JComponent getForm() {
-		return formBuilder.getForm();
-	}
+    public JComponent getForm() {
+        return formBuilder.getForm();
+    }
 
-	public JComponent[] add(String formPropertyPath) {
-		JComponent component = getDefaultComponent(formPropertyPath);
-		return formBuilder.add(getLabelFor(formPropertyPath, component), component);
-	}
+    public JComponent[] add(String formPropertyPath) {
+        JComponent component = getDefaultComponent(formPropertyPath);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
+    }
 
-	public JComponent[] addSelector(String formPropertyPath, Constraint filter) {
-		JComponent component = getSelector(formPropertyPath, filter);
-		return formBuilder.add(getLabelFor(formPropertyPath, component), component);
-	}
+    public JComponent[] addSelector(String formPropertyPath, Constraint filter) {
+        JComponent component = getSelector(formPropertyPath, filter);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
+    }
 
-	public JComponent[] addPasswordField(String formPropertyPath) {
-		JComponent component = getPasswordField(formPropertyPath);
-		return formBuilder.add(getLabelFor(formPropertyPath, component), component);
-	}
+    public JComponent[] addPasswordField(String formPropertyPath) {
+        JComponent component = getPasswordField(formPropertyPath);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
+    }
 
-	public JComponent[] addTextArea(String formPropertyPath) {
-		JComponent component = getTextArea(formPropertyPath);
-		return formBuilder.add(getLabelFor(formPropertyPath, component), "left,top", component);
-	}
+    public JComponent[] addTextArea(String formPropertyPath) {
+        JComponent component = getTextArea(formPropertyPath);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), "left,top", component);
+    }
 }

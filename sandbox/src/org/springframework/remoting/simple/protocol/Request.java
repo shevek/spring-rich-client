@@ -22,10 +22,13 @@ import java.util.Map;
 
 public class Request implements Serializable {
     private String serviceInterfaceName;
+
     private String methodDesc;
-    private Object[] args; 
+
+    private Object[] args;
+
     private Map metaData;
-    
+
     public Request(Class serviceInterface, Method method, Object[] args) {
         this.serviceInterfaceName = serviceInterface.getName();
         this.methodDesc = method.toString();
@@ -39,19 +42,19 @@ public class Request implements Serializable {
     public String getMethodDesc() {
         return methodDesc;
     }
-    
+
     public Object[] getArgs() {
         return args;
     }
-    
+
     public void putMetaData(Object key, Object value) {
         getMetaData().put(key, value);
     }
-    
+
     public Object getMetaData(Object key) {
         return getMetaData().get(key);
     }
-    
+
     private Map getMetaData() {
         if (metaData == null) {
             metaData = new HashMap();

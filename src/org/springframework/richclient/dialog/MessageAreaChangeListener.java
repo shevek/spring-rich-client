@@ -25,11 +25,11 @@ import java.util.EventListener;
  */
 public interface MessageAreaChangeListener extends EventListener {
 
-	/**
-	 * Invoked when the messages have been updated.
-	 * 
-	 * @param source
-	 *            the MessageReceiver that has been updated
-	 */
-	public void messageUpdated(MessageAreaModel source);
+    /**
+     * Invoked when the messages have been updated.
+     * 
+     * @param source
+     *            the MessageReceiver that has been updated
+     */
+    public void messageUpdated(MessageAreaModel source);
 }

@@ -14,7 +14,7 @@ import net.sf.acegisecurity.Authentication;
  * @author Ben Alex
  */
 public class LoginEvent extends ClientSecurityEvent {
-	public LoginEvent(Authentication authentication) {
-		super(authentication);
-	}
+    public LoginEvent(Authentication authentication) {
+        super(authentication);
+    }
 }

@@ -29,117 +29,117 @@ import org.springframework.util.ObjectUtils;
  * @author Keith Donald
  */
 public class ComboBoxListModel extends ListListModel implements ComboBoxModel, MutableComboBoxModel {
-	private Object selectedItem;
+    private Object selectedItem;
 
-	private Comparator sorter;
+    private Comparator sorter;
 
-	public ComboBoxListModel() {
-		this(new ArrayList(9));
-	}
+    public ComboBoxListModel() {
+        this(new ArrayList(9));
+    }
 
-	public ComboBoxListModel(List items) {
-		super(items);
-		if (getSize() > 0) {
-			selectedItem = getElementAt(0);
-		}
-	}
+    public ComboBoxListModel(List items) {
+        super(items);
+        if (getSize() > 0) {
+            selectedItem = getElementAt(0);
+        }
+    }
 
-	public ComboBoxListModel(List items, Comparator sorter) {
-		super(items, sorter);
-		if (getSize() > 0) {
-			selectedItem = getElementAt(0);
-		}
-	}
+    public ComboBoxListModel(List items, Comparator sorter) {
+        super(items, sorter);
+        if (getSize() > 0) {
+            selectedItem = getElementAt(0);
+        }
+    }
 
-	public Object getSelectedItem() {
-		return selectedItem;
-	}
+    public Object getSelectedItem() {
+        return selectedItem;
+    }
 
-	public void setSelectedItem(Object anItem) {
-		if (!ObjectUtils.nullSafeEquals(selectedItem, anItem)) {
-			this.selectedItem = anItem;
-			if (this.selectedItem == null) {
-				setSelectedItemOnNullValue();
-			}
-			fireContentsChanged(this, -1, -1);
-		}
-	}
+    public void setSelectedItem(Object anItem) {
+        if (!ObjectUtils.nullSafeEquals(selectedItem, anItem)) {
+            this.selectedItem = anItem;
+            if (this.selectedItem == null) {
+                setSelectedItemOnNullValue();
+            }
+            fireContentsChanged(this, -1, -1);
+        }
+    }
 
-	public void add(int index, Object o) {
-		super.add(index, o);
-		setSelectedItemIfNecessary(o);
-	}
+    public void add(int index, Object o) {
+        super.add(index, o);
+        setSelectedItemIfNecessary(o);
+    }
 
-	protected void setSelectedItemOnNullValue() {
-		setSelectedItemIfNecessary(null);
-	}
+    protected void setSelectedItemOnNullValue() {
+        setSelectedItemIfNecessary(null);
+    }
 
-	protected void setSelectedItemIfNecessary(Object o) {
-		if (getItems().size() > 0 && getSelectedItem() == null) {
-			if (o != null) {
-				setSelectedItem(o);
-			}
-			else {
-				setSelectedItem(getItems().get(0));
-			}
-		}
-	}
+    protected void setSelectedItemIfNecessary(Object o) {
+        if (getItems().size() > 0 && getSelectedItem() == null) {
+            if (o != null) {
+                setSelectedItem(o);
+            }
+            else {
+                setSelectedItem(getItems().get(0));
+            }
+        }
+    }
 
-	public boolean add(Object o) {
-		boolean result = super.add(o);
-		if (result) {
-			setSelectedItemIfNecessary(o);
-		}
-		return result;
-	}
+    public boolean add(Object o) {
+        boolean result = super.add(o);
+        if (result) {
+            setSelectedItemIfNecessary(o);
+        }
+        return result;
+    }
 
-	public boolean addAll(Collection c) {
-		boolean result = super.addAll(c);
-		if (result) {
-			setSelectedItemIfNecessary(null);
-		}
-		return result;
-	}
+    public boolean addAll(Collection c) {
+        boolean result = super.addAll(c);
+        if (result) {
+            setSelectedItemIfNecessary(null);
+        }
+        return result;
+    }
 
-	public boolean addAll(int index, Collection c) {
-		boolean result = super.addAll(index, c);
-		if (result) {
-			setSelectedItemIfNecessary(null);
-		}
-		return result;
-	}
+    public boolean addAll(int index, Collection c) {
+        boolean result = super.addAll(index, c);
+        if (result) {
+            setSelectedItemIfNecessary(null);
+        }
+        return result;
+    }
 
-	public void clear() {
-		super.clear();
-		this.selectedItem = null;
-	}
+    public void clear() {
+        super.clear();
+        this.selectedItem = null;
+    }
 
-	public Object remove(int index) {
-		if (get(index) == selectedItem) {
-			if (index == 0) {
-				setSelectedItem(getSize() == 1 ? null : get(index + 1));
-			}
-			else {
-				setSelectedItem(get(index - 1));
-			}
-		}
-		return super.remove(index);
-	}
+    public Object remove(int index) {
+        if (get(index) == selectedItem) {
+            if (index == 0) {
+                setSelectedItem(getSize() == 1 ? null : get(index + 1));
+            }
+            else {
+                setSelectedItem(get(index - 1));
+            }
+        }
+        return super.remove(index);
+    }
 
-	public void addElement(Object anObject) {
-		add(anObject);
-	}
+    public void addElement(Object anObject) {
+        add(anObject);
+    }
 
-	public void insertElementAt(Object anObject, int index) {
-		add(index, anObject);
-	}
+    public void insertElementAt(Object anObject, int index) {
+        add(index, anObject);
+    }
 
-	public void removeElementAt(int index) {
-		remove(index);
-	}
+    public void removeElementAt(int index) {
+        remove(index);
+    }
 
-	public void removeElement(Object o) {
-		remove(o);
-	}
+    public void removeElement(Object o) {
+        remove(o);
+    }
 
 }

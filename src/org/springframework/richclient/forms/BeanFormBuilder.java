@@ -20,13 +20,13 @@ import javax.swing.JComponent;
 import org.springframework.util.closure.Constraint;
 
 public interface BeanFormBuilder {
-	public JComponent[] add(String formPropertyPath);
+    public JComponent[] add(String formPropertyPath);
 
-	public JComponent[] addSelector(String formPropertyPath, Constraint filter);
+    public JComponent[] addSelector(String formPropertyPath, Constraint filter);
 
-	public JComponent[] addPasswordField(String formPropertyPath);
+    public JComponent[] addPasswordField(String formPropertyPath);
 
-	public JComponent[] addTextArea(String formPropertyPath);
+    public JComponent[] addTextArea(String formPropertyPath);
 
-	public JComponent getForm();
+    public JComponent getForm();
 }

@@ -15,11 +15,11 @@ package org.springframework.richclient.core;
  */
 public interface TitleConfigurable {
 
-	/**
-	 * Sets the title.
-	 * 
-	 * @param title
-	 *            the title
-	 */
-	public void setTitle(String title);
+    /**
+     * Sets the title.
+     * 
+     * @param title
+     *            the title
+     */
+    public void setTitle(String title);
 }

@@ -24,9 +24,7 @@ import org.springframework.util.Assert;
  * </pre>
  * @author peter.de.bruycker
  */
-public abstract class ListStatusBarUpdater
-    extends ListSelectionListenerSupport
-    implements ListSelectionListener {
+public abstract class ListStatusBarUpdater extends ListSelectionListenerSupport implements ListSelectionListener {
 
     private StatusBarCommandGroup statusBar;
 

@@ -70,7 +70,6 @@ public class ImageSourceTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        context = new ClassPathXmlApplicationContext(
-                "org/springframework/richclient/image/application-context.xml");
+        context = new ClassPathXmlApplicationContext("org/springframework/richclient/image/application-context.xml");
     }
 }

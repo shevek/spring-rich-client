@@ -19,34 +19,34 @@ import javax.swing.JRadioButtonMenuItem;
  */
 public class DefaultMenuFactory implements MenuFactory {
 
-	private static final MenuFactory INSTANCE = new DefaultMenuFactory();
+    private static final MenuFactory INSTANCE = new DefaultMenuFactory();
 
-	public static final MenuFactory instance() {
-		return INSTANCE;
-	}
+    public static final MenuFactory instance() {
+        return INSTANCE;
+    }
 
-	public JMenu createMenu() {
-		return new JMenu();
-	}
+    public JMenu createMenu() {
+        return new JMenu();
+    }
 
-	public JMenuItem createMenuItem() {
-		return new JMenuItem();
-	}
+    public JMenuItem createMenuItem() {
+        return new JMenuItem();
+    }
 
-	public JCheckBoxMenuItem createCheckBoxMenuItem() {
-		return new JCheckBoxMenuItem();
-	}
+    public JCheckBoxMenuItem createCheckBoxMenuItem() {
+        return new JCheckBoxMenuItem();
+    }
 
-	public JRadioButtonMenuItem createRadioButtonMenuItem() {
-		return new JRadioButtonMenuItem();
-	}
+    public JRadioButtonMenuItem createRadioButtonMenuItem() {
+        return new JRadioButtonMenuItem();
+    }
 
-	public JPopupMenu createPopupMenu() {
-		return new JPopupMenu();
-	}
+    public JPopupMenu createPopupMenu() {
+        return new JPopupMenu();
+    }
 
-	public JMenuBar createMenuBar() {
-		return new JMenuBar();
-	}
+    public JMenuBar createMenuBar() {
+        return new JMenuBar();
+    }
 
 }

@@ -40,71 +40,71 @@ import org.springframework.richclient.treetable.JTreeTable;
  * @see BeanPropertyInspector
  */
 public class DefaultBeanPropertyInspector implements BeanPropertyInspector {
-	private Object bean;
+    private Object bean;
 
-	private JTreeTable beanInspector;
+    private JTreeTable beanInspector;
 
-	private BeanInspectorTreeModel beanInspectorModel;
+    private BeanInspectorTreeModel beanInspectorModel;
 
-	public DefaultBeanPropertyInspector() {
+    public DefaultBeanPropertyInspector() {
 
-	}
+    }
 
-	public String getBeanClassName() {
-		return bean.getClass().getName();
-	}
+    public String getBeanClassName() {
+        return bean.getClass().getName();
+    }
 
-	public void setBean(Object bean) {
-		this.bean = bean;
-	}
+    public void setBean(Object bean) {
+        this.bean = bean;
+    }
 
-	public JComponent getControl() {
-		if (beanInspector == null) {
-			initializeTreeTable();
-		}
-		return beanInspector;
-	}
+    public JComponent getControl() {
+        if (beanInspector == null) {
+            initializeTreeTable();
+        }
+        return beanInspector;
+    }
 
-	private void initializeTreeTable() {
-		beanInspectorModel = new BeanInspectorTreeModel(bean);
-		beanInspector = new JTreeTable(beanInspectorModel);
-		TableUtils.installDefaultRenderers(beanInspector);
-		//@REFACTOR
-		DateTimeTableCellRenderer r = new DateTimeTableCellRenderer(TimeZone.getTimeZone("GMT"));
-		beanInspector.setDefaultRenderer(Date.class, r);
-		TableColumn col = beanInspector.getColumnModel().getColumn(1);
-		col.setCellRenderer(new BeanValueCellRenderer());
-		JTree tree = beanInspector.getTree();
-		tree.setCellRenderer(new BeanInspectorRenderer());
-		tree.setRootVisible(true);
-		tree.setShowsRootHandles(true);
-	}
+    private void initializeTreeTable() {
+        beanInspectorModel = new BeanInspectorTreeModel(bean);
+        beanInspector = new JTreeTable(beanInspectorModel);
+        TableUtils.installDefaultRenderers(beanInspector);
+        //@REFACTOR
+        DateTimeTableCellRenderer r = new DateTimeTableCellRenderer(TimeZone.getTimeZone("GMT"));
+        beanInspector.setDefaultRenderer(Date.class, r);
+        TableColumn col = beanInspector.getColumnModel().getColumn(1);
+        col.setCellRenderer(new BeanValueCellRenderer());
+        JTree tree = beanInspector.getTree();
+        tree.setCellRenderer(new BeanInspectorRenderer());
+        tree.setRootVisible(true);
+        tree.setShowsRootHandles(true);
+    }
 
-	private class BeanValueCellRenderer extends OptimizedTableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			TableCellRenderer r = null;
-			if (value != null) {
-				r = beanInspector.getDefaultRenderer(value.getClass());
-			}
-			if (r == null) {
-				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				if (value != null) {
-					if (CodedEnum.class.isAssignableFrom(value.getClass())) {
-						setText(((CodedEnum)value).getLabel());
-					}
-				}
-				setHorizontalAlignment(SwingConstants.LEFT);
-				return this;
-			}
-			else {
-				Component c = r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				if (c instanceof JLabel) {
-					((JLabel)c).setHorizontalAlignment(SwingConstants.LEFT);
-				}
-				return c;
-			}
-		}
+    private class BeanValueCellRenderer extends OptimizedTableCellRenderer {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+            TableCellRenderer r = null;
+            if (value != null) {
+                r = beanInspector.getDefaultRenderer(value.getClass());
+            }
+            if (r == null) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (value != null) {
+                    if (CodedEnum.class.isAssignableFrom(value.getClass())) {
+                        setText(((CodedEnum)value).getLabel());
+                    }
+                }
+                setHorizontalAlignment(SwingConstants.LEFT);
+                return this;
+            }
+            else {
+                Component c = r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (c instanceof JLabel) {
+                    ((JLabel)c).setHorizontalAlignment(SwingConstants.LEFT);
+                }
+                return c;
+            }
+        }
 
-	}
+    }
 }

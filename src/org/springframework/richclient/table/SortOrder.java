@@ -19,30 +19,30 @@ package org.springframework.richclient.table;
  * @author Keith Donald
  */
 public class SortOrder {
-	public static final SortOrder ASCENDING = new SortOrder(0);
+    public static final SortOrder ASCENDING = new SortOrder(0);
 
-	public static final SortOrder DESCENDING = new SortOrder(1);
+    public static final SortOrder DESCENDING = new SortOrder(1);
 
-	private int value;
+    private int value;
 
-	private SortOrder(int value) {
-		this.value = value;
-	}
+    private SortOrder(int value) {
+        this.value = value;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 
-	public SortOrder flip() {
-		if (this == SortOrder.ASCENDING) {
-			return SortOrder.DESCENDING;
-		}
-		else {
-			return SortOrder.ASCENDING;
-		}
-	}
+    public SortOrder flip() {
+        if (this == SortOrder.ASCENDING) {
+            return SortOrder.DESCENDING;
+        }
+        else {
+            return SortOrder.ASCENDING;
+        }
+    }
 
-	public String toString() {
-		return new StringBuffer().append(value).toString();
-	}
+    public String toString() {
+        return new StringBuffer().append(value).toString();
+    }
 }

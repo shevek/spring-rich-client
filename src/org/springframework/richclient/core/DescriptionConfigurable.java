@@ -22,13 +22,13 @@ package org.springframework.richclient.core;
  */
 public interface DescriptionConfigurable {
 
-	/**
-	 * @param shortDescription
-	 */
-	public void setCaption(String shortDescription);
+    /**
+     * @param shortDescription
+     */
+    public void setCaption(String shortDescription);
 
-	/**
-	 * @param longDescription
-	 */
-	public void setDescription(String longDescription);
+    /**
+     * @param longDescription
+     */
+    public void setDescription(String longDescription);
 }

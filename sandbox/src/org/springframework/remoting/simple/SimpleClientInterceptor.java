@@ -33,7 +33,7 @@ public class SimpleClientInterceptor implements MethodInterceptor {
     private Class serviceInterface;
 
     private Transport transport;
-    
+
     public SimpleClientInterceptor(Class serviceInterface, Transport transport) {
         this.serviceInterface = serviceInterface;
         this.transport = transport;
@@ -45,29 +45,28 @@ public class SimpleClientInterceptor implements MethodInterceptor {
         Class[] paramTypes = method.getParameterTypes();
         Object[] args = invocation.getArguments();
 
-        if (! serviceImplementsMethod(method)) {
-            if ("equals".equals(methodName) && paramTypes.length == 1
-                    && paramTypes[0].equals(Object.class)) {
+        if (!serviceImplementsMethod(method)) {
+            if ("equals".equals(methodName) && paramTypes.length == 1 && paramTypes[0].equals(Object.class)) {
                 return Boolean.valueOf(checkEqual(invocation.getThis()));
             }
-            else if ("hashCode".equals(methodName) && paramTypes.length == 0) { return new Integer(
-                    serviceInterface.hashCode() ^ transport.hashCode()); }
+            else if ("hashCode".equals(methodName) && paramTypes.length == 0) {
+                return new Integer(serviceInterface.hashCode() ^ transport.hashCode());
+            }
             throw new SimpleRemotingException("Method [" + method.toString()
-                    + "] is not provided by serviceInterface ["
-                    + serviceInterface + "].");
+                    + "] is not provided by serviceInterface [" + serviceInterface + "].");
         }
 
         return transport.invokeRemoteMethod(serviceInterface, method, args);
     }
-    
+
     protected Class getServiceInterface() {
         return serviceInterface;
     }
-    
+
     protected Transport getTransport() {
         return transport;
     }
-    
+
     private boolean serviceImplementsMethod(Method method) {
         Method[] methods = serviceInterface.getMethods();
         for (int i = 0; i < methods.length; i++) {
@@ -77,18 +76,18 @@ public class SimpleClientInterceptor implements MethodInterceptor {
         }
         return false;
     }
-    
+
     private boolean checkEqual(Object o2) {
         if (o2 instanceof Advised) {
-            Advisor[] advisors = ((Advised) o2).getAdvisors();
+            Advisor[] advisors = ((Advised)o2).getAdvisors();
             for (int i = 0; i < advisors.length; i++) {
                 Advice advice = advisors[i].getAdvice();
                 if (advice instanceof SimpleClientInterceptor) {
-                    SimpleClientInterceptor interceptor2 = (SimpleClientInterceptor) advice;
+                    SimpleClientInterceptor interceptor2 = (SimpleClientInterceptor)advice;
                     return serviceInterface.equals(interceptor2.getServiceInterface())
-                         && transport.equals(interceptor2.getTransport());
-                }                
-            }            
+                            && transport.equals(interceptor2.getTransport());
+                }
+            }
         }
         return false;
     }

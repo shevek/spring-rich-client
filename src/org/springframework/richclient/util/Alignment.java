@@ -16,11 +16,11 @@ import org.springframework.enums.ShortCodedEnum;
  * @author Keith Donald
  */
 public class Alignment extends ShortCodedEnum {
-	public static final Alignment LEFT = new Alignment(SwingConstants.LEFT, "Left");
+    public static final Alignment LEFT = new Alignment(SwingConstants.LEFT, "Left");
 
-	public static final Alignment RIGHT = new Alignment(SwingConstants.RIGHT, "Right");
+    public static final Alignment RIGHT = new Alignment(SwingConstants.RIGHT, "Right");
 
-	private Alignment(int code, String label) {
-		super(code, label);
-	}
+    private Alignment(int code, String label) {
+        super(code, label);
+    }
 }

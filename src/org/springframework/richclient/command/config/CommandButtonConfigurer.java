@@ -23,5 +23,5 @@ import org.springframework.richclient.command.AbstractCommand;
  * @author Keith Donald
  */
 public interface CommandButtonConfigurer {
-	public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor);
+    public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor);
 }

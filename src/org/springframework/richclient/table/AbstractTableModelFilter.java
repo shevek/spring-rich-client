@@ -28,52 +28,52 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class AbstractTableModelFilter extends AbstractTableModel implements TableModelListener {
-	protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected TableModel filteredModel;
+    protected TableModel filteredModel;
 
-	public AbstractTableModelFilter(TableModel model) {
-		Assert.notNull(model);
-		this.filteredModel = model;
-		this.filteredModel.addTableModelListener(this);
-	}
+    public AbstractTableModelFilter(TableModel model) {
+        Assert.notNull(model);
+        this.filteredModel = model;
+        this.filteredModel.addTableModelListener(this);
+    }
 
-	public TableModel getFilteredModel() {
-		return filteredModel;
-	}
+    public TableModel getFilteredModel() {
+        return filteredModel;
+    }
 
-	// By default, implement TableModel by forwarding all messages
-	// to the model.
-	public Object getValueAt(int aRow, int aColumn) {
-		return filteredModel.getValueAt(aRow, aColumn);
-	}
+    // By default, implement TableModel by forwarding all messages
+    // to the model.
+    public Object getValueAt(int aRow, int aColumn) {
+        return filteredModel.getValueAt(aRow, aColumn);
+    }
 
-	public void setValueAt(Object aValue, int aRow, int aColumn) {
-		filteredModel.setValueAt(aValue, aRow, aColumn);
-	}
+    public void setValueAt(Object aValue, int aRow, int aColumn) {
+        filteredModel.setValueAt(aValue, aRow, aColumn);
+    }
 
-	public int getRowCount() {
-		return filteredModel.getRowCount();
-	}
+    public int getRowCount() {
+        return filteredModel.getRowCount();
+    }
 
-	public int getColumnCount() {
-		return filteredModel.getColumnCount();
-	}
+    public int getColumnCount() {
+        return filteredModel.getColumnCount();
+    }
 
-	public String getColumnName(int aColumn) {
-		return filteredModel.getColumnName(aColumn);
-	}
+    public String getColumnName(int aColumn) {
+        return filteredModel.getColumnName(aColumn);
+    }
 
-	public Class getColumnClass(int aColumn) {
-		return filteredModel.getColumnClass(aColumn);
-	}
+    public Class getColumnClass(int aColumn) {
+        return filteredModel.getColumnClass(aColumn);
+    }
 
-	public boolean isCellEditable(int row, int column) {
-		return filteredModel.isCellEditable(row, column);
-	}
+    public boolean isCellEditable(int row, int column) {
+        return filteredModel.isCellEditable(row, column);
+    }
 
-	// By default forward all events to all the listeners.
-	public void tableChanged(TableModelEvent e) {
-		fireTableChanged(e);
-	}
+    // By default forward all events to all the listeners.
+    public void tableChanged(TableModelEvent e) {
+        fireTableChanged(e);
+    }
 }

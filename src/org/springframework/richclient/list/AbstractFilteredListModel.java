@@ -28,38 +28,38 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public abstract class AbstractFilteredListModel extends AbstractListModel implements ListDataListener {
-	protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected ListModel filteredModel;
+    protected ListModel filteredModel;
 
-	public AbstractFilteredListModel(ListModel model) {
-		Assert.notNull(model);
-		this.filteredModel = model;
-		this.filteredModel.addListDataListener(this);
-	}
+    public AbstractFilteredListModel(ListModel model) {
+        Assert.notNull(model);
+        this.filteredModel = model;
+        this.filteredModel.addListDataListener(this);
+    }
 
-	protected ListModel getFilteredModel() {
-		return filteredModel;
-	}
+    protected ListModel getFilteredModel() {
+        return filteredModel;
+    }
 
-	public Object getElementAt(int index) {
-		return filteredModel.getElementAt(index);
-	}
+    public Object getElementAt(int index) {
+        return filteredModel.getElementAt(index);
+    }
 
-	public int getSize() {
-		return filteredModel.getSize();
-	}
+    public int getSize() {
+        return filteredModel.getSize();
+    }
 
-	public void contentsChanged(ListDataEvent e) {
-		fireContentsChanged(e.getSource(), e.getIndex0(), e.getIndex1());
-	}
+    public void contentsChanged(ListDataEvent e) {
+        fireContentsChanged(e.getSource(), e.getIndex0(), e.getIndex1());
+    }
 
-	public void intervalAdded(ListDataEvent e) {
-		fireIntervalAdded(e.getSource(), e.getIndex0(), e.getIndex1());
-	}
+    public void intervalAdded(ListDataEvent e) {
+        fireIntervalAdded(e.getSource(), e.getIndex0(), e.getIndex1());
+    }
 
-	public void intervalRemoved(ListDataEvent e) {
-		fireIntervalRemoved(e.getSource(), e.getIndex0(), e.getIndex1());
-	}
+    public void intervalRemoved(ListDataEvent e) {
+        fireIntervalRemoved(e.getSource(), e.getIndex0(), e.getIndex1());
+    }
 
 }

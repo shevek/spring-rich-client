@@ -27,113 +27,113 @@ import org.springframework.richclient.core.UIConstants;
  */
 public class GridBagCellConstraints {
 
-	public static Insets RIGHT_INSETS = new Insets(0, 0, 0, UIConstants.ONE_SPACE);
+    public static Insets RIGHT_INSETS = new Insets(0, 0, 0, UIConstants.ONE_SPACE);
 
-	public static Insets LEFT_INSETS = new Insets(0, UIConstants.ONE_SPACE, 0, 0);
+    public static Insets LEFT_INSETS = new Insets(0, UIConstants.ONE_SPACE, 0, 0);
 
-	public static Insets TOP_INSETS = new Insets(UIConstants.ONE_SPACE, 0, 0, 0);
+    public static Insets TOP_INSETS = new Insets(UIConstants.ONE_SPACE, 0, 0, 0);
 
-	public static Insets BOTTOM_INSETS = new Insets(0, 0, UIConstants.ONE_SPACE, 0);
+    public static Insets BOTTOM_INSETS = new Insets(0, 0, UIConstants.ONE_SPACE, 0);
 
-	public static Insets TITLE_LABEL_INSETS = new Insets(0, 0, UIConstants.ONE_SPACE, UIConstants.ONE_SPACE);
+    public static Insets TITLE_LABEL_INSETS = new Insets(0, 0, UIConstants.ONE_SPACE, UIConstants.ONE_SPACE);
 
-	public static Insets RIGHT_INSETS_TWO_SPACES = new Insets(0, 0, 0, UIConstants.ONE_SPACE);
+    public static Insets RIGHT_INSETS_TWO_SPACES = new Insets(0, 0, 0, UIConstants.ONE_SPACE);
 
-	public static Insets EVEN_INSETS = new Insets(UIConstants.ONE_SPACE, UIConstants.ONE_SPACE, UIConstants.ONE_SPACE,
-			UIConstants.ONE_SPACE);
+    public static Insets EVEN_INSETS = new Insets(UIConstants.ONE_SPACE, UIConstants.ONE_SPACE, UIConstants.ONE_SPACE,
+            UIConstants.ONE_SPACE);
 
-	public GridBagConstraints xy(int x, int y) {
-		int low = 0;
-		int high = 10;
-		GridBagConstraints result = new GridBagConstraints();
-		result.gridx = x;
-		result.gridy = y;
-		return result;
-	}
+    public GridBagConstraints xy(int x, int y) {
+        int low = 0;
+        int high = 10;
+        GridBagConstraints result = new GridBagConstraints();
+        result.gridx = x;
+        result.gridy = y;
+        return result;
+    }
 
-	public GridBagConstraints xywh(int x, int y, int width, int height) {
-		int low = 0;
-		int high = 10;
-		GridBagConstraints result = xy(x, y);
-		result.gridheight = height;
-		result.gridwidth = width;
-		return result;
-	}
+    public GridBagConstraints xywh(int x, int y, int width, int height) {
+        int low = 0;
+        int high = 10;
+        GridBagConstraints result = xy(x, y);
+        result.gridheight = height;
+        result.gridwidth = width;
+        return result;
+    }
 
-	public GridBagConstraints xyf(int x, int y, int fill) {
-		return xyfi(x, y, fill, null);
-	}
+    public GridBagConstraints xyf(int x, int y, int fill) {
+        return xyfi(x, y, fill, null);
+    }
 
-	public GridBagConstraints xyfi(int x, int y, int fill, Insets insets) {
-		GridBagConstraints result = xy(x, y);
-		result.fill = fill;
-		if (insets != null) {
-			result.insets = insets;
-		}
-		switch (result.fill) {
-		case GridBagConstraints.NONE: {
-		}
-			break;
-		case GridBagConstraints.BOTH: {
-			result.weightx = result.weighty = 1.0;
-		}
-			break;
-		case GridBagConstraints.VERTICAL: {
-			result.weighty = 1.0;
-		}
-			break;
-		case GridBagConstraints.HORIZONTAL: {
-			result.weightx = 1.0;
-		}
-			break;
-		default: {
-			result.fill = GridBagConstraints.NONE;
-		}
-			break;
-		}
-		return result;
-	}
+    public GridBagConstraints xyfi(int x, int y, int fill, Insets insets) {
+        GridBagConstraints result = xy(x, y);
+        result.fill = fill;
+        if (insets != null) {
+            result.insets = insets;
+        }
+        switch (result.fill) {
+        case GridBagConstraints.NONE: {
+        }
+            break;
+        case GridBagConstraints.BOTH: {
+            result.weightx = result.weighty = 1.0;
+        }
+            break;
+        case GridBagConstraints.VERTICAL: {
+            result.weighty = 1.0;
+        }
+            break;
+        case GridBagConstraints.HORIZONTAL: {
+            result.weightx = 1.0;
+        }
+            break;
+        default: {
+            result.fill = GridBagConstraints.NONE;
+        }
+            break;
+        }
+        return result;
+    }
 
-	public GridBagConstraints xya(int x, int y, int anchor) {
-		GridBagConstraints result = xy(x, y);
-		result.anchor = anchor;
-		return result;
-	}
+    public GridBagConstraints xya(int x, int y, int anchor) {
+        GridBagConstraints result = xy(x, y);
+        result.anchor = anchor;
+        return result;
+    }
 
-	public GridBagConstraints xyaf(int x, int y, int anchor, int fill) {
-		return xyaf(x, y, anchor, fill, null);
-	}
+    public GridBagConstraints xyaf(int x, int y, int anchor, int fill) {
+        return xyaf(x, y, anchor, fill, null);
+    }
 
-	public GridBagConstraints xyaf(int x, int y, int anchor, int fill, Insets insets) {
-		GridBagConstraints result = xyfi(x, y, fill, insets);
-		result.anchor = anchor;
-		return result;
-	}
+    public GridBagConstraints xyaf(int x, int y, int anchor, int fill, Insets insets) {
+        GridBagConstraints result = xyfi(x, y, fill, insets);
+        result.anchor = anchor;
+        return result;
+    }
 
-	public GridBagConstraints title(int x, int y) {
-		GridBagConstraints result = xy(x, y);
-		result.anchor = GridBagConstraints.WEST;
-		result.insets = TITLE_LABEL_INSETS;
-		return result;
-	}
+    public GridBagConstraints title(int x, int y) {
+        GridBagConstraints result = xy(x, y);
+        result.anchor = GridBagConstraints.WEST;
+        result.insets = TITLE_LABEL_INSETS;
+        return result;
+    }
 
-	public GridBagConstraints label(int x, int y) {
-		return label(x, y, RIGHT_INSETS);
-	}
+    public GridBagConstraints label(int x, int y) {
+        return label(x, y, RIGHT_INSETS);
+    }
 
-	public GridBagConstraints label(int x, int y, Insets insets) {
-		GridBagConstraints result = xy(x, y);
-		result.anchor = GridBagConstraints.WEST;
-		result.insets = insets;
-		return result;
-	}
+    public GridBagConstraints label(int x, int y, Insets insets) {
+        GridBagConstraints result = xy(x, y);
+        result.anchor = GridBagConstraints.WEST;
+        result.insets = insets;
+        return result;
+    }
 
-	public GridBagConstraints textField(int x, int y) {
-		return xyf(x, y, GridBagConstraints.HORIZONTAL);
-	}
+    public GridBagConstraints textField(int x, int y) {
+        return xyf(x, y, GridBagConstraints.HORIZONTAL);
+    }
 
-	public GridBagConstraints textField(int x, int y, Insets insets) {
-		return xyfi(x, y, GridBagConstraints.HORIZONTAL, insets);
-	}
+    public GridBagConstraints textField(int x, int y, Insets insets) {
+        return xyfi(x, y, GridBagConstraints.HORIZONTAL, insets);
+    }
 
 }

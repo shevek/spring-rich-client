@@ -26,34 +26,34 @@ import java.util.List;
  */
 public abstract class ListTableModel extends BaseTableModel {
 
-	public ListTableModel() {
-		super();
-	}
+    public ListTableModel() {
+        super();
+    }
 
-	public ListTableModel(List rows) {
-		super(rows);
-	}
+    public ListTableModel(List rows) {
+        super(rows);
+    }
 
-	protected Object getValueAtInternal(Object row, int columnIndex) {
-		if (getDataColumnCount() > 1) {
-			if (row.getClass().isArray()) {
-				Object[] arrayRow = (Object[])row;
-				return arrayRow[columnIndex];
-			}
-			else if (row instanceof List) {
-				return ((List)row).get(columnIndex);
-			}
-			else {
-				throw new IllegalArgumentException("Unsupported row collection type " + row);
-			}
-		}
-		else {
-			if (row != null & row.getClass().isArray()) {
-				return ((Object[])row)[0];
-			}
-			else {
-				return row;
-			}
-		}
-	}
+    protected Object getValueAtInternal(Object row, int columnIndex) {
+        if (getDataColumnCount() > 1) {
+            if (row.getClass().isArray()) {
+                Object[] arrayRow = (Object[])row;
+                return arrayRow[columnIndex];
+            }
+            else if (row instanceof List) {
+                return ((List)row).get(columnIndex);
+            }
+            else {
+                throw new IllegalArgumentException("Unsupported row collection type " + row);
+            }
+        }
+        else {
+            if (row != null & row.getClass().isArray()) {
+                return ((Object[])row)[0];
+            }
+            else {
+                return row;
+            }
+        }
+    }
 }

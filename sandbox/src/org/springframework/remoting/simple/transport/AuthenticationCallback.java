@@ -17,7 +17,6 @@ package org.springframework.remoting.simple.transport;
 
 import org.springframework.remoting.simple.protocol.Request;
 
-
 /**
  * @author  oliverh
  */

@@ -39,7 +39,7 @@ public class AbstractInvoker {
             return;
         }
         for (Iterator i = invocationListeners.iterator(); i.hasNext();) {
-            ((InvocationListener) i.next()).invocationStarting(request);
+            ((InvocationListener)i.next()).invocationStarting(request);
         }
     }
 
@@ -48,7 +48,7 @@ public class AbstractInvoker {
             return;
         }
         for (Iterator i = invocationListeners.iterator(); i.hasNext();) {
-            ((InvocationListener) i.next()).invocationComplete(request, result);
+            ((InvocationListener)i.next()).invocationComplete(request, result);
         }
     }
 

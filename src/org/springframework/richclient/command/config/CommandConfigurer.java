@@ -21,5 +21,5 @@ import org.springframework.richclient.command.AbstractCommand;
  * @author Keith Donald
  */
 public interface CommandConfigurer {
-	public AbstractCommand configure(AbstractCommand command);
+    public AbstractCommand configure(AbstractCommand command);
 }

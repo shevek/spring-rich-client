@@ -33,71 +33,71 @@ import org.springframework.util.ObjectUtils;
  */
 public class DefaultMessageAreaModel implements MessageAreaModel {
 
-	private MessageAreaModel delegate;
+    private MessageAreaModel delegate;
 
-	private String message;
+    private String message;
 
-	private Severity severity;
+    private Severity severity;
 
-	private EventListenerList listenerList = new EventListenerList();
+    private EventListenerList listenerList = new EventListenerList();
 
-	public DefaultMessageAreaModel() {
-		this.delegate = this;
-	}
+    public DefaultMessageAreaModel() {
+        this.delegate = this;
+    }
 
-	public DefaultMessageAreaModel(MessageAreaModel delegate) {
-		this.delegate = delegate;
-	}
+    public DefaultMessageAreaModel(MessageAreaModel delegate) {
+        this.delegate = delegate;
+    }
 
-	/**
-	 * @return Returns the delegateFor.
-	 */
-	protected MessageAreaModel getDelegateFor() {
-		return delegate;
-	}
+    /**
+     * @return Returns the delegateFor.
+     */
+    protected MessageAreaModel getDelegateFor() {
+        return delegate;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public Severity getSeverity() {
-		return severity;
-	}
+    public Severity getSeverity() {
+        return severity;
+    }
 
-	public void setMessage(String newMessage) {
-		setMessage(newMessage, Severity.INFO);
-	}
+    public void setMessage(String newMessage) {
+        setMessage(newMessage, Severity.INFO);
+    }
 
-	public void setErrorMessage(String errorMessage) {
-		setMessage(errorMessage, Severity.ERROR);
-	}
+    public void setErrorMessage(String errorMessage) {
+        setMessage(errorMessage, Severity.ERROR);
+    }
 
-	public void setMessage(String message, Severity severity) {
-		if (ObjectUtils.nullSafeEquals(this.message, message) && ObjectUtils.nullSafeEquals(this.severity, severity)) {
-			return;
-		}
-		this.message = message;
-		this.severity = severity;
-		fireMessageUpdated();
-	}
+    public void setMessage(String message, Severity severity) {
+        if (ObjectUtils.nullSafeEquals(this.message, message) && ObjectUtils.nullSafeEquals(this.severity, severity)) {
+            return;
+        }
+        this.message = message;
+        this.severity = severity;
+        fireMessageUpdated();
+    }
 
-	public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-		listenerList.add(MessageAreaChangeListener.class, messageListener);
-	}
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        listenerList.add(MessageAreaChangeListener.class, messageListener);
+    }
 
-	public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-		listenerList.remove(MessageAreaChangeListener.class, messageListener);
-	}
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        listenerList.remove(MessageAreaChangeListener.class, messageListener);
+    }
 
-	protected void fireMessageUpdated() {
-		MessageAreaChangeListener[] listeners = (MessageAreaChangeListener[])listenerList
-				.getListeners(MessageAreaChangeListener.class);
-		for (int i = 0; i < listeners.length; i++) {
-			listeners[i].messageUpdated(delegate);
-		}
-	}
+    protected void fireMessageUpdated() {
+        MessageAreaChangeListener[] listeners = (MessageAreaChangeListener[])listenerList
+                .getListeners(MessageAreaChangeListener.class);
+        for (int i = 0; i < listeners.length; i++) {
+            listeners[i].messageUpdated(delegate);
+        }
+    }
 
-	protected List getMessageListeners() {
-		return Arrays.asList(listenerList.getListeners(MessageAreaChangeListener.class));
-	}
+    protected List getMessageListeners() {
+        return Arrays.asList(listenerList.getListeners(MessageAreaChangeListener.class));
+    }
 }

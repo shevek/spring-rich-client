@@ -27,16 +27,13 @@ import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
  * @author oliverh
  */
 public interface Protocol {
-    public void writeRequest(OutputStream os, Request request)
-            throws IOException;
+    public void writeRequest(OutputStream os, Request request) throws IOException;
 
     public Request readRequest(InputStream is, Recoverable recoverable);
 
-    public Reply readReply(InputStream is, Recoverable recoverable)
-            throws SimpleRemotingException;
+    public Reply readReply(InputStream is, Recoverable recoverable) throws SimpleRemotingException;
 
     public void writeReply(OutputStream os, Reply reply) throws IOException;
 
-    public void writeException(OutputStream os,
-            SimpleRemotingException exception) throws IOException;
+    public void writeException(OutputStream os, SimpleRemotingException exception) throws IOException;
 }

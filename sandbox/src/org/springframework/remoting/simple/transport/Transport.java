@@ -22,14 +22,11 @@ import java.lang.reflect.Method;
  */
 public interface Transport {
 
-    public Object invokeRemoteMethod(Class serviceInterface, Method method,
-            Object[] args) throws Throwable;
+    public Object invokeRemoteMethod(Class serviceInterface, Method method, Object[] args) throws Throwable;
 
-    public void setRetryDecisionManager(
-            RetryDecisionManager retryDecisionManager);
+    public void setRetryDecisionManager(RetryDecisionManager retryDecisionManager);
 
-    public void setAuthenticationCallback(
-            AuthenticationCallback authenticationCallback);
+    public void setAuthenticationCallback(AuthenticationCallback authenticationCallback);
 
     public void addInvocationListener(InvocationListener invocationListener);
 

@@ -19,7 +19,7 @@ package org.springframework.binding.form;
  * @author Keith Donald
  */
 public interface ValidationListener {
-	public void constraintSatisfied(ValidationEvent event);
+    public void constraintSatisfied(ValidationEvent event);
 
-	public void constraintViolated(ValidationEvent event);
+    public void constraintViolated(ValidationEvent event);
 }

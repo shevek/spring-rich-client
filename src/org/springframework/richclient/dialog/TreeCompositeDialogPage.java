@@ -55,223 +55,224 @@ import org.springframework.util.Assert;
  */
 public class TreeCompositeDialogPage extends CompositeDialogPage {
 
-	private static final DialogPage ROOT_PAGE = null;
+    private static final DialogPage ROOT_PAGE = null;
 
-	private CardLayout cardLayout;
+    private CardLayout cardLayout;
 
-	private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-				boolean leaf, int row, boolean hasFocus) {
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+    private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-			if (node.getUserObject() instanceof DialogPage) {
-				DialogPage page = (DialogPage)node.getUserObject();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+            if (node.getUserObject() instanceof DialogPage) {
+                DialogPage page = (DialogPage)node.getUserObject();
 
-				this.setText(decoratePageTitle(page));
-				this.setIcon(null);
-			}
+                this.setText(decoratePageTitle(page));
+                this.setIcon(null);
+            }
 
-			return this;
-		}
-	};
+            return this;
+        }
+    };
 
-	private DefaultTreeModel pageTreeModel;
+    private DefaultTreeModel pageTreeModel;
 
-	private JPanel pagePanel;
+    private JPanel pagePanel;
 
-	private JTree pageTree;
+    private JTree pageTree;
 
-	private Map nodes;
+    private Map nodes;
 
-	/**
-	 * Constructs a new <code>TreeCompositeDialogPage</code> instance.
-	 * 
-	 * @param pageId
-	 *            the pageId
-	 */
-	public TreeCompositeDialogPage(String pageId) {
-		super(pageId);
-		nodes = new HashMap();
-		nodes.put(ROOT_PAGE, new DefaultMutableTreeNode("pages"));
-	}
+    /**
+     * Constructs a new <code>TreeCompositeDialogPage</code> instance.
+     * 
+     * @param pageId
+     *            the pageId
+     */
+    public TreeCompositeDialogPage(String pageId) {
+        super(pageId);
+        nodes = new HashMap();
+        nodes.put(ROOT_PAGE, new DefaultMutableTreeNode("pages"));
+    }
 
-	/**
-	 * Adds a DialogPage to the tree. The page will be added at the top level of
-	 * the tree hierarchy.
-	 * 
-	 * @param page
-	 *            the page to add
-	 */
-	public void addPage(DialogPage page) {
-		addPage(ROOT_PAGE, page);
-	}
+    /**
+     * Adds a DialogPage to the tree. The page will be added at the top level of
+     * the tree hierarchy.
+     * 
+     * @param page
+     *            the page to add
+     */
+    public void addPage(DialogPage page) {
+        addPage(ROOT_PAGE, page);
+    }
 
-	/**
-	 * Adds a new page to the tree. The page is created by wrapping the form
-	 * page in a FormBackedDialogPage.
-	 * 
-	 * @param parent
-	 *            the parent page in the tree hierarchy
-	 * @param formPage
-	 *            the form page to be insterted
-	 * @return the DialogPage that wraps form
-	 */
-	public DialogPage addForm(DialogPage parent, Form form) {
-		DialogPage page = createDialogPage(form);
-		addPage(parent, page);
-		return page;
-	}
+    /**
+     * Adds a new page to the tree. The page is created by wrapping the form
+     * page in a FormBackedDialogPage.
+     * 
+     * @param parent
+     *            the parent page in the tree hierarchy
+     * @param formPage
+     *            the form page to be insterted
+     * @return the DialogPage that wraps form
+     */
+    public DialogPage addForm(DialogPage parent, Form form) {
+        DialogPage page = createDialogPage(form);
+        addPage(parent, page);
+        return page;
+    }
 
-	/**
-	 * Adds a DialogPage to the tree.
-	 * 
-	 * @param parent
-	 *            the parent page in the tree hierarchy
-	 * @param page
-	 *            the page to add
-	 */
-	public void addPage(DialogPage parent, DialogPage child) {
-		DefaultMutableTreeNode parentNode = getNode(parent);
-		Assert.notNull(parentNode, "Parent dialog page must have been added before child");
-		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-		parentNode.add(childNode);
-		nodes.put(child, childNode);
-		super.addPage(child);
-	}
+    /**
+     * Adds a DialogPage to the tree.
+     * 
+     * @param parent
+     *            the parent page in the tree hierarchy
+     * @param page
+     *            the page to add
+     */
+    public void addPage(DialogPage parent, DialogPage child) {
+        DefaultMutableTreeNode parentNode = getNode(parent);
+        Assert.notNull(parentNode, "Parent dialog page must have been added before child");
+        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
+        parentNode.add(childNode);
+        nodes.put(child, childNode);
+        super.addPage(child);
+    }
 
-	/**
-	 * Adds a group DialogPages to the tree.
-	 * 
-	 * @param parent
-	 *            the parent page in the tree hierarchy
-	 * @param pages
-	 *            the pages to add
-	 */
-	public void addPages(DialogPage parent, DialogPage[] pages) {
-		for (int i = 0; i < pages.length; i++) {
-			addPage(parent, pages[i]);
-		}
-	}
+    /**
+     * Adds a group DialogPages to the tree.
+     * 
+     * @param parent
+     *            the parent page in the tree hierarchy
+     * @param pages
+     *            the pages to add
+     */
+    public void addPages(DialogPage parent, DialogPage[] pages) {
+        for (int i = 0; i < pages.length; i++) {
+            addPage(parent, pages[i]);
+        }
+    }
 
-	/**
-	 * Expands or collapses all of the tree nodes.
-	 * 
-	 * @param expand
-	 *            when true expand all nodes; otherwise collapses all nodes
-	 */
-	public void expandAll(boolean expand) {
-		if (!isControlCreated()) {
-			getControl();
-		}
-		TreeUtils.expandAll(pageTree, expand);
-	}
+    /**
+     * Expands or collapses all of the tree nodes.
+     * 
+     * @param expand
+     *            when true expand all nodes; otherwise collapses all nodes
+     */
+    public void expandAll(boolean expand) {
+        if (!isControlCreated()) {
+            getControl();
+        }
+        TreeUtils.expandAll(pageTree, expand);
+    }
 
-	/**
-	 * Expands or collapses a number of levels of tree nodes.
-	 * 
-	 * @param levels
-	 *            the number of levels to expand/collapses
-	 * @param expand
-	 *            when true expand all nodes; otherwise collapses all nodes
-	 */
-	public void expandLevels(int levels, boolean expand) {
-		if (!isControlCreated()) {
-			getControl();
-		}
-		TreeUtils.expandLevels(pageTree, levels, expand);
-	}
+    /**
+     * Expands or collapses a number of levels of tree nodes.
+     * 
+     * @param levels
+     *            the number of levels to expand/collapses
+     * @param expand
+     *            when true expand all nodes; otherwise collapses all nodes
+     */
+    public void expandLevels(int levels, boolean expand) {
+        if (!isControlCreated()) {
+            getControl();
+        }
+        TreeUtils.expandLevels(pageTree, levels, expand);
+    }
 
-	/**
-	 * @see org.springframework.richclient.dialog.AbstractDialogPage#createControl()
-	 */
-	protected JComponent createControl() {
-		createPageControls();
+    /**
+     * @see org.springframework.richclient.dialog.AbstractDialogPage#createControl()
+     */
+    protected JComponent createControl() {
+        createPageControls();
 
-		cardLayout = new CardLayout();
-		pagePanel = new JPanel(cardLayout);
+        cardLayout = new CardLayout();
+        pagePanel = new JPanel(cardLayout);
 
-		List pages = getPages();
-		for (Iterator i = pages.iterator(); i.hasNext();) {
-			DialogPage page = (DialogPage)i.next();
+        List pages = getPages();
+        for (Iterator i = pages.iterator(); i.hasNext();) {
+            DialogPage page = (DialogPage)i.next();
 
-			processDialogPage(page);
-		}
+            processDialogPage(page);
+        }
 
-		DefaultMutableTreeNode rootNode = getNode(null);
-		pageTreeModel = new DefaultTreeModel(rootNode);
+        DefaultMutableTreeNode rootNode = getNode(null);
+        pageTreeModel = new DefaultTreeModel(rootNode);
 
-		createTreeControl();
-		pageTree.setModel(pageTreeModel);
+        createTreeControl();
+        pageTree.setModel(pageTreeModel);
 
-		if (rootNode.getChildCount() > 0) {
-			pageTree.setSelectionInterval(0, 0);
-		}
+        if (rootNode.getChildCount() > 0) {
+            pageTree.setSelectionInterval(0, 0);
+        }
 
-		return createContentControl();
-	}
+        return createContentControl();
+    }
 
-	private void processDialogPage(DialogPage page) {
-		JComponent control = page.getControl();
-		control.setPreferredSize(getLargestPageSize());
-		pagePanel.add(control, page.getId());
-	}
+    private void processDialogPage(DialogPage page) {
+        JComponent control = page.getControl();
+        control.setPreferredSize(getLargestPageSize());
+        pagePanel.add(control, page.getId());
+    }
 
-	private JPanel createContentControl() {
-		TableLayoutBuilder panelBuilder = new TableLayoutBuilder();
-		panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150 rowSpec=pref");
-		panelBuilder.gapCol();
-		panelBuilder.cell(pagePanel, "colSpec=pref valign=top");
+    private JPanel createContentControl() {
+        TableLayoutBuilder panelBuilder = new TableLayoutBuilder();
+        panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150 rowSpec=pref");
+        panelBuilder.gapCol();
+        panelBuilder.cell(pagePanel, "colSpec=pref valign=top");
 
-		return panelBuilder.getPanel();
-	}
+        return panelBuilder.getPanel();
+    }
 
-	private void createTreeControl() {
-		pageTree = new JTree();
-		pageTree.setRootVisible(false);
-		pageTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		pageTree.addTreeSelectionListener(new PageSelector());
-		pageTree.setCellRenderer(treeCellRenderer);
-		pageTree.setShowsRootHandles(true);
-	}
+    private void createTreeControl() {
+        pageTree = new JTree();
+        pageTree.setRootVisible(false);
+        pageTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        pageTree.addTreeSelectionListener(new PageSelector());
+        pageTree.setCellRenderer(treeCellRenderer);
+        pageTree.setShowsRootHandles(true);
+    }
 
-	/**
-	 * Returns the decorated title.
-	 * 
-	 * @param page
-	 *            the page
-	 * @return the title
-	 */
-	protected String decoratePageTitle(DialogPage page) {
-		return LabelUtils.htmlBlock(page.getTitle() + "<sup><font size=-3 color=red>" + (page.isPageComplete() ? "" : "*"));
-	}
+    /**
+     * Returns the decorated title.
+     * 
+     * @param page
+     *            the page
+     * @return the title
+     */
+    protected String decoratePageTitle(DialogPage page) {
+        return LabelUtils.htmlBlock(page.getTitle() + "<sup><font size=-3 color=red>"
+                + (page.isPageComplete() ? "" : "*"));
+    }
 
-	protected void updatePageComplete(DialogPage page) {
-		super.updatePageComplete(page);
-		pageTreeModel.nodeChanged(getNode(page));
-	}
+    protected void updatePageComplete(DialogPage page) {
+        super.updatePageComplete(page);
+        pageTreeModel.nodeChanged(getNode(page));
+    }
 
-	private DefaultMutableTreeNode getNode(DialogPage page) {
-		return (DefaultMutableTreeNode)nodes.get(page);
-	}
+    private DefaultMutableTreeNode getNode(DialogPage page) {
+        return (DefaultMutableTreeNode)nodes.get(page);
+    }
 
-	private class PageSelector implements TreeSelectionListener {
-		private TreePath currentSelection;
+    private class PageSelector implements TreeSelectionListener {
+        private TreePath currentSelection;
 
-		public void valueChanged(TreeSelectionEvent e) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)pageTree.getLastSelectedPathComponent();
+        public void valueChanged(TreeSelectionEvent e) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)pageTree.getLastSelectedPathComponent();
 
-			if (node == null) {
-				pageTree.setSelectionPath(currentSelection);
+            if (node == null) {
+                pageTree.setSelectionPath(currentSelection);
 
-				return;
-			}
-			currentSelection = e.getPath();
+                return;
+            }
+            currentSelection = e.getPath();
 
-			DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
-			DialogPage activePage = (DialogPage)selectedNode.getUserObject();
-			cardLayout.show(pagePanel, activePage.getId());
-			setActivePage(activePage);
-		}
-	}
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
+            DialogPage activePage = (DialogPage)selectedNode.getUserObject();
+            cardLayout.show(pagePanel, activePage.getId());
+            setActivePage(activePage);
+        }
+    }
 }

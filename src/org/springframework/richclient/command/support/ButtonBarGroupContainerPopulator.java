@@ -29,63 +29,63 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.Size;
 
 public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopulator {
-	private Size minimumSize;
+    private Size minimumSize;
 
-	private ButtonBarBuilder builder;
+    private ButtonBarBuilder builder;
 
-	private List buttons = new ArrayList();
+    private List buttons = new ArrayList();
 
-	public ButtonBarGroupContainerPopulator() {
-		super(new JPanel());
-		builder = new ButtonBarBuilder((JPanel)getContainer());
-	}
+    public ButtonBarGroupContainerPopulator() {
+        super(new JPanel());
+        builder = new ButtonBarBuilder((JPanel)getContainer());
+    }
 
-	public void setMinimumButtonSize(Size minimumSize) {
-		this.minimumSize = minimumSize;
-	}
+    public void setMinimumButtonSize(Size minimumSize) {
+        this.minimumSize = minimumSize;
+    }
 
-	public JPanel getButtonBar() {
-		return builder.getPanel();
-	}
+    public JPanel getButtonBar() {
+        return builder.getPanel();
+    }
 
-	public void add(Component c) {
-		buttons.add(c);
-	}
+    public void add(Component c) {
+        buttons.add(c);
+    }
 
-	public void addSeparator() {
-		buttons.add(CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE);
-	}
+    public void addSeparator() {
+        buttons.add(CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE);
+    }
 
-	public void onPopulated() {
-		builder.addGlue();
-		int length = buttons.size();
-		for (int i = 0; i < length; i++) {
-			int index = true ? i : length - 1 - i;
-			Object o = buttons.get(i);
-			if (o instanceof String && o == CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE) {
-				builder.addUnrelatedGap();
-			}
-			else if (o instanceof AbstractButton) {
-				AbstractButton button = (AbstractButton)o;
-				if (minimumSize != null) {
-					addCustomGridded(button);
-				}
-				else {
-					builder.addGridded(button);
-				}
-				if (i < buttons.size() - 1) {
-					builder.addRelatedGap();
-				}
-			}
-		}
-	}
+    public void onPopulated() {
+        builder.addGlue();
+        int length = buttons.size();
+        for (int i = 0; i < length; i++) {
+            int index = true ? i : length - 1 - i;
+            Object o = buttons.get(i);
+            if (o instanceof String && o == CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE) {
+                builder.addUnrelatedGap();
+            }
+            else if (o instanceof AbstractButton) {
+                AbstractButton button = (AbstractButton)o;
+                if (minimumSize != null) {
+                    addCustomGridded(button);
+                }
+                else {
+                    builder.addGridded(button);
+                }
+                if (i < buttons.size() - 1) {
+                    builder.addRelatedGap();
+                }
+            }
+        }
+    }
 
-	private void addCustomGridded(AbstractButton button) {
-		builder.getLayout().appendColumn(new ColumnSpec(minimumSize));
-		builder.getLayout().addGroupedColumn(builder.getColumn());
-		button.putClientProperty("jgoodies.isNarrow", Boolean.TRUE);
-		builder.add(button);
-		builder.nextColumn();
-	}
+    private void addCustomGridded(AbstractButton button) {
+        builder.getLayout().appendColumn(new ColumnSpec(minimumSize));
+        builder.getLayout().addGroupedColumn(builder.getColumn());
+        button.putClientProperty("jgoodies.isNarrow", Boolean.TRUE);
+        builder.add(button);
+        builder.nextColumn();
+    }
 
 }

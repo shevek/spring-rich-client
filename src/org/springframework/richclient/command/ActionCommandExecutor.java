@@ -16,5 +16,5 @@
 package org.springframework.richclient.command;
 
 public interface ActionCommandExecutor {
-	public void execute();
+    public void execute();
 }

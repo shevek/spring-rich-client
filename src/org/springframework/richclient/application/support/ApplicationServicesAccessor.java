@@ -36,96 +36,96 @@ import org.springframework.richclient.image.ImageSource;
  * @author Keith Donald
  */
 public class ApplicationServicesAccessor {
-	protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected String getApplicationName() {
-		return getApplication().getName();
-	}
+    protected String getApplicationName() {
+        return getApplication().getName();
+    }
 
-	protected Application getApplication() {
-		return Application.instance();
-	}
+    protected Application getApplication() {
+        return Application.instance();
+    }
 
-	protected ApplicationServices getApplicationServices() {
-		return Application.services();
-	}
+    protected ApplicationServices getApplicationServices() {
+        return Application.services();
+    }
 
-	protected ApplicationContext getApplicationContext() {
-		return getApplicationServices().getApplicationContext();
-	}
+    protected ApplicationContext getApplicationContext() {
+        return getApplicationServices().getApplicationContext();
+    }
 
-	protected ComponentFactory getComponentFactory() {
-		return getApplicationServices().getComponentFactory();
-	}
+    protected ComponentFactory getComponentFactory() {
+        return getApplicationServices().getComponentFactory();
+    }
 
-	protected MessageSource getMessageSource() {
-		return getApplicationContext();
-	}
+    protected MessageSource getMessageSource() {
+        return getApplicationContext();
+    }
 
-	protected MessageSourceAccessor getMessages() {
-		return getApplicationServices().getMessages();
-	}
+    protected MessageSourceAccessor getMessages() {
+        return getApplicationServices().getMessages();
+    }
 
-	protected ImageSource getImageSource() {
-		return getApplicationServices().getImageSource();
-	}
+    protected ImageSource getImageSource() {
+        return getApplicationServices().getImageSource();
+    }
 
-	protected IconSource getIconSource() {
-		return getApplicationServices().getIconSource();
-	}
+    protected IconSource getIconSource() {
+        return getApplicationServices().getIconSource();
+    }
 
-	protected ApplicationObjectConfigurer getObjectConfigurer() {
-		return getApplicationServices().getObjectConfigurer();
-	}
+    protected ApplicationObjectConfigurer getObjectConfigurer() {
+        return getApplicationServices().getObjectConfigurer();
+    }
 
-	protected CommandConfigurer getCommandConfigurer() {
-		return getApplicationServices().getCommandConfigurer();
-	}
+    protected CommandConfigurer getCommandConfigurer() {
+        return getApplicationServices().getCommandConfigurer();
+    }
 
-	protected ApplicationWindow getActiveWindow() {
-		return getApplication().getActiveWindow();
-	}
+    protected ApplicationWindow getActiveWindow() {
+        return getApplication().getActiveWindow();
+    }
 
-	protected String getMessage(String messageCode) {
-		return getApplicationContext().getMessage(messageCode, null, messageCode, Locale.getDefault());
-	}
+    protected String getMessage(String messageCode) {
+        return getApplicationContext().getMessage(messageCode, null, messageCode, Locale.getDefault());
+    }
 
-	protected String getMessage(final String[] messageCodes) {
-		MessageSourceResolvable resolvable = new MessageSourceResolvable() {
-			public String[] getCodes() {
-				return messageCodes;
-			}
+    protected String getMessage(final String[] messageCodes) {
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageCodes;
+            }
 
-			public Object[] getArguments() {
-				return new Object[0];
-			}
+            public Object[] getArguments() {
+                return new Object[0];
+            }
 
-			public String getDefaultMessage() {
-				return messageCodes[0];
-			}
-		};
-		return getApplicationContext().getMessage(resolvable, Locale.getDefault());
-	}
+            public String getDefaultMessage() {
+                return messageCodes[0];
+            }
+        };
+        return getApplicationContext().getMessage(resolvable, Locale.getDefault());
+    }
 
-	protected String getMessage(String messageCode, Object[] args) {
-		return getApplicationContext().getMessage(messageCode, args, messageCode, Locale.getDefault());
-	}
+    protected String getMessage(String messageCode, Object[] args) {
+        return getApplicationContext().getMessage(messageCode, args, messageCode, Locale.getDefault());
+    }
 
-	protected String getMessage(final String[] messageCodes, final Object[] args) {
-		MessageSourceResolvable resolvable = new MessageSourceResolvable() {
-			public String[] getCodes() {
-				return messageCodes;
-			}
+    protected String getMessage(final String[] messageCodes, final Object[] args) {
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageCodes;
+            }
 
-			public Object[] getArguments() {
-				return args;
-			}
+            public Object[] getArguments() {
+                return args;
+            }
 
-			public String getDefaultMessage() {
-				return messageCodes[0];
-			}
-		};
-		return getApplicationContext().getMessage(resolvable, Locale.getDefault());
-	}
+            public String getDefaultMessage() {
+                return messageCodes[0];
+            }
+        };
+        return getApplicationContext().getMessage(resolvable, Locale.getDefault());
+    }
 
 }

@@ -28,46 +28,46 @@ import org.springframework.richclient.application.support.ApplicationServicesAcc
  */
 public abstract class AbstractControlFactory extends ApplicationServicesAccessor implements ControlFactory {
 
-	protected Log logger = LogFactory.getLog(getClass());
+    protected Log logger = LogFactory.getLog(getClass());
 
-	private boolean singleton = true;
+    private boolean singleton = true;
 
-	private JComponent control;
+    private JComponent control;
 
-	protected final boolean isSingleton() {
-		return singleton;
-	}
+    protected final boolean isSingleton() {
+        return singleton;
+    }
 
-	protected final void setSingleton(boolean singleton) {
-		this.singleton = singleton;
-	}
+    protected final void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
 
-	public final JComponent getControl() {
-		if (isSingleton()) {
-			if (control == null) {
-				this.control = createControl();
-			}
-			return control;
-		}
-		else {
-			return createControl();
-		}
-	}
+    public final JComponent getControl() {
+        if (isSingleton()) {
+            if (control == null) {
+                this.control = createControl();
+            }
+            return control;
+        }
+        else {
+            return createControl();
+        }
+    }
 
-	public final boolean isControlCreated() {
-		if (isSingleton()) {
-			return control != null;
-		}
-		else {
-			return false;
-		}
-	}
+    public final boolean isControlCreated() {
+        if (isSingleton()) {
+            return control != null;
+        }
+        else {
+            return false;
+        }
+    }
 
-	protected void createControlIfNecessary() {
-		if (isSingleton() && control == null) {
-			getControl();
-		}
-	}
+    protected void createControlIfNecessary() {
+        if (isSingleton() && control == null) {
+            getControl();
+        }
+    }
 
-	protected abstract JComponent createControl();
+    protected abstract JComponent createControl();
 }

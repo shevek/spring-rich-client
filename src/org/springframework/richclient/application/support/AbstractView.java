@@ -32,99 +32,99 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 
 public abstract class AbstractView extends AbstractControlFactory implements View {
-	private ViewDescriptor descriptor;
+    private ViewDescriptor descriptor;
 
-	private ViewContext context;
+    private ViewContext context;
 
-	public void setDescriptor(ViewDescriptor descriptor) {
-		Assert.notNull(descriptor, "The view descriptor is required");
-		Assert.state(this.descriptor == null, "A view's descriptor may only be set once");
-		this.descriptor = descriptor;
-	}
+    public void setDescriptor(ViewDescriptor descriptor) {
+        Assert.notNull(descriptor, "The view descriptor is required");
+        Assert.state(this.descriptor == null, "A view's descriptor may only be set once");
+        this.descriptor = descriptor;
+    }
 
-	public final void setContext(ViewContext context) {
-		Assert.notNull(context, "This view's page component context is required");
-		Assert.state(this.context == null, "A view's context may only be set once");
-		this.context = context;
-		registerLocalCommandExecutors(context);
-	}
+    public final void setContext(ViewContext context) {
+        Assert.notNull(context, "This view's page component context is required");
+        Assert.state(this.context == null, "A view's context may only be set once");
+        this.context = context;
+        registerLocalCommandExecutors(context);
+    }
 
-	public String getId() {
-		return getDescriptor().getId();
-	}
+    public String getId() {
+        return getDescriptor().getId();
+    }
 
-	public ViewDescriptor getDescriptor() {
-		return descriptor;
-	}
+    public ViewDescriptor getDescriptor() {
+        return descriptor;
+    }
 
-	public PageComponentContext getContext() {
-		return context;
-	}
+    public PageComponentContext getContext() {
+        return context;
+    }
 
-	public String getCaption() {
-		return getDescriptor().getCaption();
-	}
+    public String getCaption() {
+        return getDescriptor().getCaption();
+    }
 
-	public String getDescription() {
-		return getDescriptor().getDescription();
-	}
+    public String getDescription() {
+        return getDescriptor().getDescription();
+    }
 
-	public String getDisplayName() {
-		return getDescriptor().getDisplayName();
-	}
+    public String getDisplayName() {
+        return getDescriptor().getDisplayName();
+    }
 
-	public Icon getIcon() {
-		return getDescriptor().getIcon();
-	}
+    public Icon getIcon() {
+        return getDescriptor().getIcon();
+    }
 
-	public Image getImage() {
-		return getDescriptor().getImage();
-	}
+    public Image getImage() {
+        return getDescriptor().getImage();
+    }
 
-	protected final Window getWindowControl() {
-		return getContext().getWindow().getControl();
-	}
+    protected final Window getWindowControl() {
+        return getContext().getWindow().getControl();
+    }
 
-	protected final CommandManager getWindowCommandManager() {
-		return context.getWindow().getCommandManager();
-	}
+    protected final CommandManager getWindowCommandManager() {
+        return context.getWindow().getCommandManager();
+    }
 
-	protected final StatusBarCommandGroup getStatusBar() {
-		return context.getWindow().getStatusBar();
-	}
+    protected final StatusBarCommandGroup getStatusBar() {
+        return context.getWindow().getStatusBar();
+    }
 
-	protected abstract JComponent createControl();
+    protected abstract JComponent createControl();
 
-	/**
-	 * Template method called once when this view is initialized; allows
-	 * subclasses to register local executors for shared commands with the view
-	 * context.
-	 * 
-	 * @param context
-	 *            the view context
-	 */
-	protected void registerLocalCommandExecutors(ViewContext context) {
+    /**
+     * Template method called once when this view is initialized; allows
+     * subclasses to register local executors for shared commands with the view
+     * context.
+     * 
+     * @param context
+     *            the view context
+     */
+    protected void registerLocalCommandExecutors(ViewContext context) {
 
-	}
+    }
 
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		getDescriptor().addPropertyChangeListener(listener);
-	}
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        getDescriptor().addPropertyChangeListener(listener);
+    }
 
-	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		getDescriptor().addPropertyChangeListener(propertyName, listener);
-	}
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        getDescriptor().addPropertyChangeListener(propertyName, listener);
+    }
 
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		getDescriptor().removePropertyChangeListener(listener);
-	}
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        getDescriptor().removePropertyChangeListener(listener);
+    }
 
-	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		getDescriptor().removePropertyChangeListener(propertyName, listener);
-	}
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        getDescriptor().removePropertyChangeListener(propertyName, listener);
+    }
 
-	public void dispose() {
+    public void dispose() {
 
-	}
+    }
 
 }

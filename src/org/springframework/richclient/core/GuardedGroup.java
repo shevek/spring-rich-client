@@ -31,140 +31,140 @@ import org.springframework.util.closure.support.Block;
  * @author Keith Donald
  */
 public class GuardedGroup implements Guarded {
-	private Boolean groupEnabledState;
+    private Boolean groupEnabledState;
 
-	private Set guardedGroup;
+    private Set guardedGroup;
 
-	private GuardedGroup() {
+    private GuardedGroup() {
 
-	}
+    }
 
-	public GuardedGroup(Guarded[] guarded) {
-		this.guardedGroup = new HashSet(Arrays.asList(guarded));
-	}
+    public GuardedGroup(Guarded[] guarded) {
+        this.guardedGroup = new HashSet(Arrays.asList(guarded));
+    }
 
-	public void addGuarded(Guarded guarded) {
-		this.guardedGroup.add(guarded);
-	}
+    public void addGuarded(Guarded guarded) {
+        this.guardedGroup.add(guarded);
+    }
 
-	public void addGuardedHolder(ValueModel guardedHolder) {
-		this.guardedGroup.add(new GuardedValueModel(this, guardedHolder));
-	}
+    public void addGuardedHolder(ValueModel guardedHolder) {
+        this.guardedGroup.add(new GuardedValueModel(this, guardedHolder));
+    }
 
-	public boolean isEnabled() {
-		if (groupEnabledState == null) {
-			return false;
-		}
-		return groupEnabledState.booleanValue();
-	}
+    public boolean isEnabled() {
+        if (groupEnabledState == null) {
+            return false;
+        }
+        return groupEnabledState.booleanValue();
+    }
 
-	public void setEnabled(final boolean enabled) {
-		if (this.groupEnabledState != null && this.groupEnabledState.booleanValue() == enabled) {
-			return;
-		}
-		Algorithms.instance().forEach(guardedGroup, new Block() {
-			protected void handle(Object guarded) {
-				((Guarded)guarded).setEnabled(enabled);
-			}
-		});
-		this.groupEnabledState = Boolean.valueOf(enabled);
-	}
+    public void setEnabled(final boolean enabled) {
+        if (this.groupEnabledState != null && this.groupEnabledState.booleanValue() == enabled) {
+            return;
+        }
+        Algorithms.instance().forEach(guardedGroup, new Block() {
+            protected void handle(Object guarded) {
+                ((Guarded)guarded).setEnabled(enabled);
+            }
+        });
+        this.groupEnabledState = Boolean.valueOf(enabled);
+    }
 
-	private static class GuardedValueModel implements Guarded {
-		private GuardedGroup guardedGroup;
+    private static class GuardedValueModel implements Guarded {
+        private GuardedGroup guardedGroup;
 
-		private ValueModel guardedHolder;
+        private ValueModel guardedHolder;
 
-		public GuardedValueModel(GuardedGroup guardedGroup, ValueModel valueModel) {
-			this.guardedGroup = guardedGroup;
-			this.guardedHolder = valueModel;
-			this.guardedHolder.addValueChangeListener(new ValueChangeListener() {
-				public void valueChanged() {
-					Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
-					if (groupEnabled != null) {
-						setEnabled(groupEnabled.booleanValue());
-					}
-				}
-			});
-		}
+        public GuardedValueModel(GuardedGroup guardedGroup, ValueModel valueModel) {
+            this.guardedGroup = guardedGroup;
+            this.guardedHolder = valueModel;
+            this.guardedHolder.addValueChangeListener(new ValueChangeListener() {
+                public void valueChanged() {
+                    Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
+                    if (groupEnabled != null) {
+                        setEnabled(groupEnabled.booleanValue());
+                    }
+                }
+            });
+        }
 
-		public boolean isEnabled() {
-			Guarded g = (Guarded)guardedHolder.getValue();
-			if (g != null) {
-				return g.isEnabled();
-			}
-			else {
-				return false;
-			}
-		}
+        public boolean isEnabled() {
+            Guarded g = (Guarded)guardedHolder.getValue();
+            if (g != null) {
+                return g.isEnabled();
+            }
+            else {
+                return false;
+            }
+        }
 
-		public void setEnabled(boolean enabled) {
-			Guarded g = (Guarded)guardedHolder.getValue();
-			if (g != null) {
-				g.setEnabled(enabled);
-			}
-		}
-	}
+        public void setEnabled(boolean enabled) {
+            Guarded g = (Guarded)guardedHolder.getValue();
+            if (g != null) {
+                g.setEnabled(enabled);
+            }
+        }
+    }
 
-	public static final Guarded createGuardedAdapter(final JComponent component) {
-		if (component instanceof JTextComponent) {
-			// JTextComponents are different from most JComponents in that
-			// they are best disabled by invoking the setEditable method.
-			// setEnabled(false) completely disables the control -- including
-			// the ability to copy to the clipboard.
-			final JTextComponent textComp = (JTextComponent)component;
-			return new Guarded() {
-				public boolean isEnabled() {
-					return textComp.isEditable();
-				}
+    public static final Guarded createGuardedAdapter(final JComponent component) {
+        if (component instanceof JTextComponent) {
+            // JTextComponents are different from most JComponents in that
+            // they are best disabled by invoking the setEditable method.
+            // setEnabled(false) completely disables the control -- including
+            // the ability to copy to the clipboard.
+            final JTextComponent textComp = (JTextComponent)component;
+            return new Guarded() {
+                public boolean isEnabled() {
+                    return textComp.isEditable();
+                }
 
-				public void setEnabled(boolean enabled) {
-					textComp.setEditable(enabled);
-				}
-			};
-		}
-		else {
-			return new Guarded() {
-				public boolean isEnabled() {
-					return component.isEnabled();
-				}
+                public void setEnabled(boolean enabled) {
+                    textComp.setEditable(enabled);
+                }
+            };
+        }
+        else {
+            return new Guarded() {
+                public boolean isEnabled() {
+                    return component.isEnabled();
+                }
 
-				public void setEnabled(boolean enabled) {
-					component.setEnabled(enabled);
-				}
-			};
-		}
-	};
+                public void setEnabled(boolean enabled) {
+                    component.setEnabled(enabled);
+                }
+            };
+        }
+    };
 
-	private static final Guarded createGuardedAdapter(final Object component) {
-		if (component.getClass().isArray()) {
-			return doCreateGuardedGroup((Object[])component);
-		}
-		else {
-			return createGuardedAdapter((JComponent)component);
-		}
-	}
+    private static final Guarded createGuardedAdapter(final Object component) {
+        if (component.getClass().isArray()) {
+            return doCreateGuardedGroup((Object[])component);
+        }
+        else {
+            return createGuardedAdapter((JComponent)component);
+        }
+    }
 
-	public static final GuardedGroup createGuardedGroup(Object[] components) {
-		return doCreateGuardedGroup(components);
-	}
+    public static final GuardedGroup createGuardedGroup(Object[] components) {
+        return doCreateGuardedGroup(components);
+    }
 
-	public static final GuardedGroup createGuardedGroup(final JComponent[] components) {
-		return doCreateGuardedGroup(components);
-	};
+    public static final GuardedGroup createGuardedGroup(final JComponent[] components) {
+        return doCreateGuardedGroup(components);
+    };
 
-	public static final GuardedGroup createGuardedGroup(JComponent[][] componentArrays) {
-		return doCreateGuardedGroup(componentArrays);
-	}
+    public static final GuardedGroup createGuardedGroup(JComponent[][] componentArrays) {
+        return doCreateGuardedGroup(componentArrays);
+    }
 
-	private static GuardedGroup doCreateGuardedGroup(Object[] components) {
-		Set guardedSet = new HashSet(components.length);
-		for (int i = 0; i < components.length; i++) {
-			guardedSet.add(createGuardedAdapter(components[i]));
-		}
-		GuardedGroup g = new GuardedGroup();
-		g.guardedGroup = guardedSet;
-		return g;
-	}
+    private static GuardedGroup doCreateGuardedGroup(Object[] components) {
+        Set guardedSet = new HashSet(components.length);
+        for (int i = 0; i < components.length; i++) {
+            guardedSet.add(createGuardedAdapter(components[i]));
+        }
+        GuardedGroup g = new GuardedGroup();
+        g.guardedGroup = guardedSet;
+        return g;
+    }
 
 }

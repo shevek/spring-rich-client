@@ -33,58 +33,58 @@ import org.springframework.util.closure.Constraint;
  */
 public abstract class AbstractFormBuilder {
 
-	private final SwingFormModel formModel;
+    private final SwingFormModel formModel;
 
-	private ComponentFactory componentFactory;
+    private ComponentFactory componentFactory;
 
-	protected AbstractFormBuilder(SwingFormModel formModel) {
-		Assert.notNull(formModel);
-		this.formModel = formModel;
+    protected AbstractFormBuilder(SwingFormModel formModel) {
+        Assert.notNull(formModel);
+        this.formModel = formModel;
 
-	}
+    }
 
-	protected ComponentFactory getComponentFactory() {
-		if (componentFactory == null) {
-			componentFactory = Application.services().getComponentFactory();
-		}
-		return componentFactory;
-	}
+    protected ComponentFactory getComponentFactory() {
+        if (componentFactory == null) {
+            componentFactory = Application.services().getComponentFactory();
+        }
+        return componentFactory;
+    }
 
-	public void setComponentFactory(ComponentFactory componentFactory) {
-		this.componentFactory = componentFactory;
-	}
+    public void setComponentFactory(ComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
+    }
 
-	protected SwingFormModel getFormModel() {
-		return formModel;
-	}
+    protected SwingFormModel getFormModel() {
+        return formModel;
+    }
 
-	protected JComponent getDefaultComponent(String propertyName) {
-		return getFormModel().createBoundControl(propertyName);
-	}
+    protected JComponent getDefaultComponent(String propertyName) {
+        return getFormModel().createBoundControl(propertyName);
+    }
 
-	protected JComponent getSelector(String propertyName, Constraint filter) {
-		JComponent propertyEditor = null;
-		if (getFormModel().getMetadataAccessStrategy().isEnumeration(propertyName)) {
-			propertyEditor = getFormModel().createBoundEnumComboBox(propertyName, filter);
-		}
-		Assert.notNull(propertyEditor, "Unsupported filterable property " + propertyName);
-		return propertyEditor;
-	}
+    protected JComponent getSelector(String propertyName, Constraint filter) {
+        JComponent propertyEditor = null;
+        if (getFormModel().getMetadataAccessStrategy().isEnumeration(propertyName)) {
+            propertyEditor = getFormModel().createBoundEnumComboBox(propertyName, filter);
+        }
+        Assert.notNull(propertyEditor, "Unsupported filterable property " + propertyName);
+        return propertyEditor;
+    }
 
-	protected JPasswordField getPasswordField(String propertyName) {
-		JPasswordField field = (JPasswordField)getFormModel().bind(new JPasswordField(8), propertyName);
-		return field;
-	}
+    protected JPasswordField getPasswordField(String propertyName) {
+        JPasswordField field = (JPasswordField)getFormModel().bind(new JPasswordField(8), propertyName);
+        return field;
+    }
 
-	protected JComponent getTextArea(String propertyName) {
-		JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-		JComponent component = new JScrollPane(getFormModel().bind(textArea, propertyName));
-		return component;
-	}
+    protected JComponent getTextArea(String propertyName) {
+        JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
+        JComponent component = new JScrollPane(getFormModel().bind(textArea, propertyName));
+        return component;
+    }
 
-	protected JLabel getLabelFor(String propertyName, JComponent component) {
-		JLabel label = formModel.createLabel(propertyName);
-		label.setLabelFor(component);
-		return label;
-	}
+    protected JLabel getLabelFor(String propertyName, JComponent component) {
+        JLabel label = formModel.createLabel(propertyName);
+        label.setLabelFor(component);
+        return label;
+    }
 }

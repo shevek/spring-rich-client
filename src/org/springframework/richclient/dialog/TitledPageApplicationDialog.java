@@ -32,70 +32,70 @@ import org.springframework.util.StringUtils;
  */
 public abstract class TitledPageApplicationDialog extends TitledApplicationDialog implements PropertyChangeListener {
 
-	private DialogPage dialogPage;
+    private DialogPage dialogPage;
 
-	public TitledPageApplicationDialog(DialogPage dialogPage) {
-		super();
-		setDialogPage(dialogPage);
-	}
+    public TitledPageApplicationDialog(DialogPage dialogPage) {
+        super();
+        setDialogPage(dialogPage);
+    }
 
-	public TitledPageApplicationDialog(DialogPage dialogPage, Window parent) {
-		super(dialogPage.getTitle(), parent);
-		setDialogPage(dialogPage);
-	}
+    public TitledPageApplicationDialog(DialogPage dialogPage, Window parent) {
+        super(dialogPage.getTitle(), parent);
+        setDialogPage(dialogPage);
+    }
 
-	public TitledPageApplicationDialog(DialogPage dialogPage, Window parent, CloseAction closeAction) {
-		super(dialogPage.getTitle(), parent, closeAction);
-		setDialogPage(dialogPage);
-	}
+    public TitledPageApplicationDialog(DialogPage dialogPage, Window parent, CloseAction closeAction) {
+        super(dialogPage.getTitle(), parent, closeAction);
+        setDialogPage(dialogPage);
+    }
 
-	protected DialogPage getDialogPage() {
-		return dialogPage;
-	}
+    protected DialogPage getDialogPage() {
+        return dialogPage;
+    }
 
-	private void setDialogPage(DialogPage dialogPage) {
-		this.dialogPage = dialogPage;
-	}
+    private void setDialogPage(DialogPage dialogPage) {
+        this.dialogPage = dialogPage;
+    }
 
-	protected JComponent createTitledDialogContentPane() {
-		Assert.notNull(dialogPage);
-		dialogPage.addMessageAreaChangeListener(new MessageAreaChangeListener() {
-			public void messageUpdated(MessageAreaModel source) {
-				update();
-			}
-		});
-		dialogPage.addPropertyChangeListener(this);
-		update();
-		return dialogPage.getControl();
-	}
+    protected JComponent createTitledDialogContentPane() {
+        Assert.notNull(dialogPage);
+        dialogPage.addMessageAreaChangeListener(new MessageAreaChangeListener() {
+            public void messageUpdated(MessageAreaModel source) {
+                update();
+            }
+        });
+        dialogPage.addPropertyChangeListener(this);
+        update();
+        return dialogPage.getControl();
+    }
 
-	public void propertyChange(PropertyChangeEvent e) {
-		if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
-			setEnabled(dialogPage.isPageComplete());
-		}
-		else {
-			update();
-		}
-	}
+    public void propertyChange(PropertyChangeEvent e) {
+        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+            setEnabled(dialogPage.isPageComplete());
+        }
+        else {
+            update();
+        }
+    }
 
-	public String getDescription() {
-		return dialogPage.getDescription();
-	}
+    public String getDescription() {
+        return dialogPage.getDescription();
+    }
 
-	protected void update() {
-		if (!StringUtils.hasText(getTitle())) {
-			setTitle(dialogPage.getTitle());
-		}
-		updateTitleBar();
-		updateMessage();
-	}
+    protected void update() {
+        if (!StringUtils.hasText(getTitle())) {
+            setTitle(dialogPage.getTitle());
+        }
+        updateTitleBar();
+        updateMessage();
+    }
 
-	protected void updateTitleBar() {
-		setTitleAreaText(dialogPage.getTitle());
-		setTitleAreaImage(dialogPage.getImage());
-	}
+    protected void updateTitleBar() {
+        setTitleAreaText(dialogPage.getTitle());
+        setTitleAreaImage(dialogPage.getImage());
+    }
 
-	protected void updateMessage() {
-		setMessage(dialogPage.getMessage(), dialogPage.getSeverity());
-	}
+    protected void updateMessage() {
+        setMessage(dialogPage.getMessage(), dialogPage.getSeverity());
+    }
 }

@@ -32,69 +32,69 @@ import org.springframework.util.CachingMapTemplate;
  * @author Keith Donald
  */
 public class DefaultIconSource implements IconSource {
-	protected static final Log logger = LogFactory.getLog(DefaultIconSource.class);
+    protected static final Log logger = LogFactory.getLog(DefaultIconSource.class);
 
-	private IconCache cache;
+    private IconCache cache;
 
-	/**
-	 * Icon cache using soft references.
-	 * 
-	 * @author Keith Donald
-	 */
-	protected static class IconCache extends CachingMapTemplate {
-		private ImageSource images;
+    /**
+     * Icon cache using soft references.
+     * 
+     * @author Keith Donald
+     */
+    protected static class IconCache extends CachingMapTemplate {
+        private ImageSource images;
 
-		public IconCache(ImageSource images) {
-			super(true);
-			this.images = images;
-		}
+        public IconCache(ImageSource images) {
+            super(true);
+            this.images = images;
+        }
 
-		public Object create(Object key) {
-			Image image = images.getImage((String)key);
-			return new ImageIcon(image);
-		}
+        public Object create(Object key) {
+            Image image = images.getImage((String)key);
+            return new ImageIcon(image);
+        }
 
-		public ImageSource images() {
-			return images;
-		}
-	}
+        public ImageSource images() {
+            return images;
+        }
+    }
 
-	/**
-	 * Constructs a icon registry that loads images from the provided source.
-	 * 
-	 * @param images
-	 *            the image source.
-	 */
-	public DefaultIconSource(ImageSource images) {
-		this.cache = new IconCache(images);
-	}
+    /**
+     * Constructs a icon registry that loads images from the provided source.
+     * 
+     * @param images
+     *            the image source.
+     */
+    public DefaultIconSource(ImageSource images) {
+        this.cache = new IconCache(images);
+    }
 
-	public Icon getIcon(String key) {
-		try {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Resolving icon with key '" + key + "'");
-			}
-			return (ImageIcon)cache.get(key);
-		}
-		catch (NoSuchImageResourceException e) {
-			if (logger.isInfoEnabled()) {
-				logger.info("No image resource found for icon with key '" + key + "'; returning a <null> icon.");
-			}
-			return null;
-		}
-	}
+    public Icon getIcon(String key) {
+        try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Resolving icon with key '" + key + "'");
+            }
+            return (ImageIcon)cache.get(key);
+        }
+        catch (NoSuchImageResourceException e) {
+            if (logger.isInfoEnabled()) {
+                logger.info("No image resource found for icon with key '" + key + "'; returning a <null> icon.");
+            }
+            return null;
+        }
+    }
 
-	public void clear() {
-		cache.clear();
-	}
+    public void clear() {
+        cache.clear();
+    }
 
-	protected String doProcessImageKeyBeforeLookup(String key) {
-		// subclasses can override
-		return key;
-	}
+    protected String doProcessImageKeyBeforeLookup(String key) {
+        // subclasses can override
+        return key;
+    }
 
-	protected IconCache cache() {
-		return cache;
-	}
+    protected IconCache cache() {
+        return cache;
+    }
 
 }

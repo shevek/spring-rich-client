@@ -61,7 +61,7 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
     private Map formViewMap;
 
     protected boolean inLink;
-    
+
     public HtmlFormBuilder(SwingFormModel formModel, String html) {
         super(formModel);
         formViewMap = new HashMap();
@@ -76,9 +76,9 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
 
             public void mouseMoved(MouseEvent e) {
             }
-            
+
             public void mouseClicked(MouseEvent e) {
-                
+
             }
         });
         htmlPane.addMouseListener(new MouseAdapter() {
@@ -101,13 +101,11 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
                     inLink = true;
                     enteredLink();
                 }
-                else if (e.getEventType().equals(
-                        HyperlinkEvent.EventType.EXITED)) {
+                else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
                     inLink = false;
                     exitedLink();
                 }
-                else if (e.getEventType().equals(
-                        HyperlinkEvent.EventType.ACTIVATED)) {
+                else if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
                     System.out.println(e.getURL()); // XXX need to open a
                     // browser
                 }
@@ -117,8 +115,7 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
     }
 
     private void enteredLink() {
-        Application.instance().getActiveWindow().getControl().setCursor(
-                Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Application.instance().getActiveWindow().getControl().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void exitedLink() {
@@ -136,10 +133,9 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
             Element element = (Element)entry.getKey();
             FormView view = (FormView)entry.getValue();
 
-            String propertyName = (String)element.getAttributes().getAttribute(
-                    HTML.getAttributeKey("id"));
+            String propertyName = (String)element.getAttributes().getAttribute(HTML.getAttributeKey("id"));
             if (propertyName != null) {
-                JComponent comp = (JComponent) view.getComponent();
+                JComponent comp = (JComponent)view.getComponent();
                 if (comp instanceof JTextComponent) {
                     getFormModel().bind((JTextComponent)comp, propertyName);
                 }
@@ -164,10 +160,9 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
     public void installLaFStyleSheet(HTMLDocument doc) {
         Font defaultFont = UIManager.getFont("Button.font");
 
-        String stylesheet = "body {  font-family: " + defaultFont.getName()
-                + "; font-size: " + defaultFont.getSize() + "pt;  }"
-                + "a, p, li { font-family: " + defaultFont.getName()
-                + "; font-size: " + defaultFont.getSize() + "pt;  }";
+        String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
+                + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: "
+                + defaultFont.getSize() + "pt;  }";
         try {
             doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
         }

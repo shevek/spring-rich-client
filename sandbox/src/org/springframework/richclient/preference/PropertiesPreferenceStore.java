@@ -55,16 +55,12 @@ public class PropertiesPreferenceStore implements PreferenceStore {
         dirty = false;
     }
 
-    public void firePropertyChangeEvent(String name, Object oldValue,
-            Object newValue) {
+    public void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
 
-        if (listeners.size() > 0
-                && (oldValue == null || !oldValue.equals(newValue))) {
-            final PropertyChangeEvent pe = new PropertyChangeEvent(this, name,
-                    oldValue, newValue);
+        if (listeners.size() > 0 && (oldValue == null || !oldValue.equals(newValue))) {
+            final PropertyChangeEvent pe = new PropertyChangeEvent(this, name, oldValue, newValue);
             for (int i = 0; i < listeners.size(); ++i) {
-                PropertyChangeListener l = (PropertyChangeListener) listeners
-                        .get(i);
+                PropertyChangeListener l = (PropertyChangeListener)listeners.get(i);
                 l.propertyChange(pe);
             }
         }
@@ -105,7 +101,8 @@ public class PropertiesPreferenceStore implements PreferenceStore {
     private double getDouble(Properties p, String name) {
         try {
             return Double.parseDouble(p.getProperty(name));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0.0;
         }
     }
@@ -121,7 +118,8 @@ public class PropertiesPreferenceStore implements PreferenceStore {
     private float getFloat(Properties p, String name) {
         try {
             return Float.parseFloat(p.getProperty(name));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0.0f;
         }
     }
@@ -133,7 +131,8 @@ public class PropertiesPreferenceStore implements PreferenceStore {
     private int getInt(Properties p, String name) {
         try {
             return Integer.parseInt(p.getProperty(name));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0;
         }
     }
@@ -145,7 +144,8 @@ public class PropertiesPreferenceStore implements PreferenceStore {
     private long getLong(Properties p, String name) {
         try {
             return Long.parseLong(p.getProperty(name));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0L;
         }
     }
@@ -192,7 +192,8 @@ public class PropertiesPreferenceStore implements PreferenceStore {
         try {
             out = new FileOutputStream(fileName);
             properties.store(out, null);
-        } finally {
+        }
+        finally {
             if (out != null)
                 out.close();
         }
@@ -263,8 +264,7 @@ public class PropertiesPreferenceStore implements PreferenceStore {
         if (oldValue != value) {
             setValue(properties, name, value);
             dirty = true;
-            firePropertyChangeEvent(name, new Boolean(oldValue), new Boolean(
-                    value));
+            firePropertyChangeEvent(name, new Boolean(oldValue), new Boolean(value));
         }
     }
 
@@ -273,8 +273,7 @@ public class PropertiesPreferenceStore implements PreferenceStore {
         if (oldValue != value) {
             setValue(properties, name, value);
             dirty = true;
-            firePropertyChangeEvent(name, new Double(oldValue), new Double(
-                    value));
+            firePropertyChangeEvent(name, new Double(oldValue), new Double(value));
         }
     }
 
@@ -292,8 +291,7 @@ public class PropertiesPreferenceStore implements PreferenceStore {
         if (oldValue != value) {
             setValue(properties, name, value);
             dirty = true;
-            firePropertyChangeEvent(name, new Integer(oldValue), new Integer(
-                    value));
+            firePropertyChangeEvent(name, new Integer(oldValue), new Integer(value));
         }
     }
 

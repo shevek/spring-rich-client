@@ -29,126 +29,127 @@ import org.springframework.richclient.factory.MenuFactory;
 
 public abstract class ToggleCommand extends ActionCommand {
 
-	private static final String SELECTED_PROPERTY = "selected";
+    private static final String SELECTED_PROPERTY = "selected";
 
-	private boolean selected;
+    private boolean selected;
 
-	private ExclusiveCommandGroupController exclusiveController;
+    private ExclusiveCommandGroupController exclusiveController;
 
-	public ToggleCommand() {
-	}
+    public ToggleCommand() {
+    }
 
-	public ToggleCommand(String commandId) {
-		super(commandId);
-	}
+    public ToggleCommand(String commandId) {
+        super(commandId);
+    }
 
-	public ToggleCommand(String id, CommandFaceDescriptor face) {
-		super(id, face);
-	}
+    public ToggleCommand(String id, CommandFaceDescriptor face) {
+        super(id, face);
+    }
 
-	public ToggleCommand(String id, String encodedLabel) {
-		super(id, encodedLabel);
-	}
+    public ToggleCommand(String id, String encodedLabel) {
+        super(id, encodedLabel);
+    }
 
-	public ToggleCommand(String id, String encodedLabel, Icon icon, String caption) {
-		super(id, encodedLabel, icon, caption);
-	}
+    public ToggleCommand(String id, String encodedLabel, Icon icon, String caption) {
+        super(id, encodedLabel, icon, caption);
+    }
 
-	public void setExclusiveController(ExclusiveCommandGroupController exclusiveController) {
-		this.exclusiveController = exclusiveController;
-	}
+    public void setExclusiveController(ExclusiveCommandGroupController exclusiveController) {
+        this.exclusiveController = exclusiveController;
+    }
 
-	public boolean isExclusiveGroupMember() {
-		return exclusiveController != null;
-	}
+    public boolean isExclusiveGroupMember() {
+        return exclusiveController != null;
+    }
 
-	public JMenuItem createMenuItem(String faceDescriptorKey, MenuFactory factory,
-			CommandButtonConfigurer buttonConfigurer) {
-		JMenuItem menuItem;
-		if (isExclusiveGroupMember()) {
-			menuItem = factory.createRadioButtonMenuItem();
-		}
-		else {
-			menuItem = factory.createCheckBoxMenuItem();
-		}
-		attach(menuItem, buttonConfigurer);
-		return menuItem;
-	}
+    public JMenuItem createMenuItem(String faceDescriptorKey, MenuFactory factory,
+            CommandButtonConfigurer buttonConfigurer) {
+        JMenuItem menuItem;
+        if (isExclusiveGroupMember()) {
+            menuItem = factory.createRadioButtonMenuItem();
+        }
+        else {
+            menuItem = factory.createCheckBoxMenuItem();
+        }
+        attach(menuItem, buttonConfigurer);
+        return menuItem;
+    }
 
-	public AbstractButton createButton(String faceDescriptorKey, ButtonFactory factory, CommandButtonConfigurer configurer) {
-		AbstractButton button = factory.createToggleButton();
-		attach(button, configurer);
-		return button;
-	}
+    public AbstractButton createButton(String faceDescriptorKey, ButtonFactory factory,
+            CommandButtonConfigurer configurer) {
+        AbstractButton button = factory.createToggleButton();
+        attach(button, configurer);
+        return button;
+    }
 
-	protected void onButtonAttached(AbstractButton button) {
-		super.onButtonAttached(button);
-		button.setSelected(selected);
-	}
+    protected void onButtonAttached(AbstractButton button) {
+        super.onButtonAttached(button);
+        button.setSelected(selected);
+    }
 
-	public boolean isSelected() {
-		return this.selected;
-	}
+    public boolean isSelected() {
+        return this.selected;
+    }
 
-	public final void setSelected(boolean selected) {
-		if (isExclusiveGroupMember()) {
-			boolean oldState = isSelected();
+    public final void setSelected(boolean selected) {
+        if (isExclusiveGroupMember()) {
+            boolean oldState = isSelected();
 
-			exclusiveController.handleSelectionRequest(this, selected);
+            exclusiveController.handleSelectionRequest(this, selected);
 
-			// set back button state if controller didn't change this command;
-			// needed b/c of natural button check box toggling in swing
-			if (oldState == isSelected()) {
-				Iterator iter = buttonIterator();
-				while (iter.hasNext()) {
-					AbstractButton button = (AbstractButton)iter.next();
-					button.setSelected(isSelected());
-				}
-			}
-		}
-		else {
-			requestSetSelection(selected);
-		}
-	}
+            // set back button state if controller didn't change this command;
+            // needed b/c of natural button check box toggling in swing
+            if (oldState == isSelected()) {
+                Iterator iter = buttonIterator();
+                while (iter.hasNext()) {
+                    AbstractButton button = (AbstractButton)iter.next();
+                    button.setSelected(isSelected());
+                }
+            }
+        }
+        else {
+            requestSetSelection(selected);
+        }
+    }
 
-	boolean requestSetSelection(boolean selected) {
-		boolean previousState = isSelected();
+    boolean requestSetSelection(boolean selected) {
+        boolean previousState = isSelected();
 
-		if (previousState != selected) {
-			this.selected = onSelection(selected);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Toggle command selection returned '" + this.selected + "'");
-			}
-		}
+        if (previousState != selected) {
+            this.selected = onSelection(selected);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Toggle command selection returned '" + this.selected + "'");
+            }
+        }
 
-		// we must always update toggle buttons
-		Iterator it = buttonIterator();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Updating all attached toggle buttons to '" + isSelected() + "'");
-		}
-		while (it.hasNext()) {
-			AbstractButton button = (AbstractButton)it.next();
-			button.setSelected(isSelected());
-		}
+        // we must always update toggle buttons
+        Iterator it = buttonIterator();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Updating all attached toggle buttons to '" + isSelected() + "'");
+        }
+        while (it.hasNext()) {
+            AbstractButton button = (AbstractButton)it.next();
+            button.setSelected(isSelected());
+        }
 
-		if (previousState != isSelected()) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Selection changed; firing property change event");
-			}
-			firePropertyChange(SELECTED_PROPERTY, previousState, isSelected());
-		}
+        if (previousState != isSelected()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Selection changed; firing property change event");
+            }
+            firePropertyChange(SELECTED_PROPERTY, previousState, isSelected());
+        }
 
-		return isSelected();
-	}
+        return isSelected();
+    }
 
-	protected void doExecuteCommand() {
-		setSelected(!isSelected());
-	}
+    protected void doExecuteCommand() {
+        setSelected(!isSelected());
+    }
 
-	protected abstract boolean onSelection(boolean selected);
+    protected abstract boolean onSelection(boolean selected);
 
-	public void requestDefaultIn(RootPaneContainer container) {
-		throw new UnsupportedOperationException();
-	}
+    public void requestDefaultIn(RootPaneContainer container) {
+        throw new UnsupportedOperationException();
+    }
 
 }

@@ -22,83 +22,83 @@ import org.springframework.util.ObjectUtils;
  * @author Keith Donald
  */
 public class TargetableActionCommand extends ActionCommand {
-	private ActionCommandExecutor commandExecutor;
+    private ActionCommandExecutor commandExecutor;
 
-	private ValueChangeListener guardRelay;
+    private ValueChangeListener guardRelay;
 
-	public TargetableActionCommand() {
-		this(null);
-	}
+    public TargetableActionCommand() {
+        this(null);
+    }
 
-	public TargetableActionCommand(String commandId) {
-		this(commandId, null);
-	}
+    public TargetableActionCommand(String commandId) {
+        this(commandId, null);
+    }
 
-	public TargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
-		super(commandId);
-		setEnabled(false);
-		setCommandExecutor(delegate);
-	}
+    public TargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
+        super(commandId);
+        setEnabled(false);
+        setCommandExecutor(delegate);
+    }
 
-	public void setCommandExecutor(ActionCommandExecutor commandExecutor) {
-		if (ObjectUtils.nullSafeEquals(this.commandExecutor, commandExecutor)) {
-			return;
-		}
-		if (commandExecutor == null) {
-			detachCommandExecutor();
-		}
-		else {
-			if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
-				unsubscribeFromGuardedCommandDelegate();
-			}
-			this.commandExecutor = commandExecutor;
-			attachCommandExecutor();
-		}
-	}
+    public void setCommandExecutor(ActionCommandExecutor commandExecutor) {
+        if (ObjectUtils.nullSafeEquals(this.commandExecutor, commandExecutor)) {
+            return;
+        }
+        if (commandExecutor == null) {
+            detachCommandExecutor();
+        }
+        else {
+            if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
+                unsubscribeFromGuardedCommandDelegate();
+            }
+            this.commandExecutor = commandExecutor;
+            attachCommandExecutor();
+        }
+    }
 
-	private void attachCommandExecutor() {
-		if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
-			GuardedActionCommandExecutor dynamicHandler = (GuardedActionCommandExecutor)commandExecutor;
-			setEnabled(dynamicHandler.isEnabled());
-			subscribeToGuardedCommandDelegate();
-		}
-		else {
-			setEnabled(true);
-		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("Command delegate '" + this.commandExecutor + "' attached.");
-		}
-	}
+    private void attachCommandExecutor() {
+        if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
+            GuardedActionCommandExecutor dynamicHandler = (GuardedActionCommandExecutor)commandExecutor;
+            setEnabled(dynamicHandler.isEnabled());
+            subscribeToGuardedCommandDelegate();
+        }
+        else {
+            setEnabled(true);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Command delegate '" + this.commandExecutor + "' attached.");
+        }
+    }
 
-	private void subscribeToGuardedCommandDelegate() {
-		this.guardRelay = new ValueChangeListener() {
-			public void valueChanged() {
-				setEnabled(((GuardedActionCommandExecutor)commandExecutor).isEnabled());
-			}
-		};
-		((GuardedActionCommandExecutor)commandExecutor).addEnabledListener(guardRelay);
-	}
+    private void subscribeToGuardedCommandDelegate() {
+        this.guardRelay = new ValueChangeListener() {
+            public void valueChanged() {
+                setEnabled(((GuardedActionCommandExecutor)commandExecutor).isEnabled());
+            }
+        };
+        ((GuardedActionCommandExecutor)commandExecutor).addEnabledListener(guardRelay);
+    }
 
-	public void detachCommandExecutor() {
-		if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
-			unsubscribeFromGuardedCommandDelegate();
-		}
-		this.commandExecutor = null;
-		setEnabled(false);
-		logger.debug("Command delegate detached.");
-	}
+    public void detachCommandExecutor() {
+        if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
+            unsubscribeFromGuardedCommandDelegate();
+        }
+        this.commandExecutor = null;
+        setEnabled(false);
+        logger.debug("Command delegate detached.");
+    }
 
-	private void unsubscribeFromGuardedCommandDelegate() {
-		((GuardedActionCommandExecutor)this.commandExecutor).removeEnabledListener(guardRelay);
-	}
+    private void unsubscribeFromGuardedCommandDelegate() {
+        ((GuardedActionCommandExecutor)this.commandExecutor).removeEnabledListener(guardRelay);
+    }
 
-	protected void doExecuteCommand() {
-		if (commandExecutor instanceof ParameterizableActionCommandExecutor) {
-			((ParameterizableActionCommandExecutor)commandExecutor).execute(getParameters());
-		}
-		else {
-			commandExecutor.execute();
-		}
-	}
+    protected void doExecuteCommand() {
+        if (commandExecutor instanceof ParameterizableActionCommandExecutor) {
+            ((ParameterizableActionCommandExecutor)commandExecutor).execute(getParameters());
+        }
+        else {
+            commandExecutor.execute();
+        }
+    }
 
 }

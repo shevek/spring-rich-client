@@ -21,12 +21,12 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 
 public class SeparatorGroupMember extends GroupMember {
 
-	public SeparatorGroupMember() {
-	}
+    public SeparatorGroupMember() {
+    }
 
-	protected void fill(GroupContainerPopulator container, Object factory, CommandButtonConfigurer configurer,
-			List previousButtons) {
-		addSeparator(container);
-	}
+    protected void fill(GroupContainerPopulator container, Object factory, CommandButtonConfigurer configurer,
+            List previousButtons) {
+        addSeparator(container);
+    }
 
 }

@@ -49,7 +49,6 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
         assertEquals(ClassEditor.class, pe.getClass());
     }
 
-
     public void testRegisteringProperty() throws Exception {
         PropertyEditor pe;
 
@@ -82,17 +81,14 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
         assertEquals(ClassEditor.class, pe.getClass());
     }
 
-
     interface A {
         public String getSomething();
-
 
         public void setSomething(String newSomething);
     }
 
     interface B {
         public Long getBar();
-
 
         public void setBar(Long newBar);
     }
@@ -102,23 +98,20 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
 
     static class D implements B, C {
         private String something;
-        private Long bar;
 
+        private Long bar;
 
         public String getSomething() {
             return something;
         }
 
-
         public void setSomething(String something) {
             this.something = something;
         }
 
-
         public Long getBar() {
             return bar;
         }
-
 
         public void setBar(Long bar) {
             this.bar = bar;

@@ -36,7 +36,7 @@ public abstract class ListenerListHelperPerformanceTests {
     private static int NUMBER_OF_ITERATIONS = 500000;
 
     public static int[] NUM_LISTENER_TESTS = new int[] { 0, 2, 5, 10 };
-    
+
     protected int listenerInvocationCount = 0;
 
     protected int numInstalledListeners = 0;
@@ -71,8 +71,7 @@ public abstract class ListenerListHelperPerformanceTests {
     public void printResults() {
         System.out.println(sw.prettyPrint());
         System.out.println(NumberFormat.getNumberInstance().format(
-                Math.round(listenerInvocationCount
-                        / sw.getTotalTimeSeconds()))
+                Math.round(listenerInvocationCount / sw.getTotalTimeSeconds()))
                 + " listener invocations per second");
     }
 
@@ -89,7 +88,7 @@ public abstract class ListenerListHelperPerformanceTests {
     private class TestListener implements EventListener {
         /* silly code to try and confuse hotspot otimizations */
         volatile boolean fug = true;
-        
+
         public void fireNoArgsEvent() {
             listenerInvocationCount++;
         }
@@ -122,7 +121,7 @@ public abstract class ListenerListHelperPerformanceTests {
             return listener;
         }
     }
-    
+
     private static class BaseLineOneArg extends ListenerListHelperPerformanceTests {
         public BaseLineOneArg() {
             super("BaseLine - One Arg");
@@ -148,14 +147,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class ReflectionNoArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class ReflectionNoArgTest extends ListenerListHelperPerformanceTests {
         public ReflectionNoArgTest() {
             super("Reflection - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -170,14 +167,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class ReflectionOneArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class ReflectionOneArgTest extends ListenerListHelperPerformanceTests {
         public ReflectionOneArgTest() {
             super("Reflection - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -192,14 +187,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class ClosureNoArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class ClosureNoArgTest extends ListenerListHelperPerformanceTests {
         public ClosureNoArgTest() {
             super("Closure - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -221,14 +214,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class ClosureOneArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class ClosureOneArgTest extends ListenerListHelperPerformanceTests {
         public ClosureOneArgTest() {
             super("Closure - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -246,14 +237,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class IteratorNoArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class IteratorNoArgTest extends ListenerListHelperPerformanceTests {
         public IteratorNoArgTest() {
             super("Iterator - No Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -266,14 +255,12 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class IteratorOneArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class IteratorOneArgTest extends ListenerListHelperPerformanceTests {
         public IteratorOneArgTest() {
             super("Iterator - 1 Args");
         }
 
-        private final ListenerListHelper listenerList = new ListenerListHelper(
-                TestListener.class);
+        private final ListenerListHelper listenerList = new ListenerListHelper(TestListener.class);
 
         protected void addListener() {
             listenerList.add(new TestListener());
@@ -286,8 +273,7 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class EventListenerListNoArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class EventListenerListNoArgTest extends ListenerListHelperPerformanceTests {
         public EventListenerListNoArgTest() {
             super("EventListenerList - No Args");
         }
@@ -308,8 +294,7 @@ public abstract class ListenerListHelperPerformanceTests {
         }
     }
 
-    private static class EventListenerListOneArgTest extends
-            ListenerListHelperPerformanceTests {
+    private static class EventListenerListOneArgTest extends ListenerListHelperPerformanceTests {
         public EventListenerListOneArgTest() {
             super("EventListenerList - 1 Args");
         }
@@ -324,8 +309,7 @@ public abstract class ListenerListHelperPerformanceTests {
             Object[] listeners = listenerList.getListenerList();
             for (int i = listeners.length - 2; i >= 0; i -= 2) {
                 if (listeners[i] == TestListener.class) {
-                    ((TestListener)listeners[i + 1])
-                            .fireOneArgsEvent(new Object());
+                    ((TestListener)listeners[i + 1]).fireOneArgsEvent(new Object());
                 }
             }
         }
@@ -333,23 +317,20 @@ public abstract class ListenerListHelperPerformanceTests {
 
     public static void main(String[] args) {
         try {
-            Class[] tests = new Class[] { BaseLine.class,BaseLineOneArg.class,
-                    ReflectionNoArgTest.class, ReflectionOneArgTest.class,
-                    ClosureNoArgTest.class, ClosureOneArgTest.class,
-                    IteratorNoArgTest.class, IteratorOneArgTest.class,
-                    EventListenerListNoArgTest.class,
+            Class[] tests = new Class[] { BaseLine.class, BaseLineOneArg.class, ReflectionNoArgTest.class,
+                    ReflectionOneArgTest.class, ClosureNoArgTest.class, ClosureOneArgTest.class,
+                    IteratorNoArgTest.class, IteratorOneArgTest.class, EventListenerListNoArgTest.class,
                     EventListenerListOneArgTest.class };
 
             for (int i = 0; i < tests.length; i++) {
                 System.gc();
-                ListenerListHelperPerformanceTests test = (ListenerListHelperPerformanceTests)tests[i]
-                        .getConstructor(null).newInstance(null);
+                ListenerListHelperPerformanceTests test = (ListenerListHelperPerformanceTests)tests[i].getConstructor(
+                        null).newInstance(null);
 
                 test.runTests(NUMBER_OF_WARM_UP_ITERATIONS);
-                
+
                 System.gc();
-                test = (ListenerListHelperPerformanceTests)tests[i]
-                        .getConstructor(null).newInstance(null);
+                test = (ListenerListHelperPerformanceTests)tests[i].getConstructor(null).newInstance(null);
 
                 test.runTests(NUMBER_OF_ITERATIONS);
                 test.printResults();

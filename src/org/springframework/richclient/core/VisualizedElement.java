@@ -20,7 +20,7 @@ import java.awt.Image;
 import javax.swing.Icon;
 
 public interface VisualizedElement {
-	public Image getImage();
+    public Image getImage();
 
-	public Icon getIcon();
+    public Icon getIcon();
 }

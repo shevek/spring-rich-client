@@ -28,17 +28,17 @@ import org.springframework.richclient.command.ActionCommand;
  */
 public class PetClinicApplicationAdvisor extends BeanFactoryApplicationAdvisor {
 
-	public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
-		super.onPreWindowOpen(configurer);
-		// comment out to hide the menubar, toolbar, or reduce window size...
-		//configurer.setShowMenuBar(false);
-		//configurer.setShowToolBar(false);
-		//configurer.setInitialSize(new Dimension(640, 480));
-	}
+    public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
+        super.onPreWindowOpen(configurer);
+        // comment out to hide the menubar, toolbar, or reduce window size...
+        //configurer.setShowMenuBar(false);
+        //configurer.setShowToolBar(false);
+        //configurer.setInitialSize(new Dimension(640, 480));
+    }
 
-	public void onCommandsCreated(ApplicationWindow window) {
-		ActionCommand command = window.getCommandManager().getActionCommand("loginCommand");
-		command.execute();
-	}
+    public void onCommandsCreated(ApplicationWindow window) {
+        ActionCommand command = window.getCommandManager().getActionCommand("loginCommand");
+        command.execute();
+    }
 
 }

@@ -33,8 +33,7 @@ import org.springframework.remoting.support.UrlBasedRemoteAccessor;
 /**
  * @author oliverh
  */
-public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
-        InitializingBean, FactoryBean {
+public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements InitializingBean, FactoryBean {
 
     private Object serviceProxy;
 
@@ -84,10 +83,12 @@ public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
     }
 
     public void afterPropertiesSet() throws MalformedURLException {
-        if (getServiceInterface() == null) { throw new IllegalArgumentException(
-                "serviceInterface is required."); }
-        if (getServiceUrl() == null) { throw new IllegalArgumentException(
-                "serviceUrl is required."); }
+        if (getServiceInterface() == null) {
+            throw new IllegalArgumentException("serviceInterface is required.");
+        }
+        if (getServiceUrl() == null) {
+            throw new IllegalArgumentException("serviceUrl is required.");
+        }
         serviceUrl = new URL(getServiceUrl());
 
         if (transport == null) {
@@ -95,14 +96,15 @@ public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
         }
         transport.setAuthenticationCallback(new AuthenticationCallback() {
             public Authentication authenticate(Request request) {
-                if (userName != null && password != null) { return new UsernamePasswordAuthentication(
-                        userName, password); }
+                if (userName != null && password != null) {
+                    return new UsernamePasswordAuthentication(userName, password);
+                }
                 return null;
             }
         });
 
-        this.serviceProxy = ProxyFactory.getProxy(getServiceInterface(),
-                new SimpleClientInterceptor(getServiceInterface(), transport));
+        this.serviceProxy = ProxyFactory.getProxy(getServiceInterface(), new SimpleClientInterceptor(
+                getServiceInterface(), transport));
     }
 
     public Object getObject() {
@@ -110,8 +112,7 @@ public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
     }
 
     public Class getObjectType() {
-        return (this.serviceProxy != null) ? this.serviceProxy.getClass()
-                : getServiceInterface();
+        return (this.serviceProxy != null) ? this.serviceProxy.getClass() : getServiceInterface();
     }
 
     public boolean isSingleton() {

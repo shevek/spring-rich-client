@@ -49,7 +49,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             factory.setServiceInterface(Person.class);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
         factory.setServiceInterface(IPerson.class);
@@ -59,16 +60,17 @@ public class SimpleRemotingTestSuite extends TestCase {
         factory.afterPropertiesSet();
         assertTrue("Correct singleton value", factory.isSingleton());
         assertTrue(factory.getObject() instanceof IPerson);
-        IPerson bean = (IPerson) factory.getObject();
+        IPerson bean = (IPerson)factory.getObject();
         try {
             bean.setName("test");
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException ex) {
+        }
+        catch (RemoteAccessException ex) {
             // expected
         }
-        
+
         assertTrue(bean.equals(bean));
-        assertTrue(! bean.equals(new Person()));
+        assertTrue(!bean.equals(new Person()));
     }
 
     public void testServiceExporterWithAccessError() throws Exception {
@@ -77,7 +79,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.afterPropertiesSet();
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
@@ -85,7 +88,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.setServiceInterface(Person.class);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
         serviceExporter.setServiceInterface(IPerson.class);
@@ -95,7 +99,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.afterPropertiesSet();
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
@@ -104,7 +109,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.afterPropertiesSet();
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
@@ -114,25 +120,24 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.afterPropertiesSet();
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
-        services.put(new Person(),
-                "org.springframework.remoting.simple.IPerson");
-        services.put(new RemoteTestBean(),
-                "org.springframework.remoting.simple.IRemoteTestBean");
+        services.put(new Person(), "org.springframework.remoting.simple.IPerson");
+        services.put(new RemoteTestBean(), "org.springframework.remoting.simple.IRemoteTestBean");
 
         serviceExporter.setServices(services);
         serviceExporter.afterPropertiesSet();
 
         services.clear();
-        services.put(new RemoteTestBean(),
-                "org.springframework.remoting.simple.IPerson");
+        services.put(new RemoteTestBean(), "org.springframework.remoting.simple.IPerson");
         try {
             serviceExporter.setServices(services);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
@@ -141,17 +146,18 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.setServices(services);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
         services.clear();
-        services.put(new Person(),
-                "org.springframework.remoting.simple.IRemoteTestBean");
+        services.put(new Person(), "org.springframework.remoting.simple.IRemoteTestBean");
         try {
             serviceExporter.setServices(services);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
 
@@ -160,29 +166,27 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             serviceExporter.setServices(services);
             fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             // expected
         }
     }
 
-    public void testServiceExporterWithSimpleProxyFactoryBean()
-            throws Exception {
+    public void testServiceExporterWithSimpleProxyFactoryBean() throws Exception {
         RemoteTestBean serviceBean1 = new RemoteTestBean();
         Person serviceBean2 = new Person();
-        TestSimpleServiceExporter service = createService(serviceBean1,
-                IRemoteTestBean.class, serviceBean2, IPerson.class);
-
-        MockHttpUrlConnection conn = new MockHttpUrlConnection(service);
-        SimpleProxyFactoryBean factory1 = createClientFactory(conn,
-                IRemoteTestBean.class);
-        SimpleProxyFactoryBean factory2 = createClientFactory(conn,
+        TestSimpleServiceExporter service = createService(serviceBean1, IRemoteTestBean.class, serviceBean2,
                 IPerson.class);
 
-        IRemoteTestBean remoteBean1 = (IRemoteTestBean) factory1.getObject();
-        IPerson remoteBean2 = (IPerson) factory2.getObject();
-        
+        MockHttpUrlConnection conn = new MockHttpUrlConnection(service);
+        SimpleProxyFactoryBean factory1 = createClientFactory(conn, IRemoteTestBean.class);
+        SimpleProxyFactoryBean factory2 = createClientFactory(conn, IPerson.class);
+
+        IRemoteTestBean remoteBean1 = (IRemoteTestBean)factory1.getObject();
+        IPerson remoteBean2 = (IPerson)factory2.getObject();
+
         remoteBean1.hashCode();
-        assertEquals(remoteBean1, remoteBean1);        
+        assertEquals(remoteBean1, remoteBean1);
         assertFalse(remoteBean1.equals(remoteBean2));
 
         remoteBean1.setInt(5);
@@ -204,56 +208,56 @@ public class SimpleRemotingTestSuite extends TestCase {
         RemoteTestBean child = new RemoteTestBean();
         child.setString("s2");
         remoteBean1.setChild(child);
-        child = (RemoteTestBean) serviceBean1.getChild();
+        child = (RemoteTestBean)serviceBean1.getChild();
         assertEquals(child.getString(), "s2");
-        child = (RemoteTestBean) remoteBean1.getChild();
+        child = (RemoteTestBean)remoteBean1.getChild();
         assertEquals(child.getString(), "s2");
 
         List list = new ArrayList();
         list.add("0");
         list.add("1");
         remoteBean1.setCollection(list);
-        list = (List) serviceBean1.getCollection();
+        list = (List)serviceBean1.getCollection();
         assertEquals(list.size(), 2);
         assertEquals(list.get(1), "1");
 
-        list = (List) remoteBean1.getCollection();
+        list = (List)remoteBean1.getCollection();
         assertEquals(list.size(), 2);
         assertEquals(list.get(1), "1");
 
         try {
             remoteBean1.bounce(new NullPointerException("m1"));
             fail("Expecteding NullPointerException");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             assertEquals(e.getMessage(), "m1");
         }
-        NullPointerException lastBounce = (NullPointerException) serviceBean1
-                .getLastBounce();
+        NullPointerException lastBounce = (NullPointerException)serviceBean1.getLastBounce();
         assertEquals(lastBounce.getMessage(), "m1");
 
         try {
             remoteBean1.setChild(new Object());
             fail("should have thrown SimpleRemotingException");
-        } catch (SimpleRemotingException e) {
+        }
+        catch (SimpleRemotingException e) {
             // expected
         }
     }
 
     public void testBadConnection() throws Exception {
-        TestSimpleServiceExporter service = createService(new RemoteTestBean(),
-                IRemoteTestBean.class);
+        TestSimpleServiceExporter service = createService(new RemoteTestBean(), IRemoteTestBean.class);
 
         MockHttpUrlConnection conn = new MockHttpUrlConnection(service);
-        SimpleProxyFactoryBean factory = createClientFactory(conn,
-                IRemoteTestBean.class);
+        SimpleProxyFactoryBean factory = createClientFactory(conn, IRemoteTestBean.class);
 
-        IRemoteTestBean remoteBean = (IRemoteTestBean) factory.getObject();
+        IRemoteTestBean remoteBean = (IRemoteTestBean)factory.getObject();
 
         conn.reset(MockHttpUrlConnection.HTTP_INTERNAL_ERROR, false, false);
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
         }
 
@@ -261,7 +265,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
         }
 
@@ -269,7 +274,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
         }
 
@@ -277,26 +283,26 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
         }
     }
 
     public void testRetry() throws Exception {
-        TestSimpleServiceExporter service = createService(new RemoteTestBean(),
-                IRemoteTestBean.class);
+        TestSimpleServiceExporter service = createService(new RemoteTestBean(), IRemoteTestBean.class);
         MockHttpUrlConnection conn = new MockHttpUrlConnection(service);
         TestRetryDecisionManager retry = new TestRetryDecisionManager();
-        SimpleProxyFactoryBean factory = createClientFactory(conn,
-                IRemoteTestBean.class, retry);
+        SimpleProxyFactoryBean factory = createClientFactory(conn, IRemoteTestBean.class, retry);
 
-        IRemoteTestBean remoteBean = (IRemoteTestBean) factory.getObject();
+        IRemoteTestBean remoteBean = (IRemoteTestBean)factory.getObject();
 
         conn.reset(MockHttpUrlConnection.HTTP_INTERNAL_ERROR, false, false);
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
             assertEquals(retry.lastException(), e);
             assertTrue(retry.wasInvoked());
@@ -308,7 +314,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
             assertEquals(retry.lastException(), e);
             assertTrue(retry.wasInvoked());
@@ -320,10 +327,11 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
             assertTrue(retry.wasInvoked());
-            assertEquals(retry.lastException(), e);            
+            assertEquals(retry.lastException(), e);
             assertTrue(retry.lastException().isRecoverable() == SimpleRemotingException.YES);
             retry.reset();
         }
@@ -332,38 +340,36 @@ public class SimpleRemotingTestSuite extends TestCase {
         try {
             remoteBean.setInt(55);
             fail("Should have thrown RemoteAccessException");
-        } catch (RemoteAccessException e) {
+        }
+        catch (RemoteAccessException e) {
             // expected
         }
     }
 
     public void testIncompatibleClientService() throws Exception {
-        TestSimpleServiceExporter service = createService(new RemoteTestBean(),
-                IRemoteTestBean.class);
+        TestSimpleServiceExporter service = createService(new RemoteTestBean(), IRemoteTestBean.class);
 
         MockHttpUrlConnection conn = new MockHttpUrlConnection(service);
-        SimpleProxyFactoryBean factory = createClientFactory(conn,
-                IPerson.class);
+        SimpleProxyFactoryBean factory = createClientFactory(conn, IPerson.class);
 
-        IPerson remoteBean = (IPerson) factory.getObject();
+        IPerson remoteBean = (IPerson)factory.getObject();
 
         try {
             remoteBean.setAge(1);
             fail("Should have thrown RemoteAccessException");
-        } catch (SimpleRemotingException e) {
+        }
+        catch (SimpleRemotingException e) {
             // expected
             assertEquals(e.isRecoverable(), SimpleRemotingException.NO);
         }
     }
 
-    private SimpleProxyFactoryBean createClientFactory(
-            MockHttpUrlConnection conn, Class serviceInterface)
+    private SimpleProxyFactoryBean createClientFactory(MockHttpUrlConnection conn, Class serviceInterface)
             throws Exception {
         return createClientFactory(conn, serviceInterface, null);
     }
 
-    private SimpleProxyFactoryBean createClientFactory(
-            MockHttpUrlConnection conn, Class serviceInterface,
+    private SimpleProxyFactoryBean createClientFactory(MockHttpUrlConnection conn, Class serviceInterface,
             TestRetryDecisionManager retry) throws Exception {
         SimpleProxyFactoryBean factory = new SimpleProxyFactoryBean();
         factory.setServiceInterface(serviceInterface);
@@ -375,8 +381,7 @@ public class SimpleRemotingTestSuite extends TestCase {
         return factory;
     }
 
-    private TestSimpleServiceExporter createService(Object serviceBean,
-            Class serviceInterface) throws Exception {
+    private TestSimpleServiceExporter createService(Object serviceBean, Class serviceInterface) throws Exception {
         TestSimpleServiceExporter service = new TestSimpleServiceExporter();
         service.setService(serviceBean);
         service.setServiceInterface(serviceInterface);
@@ -384,8 +389,8 @@ public class SimpleRemotingTestSuite extends TestCase {
         return service;
     }
 
-    private TestSimpleServiceExporter createService(Object serviceBean1,
-            Class class1, Object serviceBean2, Class class2) throws Exception {
+    private TestSimpleServiceExporter createService(Object serviceBean1, Class class1, Object serviceBean2, Class class2)
+            throws Exception {
         TestSimpleServiceExporter service = new TestSimpleServiceExporter();
         Map services = new HashMap();
         services.put(serviceBean1, class1.getName());
@@ -414,8 +419,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             return lastException;
         }
 
-        public boolean shouldRetry(Request request, int retryNumber,
-                SimpleRemotingException ex) {
+        public boolean shouldRetry(Request request, int retryNumber, SimpleRemotingException ex) {
             count++;
             lastException = ex;
             return false;
@@ -431,8 +435,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             this.conn = conn;
         }
 
-        protected HttpURLConnection openConnection(Request request,
-                Authentication authentication) throws IOException  {
+        protected HttpURLConnection openConnection(Request request, Authentication authentication) throws IOException {
             if (!conn.isReset()) {
                 conn.reset();
             }
@@ -466,8 +469,7 @@ public class SimpleRemotingTestSuite extends TestCase {
 
         private boolean corruptResponse;
 
-        public MockHttpUrlConnection(TestSimpleServiceExporter service)
-                throws MalformedURLException {
+        public MockHttpUrlConnection(TestSimpleServiceExporter service) throws MalformedURLException {
             super(new URL("http://whatever"));
             this.service = service;
             this.needsReset = true;
@@ -481,8 +483,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             reset(HttpURLConnection.HTTP_OK, false, false);
         }
 
-        public void reset(int responseCode, boolean corruptRequest,
-                boolean corruptResponse) {
+        public void reset(int responseCode, boolean corruptRequest, boolean corruptResponse) {
             this.needsReset = false;
             this.needsConnect = true;
             this.corruptRequest = corruptRequest;
@@ -515,16 +516,18 @@ public class SimpleRemotingTestSuite extends TestCase {
                 }
                 os = null;
                 return new ByteArrayInputStream(responseContent);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw e;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
         private void corrupt(byte[] requestContent) {
             for (int i = 0; i < requestContent.length / 4; i++) {
-                requestContent[i] = (byte) (requestContent[i] + 1);
+                requestContent[i] = (byte)(requestContent[i] + 1);
             }
         }
 

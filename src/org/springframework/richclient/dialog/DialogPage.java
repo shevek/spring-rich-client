@@ -24,83 +24,83 @@ import org.springframework.rules.reporting.Severity;
 
 public interface DialogPage extends ControlFactory, MessageAreaModel, Guarded, PropertyChangePublisher {
 
-	public static final String DESCRIPTION_PROPERTY = "description";
+    public static final String DESCRIPTION_PROPERTY = "description";
 
-	public static final String PAGE_COMPLETE_PROPERTY = "pageComplete";
+    public static final String PAGE_COMPLETE_PROPERTY = "pageComplete";
 
-	/**
-	 * Returns this page's name.
-	 * 
-	 * @return the name of this page
-	 */
-	public String getId();
+    /**
+     * Returns this page's name.
+     * 
+     * @return the name of this page
+     */
+    public String getId();
 
-	/**
-	 * Returns this dialog page's title.
-	 * 
-	 * @return the title of this dialog page, or <code>null</code> if none
-	 */
-	public String getTitle();
+    /**
+     * Returns this dialog page's title.
+     * 
+     * @return the title of this dialog page, or <code>null</code> if none
+     */
+    public String getTitle();
 
-	/**
-	 * Returns this dialog page's description text.
-	 * 
-	 * @return the description text for this dialog page, or <code>null</code>
-	 *         if none
-	 */
-	public String getDescription();
+    /**
+     * Returns this dialog page's description text.
+     * 
+     * @return the description text for this dialog page, or <code>null</code>
+     *         if none
+     */
+    public String getDescription();
 
-	/**
-	 * Returns the current message for this dialog page.
-	 * 
-	 * @return the message, or <code>null</code> if none
-	 */
-	public String getMessage();
+    /**
+     * Returns the current message for this dialog page.
+     * 
+     * @return the message, or <code>null</code> if none
+     */
+    public String getMessage();
 
-	/**
-	 * Returns the current error message for this dialog page.
-	 * 
-	 * @return the error message, or <code>null</code> if none
-	 */
-	public String getErrorMessage();
+    /**
+     * Returns the current error message for this dialog page.
+     * 
+     * @return the error message, or <code>null</code> if none
+     */
+    public String getErrorMessage();
 
-	/**
-	 * Returns the current message severity for this dialog page.
-	 * 
-	 * @return the severity, or <code>null</code> if none
-	 */
-	public Severity getSeverity();
+    /**
+     * Returns the current message severity for this dialog page.
+     * 
+     * @return the severity, or <code>null</code> if none
+     */
+    public Severity getSeverity();
 
-	/**
-	 * Returns this dialog page's image.
-	 * 
-	 * @return the image for this dialog page, or <code>null</code> if none
-	 */
-	public Image getImage();
+    /**
+     * Returns this dialog page's image.
+     * 
+     * @return the image for this dialog page, or <code>null</code> if none
+     */
+    public Image getImage();
 
-	/**
-	 * Notifies that help has been requested for this dialog page.
-	 */
-	public void performHelp();
+    /**
+     * Notifies that help has been requested for this dialog page.
+     */
+    public void performHelp();
 
-	/**
-	 * Sets the visibility of this dialog page.
-	 * 
-	 * @param visible
-	 *            <code>true</code> to make this page visible, and
-	 *            <code>false</code> to hide it
-	 */
-	public void setVisible(boolean visible);
+    /**
+     * Sets the visibility of this dialog page.
+     * 
+     * @param visible
+     *            <code>true</code> to make this page visible, and
+     *            <code>false</code> to hide it
+     */
+    public void setVisible(boolean visible);
 
-	/**
-	 * Returns whether this page is complete or not.
-	 * <p>
-	 * This information is typically to decide when it is okay to submit a form.
-	 * </p>
-	 * 
-	 * @return <code>true</code> if this page is complete, and
-	 *         <code>false</code> otherwise
-	 */
-	public boolean isPageComplete();
+    /**
+     * Returns whether this page is complete or not.
+     * <p>
+     * This information is typically to decide when it is okay to submit a form.
+     * </p>
+     * 
+     * @return <code>true</code> if this page is complete, and
+     *         <code>false</code> otherwise
+     */
+    public boolean isPageComplete();
 
 }

@@ -28,42 +28,42 @@ import org.springframework.binding.value.ValueModel;
  * @author Keith Donald
  */
 public class DynamicListModel extends ListListModel implements ValueChangeListener {
-	private static final Log logger = LogFactory.getLog(DynamicListModel.class);
+    private static final Log logger = LogFactory.getLog(DynamicListModel.class);
 
-	private ValueModel listItemsValueModel;
+    private ValueModel listItemsValueModel;
 
-	public DynamicListModel(ValueModel listItemsValueModel) {
-		super();
-		setListItemsValueModel(listItemsValueModel);
-	}
+    public DynamicListModel(ValueModel listItemsValueModel) {
+        super();
+        setListItemsValueModel(listItemsValueModel);
+    }
 
-	public void setListItemsValueModel(ValueModel valueModel) {
-		if (this.listItemsValueModel == valueModel) {
-			return;
-		}
-		if (this.listItemsValueModel != null) {
-			valueModel.removeValueChangeListener(this);
-		}
-		this.listItemsValueModel = valueModel;
-		if (this.listItemsValueModel != null) {
-			doAdd((Collection)valueModel.getValue());
-			this.listItemsValueModel.addValueChangeListener(this);
-		}
-	}
+    public void setListItemsValueModel(ValueModel valueModel) {
+        if (this.listItemsValueModel == valueModel) {
+            return;
+        }
+        if (this.listItemsValueModel != null) {
+            valueModel.removeValueChangeListener(this);
+        }
+        this.listItemsValueModel = valueModel;
+        if (this.listItemsValueModel != null) {
+            doAdd((Collection)valueModel.getValue());
+            this.listItemsValueModel.addValueChangeListener(this);
+        }
+    }
 
-	public void valueChanged() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Backing collection of items changed; refreshing list model.");
-		}
-		doAdd((Collection)listItemsValueModel.getValue());
-	}
+    public void valueChanged() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Backing collection of items changed; refreshing list model.");
+        }
+        doAdd((Collection)listItemsValueModel.getValue());
+    }
 
-	private void doAdd(Collection c) {
-		clear();
-		if (c != null) {
-			addAll(c);
-		}
-		sort();
-	}
+    private void doAdd(Collection c) {
+        clear();
+        if (c != null) {
+            addAll(c);
+        }
+        sort();
+    }
 
 }

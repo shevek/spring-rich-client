@@ -47,16 +47,17 @@ public class SimpleServiceInvoker extends AbstractInvoker {
     }
 
     private void populateServiceMap(List services) {
-        if (services.size() < 1) { throw new IllegalArgumentException(
-                "At least 1 service is required."); }
+        if (services.size() < 1) {
+            throw new IllegalArgumentException("At least 1 service is required.");
+        }
         serviceMap = new HashMap(services.size());
         for (Iterator i = services.iterator(); i.hasNext();) {
-            SimpleService service = (SimpleService) i.next();
-            String serviceInterfaceName = service.getServiceInterface()
-                    .getName();
-            if (serviceMap.containsKey(serviceInterfaceName)) { throw new IllegalArgumentException(
-                    "More than one service implements service interface ["
-                            + serviceInterfaceName + "]."); }
+            SimpleService service = (SimpleService)i.next();
+            String serviceInterfaceName = service.getServiceInterface().getName();
+            if (serviceMap.containsKey(serviceInterfaceName)) {
+                throw new IllegalArgumentException("More than one service implements service interface ["
+                        + serviceInterfaceName + "].");
+            }
             serviceMap.put(serviceInterfaceName, service);
         }
     }
@@ -71,42 +72,38 @@ public class SimpleServiceInvoker extends AbstractInvoker {
             request = protocol.readRequest(is, SimpleRemotingException.YES);
             firePreInvocation(request);
 
-            SimpleService service = (SimpleService) serviceMap.get(request
-                    .getServiceInterfaceName());
-            if (service == null) { throw new SimpleRemotingException(
-                    "Unrecognized service interface ["
-                            + request.getServiceInterfaceName() + "]."); }
-            Method serviceMethod = (Method) service.getServiceMethod(request
-                    .getMethodDesc());
+            SimpleService service = (SimpleService)serviceMap.get(request.getServiceInterfaceName());
+            if (service == null) {
+                throw new SimpleRemotingException("Unrecognized service interface ["
+                        + request.getServiceInterfaceName() + "].");
+            }
+            Method serviceMethod = (Method)service.getServiceMethod(request.getMethodDesc());
 
-            returnedValue = serviceMethod.invoke(service.getServiceObject(),
-                    request.getArgs());
+            returnedValue = serviceMethod.invoke(service.getServiceObject(), request.getArgs());
         }
         catch (SimpleRemotingException e) {
             serverException = e;
         }
         catch (IllegalAccessException e) {
-            serverException = new SimpleRemotingException(
-                    "Unable to access service method", e);
+            serverException = new SimpleRemotingException("Unable to access service method", e);
         }
         catch (IllegalArgumentException e) {
-            serverException = new SimpleRemotingException(
-                    "Unable to invoke service method", e);
+            serverException = new SimpleRemotingException("Unable to invoke service method", e);
         }
         catch (InvocationTargetException e) {
             returnedThrowable = e.getTargetException();
         }
         finally {
-            reply = new Reply(returnedValue, returnedThrowable);            
-            if (request != null) {                
-                firePostInvocation(request, serverException != null ? serverException :  (Object) reply);
+            reply = new Reply(returnedValue, returnedThrowable);
+            if (request != null) {
+                firePostInvocation(request, serverException != null ? serverException : (Object)reply);
             }
         }
         if (serverException != null) {
             protocol.writeException(os, serverException);
         }
         else {
-            protocol.writeReply(os, (Reply) reply);
+            protocol.writeReply(os, (Reply)reply);
         }
     }
 }

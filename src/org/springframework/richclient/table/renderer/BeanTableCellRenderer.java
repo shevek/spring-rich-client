@@ -30,47 +30,47 @@ import org.springframework.beans.BeanWrapperImpl;
  * @author Keith Donald
  */
 public class BeanTableCellRenderer extends OptimizedTableCellRenderer {
-	private BeanWrapper beanWrapper;
+    private BeanWrapper beanWrapper;
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (value == null) {
-			return this;
-		}
-		if (beanWrapper == null) {
-			beanWrapper = new BeanWrapperImpl(value);
-		}
-		else {
-			beanWrapper.setWrappedInstance(value);
-		}
-		try {
-			BeanInfo info = Introspector.getBeanInfo(value.getClass());
-			int index = info.getDefaultPropertyIndex();
-			if (index != -1) {
-				String defaultPropName = beanWrapper.getPropertyDescriptors()[index].getName();
-				Object val = beanWrapper.getPropertyValue(defaultPropName);
-				TableCellRenderer r = table.getDefaultRenderer(val.getClass());
-				return r.getTableCellRendererComponent(table, val, isSelected, hasFocus, row, column);
-			}
-			else {
-				setText(String.valueOf(value));
-			}
-		}
-		catch (IntrospectionException e) {
-			setText(String.valueOf(value));
-		}
-		return this;
-	}
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        if (value == null) {
+            return this;
+        }
+        if (beanWrapper == null) {
+            beanWrapper = new BeanWrapperImpl(value);
+        }
+        else {
+            beanWrapper.setWrappedInstance(value);
+        }
+        try {
+            BeanInfo info = Introspector.getBeanInfo(value.getClass());
+            int index = info.getDefaultPropertyIndex();
+            if (index != -1) {
+                String defaultPropName = beanWrapper.getPropertyDescriptors()[index].getName();
+                Object val = beanWrapper.getPropertyValue(defaultPropName);
+                TableCellRenderer r = table.getDefaultRenderer(val.getClass());
+                return r.getTableCellRendererComponent(table, val, isSelected, hasFocus, row, column);
+            }
+            else {
+                setText(String.valueOf(value));
+            }
+        }
+        catch (IntrospectionException e) {
+            setText(String.valueOf(value));
+        }
+        return this;
+    }
 
-	/**
-	 * Creates a ValuedEnumRenderer %DOC short caption%
-	 * 
-	 * %long description%.
-	 *  
-	 */
-	public BeanTableCellRenderer() {
-		super();
-	}
+    /**
+     * Creates a ValuedEnumRenderer %DOC short caption%
+     * 
+     * %long description%.
+     *  
+     */
+    public BeanTableCellRenderer() {
+        super();
+    }
 
 }

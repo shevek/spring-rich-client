@@ -22,11 +22,11 @@ import java.awt.Container;
  * @author Keith Donald
  */
 public interface GroupContainerPopulator {
-	public Container getContainer();
+    public Container getContainer();
 
-	public void add(Component component);
+    public void add(Component component);
 
-	public void addSeparator();
+    public void addSeparator();
 
-	public void onPopulated();
+    public void onPopulated();
 }

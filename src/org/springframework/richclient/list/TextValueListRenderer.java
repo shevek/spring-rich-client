@@ -31,20 +31,20 @@ import javax.swing.JList;
  */
 public abstract class TextValueListRenderer extends DefaultListCellRenderer {
 
-	/**
-	 * Template method to convert cell value into a String.
-	 * 
-	 * @param value
-	 *            the cell value
-	 * @return the representation of value that should be rendered by this
-	 *         ListCellRenderer
-	 */
-	protected abstract String getTextValue(Object value);
+    /**
+     * Template method to convert cell value into a String.
+     * 
+     * @param value
+     *            the cell value
+     * @return the representation of value that should be rendered by this
+     *         ListCellRenderer
+     */
+    protected abstract String getTextValue(Object value);
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		super.getListCellRendererComponent(list, "", index, isSelected, cellHasFocus);
-		setText(getTextValue(value));
-		return this;
-	}
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, "", index, isSelected, cellHasFocus);
+        setText(getTextValue(value));
+        return this;
+    }
 }

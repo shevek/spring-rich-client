@@ -22,9 +22,9 @@ import javax.swing.*;
 import junit.framework.TestCase;
 
 public class GridBagLayoutBuilderTests extends TestCase {
-//    static {
-//        Logger.getLogger(GridBagLayoutBuilder.class).setLevel(Level.DEBUG);
-//    }
+    //    static {
+    //        Logger.getLogger(GridBagLayoutBuilder.class).setLevel(Level.DEBUG);
+    //    }
 
     public void testAppend1() throws Exception {
         GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
@@ -32,12 +32,8 @@ public class GridBagLayoutBuilderTests extends TestCase {
         builder.append(new JPanel(), 2, 2);
         builder.append(new JPanel());
         builder.nextLine();
-        builder.append(new JPanel()).
-            append(new JPanel()).nextLine();
-        builder.append(new JPanel()).
-            append(new JPanel()).
-            append(new JPanel()).
-            append(new JPanel()).nextLine();
+        builder.append(new JPanel()).append(new JPanel()).nextLine();
+        builder.append(new JPanel()).append(new JPanel()).append(new JPanel()).append(new JPanel()).nextLine();
 
         JPanel panel = builder.getPanel();
         final Component[] comps = panel.getComponents();
@@ -56,13 +52,8 @@ public class GridBagLayoutBuilderTests extends TestCase {
 
     public void testAppend2() throws Exception {
         GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
-        builder.append(new JPanel()).
-            append(new JPanel(), 2, 1).
-            append(new JPanel()).nextLine();
-        builder.append(new JPanel()).
-            append(new JPanel()).
-            append(new JPanel()).
-            append(new JPanel()).nextLine();
+        builder.append(new JPanel()).append(new JPanel(), 2, 1).append(new JPanel()).nextLine();
+        builder.append(new JPanel()).append(new JPanel()).append(new JPanel()).append(new JPanel()).nextLine();
 
         JPanel panel = builder.getPanel();
         final Component[] comps = panel.getComponents();
@@ -77,9 +68,8 @@ public class GridBagLayoutBuilderTests extends TestCase {
         check(layout.getConstraints(comps[6]), 3, 1, 1, 1, false, false);
     }
 
-    private void check(GridBagConstraints gbc, final int x, final int y,
-                       final int width, final int height, boolean expandX,
-                       boolean expandY) {
+    private void check(GridBagConstraints gbc, final int x, final int y, final int width, final int height,
+            boolean expandX, boolean expandY) {
         assertEquals(x, gbc.gridx);
         assertEquals(y, gbc.gridy);
         assertEquals(width, gbc.gridwidth);
@@ -91,19 +81,15 @@ public class GridBagLayoutBuilderTests extends TestCase {
     public void testAppendLabeledField() throws Exception {
         GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
 
-        builder.appendLabeledField(new JLabel("0"), new JLabel("3"),
-            LabelOrientation.TOP, 1, 2, true, true);
-        builder.appendLabeledField(new JLabel("1"), new JLabel("2"),
-            LabelOrientation.LEFT, 2, 1, true, false);
+        builder.appendLabeledField(new JLabel("0"), new JLabel("3"), LabelOrientation.TOP, 1, 2, true, true);
+        builder.appendLabeledField(new JLabel("1"), new JLabel("2"), LabelOrientation.LEFT, 2, 1, true, false);
         builder.nextLine();
 
-        builder.appendLabeledField(new JLabel("5"), new JLabel("4"),
-            LabelOrientation.BOTTOM, 3, 1, true, false);
+        builder.appendLabeledField(new JLabel("5"), new JLabel("4"), LabelOrientation.BOTTOM, 3, 1, true, false);
         builder.nextLine();
         builder.nextLine();
 
-        builder.appendLabeledField(new JLabel("7"), new JLabel("6"),
-            LabelOrientation.RIGHT, 3, 1, true, false);
+        builder.appendLabeledField(new JLabel("7"), new JLabel("6"), LabelOrientation.RIGHT, 3, 1, true, false);
         builder.nextLine();
 
         JPanel panel = builder.getPanel();

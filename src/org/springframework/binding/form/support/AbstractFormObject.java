@@ -22,21 +22,21 @@ import org.springframework.binding.value.support.AbstractPropertyChangePublisher
  */
 public class AbstractFormObject extends AbstractPropertyChangePublisher {
 
-	private boolean dirty;
+    private boolean dirty;
 
-	protected void markDirty() {
-		markDirty(true);
-	}
+    protected void markDirty() {
+        markDirty(true);
+    }
 
-	private void markDirty(boolean dirty) {
-		if (hasChanged(this.dirty, true)) {
-			markDirty();
-			firePropertyChange("dirty", !this.dirty, this.dirty);
-		}
-	}
+    private void markDirty(boolean dirty) {
+        if (hasChanged(this.dirty, true)) {
+            markDirty();
+            firePropertyChange("dirty", !this.dirty, this.dirty);
+        }
+    }
 
-	public void clearDirty() {
-		markDirty(false);
-	}
+    public void clearDirty() {
+        markDirty(false);
+    }
 
 }

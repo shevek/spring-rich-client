@@ -33,7 +33,6 @@ public class TestClassUtils extends TestCase {
         assertEquals("A", val);
     }
 
-
     public void testIsAProperty() throws Exception {
         assertTrue(ClassUtils.isAProperty(B.class, "something"));
         assertTrue(ClassUtils.isAProperty(E.class, "something"));
@@ -41,15 +40,11 @@ public class TestClassUtils extends TestCase {
         assertTrue(ClassUtils.isAProperty(F.class, "eeProperty.deProperty"));
     }
 
-
     public void testGetPropertyClass() throws Exception {
-        assertEquals(String.class,
-            ClassUtils.getPropertyClass(B.class, "something"));
+        assertEquals(String.class, ClassUtils.getPropertyClass(B.class, "something"));
 
-        assertEquals(D.class,
-            ClassUtils.getPropertyClass(F.class, "eeProperty.deProperty"));
+        assertEquals(D.class, ClassUtils.getPropertyClass(F.class, "eeProperty.deProperty"));
     }
-
 
     interface A {
         public void setSomething(String newSomething);
@@ -65,11 +60,9 @@ public class TestClassUtils extends TestCase {
     static class D implements B, C {
         private String something;
 
-
         public String getSomething() {
             return something;
         }
-
 
         public void setSomething(String something) {
             this.something = something;
@@ -79,11 +72,9 @@ public class TestClassUtils extends TestCase {
     static class E extends D {
         private D deProperty;
 
-
         public D getDeProperty() {
             return deProperty;
         }
-
 
         public void setDeProperty(D deProperty) {
             this.deProperty = deProperty;
@@ -93,11 +84,9 @@ public class TestClassUtils extends TestCase {
     static class F {
         private E eeProperty;
 
-
         public E getEeProperty() {
             return eeProperty;
         }
-
 
         public void setEeProperty(E eeProperty) {
             this.eeProperty = eeProperty;

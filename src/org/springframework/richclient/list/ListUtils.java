@@ -22,19 +22,19 @@ import org.springframework.richclient.command.ActionCommand;
 
 public class ListUtils {
 
-	private ListUtils() {
+    private ListUtils() {
 
-	}
+    }
 
-	public static ActionCommand createRemoveRowCommand(final List list, final ValueModel selectionIndexHolder) {
-		ActionCommand removeCommand = new ActionCommand("removeCommand") {
-			protected void doExecuteCommand() {
-				int selectedRowIndex = ((Integer)selectionIndexHolder.getValue()).intValue();
-				list.remove(selectedRowIndex);
-			}
-		};
-		new SingleListSelectionGuard(selectionIndexHolder, removeCommand);
-		return removeCommand;
-	}
+    public static ActionCommand createRemoveRowCommand(final List list, final ValueModel selectionIndexHolder) {
+        ActionCommand removeCommand = new ActionCommand("removeCommand") {
+            protected void doExecuteCommand() {
+                int selectedRowIndex = ((Integer)selectionIndexHolder.getValue()).intValue();
+                list.remove(selectedRowIndex);
+            }
+        };
+        new SingleListSelectionGuard(selectionIndexHolder, removeCommand);
+        return removeCommand;
+    }
 
 }

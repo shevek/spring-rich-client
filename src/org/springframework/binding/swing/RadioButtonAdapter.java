@@ -50,64 +50,64 @@ import org.springframework.util.ObjectUtils;
  */
 public final class RadioButtonAdapter extends JToggleButton.ToggleButtonModel {
 
-	/**
-	 * Refers to the underlying ValueModel that stores the state.
-	 */
-	private final ValueModel valueModel;
+    /**
+     * Refers to the underlying ValueModel that stores the state.
+     */
+    private final ValueModel valueModel;
 
-	/**
-	 * Holds the object that is compared with the value model's value to
-	 * determine whether this adapter is selected or not.
-	 */
-	private final Object choice;
+    /**
+     * Holds the object that is compared with the value model's value to
+     * determine whether this adapter is selected or not.
+     */
+    private final Object choice;
 
-	private ValueChangeListener valueChangeHandler;
+    private ValueChangeListener valueChangeHandler;
 
-	public RadioButtonAdapter(ValueModel valueModel, Object choice) {
-		Assert.notNull(valueModel, "The subject must not be null.");
-		this.valueModel = valueModel;
-		this.choice = choice;
-		this.valueChangeHandler = new ValueChangeHandler();
-		valueModel.addValueChangeListener(valueChangeHandler);
-	}
+    public RadioButtonAdapter(ValueModel valueModel, Object choice) {
+        Assert.notNull(valueModel, "The subject must not be null.");
+        this.valueModel = valueModel;
+        this.choice = choice;
+        this.valueChangeHandler = new ValueChangeHandler();
+        valueModel.addValueChangeListener(valueChangeHandler);
+    }
 
-	// Handles changes in the subject's value.
-	private class ValueChangeHandler implements ValueChangeListener {
-		public void valueChanged() {
-			setSelected(isSelected());
-		}
-	}
+    // Handles changes in the subject's value.
+    private class ValueChangeHandler implements ValueChangeListener {
+        public void valueChanged() {
+            setSelected(isSelected());
+        }
+    }
 
-	/**
-	 * Checks and answers whether the button is selected.
-	 * 
-	 * @return true if the button is selected, false if deselected
-	 */
-	public boolean isSelected() {
-		return ObjectUtils.nullSafeEquals(choice, valueModel.getValue());
-	}
+    /**
+     * Checks and answers whether the button is selected.
+     * 
+     * @return true if the button is selected, false if deselected
+     */
+    public boolean isSelected() {
+        return ObjectUtils.nullSafeEquals(choice, valueModel.getValue());
+    }
 
-	/**
-	 * Sets the selected state of the button.
-	 * 
-	 * @param selected
-	 *            true selects the toggle button, false deselects it
-	 */
-	public void setSelected(boolean selected) {
-		boolean oldValue = isSelected();
-		if (oldValue == selected) {
-			return;
-		}
-		if (selected) {
-			updateValueModelSilently(selected);
-		}
-		super.setSelected(selected);
-	}
+    /**
+     * Sets the selected state of the button.
+     * 
+     * @param selected
+     *            true selects the toggle button, false deselects it
+     */
+    public void setSelected(boolean selected) {
+        boolean oldValue = isSelected();
+        if (oldValue == selected) {
+            return;
+        }
+        if (selected) {
+            updateValueModelSilently(selected);
+        }
+        super.setSelected(selected);
+    }
 
-	private void updateValueModelSilently(boolean selected) {
-		valueModel.removeValueChangeListener(valueChangeHandler);
-		valueModel.setValue(choice);
-		valueModel.addValueChangeListener(valueChangeHandler);
-	}
+    private void updateValueModelSilently(boolean selected) {
+        valueModel.removeValueChangeListener(valueChangeHandler);
+        valueModel.setValue(choice);
+        valueModel.addValueChangeListener(valueChangeHandler);
+    }
 
 }

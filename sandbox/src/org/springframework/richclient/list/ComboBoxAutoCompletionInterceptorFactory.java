@@ -45,13 +45,12 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
          */
         public void processComponent(String propertyName, JComponent component) {
             JComponent inner = getInnerComponent(component);
-            if (inner instanceof JComboBox && !((JComboBox) inner).isEditable()) {
+            if (inner instanceof JComboBox && !((JComboBox)inner).isEditable()) {
                 // if combobox is showing CodedEnum's, install customer editor
                 if (((JComboBox)inner).getRenderer() instanceof CodedEnumListRenderer) {
-                    ((JComboBox) inner).setEditor(
-                        new CodedEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
+                    ((JComboBox)inner).setEditor(new CodedEnumComboBoxEditor(messages, ((JComboBox)inner).getEditor()));
                 }
-                new ComboBoxAutoCompletion((JComboBox) inner);
+                new ComboBoxAutoCompletion((JComboBox)inner);
             }
         }
 
@@ -64,9 +63,8 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
         }
 
     }
-    
-    public void setMessageSource(MessageSource messageSource)
-    {
+
+    public void setMessageSource(MessageSource messageSource) {
         messages = messageSource;
     }
 

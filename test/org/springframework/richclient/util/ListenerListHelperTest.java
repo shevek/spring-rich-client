@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 
 import org.springframework.util.closure.Closure;
 
-
 /**
  * Test cases for {@link ListenerListHelper}
  * 

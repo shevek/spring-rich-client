@@ -28,13 +28,13 @@ import org.springframework.binding.value.support.ValueHolder;
 public class FocusLostTextValueSetterTest extends TestCase {
 
     private ValueModel valueModel;
-    
+
     private TestableValueChangeListener valueListener;
 
     private TestableJTextComponent comp;
 
     private FocusLostTextValueSetter valueSetter;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         valueModel = new ValueHolder("originalValue");
@@ -65,19 +65,19 @@ public class FocusLostTextValueSetterTest extends TestCase {
         assertEquals(comp.getText(), "newValue");
         assertEquals(valueListener.getEventCount(), 1);
     }
-    
-    public void testFocusChangeUpdatesValueModel() {        
-        comp.typeText("a");        
-        assertEquals(valueModel.getValue(), "originalValue");  
+
+    public void testFocusChangeUpdatesValueModel() {
+        comp.typeText("a");
+        assertEquals(valueModel.getValue(), "originalValue");
         assertEquals(valueListener.getEventCount(), 0);
-        
-        comp.gainFocus();        
-        comp.typeText("b");        
-        assertEquals(valueModel.getValue(), "originalValue");  
+
+        comp.gainFocus();
+        comp.typeText("b");
+        assertEquals(valueModel.getValue(), "originalValue");
         assertEquals(valueListener.getEventCount(), 0);
-        
-        comp.loseFocus();                
-        assertEquals(valueModel.getValue(), "ab");  
+
+        comp.loseFocus();
+        assertEquals(valueModel.getValue(), "ab");
         assertEquals(valueListener.getEventCount(), 1);
-    } 
+    }
 }

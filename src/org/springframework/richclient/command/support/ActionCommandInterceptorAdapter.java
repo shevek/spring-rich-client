@@ -23,11 +23,11 @@ import org.springframework.richclient.command.ActionCommandInterceptor;
  */
 public class ActionCommandInterceptorAdapter implements ActionCommandInterceptor {
 
-	public boolean preExecution(ActionCommand command) {
-		return true;
-	}
+    public boolean preExecution(ActionCommand command) {
+        return true;
+    }
 
-	public void postExecution(ActionCommand command) {
-	}
+    public void postExecution(ActionCommand command) {
+    }
 
 }

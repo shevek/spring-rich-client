@@ -18,14 +18,14 @@ package org.springframework.richclient.application;
 import org.springframework.richclient.command.ActionCommandExecutor;
 
 public interface PageComponentContext {
-	public ApplicationWindow getWindow();
+    public ApplicationWindow getWindow();
 
-	public ApplicationPage getPage();
+    public ApplicationPage getPage();
 
-	public PageComponentPane getPane();
+    public PageComponentPane getPane();
 
-	public ActionCommandExecutor getLocalCommandExecutor(String commandId);
+    public ActionCommandExecutor getLocalCommandExecutor(String commandId);
 
-	public void register(String commandId, ActionCommandExecutor localExecutor);
+    public void register(String commandId, ActionCommandExecutor localExecutor);
 
 }

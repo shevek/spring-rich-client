@@ -25,10 +25,10 @@ import org.springframework.binding.form.FormModel;
  */
 public interface FormComponentInterceptorFactory {
 
-	/**
-	 * Returns a {@link FormComponentInterceptor}s for the given
-	 * {@link FormModel}.
-	 */
-	public FormComponentInterceptor getInterceptor(FormModel formModel);
+    /**
+     * Returns a {@link FormComponentInterceptor}s for the given
+     * {@link FormModel}.
+     */
+    public FormComponentInterceptor getInterceptor(FormModel formModel);
 
 }

@@ -48,13 +48,14 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
         ClassEditor ce = new ClassEditor();
         services = new ArrayList(serviceMap.size());
         for (Iterator i = serviceMap.entrySet().iterator(); i.hasNext();) {
-            Entry entry = (Entry) i.next();
-            Object serviceObject = (Object) entry.getKey();
-            if (serviceObject == null) { throw new IllegalArgumentException(
-                    "Service object is null."); }
-            String serviceInterfaceName = (String) entry.getValue();
+            Entry entry = (Entry)i.next();
+            Object serviceObject = (Object)entry.getKey();
+            if (serviceObject == null) {
+                throw new IllegalArgumentException("Service object is null.");
+            }
+            String serviceInterfaceName = (String)entry.getValue();
             ce.setAsText(serviceInterfaceName);
-            Class serviceInterface = (Class) ce.getValue();
+            Class serviceInterface = (Class)ce.getValue();
             services.add(new SimpleService(serviceObject, serviceInterface));
         }
     }
@@ -65,8 +66,7 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
             services = new ArrayList(1);
         }
         if (getService() != null || getServiceInterface() != null) {
-            services
-                    .add(new SimpleService(getService(), getServiceInterface()));
+            services.add(new SimpleService(getService(), getServiceInterface()));
         }
         serviceInvoker = new SimpleServiceInvoker(services);
     }
@@ -75,11 +75,9 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
      * Process the incoming SimpleRemoting request and create a SimpleRemoting
      * response.
      */
-    public ModelAndView handleRequest(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
-            serviceInvoker.invoke(request.getInputStream(), response
-                    .getOutputStream());
+            serviceInvoker.invoke(request.getInputStream(), response.getOutputStream());
         }
         catch (Exception ex) {
             throw ex;

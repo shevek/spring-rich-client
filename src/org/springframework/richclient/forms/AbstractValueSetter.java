@@ -25,42 +25,42 @@ import org.springframework.binding.value.support.ValueModelWrapper;
  * @author oliverh
  */
 public abstract class AbstractValueSetter implements ValueChangeListener {
-	protected static final Log logger = LogFactory.getLog(AbstractValueSetter.class);
+    protected static final Log logger = LogFactory.getLog(AbstractValueSetter.class);
 
-	private ValueModel displayValueModel;
+    private ValueModel displayValueModel;
 
-	public AbstractValueSetter(ValueModel displayValueModel) {
-		this.displayValueModel = displayValueModel;
-		if (this.displayValueModel != null) {
-			this.displayValueModel.addValueChangeListener(this);
-		}
-	}
+    public AbstractValueSetter(ValueModel displayValueModel) {
+        this.displayValueModel = displayValueModel;
+        if (this.displayValueModel != null) {
+            this.displayValueModel.addValueChangeListener(this);
+        }
+    }
 
-	protected ValueModel getValueModel() {
-		return displayValueModel;
-	}
+    protected ValueModel getValueModel() {
+        return displayValueModel;
+    }
 
-	protected void componentValueChanged(Object newValue) {
-		if (displayValueModel != null) {
-			displayValueModel.removeValueChangeListener(this);
-			displayValueModel.setValue(newValue);
-			displayValueModel.addValueChangeListener(this);
-		}
-	}
+    protected void componentValueChanged(Object newValue) {
+        if (displayValueModel != null) {
+            displayValueModel.removeValueChangeListener(this);
+            displayValueModel.setValue(newValue);
+            displayValueModel.addValueChangeListener(this);
+        }
+    }
 
-	public void valueChanged() {
-		setControlValue((String)displayValueModel.getValue());
-	}
+    public void valueChanged() {
+        setControlValue((String)displayValueModel.getValue());
+    }
 
-	protected abstract void setControlValue(Object value);
+    protected abstract void setControlValue(Object value);
 
-	protected Object getInnerMostValue() {
-		if (getValueModel() instanceof ValueModelWrapper) {
-			return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
-		}
-		else {
-			return getValueModel().getValue();
-		}
-	}
+    protected Object getInnerMostValue() {
+        if (getValueModel() instanceof ValueModelWrapper) {
+            return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
+        }
+        else {
+            return getValueModel().getValue();
+        }
+    }
 
 }
