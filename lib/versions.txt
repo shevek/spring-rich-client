@@ -22,6 +22,7 @@ javahelp/jh.jar:
 jgoodies-forms/forms.jar: 1.0.4
 jgoodies-looks/looks.jar: 1.2.2
 junit/junit.jar:
+log4j/log4j.jar: 1.2.8
 spring/spring.jar: CVS Snapshot 710
 spring/spring-mock.jar: CVS Snapshot
 spring/spring-petclinic.jar: CVS snapshot 710
