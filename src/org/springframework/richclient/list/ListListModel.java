@@ -182,8 +182,8 @@ public class ListListModel extends AbstractListModel implements List {
 
     public Object set(int index, Object element) {
         Object oldObject = items.set(index, element);
-        fireContentsChanged(this, index, index);
-        return  oldObject;
+        fireContentsChanged(index);
+        return oldObject;
     }
 
     public int size() {
@@ -202,4 +202,19 @@ public class ListListModel extends AbstractListModel implements List {
         return items.toArray(a);
     }
 
+    /**
+     * Notifies the list model that one of the list elements has changed.
+     */
+    public void fireContentsChanged(int index) {
+        fireContentsChanged(index, index);
+    }
+
+    /**
+     * Notifies the list model that one or more of the list elements have
+     * changed. The changed elements are specified by the range startIndex to
+     * endIndex inclusive.
+     */
+    public void fireContentsChanged(int startIndex, int endIndex) {
+        fireContentsChanged(this, startIndex, endIndex);
+    }
 }
