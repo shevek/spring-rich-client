@@ -106,7 +106,7 @@
 				<attribute name="Main-Class"
 				           value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
 				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
+				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
@@ -125,7 +125,7 @@
 				<attribute name="Main-Class"
 				           value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
 				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
+				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
@@ -145,8 +145,8 @@
 		<!-- Remove signature from Javahelp -->
 		<delete dir="${tmp.dir}" />
 		<mkdir dir="${tmp.dir}" />
-		<unjar src="${dist.dir}/lib/jh.jar" dest="${tmp.dir}" />
-		<jar update="false" jarfile="${dist.dir}/lib/jh.jar">
+		<unjar src="${dist.dir}/lib/javahelp.jar" dest="${tmp.dir}" />
+		<jar update="false" jarfile="${dist.dir}/lib/javahelp.jar">
 			<fileset dir="${tmp.dir}">
 				<include name="**/*" />
 				<exclude name="META-INF/*" />
