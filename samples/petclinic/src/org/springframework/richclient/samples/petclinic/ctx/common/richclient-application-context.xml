@@ -14,7 +14,7 @@
 	<bean id="applicationAdvisor" class="org.springframework.richclient.samples.petclinic.PetClinicApplicationAdvisor">
 		<property name="applicationInfo"><ref bean="applicationInfo"/></property>
 		<property name="commandFactoryResource"><value>org/springframework/richclient/samples/petclinic/ui/commands-context.xml</value></property>
-		<property name="startingPageId"><value>ownerPerspective</value></property>
+                <property name="startingViewDescriptor"><ref bean="ownerManagerView"/></property>
 	</bean>
 	
   	<bean id="applicationInfo" class="org.springframework.richclient.application.ApplicationInfo">
@@ -92,11 +92,6 @@
     </property>
   </bean>
 
-    <bean      id="ownerPerspective"
-            class="org.springframework.richclient.application.Perspective">
-  	    <property name="view"><value>ownerManagerView</value></property>
-    </bean>
-
     <bean      id="ownerManagerView"
             class="org.springframework.richclient.application.ViewDescriptor">
         <property name="viewClass">
@@ -115,11 +110,6 @@
 		<property name="clinic"><ref bean="clinic"/></property>	
     </bean>
   	
-    <bean      id="vetPerspective"
-            class="org.springframework.richclient.application.Perspective">
-  	    <property name="view"><value>vetManagerView</value></property>
-    </bean>
-
     <bean      id="vetManagerView"
             class="org.springframework.richclient.application.ViewDescriptor">
         <property name="viewClass">

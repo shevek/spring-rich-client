@@ -27,6 +27,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 
@@ -40,7 +41,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
 
     private String menuBarBeanName = "menuBar";
 
-    private String startingPageId;
+    private ViewDescriptor startingViewDescriptor;
 
     private Resource commandFactoryResource;
 
@@ -50,12 +51,13 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
         this.commandFactoryResource = resource;
     }
 
-    public String getStartingPageId() {
-        return startingPageId;
+    public ViewDescriptor getStartingViewDescriptor() {
+        return startingViewDescriptor;
     }
 
-    public void setStartingPageId(String pageId) {
-        this.startingPageId = pageId;
+    public void setStartingViewDescriptor(
+            ViewDescriptor startingViewDescriptor) {
+        this.startingViewDescriptor = startingViewDescriptor;
     }
 
     public void setCommandManagerBeanName(String commandManagerBeanName) {

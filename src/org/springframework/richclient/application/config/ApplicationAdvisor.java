@@ -20,9 +20,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
-import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.*;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.support.DefaultCommandManager;
@@ -68,13 +66,13 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     /**
      * Sets the class to use to handle exceptions that happen in the
-     * {@link EventDispatchThread}. The class must have a no-arg public
-     * constructor and a method "public void handle(Throwable)".
+     * {@link java.awt.EventDispatchThread}. The class must have a no-arg
+     * public constructor and a method "public void handle(Throwable)".
      * 
      * @param eventExceptionHandler
      *            the class to use
      * 
-     * @see EventDispatchThread#handleException(Throwable)
+     * @see java.awt.EventDispatchThread#handleException(Throwable)
      */
     public void setEventExceptionHandler(Class eventExceptionHandler) {
         this.eventExceptionHandler = eventExceptionHandler;
@@ -127,7 +125,11 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     }
 
-    public abstract String getStartingPageId();
+    /**
+     * Returns the {@link ViewDescriptor} that is the default view when
+     * the application is started.
+     */
+    public abstract ViewDescriptor getStartingViewDescriptor();
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         this.managedWindow = configurer.getWindow();

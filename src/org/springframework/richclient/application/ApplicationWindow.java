@@ -62,8 +62,6 @@ public class ApplicationWindow implements PersistableElement {
 
     private WindowManager windowManager;
 
-    private String activePageId;
-
     public ApplicationWindow(int number) {
         this.number = number;
         ApplicationAdvisor advisor = getApplicationAdvisor();
@@ -118,23 +116,18 @@ public class ApplicationWindow implements PersistableElement {
         this.windowManager = windowManager;
     }
 
-    public String getActivePageId() {
-        return activePageId;
-    }
-
-    public void openPage(String pageId) {
-        Assert.notNull(pageId);
+    public void openPage(ViewDescriptor viewDescriptor) {
+        Assert.notNull(viewDescriptor);
         if (this.activePage == null) {
-            Perspective perspective = getPageTemplate(pageId);
             ApplicationPage page = new ApplicationPage(this);
-            page.addViewListener(new GlobalCommandTargeter(
-                    getCommandManager()));
-            page.showView(perspective.getViewName());
+            final GlobalCommandTargeter commandTargeter =
+                    new GlobalCommandTargeter(getCommandManager());
+            page.addViewListener(commandTargeter);
+            page.showView(viewDescriptor);
             this.activePage = page;
-            this.activePageId = pageId;
         }
         else {
-            Application.instance().openWindow(pageId);
+            Application.instance().openWindow(viewDescriptor);
         }
     }
 
@@ -143,11 +136,6 @@ public class ApplicationWindow implements PersistableElement {
         getApplicationAdvisor().showIntroComponentIfNecessary(this);
         this.control.setVisible(true);
         getApplicationAdvisor().onWindowOpened(this);
-    }
-
-    protected Perspective getPageTemplate(String pageId) {
-        return (Perspective)Application.services().getApplicationContext()
-                .getBean(pageId);
     }
 
     public void showViewOnPage(String viewName) {

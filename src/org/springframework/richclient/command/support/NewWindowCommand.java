@@ -15,25 +15,22 @@
  */
 package org.springframework.richclient.command.support;
 
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.*;
 
-/**
- * @author Keith Donald
- */
 public class NewWindowCommand extends ApplicationWindowAwareCommand {
 
     private static final String ID = "newWindowCommand";
-
-    private ApplicationWindow window;
 
     public NewWindowCommand() {
         super(ID);
     }
 
     protected void doExecuteCommand() {
-        Application.instance().openWindow(
-                getApplicationWindow().getActivePageId());
+        final ViewRegistry viewRegistry = Application.services().getViewRegistry();
+        final View view = getApplicationWindow().getView();
+        final String viewName = view.getContext().getViewName();
+        final ViewDescriptor viewDescriptor = viewRegistry.getViewDescriptor(viewName);
+        Application.instance().openWindow(viewDescriptor);
     }
 
 }
