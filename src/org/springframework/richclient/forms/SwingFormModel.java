@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.forms;
 
-import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.Comparator;
 import java.util.List;
@@ -336,6 +335,20 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
     }
 
+    /**
+     * Does binding that's common to <u>all </u> component types.
+     * 
+     * @param component
+     *            the compoenent to bind
+     * @param formProperty
+     *            the name of the component's property
+     * @return the component that was passed in
+     */
+    protected JComponent bindControl(JComponent component, String formProperty) {
+        component.setName(formProperty);
+        return component;
+    }
+
     public JFormattedTextField createBoundFormattedTextField(String formProperty) {
         Class valueClass = getMetadataAccessStrategy().getPropertyType(
                 formProperty);
@@ -359,7 +372,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             new JFormattedTextFieldValueSetter(textField, validatingModel,
                     valueCommitPolicy);
         }
-        return textField;
+        return (JFormattedTextField)bindControl(textField, formProperty);
     }
 
     protected JFormattedTextField createNewFormattedTextField(
@@ -388,7 +401,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             spinner.setModel(new SpinnerDateModel());
         }
         new SpinnerValueSetter(spinner, model);
-        return spinner;
+        return (JSpinner)bindControl(spinner, formProperty);
     }
 
     protected JSpinner createNewSpinner() {
@@ -400,7 +413,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         Assert
                 .isTrue(propertyEditor.supportsCustomEditor(),
                         "The propertyEditor to bind must provide a customEditor component.");
-        final Component customEditor = propertyEditor.getCustomEditor();
+        final JComponent customEditor = (JComponent)propertyEditor
+                .getCustomEditor();
         Assert.notNull(customEditor,
                 "The customEditor property cannot be null.");
         Assert.isTrue(customEditor instanceof JComponent,
@@ -416,7 +430,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         propertyEditor.setValue(valueModel.get());
         new PropertyEditorValueSetter(propertyEditor, valueModel);
-        return (JComponent)customEditor;
+        return bindControl(customEditor, formProperty);
     }
 
     public JTextComponent bind(JTextComponent component, String formProperty) {
@@ -445,7 +459,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 }
             });
         }
-        return component;
+        return (JTextComponent)bindControl(component, formProperty);
     }
 
     public JTextComponent createBoundLabel(String formProperty) {
@@ -467,7 +481,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 component.setText((String)value.get());
             }
         });
-        return component;
+        return (JTextComponent)bindControl(component, formProperty);
     }
 
     // @TODO better support for nested properties...
@@ -482,7 +496,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 component.setText((String)nestedAccessor.get());
             }
         });
-        return component;
+        return (JTextComponent)bindControl(component, parentProperty);
     }
 
     public JCheckBox createBoundCheckBox(String formProperty) {
@@ -500,7 +514,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
         ValueModel valueModel = getOrCreateValueModel(formProperty);
         checkBox.setModel(new SelectableButtonValueModel(valueModel));
-        return checkBox;
+        return (JCheckBox)bindControl(checkBox, formProperty);
     }
 
     public JComboBox createBoundComboBox(String formProperty) {
@@ -515,7 +529,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty) {
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
         comboBox.setModel(new DynamicComboBoxListModel(selectedValueModel));
-        return comboBox;
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty,
@@ -524,7 +538,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ValueModel itemsValueModel = getOrCreateValueModel(selectableItemsProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
                 itemsValueModel, renderedItemProperty);
-        return comboBox;
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty,
@@ -532,7 +546,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel,
                 selectableItemsHolder, renderedItemProperty);
-        return comboBox;
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(ValueModel selectedItemHolder,
@@ -560,7 +574,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComboBox createBoundEnumComboBox(String selectionFormProperty,
             UnaryPredicate filter) {
         JComboBox comboBox = createBoundEnumComboBox(selectionFormProperty);
-        return installFilter(comboBox, filter);
+        return (JComboBox)bindControl(installFilter(comboBox, filter),
+                selectionFormProperty);
     }
 
     private JComboBox installFilter(JComboBox comboBox, UnaryPredicate filter) {
@@ -573,8 +588,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty,
             List selectableItems, Comparator itemsComparator) {
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
-        return bind(comboBox, selectedValueModel, new ValueHolder(
-                selectableItems), itemsComparator);
+        final ValueHolder valueHolder = new ValueHolder(selectableItems);
+        final JComboBox boundCombo = bind(comboBox, selectedValueModel,
+                valueHolder, itemsComparator);
+        return (JComboBox)bindControl(boundCombo, selectionFormProperty);
     }
 
     public JComboBox bind(JComboBox comboBox, ValueModel selectedItemHolder,
@@ -642,7 +659,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ListModel listModel = createBoundListModel(formProperty);
         JList list = createNewList();
         list.setModel(listModel);
-        return list;
+        return (JList)bindControl(list, formProperty);
     }
 
     public JList createBoundList(String selectionFormProperty,
@@ -673,8 +690,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JList bind(JList list, String selectionFormProperty,
             ValueModel selectableItemsHolder, Comparator itemsComparator) {
-        return bind(list, getOrCreateValueModel(selectionFormProperty),
-                selectableItemsHolder, itemsComparator);
+        return (JList)bindControl(bind(list,
+                getOrCreateValueModel(selectionFormProperty),
+                selectableItemsHolder, itemsComparator), selectionFormProperty);
     }
 
     public JList bind(JList list, ValueModel selectedItemHolder,
