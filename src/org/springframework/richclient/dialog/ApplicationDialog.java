@@ -72,6 +72,7 @@ import org.springframework.util.StringUtils;
  * </ul>
  */
 public abstract class ApplicationDialog extends ApplicationServicesAccessor implements TitleConfigurable, Guarded {
+
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 
     protected static final String DEFAULT_FINISH_COMMAND_ID = "okCommand";
@@ -152,8 +153,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         if (!StringUtils.hasText(this.title)) {
             if (StringUtils.hasText(getCallingCommandText())) {
                 return getCallingCommandText();
-            }
-            else {
+            } else {
                 return DEFAULT_DIALOG_TITLE;
             }
         }
@@ -169,12 +169,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                     }
                     this.parent = parent;
                 }
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Parent must be a JFrame or JDialog.");
             }
-        }
-        else {
+        } else {
             this.parent = null;
         }
     }
@@ -226,8 +224,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     public boolean isEnabled() {
         if (isControlCreated()) {
             return finishCommand.isEnabled();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -263,8 +260,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             onAboutToShow();
             dialog.setLocationRelativeTo(parent);
             dialog.setVisible(true);
-        }
-        else {
+        } else {
             if (!isShowing()) {
                 onAboutToShow();
                 dialog.setVisible(true);
@@ -297,21 +293,18 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private void constructDialog() {
         if (parent instanceof JFrame) {
-            dialog = new JDialog((JFrame)parent, getTitle(), modal);
-        }
-        else if (parent instanceof JDialog) {
-            dialog = new JDialog((JDialog)parent, getTitle(), modal);
-        }
-        else {
+            dialog = new JDialog((JFrame) parent, getTitle(), modal);
+        } else if (parent instanceof JDialog) {
+            dialog = new JDialog((JDialog) parent, getTitle(), modal);
+        } else {
             if (logger.isInfoEnabled()) {
                 logger.warn("Parent is not a JFrame or JDialog, it is " + parent
                         + ". Using current active window as parent by default.");
             }
             if (getActiveWindow() != null) {
                 dialog = new JDialog(getActiveWindow().getControl(), getTitle(), modal);
-            }
-            else {
-                dialog = new JDialog((JFrame)null, getTitle(), modal);
+            } else {
+                dialog = new JDialog((JFrame) null, getTitle(), modal);
             }
         }
         dialog.getContentPane().setLayout(new BorderLayout());
@@ -323,6 +316,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private void initStandardCommands() {
         this.finishCommand = new ActionCommand(getFinishCommandId()) {
+
             public void doExecuteCommand() {
                 try {
                     boolean result = onFinish();
@@ -332,8 +326,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                         }
                         executeCloseAction();
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.warn("Exception occured executing dialog finish command.", e);
                     onFinishException(e);
                 }
@@ -342,6 +335,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         this.finishCommand.setEnabled(defaultEnabled);
 
         this.cancelCommand = new ActionCommand(getCancelCommandId()) {
+
             public void doExecuteCommand() {
                 onCancel();
             }
@@ -381,8 +375,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             String[] successMessageKeys = new String[] { callingCommand.getId() + ".successMessage",
                     DEFAULT_SUCCESS_MESSAGE_KEY };
             return getMessage(successMessageKeys, getFinishSuccessMessageArguments());
-        }
-        else {
+        } else {
             return getMessage(DEFAULT_SUCCESS_MESSAGE_KEY);
         }
     }
@@ -402,8 +395,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected Object[] getFinishSuccessTitleArguments() {
         if (StringUtils.hasText(getCallingCommandText())) {
             return new Object[] { getCallingCommandText() };
-        }
-        else {
+        } else {
             return new Object[0];
         }
     }
@@ -415,9 +407,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected void onFinishException(Exception e) {
         String exceptionMessage;
         if (e instanceof MessageSourceResolvable) {
-            exceptionMessage = getMessages().getMessage((MessageSourceResolvable)e);
-        }
-        else {
+            exceptionMessage = getMessages().getMessage((MessageSourceResolvable) e);
+        } else {
             exceptionMessage = e.getLocalizedMessage();
         }
         if (!StringUtils.hasText(exceptionMessage)) {
@@ -452,11 +443,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected void addActionKeyBinding(KeyStroke key, String actionKey) {
         if (actionKey == finishCommand.getId()) {
             addActionKeyBinding(key, actionKey, finishCommand.getActionAdapter());
-        }
-        else if (actionKey == cancelCommand.getId()) {
+        } else if (actionKey == cancelCommand.getId()) {
             addActionKeyBinding(key, actionKey, cancelCommand.getActionAdapter());
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unknown action key " + actionKey);
         }
     }
@@ -500,6 +489,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     protected final void attachListeners() {
         dialog.addWindowFocusListener(new WindowFocusListener() {
+
             public void windowActivated(WindowEvent e) {
                 ApplicationDialog.this.onWindowActivated();
             }
@@ -513,6 +503,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             }
         });
         dialog.addWindowListener(new WindowAdapter() {
+
             public void windowClosing(WindowEvent e) {
                 getCancelCommand().execute();
             }
@@ -621,8 +612,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private void executeCloseAction() {
         if (closeAction == CloseAction.HIDE) {
             hide();
-        }
-        else {
+        } else {
             dispose();
         }
     }
@@ -644,5 +634,14 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected final void hide() {
         onWindowClosing();
         this.dialog.setVisible(false);
+    }
+
+    /**
+     * Returns the parent window.
+     * 
+     * @return the parent window
+     */
+    public Window getParent() {
+        return parent;
     }
 }
