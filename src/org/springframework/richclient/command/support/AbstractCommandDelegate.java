@@ -22,7 +22,6 @@ import org.springframework.richclient.command.ParameterizedCommandDelegate;
 import org.springframework.rules.values.ValueHolder;
 import org.springframework.rules.values.ValueListener;
 import org.springframework.rules.values.ValueModel;
-import org.springframework.util.ObjectUtils;
 
 /**
  * @author Keith Donald
@@ -37,7 +36,7 @@ public class AbstractCommandDelegate implements ParameterizedCommandDelegate,
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled.set(ObjectUtils.getBoolean(enabled));
+        this.enabled.set(Boolean.valueOf(enabled));
     }
 
     public void addEnabledListener(ValueListener listener) {
