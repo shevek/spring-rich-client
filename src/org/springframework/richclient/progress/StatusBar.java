@@ -50,10 +50,13 @@ import org.springframework.util.StringUtils;
  * a JProgressBar and it provides API for easy access.
  */
 public class StatusBar extends JPanel implements ProgressMonitor {
+
     private static Log logger = LogFactory.getLog(StatusBar.class);
 
     /** Progress bar creation is delayed by this ms */
     public static final int DELAY_PROGRESS = 500;
+
+    public static final int UNKNOWN = -1;
 
     private String taskName;
 
@@ -105,6 +108,7 @@ public class StatusBar extends JPanel implements ProgressMonitor {
         cancelButton.setBorderPainted(false);
         cancelButton.setIcon(getDefaultCancelIcon());
         cancelButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 logger.info("Requesting task cancellation...");
                 setCanceled(true);
@@ -142,15 +146,27 @@ public class StatusBar extends JPanel implements ProgressMonitor {
     public void taskStarted(String name, int totalWork) {
         startTime = System.currentTimeMillis();
         isCanceled = false;
-        progressBar.setMaximum(totalWork);
-        progressBar.setValue(0);
+        if (totalWork == StatusBar.UNKNOWN) {
+            progressBar.setIndeterminate(true);
+        } else {
+            progressBar.setIndeterminate(false);
+            progressBar.setMaximum(totalWork);
+            progressBar.setValue(0);
+        }
         if (name == null) {
             taskName = " ";
-        }
-        else {
+        } else {
             taskName = name;
         }
         setMessage(taskName);
+        showProgress();
+    }
+
+    /**
+     * @return Returns the progressBar.
+     */
+    public JProgressBar getProgressBar() {
+        return progressBar;
     }
 
     /**
@@ -165,12 +181,10 @@ public class StatusBar extends JPanel implements ProgressMonitor {
         String text;
         if (name.length() == 0) {
             text = name;
-        }
-        else {
+        } else {
             if (StringUtils.hasText(taskName)) {
                 text = taskName + " - " + name;
-            }
-            else {
+            } else {
                 text = name;
             }
         }
@@ -239,7 +253,7 @@ public class StatusBar extends JPanel implements ProgressMonitor {
                 showProgress();
             }
         }
-        progressBar.setValue((int)work);
+        progressBar.setValue((int) work);
     }
 
     /**
@@ -303,8 +317,7 @@ public class StatusBar extends JPanel implements ProgressMonitor {
     public void setErrorMessage(ImageIcon icon, String message) {
         if (message == null) {
             clearErrorMessage();
-        }
-        else {
+        } else {
             if (!errorMessageShowing) {
                 messageLabel.setForeground(SystemColor.RED);
                 errorMessageShowing = true;
