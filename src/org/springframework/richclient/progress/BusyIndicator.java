@@ -66,7 +66,7 @@ public class BusyIndicator {
      */
     public static void showWhile(Component component, Runnable runnable) {
         if (component != null) {
-            showOver(component);
+            showAt(component);
         }
         try {
             runnable.run();
@@ -81,12 +81,12 @@ public class BusyIndicator {
         }
         finally {
             if (component != null) {
-                clearOver(component);
+                clearAt(component);
             }
         }
     }
 
-    public static void showOver(Component component) {
+    public static void showAt(Component component) {
         JRootPane root = SwingUtilities.getRootPane(component);
         if (root != null && root.isShowing()) {
             root.setGlassPane(BusyGlassPanel.INSTANCE);
@@ -94,7 +94,7 @@ public class BusyIndicator {
         }
     }
 
-    public static void clearOver(Component component) {
+    public static void clearAt(Component component) {
         JRootPane root = SwingUtilities.getRootPane(component);
         if (root != null && root.isShowing()) {
             root.getGlassPane().setVisible(false);

@@ -57,7 +57,7 @@ public class TableSortAction extends ActionCommand implements Observer {
 
     private void doSort() {
         try {
-            BusyIndicator.showOver(table);
+            BusyIndicator.showAt(table);
 
             final int[] preSortSelectedRows = table.getSelectedRows();
 
@@ -74,7 +74,7 @@ public class TableSortAction extends ActionCommand implements Observer {
             }
         }
         finally {
-            BusyIndicator.clearOver(table);
+            BusyIndicator.clearAt(table);
         }
     }
 

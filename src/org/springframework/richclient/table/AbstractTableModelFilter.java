@@ -20,6 +20,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -27,46 +29,48 @@ import org.springframework.util.Assert;
  */
 public class AbstractTableModelFilter extends AbstractTableModel implements
         TableModelListener {
-    protected TableModel model;
+    protected final Log logger = LogFactory.getLog(getClass());
+    
+    protected TableModel filteredModel;
 
     public AbstractTableModelFilter(TableModel model) {
         Assert.notNull(model);
-        this.model = model;
-        this.model.addTableModelListener(this);
+        this.filteredModel = model;
+        this.filteredModel.addTableModelListener(this);
     }
 
     public TableModel getFilteredModel() {
-        return model;
+        return filteredModel;
     }
 
     // By default, implement TableModel by forwarding all messages
     // to the model.
     public Object getValueAt(int aRow, int aColumn) {
-        return model.getValueAt(aRow, aColumn);
+        return filteredModel.getValueAt(aRow, aColumn);
     }
 
     public void setValueAt(Object aValue, int aRow, int aColumn) {
-        model.setValueAt(aValue, aRow, aColumn);
+        filteredModel.setValueAt(aValue, aRow, aColumn);
     }
 
     public int getRowCount() {
-        return model.getRowCount();
+        return filteredModel.getRowCount();
     }
 
     public int getColumnCount() {
-        return model.getColumnCount();
+        return filteredModel.getColumnCount();
     }
 
     public String getColumnName(int aColumn) {
-        return model.getColumnName(aColumn);
+        return filteredModel.getColumnName(aColumn);
     }
 
     public Class getColumnClass(int aColumn) {
-        return model.getColumnClass(aColumn);
+        return filteredModel.getColumnClass(aColumn);
     }
 
     public boolean isCellEditable(int row, int column) {
-        return model.isCellEditable(row, column);
+        return filteredModel.isCellEditable(row, column);
     }
 
     // By default forward all events to all the listeners.

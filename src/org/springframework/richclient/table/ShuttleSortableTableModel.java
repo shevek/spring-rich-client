@@ -72,7 +72,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     private void allocateIndexes() {
-        int rowCount = model.getRowCount();
+        int rowCount = filteredModel.getRowCount();
         // Set up a new array of indexes with the right number of elements
         // for the new model model.
         indexes = new int[rowCount];
@@ -83,10 +83,10 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     private void initComparators() {
-        int colCount = model.getColumnCount();
+        int colCount = filteredModel.getColumnCount();
         columnComparators = new Comparator[colCount];
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            Class clazz = model.getColumnClass(i);
+        for (int i = 0; i < filteredModel.getColumnCount(); i++) {
+            Class clazz = filteredModel.getColumnClass(i);
             if (clazz == Object.class
                     || !Comparable.class.isAssignableFrom(clazz)) {
                 columnComparators[i] = OBJECT_COMPARATOR;
@@ -114,11 +114,11 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     // The mapping only affects the contents of the model rows.
     // Pass all requests to these rows through the mapping array: "indexes".
     public Object getValueAt(int row, int column) {
-        return model.getValueAt(indexes[row], column);
+        return filteredModel.getValueAt(indexes[row], column);
     }
 
     public void setValueAt(Object value, int row, int column) {
-        model.setValueAt(value, indexes[row], column);
+        filteredModel.setValueAt(value, indexes[row], column);
     }
 
     public void sortByColumn(ColumnToSort columnToSort) {
@@ -187,7 +187,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     private void checkModel() {
-        if (indexes.length != model.getRowCount()) { throw new IllegalStateException(
+        if (indexes.length != filteredModel.getRowCount()) { throw new IllegalStateException(
                 "Sorter not informed of a change in model."); }
     }
 
@@ -252,8 +252,8 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     private int compareRowsByColumn(int row1, int row2, int column) {
-        Object o1 = model.getValueAt(row1, column);
-        Object o2 = model.getValueAt(row2, column);
+        Object o1 = filteredModel.getValueAt(row1, column);
+        Object o2 = filteredModel.getValueAt(row2, column);
 
         // If both values are null, return 0.
         if (o1 == null && o2 == null) {
@@ -335,7 +335,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     private void reallocateIndexesOnInsert(int firstRow, int lastRow) {
-        int rowCount = model.getRowCount();
+        int rowCount = filteredModel.getRowCount();
         int[] newIndexes = new int[rowCount];
         for (int row = 0; row < indexes.length; row++) {
             newIndexes[row] = indexes[row];
