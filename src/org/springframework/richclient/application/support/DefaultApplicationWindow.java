@@ -28,6 +28,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationPageDescriptor;
@@ -47,7 +48,7 @@ import org.springframework.richclient.util.Memento;
 public class DefaultApplicationWindow implements ApplicationWindow {
     protected Log logger = LogFactory.getLog(getClass());
 
-    private static final String APPLICATION_PAGE = "applicationPage";
+    private static final String APPLICATION_PAGE_BEAN_ID = "applicationPagePrototype";
 
     private int number;
 
@@ -108,7 +109,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     public CommandManager getCommandManager() {
         return commandManager;
     }
-    
+
     public Iterator getSharedCommands() {
         return commandManager.getSharedCommands();
     }
@@ -145,7 +146,13 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected ApplicationPage createPage(ApplicationWindow window,
             String pageDescriptorId) {
         ApplicationPageDescriptor descriptor = getPageDescriptor(pageDescriptorId);
-        return new DefaultApplicationPage(window, descriptor);
+        try {
+            return (ApplicationPage)getApplication().getApplicationContext()
+                    .getBean(APPLICATION_PAGE_BEAN_ID, ApplicationPage.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            return new DefaultApplicationPage(window, descriptor);
+        }
     }
 
     protected ApplicationPageDescriptor getPageDescriptor(

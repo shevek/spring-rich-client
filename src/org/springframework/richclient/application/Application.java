@@ -35,7 +35,7 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class Application extends ApplicationObjectSupport {
-    private static final String APPLICATION_WINDOW = "applicationWindow";
+    private static final String APPLICATION_WINDOW_BEAN_ID = "applicationWindowPrototype";
 
     private static Application INSTANCE;
 
@@ -156,7 +156,7 @@ public class Application extends ApplicationObjectSupport {
     protected ApplicationWindow createNewWindow() {
         try {
             return (ApplicationWindow)getApplicationContext().getBean(
-                    APPLICATION_WINDOW);
+                    APPLICATION_WINDOW_BEAN_ID, ApplicationWindow.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             return new DefaultApplicationWindow();
