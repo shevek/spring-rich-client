@@ -23,6 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.util.Assert;
@@ -37,6 +38,7 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class Application implements InitializingBean, ApplicationContextAware {
+
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
     private static final String APPLICATION_WINDOW_BEAN_ID = "applicationWindowPrototype";
@@ -56,7 +58,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
     /**
      * Load the single application instance.
      * 
-     * @param instance The application
+     * @param instance
+     *            The application
      */
     public static void load(Application instance) {
         SOLE_INSTANCE = instance;
@@ -142,8 +145,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public String getName() {
         if (descriptor != null && StringUtils.hasText(descriptor.getDisplayName())) {
             return descriptor.getDisplayName();
-        }
-        else {
+        } else {
             return "Spring Rich Client Application";
         }
     }
@@ -151,8 +153,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public Image getImage() {
         if (descriptor != null && descriptor.getImage() != null) {
             return descriptor.getImage();
-        }
-        else {
+        } else {
             return Application.services().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
         }
     }
@@ -171,9 +172,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     protected ApplicationWindow createNewWindow() {
         try {
-            return (ApplicationWindow)services().getBean(APPLICATION_WINDOW_BEAN_ID, ApplicationWindow.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
+            return (ApplicationWindow) services().getBean(APPLICATION_WINDOW_BEAN_ID, ApplicationWindow.class);
+        } catch (NoSuchBeanDefinitionException e) {
             return new DefaultApplicationWindow();
         }
     }
@@ -188,6 +188,10 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     public void close() {
         if (windowManager.close()) {
+            if (getServices().getApplicationContext() instanceof ConfigurableApplicationContext) {
+                ((ConfigurableApplicationContext) getServices().getApplicationContext()).close();
+            }
+
             System.exit(0);
         }
     }
@@ -196,6 +200,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
      * Closes the application once all windows have been closed.
      */
     private class CloseApplicationObserver implements Observer {
+
         boolean firstWindowCreated = false;
 
         public void update(Observable o, Object arg) {
@@ -204,8 +209,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
             // has been added
             if (!firstWindowCreated && numOpenWidows > 0) {
                 firstWindowCreated = true;
-            }
-            else if (firstWindowCreated && numOpenWidows == 0) {
+            } else if (firstWindowCreated && numOpenWidows == 0) {
                 close();
             }
         }
