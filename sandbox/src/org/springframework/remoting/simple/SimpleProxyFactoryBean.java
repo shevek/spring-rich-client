@@ -16,12 +16,9 @@
 
 package org.springframework.remoting.simple;
 
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,7 +37,7 @@ public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
         InitializingBean, FactoryBean {
 
     private Object serviceProxy;
-    
+
     private URL serviceUrl;
 
     private String userName;
@@ -86,37 +83,26 @@ public class SimpleProxyFactoryBean extends UrlBasedRemoteAccessor implements
         return transport;
     }
 
-
     public void afterPropertiesSet() throws MalformedURLException {
-        if (getServiceInterface() == null) {
-            throw new IllegalArgumentException("serviceInterface is required.");
-        }
-        if (getServiceUrl() == null) {
-            throw new IllegalArgumentException("serviceUrl is required.");
-        }
+        if (getServiceInterface() == null) { throw new IllegalArgumentException(
+                "serviceInterface is required."); }
+        if (getServiceUrl() == null) { throw new IllegalArgumentException(
+                "serviceUrl is required."); }
         serviceUrl = new URL(getServiceUrl());
-        
+
         if (transport == null) {
             transport = new HttpTransport(serviceUrl);
         }
         transport.setAuthenticationCallback(new AuthenticationCallback() {
             public Authentication authenticate(Request request) {
-                if (userName != null && password != null) {
-                    return new UsernamePasswordAuthentication(userName, password);
-                }
+                if (userName != null && password != null) { return new UsernamePasswordAuthentication(
+                        userName, password); }
                 return null;
-            }            
-        });
-
-        this.serviceProxy = ProxyFactory.getProxy(getServiceInterface(), new MethodInterceptor() {
-            public Object invoke(MethodInvocation invocation) throws Throwable {
-                Method method = invocation.getMethod();
-                Object[] args = invocation.getArguments();
-
-                return transport
-                        .invokeRemoteMethod(getServiceInterface(), method, args);
             }
         });
+
+        this.serviceProxy = ProxyFactory.getProxy(getServiceInterface(),
+                new SimpleClientInterceptor(getServiceInterface(), transport));
     }
 
     public Object getObject() {

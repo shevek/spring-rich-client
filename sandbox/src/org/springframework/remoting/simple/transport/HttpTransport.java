@@ -23,7 +23,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.springframework.remoting.simple.SimpleRemotingException;
-import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
 import org.springframework.remoting.simple.protocol.Reply;
 import org.springframework.remoting.simple.protocol.Request;
 
@@ -94,7 +93,7 @@ public class HttpTransport extends AbstractTransport {
             os.flush();
             int responseCode = conn.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new SimpleRemotingException(Recoverable.MAYBE,
+                throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
                         "Error contecting to server. HTTP response code ["
                                 + responseCode + "], response message ["
                                 + conn.getResponseMessage() + "].");
@@ -102,7 +101,7 @@ public class HttpTransport extends AbstractTransport {
 
             return conn;
         } catch (IOException e) {
-            throw new SimpleRemotingException(Recoverable.MAYBE,
+            throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
                     "Error attempting to connect to server", e);
         } finally {
             if (os != null) {
@@ -122,9 +121,9 @@ public class HttpTransport extends AbstractTransport {
         try {
             tracker.startReceiving(-1);
             is = tracker.getProgressInputStream(conn.getInputStream());
-            return getProtocol().readReply(is, Recoverable.MAYBE);
+            return getProtocol().readReply(is, SimpleRemotingException.MAYBE);
         } catch (IOException e) {
-            throw new SimpleRemotingException(Recoverable.MAYBE,
+            throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
                     "Error reading response from server", e);
         } finally {
             if (is != null) {

@@ -26,14 +26,18 @@ import org.springframework.remoting.RemoteAccessException;
  */
 public class SimpleRemotingException extends RemoteAccessException {
     
+    public static final Recoverable YES = new Recoverable("Yes");
+    public static final Recoverable NO = new Recoverable("No");
+    public static final Recoverable MAYBE = new Recoverable("Maybe");
+    
     private Recoverable recoverable;
     
     public SimpleRemotingException(String message) {
-        this(Recoverable.NO, message, null);
+        this(NO, message, null);
     }
     
     public SimpleRemotingException(String message, Throwable cause) {
-        this(Recoverable.NO, message, cause);
+        this(NO, message, cause);
     }
     
     public SimpleRemotingException(Recoverable recoverable, String message) {
@@ -50,10 +54,6 @@ public class SimpleRemotingException extends RemoteAccessException {
     }
     
     public static class Recoverable implements Serializable {
-        public static final Recoverable YES = new Recoverable("Yes");
-        public static final Recoverable NO = new Recoverable("No");
-        public static final Recoverable MAYBE = new Recoverable("Maybe");
-        
         private String value;
         
         private Recoverable(String value) {

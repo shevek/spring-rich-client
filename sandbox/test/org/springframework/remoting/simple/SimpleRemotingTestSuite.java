@@ -34,7 +34,6 @@ import junit.framework.TestCase;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.remoting.RemoteAccessException;
-import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
 import org.springframework.remoting.simple.protocol.Request;
 import org.springframework.remoting.simple.transport.Authentication;
 import org.springframework.remoting.simple.transport.HttpTransport;
@@ -67,6 +66,9 @@ public class SimpleRemotingTestSuite extends TestCase {
         } catch (RemoteAccessException ex) {
             // expected
         }
+        
+        assertTrue(bean.equals(bean));
+        assertTrue(! bean.equals(new Person()));
     }
 
     public void testServiceExporterWithAccessError() throws Exception {
@@ -298,7 +300,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             // expected
             assertEquals(retry.lastException(), e);
             assertTrue(retry.wasInvoked());
-            assertTrue(retry.lastException().isRecoverable() == Recoverable.MAYBE);
+            assertTrue(retry.lastException().isRecoverable() == SimpleRemotingException.MAYBE);
             retry.reset();
         }
 
@@ -310,7 +312,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             // expected
             assertEquals(retry.lastException(), e);
             assertTrue(retry.wasInvoked());
-            assertTrue(retry.lastException().isRecoverable() == Recoverable.MAYBE);
+            assertTrue(retry.lastException().isRecoverable() == SimpleRemotingException.MAYBE);
             retry.reset();
         }
 
@@ -322,7 +324,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             // expected
             assertTrue(retry.wasInvoked());
             assertEquals(retry.lastException(), e);            
-            assertTrue(retry.lastException().isRecoverable() == Recoverable.YES);
+            assertTrue(retry.lastException().isRecoverable() == SimpleRemotingException.YES);
             retry.reset();
         }
 
@@ -350,7 +352,7 @@ public class SimpleRemotingTestSuite extends TestCase {
             fail("Should have thrown RemoteAccessException");
         } catch (SimpleRemotingException e) {
             // expected
-            assertEquals(e.isRecoverable(), Recoverable.NO);
+            assertEquals(e.isRecoverable(), SimpleRemotingException.NO);
         }
     }
 

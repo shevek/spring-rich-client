@@ -26,11 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
+import org.springframework.remoting.simple.protocol.DefaultProtocol;
 import org.springframework.remoting.simple.protocol.Protocol;
 import org.springframework.remoting.simple.protocol.Reply;
 import org.springframework.remoting.simple.protocol.Request;
-import org.springframework.remoting.simple.protocol.DefaultProtocol;
 
 /**
  * 
@@ -55,7 +54,7 @@ public class SimpleServiceInvoker {
         }
         serviceMap = new HashMap(services.size());
         for (Iterator i = services.iterator(); i.hasNext();) {
-            Service service = (Service) i.next();
+            SimpleService service = (SimpleService) i.next();
             String serviceInterfaceName = service.getServiceInterface()
                     .getName();
             if (serviceMap.containsKey(serviceInterfaceName)) {
@@ -74,9 +73,9 @@ public class SimpleServiceInvoker {
         SimpleRemotingException serverException = null;
 
         try {
-            Request request = protocol.readRequest(is, Recoverable.YES);
+            Request request = protocol.readRequest(is, SimpleRemotingException.YES);
 
-            Service service = (Service) serviceMap.get(request
+            SimpleService service = (SimpleService) serviceMap.get(request
                     .getServiceInterfaceName());
             if (service == null) {
                 throw new SimpleRemotingException(
@@ -104,69 +103,6 @@ public class SimpleServiceInvoker {
             protocol.writeException(os, serverException);
         } else {
             protocol.writeReply(os, new Reply(returnedValue, returnedThrowable));
-        }
-    }
-
-    public static class Service {
-        private Object serviceObject;
-
-        private Class serviceInterface;
-
-        private Map methodMap;
-
-        public Service(Object serviceObject, Class serviceInterface) {
-            if (!serviceInterface.isInterface()) {
-                throw new IllegalArgumentException("serviceInterface ["
-                        + serviceInterface.getName()
-                        + "] must be an interface.");
-            }
-            if (!serviceInterface.isInstance(serviceObject)) {
-                throw new IllegalArgumentException("serviceInterface ["
-                        + serviceInterface.getName()
-                        + "] needs to be implemented by service ["
-                        + serviceObject + "].");
-            }
-            this.serviceObject = serviceObject;
-            this.serviceInterface = serviceInterface;
-            populateMethodMap();
-        }
-
-        public Object getServiceObject() {
-            return serviceObject;
-        }
-
-        public Class getServiceInterface() {
-            return serviceInterface;
-        }
-
-        public Method getServiceMethod(String methodDesc) {
-            Method method = (Method) methodMap.get(methodDesc);
-            if (method == null) {
-                throw new SimpleRemotingException("Service ["
-                        + serviceInterface.getName()
-                        + "] does not implement method [" + methodDesc + "].");
-            }
-            return method;
-        }
-
-        private void populateMethodMap() {
-            Method[] interfaceMethods = serviceInterface.getMethods();
-            methodMap = new HashMap(interfaceMethods.length);
-            Class serviceObjectClass = serviceObject.getClass();
-            for (int i = 0; i < interfaceMethods.length; i++) {
-                Method interfaceMethod = interfaceMethods[i];
-                try {
-                    Method serviceMethod = serviceObjectClass.getMethod(
-                            interfaceMethod.getName(), interfaceMethod
-                                    .getParameterTypes());
-                    String methodDesc = interfaceMethod.toString();
-                    methodMap.put(methodDesc, serviceMethod);
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Service object ["
-                            + serviceObject + "] does not implement method ["
-                            + interfaceMethod + "].");
-                }
-            }
         }
     }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.springframework.remoting.simple.transport;
 
 import java.io.IOException;
@@ -113,17 +112,9 @@ public abstract class AbstractTransport implements Transport {
 
     public Object invokeRemoteMethod(Class serviceInterface, Method method,
             Object[] args) throws Throwable {
-        String methodName = method.getName();
-        Class[] paramTypes = method.getParameterTypes();
+        
 
-        // XXX broken. these methods need the
-        // proxy object to work...
-        if ("equals".equals(methodName) && paramTypes.length == 1
-                && paramTypes[0].equals(Object.class)) {
-            return Boolean.valueOf(this.equals(args[0]));
-        } else if ("hashCode".equals(methodName) && paramTypes.length == 0) {
-            return new Integer(this.hashCode());
-        }
+
 
         Request request = new Request(serviceInterface, method, args, null);
 

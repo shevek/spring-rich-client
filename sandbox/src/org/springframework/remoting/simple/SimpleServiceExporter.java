@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.propertyeditors.ClassEditor;
-import org.springframework.remoting.simple.SimpleServiceInvoker.Service;
 import org.springframework.remoting.support.RemoteExporter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -51,24 +50,23 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
         for (Iterator i = serviceMap.entrySet().iterator(); i.hasNext();) {
             Entry entry = (Entry) i.next();
             Object serviceObject = (Object) entry.getKey();
-            if (serviceObject == null) {
-                throw new IllegalArgumentException("Service object is null.");
-            }
+            if (serviceObject == null) { throw new IllegalArgumentException(
+                    "Service object is null."); }
             String serviceInterfaceName = (String) entry.getValue();
             ce.setAsText(serviceInterfaceName);
             Class serviceInterface = (Class) ce.getValue();
-            services.add(new Service(serviceObject, serviceInterface));
+            services.add(new SimpleService(serviceObject, serviceInterface));
         }
     }
 
     public void afterPropertiesSet() throws Exception {
         if (services == null) {
             super.afterPropertiesSet();
-            services = new ArrayList(1);            
-        } 
+            services = new ArrayList(1);
+        }
         if (getService() != null || getServiceInterface() != null) {
-            services.add(new Service(getService(),
-                    getServiceInterface()));
+            services
+                    .add(new SimpleService(getService(), getServiceInterface()));
         }
         serviceInvoker = new SimpleServiceInvoker(services);
     }
@@ -82,11 +80,14 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
         try {
             serviceInvoker.invoke(request.getInputStream(), response
                     .getOutputStream());
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw ex;
-        } catch (Error ex) {
+        }
+        catch (Error ex) {
             throw ex;
-        } catch (Throwable ex) {
+        }
+        catch (Throwable ex) {
             throw new ServletException(ex);
         }
         return null;
