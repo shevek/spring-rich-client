@@ -9,7 +9,6 @@
 	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/src"/>
 	<classpathentry output="samples/petclinic/target/tests" kind="src" path="samples/petclinic/test"/>
 	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/resources"/>
-	<classpathentry kind="src" path="/spring"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/concurrent/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/javahelp/jh.jar"/>
@@ -26,5 +25,6 @@
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-sandbox.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
