@@ -47,7 +47,7 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
         }
         return control;
     }
-    
+
     protected boolean giveFocusTo(PageComponent pageComponent) {
         PageComponentPane pane = pageComponent.getContext().getPane();
         this.control.removeAll();
@@ -55,15 +55,20 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
         this.control.validate();
         this.control.repaint();
         pane.requestFocusInWindow();
-        
+
         fireFocusGained(pageComponent);
-        
+
         return true;
     }
 
     protected PageComponent createPageComponent(PageComponentDescriptor pageComponentDescriptor) {
         PageComponent pageComponent = pageComponentDescriptor.createPageComponent();
         pageComponent.setContext(new DefaultViewContext(this, new PageComponentPane(pageComponent)));
+
+        // trigger the createControl method of the PageComponent, so if a
+        // PageComponentListener is added
+        // in the createControl method, the componentOpened event is received.
+        pageComponent.getControl();
 
         return pageComponent;
     }
