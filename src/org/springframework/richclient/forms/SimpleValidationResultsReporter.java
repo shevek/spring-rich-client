@@ -111,13 +111,10 @@ public class SimpleValidationResultsReporter implements ValidationListener {
             guarded.setEnabled(false);
             if (messages.size() > 0) {
                 ValidationEvent error = (ValidationEvent)messages.peek();
-                System.out.println("setting message");
                 messageReceiver
                         .setMessage(new Message(translate(error.getResults()), error.getResults().getSeverity()));
             }
             else {
-                System.out.println("setting message null");
-
                 messageReceiver.setMessage(null);
             }
         }
