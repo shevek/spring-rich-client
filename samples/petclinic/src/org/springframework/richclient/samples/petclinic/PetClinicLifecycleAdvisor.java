@@ -20,6 +20,9 @@ import org.springframework.richclient.application.config.ApplicationWindowConfig
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.setup.SetupWizard;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.preference.PreferenceStore;
+import org.springframework.richclient.samples.petclinic.ui.preference.CompositeDialogPageType;
+import org.springframework.richclient.samples.petclinic.ui.preference.PetClinicAppearance;
 
 /**
  * Custom application lifecycle implementation that configures the petclinic app
@@ -41,8 +44,16 @@ public class PetClinicLifecycleAdvisor extends DefaultApplicationLifecycleAdviso
     }
 
     public void onCommandsCreated(ApplicationWindow window) {
+        initializeDefaultPreferences();
+        
         ActionCommand command = window.getCommandManager().getActionCommand("loginCommand");
         command.execute();
+    }
+    
+
+    private void initializeDefaultPreferences() {
+        PreferenceStore ps = (PreferenceStore) getApplicationServices().getBean("preferenceStore");
+        ps.setDefault(PetClinicAppearance.DIALOG_PAGE_TYPE, CompositeDialogPageType.TREE);
     }
 
 }
