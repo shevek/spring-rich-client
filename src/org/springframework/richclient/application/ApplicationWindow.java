@@ -125,7 +125,7 @@ public class ApplicationWindow implements PersistableElement {
     public void openPage(String pageId) {
         Assert.notNull(pageId);
         if (this.activePage == null) {
-            Perspective perspective = (Perspective)getPageTemplate(pageId);
+            Perspective perspective = getPageTemplate(pageId);
             ApplicationPage page = new ApplicationPage(this);
             page.addViewListener(new GlobalCommandTargeterViewListener(
                     getCommandManager()));
@@ -156,6 +156,10 @@ public class ApplicationWindow implements PersistableElement {
 
     public void showViewOnPage(ViewDescriptor viewDescriptor) {
         activePage.showView(viewDescriptor);
+    }
+
+    public View getView() {
+        return this.activePage.getView();
     }
 
     public JFrame getControl() {

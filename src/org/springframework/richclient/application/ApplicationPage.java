@@ -32,6 +32,8 @@ public class ApplicationPage {
 
     private ViewRegistry viewRegistry;
 
+    private View view;
+
     private List viewListeners = new ArrayList();
 
     public ApplicationPage(ApplicationWindow window) {
@@ -59,18 +61,22 @@ public class ApplicationPage {
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
-        // todo - views are always being recreated when swithced...we should cache open views...
-        View view = viewDescriptor.createView();
-        view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
+        // todo - views are always being recreated when switched...we should cache open views...
+        this.view = viewDescriptor.createView();
+        this.view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
                 .getDisplayName(), this));
         SimpleInternalFrame viewPane = new SimpleInternalFrame(viewDescriptor
                 .getImageIcon(), viewDescriptor.getDisplayName());
         viewPane.setToolTipText(viewDescriptor.getCaption());
-        viewPane.add(view.getControl());
+        viewPane.add(this.view.getControl());
         pageControl.removeAll();
         pageControl.add(viewPane, BorderLayout.CENTER);
         pageControl.revalidate();
-        fireViewActivated(view);
+        fireViewActivated(this.view);
+    }
+
+    public View getView() {
+        return view;
     }
 
     protected void fireViewActivated(View view) {
