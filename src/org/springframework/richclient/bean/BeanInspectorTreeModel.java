@@ -156,16 +156,10 @@ public class BeanInspectorTreeModel extends AbstractTreeTableModel {
         }
     }
 
-    /**
-     * @see org.springframework.richclient.treetable.TreeTableModel#getColumnCount()
-     */
     public int getColumnCount() {
         return names.length;
     }
 
-    /**
-     * @see org.springframework.richclient.treetable.TreeTableModel#getColumnName(int)
-     */
     public String getColumnName(int column) {
         return names[column];
     }
@@ -174,10 +168,6 @@ public class BeanInspectorTreeModel extends AbstractTreeTableModel {
         return clazzes[column];
     }
 
-    /**
-     * @see org.springframework.richclient.treetable.TreeTableModel#getValueAt(java.lang.Object,
-     *      int)
-     */
     public Object getValueAt(Object node, int column) {
         if (column == 0) {
             return node;
@@ -194,16 +184,10 @@ public class BeanInspectorTreeModel extends AbstractTreeTableModel {
         return null;
     }
 
-    /**
-     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-     */
     public int getChildCount(Object parent) {
         return ((BeanFeatureNode)parent).getChildren().length;
     }
 
-    /**
-     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-     */
     public Object getChild(Object parent, int index) {
         return ((BeanFeatureNode)parent).getChildren()[index];
     }

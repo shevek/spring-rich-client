@@ -46,12 +46,8 @@ public class BeanInspectorRenderer extends DefaultTreeCellRenderer implements
 
     private static String BEAN_ICON_KEY = "bean.icon";
 
-    private IconSource iconRegistry = Application.services();
+    private IconSource iconSource = Application.services();
 
-    /**
-     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree,
-     *      java.lang.Object, boolean, boolean, boolean, int, boolean)
-     */
     public Component getTreeCellRendererComponent(JTree tree, Object value,
             boolean sel, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
@@ -63,14 +59,14 @@ public class BeanInspectorRenderer extends DefaultTreeCellRenderer implements
         if (f instanceof PropertyDescriptor) {
             PropertyDescriptor p = (PropertyDescriptor)f;
             if (ClassUtils.isSimpleScalar(p.getPropertyType())) {
-                setIcon(iconRegistry.getIcon(PROPERTY_ICON_KEY));
+                setIcon(iconSource.getIcon(PROPERTY_ICON_KEY));
             }
             else {
-                setIcon(iconRegistry.getIcon(COMPONENT_ICON_KEY));
+                setIcon(iconSource.getIcon(COMPONENT_ICON_KEY));
             }
         }
         else if (f instanceof BeanDescriptor) {
-            setIcon(iconRegistry.getIcon(BEAN_ICON_KEY));
+            setIcon(iconSource.getIcon(BEAN_ICON_KEY));
         }
         return this;
     }

@@ -50,16 +50,10 @@ public class DefaultBeanPropertyInspector implements BeanPropertyInspector {
 
     }
 
-    /**
-     * @see org.springframework.richclient.bean.BeanPropertyInspector#getBeanClassName()
-     */
     public String getBeanClassName() {
         return bean.getClass().getName();
     }
 
-    /**
-     * @see org.springframework.richclient.bean.BeanPropertyInspector#setBean(java.lang.Object)
-     */
     public void setBean(Object bean) {
         this.bean = bean;
     }
@@ -87,11 +81,7 @@ public class DefaultBeanPropertyInspector implements BeanPropertyInspector {
         tree.setShowsRootHandles(true);
     }
 
-    class BeanValueCellRenderer extends OptimizedTableCellRenderer {
-        /**
-         * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
-         *      java.lang.Object, boolean, boolean, int, int)
-         */
+    private class BeanValueCellRenderer extends OptimizedTableCellRenderer {
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
                 int column) {
