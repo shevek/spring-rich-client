@@ -48,24 +48,29 @@ public class GuiStandardUtils {
     private GuiStandardUtils() {
     }
 
+    public static JComponent attachBorder(JComponent c, Border border) {
+        c.setBorder(border);
+        return c;
+    }
+
     public static JComponent attachBorder(JComponent c) {
         return attachDialogBorder(c);
     }
 
-    public static JComponent attachBorder(JComponent c, Border border) {
-		c.setBorder(border);
-        return c;
-    }
-    
     public static JComponent attachDialogBorder(JComponent c) {
         if (c instanceof JTabbedPane) {
             c.setBorder(Borders.TABBED_DIALOG_BORDER);
-        } else {
+        }
+        else {
             c.setBorder(Borders.DIALOG_BORDER);
         }
         return c;
     }
-    
+
+    public static Border getStandardDialogBorder() {
+        return Borders.DIALOG_BORDER;
+    }
+
     public static Border createEvenlySpacedBorder(int spacePx) {
         return createEvenlySpacedBorder(Sizes.pixel(spacePx));
     }
@@ -73,7 +78,7 @@ public class GuiStandardUtils {
     public static Border createEvenlySpacedBorder(ConstantSize space) {
         return Borders.createEmptyBorder(space, space, space, space);
     }
-    
+
     public static Border createLeftAndRightBorder(int spacePx) {
         return createLeftAndRightBorder(Sizes.pixel(spacePx));
     }
@@ -81,7 +86,7 @@ public class GuiStandardUtils {
     public static Border createLeftAndRightBorder(ConstantSize space) {
         return Borders.createEmptyBorder(Sizes.ZERO, space, Sizes.ZERO, space);
     }
-    
+
     public static Border createTopAndBottomBorder(int spacePx) {
         return createTopAndBottomBorder(Sizes.pixel(spacePx));
     }
@@ -145,12 +150,12 @@ public class GuiStandardUtils {
      */
     public static JComponent createCommandButtonColumn(JButton[] buttons) {
         ButtonStackBuilder builder = new ButtonStackBuilder();
-        
+
         for (int i = 0; i < buttons.length; i++) {
             if (i > 0) {
                 builder.addRelatedGap();
             }
-            builder.addGridded(buttons[i]);            
+            builder.addGridded(buttons[i]);
         }
         return builder.getPanel();
     }
@@ -196,7 +201,7 @@ public class GuiStandardUtils {
         area.setColumns(columns);
         return area;
     }
-    
+
     /**
      * An alternative to multi-line labels, for the presentation of several
      * lines of text, and for which the line breaks are determined solely by the
@@ -213,7 +218,7 @@ public class GuiStandardUtils {
         JTextArea result = new JTextArea(text);
         return configureStandardTextArea(result);
     }
-    
+
     public static JTextArea configureStandardTextArea(JTextArea textArea) {
         textArea.setEditable(false);
         textArea.setWrapStyleWord(true);
@@ -232,7 +237,7 @@ public class GuiStandardUtils {
      *            the text to be placed in the text area.
      * @return <code>JTextArea</code> which is not editable and has improved
      *         spacing over the supplied default (placing
-     *         {@link UIConstants#ONE_SPACE} on the left and right).
+     *         {@link UIConstants#ONE_SPACE}on the left and right).
      */
     public static JTextArea createStandardTextAreaHardNewLines(String text) {
         JTextArea result = new JTextArea(text);
@@ -281,7 +286,8 @@ public class GuiStandardUtils {
      * This will allow selection and copy to work but still retain the label
      * look
      */
-    public static JTextComponent textComponentAsLabel(JTextComponent textcomponent) {
+    public static JTextComponent textComponentAsLabel(
+            JTextComponent textcomponent) {
         //  Make the text component non editable
         textcomponent.setEditable(false);
         // Make the text area look like a label
