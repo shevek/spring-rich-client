@@ -15,11 +15,13 @@ caucho/burlap.jar: 2.1.12
 caucho/hessian.jar: 2.1.12
 concurrent/concurrent.jar: 1.3.2
 foxtrot/foxtrot.jar: 2.0
+glazedlists/glazedlists.jar: 1.1
 hsqldb/hsqldb.jar: 1.7.2 Release Candidate 6d
 j2ee/servlet.jar:
 jakarta-commons/commons-codec.jar: 
 jakarta-commons/commons-logging.jar:
 javahelp/jh.jar: 2.0
+jdbc/jdnc.jar: .6
 jgoodies/forms.jar: 1.0.5
 jgoodies/looks.jar: 1.2.2
 junit/junit.jar: 3.8.1
