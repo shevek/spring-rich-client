@@ -41,16 +41,19 @@ public class SecureCommandConfigurer implements ApplicationListener {
                 && ContextHolder.getContext() instanceof SecureContext) {
             SecureContext secureContext = (SecureContext)ContextHolder
                     .getContext();
-            granted = secureContext.getAuthentication().getAuthorities();
+            if (secureContext.getAuthentication() != null)
+            	granted = secureContext.getAuthentication().getAuthorities();
         }
 
-        if (logger.isDebugEnabled()) {
+        if (logger.isInfoEnabled()) {
             StringBuffer sb = new StringBuffer();
             sb.append("Updating commands using granted authorities: ");
-            for (int i = 0; i < granted.length; i++) {
-                sb.append(granted[i].toString()).append("; ");
+            if (granted != null) {
+	            for (int i = 0; i < granted.length; i++) {
+	                sb.append(granted[i].toString()).append("; ");
+	            }
             }
-            logger.debug(sb.toString());
+            logger.info(sb.toString());
         }
 
         // TODO: Update the commands....

@@ -75,10 +75,12 @@ DaoAuthenticationProvider).</P>
 case you need the client to ensure a username and password is valid against
 the remote server, and also obtain the list of GrantedAuthority[]s (so the
 populated Authentication object can be constructed). To achieve this, on the
-client you’ll need to use the ClientServerRequestorAuthenticationProvider.
-On the server you’ll need to use the ClientServerResponderFilter. Both of
-these classes are yet to be written but will be available in the normal
-Acegi Security distribution file.</P>
+client you’ll need to use the RemoteAuthenticationProvider.
+On the server you’ll need to use the RemoteAuthenticationManagerImpl. On the
+client you'll use your preferred remoting proxy factory to access the
+server-side RemoteAuthenticationManagerImpl. You can find these classes
+in Acegi Security's <code>net.sf.acegisecurity.providers.rcp</code>
+package.</P>
 
 <h1>Remoting Integration</h1>
 
@@ -99,15 +101,10 @@ authentication (it is not an RCP-specific requirement).</P>
 
 <h1>Action Control</h1>
 
-<P>[CLASS YET TO BE WRITTEN]<p></p>
-
-<P>Finally, the other RCP package member related to security is the
-CommandSecurityConfigurer. This class also listens for login and logout events,
-updating the command enabled/disabled and visible/invisible statuses based on
-the GrantedAuthority[]s held. It directly uses the ContextHolder to obtain the
-Authentication object, simply because ActionSecurityConfigurer can be called
-at unpredictable times (eg if a page is refreshed) and not solely in response
-to a login or logout event.</P>
+<P>Coming soon... The general idea will be CommandActions listen for
+events and update their visibility and enable/disabled status based on
+delegation to a security manager. The security manager will indicate
+the expected state based on granted authorities held.</p>
 
 </body>
 </html>
