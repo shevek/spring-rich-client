@@ -347,55 +347,79 @@ public class ClassUtils {
         if (propertyName == null)
             throw new IllegalArgumentException("propertyName == null");
 
-        if (getGetterMethod(theClass, propertyName) != null)
+        if (getReadMethod(theClass, propertyName) != null)
             return true;
-        if (getSetterMethod(theClass, propertyName) != null)
+        if (getWriteMethod(theClass, propertyName) != null)
             return true;
         return false;
     }
 
-    private static Method getGetterMethod(Class theClass, String propertyName) {
+    private static Method getReadMethod(Class theClass, String propertyName) {
         // handle "embedded/dotted" properties
         if (propertyName.indexOf('.') > -1) {
             final int index = propertyName.indexOf('.');
             final String firstPropertyName = propertyName.substring(0, index);
-            final String restOfPropertyName = propertyName.substring(index + 1, propertyName.length());
+            final String restOfPropertyName =
+                    propertyName.substring(index + 1, propertyName.length());
             final Class firstPropertyClass = getPropertyClass(theClass, firstPropertyName);
-            return getGetterMethod(firstPropertyClass, restOfPropertyName);
+            return getReadMethod(firstPropertyClass, restOfPropertyName);
         }
 
         final String getterName = "get" + propertyName.substring(0, 1).toUpperCase()
                 + (propertyName.length() == 1 ? "" : propertyName.substring(1));
 
+        Method method = getMethod(theClass, getterName);
+        if (method == null) {
+            final String isserName = "is" + propertyName.substring(0, 1).toUpperCase()
+                    + (propertyName.length() == 1 ? "" : propertyName.substring(1));
+            method = getMethod(theClass, isserName);
+        }
+
+        if (method == null) {
+            logger.info("There is not a getter for " + propertyName + " in " + theClass);
+            return null;
+        }
+
+        if (!Modifier.isPublic(method.getModifiers())) {
+            logger.warn("The getter for " + propertyName + " in " + theClass +
+                    " is not public: " + method);
+            return null;
+        }
+
+        if (Void.TYPE.equals(method.getReturnType())) {
+            logger.warn("The getter for " + propertyName + " in " + theClass +
+                    " returns void: " + method);
+            return null;
+        }
+
+        if (method.getName().startsWith("is") &&
+                !(Boolean.class.equals(method.getReturnType()) ||
+                Boolean.TYPE.equals(method.getReturnType()))) {
+            logger.warn("The getter for " + propertyName + " in " + theClass +
+                    " uses the boolean naming convention but is not boolean: " + method);
+            return null;
+        }
+
+        return method;
+    }
+
+    private static Method getMethod(final Class theClass, final String getterName) {
         try {
-            final Method method = theClass.getMethod(getterName, null);
-
-            if (!Modifier.isPublic(method.getModifiers())) {
-                logger.warn("The getter for " + propertyName + " in " + theClass + " is not public: " + method);
-                return null;
-            }
-
-            if (Void.TYPE.equals(method.getReturnType())) {
-                logger.warn("The getter for " + propertyName + " in " + theClass + " is void: " + method);
-                return null;
-            }
-
-            return method;
+            return theClass.getMethod(getterName, null);
         }
         catch (NoSuchMethodException e) {
-            logger.info("There is not a getter for " + propertyName + " in " + theClass);
             return null;
         }
     }
 
-    private static Method getSetterMethod(Class theClass, String propertyName) {
+    private static Method getWriteMethod(Class theClass, String propertyName) {
         // handle "embedded/dotted" properties
         if (propertyName.indexOf('.') > -1) {
             final int index = propertyName.indexOf('.');
             final String firstPropertyName = propertyName.substring(0, index);
             final String restOfPropertyName = propertyName.substring(index + 1, propertyName.length());
             final Class firstPropertyClass = getPropertyClass(theClass, firstPropertyName);
-            return getSetterMethod(firstPropertyClass, restOfPropertyName);
+            return getWriteMethod(firstPropertyClass, restOfPropertyName);
         }
 
         final String setterName = "set" + propertyName.substring(0, 1).toUpperCase()
@@ -450,12 +474,12 @@ public class ClassUtils {
         if (propertyName == null)
             throw new IllegalArgumentException("propertyName == null");
 
-        final Method getterMethod = getGetterMethod(parentClass, propertyName);
+        final Method getterMethod = getReadMethod(parentClass, propertyName);
         if (getterMethod != null) {
             return getterMethod.getReturnType();
         }
 
-        final Method setterMethod = getSetterMethod(parentClass, propertyName);
+        final Method setterMethod = getWriteMethod(parentClass, propertyName);
         if (setterMethod != null) {
             return setterMethod.getParameterTypes()[0];
         }
