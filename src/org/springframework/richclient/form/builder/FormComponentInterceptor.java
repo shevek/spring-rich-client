@@ -21,7 +21,7 @@ import javax.swing.*;
  * This provides a way to wrap functionality around components and labels.<p />
  *
  * Example uses include changing the color when validation fails, or attaching
- * a richt-click popup menu.
+ * a right-click popup menu.
  *
  * @author oliverh
  */
