@@ -17,6 +17,8 @@ package org.springframework.richclient.application.support;
 
 import java.beans.PropertyEditor;
 import java.lang.reflect.Modifier;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +29,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.ClassEditor;
+import org.springframework.beans.propertyeditors.CustomBooleanEditor;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
@@ -44,6 +49,63 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     
     private Map propertyEditorByClassAndProperty = new HashMap();
     
+    public DefaultPropertyEditorRegistry() {
+        initDefaultEditors();
+    }
+    
+    /**
+     * Initialize the default property editors, covering primitive and other basic value types.
+     */
+    protected void initDefaultEditors() {
+        setPropertyEditor(int.class, DefaultIntegerEditor.class);
+        setPropertyEditor(Integer.class, DefaultIntegerEditor.class);
+        setPropertyEditor(long.class, DefaultLongEditor.class);
+        setPropertyEditor(Long.class, DefaultLongEditor.class);
+        setPropertyEditor(float.class, DefaultFloatEditor.class);
+        setPropertyEditor(Float.class, DefaultFloatEditor.class);
+        setPropertyEditor(double.class, DefaultDoubleEditor.class);
+        setPropertyEditor(Double.class, DefaultDoubleEditor.class);
+        setPropertyEditor(boolean.class, DefaultBooleanEditor.class);
+        setPropertyEditor(Boolean.class, DefaultBooleanEditor.class);
+        setPropertyEditor(Date.class, DefaultDateEditor.class);
+    }
+    
+    private static class DefaultIntegerEditor extends CustomNumberEditor {
+        public DefaultIntegerEditor() {
+            super(Integer.class, true);
+        }
+    }
+
+    private static class DefaultLongEditor extends CustomNumberEditor {
+        public DefaultLongEditor() {
+            super(Long.class, true);
+        }
+    }
+
+    private static class DefaultFloatEditor extends CustomNumberEditor {
+        public DefaultFloatEditor() {
+            super(Float.class, true);
+        }
+    }
+
+    private static class DefaultDoubleEditor extends CustomNumberEditor {
+        public DefaultDoubleEditor() {
+            super(Double.class, true);
+        }
+    }
+
+    private static class DefaultBooleanEditor extends CustomBooleanEditor {
+        public DefaultBooleanEditor() {
+            super(true);
+        }
+    }
+
+    private static class DefaultDateEditor extends CustomDateEditor {
+        public DefaultDateEditor() {
+            super(DateFormat.getDateInstance(), true);
+        }
+    }
+
     /**
      * Adds a list of property editors to the registry extracting the object
      * class, property name and property editor class from the properties

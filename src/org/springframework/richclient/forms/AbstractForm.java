@@ -72,35 +72,20 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private ValueChangeListener editingFormObjectSetter;
 
     protected AbstractForm() {
-
+        init();
     }
 
     protected AbstractForm(String formId) {
         setId(formId);
+        init();
     }
 
     protected AbstractForm(Object formObject) {
         this(SwingFormModel.createFormModel(formObject));
     }
 
-    protected AbstractForm(SwingFormModel pageFormModel) {
+    protected AbstractForm(FormModel pageFormModel) {
         this(pageFormModel, null);
-    }
-
-    protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId), formId);
-    }
-
-    protected AbstractForm(NestingFormModel parentFormModel, String formId, String childFormObjectPropertyPath) {
-        setId(formId);
-        this.parentFormModel = parentFormModel;
-        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectPropertyPath));
-    }
-
-    protected AbstractForm(NestingFormModel parentFormModel, String formId, ValueModel childFormObjectHolder) {
-        setId(formId);
-        this.parentFormModel = parentFormModel;
-        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectHolder));
     }
 
     protected AbstractForm(FormModel formModel, String formId) {
@@ -115,8 +100,31 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         else {
             throw new IllegalArgumentException("Unsupported form model implementation " + formModel);
         }
+        init();
     }
 
+    protected AbstractForm(NestingFormModel parentFormModel, String formId) {
+        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId), formId);
+    }
+
+    protected AbstractForm(NestingFormModel parentFormModel, String formId, String childFormObjectPropertyPath) {
+        setId(formId);
+        this.parentFormModel = parentFormModel;
+        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectPropertyPath));
+        init();
+    }
+
+    protected AbstractForm(NestingFormModel parentFormModel, String formId, ValueModel childFormObjectHolder) {
+        setId(formId);
+        this.parentFormModel = parentFormModel;
+        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectHolder));
+        init();
+    }
+
+    protected void init() {
+        
+    }
+    
     public String getId() {
         return formId;
     }

@@ -17,6 +17,7 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import javax.swing.JComponent;
 
+
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.forms.AbstractForm;

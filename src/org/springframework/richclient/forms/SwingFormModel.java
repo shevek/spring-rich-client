@@ -527,7 +527,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         }
         catch (ClassCastException e) {
             IllegalArgumentException ex = new IllegalArgumentException(
-                    "Class cast exception converting value to string - did you install a type converter?");
+                    "Class cast exception converting '" + formProperty + "' property value to string - did you install a type converter?");
             ex.initCause(e);
             throw ex;
         }
