@@ -13,26 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.factory;
+package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
+import javax.swing.JTextArea;
 
-
-/**
- * Common interface to assist with building forms.
- * 
- * @author Keith Donald
- */
-public interface FormBuilder {
+public interface BeanFormBuilder {
+    public JComponent add(String propertyName);
+    public JTextArea addTextArea(String propertyName);
     public JComponent getForm();
-
-    public void add(String labelKey, JComponent labeledComponent);
-
-    public void add(String labelKey, String labelConstraints, JComponent labeledComponent);
-    
-    public void addSeparator();
-    
-    public void addGapRow();
-    
-    public void addRow(ControlFactory controlFactory);
 }

@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.factory;
+package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -63,7 +63,7 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     }
 
     /**
-     * @see org.springframework.richclient.factory.BeanFormBuilder#add(java.lang.String)
+     * @see org.springframework.richclient.forms.BeanFormBuilder#add(java.lang.String)
      */
     public JComponent add(String propertyName) {
         JComponent propertyEditor = formModel.createBoundControl(propertyName);
@@ -72,7 +72,7 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     }
 
     /**
-     * @see org.springframework.richclient.factory.BeanFormBuilder#addTextArea(java.lang.String)
+     * @see org.springframework.richclient.forms.BeanFormBuilder#addTextArea(java.lang.String)
      */
     public JTextArea addTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);

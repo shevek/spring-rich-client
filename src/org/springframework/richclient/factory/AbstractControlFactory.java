@@ -19,6 +19,7 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 
 /**
  * A control factory that only creates it's control when requested.

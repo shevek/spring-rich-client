@@ -23,8 +23,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.richclient.factory.FormBuilder;
-import org.springframework.richclient.factory.JGoodiesFormBuilder;
+import org.springframework.richclient.forms.FormBuilder;
+import org.springframework.richclient.forms.JGoodiesFormBuilder;
 import org.springframework.richclient.forms.SimpleValidationResultsReporter;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.rules.UnaryPredicate;

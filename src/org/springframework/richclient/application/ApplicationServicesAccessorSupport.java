@@ -5,12 +5,12 @@
  * 
  * Copyright Computer Science Innovations (CSI), 2004. All rights reserved.
  */
-package org.springframework.richclient.factory;
+package org.springframework.richclient.application;
 
 import java.util.Locale;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.factory.ComponentFactory;
 
 /**
  * @author Keith Donald

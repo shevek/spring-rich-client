@@ -13,12 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.factory;
+package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.util.Assert;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -46,7 +48,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
     }
 
     /**
-     * @see org.springframework.richclient.factory.FormBuilder#getForm()
+     * @see org.springframework.richclient.forms.FormBuilder#getForm()
      */
     public JComponent getForm() {
         return formBuilder.getPanel();
@@ -57,7 +59,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
     }
     
     /**
-     * @see org.springframework.richclient.factory.FormBuilder#add(java.lang.String,
+     * @see org.springframework.richclient.forms.FormBuilder#add(java.lang.String,
      *      javax.swing.JComponent)
      */
     public void add(String labelKey, JComponent labeledComponent) {

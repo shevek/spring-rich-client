@@ -25,8 +25,8 @@ import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.factory.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.image.IconSource;
 
 /**
