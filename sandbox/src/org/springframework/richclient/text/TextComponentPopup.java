@@ -38,6 +38,7 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
+import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.DefaultCommandManager;
 import org.springframework.richclient.command.support.GlobalCommandIds;
@@ -51,7 +52,12 @@ import org.springframework.richclient.command.support.GlobalCommandIds;
 public class TextComponentPopup extends MouseAdapter implements FocusListener,
         CaretListener, UndoableEditListener {
 
-    public static void attachPopup(JTextComponent textComponent,
+    private static final String[] COMMANDS = new String[] {
+                        GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
+                        GlobalCommandIds.COPY, GlobalCommandIds.CUT,
+                        GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL };
+                        
+	public static void attachPopup(JTextComponent textComponent,
             ValueModel resetUndoHistoryTrigger) {
         new TextComponentPopup(textComponent, resetUndoHistoryTrigger);
     }
@@ -108,44 +114,35 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
     }
 
     protected CommandManager getCommandManager() {
+    	CommandManager commandManager;    	
         ApplicationWindow appWindow = Application.instance().getActiveWindow();
-        if (appWindow == null) {
+        if (appWindow == null
+        		|| appWindow.getCommandManager() == null) {
             if (localCommandManager == null) {
-                DefaultCommandManager commandManager = new DefaultCommandManager();
-                commandManager.setGlobalCommandIds(new String[] {
-                        GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
-                        GlobalCommandIds.COPY, GlobalCommandIds.CUT,
-                        GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL });
-                localCommandManager = commandManager;
+                localCommandManager = new DefaultCommandManager();
             }
-            return localCommandManager;
+            commandManager = localCommandManager;
         }
         else {
-            return appWindow.getCommandManager();
-        }
+        	commandManager = appWindow.getCommandManager();
+        }        
+        for (int i=0; i<COMMANDS.length; i++) {
+        	if (!commandManager.containsActionCommand(COMMANDS[i])) {
+        		commandManager.addNewCommand(new TargetableActionCommand(
+        				COMMANDS[i], null), COMMANDS[i]);
+        	}
+        }        
+        return commandManager;
     }
 
     public void registerAccelerators() {
         CommandManager commandManager = getCommandManager();        
         Keymap keymap = textComponent.getKeymap();
-        ActionCommand command = commandManager.getActionCommand(
-                GlobalCommandIds.UNDO);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
-        command = commandManager.getActionCommand(
-                GlobalCommandIds.REDO);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
-        command = commandManager.getActionCommand(
-                GlobalCommandIds.COPY);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
-        command = commandManager.getActionCommand(
-                GlobalCommandIds.CUT);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
-        command = commandManager.getActionCommand(
-                GlobalCommandIds.PASTE);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
-        command = commandManager.getActionCommand(
-                GlobalCommandIds.SELECT_ALL);
-        keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
+        String[] commandIds = new String[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO,};
+        for (int i=0; i<COMMANDS.length; i++) {
+        	ActionCommand command = commandManager.getActionCommand(COMMANDS[i]);
+        	keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
+        }
     }
 
     public void mousePressed(MouseEvent evt) {
