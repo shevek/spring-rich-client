@@ -16,7 +16,7 @@ import org.springframework.rules.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesProvider;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.constraints.beans.BeanPropertyConstraint;
+import org.springframework.rules.constraint.bean.BeanPropertyConstraint;
 import org.springframework.rules.factory.Constraints;
 import org.springframework.rules.support.DefaultRulesSource;
 

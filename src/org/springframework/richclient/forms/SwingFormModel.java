@@ -69,7 +69,7 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.comparators.BeanPropertyComparator;
+import org.springframework.util.comparator.BeanPropertyComparator;
 
 /**
  * @author Keith Donald

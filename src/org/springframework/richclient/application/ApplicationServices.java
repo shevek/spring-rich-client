@@ -45,7 +45,7 @@ import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.constraints.beans.BeanPropertyConstraint;
+import org.springframework.rules.constraint.bean.BeanPropertyConstraint;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**

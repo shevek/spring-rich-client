@@ -24,7 +24,7 @@ import javax.swing.event.EventListenerList;
 
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.rules.constraints.Range;
+import org.springframework.rules.constraint.Range;
 import org.springframework.util.ToStringBuilder;
 
 /**

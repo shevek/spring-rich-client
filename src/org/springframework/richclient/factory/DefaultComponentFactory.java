@@ -48,8 +48,8 @@ import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.comparators.ComparableComparator;
-import org.springframework.util.comparators.CompoundComparator;
+import org.springframework.util.comparator.ComparableComparator;
+import org.springframework.util.comparator.CompoundComparator;
 
 /**
  * Default component factory implementation that delegates to JGoodies component

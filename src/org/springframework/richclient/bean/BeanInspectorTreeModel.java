@@ -29,9 +29,9 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.richclient.treetable.AbstractTreeTableModel;
 import org.springframework.richclient.treetable.TreeTableModel;
 import org.springframework.richclient.util.ClassUtils;
-import org.springframework.util.comparators.BeanPropertyComparator;
-import org.springframework.util.comparators.BooleanComparator;
-import org.springframework.util.comparators.CompoundComparator;
+import org.springframework.util.comparator.BeanPropertyComparator;
+import org.springframework.util.comparator.BooleanComparator;
+import org.springframework.util.comparator.CompoundComparator;
 
 /**
  * An implementation of a tree table model for inspecting bean properties. Each
