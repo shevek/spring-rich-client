@@ -149,13 +149,6 @@ public class DefaultApplicationPage implements ApplicationPage,
         return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
     }
     
-    // Initial Application Page Layout Builder methods
-    
-    public void addView(String viewDescriptorId) {
-        ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
-        this.pageControl.add(viewPane.getControl());
-    }
-
     public View getActiveView() {
         return activeView.getView();
     }
@@ -174,4 +167,10 @@ public class DefaultApplicationPage implements ApplicationPage,
         }
     }
 
+    // Initial Application Page Layout Builder methods
+    
+    public void addView(String viewDescriptorId) {
+        ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
+        this.pageControl.add(viewPane.getControl());
+    }
 }
