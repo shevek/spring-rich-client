@@ -90,6 +90,10 @@ public class SimpleInternalFrame extends JPanel {
 
     // Instance Creation ****************************************************
 
+    public SimpleInternalFrame() {
+        this("");
+    }
+    
     /**
      * Constructs a <code>SimpleInternalFrame</code> with the specified title.
      * 

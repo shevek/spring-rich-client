@@ -29,17 +29,17 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
-import org.springframework.richclient.command.config.CommandIconable;
-import org.springframework.richclient.command.config.CommandLabelable;
-import org.springframework.richclient.core.Describable;
-import org.springframework.richclient.core.Labelable;
-import org.springframework.richclient.core.Titleable;
+import org.springframework.richclient.command.config.CommandIconConfigurable;
+import org.springframework.richclient.command.config.CommandLabelConfigurable;
+import org.springframework.richclient.core.DescriptionConfigurable;
+import org.springframework.richclient.core.LabelConfigurable;
+import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
-import org.springframework.richclient.image.config.Iconable;
-import org.springframework.richclient.image.config.Imageable;
+import org.springframework.richclient.image.config.IconConfigurable;
+import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -132,22 +132,22 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
     }
 
     private void configureTitle(Object bean, String beanName) {
-        if (bean instanceof Titleable) {
-            Titleable titleable = (Titleable)bean;
+        if (bean instanceof TitleConfigurable) {
+            TitleConfigurable titleable = (TitleConfigurable)bean;
             titleable.setTitle(loadMessage(beanName, "title"));
         }
     }
 
     private void configureLabel(Object bean, String beanName) {
-        if (bean instanceof Labelable) {
-            Labelable labelable = (Labelable)bean;
+        if (bean instanceof LabelConfigurable) {
+            LabelConfigurable labelable = (LabelConfigurable)bean;
             String labelStr = loadMessage(beanName, "label");
             labelable.setLabelInfo(new LabelInfoFactory(labelStr)
                     .createLabelInfo());
         }
         else {
-            if (bean instanceof CommandLabelable) {
-                CommandLabelable labelable = (CommandLabelable)bean;
+            if (bean instanceof CommandLabelConfigurable) {
+                CommandLabelConfigurable labelable = (CommandLabelConfigurable)bean;
                 String labelStr = loadMessage(beanName, "label");
                 labelable.setLabelInfo(new LabelInfoFactory(labelStr)
                         .createButtonLabelInfo());
@@ -156,8 +156,8 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
     }
 
     private void configureDescription(Object bean, String beanName) {
-        if (bean instanceof Describable) {
-            Describable config = (Describable)bean;
+        if (bean instanceof DescriptionConfigurable) {
+            DescriptionConfigurable config = (DescriptionConfigurable)bean;
             String caption = loadMessage(beanName, CAPTION_KEY);
             if (StringUtils.hasText(caption)) {
                 config.setCaption(caption);
@@ -171,24 +171,24 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
 
     private void configureImageIcons(Object bean, String beanName) {
         if (imageSource != null) {
-            if (bean instanceof Imageable) {
-                Imageable imageable = (Imageable)bean;
+            if (bean instanceof ImageConfigurable) {
+                ImageConfigurable imageable = (ImageConfigurable)bean;
                 imageable.setImage(loadImage(beanName, IMAGE_KEY));
             }
         }
         if (iconSource != null) {
-            if (bean instanceof Iconable) {
-                Iconable iconable = (Iconable)bean;
+            if (bean instanceof IconConfigurable) {
+                IconConfigurable iconable = (IconConfigurable)bean;
                 iconable.setIcon(loadOptionalIcon(beanName, ICON_KEY));
             }
-            else if (bean instanceof CommandIconable) {
-                setIconInfo((CommandIconable)bean, beanName);
-                setLargeIconInfo((CommandIconable)bean, beanName);
+            else if (bean instanceof CommandIconConfigurable) {
+                setIconInfo((CommandIconConfigurable)bean, beanName);
+                setLargeIconInfo((CommandIconConfigurable)bean, beanName);
             }
         }
     }
 
-    public void setIconInfo(CommandIconable bean, String beanName) {
+    public void setIconInfo(CommandIconConfigurable bean, String beanName) {
         Icon icon = loadOptionalIcon(beanName, ICON_KEY);
         if (icon != null) {
             CommandButtonIconInfo iconInfo;
@@ -206,11 +206,11 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            ((CommandIconable)bean).setIconInfo(iconInfo);
+            ((CommandIconConfigurable)bean).setIconInfo(iconInfo);
         }
     }
 
-    public void setLargeIconInfo(CommandIconable bean, String beanName) {
+    public void setLargeIconInfo(CommandIconConfigurable bean, String beanName) {
         Icon icon = loadOptionalLargeIcon(beanName, ICON_KEY);
         if (icon != null) {
             CommandButtonIconInfo iconInfo;
@@ -228,7 +228,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            ((CommandIconable)bean).setLargeIconInfo(iconInfo);
+            ((CommandIconConfigurable)bean).setLargeIconInfo(iconInfo);
         }
     }
 

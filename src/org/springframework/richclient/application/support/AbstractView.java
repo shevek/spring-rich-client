@@ -53,6 +53,10 @@ public abstract class AbstractView extends LabeledObjectSupport implements View 
         setGlobalCommandExecutors(context);
     }
 
+    public String getId() {
+        return descriptor.getId();
+    }
+    
     public ViewContext getContext() {
         return context;
     }

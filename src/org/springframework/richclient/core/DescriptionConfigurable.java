@@ -20,7 +20,7 @@ package org.springframework.richclient.core;
  * 
  * @author Keith Donald
  */
-public interface Describable {
+public interface DescriptionConfigurable {
 
     /**
      * @param shortDescription

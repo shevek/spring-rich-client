@@ -13,10 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.core;
 
-public interface ViewRegistry {
-    public ViewDescriptor[] getViewDescriptors();
+import java.awt.Image;
 
-    public ViewDescriptor getViewDescriptor(String viewName);
+import javax.swing.Icon;
+
+public interface VisualizedElement {
+    public Image getImage();
+
+    public Icon getIcon();
 }

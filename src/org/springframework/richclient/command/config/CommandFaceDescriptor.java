@@ -23,7 +23,7 @@ import javax.swing.KeyStroke;
 
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.richclient.command.AbstractCommand;
-import org.springframework.richclient.core.Describable;
+import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ToStringCreator;
@@ -32,7 +32,7 @@ import org.springframework.util.ToStringCreator;
  * @author Keith Donald
  */
 public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
-        implements CommandLabelable, Describable, CommandIconable {
+        implements CommandLabelConfigurable, DescriptionConfigurable, CommandIconConfigurable {
 
     public static final String BUTTON_LABEL_INFO_PROPERTY = "buttonLabelInfo";
 

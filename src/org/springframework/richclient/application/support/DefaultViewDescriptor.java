@@ -30,6 +30,7 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.support.ShowViewCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.util.Assert;
@@ -112,6 +113,10 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements
         }
 
         return view;
+    }
+
+    public CommandButtonLabelInfo getShowViewCommandLabel() {
+        return getLabel();
     }
 
     public ActionCommand createShowViewCommand(ApplicationWindow window) {

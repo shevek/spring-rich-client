@@ -26,9 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-import org.springframework.richclient.core.Titleable;
+import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.image.config.Imageable;
+import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.rules.reporting.Severity;
 
@@ -40,7 +40,7 @@ import com.jgoodies.forms.factories.FormFactory;
  * error message.
  */
 public class TitleAreaPane extends AbstractControlFactory implements
-        MessageAreaPane, Titleable, Imageable {
+        MessageAreaPane, TitleConfigurable, ImageConfigurable {
 
     /**
      * Image source key for banner image (value <code>dialog_title_banner</code>).

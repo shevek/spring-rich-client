@@ -34,7 +34,7 @@ import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.ObjectConfigurer;
-import org.springframework.richclient.application.support.ApplicationContextViewRegistry;
+import org.springframework.richclient.application.support.BeanFactoryViewDescriptorRegistry;
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
@@ -94,7 +94,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private RulesSource rulesSource;
 
-    private ViewRegistry viewRegistry;
+    private ViewDescriptorRegistry viewRegistry;
 
     private ImageSource imageSource;
 
@@ -123,14 +123,14 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         this.componentFactory = factory;
     }
 
-    public ViewRegistry getViewRegistry() {
+    public ViewDescriptorRegistry getViewDescriptorRegistry() {
         if (viewRegistry == null) {
             initViewRegistry();
         }
         return viewRegistry;
     }
 
-    public void setViewRegistry(ViewRegistry registry) {
+    public void setViewRegistry(ViewDescriptorRegistry registry) {
         this.viewRegistry = registry;
     }
 
@@ -226,7 +226,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         getImageSource();
         getIconSource();
         getComponentFactory();
-        getViewRegistry();
+        getViewDescriptorRegistry();
         getRulesSource();
         getObjectConfigurer();
         getCommandConfigurer();
@@ -276,7 +276,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     private void initViewRegistry() {
-        ApplicationContextViewRegistry r = new ApplicationContextViewRegistry();
+        BeanFactoryViewDescriptorRegistry r = new BeanFactoryViewDescriptorRegistry();
         r.setApplicationContext(getApplicationContext());
         this.viewRegistry = r;
     }

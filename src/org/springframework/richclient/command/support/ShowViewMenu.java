@@ -43,7 +43,7 @@ public class ShowViewMenu extends CommandGroup implements
     }
 
     private void populate() {
-        ViewDescriptor[] views = Application.services().getViewRegistry()
+        ViewDescriptor[] views = Application.services().getViewDescriptorRegistry()
                 .getViewDescriptors();
         for (int i = 0; i < views.length; i++) {
             ViewDescriptor view = views[i];

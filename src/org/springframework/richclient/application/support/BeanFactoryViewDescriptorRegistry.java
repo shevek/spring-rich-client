@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.richclient.application.ViewDescriptor;
-import org.springframework.richclient.application.ViewRegistry;
+import org.springframework.richclient.application.ViewDescriptorRegistry;
 
 
 /**
@@ -28,8 +28,8 @@ import org.springframework.richclient.application.ViewRegistry;
  * 
  * @author Keith Donald
  */
-public class ApplicationContextViewRegistry extends ApplicationObjectSupport
-    implements ViewRegistry {
+public class BeanFactoryViewDescriptorRegistry extends ApplicationObjectSupport
+    implements ViewDescriptorRegistry {
 
     public ViewDescriptor[] getViewDescriptors() {
         Map beans = getApplicationContext().getBeansOfType(ViewDescriptor.class, false, false);

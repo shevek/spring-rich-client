@@ -29,7 +29,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationPageDescriptor;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
@@ -124,11 +126,10 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public void showPage(String pageId) {
         if (this.currentPage == null) {
-            ApplicationPage page = createPage(this);
+            ApplicationPage page = createPage(this, pageId);
             GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
                     getCommandManager());
             page.addViewListener(commandTargeter);
-            page.showView(pageId);
             this.currentPage = page;
             configureWindow();
         }
@@ -145,8 +146,26 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         getApplicationAdvisor().onWindowOpened(this);
     }
 
-    protected ApplicationPage createPage(ApplicationWindow window) {
-        return new DefaultApplicationPage(window);
+    protected ApplicationPage createPage(ApplicationWindow window,
+            String pageDescriptorId) {
+        ApplicationPageDescriptor descriptor = getPageDescriptor(pageDescriptorId);
+        return new DefaultApplicationPage(window, descriptor);
+    }
+
+    protected ApplicationPageDescriptor getPageDescriptor(
+            String pageDescriptorId) {
+        Object desc = getApplication().getApplicationContext().getBean(
+                pageDescriptorId);
+        if (desc instanceof ApplicationPageDescriptor) {
+            return (ApplicationPageDescriptor)desc;
+        }
+        else if (desc instanceof ViewDescriptor) {
+            return new SingleViewApplicationPageDescriptor((ViewDescriptor)desc);
+        }
+        else {
+            throw new IllegalArgumentException("Page id '" + pageDescriptorId
+                    + "' is not backed by an ApplicationPageDescriptor");
+        }
     }
 
     public JFrame getControl() {

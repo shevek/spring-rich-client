@@ -17,7 +17,8 @@ package org.springframework.richclient.application;
 
 import javax.swing.Icon;
 
-import org.springframework.richclient.core.ManagedElement;
+import org.springframework.binding.value.PropertyChangePublisher;
+import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
@@ -33,13 +34,14 @@ import org.springframework.richclient.factory.ControlFactory;
  * 
  * @author Keith Donald
  */
-public interface View extends ManagedElement, ControlFactory {
-    public Icon getImageIcon();
+public interface View extends PropertyChangePublisher, DescribedElement,
+        ControlFactory {
+    public String getId();
+    
+    public Icon getIcon();
 
     public void initialize(ViewDescriptor descriptor, ViewContext context);
 
     public ViewContext getContext();
-
-    public ViewDescriptor getViewDescriptor();
 
 }

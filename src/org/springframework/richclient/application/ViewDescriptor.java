@@ -15,13 +15,10 @@
  */
 package org.springframework.richclient.application;
 
-import java.awt.Image;
-
-import javax.swing.Icon;
-
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-import org.springframework.richclient.core.ManagedElement;
+import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.VisualizedElement;
 
 /**
  * Metadata about a view; a view descriptor is effectively a singleton view
@@ -32,15 +29,9 @@ import org.springframework.richclient.core.ManagedElement;
  * 
  * @author Keith Donald
  */
-public interface ViewDescriptor extends ManagedElement {
+public interface ViewDescriptor extends DescribedElement, VisualizedElement {
 
     public String getId();
-
-    public Image getImage();
-
-    public CommandButtonLabelInfo getLabel();
-
-    public Icon getImageIcon();
 
     /**
      * Factory method that produces a new instance of the View described by this
@@ -65,4 +56,5 @@ public interface ViewDescriptor extends ManagedElement {
      */
     public ActionCommand createShowViewCommand(ApplicationWindow window);
 
+    public CommandButtonLabelInfo getShowViewCommandLabel();
 }

@@ -41,7 +41,7 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.core.Titleable;
+import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -71,7 +71,7 @@ import org.springframework.util.StringUtils;
  * </ul>
  */
 public abstract class ApplicationDialog extends
-        ApplicationServicesAccessor implements Titleable,
+        ApplicationServicesAccessor implements TitleConfigurable,
         Guarded {
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 

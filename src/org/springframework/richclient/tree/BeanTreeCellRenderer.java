@@ -29,7 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.FatalBeanException;
-import org.springframework.richclient.core.ManagedElement;
+import org.springframework.richclient.core.DescribedElement;
 import org.springframework.util.Assert;
 
 /**
@@ -73,8 +73,8 @@ public class BeanTreeCellRenderer extends FocusableTreeCellRenderer {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             Object bean = node.getUserObject();
             if (bean != null && !BeanUtils.isSimpleProperty(bean.getClass())) {
-                if (bean instanceof ManagedElement) {
-                    ManagedElement element = (ManagedElement)bean;
+                if (bean instanceof DescribedElement) {
+                    DescribedElement element = (DescribedElement)bean;
                     setText(element.getDisplayName());
                     setToolTipText(element.getCaption());
                 }

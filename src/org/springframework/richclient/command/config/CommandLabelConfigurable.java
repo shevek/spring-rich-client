@@ -13,25 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.core;
-
-import org.springframework.binding.value.PropertyChangePublisher;
+package org.springframework.richclient.command.config;
 
 /**
- * A interface for managed elements that can be displayed in a GUI.
+ * An object that can be labeled; where a label consists of text, mnemonic, and
+ * potentially an accelerator key.
  * 
  * @author Keith Donald
  */
-public interface ManagedElement extends PropertyChangePublisher {
-    public static final String DISPLAY_NAME_PROPERTY = "displayName";
-
-    public static final String CAPTION_PROPERTY = "caption";
-
-    public static final String DESCRIPTION_PROPERTY = "description";
-
-    public String getDisplayName();
-
-    public String getCaption();
-
-    public String getDescription();
+public interface CommandLabelConfigurable {
+    public void setLabelInfo(CommandButtonLabelInfo labelInfo);
 }

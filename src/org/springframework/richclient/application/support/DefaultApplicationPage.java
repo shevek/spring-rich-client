@@ -16,57 +16,61 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationPageDescriptor;
+import org.springframework.richclient.application.ApplicationPageLayoutBuilder;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.ViewListener;
-import org.springframework.richclient.application.ViewRegistry;
 import org.springframework.richclient.control.SimpleInternalFrame;
+import org.springframework.util.Assert;
+import org.springframework.util.closure.support.AbstractConstraint;
 
 /**
  * Provides a standard implementation of {@link ApplicationPage}
  */
-public class DefaultApplicationPage implements ApplicationPage {
+public class DefaultApplicationPage implements ApplicationPage,
+        ApplicationPageLayoutBuilder {
+
+    private ApplicationPageDescriptor pageDescriptor;
+
     private JComponent pageControl;
 
     private SimpleInternalFrame viewPane;
 
     private ApplicationWindow parentWindow;
 
-    private ViewRegistry viewRegistry;
+    private ViewDescriptorRegistry viewDescriptorRegistry;
 
-    private View view;
+    private Set viewPanes = new HashSet();
 
-    private List viewListeners = new ArrayList();
+    private Set viewListeners = new LinkedHashSet();
 
-    public DefaultApplicationPage() {
-        this.viewRegistry = Application.services().getViewRegistry();
-        this.pageControl = new JPanel(new BorderLayout());
-        this.viewPane = new SimpleInternalFrame("");
-        this.pageControl.add(viewPane, BorderLayout.CENTER);
-    }
+    private ViewPane activeView;
 
-    public DefaultApplicationPage(ApplicationWindow window) {
-        this();
+    public DefaultApplicationPage(ApplicationWindow window,
+            ApplicationPageDescriptor pageDescriptor) {
+        Assert.notNull(window, "The containing window is required");
+        Assert.notNull(pageDescriptor, "The page's descriptor is required");
+        this.viewDescriptorRegistry = Application.services()
+                .getViewDescriptorRegistry();
         this.parentWindow = window;
+        this.pageDescriptor = pageDescriptor;
     }
 
     public String getId() {
-        return getActiveView().getViewDescriptor().getId();
-    }
-    
-    public void setParentWindow(ApplicationWindow parentWindow) {
-        this.parentWindow = parentWindow;
+        return pageDescriptor.getId();
     }
 
     public ApplicationWindow getParentWindow() {
@@ -74,6 +78,10 @@ public class DefaultApplicationPage implements ApplicationPage {
     }
 
     public JComponent getControl() {
+        if (pageControl == null) {
+            this.pageControl = new JPanel(new BorderLayout());
+            this.pageDescriptor.buildInitialLayout(this);
+        }
         return pageControl;
     }
 
@@ -85,31 +93,76 @@ public class DefaultApplicationPage implements ApplicationPage {
         viewListeners.remove(listener);
     }
 
-    public void showView(String viewName) {
-        ViewDescriptor descriptor = viewRegistry.getViewDescriptor(viewName);
-        if (descriptor != null) {
-            showView(descriptor);
-        }
+    public void showView(String viewDescriptorId) {
+        showView(getViewDescriptor(viewDescriptorId));
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
-        // todo - views are always being recreated when switched...we should
-        // cache open views...
-        if (view != null) {
-            view.removePropertyChangeListener(this);
-            viewPane.remove(view.getControl());
+        ViewPane viewPane = findViewPane(viewDescriptor.getId());
+        if (viewPane != null) {
+            giveFocusTo(viewPane);
         }
-        view = viewDescriptor.createView();
-        view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
-                .getDisplayName(), this));
-        viewPane.add(view.getControl());
-        view.addPropertyChangeListener(this);
-        updateViewPane();
-        fireViewActivated(view);
+        else {
+            viewPane = show(viewDescriptor);
+        }
+        if (this.activeView != null) {
+            fireViewDeactivated(this.activeView.getView());
+        }
+        this.activeView = viewPane;
+        fireViewActivated(this.activeView.getView());
+    }
+
+    private ViewPane findViewPane(final String viewDescriptorId) {
+        return (ViewPane)new AbstractConstraint() {
+            public boolean test(Object arg) {
+                return ((ViewPane)arg).getView().getId().equals(
+                        viewDescriptorId);
+            }
+        }.findFirst(viewPanes);
+    }
+
+    protected boolean giveFocusTo(ViewPane viewPane) {
+        this.pageControl.removeAll();
+        this.pageControl.add(viewPane.getControl());
+        this.pageControl.revalidate();
+        this.pageControl.repaint();
+        this.pageControl.requestFocusInWindow();
+        return true;
+    }
+
+    protected ViewPane show(ViewDescriptor viewDescriptor) {
+        this.pageControl.removeAll();
+        ViewPane viewPane = addViewPane(viewDescriptor);
+        this.pageControl.revalidate();
+        this.pageControl.repaint();
+        return viewPane;
+    }
+
+    private ViewPane addViewPane(ViewDescriptor viewDescriptor) {
+        View view = createView(viewDescriptor);
+        ViewPane viewPane = new ViewPane(view);
+        this.viewPanes.add(viewPane);
+        this.pageControl.add(viewPane.getControl());
+        return viewPane;
+    }
+
+    protected View createView(ViewDescriptor viewDescriptor) {
+        View view = viewDescriptor.createView();
+        view.initialize(viewDescriptor, new DefaultViewContext(viewDescriptor
+                .getId(), this));
+        return view;
+    }
+
+    private ViewDescriptor getViewDescriptor(String viewDescriptorId) {
+        return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
+    }
+
+    public void addView(String viewDescriptorId) {
+        addViewPane(getViewDescriptor(viewDescriptorId));
     }
 
     public View getActiveView() {
-        return view;
+        return activeView.getView();
     }
 
     protected void fireViewActivated(View view) {
@@ -119,14 +172,11 @@ public class DefaultApplicationPage implements ApplicationPage {
         }
     }
 
-    public void propertyChange(PropertyChangeEvent evt) {
-        updateViewPane();
-    }
-
-    private void updateViewPane() {
-        viewPane.setTitle(view.getDisplayName());
-        viewPane.setFrameIcon(view.getImageIcon());
-        viewPane.setToolTipText(view.getCaption());
+    protected void fireViewDeactivated(View view) {
+        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
+            ViewListener l = (ViewListener)i.next();
+            l.viewDeactivated(view);
+        }
     }
 
 }

@@ -13,24 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.tree;
-
-import java.util.Collection;
-
-import org.springframework.richclient.core.DescribedElement;
+package org.springframework.richclient.core;
 
 /**
- * A interface to be implemented by any object participating in a hierarchical
- * tree structure. For example, business objects that were linked via a graph of
- * references may implement this interface to allow for traversing the graph by
- * a client such as a user interface application.
+ * A interface for managed elements that can be displayed in a GUI.
  * 
  * @author Keith Donald
  */
-public interface TreeObject extends DescribedElement {
-    public TreeObject getParent();
+public interface DescribedElement {
+    public static final String DISPLAY_NAME_PROPERTY = "displayName";
 
-    public Collection getChildren();
+    public static final String CAPTION_PROPERTY = "caption";
 
-    public int getChildCount();
+    public static final String DESCRIPTION_PROPERTY = "description";
+
+    public String getDisplayName();
+
+    public String getCaption();
+
+    public String getDescription();
 }

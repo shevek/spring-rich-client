@@ -27,9 +27,9 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
-import org.springframework.richclient.command.config.CommandLabelable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-import org.springframework.richclient.image.config.Imageable;
+import org.springframework.richclient.command.config.CommandLabelConfigurable;
+import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
@@ -40,9 +40,9 @@ import org.springframework.util.ToStringCreator;
  * 
  * @author Keith Donald
  */
-public class LabeledObjectSupport extends ApplicationServicesAccessor
-        implements ManagedElement, CommandLabelable,
-        Imageable, Describable, Titleable {
+public class LabeledObjectSupport extends ApplicationServicesAccessor implements
+        DescribedElement, VisualizedElement, CommandLabelConfigurable,
+        ImageConfigurable, DescriptionConfigurable, TitleConfigurable {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private CommandButtonLabelInfo label;
@@ -124,7 +124,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessor
         return image;
     }
 
-    public Icon getImageIcon() {
+    public Icon getIcon() {
         if (image != null) {
             return new ImageIcon(image);
         }

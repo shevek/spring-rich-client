@@ -13,14 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.command.config;
+package org.springframework.richclient.application;
 
-/**
- * An object that can be labeled; where a label consists of text, mnemonic, and
- * potentially an accelerator key.
- * 
- * @author Keith Donald
- */
-public interface CommandLabelable {
-    public void setLabelInfo(CommandButtonLabelInfo labelInfo);
+public interface ViewDescriptorRegistry {
+    public ViewDescriptor[] getViewDescriptors();
+
+    public ViewDescriptor getViewDescriptor(String viewDescriptorId);
 }

@@ -13,13 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.image.config;
+package org.springframework.richclient.application;
 
-import javax.swing.Icon;
+import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.VisualizedElement;
 
-/**
- * @author Keith Donald
- */
-public interface Iconable {
-    public void setIcon(Icon icon);
+public interface ApplicationPageDescriptor extends DescribedElement,
+        VisualizedElement {
+    public String getId();
+
+    public void buildInitialLayout(ApplicationPageLayoutBuilder pageLayout);
 }

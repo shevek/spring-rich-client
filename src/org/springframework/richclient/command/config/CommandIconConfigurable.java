@@ -13,13 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.image.config;
-
-import java.awt.Image;
+package org.springframework.richclient.command.config;
 
 /**
  * @author Keith Donald
  */
-public interface Imageable {
-    public void setImage(Image image);
+public interface CommandIconConfigurable {
+    public void setIconInfo(CommandButtonIconInfo buttonIconInfo);
+
+    public void setLargeIconInfo(CommandButtonIconInfo buttonIconInfo);
 }

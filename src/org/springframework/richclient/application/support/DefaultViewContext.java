@@ -32,18 +32,18 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class SimpleViewContext implements ViewContext {
+public class DefaultViewContext implements ViewContext {
 
-    private String viewName;
+    private String viewId;
 
     private ApplicationPage page;
 
     private Map commandDelegates = new HashMap();
 
-    public SimpleViewContext(String viewName, ApplicationPage page) {
+    public DefaultViewContext(String viewName, ApplicationPage page) {
         Assert.hasText(viewName, "The view name is required");
         Assert.notNull(page);
-        this.viewName = viewName;
+        this.viewId = viewName;
         this.page = page;
     }
 
@@ -52,7 +52,7 @@ public class SimpleViewContext implements ViewContext {
     }
 
     public String getViewName() {
-        return viewName;
+        return viewId;
     }
 
     public ActionCommandExecutor findGlobalCommandDelegate(String commandId) {
