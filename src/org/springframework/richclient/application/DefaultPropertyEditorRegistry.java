@@ -16,57 +16,52 @@
 package org.springframework.richclient.application;
 
 import java.beans.PropertyEditor;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.util.ClassUtils;
+import org.springframework.util.Assert;
 
 /**
  * This provides a default implementation of {@link PropertyEditorRegistry}
- *
+ * 
  * @author Jim Moore
  */
 public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     private static final Log logger = LogFactory.getLog(
         DefaultPropertyEditorRegistry.class);
+    
     private Map propertyEditorByClass = new HashMap();
+    
     private Map propertyEditorByClassAndProperty = new HashMap();
 
 
     public void setPropertyEditor(final Class typeClass,
                                   final Class propertyEditorClass) {
-        if (typeClass == null)
-            throw new IllegalArgumentException("typeClass == null");
+        Assert.notNull(typeClass);
         verifyPropertyEditorClass(propertyEditorClass);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("setting " + propertyEditorClass +
+            logger.debug("Setting " + propertyEditorClass +
                 " as the property editor for " + typeClass);
         }
-
         this.propertyEditorByClass.put(typeClass, propertyEditorClass);
     }
 
 
     private void verifyPropertyEditorClass(final Class propertyEditorClass) {
-        if (propertyEditorClass == null)
-            throw new IllegalArgumentException("propertyEditorClass == null");
-
         // do some checks so we "fail fast"
-        if (!PropertyEditor.class.isAssignableFrom(propertyEditorClass)) {
-            throw new IllegalArgumentException(
+        Assert.notNull(propertyEditorClass);
+        Assert.isTrue(PropertyEditor.class.isAssignableFrom(propertyEditorClass),
                 propertyEditorClass + " is not a " + PropertyEditor.class);
-        }
-
         try {
-            Constructor constr = propertyEditorClass.getConstructor(null);
-            if (!Modifier.isPublic(constr.getModifiers())) {
-                throw new IllegalArgumentException(propertyEditorClass +
-                    " does not have a public no-arg constructor");
-            }
+            Assert.isTrue(Modifier.isPublic(propertyEditorClass.getConstructor(null).getModifiers()),
+                    propertyEditorClass + " does not have a public no-arg constructor");
         }
         catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(propertyEditorClass +
@@ -78,21 +73,15 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     public void setPropertyEditor(final Class objectType,
                                   final String propertyName,
                                   final Class propertyEditorClass) {
-        if (objectType == null)
-            throw new IllegalArgumentException("objectType == null");
-        if (propertyName == null)
-            throw new IllegalArgumentException("propertyName == null");
-        if (!ClassUtils.isAProperty(objectType, propertyName))
-            throw new IllegalArgumentException(
-                propertyName + " is not a property of " + objectType);
+        Assert.notNull(objectType);
+        Assert.notNull(propertyName);
+        Assert.isTrue(ClassUtils.isAProperty(objectType, propertyName), "'" + propertyName + "' is not a property of " + objectType);
         verifyPropertyEditorClass(propertyEditorClass);
-
         if (logger.isDebugEnabled()) {
-            logger.debug("setting " + propertyEditorClass +
-                " as the property editor for the " + propertyName +
-                " property of " + objectType);
+            logger.debug("Setting " + propertyEditorClass +
+                " as the property editor for the '" + propertyName +
+                "' property of " + objectType);
         }
-
         final ClassAndPropertyKey key =
             new ClassAndPropertyKey(objectType, propertyName);
         this.propertyEditorByClassAndProperty.put(key, propertyEditorClass);
@@ -100,19 +89,18 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
 
 
     public PropertyEditor getPropertyEditor(final Class typeClass) {
-        final Class propEdClass = (Class)ClassUtils.getValueFromMapForClass(
+        final Class editorClass = (Class)ClassUtils.getValueFromMapForClass(
             typeClass, this.propertyEditorByClass);
 
-        if (propEdClass == null) {
+        if (editorClass == null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Could not find a property editor for " +
                     typeClass);
             }
-
             return null;
         }
 
-        return instantiatePropertyEditor(propEdClass);
+        return instantiatePropertyEditor(editorClass);
     }
 
 
@@ -120,11 +108,11 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
                                             final String propertyName) {
         final ClassAndPropertyKey key = new ClassAndPropertyKey(objectType,
             propertyName);
-        Class propEdClass =
+        Class editorClass =
             (Class)this.propertyEditorByClassAndProperty.get(key);
 
-        if (propEdClass != null) {
-            return instantiatePropertyEditor(propEdClass);
+        if (editorClass != null) {
+            return instantiatePropertyEditor(editorClass);
         }
 
         // maybe it's registered under a different class...
@@ -138,12 +126,12 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
             }
         }
 
-        propEdClass =
+        editorClass =
             (Class)ClassUtils.getValueFromMapForClass(objectType, map);
-        if (propEdClass != null) {
+        if (editorClass != null) {
             // remember the lookup so it doesn't have to be discovered again
-            setPropertyEditor(objectType, propertyName, propEdClass);
-            return instantiatePropertyEditor(propEdClass);
+            setPropertyEditor(objectType, propertyName, editorClass);
+            return instantiatePropertyEditor(editorClass);
         }
 
         if (logger.isDebugEnabled()) {
@@ -180,15 +168,12 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
 
 
     //***********************************************************************
-    //
     // INNER CLASSES
-    //
     //***********************************************************************
-
+    
     private static class ClassAndPropertyKey {
         private Class theClass;
         private String propertyName;
-
 
         public ClassAndPropertyKey(Class theClass, String propertyName) {
             if (theClass == null || propertyName == null) throw new NullPointerException();
@@ -196,11 +181,9 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
             this.theClass = theClass;
         }
 
-
         public String getPropertyName() {
             return propertyName;
         }
-
 
         public Class getTheClass() {
             return theClass;
@@ -234,6 +217,6 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
             return result;
         }
 
-    } // class ClassAndPropertyKey
+    }
 
 }
