@@ -1,0 +1,78 @@
+/*
+ * Copyright 2002-2004 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.springframework.richclient.command;
+
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.AbstractButton;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.command.config.CommandButtonConfigurer;
+
+class GroupMemberContainerManager {
+    private static final Log logger = LogFactory
+            .getLog(GroupMemberContainerManager.class);
+
+    private GroupContainerPopulator containerPopulator;
+
+    private Object factory;
+
+    private CommandButtonConfigurer configurer;
+
+    public GroupMemberContainerManager(GroupContainerPopulator containerPopulator,
+            Object factory, CommandButtonConfigurer configurer) {
+        this.containerPopulator = containerPopulator;
+        this.factory = factory;
+        this.configurer = configurer;
+    }
+
+    public void setVisible(boolean visible) {
+        containerPopulator.getControl().setVisible(visible);
+    }
+    
+    public void rebuildControlsFor(Collection members) {
+        if (logger.isDebugEnabled()) {
+            logger
+                    .debug("Rebuilding group member controls; members="
+                            + members);
+        }
+        Component[] components = containerPopulator.getControl().getComponents();
+        List previousButtons = new ArrayList(components.length);
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] instanceof AbstractButton) {
+                previousButtons.add(components[i]);
+            }
+        }
+        containerPopulator.getControl().removeAll();
+        for (Iterator iterator = members.iterator(); iterator.hasNext();) {
+            GroupMember member = (GroupMember)iterator.next();
+            member.fill(containerPopulator, factory, configurer, previousButtons);
+        }
+        containerPopulator.onComponentsAdded();
+        containerPopulator.getControl().revalidate();
+        containerPopulator.getControl().repaint();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Rebuild complete; container control count = "
+                    + containerPopulator.getControl().getComponentCount());
+        }
+    }
+
+}

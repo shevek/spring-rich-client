@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<project name="xdoclet" default="usage" basedir=".">
+	<import file="build.xml"/>
+
+    <!-- Construct xdoclet task classpath -->
+    <path id="xdoclet.classpath">
+    	<fileset dir="${xdoclet.home}/current/lib">
+    		<include name="*.jar"/>
+    	</fileset>
+        <pathelement location="${jakarta-commons-collections.jar}"/>
+        <pathelement location="${jakarta-commons-logging.jar}"/>
+        <pathelement location="${log4j.jar}"/>
+    </path>
+	
+	<target name="xdoclet.javabeans" description="Generates Bean Infos">
+        <taskdef
+            name="xdoclet"
+            classname="xdoclet.DocletTask"
+            classpathref="xdoclet.classpath"/>
+	
+        <xdoclet
+            destdir="${source.home}"
+            excludedtags="@version,@author,@todo"
+            force="${xdoclet.force}"
+            verbose="true">
+            <fileset refid="javabeans"/>
+            <beaninfo/>
+        </xdoclet>
+ 	</target>
+
+    <!-- ================ Database Related Targets ======================= -->
+    <target name="xdoclet.hibernate" depends="compile" description="Generates hibernate class-to-table mapping files.">
+		<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
+		    <classpath refid="xdoclet.classpath"/>
+		</taskdef>
+        
+		<hibernatedoclet destdir="${build.home}/classes" excludedtags="@version,@author,@todo"
+ 		                   force="${xdoclet.force}" mergedir="${source.home}"
+ 		                 verbose="true">
+ 		    <fileset refid="orm-entities"/>
+		    <hibernate version="2.0"/>
+		</hibernatedoclet>
+    </target>
+
+	<target name="usage">
+		<antcall target="toplevel.usage"/>
+		<echo message=""/>
+		<echo message="xdoclet build file"/>
+		<echo message="------------------------------------------------------"/>
+		<echo message=""/>
+		<echo message="Among the available targets are:"/>
+		<echo message=""/>
+		<echo message="xdoclet.javabeans --> generate java bean infos"/>
+		<echo message=""/>
+	</target>     	
+</project>

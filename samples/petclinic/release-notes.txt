@@ -1,0 +1,25 @@
+$Id$
+
+
+	                      Rich Client Pet Clinic
+                                Version 1.0
+                               Release Notes
+
+INTRODUCTION:
+============
+
+
+CHANGES:
+========
+
+
+NEW FEATURES:
+============
+
+
+BUG REPORTS ADDRESSED:
+=====================
+
+
+DEPRECATED
+==========

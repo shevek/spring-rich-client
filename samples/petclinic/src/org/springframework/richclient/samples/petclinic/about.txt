@@ -1,0 +1,4 @@
+Spring Pet Clinic Rich Client Sample Application
+Copyright - The Spring Framework Team, 2004
+
+Build: 20040704001

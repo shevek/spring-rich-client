@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean  id="imageResourcesFactory" 
+  	    class="org.springframework.context.support.ResourceMapFactoryBean">
+  	  <property name="location">
+  	  	<value>classpath:org/springframework/rcp/image/test-images.properties</value>
+  	  </property>
+  	</bean>
+  	
+	<bean  id="imageSource" 
+  	    class="org.springframework.rcp.image.DefaultAwtImageSource">
+  	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
+  	</bean>
+
+	<bean  id="imageSourceBroken" 
+  	    class="org.springframework.rcp.image.DefaultAwtImageSource">
+  	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
+  	  <property name="brokenImageIndicator"><value>org/springframework/rcp/image/broken.gif</value></property>
+  	</bean>
+</beans>

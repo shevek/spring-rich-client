@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="application"
+  	   class="org.springframework.richclient.application.Application">
+  		<constructor-arg index="0">
+  			<ref bean="applicationLifecycle"/>
+  		</constructor-arg>
+	</bean>
+
+	<bean id="applicationLifecycle" class="org.springframework.richclient.application.config.ConfigurableApplicationLifecycle">
+		<property name="applicationInfo"><ref bean="applicationInfo"/></property>
+		<property name="commandFactoryResource"><value>org/springframework/richclient/samples/petclinic/ui/commands-context.xml</value></property>
+		<property name="startingPageId"><value>ownerPerspective</value></property>
+	</bean>
+	
+  	<bean id="applicationInfo" class="org.springframework.richclient.application.ApplicationInfo">
+  		<property name="version"><value>1.0</value></property>
+	  	<property name="buildId"><value>20040704001</value></property>
+  	</bean>
+
+	<bean id="applicationObjectConfigurer" class="org.springframework.richclient.application.config.ApplicationObjectConfigurer"/>
+
+  	<bean id="componentFactory" class="org.springframework.richclient.factory.DefaultComponentFactory">
+  		<property name="iconSource"><ref bean="iconSource"/></property>
+  	</bean>
+
+  	<bean id="rulesSource" class="org.springframework.richclient.samples.petclinic.domain.PetClinicValidationRulesSource"/>
+
+	<bean id="lookAndFeelConfigurer" class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
+		<property name="plasticLookAndFeel">
+			<map>
+				<entry key="theme">
+					<bean class="com.jgoodies.plaf.plastic.theme.ExperienceBlue"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+		
+	<bean  id="messageSource" 
+  	    class="org.springframework.context.support.ResourceBundleMessageSource">
+  	  <property name="basenames">
+  	  	<list>
+  	  		<value>org.springframework.richclient.samples.petclinic.ui.messages</value>
+  	  		<value>org.springframework.richclient.application.messages</value>
+  	  	</list>
+  	  </property>
+  	</bean>
+
+	<bean  id="imageResourcesFactory" 
+  	    class="org.springframework.context.support.ResourceMapFactoryBean">
+  	  <property name="locations">
+  	  	<list>
+  	  	  <value>classpath:org/springframework/richclient/image/images.properties</value>
+  	  	  <value>classpath:org/springframework/richclient/samples/petclinic/ui/images.properties</value>
+  	  	</list>
+  	  </property>
+  	  <property name="resourceBasePath"><value>images/</value></property>
+  	</bean>
+
+	<bean  id="imageSource" 
+  	    class="org.springframework.richclient.image.DefaultAwtImageSource">
+  	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
+  	  <property name="brokenImageIndicator"><value>images/alert/error_obj.gif</value></property>
+  	</bean>
+
+	<bean  id="iconSource" 
+  	    class="org.springframework.richclient.image.DefaultIconSource">
+  	  <constructor-arg index="0"><ref bean="imageSource"/></constructor-arg>
+  	</bean>
+
+    <bean      id="ownerPerspective"
+            class="org.springframework.richclient.application.Perspective">
+  	    <property name="view"><value>ownerManagerView</value></property>
+    </bean>
+
+    <bean      id="ownerManagerView"
+            class="org.springframework.richclient.samples.petclinic.ui.OwnerManagerView">
+        <property name="lastNameToDisplay"><value></value></property>
+		<property name="clinic"><ref bean="clinic"/></property>	
+    </bean>
+
+    <bean id="newOwnerWizard" class="org.springframework.richclient.samples.petclinic.ui.NewOwnerWizard">
+		<property name="clinic"><ref bean="clinic"/></property>	
+    </bean>
+  	
+    <bean      id="vetPerspective"
+            class="org.springframework.richclient.application.Perspective">
+  	    <property name="view"><value>vetManagerView</value></property>
+    </bean>
+
+    <bean      id="vetManagerView"
+            class="org.springframework.richclient.samples.petclinic.ui.VetManagerView">
+		<property name="clinic"><ref bean="clinic"/></property>	
+    </bean>
+
+	<!-- CLINIC BUSINESS OBJECT RELATED -->
+	
+	<!-- NB: In-memory HSQL requires recent hsqldb.jar (tested with 1.7.2 RC 6d) -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+		<property name="url"><value>jdbc:hsqldb:petclinic</value></property>
+		<property name="username"><value>sa</value></property>
+		<property name="password"><value></value></property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource"><ref local="dataSource"/></property>
+	</bean>
+
+	<bean id="hsqlClinic" class="org.springframework.richclient.samples.petclinic.domain.InMemoryClinic" lazy-init="true">
+		<property name="dataSource"><ref local="dataSource"/></property>
+	</bean>
+
+	<bean id="clinic" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager"><ref local="transactionManager"/></property>
+		<property name="target"><ref bean="hsqlClinic"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>
