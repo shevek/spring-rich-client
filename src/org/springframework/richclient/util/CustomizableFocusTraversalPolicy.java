@@ -63,9 +63,9 @@ public class CustomizableFocusTraversalPolicy extends
      */
     public static void customizeFocusTraversalOrder(JComponent container,
             List componentsInOrder) {
-        if (container instanceof OverlayPanel) {
-            container = ((OverlayPanel)container).getContentPanel();
-        }
+        //if (container instanceof OverlayPanel) {
+        //    container = ((OverlayPanel)container).getContentPanel();
+        //}
         for (Iterator i = componentsInOrder.iterator(); i.hasNext();) {
             Component comp = (Component)i.next();
             if (comp.getParent() != container) { throw new IllegalArgumentException(
