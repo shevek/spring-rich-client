@@ -285,7 +285,7 @@ public class OwnerManagerView extends AbstractView implements
             ownerGeneralPanel = new OwnerGeneralForm(ownerFormModel);
             tabbedPage = new TabbedDialogPage("ownerProperties");
             tabbedPage.addForm(ownerGeneralPanel);
-            tabbedPage.addForm(new AddressPanel(ownerFormModel));
+            tabbedPage.addForm(new OwnerAddressForm(ownerFormModel));
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage,
                     getParentWindowControl()) {

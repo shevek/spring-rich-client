@@ -17,6 +17,7 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.dialog.CloseAction;
 import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.FormBackedWizardPage;
@@ -31,7 +32,7 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     private CompoundForm wizardForm;
 
     private Clinic clinic;
-    
+
     public NewOwnerWizard() {
         super("newOwnerWizard");
     }
@@ -42,12 +43,11 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     }
 
     public void addPages() {
-        addPage(new OwnerGeneralWizardPage());        
+        addPage(new OwnerGeneralWizardPage());
         addPage(new OwnerAddressWizardPage());
     }
 
     public class OwnerGeneralWizardPage extends FormBackedWizardPage {
-
         public OwnerGeneralWizardPage() {
             super(new OwnerGeneralForm(wizardForm.getFormModel()), false);
         }
@@ -55,21 +55,20 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
         public void setVisible(boolean bool) {
             super.setVisible(bool);
             if (bool) {
-                ((OwnerGeneralForm) getBackingFormPage()).requestFocusInWindow();
+                ((OwnerGeneralForm)getBackingFormPage()).requestFocusInWindow();
             }
         }
     }
-    
-    public class OwnerAddressWizardPage extends FormBackedWizardPage {
 
+    public class OwnerAddressWizardPage extends FormBackedWizardPage {
         public OwnerAddressWizardPage() {
-            super(new AddressPanel(wizardForm.getFormModel()), false);
+            super(new OwnerAddressForm(wizardForm.getFormModel()), false);
         }
 
         public void setVisible(boolean bool) {
             super.setVisible(bool);
             if (bool) {
-                ((AddressPanel) getBackingFormPage()).requestFocusInWindow();
+                ((OwnerAddressForm)getBackingFormPage()).requestFocusInWindow();
             }
         }
     }
@@ -77,6 +76,7 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     public void execute() {
         if (wizardDialog == null) {
             wizardDialog = new WizardDialog(this);
+            wizardDialog.setCloseAction(CloseAction.HIDE);
             wizardDialog.setResetMessagePaneOnDisplay(true);
             wizardForm = new CompoundForm(new Owner());
         }

@@ -24,12 +24,12 @@ import org.springframework.rules.values.FormModel;
 
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddressPanel extends AbstractFormPage {
+public class OwnerAddressForm extends AbstractFormPage {
     public static final String ADDRESS_FORM_PAGE = "addressPage";
 
     private JComponent address;
 
-    public AddressPanel(FormModel formModel) {
+    public OwnerAddressForm(FormModel formModel) {
         super(formModel, ADDRESS_FORM_PAGE);
     }
 
