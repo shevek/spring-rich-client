@@ -25,7 +25,7 @@ import org.springframework.richclient.image.EmptyIcon;
 /**
  * @author Peter De Bruycker
  */
-public class DefaultButtonConfigurerTest extends TestCase {
+public class DefaultButtonConfigurerTests extends TestCase {
 
     private CommandFaceDescriptor descriptor;
 

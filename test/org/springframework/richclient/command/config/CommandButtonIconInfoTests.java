@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 /**
  * @author Peter De Bruycker
  */
-public class CommandButtonIconInfoTest extends TestCase {
+public class CommandButtonIconInfoTests extends TestCase {
 
     private Icon icon;
 
