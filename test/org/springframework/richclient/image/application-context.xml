@@ -11,7 +11,8 @@
   	
 	<bean  id="imageSource" 
   	    class="org.springframework.richclient.image.DefaultImageSource">
-  	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
+  	  <constructor-arg index="0"><value>false</value></constructor-arg>
+  	  <constructor-arg index="1"><ref bean="imageResourcesFactory"/></constructor-arg>
   	</bean>
 
 	<bean  id="imageSourceBroken" 

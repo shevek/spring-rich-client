@@ -30,34 +30,39 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class HandlerTest extends TestCase {
 
+    private static boolean imageHasNotBeenInstalledInThisJVM = true;
+
     /**
      * NOTE: This must be one big test method because of the static dependency
      * introduced by the strange way Java requires custom URL handlers to be
      * registered.
      */
     public void testHandler() throws MalformedURLException, IOException {
+        assertTrue("This test can only be run once in a single JVM", imageHasNotBeenInstalledInThisJVM);
+
         URL url;
 
         // make sure a handler is not installed
         try {
             url = new URL("image:test");
-            fail("image protocol is already installed");
+            fail("image protocol is already installed. Do any of the other tests instantiate DefaultImageSource?");
         }
         catch (MalformedURLException e) {
             // expected
         }
 
-        // test install       
+        // test install
         Handler.installImageUrlHandler((ImageSource)new ClassPathXmlApplicationContext(
                 "org/springframework/richclient/image/application-context.xml").getBean("imageSource"));
         try {
             url = new URL("image:test");
+            imageHasNotBeenInstalledInThisJVM = false;
         }
         catch (MalformedURLException e) {
             fail("protocol was not installed");
         }
 
-        // test invalid key 
+        // test invalid key
         url = new URL("image:image.that.does.not.exist");
         try {
             url.openConnection();
