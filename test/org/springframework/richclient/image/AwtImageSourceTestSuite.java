@@ -33,9 +33,6 @@ public class AwtImageSourceTestSuite extends TestCase {
     }
     
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     protected void setUp() throws Exception {
         context =
             new ClassPathXmlApplicationContext("org/springframework/rcp/image/application-context.xml");

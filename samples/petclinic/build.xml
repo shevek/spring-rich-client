@@ -1,19 +1,15 @@
 <?xml version="1.0"?>
 
-<project name="Pet Clinic Swing RCP" default="usage" basedir=".">
+<project name="Pet Clinic Rich Client" default="usage" basedir=".">
     <property file="build.properties"/>
     <property file="${common.build.properties}"/>
 	<import file="${common.build.xml}"/>
  
     <!-- Construct compile classpath -->
     <path id="project.compile.classpath">
-		<fileset dir="${spring.dist.dir}">
-			<include name="spring.jar"/>
-            <include name="spring-sandbox.jar"/>
-		</fileset>
     	<pathelement path="${spring-rcp.resources.dir}"/>
     	<fileset dir="${spring-rcp.dist.dir}">
-   			<include name="spring-rcp.jar"/>
+   			<include name="spring-richclient.jar"/>
     	</fileset>
 		<fileset dir="${spring-rcp.lib.dir}">
 			<include name="**/*.jar"/>
