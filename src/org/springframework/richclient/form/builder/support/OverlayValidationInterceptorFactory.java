@@ -86,7 +86,13 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             messageBuffer.setMessage(message);
             message = messageBuffer.getMessage();
             setToolTipText(message.getText());
-            setIcon(message.getIcon());
+            Severity severity = message.getSeverity();
+            if (severity != null) {
+                setIcon(Application.services().getIconSource().getIcon(
+                        "severity." + severity.getShortCode() + ".overlay"));
+            } else {
+                setIcon(null);
+            }
         }
     }
 }
