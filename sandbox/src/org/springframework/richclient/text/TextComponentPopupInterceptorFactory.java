@@ -41,7 +41,7 @@ public class TextComponentPopupInterceptorFactory implements
 
     private class TextComponentPopupInterceptor extends
             AbstractFormComponentInterceptor {
-        private CommitTrigger resetTriger;
+        private CommitTrigger resetTrigger;
         
         protected TextComponentPopupInterceptor(FormModel formModel) {
             super(formModel);
@@ -58,11 +58,11 @@ public class TextComponentPopupInterceptorFactory implements
         }
 
         private CommitTrigger getResetTrigger() {
-            if (resetTriger == null) {
-                resetTriger = new CommitTrigger();
+            if (resetTrigger == null) {
+                resetTrigger = new CommitTrigger();
                 registerListeners();
             }
-            return resetTriger;
+            return resetTrigger;
         }
 
         private void registerListeners() {
@@ -73,12 +73,12 @@ public class TextComponentPopupInterceptorFactory implements
                 }
 
                 public void postEditCommitted(Object formObject) {
-                    resetTriger.commit();
+                    resetTrigger.commit();
                 }
             });
             formModel.addFormObjectChangeListener(new ValueChangeListener() {
                 public void valueChanged() {
-                    resetTriger.commit();
+                    resetTrigger.commit();
                 }
             });
         }

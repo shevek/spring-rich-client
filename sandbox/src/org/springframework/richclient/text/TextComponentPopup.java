@@ -68,17 +68,17 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
 
     private static CommandManager localCommandManager;
 
-    private final UndoCommandDelegate undo = new UndoCommandDelegate();
+    private final UndoCommandExecutor undo = new UndoCommandExecutor();
 
-    private final RedoCommandDelegate redo = new RedoCommandDelegate();
+    private final RedoCommandExecutor redo = new RedoCommandExecutor();
 
-    private final CutCommandDelegate cut = new CutCommandDelegate();
+    private final CutCommandExecutor cut = new CutCommandExecutor();
 
-    private final CopyCommandDelegate copy = new CopyCommandDelegate();
+    private final CopyCommandExecutor copy = new CopyCommandExecutor();
 
-    private final PasteCommandDelegate paste = new PasteCommandDelegate();
+    private final PasteCommandExecutor paste = new PasteCommandExecutor();
 
-    private final SelectAllCommandDelegate selectAll = new SelectAllCommandDelegate();
+    private final SelectAllCommandExecutor selectAll = new SelectAllCommandExecutor();
 
     protected TextComponentPopup(JTextComponent textComponent,
             ValueModel resetUndoHistoryTrigger) {
@@ -160,12 +160,12 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
 
     public void focusGained(FocusEvent e) {
         updateState();
-        registerDelgates();
+        registerCommandExecutors();
     }
 
     public void focusLost(FocusEvent e) {
         if (!e.isTemporary()) {
-            deRegisterDelgates();
+            unregisterCommandExecutors();
         }
     }
 
@@ -255,9 +255,8 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
         return readOnlyGroup;
     }
 
-    private void registerDelgates() {
+    private void registerCommandExecutors() {
         CommandManager commandManager = getCommandManager();
-
         commandManager.setTargetableActionCommandExecutor(
                 GlobalCommandIds.UNDO, undo);
         commandManager.setTargetableActionCommandExecutor(
@@ -272,7 +271,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
                 GlobalCommandIds.SELECT_ALL, selectAll);
     }
 
-    private void deRegisterDelgates() {
+    private void unregisterCommandExecutors() {
         CommandManager commandManager = getCommandManager();
         commandManager.setTargetableActionCommandExecutor(
                 GlobalCommandIds.UNDO, null);
@@ -288,37 +287,37 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
                 GlobalCommandIds.SELECT_ALL, null);
     }
 
-    private class UndoCommandDelegate extends AbstractActionCommandExecutor {
+    private class UndoCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             undoManager.undo();
         }
     }
 
-    private class RedoCommandDelegate extends AbstractActionCommandExecutor {
+    private class RedoCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             undoManager.redo();
         }
     }
 
-    private class CutCommandDelegate extends AbstractActionCommandExecutor {
+    private class CutCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.cut();
         }
     }
 
-    private class CopyCommandDelegate extends AbstractActionCommandExecutor {
+    private class CopyCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.copy();
         }
     }
 
-    private class PasteCommandDelegate extends AbstractActionCommandExecutor {
+    private class PasteCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.paste();
         }
     }
 
-    private class SelectAllCommandDelegate extends AbstractActionCommandExecutor {
+    private class SelectAllCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.selectAll();
         }
