@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,10 +17,9 @@ package org.springframework.richclient.application;
 
 import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.*;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -34,7 +33,7 @@ import org.springframework.util.Assert;
  * of a given view when requested, typically by a requesting application page. A
  * view descriptor can also produce a command which launches a view for display
  * on the page within the current active window.
- * 
+ *
  * @author Keith Donald
  */
 public class ViewDescriptor extends LabeledObjectSupport implements
@@ -46,7 +45,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     /**
      * Sets the class that is the implementation of the View described by this
      * descriptor.
-     * 
+     *
      * @param viewClass
      */
     public void setViewClass(Class viewClass) {
@@ -54,9 +53,9 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     }
 
     /**
-     * Sets the map of properties to inject when new view instances 
+     * Sets the map of properties to inject when new view instances
      * are instantiated by this descriptor.
-     * 
+     *
      * @param viewClass
      */
     public void setViewProperties(Map viewProperties) {
@@ -68,7 +67,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
      * application context (service registry) of this application. If no
      * multicaster, bean is defined, null is returned, and View instances
      * created by this ViewDescriptor will not be wired as ApplicationListeners.
-     * 
+     *
      * @return The event multicaster
      */
     public ApplicationEventMulticaster getApplicationEventMulticaster() {
@@ -94,7 +93,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
      * ApplicationListener, and an ApplicationEventMulticaster is configured in
      * this application's ApplicationContext, the view is registered as an
      * ApplicationListener.
-     * 
+     *
      * @return The new view prototype
      */
     public View createView() {
@@ -116,13 +115,23 @@ public class ViewDescriptor extends LabeledObjectSupport implements
             BeanWrapper wrapper = new BeanWrapperImpl(view);
             wrapper.setPropertyValues(viewProperties);
         }
+
+        if (view instanceof InitializingBean) {
+            try {
+                ((InitializingBean)view).afterPropertiesSet();
+            }
+            catch (Exception e) {
+                throw new BeanInitializationException("Problem running on "+view, e);
+            }
+        }
+
         return view;
     }
 
     /**
      * Create a command that when executed, will attempt to show the view
      * described by this descriptor in the provided application window.
-     * 
+     *
      * @param window
      *            The window
      * @return The show view command.
