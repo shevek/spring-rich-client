@@ -102,9 +102,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         Object newCollection = createNewWrappedCollection();
         getWrappedModel().set(newCollection);
         if (listListModelHasSameStructureAsWrappedCollection()) { return; }
-        super.set(updateListListModelFromWrappedCollection());
+        updateListListModelFromWrappedCollection();
     }
-
     
     protected Class getConcreteClassForWrappedType(Class wrappedType) {
         Class class2Create;
@@ -230,15 +229,15 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             listListModel = new ListListModel();
             listListModel.addListDataListener(new ListDataListener() {
                 public void contentsChanged(ListDataEvent e) {
-                    fireValueChanged();
+                    fireListListModelChanged();
                 }
 
                 public void intervalAdded(ListDataEvent e) {
-                    fireValueChanged();
+                    fireListListModelChanged();
                 }
 
                 public void intervalRemoved(ListDataEvent e) {
-                    fireValueChanged();
+                    fireListListModelChanged();
                 }
             });
         }
@@ -288,14 +287,22 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             updateListListModelFromWrappedCollection();
         }
     }
-
-    protected void fireValueChanged() {
-        if (!updating) {
+    
+    protected void fireListListModelChanged() {
+        if (!updating) {        
             if (isChangeBuffered()) {
                 super.fireValueChanged();
             }
             else {
                 super.set(listListModel);
+            }            
+        }
+    }
+
+    protected void fireValueChanged() {
+        if (!updating) {
+            if (! isChangeBuffered()) {
+                updateListListModelFromWrappedCollection();
             }
         }
     }

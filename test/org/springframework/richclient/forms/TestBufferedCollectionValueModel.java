@@ -284,8 +284,20 @@ public class TestBufferedCollectionValueModel extends TestCase {
         catch (IllegalArgumentException e) {
             // expected
         }
-
     }
+    
+    public void testRevert() {
+        ValueHolder commitTriger = new ValueHolder(null);
+        
+        Collection backingCollection = getCollection(HashSet.class, 700);        
+        BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingCollection);
+        vm.setCommitTrigger(commitTriger);
+        ListListModel llm = (ListListModel)vm.get();
+        llm.clear();
+        commitTriger.set(Boolean.FALSE);
+        assertHasSameStructure(llm, backingCollection);        
+    }
+    
 
     private void assertHasSameStructure(ListListModel c1, Object[] c2) {
         assertEquals("collections must be the same size", c1.size(), c2.length);
@@ -297,7 +309,7 @@ public class TestBufferedCollectionValueModel extends TestCase {
     }
 
     private void assertHasSameStructure(ListListModel c1, Collection c2) {
-        assertEquals("collections must be the same size", c1.size(), c2.size());
+        assertEquals("collections must be the same size", c2.size(), c1.size());
         for (Iterator i = c1.iterator(), j = c2.iterator(); i.hasNext();) {
             assertEquals(
                     "collections must have the same items in the same order", i
