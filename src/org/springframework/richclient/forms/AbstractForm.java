@@ -85,7 +85,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId));
+        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId), formId);
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId,
