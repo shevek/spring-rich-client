@@ -15,13 +15,11 @@
  */
 package org.springframework.richclient.samples.petclinic.ui;
 
-import javax.swing.JComponent;
-
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.CommandDelegate;
 import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
-import org.springframework.richclient.wizard.AbstractWizardPage;
+import org.springframework.richclient.wizard.FormPageBackedWizardPage;
 import org.springframework.richclient.wizard.WizardDialog;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
@@ -34,8 +32,6 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
 
     private Clinic clinic;
 
-    private OwnerGeneralPanel ownerGeneralPanel;
-
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic);
         this.clinic = clinic;
@@ -45,35 +41,19 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
         addPage(new OwnerGeneralWizardPage());
     }
 
-    public class OwnerGeneralWizardPage extends AbstractWizardPage {
+    public class OwnerGeneralWizardPage extends FormPageBackedWizardPage {
         public static final String ID = "newOwnerWizard.general";
 
         public OwnerGeneralWizardPage() {
-            super(ID);
+            super(ID, new OwnerGeneralPanel(wizardForm.getFormModel()));
         }
 
         public void setVisible(boolean bool) {
             super.setVisible(bool);
             if (bool) {
-                ownerGeneralPanel.requestFocusInWindow();
+                ((OwnerGeneralPanel) getBackingFormPage()).requestFocusInWindow();
             }
         }
-
-        public void onAboutToShow() {
-            setEnabled(!ownerGeneralPanel.hasErrors());
-        }
-
-        public JComponent createControl() {
-            ownerGeneralPanel = new OwnerGeneralPanel(wizardForm.getFormModel());
-            ownerGeneralPanel.newSingleLineResultsReporter(this, this);
-            JComponent form = ownerGeneralPanel.getControl();
-            return form;
-        }
-
-        public void setEnabled(boolean enabled) {
-            setPageComplete(enabled);
-        }
-
     }
 
     public void execute() {
