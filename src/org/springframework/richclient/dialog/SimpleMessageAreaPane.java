@@ -22,10 +22,8 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.EmptyIcon;
-import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.util.LabelUtils;
 import org.springframework.rules.reporting.Severity;
@@ -43,8 +41,6 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     private JLabel messageLabel;
 
     private Icon defaultIcon = EmptyIcon.SMALL;
-
-    private IconSource icons = ApplicationServices.locator();
 
     public void setDefaultIcon(Icon defaultIcon) {
         this.defaultIcon = defaultIcon;
@@ -104,7 +100,7 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     private Icon getIcon(Severity severity) {
         if (severity == null) { return getDefaultIcon(); }
         try {
-            return icons.getIcon("severity." + severity.getCode());
+            return getIconSource().getIcon("severity." + severity.getCode());
         }
         catch (NoSuchImageResourceException e) {
             logger.info("No severity icon found for severity " + severity

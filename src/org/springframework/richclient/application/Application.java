@@ -21,7 +21,6 @@ import java.util.Observer;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.ApplicationObjectSupport;
-
 import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.util.Assert;
 
@@ -33,44 +32,36 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class Application extends ApplicationObjectSupport  {
+public class Application extends ApplicationObjectSupport {
+    private static Application INSTANCE;
 
-    private static Application sharedInstance;
+    private ApplicationServices services;
+
+    private ApplicationAdvisor advisor;
 
     private ApplicationWindow activeWindow;
 
     private WindowManager windowManager = new WindowManager();
 
-    private ApplicationAdvisor advisor;
+    public Application(ApplicationAdvisor advisor) {
+        this(null, advisor);
+    }
 
-    public Application(ApplicationServices applicationServices, ApplicationAdvisor advisor) {
+    public Application(ApplicationServices applicationServices,
+            ApplicationAdvisor advisor) {
+        setServices(applicationServices);
         setAdvisor(advisor);
-        Assert.isTrue(sharedInstance == null,
-                "Only one instance of a RCP Application allowed per VM.");
+        Assert.isTrue(INSTANCE == null,
+            "Only one instance of a RCP Application allowed per VM.");
         load(this);
     }
 
-    public static void load(Application instance) {
-        sharedInstance = instance;
+    private void setServices(ApplicationServices services) {
+        this.services = services;
     }
 
-    /**
-     * Return the single application instance.
-     * 
-     * @return The application
-     */
-    public static Application locator() {
-        Assert.notNull(sharedInstance,
-            "The global application instance has not yet been initialized.");
-        return sharedInstance;
-    }
-    
-    public String getName() {
-        return advisor.getApplicationName();
-    }
-
-    public Image getImage() {
-        return advisor.getApplicationImage();
+    public ApplicationServices getServices() {
+        return services;
     }
 
     private void setAdvisor(ApplicationAdvisor advisor) {
@@ -82,11 +73,51 @@ public class Application extends ApplicationObjectSupport  {
         return advisor;
     }
 
+    public static void load(Application instance) {
+        INSTANCE = instance;
+    }
+
+    /**
+     * Return the single application instance.
+     * 
+     * @return The application
+     */
+    public static Application instance() {
+        Assert.notNull(INSTANCE,
+            "The global application instance has not yet been initialized.");
+        return INSTANCE;
+    }
+
+    /**
+     * Return a global service locator for application services.
+     * 
+     * @return The application services locator.
+     */
+    public static ApplicationServices services() {
+        return instance().getServices();
+    }
+
+    public String getName() {
+        return advisor.getApplicationName();
+    }
+
+    public Image getImage() {
+        return advisor.getApplicationImage();
+    }
+
     protected void initApplicationContext() throws BeansException {
         getAdvisor().onPreInitialize(this);
+        initApplicationServices();
         getAdvisor().onPreStartup();
         openFirstTimeApplicationWindow();
         getAdvisor().onStarted();
+    }
+
+    protected void initApplicationServices() {
+        if (this.services == null) {
+            this.services = new ApplicationServices();
+            this.services.setApplicationContext(getApplicationContext());
+        }
     }
 
     protected void openFirstTimeApplicationWindow() {

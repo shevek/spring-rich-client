@@ -48,11 +48,11 @@ public class HelpContents {
     }
     
     protected String getApplicationName() {
-        return Application.locator().getName();
+        return Application.instance().getName();
     }
     
     protected Image getApplicationImage() {
-        return Application.locator().getImage();
+        return Application.instance().getImage();
     }
 
     public void display(Window parent) {

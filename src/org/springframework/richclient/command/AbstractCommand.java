@@ -38,7 +38,7 @@ import org.springframework.richclient.command.support.DefaultCommandServices;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
-import org.springframework.richclient.util.AbstractPropertyChangePublisher;
+import org.springframework.rules.values.AbstractPropertyChangePublisher;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -174,7 +174,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
                             + " has no set id; note: anonymous commands cannot be used in registries.");
         }
         Assert.notNull(commandServices,
-                "The commandServices property must be set and non-null.");
+            "The commandServices property must be set and non-null.");
         if (this instanceof ActionCommand && faceDescriptor == null) {
             logger
                     .warn("The face descriptor property is not yet set for action command '"

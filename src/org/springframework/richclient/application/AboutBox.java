@@ -53,7 +53,7 @@ public class AboutBox {
     }
 
     protected String getApplicationName() {
-        return Application.locator().getName();
+        return Application.instance().getName();
     }
 
     public void display(Window parent) {

@@ -36,7 +36,7 @@ import javax.swing.border.Border;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.controls.ShadowBorder;
 import org.springframework.richclient.util.GridBagCellConstraints;
 import org.springframework.util.StringUtils;
@@ -91,7 +91,7 @@ public class StatusBar extends JPanel implements ProgressMonitor {
     private void initialize() {
         setLayout(new GridBagLayout());
         messageLabel = new JLabel(" ");
-        defaultCancelIcon = ApplicationServices.locator().getIcon("cancel.icon");
+        defaultCancelIcon = Application.services().getIcon("cancel.icon");
 
         Border bevelBorder = BorderFactory.createBevelBorder(
                 BevelBorder.LOWERED, UIManager.getColor("controlHighlight"),

@@ -31,7 +31,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.event.EventListenerList;
 
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
@@ -133,6 +133,17 @@ public class CommandGroup extends AbstractCommand {
     }
 
     /**
+     * Creates a command group with a single command member.
+     * 
+     * @param groupId
+     * @param members
+     * @return
+     */
+    public static CommandGroup createCommandGroup(AbstractCommand member) {
+        return createCommandGroup(null, new Object[] { member });
+    }
+
+    /**
      * Creates a command group, configuring the group using the ObjectConfigurer
      * service (pulling visual configuration properties from an external
      * source). This method will also auto-configure contained Command members
@@ -160,7 +171,7 @@ public class CommandGroup extends AbstractCommand {
     public static CommandGroup createCommandGroup(String groupId,
             Object[] members, CommandConfigurer configurer) {
         if (configurer == null) {
-            configurer = ApplicationServices.locator();
+            configurer = Application.services();
         }
         CommandGroupFactoryBean groupFactory = new CommandGroupFactoryBean(
                 groupId, null, configurer, members);
@@ -272,7 +283,7 @@ public class CommandGroup extends AbstractCommand {
     protected Iterator memberIterator() {
         return getMemberList().iterator();
     }
-    
+
     public int size() {
         return getMemberCount();
     }
@@ -386,7 +397,7 @@ public class CommandGroup extends AbstractCommand {
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory) {
         return createButton(buttonFactory, menuFactory,
-                getPullDownMenuButtonConfigurer());
+            getPullDownMenuButtonConfigurer());
     }
 
     protected CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
@@ -474,25 +485,23 @@ public class CommandGroup extends AbstractCommand {
             GroupMember member = (GroupMember)members.next();
             if (member.getCommand() instanceof CommandGroup) {
                 member.fill(container, getButtonFactory(),
-                        getPullDownMenuButtonConfigurer(),
-                        Collections.EMPTY_LIST);
+                    getPullDownMenuButtonConfigurer(), Collections.EMPTY_LIST);
             }
             else {
                 member.fill(container, getButtonFactory(),
-                        getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
+                    getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
             }
         }
         container.onPopulated();
         return GuiStandardUtils.attachBorder(container.getButtonBar(),
-                GuiStandardUtils
-                        .createTopAndBottomBorder(UIConstants.TWO_SPACES));
+            GuiStandardUtils.createTopAndBottomBorder(UIConstants.TWO_SPACES));
     }
 
     private void bindMembers(Object owner, JComponent memberContainer,
             Object controlFactory, CommandButtonConfigurer configurer) {
         getMemberList().bindMembers(owner,
-                new SimpleGroupContainerPopulator(memberContainer),
-                controlFactory, configurer);
+            new SimpleGroupContainerPopulator(memberContainer), controlFactory,
+            configurer);
     }
 
     public void addGroupListener(CommandGroupListener l) {
@@ -504,7 +513,7 @@ public class CommandGroup extends AbstractCommand {
 
     public void removeGroupListener(CommandGroupListener l) {
         Assert.notNull(listenerList,
-                "Listener list has not yet been instantiated!");
+            "Listener list has not yet been instantiated!");
         listenerList.remove(CommandGroupListener.class, l);
     }
 

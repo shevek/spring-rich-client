@@ -27,7 +27,6 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 
@@ -77,7 +76,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
 
     public CommandManager getCommandManager() {
         this.currentWindowCommands = new XmlBeanFactory(commandFactoryResource,
-                Application.locator().getApplicationContext());
+                Application.instance().getApplicationContext());
         this.currentWindowCommands
                 .addBeanPostProcessor(new ApplicationWindowSetter(
                         getManagedWindow()));
@@ -91,7 +90,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
         return new BeanPostProcessor() {
             public Object postProcessBeforeInitialization(Object bean,
                     String beanName) {
-                return ApplicationServices.locator().configure(bean, beanName);
+                return Application.services().configure(bean, beanName);
             }
 
             public Object postProcessAfterInitialization(Object bean,

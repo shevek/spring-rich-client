@@ -37,7 +37,6 @@ import javax.swing.tree.TreePath;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.AbstractView;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommand;
@@ -84,9 +83,10 @@ public class OwnerManagerView extends AbstractView implements
     }
 
     protected void registerGlobalCommandDelegates(ViewContext context) {
-        context.registerGlobalCommandDelegate(GlobalCommandIds.DELETE, deleteCommand);
+        context.registerGlobalCommandDelegate(GlobalCommandIds.DELETE,
+            deleteCommand);
         context.registerGlobalCommandDelegate(GlobalCommandIds.PROPERTIES,
-                propertiesCommand);
+            propertiesCommand);
     }
 
     protected JComponent createControl() {
@@ -171,35 +171,35 @@ public class OwnerManagerView extends AbstractView implements
         }
     }
 
-    private static DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
+    private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
         public Component getTreeCellRendererComponent(JTree tree, Object value,
                 boolean sel, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                    leaf, row, hasFocus);
+                leaf, row, hasFocus);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
-                this.setIcon(ApplicationServices.locator().getIcon("folder.icon"));
+                this.setIcon(getIconSource().getIcon("folder.icon"));
             }
             else {
                 Owner o = (Owner)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
-                this.setIcon(ApplicationServices.locator().getIcon("owner.bullet"));
+                this.setIcon(getIconSource().getIcon("owner.bullet"));
             }
             return this;
         }
     };
 
-    public static TreeCellRenderer getTreeCellRenderer() {
+    public TreeCellRenderer getTreeCellRenderer() {
         return treeCellRenderer;
     }
 
     private JPopupMenu createPopupContextMenu() {
         // rename, separator, delete, properties
         CommandGroup group = getCommandManager().createCommandGroup(
-                "ownerCommandGroup",
-                new Object[] { renameCommand, "separator", "deleteCommand",
-                        "separator", "propertiesCommand" });
+            "ownerCommandGroup",
+            new Object[] { renameCommand, "separator", "deleteCommand",
+                    "separator", "propertiesCommand" });
         return group.createPopupMenu();
     }
 

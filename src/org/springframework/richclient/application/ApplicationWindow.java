@@ -69,9 +69,12 @@ public class ApplicationWindow implements PersistableElement {
         this.number = number;
         getLifecycleAdvisor().onPreWindowOpen(getWindowConfigurer());
         this.commandManager = getLifecycleAdvisor().getCommandManager();
-        this.menuBarCommandGroup = getLifecycleAdvisor().getMenuBarCommandGroup();
-        this.toolBarCommandGroup = getLifecycleAdvisor().getToolBarCommandGroup();
-        this.statusBarCommandGroup = getLifecycleAdvisor().getStatusBarCommandGroup();
+        this.menuBarCommandGroup = getLifecycleAdvisor()
+                .getMenuBarCommandGroup();
+        this.toolBarCommandGroup = getLifecycleAdvisor()
+                .getToolBarCommandGroup();
+        this.statusBarCommandGroup = getLifecycleAdvisor()
+                .getStatusBarCommandGroup();
     }
 
     public int getNumber() {
@@ -95,7 +98,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     protected Application getApplication() {
-        return Application.locator();
+        return Application.instance();
     }
 
     protected ApplicationAdvisor getLifecycleAdvisor() {
@@ -136,7 +139,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     protected Perspective getPageTemplate(String pageId) {
-        return (Perspective)ApplicationServices.locator().getApplicationContext()
+        return (Perspective)Application.services().getApplicationContext()
                 .getBean(pageId);
     }
 

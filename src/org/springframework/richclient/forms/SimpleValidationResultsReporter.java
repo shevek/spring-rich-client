@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageAreaPane;
 import org.springframework.richclient.dialog.SimpleMessageAreaPane;
@@ -43,7 +43,7 @@ public class SimpleValidationResultsReporter implements ValidationListener,
             .getLog(SimpleValidationResultsReporter.class);
 
     private FormModel formModel;
-    
+
     private Guarded guarded;
 
     private MessageAreaPane messageAreaPane;
@@ -54,18 +54,19 @@ public class SimpleValidationResultsReporter implements ValidationListener,
         this(formModel, guarded, new SimpleMessageAreaPane());
     }
 
-    public SimpleValidationResultsReporter(FormModel formModel, Guarded guarded,
-            MessageAreaPane messagePane) {
+    public SimpleValidationResultsReporter(FormModel formModel,
+            Guarded guarded, MessageAreaPane messagePane) {
         this.formModel = formModel;
         this.guarded = guarded;
         this.messageAreaPane = messagePane;
         initialize();
     }
-    
+
     private void initialize() {
         if (formModel.hasErrors()) {
             guarded.setEnabled(false);
-        } else {
+        }
+        else {
             guarded.setEnabled(true);
         }
         formModel.addValidationListener(this);
@@ -128,7 +129,7 @@ public class SimpleValidationResultsReporter implements ValidationListener,
 
     private String translate(ValidationResults results) {
         DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(
-                ApplicationServices.locator());
+                Application.services());
         return messageTranslator.getMessage((PropertyResults)results);
     }
 

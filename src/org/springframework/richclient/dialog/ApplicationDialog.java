@@ -35,14 +35,13 @@ import javax.swing.KeyStroke;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -73,7 +72,9 @@ import com.jgoodies.forms.factories.Borders;
  * <li>by default, modal enabling & disabling of resizing
  * </ul>
  */
-public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
+public abstract class ApplicationDialog extends
+        ApplicationServicesAccessorSupport implements TitleConfigurable,
+        Guarded {
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -208,11 +209,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
     }
 
     protected ApplicationWindow getActiveWindow() {
-        return Application.locator().getActiveWindow();
-    }
-
-    protected ComponentFactory getComponentFactory() {
-        return ApplicationServices.locator().getComponentFactory();
+        return Application.instance().getActiveWindow();
     }
 
     /**
@@ -537,7 +534,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
 
     protected void onFinishException(Exception e) {
         JOptionPane.showMessageDialog(getDialog(),
-            "Unable to execute finish action", Application.locator().getName(),
+            "Unable to execute finish action", Application.instance().getName(),
             JOptionPane.ERROR_MESSAGE);
     }
 }

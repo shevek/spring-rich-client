@@ -27,7 +27,7 @@ public class ExitCommand extends ApplicationWindowAwareCommand {
     }
     
     protected void doExecuteCommand() {
-        Application.locator().close();
+        Application.instance().close();
     }
 
 }

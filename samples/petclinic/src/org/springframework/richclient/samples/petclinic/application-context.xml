@@ -2,16 +2,9 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<bean id="applicationServices"
-  	   class="org.springframework.richclient.application.ApplicationServices">
-	</bean>
-	
 	<bean  id="application"
   	    class="org.springframework.richclient.application.Application">
   	  <constructor-arg index="0">
-  	  	  <ref bean="applicationServices"/>
-  	  </constructor-arg>
-  	  <constructor-arg index="1">
   	  	  <ref bean="applicationAdvisor"/>
   	  </constructor-arg>
 	</bean>

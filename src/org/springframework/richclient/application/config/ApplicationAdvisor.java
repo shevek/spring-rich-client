@@ -19,7 +19,6 @@ import java.awt.Image;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationInfo;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
@@ -66,7 +65,8 @@ public abstract class ApplicationAdvisor {
             return applicationInfo.getImage();
         }
         else {
-            return ApplicationServices.locator().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+            return Application.services().getImage(
+                DEFAULT_APPLICATION_IMAGE_KEY);
         }
     }
 

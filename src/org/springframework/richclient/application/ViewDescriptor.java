@@ -158,7 +158,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
 
         protected void doExecuteCommand() {
             if (this.window == null) {
-                this.window = Application.locator().getActiveWindow();
+                this.window = Application.instance().getActiveWindow();
             }
             this.window.showViewOnPage(viewDescriptor);
         }

@@ -32,7 +32,7 @@ public class NewWindowCommand extends ApplicationWindowAwareCommand {
     }
 
     protected void doExecuteCommand() {
-        Application.locator().openWindow(
+        Application.instance().openWindow(
                 getApplicationWindow().getActivePageId());
     }
 

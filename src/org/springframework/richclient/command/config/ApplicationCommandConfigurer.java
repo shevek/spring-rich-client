@@ -17,7 +17,7 @@ package org.springframework.richclient.command.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandRegistry;
@@ -45,7 +45,7 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
 
     protected ObjectConfigurer getObjectConfigurer() {
         if (this.objectConfigurer == null) {
-            return ApplicationServices.locator();
+            return Application.services();
         }
         else {
             return objectConfigurer;

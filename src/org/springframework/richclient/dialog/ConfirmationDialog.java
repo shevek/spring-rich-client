@@ -23,8 +23,6 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import org.springframework.richclient.application.ApplicationServices;
-import org.springframework.richclient.image.IconSource;
 import org.springframework.util.Assert;
 
 public abstract class ConfirmationDialog extends ApplicationDialog {
@@ -75,9 +73,9 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
 
     private void setupKeyBindings() {
         addActionKeyBinding(KeyStroke.getKeyStroke(getYesKey(), 0),
-                getFinishCommand().getId());
+            getFinishCommand().getId());
         addActionKeyBinding(KeyStroke.getKeyStroke(getNoKey(), 0),
-                getCancelCommand().getId());
+            getCancelCommand().getId());
     }
 
     protected int getYesKey() {
@@ -92,8 +90,7 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         SimpleMessageAreaPane pane = new SimpleMessageAreaPane();
         this.messageAreaPane = pane;
 
-        IconSource icons = ApplicationServices.locator();
-        Icon icon = icons.getIcon(CONFIRMATION_DIALOG_ICON);
+        Icon icon = getIconSource().getIcon(CONFIRMATION_DIALOG_ICON);
         if (icon == null) {
             icon = UIManager.getIcon("OptionPane.questionIcon");
         }

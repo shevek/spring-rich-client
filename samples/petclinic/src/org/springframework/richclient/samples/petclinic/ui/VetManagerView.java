@@ -30,7 +30,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.springframework.richclient.application.AbstractView;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.samples.petclinic.Clinic;
@@ -112,31 +111,31 @@ public class VetManagerView extends AbstractView {
         }
     }
 
-    private static DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
+    private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
         public Component getTreeCellRendererComponent(JTree tree, Object value,
                 boolean sel, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                    leaf, row, hasFocus);
+                leaf, row, hasFocus);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
-                this.setIcon(ApplicationServices.locator().getIcon("folder.icon"));
+                this.setIcon(getIconSource().getIcon("folder.icon"));
             }
             else if (node.getUserObject() instanceof Vet) {
                 Vet o = (Vet)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
-                this.setIcon(ApplicationServices.locator().getIcon("owner.bullet"));
+                this.setIcon(getIconSource().getIcon("owner.bullet"));
             }
             else {
                 Specialty o = (Specialty)node.getUserObject();
                 this.setText(o.getName());
-                this.setIcon(ApplicationServices.locator().getIcon("specialty.bullet"));
+                this.setIcon(getIconSource().getIcon("specialty.bullet"));
             }
             return this;
         }
     };
 
-    public static TreeCellRenderer getTreeCellRenderer() {
+    public TreeCellRenderer getTreeCellRenderer() {
         return treeCellRenderer;
     }
 

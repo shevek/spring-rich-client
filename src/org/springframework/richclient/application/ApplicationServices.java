@@ -32,7 +32,6 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.application.config.JGoodiesLooksConfigurer;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
@@ -76,8 +75,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     public static final String LOOK_AND_FEEL_CONFIGURER_BEAN_KEY = "lookAndFeelConfigurer";
 
-    private static ApplicationServices sharedInstance;
-
     private final Log logger = LogFactory.getLog(getClass());
 
     private ObjectConfigurer objectConfigurer;
@@ -95,28 +92,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private IconSource iconSource;
 
     private Map attributes;
-
-    public ApplicationServices() {
-        Assert.isTrue(sharedInstance == null,
-                "Only one instance of RCP ApplicationServices allowed per VM.");
-        load(this);
-    }
-
-    public static void load(ApplicationServices instance) {
-        sharedInstance = instance;
-    }
-
-    /**
-     * Return the single application instance.
-     * 
-     * @return The application
-     */
-    public static ApplicationServices locator() {
-        Assert
-                .notNull(sharedInstance,
-                        "The global ApplicationServices instance has not yet been initialized.");
-        return sharedInstance;
-    }
 
     public ComponentFactory getComponentFactory() {
         return componentFactory;
@@ -152,14 +127,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     protected void initApplicationContext() throws BeansException {
-        initImageSource();
-        initIconSource();
-        initComponentFactory();
-        initViewRegistry();
-        initRulesSource();
-        initObjectConfigurer();
-        initCommandConfigurer();
-        initLookAndFeelConfigurer();
+        initStandardServices();
     }
 
     protected void initStandardServices() {
@@ -175,9 +143,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initImageSource() {
         try {
-            this.imageSource = (ImageSource) getApplicationContext().getBean(
-                    IMAGE_SOURCE_BEAN_KEY);
-        } catch (NoSuchBeanDefinitionException e) {
+            this.imageSource = (ImageSource)getApplicationContext().getBean(
+                IMAGE_SOURCE_BEAN_KEY);
+        }
+        catch (NoSuchBeanDefinitionException e) {
             logger.info("No image source bean found in context under name '"
                     + IMAGE_SOURCE_BEAN_KEY + "'; configuring defaults.");
             this.imageSource = new DefaultImageSource(new HashMap());
@@ -186,9 +155,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initIconSource() {
         try {
-            this.iconSource = (IconSource) getApplicationContext().getBean(
-                    ICON_SOURCE_BEAN_KEY);
-        } catch (NoSuchBeanDefinitionException e) {
+            this.iconSource = (IconSource)getApplicationContext().getBean(
+                ICON_SOURCE_BEAN_KEY);
+        }
+        catch (NoSuchBeanDefinitionException e) {
             logger.info("No icon source bean found under name "
                     + ICON_SOURCE_BEAN_KEY
                     + "; creating using existing image source.");
@@ -215,9 +185,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initRulesSource() {
         if (rulesSource == null) {
             try {
-                rulesSource = (RulesSource) getApplicationContext().getBean(
-                        RULES_SOURCE_BEAN_KEY);
-            } catch (NoSuchBeanDefinitionException e) {
+                rulesSource = (RulesSource)getApplicationContext().getBean(
+                    RULES_SOURCE_BEAN_KEY);
+            }
+            catch (NoSuchBeanDefinitionException e) {
                 logger.info("No rule source found in context under name '"
                         + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
                 this.rulesSource = new DefaultRulesSource();
@@ -228,9 +199,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initObjectConfigurer() {
         if (objectConfigurer == null) {
             try {
-                objectConfigurer = (ObjectConfigurer) getApplicationContext()
+                objectConfigurer = (ObjectConfigurer)getApplicationContext()
                         .getBean(OBJECT_CONFIGURER_BEAN_KEY);
-            } catch (NoSuchBeanDefinitionException e) {
+            }
+            catch (NoSuchBeanDefinitionException e) {
                 logger
                         .info("No object configurer found in context under name '"
                                 + OBJECT_CONFIGURER_BEAN_KEY
@@ -246,9 +218,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initCommandConfigurer() {
         if (commandConfigurer == null) {
             try {
-                commandConfigurer = (CommandConfigurer) getApplicationContext()
+                commandConfigurer = (CommandConfigurer)getApplicationContext()
                         .getBean(COMMAND_CONFIGURER_BEAN_KEY);
-            } catch (NoSuchBeanDefinitionException e) {
+            }
+            catch (NoSuchBeanDefinitionException e) {
                 logger
                         .info("No command configurer found in context under name '"
                                 + COMMAND_CONFIGURER_BEAN_KEY
@@ -261,12 +234,12 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initLookAndFeelConfigurer() {
         try {
             getApplicationContext().getBean(LOOK_AND_FEEL_CONFIGURER_BEAN_KEY);
-        } catch (NoSuchBeanDefinitionException e) {
+        }
+        catch (NoSuchBeanDefinitionException e) {
             logger
                     .info("No look and feel configurer found in context under name '"
                             + LOOK_AND_FEEL_CONFIGURER_BEAN_KEY
                             + "'; configuring defaults.");
-            new JGoodiesLooksConfigurer().setPlasticLookAndFeel(null);
         }
     }
 
@@ -300,7 +273,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public String getMessage(String code, Object[] args, String defaultMessage,
             Locale locale) {
         return getApplicationContext().getMessage(code, args, defaultMessage,
-                locale);
+            locale);
     }
 
     public Image getImage(String key) {

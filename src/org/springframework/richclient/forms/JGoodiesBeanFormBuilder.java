@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
 
@@ -40,7 +40,8 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,
             FormLayout formLayout) {
-        this(formModel, formLayout, ApplicationServices.locator().getComponentFactory());
+        this(formModel, formLayout, Application.services()
+                .getComponentFactory());
     }
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,
@@ -71,7 +72,7 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     public JTextArea addTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
         formBuilder.add(getPropertyLabelCode(propertyName), "left,top",
-                new JScrollPane(formModel.bind(textArea, propertyName)));
+            new JScrollPane(formModel.bind(textArea, propertyName)));
         return textArea;
     }
 
