@@ -364,7 +364,7 @@ public class ClassUtils {
             return method;
         }
         catch (NoSuchMethodException e) {
-            logger.info("There is not getter for " + propertyName + " in " +
+            logger.info("There is not a getter for " + propertyName + " in " +
                 theClass);
             return null;
         }
@@ -398,7 +398,7 @@ public class ClassUtils {
             }
         }
 
-        logger.info("There is not setter for " + propertyName + " in " +
+        logger.info("There is not a setter for " + propertyName + " in " +
             theClass);
         return null;
     }
