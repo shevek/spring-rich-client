@@ -79,7 +79,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
     }
 
     public void setDescription(String description) {
-        String oldValue = description;
+        String oldValue = this.description;
         this.description = description;
         firePropertyChange(DESCRIPTION_PROPERTY, oldValue, description);
     }
