@@ -23,7 +23,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapTemplate;
 import org.springframework.util.DefaultObjectStyler;
@@ -97,7 +96,7 @@ public class DefaultImageSource implements ImageSource {
         try {
             return (Image)imageCache.get(resource);
         }
-        catch (DataAccessResourceFailureException e) {
+        catch (RuntimeException e) {
             if (brokenImageIndicator != null) {
                 return returnBrokenImageIndicator(resource);
             }
@@ -164,7 +163,7 @@ public class DefaultImageSource implements ImageSource {
         return new ToStringCreator(this).append("imageResources", imageResources).toString();
     }
 
-    private class ImageCache extends CachingMapTemplate {
+    private static class ImageCache extends CachingMapTemplate {
         public ImageCache() {
             super(true);
         }
@@ -174,7 +173,7 @@ public class DefaultImageSource implements ImageSource {
                 return ((AwtImageResource)resource).getImage();
             }
             catch (IOException e) {
-                throw new DataAccessResourceFailureException("No image found at resource '" + resource + '"', e);
+                throw new NoSuchImageResourceException("No image found at resource '" + resource + '"', e);
             }
         }
     }

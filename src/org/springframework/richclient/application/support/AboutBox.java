@@ -34,9 +34,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.springframework.core.io.Resource;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CloseAction;
@@ -50,9 +48,6 @@ import org.springframework.util.FileCopyUtils;
  * @author Oliver Hutchison
  */
 public class AboutBox {
-
-    private ApplicationDescriptor applicationInfo;
-
     private Resource aboutTextPath;
 
     public AboutBox() {
@@ -98,7 +93,10 @@ public class AboutBox {
                 scroller.setHtml(text);
             }
             catch (IOException e) {
-                throw new DataAccessResourceFailureException("About text not accessible", e);
+                final IllegalStateException exp =
+                        new IllegalStateException("About text not accessible: "+e.getMessage());
+                exp.setStackTrace(e.getStackTrace());
+                throw exp;
             }
             dialogPanel.add(scroller);
             dialogPanel.setPreferredSize(new Dimension(scroller.getPreferredSize().width, 200));
@@ -113,7 +111,10 @@ public class AboutBox {
                 scroller.setHtml(text);
             }
             catch (IOException e) {
-                throw new DataAccessResourceFailureException("About text not accessible", e);
+                final IllegalStateException exp =
+                        new IllegalStateException("About text not accessible: "+e.getMessage());
+                exp.setStackTrace(e.getStackTrace());
+                throw exp;
             }
             scroller.reset();
             scroller.startScrolling();
@@ -134,7 +135,7 @@ public class AboutBox {
      * 
      * @author Oliver Hutchison
      */
-    private class HtmlScroller extends JViewport {
+    private static class HtmlScroller extends JViewport {
 
         private HtmlPane htmlPane;
 
@@ -202,7 +203,7 @@ public class AboutBox {
         /**
          * Resets this component to its inital state.
          */
-        public void reset() {
+        public final void reset() {
             currentX = 0;
             currentY = 0;
             timer.setInitialDelay(initalDelay);

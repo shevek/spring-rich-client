@@ -23,9 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.springframework.core.io.Resource;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.ExclusiveCommandGroup;
 import org.springframework.richclient.command.ToggleCommand;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
 import org.springframework.richclient.text.HtmlPane;
@@ -38,9 +36,6 @@ import org.springframework.util.FileCopyUtils;
  * @author Claudio Romano
  */
 public class SetupLicenseWizardPage extends AbstractWizardPage {
-
-    private ExclusiveCommandGroup licenseAcceptGroup;
-
     private HtmlPane licenseTextPane;
 
     private Resource licenseTextLocation;
@@ -54,7 +49,7 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
         setLicenseTextLocation(licenseTextLocation);
     }
 
-    public void setLicenseTextLocation(Resource location) {
+    public final void setLicenseTextLocation(Resource location) {
         this.licenseTextLocation = location;
         if (licenseTextPane != null) {
             updateLicenseTextPane();
@@ -101,7 +96,10 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
             licenseTextPane.setText(LabelUtils.htmlBlock(text));
         }
         catch (IOException e) {
-            throw new DataAccessResourceFailureException("License text not accessible", e);
+            final IllegalStateException exp =
+                    new IllegalStateException("License text not accessible: "+e.getMessage());
+            exp.setStackTrace(e.getStackTrace());
+            throw exp;
         }
     }
 
