@@ -163,6 +163,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 .addValueChangeListener(editingFormObjectSetter);
     }
 
+    public boolean isEditingNewFormObject() {
+        return editingNewFormObject;
+    }
+
     private class EditingFormObjectSetter implements ValueChangeListener {
         public void valueChanged() {
             int selectionIndex = getEditingFormObjectIndex();
@@ -237,9 +241,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     private void initStandardLocalFormCommands() {
-        initNewFormObjectCommand();
-        initCommitCommand();
-        initRevertCommand();
+        getNewFormObjectCommand();
+        getCommitCommand();
+        getRevertCommand();
     }
 
     protected abstract JComponent createFormControl();
@@ -309,23 +313,31 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     }
 
-    protected ActionCommand getNewFormObjectCommand() {
+    public ActionCommand getNewFormObjectCommand() {
+        if (this.newFormObjectCommand == null) {
+            this.newFormObjectCommand = createNewFormObjectCommand();
+        }
         return newFormObjectCommand;
     }
 
-    protected ActionCommand getCommitCommand() {
+    public ActionCommand getCommitCommand() {
+        if (this.commitCommand == null) {
+            this.commitCommand = createCommitCommand();
+        }
         return commitCommand;
     }
 
-    protected ActionCommand getRevertCommand() {
+    public ActionCommand getRevertCommand() {
+        if (this.revertCommand == null) {
+            this.revertCommand = createRevertCommand();
+        }
         return revertCommand;
     }
 
-    private ActionCommand initNewFormObjectCommand() {
+    private ActionCommand createNewFormObjectCommand() {
         String commandId = getNewFormObjectFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
-
-        this.newFormObjectCommand = new ActionCommand(commandId) {
+        ActionCommand newFormObjectCommand = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().reset();
                 getFormModel().setEnabled(true);
@@ -358,10 +370,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 .addValueChangeListener(editingFormObjectSetter);
     }
 
-    private final ActionCommand initCommitCommand() {
+    private final ActionCommand createCommitCommand() {
         String commandId = getCommitFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
-        this.commitCommand = new ActionCommand(commandId) {
+        ActionCommand commitCommand = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().commit();
             }
@@ -392,15 +404,15 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         editingNewFormObject = false;
     }
 
-    private final ActionCommand initRevertCommand() {
+    private final ActionCommand createRevertCommand() {
         String commandId = getRevertFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
-        this.commitCommand = new ActionCommand(commandId) {
+        ActionCommand revertCommand = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().revert();
             }
         };
-        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+        return (ActionCommand)getCommandConfigurer().configure(revertCommand);
     }
 
     protected final JButton createNewFormObjectButton() {
