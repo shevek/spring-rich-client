@@ -42,7 +42,7 @@ public class DynamicListModel extends ListListModel implements ValueChangeListen
             return;
         }
         if (this.listItemsValueModel != null) {
-            valueModel.removeValueChangeListener(this);
+            this.listItemsValueModel.removeValueChangeListener(this);
         }
         this.listItemsValueModel = valueModel;
         if (this.listItemsValueModel != null) {
