@@ -120,15 +120,13 @@ public class WindowManager extends Observable {
         Iterator e = t.iterator();
         while (e.hasNext()) {
             ApplicationWindow window = (ApplicationWindow)e.next();
-            if (!window.close())
-                return false;
+            if (!window.close()) { return false; }
         }
         if (subManagers != null) {
             e = subManagers.iterator();
             while (e.hasNext()) {
                 WindowManager wm = (WindowManager)e.next();
-                if (!wm.close())
-                    return false;
+                if (!wm.close()) { return false; }
             }
         }
         return true;

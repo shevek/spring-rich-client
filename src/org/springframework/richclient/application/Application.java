@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
 
 /**
  * A singleton workbench or shell of a rich client application.
- * 
+ * <p>
  * The application provides a point of reference and context for an entire
  * application. It provides an interface to open application windows.
  * 
@@ -48,7 +48,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private ApplicationWindow activeWindow;
 
-    private WindowManager windowManager = new WindowManager();
+    private WindowManager windowManager;
 
     /**
      * Load the single application instance.
@@ -92,6 +92,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public Application(ApplicationAdvisor advisor, ApplicationServices services) {
         setAdvisor(advisor);
         setServices(services);
+        windowManager = new WindowManager();
+        windowManager.addObserver(new CloseApplicationObserver());
         Assert.state(!isLoaded(), "Only one instance of a Spring Rich Application allowed per VM.");
         load(this);
     }
@@ -144,13 +146,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private ApplicationWindow initWindow(ApplicationWindow window) {
         windowManager.add(window);
-        windowManager.addObserver(new Observer() {
-            public void update(Observable o, Object arg) {
-                if (windowManager.getWindows().length == 0) {
-                    close();
-                }
-            }
-        });
         return window;
     }
 
@@ -172,8 +167,27 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public void close() {
-        if (windowManager.close())
+        if (windowManager.close()) {
             System.exit(0);
+        }
     }
 
+    /*
+     * Closes the application once all windows have been closed.
+     */
+    private class CloseApplicationObserver implements Observer {
+        boolean firstWindowCreated = false;
+
+        public void update(Observable o, Object arg) {
+            int numOpenWidows = windowManager.getWindows().length;
+            // make sure we only close the application after at least 1 window
+            // has been added
+            if (!firstWindowCreated && numOpenWidows > 0) {
+                firstWindowCreated = true;
+            }
+            else if (firstWindowCreated && numOpenWidows == 0) {
+                close();
+            }
+        }
+    }
 }
