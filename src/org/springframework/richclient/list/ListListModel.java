@@ -256,4 +256,24 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     protected void fireContentsChanged(int startIndex, int endIndex) {
         fireContentsChanged(this, startIndex, endIndex);
     }
+
+    /**
+     * Replace this list model's items with the contents of the provided collection.
+     * 
+     * @param collection The collection to replace with
+     */
+    public boolean replaceWith(Collection collection) {
+        boolean changed = false;
+        if (items.size() > 0) {
+            items.clear();
+            changed = true;
+        }
+        if (items.addAll(0, collection) && !changed) {
+            changed = true;
+        }
+        if (changed) {
+            fireContentsChanged(-1, -1);
+        }
+        return changed;
+    }
 }

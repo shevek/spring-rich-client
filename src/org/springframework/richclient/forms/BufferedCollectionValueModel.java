@@ -18,6 +18,7 @@ package org.springframework.richclient.forms;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
+import org.springframework.rules.closure.NoArgBlock;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -57,7 +59,7 @@ import org.springframework.util.ObjectUtils;
  * NOTE: Between calls to commit the list model adhers to the contract defined
  * in <code>java.util.List</code> NOT the contract of the underlying
  * collection's type. This can result in the list model representing a state
- * that is not possible for the underlying collection.  
+ * that is not possible for the underlying collection.
  * </p>
  * 
  * @author oliverh
@@ -68,8 +70,6 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     private Class wrappedType;
 
     private Class wrappedConcreteType;
-
-    private boolean updating;
 
     /**
      * Constructs a new BufferedCollectionValueModel.
@@ -86,8 +86,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         super(wrappedModel);
         Assert.notNull(wrappedType);
         this.wrappedType = wrappedType;
-        this.wrappedConcreteType = getConcreteClassForWrappedType(wrappedType);
-        updateListListModelFromWrappedCollection();
+        this.wrappedConcreteType = getConcreteCollectionType(wrappedType);
+        updateListModel();
     }
 
     public Object getValue() {
@@ -98,14 +98,13 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     protected void doBufferedValueCommit(Object bufferedValue) {
-        if (listListModelHasSameStructureAsWrappedCollection()) { return; }
-        Object newCollection = createNewWrappedCollection();
-        getWrappedModel().setValue(newCollection);
-        if (listListModelHasSameStructureAsWrappedCollection()) { return; }
-        updateListListModelFromWrappedCollection();
+        if (hasSameStructure()) { return; }
+        getWrappedModel().setValue(createCollection());
+        if (hasSameStructure()) { return; }
+        updateListModel();
     }
-    
-    protected Class getConcreteClassForWrappedType(Class wrappedType) {
+
+    protected Class getConcreteCollectionType(Class wrappedType) {
         Class class2Create;
         if (wrappedType.isArray()) {
             if (BeanUtils.isPrimitiveArray(wrappedType)) { throw new IllegalArgumentException(
@@ -143,13 +142,13 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
      * collecton. "same stucture" is defined as having the same elements in the
      * same order with the one exception that NULL == empty list.
      */
-    private boolean listListModelHasSameStructureAsWrappedCollection() {
-        Object wrappedObject = getWrappedValue();
-        if (wrappedObject == null) {
+    private boolean hasSameStructure() {
+        Object wrappedCollection = getWrappedValue();
+        if (wrappedCollection == null) {
             return listListModel.size() == 0;
         }
-        else if (wrappedObject instanceof Object[]) {
-            Object[] wrappedArray = (Object[])wrappedObject;
+        else if (wrappedCollection instanceof Object[]) {
+            Object[] wrappedArray = (Object[])wrappedCollection;
             if (wrappedArray.length != listListModel.size()) { return false; }
             for (int i = 0; i < listListModel.size(); i++) {
                 if (!ObjectUtils.nullSafeEquals(wrappedArray[i], listListModel
@@ -157,8 +156,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             }
         }
         else {
-            if (((Collection)wrappedObject).size() != listListModel.size()) { return false; }
-            for (Iterator i = ((Collection)wrappedObject).iterator(), j = listListModel
+            if (((Collection)wrappedCollection).size() != listListModel.size()) { return false; }
+            for (Iterator i = ((Collection)wrappedCollection).iterator(), j = listListModel
                     .iterator(); i.hasNext();) {
                 if (!ObjectUtils.nullSafeEquals(i.next(), j.next())) { return false; }
             }
@@ -166,27 +165,11 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         return true;
     }
 
-    private Object createNewWrappedCollection() {
-        Object wrappedObject = getWrappedValue();
-        return populateFromListListModel(createNewCollection(wrappedObject));
+    private Object createCollection() {
+        return populateFromListModel(createNewCollection(getWrappedValue()));
     }
 
-    private Object populateFromListListModel(Object wrappedObject) {
-        if (wrappedObject instanceof Object[]) {
-            Object[] wrappedArray = (Object[])wrappedObject;
-            for (int i = 0; i < listListModel.size(); i++) {
-                wrappedArray[i] = listListModel.get(i);
-            }
-        }
-        else {
-            Collection wrappedVollection = ((Collection)wrappedObject);
-            wrappedVollection.clear();
-            wrappedVollection.addAll(listListModel);
-        }
-        return wrappedObject;
-    }
-
-    private Object createNewCollection(Object wrappedObject) {
+    private Object createNewCollection(Object wrappedCollection) {
         if (wrappedConcreteType.isArray()) {
             return Array.newInstance(wrappedConcreteType.getComponentType(),
                     listListModel.size());
@@ -194,13 +177,13 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         else {
             Object newCollection;
             if (SortedSet.class.isAssignableFrom(wrappedConcreteType)
-                    && wrappedObject instanceof SortedSet
-                    && ((SortedSet)wrappedObject).comparator() != null) {
+                    && wrappedCollection instanceof SortedSet
+                    && ((SortedSet)wrappedCollection).comparator() != null) {
                 try {
                     Constructor con = wrappedConcreteType
                             .getConstructor(new Class[] { Comparator.class });
                     newCollection = BeanUtils.instantiateClass(con,
-                            new Object[] { ((SortedSet)wrappedObject)
+                            new Object[] { ((SortedSet)wrappedCollection)
                                     .comparator() });
                 }
                 catch (NoSuchMethodException e) {
@@ -218,89 +201,80 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         }
     }
 
+    private Object populateFromListModel(Object collection) {
+        if (collection instanceof Object[]) {
+            Object[] wrappedArray = (Object[])collection;
+            for (int i = 0; i < listListModel.size(); i++) {
+                wrappedArray[i] = listListModel.get(i);
+            }
+        }
+        else {
+            Collection wrappedCollection = ((Collection)collection);
+            wrappedCollection.clear();
+            wrappedCollection.addAll(listListModel);
+        }
+        return collection;
+    }
+
+    protected void onWrappedValueChanged() {
+        updateListModel();
+    }
+
     /**
      * Gets the list value associated with this value model, creating a list
      * model buffer containing its contents, suitable for manipulation.
      * 
      * @return The list model buffer
      */
-    private Object updateListListModelFromWrappedCollection() {
+    private Object updateListModel() {
         if (listListModel == null) {
             listListModel = new ListListModel();
             listListModel.addListDataListener(new ListDataListener() {
                 public void contentsChanged(ListDataEvent e) {
-                    fireListListModelChanged();
+                    fireListModelChanged();
                 }
 
                 public void intervalAdded(ListDataEvent e) {
-                    fireListListModelChanged();
+                    fireListModelChanged();
                 }
 
                 public void intervalRemoved(ListDataEvent e) {
-                    fireListListModelChanged();
+                    fireListModelChanged();
                 }
             });
         }
-        else {
-            try {
-                updating = true;
-                listListModel.clear();
-            }
-            finally {
-                updating = false;
-            }
-        }
-        Object wrappedCollection = getWrappedValue();
+        final Object wrappedCollection = getWrappedValue();
         if (wrappedCollection != null) {
-            try {
-                updating = true;
-                if (wrappedType.isAssignableFrom(wrappedCollection.getClass())) {
-                    if (wrappedCollection instanceof Object[]) {
-                        Object[] wrappedArray = (Object[])wrappedCollection;
-                        for (int i = 0; i < wrappedArray.length; i++) {
-                            listListModel.add(wrappedArray[i]);
+            doSilently(new NoArgBlock() {
+                protected void handle() {
+                    if (wrappedType.isAssignableFrom(wrappedCollection
+                            .getClass())) {
+                        Collection buffer = null;
+                        if (wrappedCollection instanceof Object[]) {
+                            Object[] wrappedArray = (Object[])wrappedCollection;
+                            buffer = Arrays.asList(wrappedArray);
+                        } else {
+                            buffer = (Collection)wrappedCollection;
                         }
+                        listListModel.replaceWith(buffer);
                     }
                     else {
-                        listListModel.addAll((Collection)wrappedCollection);
+                        throw new IllegalArgumentException(
+                                "wrappedCollection must be an instance of "
+                                        + wrappedType.getName());
                     }
                 }
-                else {
-                    throw new IllegalArgumentException(
-                            "wrappedCollection must be an instance of "
-                                    + wrappedType.getName());
-                }
-            }
-            finally {
-                updating = false;
-            }
+            });
         }
         return listListModel;
     }
 
-    protected void onWrappedValueChanged() {
-        if (!updating) {
-            updateListListModelFromWrappedCollection();
-        }
-    }
-    
-    protected void fireListListModelChanged() {
-        if (!updating) {        
-            if (hasChangeBuffered()) {
-                super.fireValueChanged();
-            }
-            else {
-                super.setValue(listListModel);
-            }            
-        }
-    }
-
-    protected void fireValueChanged() {
-        if (!updating) {
-            if (! hasChangeBuffered()) {
-                updateListListModelFromWrappedCollection();
-            }
+    protected void fireListModelChanged() {
+        if (hasChangeBuffered()) {
             super.fireValueChanged();
+        }
+        else {
+            super.setValue(listListModel);
         }
     }
 }

@@ -214,11 +214,17 @@ public final class SingleListSelectionModel implements ListSelectionModel {
         int upper = Math.max(index0, index1);
         int selectionIndex = getSelectionIndex();
 
+        System.out.println("selection index " + selectionIndex + " , lower ="
+                + lower + ", upper=" + upper);
         if ((lower <= selectionIndex) && (selectionIndex <= upper)) {
+            Thread.dumpStack();
             clearSelection();
         }
         else if (upper < selectionIndex) {
             int translated = selectionIndex - (upper - lower + 1);
+            System.out.println("translated " + translated);
+            Thread.dumpStack();
+
             setSelectionInterval(translated, translated);
         }
     }

@@ -171,8 +171,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 setEnabled(false);
             }
             else {
-                setFormObject(getEditableFormObject(selectionIndex));
-                setEnabled(true);
+                if (selectionIndex < editableFormObjects.size()) {
+                    setFormObject(getEditableFormObject(selectionIndex));
+                    setEnabled(true);
+                }
             }
         }
     }
