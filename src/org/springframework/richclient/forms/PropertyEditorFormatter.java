@@ -37,8 +37,8 @@ public class PropertyEditorFormatter extends DefaultFormatter {
         try {
             editor.setAsText(string);
         }
-        catch (Exception e) {
-            return new ParseException(e.getMessage(), 0);
+        catch (IllegalArgumentException e) {
+            throw new ParseException(e.getMessage(), 0);
         }
         return editor.getValue();
     }
