@@ -15,17 +15,14 @@
  */
 package org.springframework.richclient.table;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractAction;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 
-import org.springframework.richclient.util.SwingWorker;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.progress.BusyIndicator;
+import org.springframework.util.Assert;
 
 /**
  * Listens to a sort list for changes and when they happen, sorts a sortable
@@ -33,23 +30,18 @@ import org.springframework.richclient.util.SwingWorker;
  * 
  * @author Keith Donald
  */
-public class TableSortAction extends AbstractAction implements Observer {
-    private Component parent;
+public class TableSortAction extends ActionCommand implements Observer {
     private JTable table;
+
     private SortableTableModel sortableTableModel;
+
     private ColumnSortList sortList;
 
     public TableSortAction(JTable table, ColumnSortList sortList) {
-        this(table, sortList, null);
-    }
-
-    public TableSortAction(
-        JTable table,
-        ColumnSortList sortList,
-        Component parent) {
-        super();
+        super("sortCommand");
         this.table = table;
-        this.parent = parent;
+        Assert.isTrue((table.getModel() instanceof SortableTableModel),
+                "Table's model must be sortable!");
         this.sortableTableModel = (SortableTableModel)table.getModel();
         this.sortList = sortList;
         this.sortList.addObserver(this);
@@ -59,42 +51,31 @@ public class TableSortAction extends AbstractAction implements Observer {
         doSort();
     }
 
-    public void actionPerformed(ActionEvent e) {
+    protected void doExecuteCommand() {
         doSort();
     }
 
     private void doSort() {
-        if (parent == null) {
-            parent = SwingUtilities.getWindowAncestor(table);
+        try {
+            BusyIndicator.showOver(table);
+
+            final int[] preSortSelectedRows = table.getSelectedRows();
+
+            int[] postSortSelectedRows = sortableTableModel.sortByColumns(
+                    sortList.getSortLevels(), preSortSelectedRows);
+
+            for (int i = 0; i < postSortSelectedRows.length; i++) {
+                table.addRowSelectionInterval(postSortSelectedRows[i],
+                        postSortSelectedRows[i]);
+            }
+
+            if (postSortSelectedRows.length > 0) {
+                TableUtils.scrollToRow(table, postSortSelectedRows[0]);
+            }
         }
-        final Component glassPane =
-            SwingUtilities.getRootPane(parent).getGlassPane();
-        glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        glassPane.setVisible(true);
-        final int[] selectedRows = table.getSelectedRows();
-        SwingWorker worker = new SwingWorker() {
-            public Object construct() throws InterruptedException {
-                sortableTableModel.sortByColumns(
-                    sortList.getSortLevels(),
-                    selectedRows);
-                return null;
-            }
-            public void finished() {
-                int[] newSelectedRows = sortableTableModel.getSelectedRows();
-                for (int i = 0; i < newSelectedRows.length; i++) {
-                    table.addRowSelectionInterval(
-                        newSelectedRows[i],
-                        newSelectedRows[i]);
-                }
-                if (newSelectedRows.length > 0) {
-                    TableUtils.scrollToRow(table, newSelectedRows[0]);
-                }
-                glassPane.setCursor(
-                    Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                glassPane.setVisible(false);
-            }
-        };
-        worker.start();
+        finally {
+            BusyIndicator.clearOver(table);
+        }
     }
 
     public void dispose() {

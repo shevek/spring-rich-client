@@ -31,9 +31,8 @@ import org.springframework.util.Assert;
  * stable which means that it does not move around rows when its comparison
  * function returns 0 to denote that they are equivalent.
  */
-public class ShuttleSortableTableModel
-    extends AbstractTableModelFilter
-    implements SortableTableModel {
+public class ShuttleSortableTableModel extends AbstractTableModelFilter
+        implements SortableTableModel {
     public static final Comparator OBJECT_COMPARATOR = new Comparator() {
         public int compare(Object o1, Object o2) {
             String s1 = o1.toString();
@@ -41,11 +40,15 @@ public class ShuttleSortableTableModel
             return s1.compareTo(s2);
         }
     };
+
     private Comparator[] columnComparators;
+
     private List columnsToSort = new ArrayList(4);
+
     private int[] indexes;
-    private int[] selectedRows = new int[0];
+
     private int compares;
+
     private boolean autoSortEnabled = true;
 
     private Runnable notifyTableRunnable = new Runnable() {
@@ -77,7 +80,7 @@ public class ShuttleSortableTableModel
         for (int i = 0; i < model.getColumnCount(); i++) {
             Class clazz = model.getColumnClass(i);
             if (clazz == Object.class
-                || !Comparable.class.isAssignableFrom(clazz)) {
+                    || !Comparable.class.isAssignableFrom(clazz)) {
                 columnComparators[i] = OBJECT_COMPARATOR;
             }
         }
@@ -89,6 +92,15 @@ public class ShuttleSortableTableModel
 
     public void setAutoSortEnabled(boolean autoSortEnabled) {
         this.autoSortEnabled = autoSortEnabled;
+    }
+
+    public Comparator getComparator(int columnIndex) {
+        return this.columnComparators[columnIndex];
+    }
+
+    public void setComparator(int columnIndex, Comparator comparator) {
+        Assert.notNull(comparator);
+        this.columnComparators[columnIndex] = comparator;
     }
 
     // The mapping only affects the contents of the model rows.
@@ -114,20 +126,20 @@ public class ShuttleSortableTableModel
         SwingUtilities.invokeLater(notifyTableRunnable);
     }
 
-    public void sortByColumns(
-        ColumnToSort[] columnsToSort,
-        int[] presortSelectedRows) {
-        int[] modelIndexes = new int[presortSelectedRows.length];
-        for (int i = 0; i < presortSelectedRows.length; i++) {
-            modelIndexes[i] = convertSortedIndexToDataIndex(presortSelectedRows[i]);
+    public int[] sortByColumns(ColumnToSort[] columnsToSort,
+            int[] preSortSelectedTableRows) {
+        int[] modelIndexes = new int[preSortSelectedTableRows.length];
+        for (int i = 0; i < preSortSelectedTableRows.length; i++) {
+            modelIndexes[i] = convertSortedIndexToDataIndex(preSortSelectedTableRows[i]);
         }
         this.columnsToSort = Arrays.asList(columnsToSort);
         sort();
-        this.selectedRows = new int[modelIndexes.length];
+        int[] postSortSelectedRows = new int[modelIndexes.length];
         for (int i = 0; i < modelIndexes.length; i++) {
-            this.selectedRows[i] = convertModelToRowIndex(modelIndexes[i]);
+            postSortSelectedRows[i] = convertModelToRowIndex(modelIndexes[i]);
         }
         SwingUtilities.invokeLater(notifyTableRunnable);
+        return postSortSelectedRows;
     }
 
     public int convertSortedIndexToDataIndex(int index) {
@@ -145,9 +157,7 @@ public class ShuttleSortableTableModel
     /* this linear search is a bit slow -- we'll need to optimize later */
     public int convertModelToRowIndex(int index) {
         for (int i = 0; i < indexes.length; i++) {
-            if (index == indexes[i]) {
-                return i;
-            }
+            if (index == indexes[i]) { return i; }
         }
         return 0;
     }
@@ -159,23 +169,18 @@ public class ShuttleSortableTableModel
         }
         return converted;
     }
-    
-    public int[] getSelectedRows() {
-        return selectedRows;
-    }
 
     private void sort() {
         if (columnsToSort.size() > 0) {
             checkModel();
             compares = 0;
-            shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
+            doShuttleSort((int[])indexes.clone(), indexes, 0, indexes.length);
         }
     }
 
     private void checkModel() {
-        if (indexes.length != model.getRowCount()) {
-            throw new IllegalStateException("Sorter not informed of a change in model.");
-        }
+        if (indexes.length != model.getRowCount()) { throw new IllegalStateException(
+                "Sorter not informed of a change in model."); }
     }
 
     // This is a home-grown implementation which we have not had time
@@ -185,31 +190,29 @@ public class ShuttleSortableTableModel
     // arrays. The number of compares appears to vary between N-1 and
     // NlogN depending on the initial order but the main reason for
     // using it here is that, unlike qsort, it is stable.
-    private void shuttlesort(int from[], int to[], int low, int high) {
-        if (high - low < 2) {
-            return;
-        }
+    private void doShuttleSort(int from[], int to[], int low, int high) {
+        if (high - low < 2) { return; }
         int middle = (low + high) / 2;
-        shuttlesort(to, from, low, middle);
-        shuttlesort(to, from, middle, high);
+        doShuttleSort(to, from, low, middle);
+        doShuttleSort(to, from, middle, high);
 
         int p = low;
         int q = middle;
 
         /*
-		 * This is an optional short-cut; at each recursive call, check to see
-		 * if the elements in this subset are already ordered. If so, no
-		 * further comparisons are needed; the sub-array can just be copied.
-		 * The array must be copied rather than assigned otherwise sister calls
-		 * in the recursion might get out of sinc. When the number of elements
-		 * is three they are partitioned so that the first set, [low, mid), has
-		 * one element and and the second, [mid, high), has two. We skip the
-		 * optimisation when the number of elements is three or less as the
-		 * first compare in the normal merge will produce the same sequence of
-		 * steps. This optimisation seems to be worthwhile for partially
-		 * ordered lists but some analysis is needed to find out how the
-		 * performance drops to Nlog(N) as the initial
-		 */
+         * This is an optional short-cut; at each recursive call, check to see
+         * if the elements in this subset are already ordered. If so, no further
+         * comparisons are needed; the sub-array can just be copied. The array
+         * must be copied rather than assigned otherwise sister calls in the
+         * recursion might get out of sinc. When the number of elements is three
+         * they are partitioned so that the first set, [low, mid), has one
+         * element and and the second, [mid, high), has two. We skip the
+         * optimisation when the number of elements is three or less as the
+         * first compare in the normal merge will produce the same sequence of
+         * steps. This optimisation seems to be worthwhile for partially ordered
+         * lists but some analysis is needed to find out how the performance
+         * drops to Nlog(N) as the initial
+         */
         if (high - low >= 4 && compare(from[middle - 1], from[middle]) <= 0) {
             for (int i = low; i < high; i++) {
                 to[i] = from[i];
@@ -221,7 +224,8 @@ public class ShuttleSortableTableModel
         for (int i = low; i < high; i++) {
             if (q >= high || (p < middle && compare(from[p], from[q]) <= 0)) {
                 to[i] = from[p++];
-            } else {
+            }
+            else {
                 to[i] = from[q++];
             }
         }
@@ -231,13 +235,10 @@ public class ShuttleSortableTableModel
         compares++;
         for (int level = 0; level < columnsToSort.size(); level++) {
             ColumnToSort column = (ColumnToSort)columnsToSort.get(level);
-            int result =
-                compareRowsByColumn(row1, row2, column.getColumnIndex());
-            if (result != 0) {
-                return column.getSortOrder() == SortOrder.ASCENDING
-                    ? result
-                    : -result;
-            }
+            int result = compareRowsByColumn(row1, row2, column
+                    .getColumnIndex());
+            if (result != 0) { return column.getSortOrder() == SortOrder.ASCENDING ? result
+                    : -result; }
         }
         return 0;
     }
@@ -249,21 +250,23 @@ public class ShuttleSortableTableModel
         // If both values are null, return 0.
         if (o1 == null && o2 == null) {
             return 0;
-        } else if (o1 == null) {
+        }
+        else if (o1 == null) {
             // Define null less than everything
             return -1;
-        } else if (o2 == null) {
-            return 1;
         }
+        else if (o2 == null) { return 1; }
 
         Comparator comparator = columnComparators[column];
         if (comparator != null) {
             int result = comparator.compare(o1, o2);
             if (result > 0) {
                 return 1;
-            } else if (result < 0) {
+            }
+            else if (result < 0) {
                 return -1;
-            } else {
+            }
+            else {
                 return 0;
             }
         }
@@ -273,20 +276,13 @@ public class ShuttleSortableTableModel
         int result = c1.compareTo(c2);
         if (result > 0) {
             return 1;
-        } else if (result < 0) {
+        }
+        else if (result < 0) {
             return -1;
-        } else {
+        }
+        else {
             return 0;
         }
-    }
-
-    public Comparator getComparator(int columnIndex) {
-        return this.columnComparators[columnIndex];
-    }
-
-    public void setComparator(int columnIndex, Comparator comparator) {
-        Assert.notNull(comparator);
-        this.columnComparators[columnIndex] = comparator;
     }
 
     public void tableChanged(final TableModelEvent e) {
@@ -294,8 +290,8 @@ public class ShuttleSortableTableModel
             if (autoSortEnabled) {
                 reallocateIndexesOnInsert(e.getFirstRow(), e.getLastRow());
                 sort();
-                final int[] insertedRows =
-                    new int[e.getLastRow() - e.getFirstRow() + 1];
+                final int[] insertedRows = new int[e.getLastRow()
+                        - e.getFirstRow() + 1];
                 int row = e.getFirstRow();
                 for (int i = 0; i < insertedRows.length; i++) {
                     insertedRows[i] = convertModelToRowIndex(row++);
@@ -303,13 +299,15 @@ public class ShuttleSortableTableModel
                 for (int i = 0; i < insertedRows.length; i++) {
                     fireTableRowsInserted(insertedRows[i], insertedRows[i]);
                 }
-            } else {
+            }
+            else {
                 reallocateIndexesOnInsert(e.getFirstRow(), e.getLastRow());
                 super.tableChanged(e);
             }
-        } else if (e.getType() == TableModelEvent.DELETE) {
-            final int[] deletedRows =
-                new int[e.getLastRow() - e.getFirstRow() + 1];
+        }
+        else if (e.getType() == TableModelEvent.DELETE) {
+            final int[] deletedRows = new int[e.getLastRow() - e.getFirstRow()
+                    + 1];
             int row = e.getFirstRow();
             for (int i = 0; i < deletedRows.length; i++) {
                 deletedRows[i] = convertModelToRowIndex(row);
@@ -320,7 +318,8 @@ public class ShuttleSortableTableModel
                 fireTableRowsDeleted(deletedRows[i], deletedRows[i]);
             }
             sort();
-        } else {
+        }
+        else {
             allocateIndexes();
             sort();
             super.tableChanged(e);

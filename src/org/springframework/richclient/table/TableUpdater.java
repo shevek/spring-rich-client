@@ -104,12 +104,15 @@ public class TableUpdater extends Thread {
      */
     private void publishChanges() {
         // And wait until there are no pending events.
+        /*
         try {
             tableModel.lock();
         } catch (InterruptedException e) {
             System.err.println("Table updater interrupted on table lock attempt. Nothing updated.");
             return;
         }
+        */
+        
         try {
             // publish the changes on the event dispatching thread
             SwingUtilities.invokeAndWait(publishRunnable);
@@ -124,7 +127,10 @@ public class TableUpdater extends Thread {
         } catch (InterruptedException ie) {
         } catch (InvocationTargetException ite) {
         }
+        
+        /*
         tableModel.unlock();
+        */
     }
     
     /**

@@ -24,12 +24,19 @@ import javax.swing.table.TableModel;
  */
 public interface SortableTableModel extends TableModel {
     public TableModel getModel();
-    public int[] getSelectedRows();
-    public int convertSortedIndexToDataIndex(int index);
-    public int[] convertSortedIndexesToDataIndexes(int[] index);
-    public int[] convertDataIndexesToSortedIndexes(int[] index);
-    public void sortByColumn(ColumnToSort columnToSort);
-    public void sortByColumns(ColumnToSort[] columnsToSort);
-    public void sortByColumns(ColumnToSort[] columnsToSort, int[] selectedIndexes);
+
     public void setComparator(int columnIndex, Comparator comparator);
+
+    public int convertSortedIndexToDataIndex(int index);
+
+    public int[] convertSortedIndexesToDataIndexes(int[] index);
+
+    public int[] convertDataIndexesToSortedIndexes(int[] index);
+
+    public void sortByColumn(ColumnToSort columnToSort);
+
+    public void sortByColumns(ColumnToSort[] columnsToSort);
+
+    public int[] sortByColumns(ColumnToSort[] columnsToSort,
+            int[] selectedIndexes);
 }

@@ -70,13 +70,11 @@ public class JFormattedTextFieldValueSetter extends AbstractValueSetter
         //this.component.addPropertyChangeListener("value", this);
     }
 
-    protected void setComponentValue(Object value) {
-        component.setValue(value);
-    }
-
     public void valueChanged() {
         if (getValueModel() instanceof ValueModelWrapper) {
             if (!isUpdating()) {
+                System.out.println("Underlying value changed "
+                        + ((ValueModelWrapper)getValueModel()).getWrapped());
                 setComponentValue(((ValueModelWrapper)getValueModel())
                         .getWrapped());
             }
@@ -84,6 +82,10 @@ public class JFormattedTextFieldValueSetter extends AbstractValueSetter
         else {
             super.valueChanged();
         }
+    }
+
+    protected void setComponentValue(Object value) {
+        component.setValue(value);
     }
 
     public void propertyChange(PropertyChangeEvent e) {

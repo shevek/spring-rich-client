@@ -17,57 +17,87 @@ package org.springframework.richclient.progress;
 
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
 
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 /**
  * Support for showing a Busy Cursor during a long running process.
  */
 public class BusyIndicator {
+
+    public static class BusyGlassPanel extends JPanel {
+
+        public static final Component INSTANCE = new BusyGlassPanel();
+
+        public static Component instance() {
+            return INSTANCE;
+        }
+
+        public BusyGlassPanel() {
+            super.setOpaque(false);
+            super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            super.addKeyListener((new KeyAdapter() {
+            }));
+            super.addMouseListener((new MouseAdapter() {
+            }));
+            super.addMouseMotionListener((new MouseMotionAdapter() {
+            }));
+        }
+    }
+
     /**
-	 * Runs the given <code>Runnable</code> while providing busy feedback
-	 * using this busy indicator.
-	 * 
-	 * @param the
-	 *            display on which the busy feedback should be displayed. If
-	 *            the display is null, the Display for the current thread will
-	 *            be used. If there is no Display for the current thread, the
-	 *            runnable code will be executed and no busy feedback will be
-	 *            displayed.
-	 * @param the
-	 *            runnable for which busy feedback is to be shown
-	 * @see #showWhile
-	 */
-    public static void showWhile(Component display, Runnable runnable) {
-        if (display != null) {
-            show(display);
+     * Runs the given <code>Runnable</code> while providing busy feedback
+     * using this busy indicator.
+     * 
+     * @param the
+     *            display on which the busy feedback should be displayed. If the
+     *            display is null, the Display for the current thread will be
+     *            used. If there is no Display for the current thread, the
+     *            runnable code will be executed and no busy feedback will be
+     *            displayed.
+     * @param the
+     *            runnable for which busy feedback is to be shown
+     * @see #showWhile
+     */
+    public static void showWhile(Component component, Runnable runnable) {
+        if (component != null) {
+            showOver(component);
         }
         try {
             runnable.run();
-        } catch (RuntimeException x) {
+        }
+        catch (RuntimeException x) {
             x.printStackTrace();
             throw x;
-        } catch (Error x) {
+        }
+        catch (Error x) {
             x.printStackTrace();
             throw x;
-        } finally {
-            if (display != null) {
-                clear(display);
+        }
+        finally {
+            if (component != null) {
+                clearOver(component);
             }
         }
     }
-    
-    public static void show(Component display) {
-        Component root = SwingUtilities.getRoot(display);
+
+    public static void showOver(Component component) {
+        JRootPane root = SwingUtilities.getRootPane(component);
         if (root != null && root.isShowing()) {
-            root.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            root.setGlassPane(BusyGlassPanel.INSTANCE);
+            root.getGlassPane().setVisible(true);
         }
     }
-    
-    public static void clear(Component display) {
-        Component root = SwingUtilities.getRoot(display);
+
+    public static void clearOver(Component component) {
+        JRootPane root = SwingUtilities.getRootPane(component);
         if (root != null && root.isShowing()) {
-            root.setCursor(null);
+            root.getGlassPane().setVisible(false);
         }
     }
 

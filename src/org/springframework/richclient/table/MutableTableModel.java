@@ -17,10 +17,12 @@ package org.springframework.richclient.table;
 
 import java.util.List;
 
+import javax.swing.table.TableModel;
+
 /**
  * @author Keith Donald
  */
-public interface MutableTableModel extends SyncTableModel {
+public interface MutableTableModel extends TableModel {
     public void addRow(Object row);
     public void addRows(List rows);
     public void remove(int index);
