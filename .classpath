@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/burlap.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/hessian.jar"/>
-	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4.jar"/>
@@ -31,5 +30,7 @@
 	<classpathentry kind="lib" path="lib/javahelp/javahelp.jar"/>
 	<classpathentry kind="lib" path="lib/jdnc/jdnc.jar"/>
 	<classpathentry sourcepath="lib/src/glazedlists-source.zip" kind="lib" path="lib/glazedlists/glazedlists.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-context.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-core.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -24,12 +24,14 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.ObjectUtils;
 
-public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable, ImageConfigurable {
+public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable, ImageConfigurable,
+        DescriptionConfigurable {
     private TitlePane titlePane = new TitlePane();
 
     private Message description = new Message("Title pane description");
@@ -48,6 +50,10 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public TitledApplicationDialog(String title, Window parent, CloseAction closeAction) {
         super(title, parent, closeAction);
+    }
+
+    public void setCaption(String shortDescription) {
+        throw new UnsupportedOperationException("What can I do with a caption?");
     }
 
     public void setDescription(String description) {
@@ -76,7 +82,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
     public Message getMessage() {
         return titlePane.getMessage();
     }
-    
+
     public void setMessage(Message message) {
         if (message == null) {
             message = Message.EMPTY_MESSAGE;
