@@ -103,7 +103,8 @@ public class DefaultApplicationPage implements ApplicationPage,
             giveFocusTo(viewPane);
         }
         else {
-            viewPane = show(viewDescriptor);
+            viewPane = addViewPane(viewDescriptor);
+            giveFocusTo(viewPane);
         }
         if (this.activeView != null) {
             fireViewDeactivated(this.activeView.getView());
@@ -130,19 +131,10 @@ public class DefaultApplicationPage implements ApplicationPage,
         return true;
     }
 
-    protected ViewPane show(ViewDescriptor viewDescriptor) {
-        this.pageControl.removeAll();
-        ViewPane viewPane = addViewPane(viewDescriptor);
-        this.pageControl.revalidate();
-        this.pageControl.repaint();
-        return viewPane;
-    }
-
     private ViewPane addViewPane(ViewDescriptor viewDescriptor) {
         View view = createView(viewDescriptor);
         ViewPane viewPane = new ViewPane(view);
         this.viewPanes.add(viewPane);
-        this.pageControl.add(viewPane.getControl());
         return viewPane;
     }
 
@@ -156,9 +148,12 @@ public class DefaultApplicationPage implements ApplicationPage,
     private ViewDescriptor getViewDescriptor(String viewDescriptorId) {
         return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
     }
-
+    
+    // Initial Application Page Layout Builder methods
+    
     public void addView(String viewDescriptorId) {
-        addViewPane(getViewDescriptor(viewDescriptorId));
+        ViewPane viewPane = addViewPane(getViewDescriptor(viewDescriptorId));
+        this.pageControl.add(viewPane.getControl());
     }
 
     public View getActiveView() {
