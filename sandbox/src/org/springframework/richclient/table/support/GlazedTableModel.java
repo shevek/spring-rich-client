@@ -34,7 +34,7 @@ import ca.odell.glazedlists.swing.WritableTableFormat;
  * 
  * @author Peter De Bruycker
  */
-public abstract class GlazedTableModel extends EventTableModel {
+public class GlazedTableModel extends EventTableModel {
 
     private static final EventList EMPTY_LIST = new BasicEventList();
 
