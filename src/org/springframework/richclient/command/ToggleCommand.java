@@ -64,7 +64,8 @@ public abstract class ToggleCommand extends ActionCommand {
         return exclusiveController != null;
     }
 
-    public JMenuItem createMenuItem(MenuFactory factory) {
+    public JMenuItem createMenuItem(String faceDescriptorKey,
+            MenuFactory factory, CommandButtonConfigurer buttonConfigurer) {
         JMenuItem menuItem;
         if (isExclusiveGroupMember()) {
             menuItem = factory.createRadioButtonMenuItem();
@@ -72,11 +73,11 @@ public abstract class ToggleCommand extends ActionCommand {
         else {
             menuItem = factory.createCheckBoxMenuItem();
         }
-        attach(menuItem);
+        attach(menuItem, buttonConfigurer);
         return menuItem;
     }
 
-    public AbstractButton createButton(ButtonFactory factory,
+    public AbstractButton createButton(String faceDescriptorKey, ButtonFactory factory,
             CommandButtonConfigurer configurer) {
         AbstractButton button = factory.createToggleButton();
         attach(button, configurer);
