@@ -17,21 +17,24 @@ import org.springframework.util.closure.Constraint;
  */
 public class PetClinicValidationRulesSource extends DefaultRulesSource {
 
-    public PetClinicValidationRulesSource() {
-        addRules(createOwnerRules());
-    }
+	public PetClinicValidationRulesSource() {
+		super();
+		addRules(createOwnerRules());
+	}
 
-    private Rules createOwnerRules() {
-        Rules rules = Rules.createRules(Owner.class);
-        rules.add("firstName", getNamePropertyConstraint());
-        rules.add("lastName", getNamePropertyConstraint());
-        rules.add("address", required());
-        return rules;
-    }
+	private Rules createOwnerRules() {
+		return new Rules(Owner.class) {
+			protected void initRules() {
+				add("firstName", getNameValueConstraint());
+				add("lastName", getNameValueConstraint());
+				add("address", required());
+			}
 
-    private Constraint getNamePropertyConstraint() {
-        return all(new Constraint[] { required(), maxLength(25),
-                regexp("[a-zA-Z]*", "alphabetic") });
-    }
+			private Constraint getNameValueConstraint() {
+				return all(new Constraint[] { required(), maxLength(25), regexp("[a-zA-Z]*", "alphabetic") });
+			}
+
+		};
+	}
 
 }
