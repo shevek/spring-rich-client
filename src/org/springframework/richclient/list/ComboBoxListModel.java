@@ -35,7 +35,7 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
     private Comparator sorter;
 
     public ComboBoxListModel() {
-        this(new ArrayList());
+        this(new ArrayList(9));
     }
 
     public ComboBoxListModel(List items) {

@@ -47,7 +47,7 @@ import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.list.DynamicComboBoxListModel;
 import org.springframework.richclient.list.DynamicListModel;
-import org.springframework.richclient.list.FilteredComboBoxModel;
+import org.springframework.richclient.list.FilteredComboBoxListModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.UnaryPredicate;
@@ -585,7 +585,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     private JComboBox installFilter(JComboBox comboBox, UnaryPredicate filter) {
-        FilteredComboBoxModel model = new FilteredComboBoxModel(comboBox
+        FilteredComboBoxListModel model = new FilteredComboBoxListModel(comboBox
                 .getModel(), filter);
         comboBox.setModel(model);
         return comboBox;

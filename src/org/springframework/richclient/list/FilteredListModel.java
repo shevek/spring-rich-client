@@ -18,8 +18,8 @@ package org.springframework.richclient.list;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
 
 import org.springframework.rules.UnaryPredicate;
 import org.springframework.rules.values.ValueChangeable;
@@ -28,28 +28,31 @@ import org.springframework.rules.values.ValueListener;
 /**
  * @author Keith Donald
  */
-public class FilteredListModel extends AbstractListModel implements Observer,
-        ValueListener {
+public class FilteredListModel extends AbstractFilteredListModel
+        implements Observer, ValueListener {
 
-    private ListModel filteredListModel;
-
-    private UnaryPredicate filter;
+    private UnaryPredicate constraint;
 
     private int[] indexes;
 
     private int filteredSize;
 
-    public FilteredListModel(ListModel listModel, UnaryPredicate filter) {
-        this.filteredListModel = listModel;
-        this.filter = filter;
-        if (this.filter instanceof Observable) {
-            ((Observable)this.filter).addObserver(this);
+    public FilteredListModel(ListModel listModel,
+            UnaryPredicate constraint) {
+        super(listModel);
+        this.constraint = constraint;
+        if (this.constraint instanceof Observable) {
+            ((Observable)this.constraint).addObserver(this);
         }
-        else if (this.filter instanceof ValueChangeable) {
-            ((ValueChangeable)this.filter).addValueListener(this);
+        else if (this.constraint instanceof ValueChangeable) {
+            ((ValueChangeable)this.constraint).addValueListener(this);
         }
-        this.indexes = new int[listModel.getSize()];
-        applyFilter();
+        reallocateIndexes();
+    }
+    
+    protected void reallocateIndexes() {
+        this.indexes = new int[getFilteredModel().getSize()];
+        applyConstraint();
     }
 
     public void valueChanged() {
@@ -57,33 +60,30 @@ public class FilteredListModel extends AbstractListModel implements Observer,
     }
 
     public void update(Observable changed, Object arg) {
-        applyFilter();
+        applyConstraint();
         fireContentsChanged(this, -1, -1);
     }
 
-    protected ListModel getModel() {
-        return filteredListModel;
-    }
-
-    private void applyFilter() {
+    private void applyConstraint() {
         filteredSize = 0;
+        ListModel filteredListModel = getFilteredModel();
         for (int i = 0, j = 0; i < filteredListModel.getSize(); i++) {
             Object element = filteredListModel.getElementAt(i);
-            if (filter.test(element)) {
+            if (constraint.test(element)) {
                 indexes[j] = i;
                 j++;
                 filteredSize++;
                 onMatchingElement(element);
             }
         }
-        onFilterApplied();
+        postConstraintApplied();
     }
 
     protected void onMatchingElement(Object element) {
 
     }
 
-    protected void onFilterApplied() {
+    protected void postConstraintApplied() {
 
     }
 
@@ -92,7 +92,21 @@ public class FilteredListModel extends AbstractListModel implements Observer,
     }
 
     public Object getElementAt(int index) {
-        return filteredListModel.getElementAt(indexes[index]);
+        return getFilteredModel().getElementAt(indexes[index]);
+    }
+
+    public void contentsChanged(ListDataEvent e) {
+        super.contentsChanged(e);
+    }
+
+    public void intervalAdded(ListDataEvent e) {
+        reallocateIndexes();
+        super.intervalAdded(e);
+    }
+
+    public void intervalRemoved(ListDataEvent e) {
+        reallocateIndexes();
+        super.intervalRemoved(e);
     }
 
 }

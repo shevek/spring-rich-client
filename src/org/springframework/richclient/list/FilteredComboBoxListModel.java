@@ -22,17 +22,17 @@ import org.springframework.rules.UnaryPredicate;
 /**
  * @author kdonald
  */
-public class FilteredComboBoxModel extends FilteredListModel implements
+public class FilteredComboBoxListModel extends FilteredListModel implements
         ComboBoxModel {
 
     private boolean matchedSelected;
     
-    public FilteredComboBoxModel(ComboBoxModel filteredModel, UnaryPredicate filter) {
+    public FilteredComboBoxListModel(ComboBoxModel filteredModel, UnaryPredicate filter) {
         super(filteredModel, filter);
     }
     
     protected ComboBoxModel getComboBoxModel() {
-        return (ComboBoxModel)getModel();
+        return (ComboBoxModel)getFilteredModel();
     }
     
     protected void onMatchingElement(Object element) {
@@ -41,7 +41,7 @@ public class FilteredComboBoxModel extends FilteredListModel implements
         }
     }
     
-    protected void onFilterApplied() {
+    protected void postConstraintApplied() {
         if (!matchedSelected) {
             if (getSize() > 0 ) {
                 setSelectedItem(getElementAt(0));

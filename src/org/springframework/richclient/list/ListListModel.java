@@ -205,7 +205,7 @@ public class ListListModel extends AbstractListModel implements List {
     /**
      * Notifies the list model that one of the list elements has changed.
      */
-    public void fireContentsChanged(int index) {
+    protected void fireContentsChanged(int index) {
         fireContentsChanged(index, index);
     }
 
@@ -214,7 +214,7 @@ public class ListListModel extends AbstractListModel implements List {
      * changed. The changed elements are specified by the range startIndex to
      * endIndex inclusive.
      */
-    public void fireContentsChanged(int startIndex, int endIndex) {
+    protected void fireContentsChanged(int startIndex, int endIndex) {
         fireContentsChanged(this, startIndex, endIndex);
     }
 }

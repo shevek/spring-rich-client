@@ -58,13 +58,27 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
                                 .debug("Notifying combo box view selected value changed; new value is '"
                                         + selectedItemHolder.get() + "'");
                     }
+                    //Thread.dumpStack();
                     if (selectedItemHolder.get() == null) {
                         if (size() > 0 && get(0) != null) {
+                            if (logger.isDebugEnabled()) {
+                                logger
+                                        .debug("Backing value model is null; Pre-setting initial value to first combo-box element "
+                                                + get(0));
+                            }
                             setSelectedItem(get(0));
                         }
                     }
                     else {
+                        if (logger.isDebugEnabled()) {
+                            logger
+                                    .debug("Firing contents change event; selected item may have changed");
+                        }
                         fireContentsChanged(this, -1, -1);
+                        if (logger.isDebugEnabled()) {
+                            logger
+                                    .debug("Fired contents change event!");
+                        }
                     }
                 }
             });
@@ -90,8 +104,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
                 logger.debug("Returning selected item "
                         + selectedItemHolder.get());
             }
-            Object item = selectedItemHolder.get();
-            return item;
+            return selectedItemHolder.get();
         }
         else {
             return super.getSelectedItem();
