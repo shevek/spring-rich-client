@@ -478,7 +478,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return comboBox;
     }
 
-    private JComboBox createBoundComboBox(ValueModel selectedItemHolder,
+    public JComboBox createBoundComboBox(ValueModel selectedItemHolder,
             ValueModel selectableItemsHolder, String renderedProperty) {
         Comparator comparator = (renderedProperty != null ? new BeanPropertyComparator(
                 renderedProperty)
