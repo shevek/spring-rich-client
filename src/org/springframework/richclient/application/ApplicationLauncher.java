@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.application;
 
+import java.awt.EventQueue;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -164,7 +166,7 @@ public class ApplicationLauncher {
         try {
             Application application = (Application)applicationContext.getBean(
                     APPLICATION_BEAN_NAME, Application.class);
-            application.openFirstTimeApplicationWindow();
+            application.openFirstApplicationWindow();
             application.getApplicationAdvisor().onPostStartup();
         }
         catch (NoSuchBeanDefinitionException e) {
@@ -204,6 +206,36 @@ public class ApplicationLauncher {
         if (splashScreen != null) {
             logger.debug("Closing splash screen...");
             new SplashScreenCloser(splashScreen);
+        }
+    }
+    
+    /**
+     * Closes the splash screen in the event dispatching (GUI) thread.
+     * 
+     * @author Keith Donald
+     * @see SplashScreen
+     */
+    public static class SplashScreenCloser {
+
+        /**
+         * Closes the currently-displayed, non-null splash screen.
+         * 
+         * @param splashScreen
+         */
+        public SplashScreenCloser(final SplashScreen splashScreen) {
+
+            /*
+             * Removes the splash screen.
+             * 
+             * Invoke this <code> Runnable </code> using <code>
+             * EventQueue.invokeLater </code> , in order to remove the splash screen
+             * in a thread-safe manner.
+             */
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    splashScreen.dispose();
+                }
+            });
         }
     }
 }

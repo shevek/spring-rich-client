@@ -19,6 +19,7 @@ import java.beans.PropertyEditor;
 
 import junit.framework.TestCase;
 import org.springframework.beans.propertyeditors.ClassEditor;
+import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 
 /**
  * Test cases for {@link DefaultPropertyEditorRegistry}

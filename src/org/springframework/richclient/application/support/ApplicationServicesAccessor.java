@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.util.Locale;
 
@@ -22,6 +22,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
@@ -31,7 +34,7 @@ import org.springframework.richclient.image.ImageSource;
 /**
  * @author Keith Donald
  */
-public class ApplicationServicesAccessorSupport {
+public class ApplicationServicesAccessor {
     protected final Log logger = LogFactory.getLog(getClass());
 
     protected Application getApplication() {

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
@@ -27,6 +27,10 @@ import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.command.CommandGroup;

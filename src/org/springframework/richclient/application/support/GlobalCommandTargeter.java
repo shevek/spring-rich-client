@@ -13,10 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.util.Iterator;
 
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.util.Assert;

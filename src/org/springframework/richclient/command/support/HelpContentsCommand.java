@@ -16,7 +16,7 @@
 package org.springframework.richclient.command.support;
 
 import org.springframework.core.io.Resource;
-import org.springframework.richclient.application.HelpContents;
+import org.springframework.richclient.application.support.HelpContents;
 
 /**
  * @author Keith Donald

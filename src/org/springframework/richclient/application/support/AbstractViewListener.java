@@ -13,7 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
+
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewListener;
 
 public abstract class AbstractViewListener implements ViewListener {
     private View activeView;

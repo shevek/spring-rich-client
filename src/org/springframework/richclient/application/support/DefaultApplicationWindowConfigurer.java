@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.Dimension;
 import java.awt.Image;
 
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.util.Assert;
 import org.springframework.util.ToStringCreator;

@@ -36,7 +36,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
+import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
@@ -71,7 +71,7 @@ import org.springframework.util.StringUtils;
  * </ul>
  */
 public abstract class ApplicationDialog extends
-        ApplicationServicesAccessorSupport implements Titleable,
+        ApplicationServicesAccessor implements Titleable,
         Guarded {
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 

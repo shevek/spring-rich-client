@@ -20,8 +20,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
+import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.util.Assert;
 
 /**
@@ -66,7 +68,7 @@ public class Application extends ApplicationObjectSupport {
         this.applicationServices = services;
     }
 
-    protected ApplicationAdvisor getApplicationAdvisor() {
+    public ApplicationAdvisor getApplicationAdvisor() {
         return applicationAdvisor;
     }
 
@@ -99,8 +101,9 @@ public class Application extends ApplicationObjectSupport {
      * @return The application
      */
     public static Application instance() {
-        Assert.notNull(INSTANCE,
-                "The global application instance has not yet been initialized.");
+        Assert
+                .notNull(INSTANCE,
+                        "The global application instance has not yet been initialized.");
         return INSTANCE;
     }
 
@@ -126,7 +129,7 @@ public class Application extends ApplicationObjectSupport {
         }
     }
 
-    void openFirstTimeApplicationWindow() {
+    void openFirstApplicationWindow() {
         openWindow(getApplicationAdvisor().getStartingPageId());
     }
 
@@ -150,7 +153,13 @@ public class Application extends ApplicationObjectSupport {
     }
 
     protected ApplicationWindow createNewWindow() {
-        return (ApplicationWindow)getApplicationContext().getBean(APPLICATION_WINDOW);
+        try {
+            return (ApplicationWindow)getApplicationContext().getBean(
+                    APPLICATION_WINDOW);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            return new DefaultApplicationWindow();
+        }
     }
 
     public WindowManager getWindowManager() {

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.Cursor;
 import java.awt.Image;
@@ -25,6 +25,8 @@ import javax.swing.JFrame;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationInfo;
 
 /**
  * A simple implementation of a help contents frame for an application using

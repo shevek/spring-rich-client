@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
@@ -24,6 +24,13 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.ViewListener;
+import org.springframework.richclient.application.ViewRegistry;
 import org.springframework.richclient.control.SimpleInternalFrame;
 
 /**

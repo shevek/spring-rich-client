@@ -20,8 +20,8 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
-import org.springframework.richclient.application.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
+import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.util.ToStringCreator;
 

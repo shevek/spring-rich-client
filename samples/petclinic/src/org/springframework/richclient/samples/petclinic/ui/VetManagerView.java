@@ -29,7 +29,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 
-import org.springframework.richclient.application.AbstractView;
+import org.springframework.richclient.application.support.AbstractView;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.samples.petclinic.Clinic;

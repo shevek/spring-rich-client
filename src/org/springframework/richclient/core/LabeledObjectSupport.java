@@ -26,7 +26,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
+import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.config.CommandLabelable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.image.config.Imageable;
@@ -40,7 +40,7 @@ import org.springframework.util.ToStringCreator;
  * 
  * @author Keith Donald
  */
-public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
+public class LabeledObjectSupport extends ApplicationServicesAccessor
         implements ManagedElement, CommandLabelable,
         Imageable, Describable, Titleable {
     protected final Log logger = LogFactory.getLog(getClass());

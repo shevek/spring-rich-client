@@ -61,8 +61,8 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
-import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.application.PropertyEditorRegistry;
+import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
@@ -83,7 +83,7 @@ import org.springframework.util.comparator.PropertyComparator;
 /**
  * @author Keith Donald
  */
-public class SwingFormModel extends ApplicationServicesAccessorSupport
+public class SwingFormModel extends ApplicationServicesAccessor
         implements FormModel, PropertyChangePublisher {
 
     private static final String LABEL_MESSAGE_KEY_PREFIX = "label";

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.util.Map;
 
@@ -26,6 +26,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.support.ShowViewCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;

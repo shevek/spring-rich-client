@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -52,6 +52,8 @@ import javax.swing.text.html.ImageView;
 
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationInfo;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CloseAction;

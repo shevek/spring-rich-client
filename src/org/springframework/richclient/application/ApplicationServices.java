@@ -34,6 +34,8 @@ import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.ObjectConfigurer;
+import org.springframework.richclient.application.support.ApplicationContextViewRegistry;
+import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;

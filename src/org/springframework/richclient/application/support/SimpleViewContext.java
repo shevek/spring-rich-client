@@ -13,11 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.util.Assert;
 

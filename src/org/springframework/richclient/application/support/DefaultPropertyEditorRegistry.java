@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.beans.PropertyEditor;
 import java.lang.reflect.Modifier;
@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.ClassEditor;
+import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 

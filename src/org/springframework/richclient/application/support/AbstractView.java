@@ -13,12 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application;
+package org.springframework.richclient.application.support;
 
 import java.awt.Window;
 
 import javax.swing.JComponent;
 
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewContext;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.core.LabeledObjectSupport;

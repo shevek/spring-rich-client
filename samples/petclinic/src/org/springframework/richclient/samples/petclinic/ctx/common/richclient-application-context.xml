@@ -121,16 +121,8 @@
 		</property>
 	</bean>
 	
-	<bean id="applicationWindow" singleton="false"
-		class="org.springframework.richclient.application.DefaultApplicationWindow">
-	</bean>
-
-	<bean id="applicationPage" singleton="false"
-		class="org.springframework.richclient.application.DefaultApplicationPage">
-	</bean>
-
 	<bean id="ownerManagerView"
-		class="org.springframework.richclient.application.DefaultViewDescriptor">
+		class="org.springframework.richclient.application.support.DefaultViewDescriptor">
 		<property name="viewClass">
 			<value>org.springframework.richclient.samples.petclinic.ui.OwnerManagerView</value>
 		</property>
@@ -151,7 +143,7 @@
 	</bean>
 	
 	<bean id="vetManagerView" 
-		class="org.springframework.richclient.application.DefaultViewDescriptor">
+		class="org.springframework.richclient.application.support.DefaultViewDescriptor">
 		<property name="viewClass">
 			<value>org.springframework.richclient.samples.petclinic.ui.VetManagerView</value>
 		</property>

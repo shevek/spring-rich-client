@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
+import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 
 /**
  * A control factory that only creates it's control when requested.
@@ -27,7 +27,7 @@ import org.springframework.richclient.application.ApplicationServicesAccessorSup
  * @author Keith Donald
  */
 public abstract class AbstractControlFactory extends
-        ApplicationServicesAccessorSupport implements ControlFactory {
+        ApplicationServicesAccessor implements ControlFactory {
 
     protected Log logger = LogFactory.getLog(getClass());
 
