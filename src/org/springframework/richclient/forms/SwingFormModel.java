@@ -33,8 +33,6 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
@@ -53,6 +51,7 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.values.AspectAccessStrategy;
 import org.springframework.rules.values.AspectAdapter;
 import org.springframework.rules.values.BufferedValueModel;
+import org.springframework.rules.values.CommitListener;
 import org.springframework.rules.values.CompoundFormModel;
 import org.springframework.rules.values.FormModel;
 import org.springframework.rules.values.MetaAspectAccessStrategy;
@@ -141,6 +140,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.getAspectAccessStrategy().registerCustomEditor(
                 getMetaAspectAccessor().getAspectClass(domainObjectProperty),
                 domainObjectProperty, customPropertyEditor);
+    }
+
+    public void addCommitListener(CommitListener listener) {
+        formModel.addCommitListener(listener);
+    }
+
+    public void removeCommitListener(CommitListener listener) {
+        formModel.removeCommitListener(listener);
     }
 
     public void addValidationListener(ValidationListener listener) {

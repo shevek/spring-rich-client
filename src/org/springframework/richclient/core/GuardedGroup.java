@@ -30,7 +30,7 @@ import org.springframework.rules.values.ValueModel;
  * @author Keith Donald
  */
 public class GuardedGroup implements Guarded {
-    private boolean groupEnabledState;
+    private Boolean groupEnabledState;
 
     private Set guardedGroup;
 
@@ -52,15 +52,19 @@ public class GuardedGroup implements Guarded {
 
     private static class GuardedValueModel implements Guarded {
         private GuardedGroup guardedGroup;
-        
+
         private ValueModel guardedHolder;
 
-        public GuardedValueModel(GuardedGroup guardedGroup, ValueModel valueModel) {
+        public GuardedValueModel(GuardedGroup guardedGroup,
+                ValueModel valueModel) {
             this.guardedGroup = guardedGroup;
             this.guardedHolder = valueModel;
             this.guardedHolder.addValueListener(new ValueListener() {
                 public void valueChanged() {
-                    setEnabled(GuardedValueModel.this.guardedGroup.groupEnabledState);
+                    Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
+                    if (groupEnabled != null) {
+                        setEnabled(groupEnabled.booleanValue());
+                    }
                 }
             });
         }
@@ -93,13 +97,14 @@ public class GuardedGroup implements Guarded {
     };
 
     public void setEnabled(final boolean enabled) {
-        if (this.groupEnabledState == enabled) { return; }
+        if (this.groupEnabledState != null
+                && this.groupEnabledState.booleanValue() == enabled) { return; }
         Algorithms.instance().forEachIn(guardedGroup, new UnaryProcedure() {
             public void run(Object guarded) {
                 ((Guarded)guarded).setEnabled(enabled);
             }
         });
-        this.groupEnabledState = enabled;
+        this.groupEnabledState = Boolean.valueOf(enabled);
     }
 
 }
