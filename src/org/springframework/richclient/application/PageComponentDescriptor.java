@@ -29,4 +29,7 @@ import org.springframework.richclient.core.VisualizedElement;
  */
 public interface PageComponentDescriptor extends PropertyChangePublisher, DescribedElement, VisualizedElement {
     public String getId();
+
+    public PageComponent createPageComponent();
+
 }

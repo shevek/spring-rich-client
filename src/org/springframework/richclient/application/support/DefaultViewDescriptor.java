@@ -29,6 +29,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.support.ShowViewCommand;
@@ -78,7 +79,7 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
         return null;
     }
 
-    public View createView() {
+    public PageComponent createPageComponent() {
         Assert.state(viewClass != null, "View class to instantiate is not set");
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass

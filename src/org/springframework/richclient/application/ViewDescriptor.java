@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
+import org.springframework.richclient.command.ActionCommand;
 
 /**
  * Metadata about a view; a view descriptor is effectively a singleton view
@@ -28,20 +28,6 @@ import org.springframework.richclient.command.config.CommandButtonLabelInfo;
  * @author Keith Donald
  */
 public interface ViewDescriptor extends PageComponentDescriptor {
-
-    /**
-     * Factory method that produces a new instance of the PageComponent
-     * described by this descriptor each time it is called. The new
-     * page component instance is instantiated (it must have a default
-     * constructor), and any configured properties are injected. If the
-     * page component is an instance of ApplicationListener, and an
-     * ApplicationEventMulticaster is configured in this application's
-     * ApplicationContext, the component is registered as an
-     * ApplicationListener.
-     *
-     * @return The new page component prototype
-     */
-    public View createView();
 
     /**
      * Create a command that when executed, will attempt to show the

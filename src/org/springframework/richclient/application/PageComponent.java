@@ -39,4 +39,11 @@ public interface PageComponent extends PropertyChangePublisher, DescribedElement
     public PageComponentContext getContext();
 
     public void dispose();
+
+    public void setContext(PageComponentContext context);
+
+    public void setDescriptor(PageComponentDescriptor pageComponentDescriptor);
+
+    public String getId();
+
 }

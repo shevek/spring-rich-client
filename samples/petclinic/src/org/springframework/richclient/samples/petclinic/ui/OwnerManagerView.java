@@ -36,7 +36,7 @@ import javax.swing.tree.TreePath;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.richclient.application.ViewContext;
+import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.AbstractView;
 import org.springframework.richclient.command.ActionCommand;
@@ -86,7 +86,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         this.ownerLastName = ownerLastName;
     }
 
-    protected void registerLocalCommandExecutors(ViewContext context) {
+    protected void registerLocalCommandExecutors(PageComponentContext context) {
         context.register(GlobalCommandIds.DELETE, deleteExecutor);
         context.register(GlobalCommandIds.PROPERTIES, propertiesExecutor);
     }

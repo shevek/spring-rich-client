@@ -24,25 +24,24 @@ import javax.swing.JComponent;
 
 import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.View;
-import org.springframework.richclient.application.ViewContext;
-import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.PageComponentDescriptor;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 
 public abstract class AbstractView extends AbstractControlFactory implements View {
-    private ViewDescriptor descriptor;
+    private PageComponentDescriptor descriptor;
 
-    private ViewContext context;
+    private PageComponentContext context;
 
-    public void setDescriptor(ViewDescriptor descriptor) {
+    public void setDescriptor(PageComponentDescriptor descriptor) {
         Assert.notNull(descriptor, "The view descriptor is required");
         Assert.state(this.descriptor == null, "A view's descriptor may only be set once");
         this.descriptor = descriptor;
     }
 
-    public final void setContext(ViewContext context) {
+    public final void setContext(PageComponentContext context) {
         Assert.notNull(context, "This view's page component context is required");
         Assert.state(this.context == null, "A view's context may only be set once");
         this.context = context;
@@ -53,7 +52,7 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
         return getDescriptor().getId();
     }
 
-    public ViewDescriptor getDescriptor() {
+    public PageComponentDescriptor getDescriptor() {
         Assert.state(descriptor != null, "View descriptor property is not set; it is required");
         return descriptor;
     }
@@ -101,10 +100,9 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
      * subclasses to register local executors for shared commands with the view
      * context.
      * 
-     * @param context
-     *            the view context
+     * @param context the view context
      */
-    protected void registerLocalCommandExecutors(ViewContext context) {
+    protected void registerLocalCommandExecutors(PageComponentContext context) {
 
     }
 

@@ -34,6 +34,7 @@ import org.springframework.richclient.application.PageLayoutBuilder;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
+import org.springframework.richclient.application.PageComponentDescriptor;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.util.Assert;
 import org.springframework.util.closure.support.AbstractConstraint;
@@ -65,14 +66,14 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
         setDescriptor(pageDescriptor);
     }
 
-    public void setApplicationWindow(ApplicationWindow window) {
+    public final void setApplicationWindow(ApplicationWindow window) {
         Assert.notNull(window, "The containing window is required");
         Assert.state(this.window == null, "Page window already set: it should only be set once, during initialization");
         this.window = window;
         addPageComponentListener(new SharedCommandTargeter(this.window));
     }
 
-    public void setDescriptor(PageDescriptor descriptor) {
+    public final void setDescriptor(PageDescriptor descriptor) {
         Assert.notNull(descriptor, "The page's descriptor is required");
         Assert.state(this.descriptor == null,
                 "Page descriptor already set: it should only be set once, during initialization");
@@ -120,15 +121,15 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
-        PageComponent component = findView(viewDescriptor.getId());
+        PageComponent component = findPageComponent(viewDescriptor.getId());
         if (component == null) {
-            component = createView(viewDescriptor);
+            component = createPageComponent(viewDescriptor);
         }
         setActiveComponent(component);
     }
 
-    private View findView(final String viewDescriptorId) {
-        return (View)new AbstractConstraint() {
+    private PageComponent findPageComponent(final String viewDescriptorId) {
+        return (PageComponent)new AbstractConstraint() {
             public boolean test(Object arg) {
                 if (arg instanceof View) {
                     return ((View)arg).getId().equals(viewDescriptorId);
@@ -149,12 +150,12 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
         return true;
     }
 
-    protected View createView(ViewDescriptor viewDescriptor) {
-        View view = (View)viewDescriptor.createView();
-        view.setContext(new DefaultViewContext(this, new PageComponentPane(view)));
-        pageComponents.add(view);
-        fireOpened(view);
-        return view;
+    protected PageComponent createPageComponent(PageComponentDescriptor pageComponentDescriptor) {
+        PageComponent pageComponent = pageComponentDescriptor.createPageComponent();
+        pageComponent.setContext(new DefaultViewContext(this, new PageComponentPane(pageComponent)));
+        pageComponents.add(pageComponent);
+        fireOpened(pageComponent);
+        return pageComponent;
     }
 
     private ViewDescriptor getViewDescriptor(String viewDescriptorId) {
@@ -166,6 +167,7 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
     }
 
     public boolean closeAllEditors() {
+        // todo
         return true;
     }
 
@@ -196,7 +198,7 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
     // Initial Application Page Layout Builder methods
 
     public void addView(String viewDescriptorId) {
-        View view = createView(getViewDescriptor(viewDescriptorId));
+        PageComponent view = createPageComponent(getViewDescriptor(viewDescriptorId));
         this.control.add(view.getContext().getPane().getControl());
     }
 
