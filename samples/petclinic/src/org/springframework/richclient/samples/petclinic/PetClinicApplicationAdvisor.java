@@ -16,7 +16,7 @@
 package org.springframework.richclient.samples.petclinic;
 
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
-import org.springframework.richclient.application.config.ConfigurableApplicationLifecycle;
+import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
 
 /**
  * Custom application lifecycle implementation that configures the petclinic app
@@ -24,8 +24,8 @@ import org.springframework.richclient.application.config.ConfigurableApplication
  * 
  * @author Keith Donald
  */
-public class PetClinicApplicationLifecycle extends
-        ConfigurableApplicationLifecycle {
+public class PetClinicApplicationAdvisor extends
+        BeanFactoryApplicationAdvisor {
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);

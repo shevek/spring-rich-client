@@ -5,11 +5,11 @@
 	<bean id="application"
   	   class="org.springframework.richclient.application.Application">
   		<constructor-arg index="0">
-  			<ref bean="applicationLifecycle"/>
+  			<ref bean="applicationAdvisor"/>
   		</constructor-arg>
 	</bean>
 
-	<bean id="applicationLifecycle" class="org.springframework.richclient.samples.petclinic.PetClinicApplicationLifecycle">
+	<bean id="applicationAdvisor" class="org.springframework.richclient.samples.petclinic.PetClinicApplicationAdvisor">
 		<property name="applicationInfo"><ref bean="applicationInfo"/></property>
 		<property name="commandFactoryResource"><value>org/springframework/richclient/samples/petclinic/ui/commands-context.xml</value></property>
 		<property name="startingPageId"><value>ownerPerspective</value></property>
