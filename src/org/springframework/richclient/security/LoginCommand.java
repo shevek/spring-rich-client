@@ -102,6 +102,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 JTabbedPane tabbedPane = getComponentFactory()
                         .createTabbedPane();
                 this.loginGeneralPanel = new LoginPanel(authenticationManager);
+                this.loginGeneralPanel.newSingleLineResultsReporter(this, this);
                 getComponentFactory().addConfiguredTab(tabbedPane, "General",
                         loginGeneralPanel.getControl());
                 return tabbedPane;
