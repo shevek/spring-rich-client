@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.EventListenerList;
-
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.util.ListenerListHelper;
 
 /**
  * Helper implementation of the wizard interface.
@@ -45,7 +44,8 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
 
     private WizardContainer container;
 
-    private EventListenerList listeners = new EventListenerList();
+    private ListenerListHelper listeners = new ListenerListHelper(
+            WizardListener.class);
 
     private boolean autoConfigureChildPages = true;
 
@@ -190,8 +190,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         for (int i = 0; i < pages.size(); i++) {
-            if (!((WizardPage)pages.get(i)).isPageComplete())
-                return false;
+            if (!((WizardPage)pages.get(i)).isPageComplete()) return false;
         }
         return true;
     }
@@ -248,43 +247,25 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     }
 
     public void addWizardListener(WizardListener wizardListener) {
-        listeners.add(WizardListener.class, wizardListener);
+        listeners.add(wizardListener);
     }
 
     public void removeWizardListener(WizardListener wizardListener) {
-        listeners.remove(WizardListener.class, wizardListener);
+        listeners.remove(wizardListener);
     }
 
     /**
      * Fires a onPerformFinish event to all listeners.
      */
     protected void fireFinishedPerformed(boolean result) {
-        Object[] array = listeners.getListenerList();
-        for (int i = 0; i < array.length; i++) {
-            WizardListener listener = (WizardListener)array[i];
-            try {
-                listener.onPerformFinish(this, result);
-            }
-            catch (Throwable t) {
-                logger.error(t);
-            }
-        }
+        listeners.fire("onPerformFinish", this, Boolean.valueOf(result));
     }
 
     /**
      * Fires a onPerformCancel event to all listeners.
      */
     protected void fireCancelPerformed(boolean result) {
-        Object[] array = listeners.getListenerList();
-        for (int i = 0; i < array.length; i++) {
-            WizardListener listener = (WizardListener)array[i];
-            try {
-                listener.onPerformCancel(this, result);
-            }
-            catch (Throwable t) {
-                logger.error(t);
-            }
-        }
+        listeners.fire("onPerformCancel", this, Boolean.valueOf(result));
     }
 
     /**
