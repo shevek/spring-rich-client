@@ -22,11 +22,11 @@ import junit.framework.TestCase;
 /**
  * @author Peter De Bruycker
  */
-public class MessageBufferTest extends TestCase {
+public class DefaultMessageAreaModelTests extends TestCase {
 
-    private TestMessageListener ml1;
+    private TestMessageAreaChangeListener ml1;
 
-    private TestMessageListener ml2;
+    private TestMessageAreaChangeListener ml2;
 
     public void testAddAndRemoveMessageListener() {
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
@@ -170,11 +170,11 @@ public class MessageBufferTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        ml1 = new TestMessageListener();
-        ml2 = new TestMessageListener();
+        ml1 = new TestMessageAreaChangeListener();
+        ml2 = new TestMessageAreaChangeListener();
     }
 
-    private static class TestMessageListener implements MessageAreaChangeListener {
+    private static class TestMessageAreaChangeListener implements MessageAreaChangeListener {
 
         private MessageAreaModel lastUpdated;
 
