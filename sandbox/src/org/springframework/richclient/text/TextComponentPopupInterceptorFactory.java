@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.text;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.CommitListener;
@@ -27,10 +27,13 @@ import org.springframework.richclient.form.builder.FormComponentInterceptorFacto
 import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
 
 /**
+ * Adds a right-click popup-menu to JTextComponents.
+ *
  * @author oliverh
+ * @see TextComponentPopup#attachPopup
  */
 public class TextComponentPopupInterceptorFactory implements
-        FormComponentInterceptorFactory {
+    FormComponentInterceptorFactory {
 
     public TextComponentPopupInterceptorFactory() {
     }
@@ -40,19 +43,20 @@ public class TextComponentPopupInterceptorFactory implements
     }
 
     private class TextComponentPopupInterceptor extends
-            AbstractFormComponentInterceptor {
+        AbstractFormComponentInterceptor {
+
         private CommitTrigger resetTrigger;
-        
+
         protected TextComponentPopupInterceptor(FormModel formModel) {
             super(formModel);
         }
 
         public JComponent processComponent(String propertyName,
-                JComponent component) {
+                                           JComponent component) {
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 TextComponentPopup.attachPopup((JTextComponent)innerComp,
-                        getResetTrigger());
+                    getResetTrigger());
             }
             return component;
         }
@@ -83,4 +87,5 @@ public class TextComponentPopupInterceptorFactory implements
             });
         }
     }
+
 }
