@@ -29,6 +29,9 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
     public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
         super(valueModel);
         this.spinner = spinner;
+        if (valueModel.get() != null) {
+            this.spinner.setValue(valueModel.get());
+        }
         this.spinner.addChangeListener(this);
     }
 
