@@ -1,17 +1,31 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright (c) 2002-2004 JGoodies Karsten Lentzsch. All Rights Reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ *  o Redistributions of source code must retain the above copyright notice, 
+ *    this list of conditions and the following disclaimer. 
+ *     
+ *  o Redistributions in binary form must reproduce the above copyright notice, 
+ *    this list of conditions and the following disclaimer in the documentation 
+ *    and/or other materials provided with the distribution. 
+ *     
+ *  o Neither the name of JGoodies Karsten Lentzsch nor the names of 
+ *    its contributors may be used to endorse or promote products derived 
+ *    from this software without specific prior written permission. 
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 package org.springframework.binding.swing;
 
@@ -34,24 +48,23 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A {@link ValueModel}that represents a selection in a list of objects. The
+ * A {@link ValueModel} that represents a selection in a list of objects. The
  * list, the selection, and the selection index are exposed using
  * <code>ValueModel</code>s, so others can observe changes in the list and
  * selection.
  * <p>
  * 
- * This class also implements the {@link ListModel}interface that allows API
+ * This class also implements the {@link ListModel} interface that allows API
  * users to observe fine grained changes in the structure and contents of the
  * list. Hence instances of this class can be used directly as model of a
- * <code>JList</code>. If you want to use a <code>SelectionInList</code>
+ * <code>JList</code>. If you want to use a <code>SelectableItemsListModel</code>
  * with a <code>JComboBox</code> or <code>JTable</code>, you can convert
- * the <code>SelectionInList</code> to the associated component model
- * interfaces using the classes {@link ComboBoxModelAdapter}and
- * {@link ListModelTableModelAdapter}respectively. These classes are part of
- * the Binding library too.
+ * the <code>SelectableItemsListModel</code> to the associated component model
+ * interfaces using the classes {@link ComboBoxModelAdapter} and
+ * {@link AbstractTableModelAdapter} respectively.
  * <p>
  * 
- * The <code>SelectionInList</code> supports two list types as content of its
+ * The <code>SelectableItemsListModel</code> supports two list types as content of its
  * list holder: <code>List</code> and <code>ListModel</code>. The two modes
  * differ in how precise this class can fire events about changes to the content
  * and structure of the list. If you use a <code>List</code>, this class can
@@ -74,12 +87,12 @@ import org.springframework.util.ObjectUtils;
  * <p>
  * 
  * An example for using a <code>ListModel</code> in a
- * <code>SelectionInList</code> is the asynchronous transport of list elements
+ * <code>SelectableItemsListModel</code> is the asynchronous transport of list elements
  * from a server to a client. Let's say you transport the list elements in
  * portions of 10 elements to improve the application's responsiveness. The user
- * can then select and work with the <code>SelectionInList</code> as soon as
+ * can then select and work with the <code>SelectableItemsListModel</code> as soon as
  * the <code>ListModel</code> gets populated. If at a later time new elements
- * are added to the list model, the <code>SelectionInList</code> can retain
+ * are added to the list model, the <code>SelectableItemsListModel</code> can retain
  * the selection index (and selection) and will just report a
  * <code>ListDataEvent</code> about the interval added. <code>JList</code>,
  * <code>JTable</code> and <code>JComboBox</code> will then just add the new
@@ -100,10 +113,10 @@ import org.springframework.util.ObjectUtils;
  * instance. It is easy to violate this constraint, just because the
  * <code>PropertyChangeSupport</code> helper class that is used by many beans
  * checks a changed instance via <code>#equals</code>,<code>==</code>.
- * For example, if you change the SelectionInList's list model from an empty
+ * For example, if you change the SelectableItemsListModel's list model from an empty
  * list <code>L1</code> to another empty list instance <code>L2</code>, the
  * PropertyChangeSupport won't generate a PropertyChangeEvent, and so, the
- * SelectionInList won't know about the change, which may lead to unexpected
+ * SelectableItemsListModel won't know about the change, which may lead to unexpected
  * behavior.
  * <p>
  * 
@@ -116,8 +129,8 @@ import org.springframework.util.ObjectUtils;
  * must fire a PropertyChangeEvent.
  * <p>
  * 
- * @author Keith Donald
  * @author Karsten Lentzsch
+ * @author Keith Donald
  * 
  * @see ValueModel
  * @see List
@@ -166,7 +179,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     /**
      * Holds a copy of the listHolder's value. Used as the old list when the
      * listHolder's value changes. Required because a ValueModel may use
-     * <code>null</code> as old value, but the SelectionInList must know about
+     * <code>null</code> as old value, but the SelectableItemsListModel must know about
      * the old and the new list.
      */
     private Object list;
@@ -217,15 +230,15 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     private int oldSelectionIndex;
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given list using
+     * Constructs a <code>SelectableItemsListModel</code> on the given list using
      * defaults for the selection holder and selection index holder.
      * <p>
      * 
      * <strong>Note: </strong> Favor <code>ListModel</code> over
-     * <code>List</code> when working with the SelectionInList. Why? The
-     * SelectionInList can work with both types. What's the difference?
+     * <code>List</code> when working with the SelectableItemsListModel. Why? The
+     *  can work with both types. What's the difference?
      * ListModel provides all list access features required by the
-     * SelectionInList's. In addition it reports more fine grained change
+     * 's. In addition it reports more fine grained change
      * events, instances of <code>ListDataEvents</code>. In contrast
      * developer often create Lists and operate on them and the ListModel may be
      * inconvenient for these operations.
@@ -244,7 +257,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given item array using
+     * Constructs a <code></code> on the given item array using
      * defaults for the selection holder and selection index holder. The
      * specified array will be converted to a List.
      * <p>
@@ -264,7 +277,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given list model using
+     * Constructs a <code></code> on the given list model using
      * defaults for the selection holder and selection index holder.
      * 
      * @param listModel
@@ -275,7 +288,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given list holder
+     * Constructs a <code></code> on the given list holder
      * using defaults for the selection holder and selection index holder.
      * 
      * @param selectableItemsHolder
@@ -288,7 +301,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given list holder,
+     * Constructs a <code></code> on the given list holder,
      * selection holder and selection index holder.
      * 
      * @param selectableItemsHolder
@@ -304,7 +317,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Constructs a <code>SelectionInList</code> on the given list holder,
+     * Constructs a <code></code> on the given list holder,
      * selection holder and selection index holder.
      * 
      * @param selectableItemsHolder
@@ -463,7 +476,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     }
 
     /**
-     * Clears the selection of this SelectionInList - if any.
+     * Clears the selection - if any.
      */
     public void clearSelection() {
         setSelectionIndex(EMPTY_SELECTION_INDEX);
