@@ -32,7 +32,6 @@ import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.ViewListener;
-import org.springframework.richclient.control.SimpleInternalFrame;
 import org.springframework.util.Assert;
 import org.springframework.util.closure.support.AbstractConstraint;
 
@@ -45,8 +44,6 @@ public class DefaultApplicationPage implements ApplicationPage,
     private ApplicationPageDescriptor pageDescriptor;
 
     private JComponent pageControl;
-
-    private SimpleInternalFrame viewPane;
 
     private ApplicationWindow parentWindow;
 
@@ -129,6 +126,7 @@ public class DefaultApplicationPage implements ApplicationPage,
         this.pageControl.removeAll();
         this.pageControl.add(viewPane.getControl());
         this.pageControl.validate();
+        this.pageControl.repaint();
         viewPane.requestFocusInWindow();
         return true;
     }
