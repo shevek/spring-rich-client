@@ -55,8 +55,9 @@ public class Application extends ApplicationObjectSupport {
             ApplicationAdvisor advisor) {
         setApplicationServices(applicationServices);
         setApplicationAdvisor(advisor);
-        Assert.isTrue(INSTANCE == null,
-                "Only one instance of a Spring Rich Application allowed per VM.");
+        Assert
+                .isTrue(INSTANCE == null,
+                        "Only one instance of a Spring Rich Application allowed per VM.");
         load(this);
     }
 
@@ -103,7 +104,7 @@ public class Application extends ApplicationObjectSupport {
     public static Application instance() {
         Assert
                 .notNull(INSTANCE,
-                        "The global application instance has not yet been initialized.");
+                        "The global rich client application instance has not yet been initialized.");
         return INSTANCE;
     }
 
@@ -133,9 +134,9 @@ public class Application extends ApplicationObjectSupport {
         openWindow(getApplicationAdvisor().getStartingPageId());
     }
 
-    public void openWindow(String pageId) {
+    public void openWindow(String pageDescriptorId) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
-        newWindow.showPage(pageId);
+        newWindow.showPage(pageDescriptorId);
         // @TODO track active window...
         this.activeWindow = newWindow;
     }
@@ -160,14 +161,6 @@ public class Application extends ApplicationObjectSupport {
         catch (NoSuchBeanDefinitionException e) {
             return new DefaultApplicationWindow();
         }
-    }
-
-    public WindowManager getWindowManager() {
-        return windowManager;
-    }
-
-    public void setWindowManager(WindowManager windowManager) {
-        this.windowManager = windowManager;
     }
 
     public ApplicationWindow getActiveWindow() {
