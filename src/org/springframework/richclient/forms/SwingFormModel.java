@@ -352,8 +352,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return bind(component, formProperty, valueCommitPolicy);
     }
 
-    public JTextComponent bind(JTextComponent component, String formProperty,
-            ValueCommitPolicy valueCommitPolicy) {
+    public JTextComponent bind(final JTextComponent component,
+            String formProperty, ValueCommitPolicy valueCommitPolicy) {
         final ValueModel valueModel = getOrCreateValueModel(formProperty);
         component.setText((String)valueModel.get());
         if (isWriteable(formProperty)) {
@@ -368,6 +368,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         else {
             component.setEditable(false);
+            valueModel.addValueListener(new ValueListener() {
+                public void valueChanged() {
+                    component.setText((String)valueModel.get());
+                }
+            });
         }
         return component;
     }

@@ -32,8 +32,7 @@ import org.springframework.rules.values.ValidationListener;
 /**
  * @author Keith Donald
  */
-public class SimpleValidationResultsReporter implements ValidationListener
-{
+public class SimpleValidationResultsReporter implements ValidationListener {
     private static final Log logger = LogFactory
             .getLog(SimpleValidationResultsReporter.class);
 
@@ -88,6 +87,12 @@ public class SimpleValidationResultsReporter implements ValidationListener
         }
     }
 
+    public void clearErrors() {
+        messages.clear();
+        messageAreaPane.setMessage("", null);
+        guarded.setEnabled(true);
+    }
+    
     private void update(ValidationEvent event) {
         if (!event.getFormModel().hasErrors()) {
             messageAreaPane.setMessage("", null);
