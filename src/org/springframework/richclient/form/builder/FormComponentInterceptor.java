@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,13 +15,38 @@
  */
 package org.springframework.richclient.form.builder;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /**
+ * This provides a way to wrap functionality around components and labels.<p />
+ *
+ * Example uses include changing the color when validation fails, or attaching
+ * a richt-click popup menu.
+ *
  * @author oliverh
  */
 public interface FormComponentInterceptor {
+
+    /**
+     * Perform some kind of processing on the label.
+     *
+     * @param propertyName the name of the property that the label is for
+     * @param label        the label to process
+     *
+     * @return the component to use as the label as the result of the processing
+     */
     public JComponent processLabel(String propertyName, JComponent label);
 
-    public JComponent processComponent(String propertyName, JComponent component);
+    /**
+     * Perform some kind of processing on the component.
+     *
+     * @param propertyName the name of the property that the component is for
+     * @param component    the component to process
+     *
+     * @return the component to use as the component as the result of
+     *         the processing
+     */
+    public JComponent processComponent(String propertyName,
+                                       JComponent component);
+
 }
