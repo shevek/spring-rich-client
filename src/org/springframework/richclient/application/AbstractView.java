@@ -43,6 +43,10 @@ public abstract class AbstractView extends AbstractControlFactory implements
         return context;
     }
 
+    public ViewDescriptor getViewDescriptor() {
+        return descriptor;
+    }
+
     protected CommandManager getCommandManager() {
         return context.getApplicationWindow().getCommandManager();
     }

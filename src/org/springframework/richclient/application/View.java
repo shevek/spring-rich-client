@@ -40,4 +40,6 @@ public interface View extends ManagedElement, ControlFactory {
 
     public ViewContext getContext();
 
+    public ViewDescriptor getViewDescriptor();
+
 }
