@@ -17,7 +17,6 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.CommandDelegate;
-import org.springframework.richclient.dialog.CloseAction;
 import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.FormBackedWizardPage;
@@ -76,7 +75,6 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     public void execute() {
         if (wizardDialog == null) {
             wizardDialog = new WizardDialog(this);
-            wizardDialog.setCloseAction(CloseAction.HIDE);
             wizardDialog.setResetMessagePaneOnDisplay(true);
             wizardForm = new CompoundForm(new Owner());
         }

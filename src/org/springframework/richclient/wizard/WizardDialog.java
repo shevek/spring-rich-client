@@ -182,7 +182,7 @@ public class WizardDialog extends TitledApplicationDialog implements
 
     protected void onCancel() {
         if (wizard.performCancel()) {
-            hide();
+            super.onCancel();
         }
     }
 

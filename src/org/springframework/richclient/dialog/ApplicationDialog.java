@@ -31,13 +31,12 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
-import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
@@ -92,7 +91,7 @@ public abstract class ApplicationDialog extends
 
     private Window parent;
 
-    private CloseAction closeAction = CloseAction.DISPOSE;
+    private CloseAction closeAction = CloseAction.HIDE;
 
     private boolean defaultEnabled = true;
 
@@ -230,12 +229,9 @@ public abstract class ApplicationDialog extends
     }
 
     protected Container getDialogContentPane() {
-        Assert.isTrue(isControlCreated());
+        Assert.isTrue(isControlCreated(),
+                "Dialog control has not yet been created.");
         return dialog.getContentPane();
-    }
-
-    protected ApplicationWindow getActiveWindow() {
-        return Application.instance().getActiveWindow();
     }
 
     /**
@@ -304,7 +300,7 @@ public abstract class ApplicationDialog extends
             }
         }
         dialog.getContentPane().setLayout(new BorderLayout());
-        dialog.setDefaultCloseOperation(this.closeAction.getValue());
+        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setResizable(resizable);
         initStandardCommands();
         addCancelByEscapeKey();
@@ -319,7 +315,7 @@ public abstract class ApplicationDialog extends
                         if (getDisplayFinishSuccessMessage()) {
                             showFinishSuccessMessageDialog();
                         }
-                        hide();
+                        executeCloseAction();
                     }
                 }
                 catch (Exception e) {
@@ -415,7 +411,7 @@ public abstract class ApplicationDialog extends
                     "applicationDialog.defaultFinishException", defaultMessage);
         }
         JOptionPane.showMessageDialog(getDialog(), exceptionMessage,
-                Application.instance().getName(), JOptionPane.ERROR_MESSAGE);
+                getApplicationName(), JOptionPane.ERROR_MESSAGE);
     }
 
     protected ActionCommand getFinishCommand() {
@@ -493,10 +489,7 @@ public abstract class ApplicationDialog extends
         });
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                ApplicationDialog.this.onWindowClosing();
-                if (closeAction == CloseAction.DISPOSE) {
-                    dialog = null;
-                }
+                executeCloseAction();
             }
         });
     }
@@ -514,6 +507,13 @@ public abstract class ApplicationDialog extends
         return buttonBar;
     }
 
+    /**
+     * Template getter method to return the commands to populate the dialog
+     * button bar.
+     * 
+     * @return The array of commands (may also be a separator or glue
+     *         identifier)
+     */
     protected Object[] getCommandGroupMembers() {
         return new AbstractCommand[] { getFinishCommand(), getCancelCommand() };
     }
@@ -527,6 +527,9 @@ public abstract class ApplicationDialog extends
         }
     }
 
+    /**
+     * Register the cancel button as the default dialog button.
+     */
     protected final void registerCancelCommandAsDefault() {
         if (isControlCreated()) {
             cancelCommand.setDefaultButtonIn(getDialog());
@@ -592,6 +595,10 @@ public abstract class ApplicationDialog extends
      * Handle a dialog cancellation request.
      */
     protected void onCancel() {
+        executeCloseAction();
+    }
+
+    private void executeCloseAction() {
         if (closeAction == CloseAction.HIDE) {
             hide();
         }

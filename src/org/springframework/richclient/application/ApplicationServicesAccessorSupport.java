@@ -34,6 +34,14 @@ import org.springframework.util.Assert;
 public class ApplicationServicesAccessorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    protected String getApplicationName() {
+        return Application.instance().getName();
+    }
+    
+    protected ApplicationWindow getActiveWindow() {
+        return Application.instance().getActiveWindow();
+    }
+
     protected ApplicationContext getApplicationContext() {
         return Application.services().getApplicationContext();
     }
