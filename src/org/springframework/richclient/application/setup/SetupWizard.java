@@ -31,7 +31,7 @@ public class SetupWizard extends AbstractWizard implements ActionCommandExecutor
     public void execute() {
         if (wizardDialog == null) {
             wizardDialog = new SetupWizardDialog(this);
-            wizardDialog.setPreferredSize(new Dimension(600, 400));
+            wizardDialog.setPreferredSize(new Dimension(500, 300));
         }
         wizardDialog.showDialog();
     }
