@@ -56,6 +56,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     private ActionCommand commitCommand;
 
+    private ActionCommand revertCommand;
+
     protected AbstractForm() {
 
     }
@@ -215,7 +217,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected final JComponent createControl() {
-        initFormCommands();
+        initStandardLocalFormCommands();
         JComponent formControl = createFormControl();
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
         getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
@@ -228,9 +230,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         return formControl;
     }
 
-    private void initFormCommands() {
+    private void initStandardLocalFormCommands() {
         initNewFormObjectCommand();
         initCommitCommand();
+        initRevertCommand();
     }
 
     protected void attachFormErrorGuard(Guarded guarded) {
@@ -279,12 +282,16 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         }
     }
 
-    private ActionCommand getCommitCommand() {
+    protected ActionCommand getNewFormObjectCommand() {
+        return newFormObjectCommand;
+    }
+    
+    protected ActionCommand getCommitCommand() {
         return commitCommand;
     }
 
-    protected void setCommitCommand(ActionCommand commitCommand) {
-        this.commitCommand = commitCommand;
+    protected ActionCommand getRevertCommand() {
+        return revertCommand;
     }
 
     private class FormEnabledStateController implements ValueChangeListener {
@@ -314,7 +321,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     private ActionCommand initNewFormObjectCommand() {
-        String commandId = getNewFormObjectCommandId();
+        String commandId = getNewFormObjectFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
 
         this.newFormObjectCommand = new ActionCommand(commandId) {
@@ -328,32 +335,48 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected final JButton createNewFormObjectButton() {
-        Assert.notNull(newFormObjectCommand, "New form object command has not been created!");
+        Assert.notNull(newFormObjectCommand,
+                "New form object command has not been created!");
         return (JButton)newFormObjectCommand.createButton();
     }
-    
+
     protected final JButton createCommitButton() {
         Assert.notNull(commitCommand, "Commit command has not been created!");
         return (JButton)commitCommand.createButton();
     }
-    
-    protected String getNewFormObjectCommandId() {
+
+    protected String getNewFormObjectFaceConfigurationKey() {
         return "new"
                 + StringUtils.capitalize(ClassUtils.getShortName(getFormModel()
                         .getFormObject().getClass()
                         + "Command"));
     }
 
-    protected String getCommitCommandId() {
+    protected String getCommitFaceConfigurationKey() {
+        return null;
+    }
+
+    protected String getRevertFaceConfigurationKey() {
         return null;
     }
 
     private final ActionCommand initCommitCommand() {
-        String commandId = getCommitCommandId();
+        String commandId = getCommitFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
         this.commitCommand = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().commit();
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+    }
+
+    private final ActionCommand initRevertCommand() {
+        String commandId = getRevertFaceConfigurationKey();
+        if (!StringUtils.hasText(commandId)) { return null; }
+        this.commitCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().revert();
             }
         };
         return (ActionCommand)getCommandConfigurer().configure(commitCommand);
