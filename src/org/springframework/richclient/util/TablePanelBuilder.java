@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,36 +59,20 @@ import com.jgoodies.forms.layout.RowSpec;
  * <strong>Example: </strong> <br>
  * 
  * <pre>
- *    TablePanelBuilder table = new TablePanelBuilder();
- *    table
- *       .row()
- *           .separator("General 1")
- *       .row()
- *           .cell(new JLabel("Company"),"colSpec=right:pref colGrId=labels")
- *           .labelGapCol()
- *           .cell(new JFormattedTextField())
- *       .row()
- *           .cell(new JLabel("Contact"))
- *           .cell(new JFormattedTextField())
- *       .unrelatedGapRow()
- *           .separator("Propeller")
- *       .row()
- *           .cell(new JLabel("PTI [kW]"))
- *           .cell(new JFormattedTextField())
- *           .unrelatedGapCol()
- *           .cell(new JLabel("Description"), "colSpec=right:pref colGrId=labels")
- *           .labelGapCol()
- *           .cell(new JScrollPane(new JTextArea()), "rowspan=3")
- *       .row()
- *           .cell(new JLabel("R [mm]"))
- *           .cell(new JFormattedTextField())
- *           .cell()
- *       .row()
- *           .cell(new JLabel("D [mm]"))
- *           .cell(new JFormattedTextField())
- *           .cell();
+ * TablePanelBuilder table = new TablePanelBuilder();
+ * table.row().separator(&quot;General 1&quot;).row().cell(new JLabel(&quot;Company&quot;),
+ *         &quot;colSpec=right:pref colGrId=labels&quot;).labelGapCol().cell(
+ *         new JFormattedTextField()).row().cell(new JLabel(&quot;Contact&quot;)).cell(
+ *         new JFormattedTextField()).unrelatedGapRow().separator(&quot;Propeller&quot;)
+ *         .row().cell(new JLabel(&quot;PTI [kW]&quot;)).cell(new JFormattedTextField())
+ *         .unrelatedGapCol().cell(new JLabel(&quot;Description&quot;),
+ *                 &quot;colSpec=right:pref colGrId=labels&quot;).labelGapCol().cell(
+ *                 new JScrollPane(new JTextArea()), &quot;rowspan=3&quot;).row().cell(
+ *                 new JLabel(&quot;R [mm]&quot;)).cell(new JFormattedTextField()).cell()
+ *         .row().cell(new JLabel(&quot;D [mm]&quot;)).cell(new JFormattedTextField())
+ *         .cell();
  * 
- *    table.getPanel();
+ * table.getPanel();
  * </pre>
  * 
  * @author oliverh
@@ -114,7 +97,7 @@ public class TablePanelBuilder {
 
     private List rowSpecs = new ArrayList();
 
-    private List rowBitsSets = new ArrayList();
+    private List rowOccupiers = new ArrayList();
 
     private List columnSpecs = new ArrayList();
 
@@ -146,14 +129,14 @@ public class TablePanelBuilder {
 
     private ComponentFactory componentFactory;
 
-    /** 
+    /**
      * Creates a new TablePanelBuilder.
      */
     public TablePanelBuilder() {
         this(new JPanel());
     }
 
-    /** 
+    /**
      * Creates a new TablePanelBuilder which will build in the supplied JPanel
      */
     public TablePanelBuilder(JPanel panel) {
@@ -161,7 +144,7 @@ public class TablePanelBuilder {
     }
 
     /**
-     * Returns the {@link ComponentFactory} that this uses to create things like
+     * Returns the {@link ComponentFactory}that this uses to create things like
      * labels.
      * 
      * @return if not explicitly set, this uses the {@link Application}'s
@@ -175,7 +158,7 @@ public class TablePanelBuilder {
     }
 
     /**
-     * Sets the {@link ComponentFactory} that this uses to create things like
+     * Sets the {@link ComponentFactory}that this uses to create things like
      * labels.
      */
     public void setComponentFactory(ComponentFactory componentFactory) {
@@ -203,7 +186,8 @@ public class TablePanelBuilder {
      * this row.
      * <p>
      * NOTE: no gap row will be inserted if this is called on the first row of
-     * the table.
+     * the table. To have a gap for the first row use of the other "row"
+     * methods.
      */
     public TablePanelBuilder row() {
         if (currentRow == -1) {
@@ -214,20 +198,20 @@ public class TablePanelBuilder {
     }
 
     /**
-     * Inserts a new row. A gap row with specified rowSpec will be inserted
+     * Inserts a new row. A gap row with specified RowSpec will be inserted
      * before this row.
      */
-    public TablePanelBuilder row(String rowSpec) {
-        return row(new RowSpec(rowSpec));
+    public TablePanelBuilder row(String gapRowSpec) {
+        return row(new RowSpec(gapRowSpec));
     }
 
     /**
-     * Inserts a new row. A gap row with specified rowSpec will be inserted
+     * Inserts a new row. A gap row with specified RowSpec will be inserted
      * before this row.
      */
-    public TablePanelBuilder row(RowSpec rowSpec) {
+    public TablePanelBuilder row(RowSpec gapRowSpec) {
         ++currentRow;
-        gapRows.put(new Integer(currentRow), rowSpec);        
+        gapRows.put(new Integer(currentRow), gapRowSpec);
         lastCC = null;
         maxColumns = Math.max(maxColumns, currentCol);
         currentCol = 0;
@@ -334,15 +318,15 @@ public class TablePanelBuilder {
     /**
      * Creates and returns a JPanel with all the given components in it, using
      * the "hints" that were provided to the builder.
-     *
+     * 
      * @return a new JPanel with the components laid-out in it
      */
     public JPanel getPanel() {
         insertMissingSpecs();
         fixColSpans();
-        fillInGaps();
-        //        buildFocusOrder();
+        fillInGaps();        
         fillPanel();
+//        buildFocusOrder();
         return panel;
     }
 
@@ -436,28 +420,47 @@ public class TablePanelBuilder {
         if (currentRow == -1) {
             row();
         }
-        BitSet currentColCells = getRowBitSet(getCurrentRow());
         do {
             ++currentCol;
         }
-        while (currentColCells.get(currentCol));
+        while (getOccupier(currentRow, currentCol) != null);
     }
 
-    private BitSet getRowBitSet(int row) {
-        if (row >= rowBitsSets.size()) {
-            int missingBitSets = (row - rowBitsSets.size()) + 1;
-            for (int i = 0; i < missingBitSets; i++) {
-                rowBitsSets.add(new BitSet());
+    private Cell getOccupier(int row, int col) {
+        List occupiers = getOccupiers(row);
+        if (col >= occupiers.size()) { return null; }
+        return (Cell)occupiers.get(col);
+    }
+
+    private List getOccupiers(int row) {
+        if (row >= rowOccupiers.size()) {
+            int numMissingRows = (row - rowOccupiers.size()) + 1;
+            for (int i = 0; i < numMissingRows; i++) {
+                rowOccupiers.add(new ArrayList());
             }
         }
-        return (BitSet)rowBitsSets.get(row);
+        return (List)rowOccupiers.get(row);
     }
 
     private void markContained(Cell cc) {
-        for (int row = cc.startRow; row <= cc.endRow; row++) {
-            getRowBitSet(row).set(cc.startCol,
-                    cc.endCol < cc.startCol ? cc.startCol + 1 : cc.endCol + 1);
+        setOccupier(cc, cc.startRow, cc.endRow, cc.startCol,
+                cc.endCol < cc.startCol ? cc.startCol : cc.endCol);
+    }
+
+    private void setOccupier(Cell occupier, int startRow, int endRow, int startCol, int endCol) {
+        for (int row = startRow; row <= endRow; row++) {
+            List occupiers = getOccupiers(row);
+            if (endCol >= occupiers.size()) {
+                int numMissingCols = (endCol - occupiers.size()) + 1;
+                for (int i = 0; i < numMissingCols; i++) {
+                    occupiers.add(null);
+                }
+            }
+            for (int i = startCol; i <= endCol; i++) {
+                occupiers.set(i, occupier);
+            }
         }
+        
     }
 
     private Cell createCell(JComponent component, Map attributes) {
@@ -480,8 +483,8 @@ public class TablePanelBuilder {
                     "Attribute 'rowspan' must be an integer.");
         }
 
-        return new Cell(component, getCurrentCol(), getCurrentRow(), colSpan, rowSpan,
-                align + "," + valign);
+        return new Cell(component, getCurrentCol(), getCurrentRow(), colSpan,
+                rowSpan, align + "," + valign);
     }
 
     private void fixColSpans() {
@@ -489,13 +492,13 @@ public class TablePanelBuilder {
             Cell cc = (Cell)i.next();
             if (cc.endCol < cc.startCol) {
                 int endCol = cc.startCol;
-                BitSet currentColCells = getRowBitSet(cc.startRow);
                 while (endCol < maxColumns
-                        && currentColCells.get(endCol + 1) == false) {
+                        && getOccupier(cc.startRow, endCol + 1) == null) {
                     ++endCol;
                 }
                 cc.endCol = endCol;
             }
+            markContained(cc);
         }
     }
 
@@ -526,8 +529,7 @@ public class TablePanelBuilder {
             cc.startCol = ((Integer)adjustedCols.get(cc.startCol - 1))
                     .intValue();
             cc.endCol = ((Integer)adjustedCols.get(cc.endCol - 1)).intValue();
-            cc.startRow = ((Integer)adjustedRows.get(cc.startRow))
-                    .intValue();
+            cc.startRow = ((Integer)adjustedRows.get(cc.startRow)).intValue();
             cc.endRow = ((Integer)adjustedRows.get(cc.endRow)).intValue();
         }
         adjustedColGroupIndices = new int[colGroups.size()][];
@@ -557,26 +559,21 @@ public class TablePanelBuilder {
         }
     }
 
-    //    private void buildFocusOrder() {
-    //        focusOrder = new ArrayList(items.size());
-    //        for (Iterator i = items.iterator(); i.hasNext();) {
-    //            Cell cc = (Cell)i.next();
-    //            if (cc.getComponent() instanceof JComponent) {
-    //                focusOrder.add(cc.getComponent());
-    //            }
-    //        }
-    //        panel.putClientProperty(
-    //                CustomizableFocusTraversalPolicy.FOCUS_ORDER_PROPERTY_NAME,
-    //                focusOrder);
-    //
-    //        if (!(KeyboardFocusManager.getCurrentKeyboardFocusManager()
-    //                .getDefaultFocusTraversalPolicy() instanceof
-    // CustomizableFocusTraversalPolicy)) {
-    //            KeyboardFocusManager.getCurrentKeyboardFocusManager()
-    //                    .setDefaultFocusTraversalPolicy(
-    //                            new CustomizableFocusTraversalPolicy());
-    //        }
-    //    }
+    private void buildFocusOrder() {
+        List focusOrder = new ArrayList(items.size());
+        for (int col = maxColumns; col >= 0; col--) {
+            for (int row = rowOccupiers.size()-1; row >= 0; row--) {
+                
+                Cell currentCell = getOccupier(row, col);
+                if (currentCell != null
+                        && !focusOrder.contains(currentCell.getComponent())) {
+                    focusOrder.add(currentCell.getComponent());
+                }
+            }
+        }
+        CustomizableFocusTraversalPolicy.installCustomizableFocusTraversalPolicy();
+        CustomizableFocusTraversalPolicy.customizeFocusTraversalOrder(panel, focusOrder);
+    }
 
     private void fillPanel() {
         panel.setLayout(createLayout());
@@ -716,7 +713,7 @@ public class TablePanelBuilder {
         }
 
         public CellConstraints getCellConstraints() {
-            return new CellConstraints().xywh(startCol, startRow+1, endCol
+            return new CellConstraints().xywh(startCol, startRow + 1, endCol
                     - startCol + 1, endRow - startRow + 1, align);
         }
     }
