@@ -34,6 +34,9 @@ public interface Settings
 	public void setInt(String key, int value);
 	public int getInt(String key);
 
+	public void setLong(String key, long value);
+	public long getLong(String key);
+
 	public void setDefaultInt(String key, int value);
 	public int getDefaultInt(String key);
 
@@ -81,4 +84,6 @@ public interface Settings
 	public void addPropertyChangeListener(String key, PropertyChangeListener l);
 	public void removePropertyChangeListener(PropertyChangeListener l);
 	public void removePropertyChangeListener(String key, PropertyChangeListener l);
+	
+	public boolean contains(String key);
 }
