@@ -18,17 +18,18 @@ package org.springframework.richclient.dialog;
 import javax.swing.event.EventListenerList;
 
 import org.springframework.rules.reporting.Severity;
+import org.springframework.util.ObjectUtils;
 
 /**
  * A concrete implementation of the MessageReceiver interface. Primarily
  * intended to be used as a delegate for the MessageReceiver functionality of
- * more complex classes. 
+ * more complex classes.
  * 
  * @author oliverh
  * @see SimpleMessageAreaPane
  */
 public class MessageBuffer implements MessageReceiver {
-    
+
     private MessageReceiver delegateFor;
 
     private String message;
@@ -36,11 +37,11 @@ public class MessageBuffer implements MessageReceiver {
     private Severity severity;
 
     private EventListenerList listenerList = new EventListenerList();
-    
+
     public MessageBuffer() {
         this.delegateFor = this;
     }
-    
+
     public MessageBuffer(MessageReceiver delegateFor) {
         this.delegateFor = delegateFor;
     }
@@ -62,6 +63,8 @@ public class MessageBuffer implements MessageReceiver {
     }
 
     public void setMessage(String message, Severity severity) {
+        if (ObjectUtils.nullSafeEquals(this.message, message)
+                && ObjectUtils.nullSafeEquals(this.severity, severity)) { return; }
         this.message = message;
         this.severity = severity;
         fireMessageUpdated();
@@ -69,14 +72,15 @@ public class MessageBuffer implements MessageReceiver {
 
     public void addMessageListener(MessageListener messageListener) {
         listenerList.add(MessageListener.class, messageListener);
-    }    
+    }
 
     public void removeMessageListener(MessageListener messageListener) {
         listenerList.remove(MessageListener.class, messageListener);
-    }    
+    }
 
     protected void fireMessageUpdated() {
-        MessageListener[] listeners = (MessageListener[]) listenerList.getListeners(MessageListener.class);
+        MessageListener[] listeners = (MessageListener[])listenerList
+                .getListeners(MessageListener.class);
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].messageUpdated(delegateFor);
         }
