@@ -124,10 +124,6 @@ public class WizardDialog extends TitledApplicationDialog implements
         super.onAboutToShow();
     }
 
-    protected void onWindowClosing() {
-        currentPage = null;
-    }
-
     /**
      * Allow the wizard's pages to pre-create their page controls. This allows
      * the wizard dialog to open to the correct size.
@@ -162,9 +158,6 @@ public class WizardDialog extends TitledApplicationDialog implements
         this.currentPage.setVisible(true);
     }
 
-    /**
-     * @see com.csi.commons.ui.WizardContainer#getActivePage()
-     */
     public WizardPage getCurrentPage() {
         return currentPage;
     }
@@ -183,16 +176,10 @@ public class WizardDialog extends TitledApplicationDialog implements
         showPage(newPage);
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
-     */
     protected boolean onFinish() {
         return wizard.performFinish();
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.ApplicationDialog#onCancel()
-     */
     protected void onCancel() {
         if (wizard.performCancel()) {
             hide();
