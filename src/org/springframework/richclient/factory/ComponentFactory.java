@@ -196,6 +196,16 @@ public interface ComponentFactory {
     public JCheckBox createCheckBox(String labelKey);
 
     /**
+     * Create a configured checkbox.
+     * 
+     * @param labelKeys
+     *            The label message codes; may also be the label text if no
+     *            message source is configured.
+     * @return The checkbox.
+     */
+    public JCheckBox createCheckBox(String[] labelKeys);
+
+    /**
      * Create a formatted text field using this component factory.
      * 
      * @param formatterFactory

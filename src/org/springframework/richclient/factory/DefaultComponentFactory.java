@@ -32,6 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.enums.CodedEnumResolver;
@@ -125,6 +126,11 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
 
     public JCheckBox createCheckBox(String labelKey) {
         return (JCheckBox)getButtonLabelInfo(getRequiredMessage(labelKey))
+                .configure(createNewCheckBox());
+    }
+
+    public JCheckBox createCheckBox(String[] labelKeys) {
+        return (JCheckBox)getButtonLabelInfo(getRequiredMessage(labelKeys))
                 .configure(createNewCheckBox());
     }
 
@@ -252,6 +258,35 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         }
         else {
             return null;
+        }
+    }
+
+    protected String getRequiredMessage(final String[] messageKeys) {
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageKeys;
+            }
+
+            public Object[] getArguments() {
+                return null;
+            }
+
+            public String getDefaultMessage() {
+                if (messageKeys.length > 0) {
+                    return messageKeys[0];
+                }
+                else {
+                    return "";
+                }
+            }
+        };
+        if (getMessageSourceAccessor() != null) {
+            return getMessageSourceAccessor().getMessage(resolvable);
+        }
+        else {
+            logger.warn("No message source is set; returning key "
+                    + messageKeys[0]);
+            return messageKeys[0];
         }
     }
 

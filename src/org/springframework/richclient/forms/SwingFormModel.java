@@ -275,7 +275,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             String childProperty) {
         MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy)getPropertyAccessStrategy();
         PropertyAdapter adapter = new PropertyAdapter(strategy
-                .newNestedAccessor(parentValueHolder), childProperty);
+                .newPropertyAccessStrategy(parentValueHolder), childProperty);
         return adapter;
     }
 
@@ -513,7 +513,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     protected JCheckBox createNewCheckBox(String labelKey) {
         return getComponentFactory().createCheckBox(
-                labelKey + "." + CHECK_BOX_LABEL_SUFFIX);
+                new String[] { labelKey + "." + CHECK_BOX_LABEL_SUFFIX,
+                        labelKey });
     }
 
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
