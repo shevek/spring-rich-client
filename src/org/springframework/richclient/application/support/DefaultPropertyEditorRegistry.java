@@ -65,8 +65,6 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
         setPropertyEditor(Float.class, DefaultFloatEditor.class);
         setPropertyEditor(double.class, DefaultDoubleEditor.class);
         setPropertyEditor(Double.class, DefaultDoubleEditor.class);
-        setPropertyEditor(boolean.class, DefaultBooleanEditor.class);
-        setPropertyEditor(Boolean.class, DefaultBooleanEditor.class);
         setPropertyEditor(Date.class, DefaultDateEditor.class);
     }
     
