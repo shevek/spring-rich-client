@@ -8,5 +8,20 @@
 Support for selection dialogs, i.e. dialogs that can be used to select an item from a dialog
 showing a list or a tree.
 
+Usage:
+
+<pre>
+        Window parent = ...
+        List items = ...;
+
+        ListSelectionDialog dialog = new ListSelectionDialog("Test Selection", null, items, new StartsWithFilter()) {
+            protected void onSelect(Object selection) {
+                System.out.println("User selected: "+selection);
+            }
+        };
+        
+        dialog.showDialog();        
+</pre>
+
 </body>
 </html>
