@@ -35,8 +35,8 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.PropertyAdapter;
 import org.springframework.rules.Constraint;
+import org.springframework.rules.closure.ClosureWithoutResult;
 import org.springframework.rules.support.Algorithms;
-import org.springframework.rules.support.ClosureWithoutResult;
 import org.springframework.util.Assert;
 
 /**
@@ -186,7 +186,7 @@ public class CompoundFormModel extends AbstractFormModel implements
     public void addValidationListener(final ValidationListener listener) {
         Algorithms.instance().forEach(childFormModels.values(),
                 new ClosureWithoutResult() {
-                    public void doCall(Object formModel) {
+                    public void doCallAction(Object formModel) {
                         ((FormModel)formModel).addValidationListener(listener);
                     }
                 });
@@ -215,7 +215,7 @@ public class CompoundFormModel extends AbstractFormModel implements
     public void removeValidationListener(final ValidationListener listener) {
         Algorithms.instance().forEach(childFormModels.values(),
                 new ClosureWithoutResult() {
-                    public void doCall(Object childFormModel) {
+                    public void doCallAction(Object childFormModel) {
                         ((FormModel)childFormModel)
                                 .removeValidationListener(listener);
                     }
@@ -264,7 +264,7 @@ public class CompoundFormModel extends AbstractFormModel implements
     protected void handleEnabledChange() {
         Algorithms.instance().forEach(childFormModels.values(),
                 new ClosureWithoutResult() {
-                    public void doCall(Object childFormModel) {
+                    public void doCallAction(Object childFormModel) {
                         ((FormModel)childFormModel).setEnabled(isEnabled());
                     }
                 });
@@ -283,7 +283,7 @@ public class CompoundFormModel extends AbstractFormModel implements
         final Map allErrors = new HashMap();
         Algorithms.instance().forEach(childFormModels.values(),
                 new ClosureWithoutResult() {
-                    public void doCall(Object childFormModel) {
+                    public void doCallAction(Object childFormModel) {
                         allErrors.putAll(((FormModel)childFormModel)
                                 .getErrors());
                     }
@@ -311,14 +311,14 @@ public class CompoundFormModel extends AbstractFormModel implements
         if (preEditCommit()) {
             Algorithms.instance().forEach(childFormModels.values(),
                     new ClosureWithoutResult() {
-                        public void doCall(Object childFormModel) {
+                        public void doCallAction(Object childFormModel) {
                             ((FormModel)childFormModel).commit();
                         }
                     });
             if (getBufferChangesDefault()) {
                 Algorithms.instance().forEach(childFormObjectBuffers,
                         new ClosureWithoutResult() {
-                            public void doCall(Object bufferedValueModel) {
+                            public void doCallAction(Object bufferedValueModel) {
                                 ((BufferedValueModel)bufferedValueModel)
                                         .commit();
                             }
@@ -331,7 +331,7 @@ public class CompoundFormModel extends AbstractFormModel implements
     public void revert() {
         Algorithms.instance().forEach(childFormModels.values(),
                 new ClosureWithoutResult() {
-                    public void doCall(Object childFormModel) {
+                    public void doCallAction(Object childFormModel) {
                         ((FormModel)childFormModel).revert();
                     }
                 });

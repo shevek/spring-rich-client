@@ -341,7 +341,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         if (logger.isDebugEnabled()) {
             logger.debug("Number of errors on form is now "
                     + validationErrors.size() + "; errors="
-                    + DefaultObjectStyler.evaluate(validationErrors));
+                    + DefaultObjectStyler.call(validationErrors));
         }
     }
 
@@ -370,7 +370,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         if (logger.isDebugEnabled()) {
             logger.debug("Number of errors on form is now "
                     + validationErrors.size() + "; errors="
-                    + DefaultObjectStyler.evaluate(validationErrors));
+                    + DefaultObjectStyler.call(validationErrors));
         }
     }
 

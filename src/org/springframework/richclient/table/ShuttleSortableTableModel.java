@@ -145,7 +145,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
         int[] modelIndexes = new int[preSortSelectedRows.length];
         if (logger.isDebugEnabled()) {
             logger.debug("Selected row indexes before sort"
-                    + DefaultObjectStyler.evaluate(preSortSelectedRows));
+                    + DefaultObjectStyler.call(preSortSelectedRows));
         }
         for (int i = 0; i < preSortSelectedRows.length; i++) {
             modelIndexes[i] = convertSortedIndexToDataIndex(preSortSelectedRows[i]);
@@ -158,7 +158,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Selected row indexes after sort"
-                    + DefaultObjectStyler.evaluate(postSortSelectedRows));
+                    + DefaultObjectStyler.call(postSortSelectedRows));
         }
         notifyTableChanged();
         return postSortSelectedRows;

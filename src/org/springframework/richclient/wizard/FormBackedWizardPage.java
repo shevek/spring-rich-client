@@ -17,7 +17,7 @@ package org.springframework.richclient.wizard;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.forms.FormPage;
+import org.springframework.richclient.forms.Form;
 
 /**
  * An implementation of WizardPage that delegates to a FormPage for its
@@ -26,7 +26,7 @@ import org.springframework.richclient.forms.FormPage;
  * @author oliverh
  */
 public class FormBackedWizardPage extends AbstractWizardPage {
-    FormPage backingFormPage;
+    Form backingFormPage;
 
     /**
      * Createa a new FormBackedWizardPage
@@ -35,11 +35,11 @@ public class FormBackedWizardPage extends AbstractWizardPage {
      *            the named form page which will provide the control for this
      *            wizard page.
      */
-    public FormBackedWizardPage(FormPage backingFormPage) {
+    public FormBackedWizardPage(Form backingFormPage) {
         this(backingFormPage, true);
     }
 
-    public FormBackedWizardPage(FormPage backingFormPage, boolean autoConfigure) {
+    public FormBackedWizardPage(Form backingFormPage, boolean autoConfigure) {
         super(backingFormPage.getId(), autoConfigure);
         this.backingFormPage = backingFormPage;
     }
@@ -55,14 +55,14 @@ public class FormBackedWizardPage extends AbstractWizardPage {
      *            wizard page.
      */
     public FormBackedWizardPage(String parentPageId,
-            FormPage backingFormPage) {
+            Form backingFormPage) {
         super(parentPageId
                 + (backingFormPage.getId() != null ? "."
                         + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
     
-    protected FormPage getBackingFormPage() {
+    protected Form getBackingFormPage() {
         return backingFormPage;
     }
 

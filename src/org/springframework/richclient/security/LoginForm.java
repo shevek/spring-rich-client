@@ -20,14 +20,14 @@ import javax.swing.JComponent;
 import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
 
-import org.springframework.richclient.forms.AbstractFormPage;
+import org.springframework.richclient.forms.AbstractForm;
 import org.springframework.richclient.forms.BeanFormBuilder;
 import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
 import org.springframework.richclient.forms.SwingFormModel;
 
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LoginForm extends AbstractFormPage {
+public class LoginForm extends AbstractForm {
     private SessionDetails sessionDetails;
 
     private JComponent usernameField;
@@ -47,7 +47,7 @@ public class LoginForm extends AbstractFormPage {
         sessionDetails.setAuthenticationManager(manager);
     }
 
-    protected JComponent createControl() {
+    protected JComponent createFormControl() {
         FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
         BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
                 getFormModel(), layout);

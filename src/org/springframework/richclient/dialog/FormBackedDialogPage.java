@@ -17,7 +17,7 @@ package org.springframework.richclient.dialog;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.forms.FormPage;
+import org.springframework.richclient.forms.Form;
 
 /**
  * An implementation of DialogPage that delegates to a FormPage for its
@@ -26,7 +26,7 @@ import org.springframework.richclient.forms.FormPage;
  * @author oliverh
  */
 public class FormBackedDialogPage extends AbstractDialogPage {
-    private FormPage backingFormPage;
+    private Form backingFormPage;
 
     /**
      * Createa a new FormBackedDialogPage
@@ -35,11 +35,11 @@ public class FormBackedDialogPage extends AbstractDialogPage {
      *            a named form page that will provide the control for this
      *            dialog page
      */
-    public FormBackedDialogPage(FormPage backingFormPage) {
+    public FormBackedDialogPage(Form backingFormPage) {
         this(backingFormPage, true);
     }
 
-    public FormBackedDialogPage(FormPage backingFormPage, boolean autoConfigure) {
+    public FormBackedDialogPage(Form backingFormPage, boolean autoConfigure) {
         super(backingFormPage.getId(), autoConfigure);
         this.backingFormPage = backingFormPage;
     }
@@ -55,14 +55,14 @@ public class FormBackedDialogPage extends AbstractDialogPage {
      *            page.
      */
     public FormBackedDialogPage(String parentPageId,
-            FormPage backingFormPage) {
+            Form backingFormPage) {
         super(parentPageId
                 + (backingFormPage.getId() != null ? "."
                         + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
     
-    protected FormPage getBackingFormPage() {
+    protected Form getBackingFormPage() {
         return backingFormPage;
     }
 

@@ -18,13 +18,13 @@ package org.springframework.richclient.samples.petclinic.ui;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.forms.AbstractFormPage;
+import org.springframework.richclient.forms.AbstractForm;
 import org.springframework.richclient.forms.BeanFormBuilder;
 import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
 
 import com.jgoodies.forms.layout.FormLayout;
 
-public class OwnerGeneralForm extends AbstractFormPage {
+public class OwnerGeneralForm extends AbstractForm {
     public static final String GENERAL_FORM_PAGE = "generalPage";
 
     private JComponent firstNameField;
@@ -33,7 +33,7 @@ public class OwnerGeneralForm extends AbstractFormPage {
         super(formModel, GENERAL_FORM_PAGE);
     }
 
-    protected JComponent createControl() {
+    protected JComponent createFormControl() {
         FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
         BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
                 getFormModel(), layout);

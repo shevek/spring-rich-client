@@ -25,7 +25,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.core.UIConstants;
-import org.springframework.richclient.forms.FormPage;
+import org.springframework.richclient.forms.Form;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 
@@ -92,7 +92,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
      *            the form page to be insterted
      * @return the DialogPage that wraps formPage
      */
-    public DialogPage addForm(FormPage formPage) {
+    public DialogPage addForm(Form formPage) {
         DialogPage page = new FormBackedDialogPage(formPage,
                 !autoConfigureChildPages);
         addPage(page);

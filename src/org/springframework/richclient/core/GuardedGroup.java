@@ -24,8 +24,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.rules.closure.ClosureWithoutResult;
 import org.springframework.rules.support.Algorithms;
-import org.springframework.rules.support.ClosureWithoutResult;
 
 /**
  * @author Keith Donald
@@ -60,7 +60,7 @@ public class GuardedGroup implements Guarded {
         if (this.groupEnabledState != null
                 && this.groupEnabledState.booleanValue() == enabled) { return; }
         Algorithms.instance().forEach(guardedGroup, new ClosureWithoutResult() {
-            protected void doCall(Object guarded) {
+            protected void doCallAction(Object guarded) {
                 ((Guarded)guarded).setEnabled(enabled);
             }
         });

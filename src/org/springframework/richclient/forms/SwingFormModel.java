@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.forms;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +47,7 @@ import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
@@ -75,7 +77,7 @@ import org.springframework.util.comparator.BeanPropertyComparator;
  * @author Keith Donald
  */
 public class SwingFormModel extends ApplicationServicesAccessorSupport
-        implements FormModel {
+        implements FormModel, PropertyChangePublisher {
 
     private static final String CHECK_BOX_LABEL_SUFFIX = "checkBox";
 
@@ -130,15 +132,15 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * @param childPageName
      *            the name to associate the created SwingFormModel with in the
      *            groupingModel
-     * @param parentPropertyFormObjectPath
+     * @param childFormObjectPropertyPath
      *            the path into the groupingModel that the SwingFormModel is for
      * @return The child form model
      */
     public static SwingFormModel createChildPageFormModel(
             NestingFormModel groupingModel, String childPageName,
-            String parentPropertyFormObjectPath) {
+            String childFormObjectPropertyPath) {
         return new SwingFormModel(groupingModel.createChild(childPageName,
-                parentPropertyFormObjectPath));
+                childFormObjectPropertyPath));
     }
 
     public static SwingFormModel createChildPageFormModel(
@@ -183,14 +185,42 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.removeValidationListener(listener);
     }
 
-    public void addValueChangeListener(String formProperty,
-            ValueChangeListener listener) {
-        formModel.addValueChangeListener(formProperty, listener);
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        formModel.addPropertyChangeListener(listener);
     }
 
-    public void removeValueChangeListener(String formProperty,
+    public void addPropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
+        formModel.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        formModel.removePropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
+        formModel.removePropertyChangeListener(propertyName, listener);
+    }
+
+    public void addFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener) {
-        formModel.removeValueChangeListener(formProperty, listener);
+        formModel.addFormValueChangeListener(formPropertyPath, listener);
+    }
+
+    public void removeFormValueChangeListener(String formPropertyPath,
+            ValueChangeListener listener) {
+        formModel.removeFormValueChangeListener(formPropertyPath, listener);
+    }
+
+    public void addFormPropertyChangeListener(String formPropertyPath,
+            PropertyChangeListener listener) {
+        formModel.addFormPropertyChangeListener(formPropertyPath, listener);
+    }
+
+    public void removeFormPropertyChangeListener(String formPropertyPath,
+            PropertyChangeListener listener) {
+        formModel.removeFormPropertyChangeListener(formPropertyPath, listener);
     }
 
     public Object getFormObject() {

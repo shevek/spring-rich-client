@@ -56,11 +56,11 @@ public interface NestingFormModel extends FormModel {
      * the value model at the specified parent property path.
      * 
      * @param childFormModelName
-     * @param parentPropertyFormObjectPath
+     * @param childFormObjectPropertyPath
      * @return The child form model
      */
     public MutableFormModel createChild(String childFormModelName,
-            String parentPropertyFormObjectPath);
+            String childFormObjectPropertyPath);
 
     /**
      * Create a child form model nested by this form model identified by the
@@ -68,11 +68,11 @@ public interface NestingFormModel extends FormModel {
      * the value model at the specified parent property path.
      * 
      * @param childFormModelName
-     * @param parentPropertyFormObjectPath
+     * @param childFormObjectPropertyPath
      * @return The child form model
      */
     public NestingFormModel createCompoundChild(String childFormModelName,
-            String parentPropertyFormObjectPath);
+            String childFormObjectPropertyPath);
 
     /**
      * Create a child form model nested by this form model identified by the

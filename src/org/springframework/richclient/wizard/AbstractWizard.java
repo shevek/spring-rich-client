@@ -24,7 +24,7 @@ import javax.swing.event.EventListenerList;
 
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.forms.FormPage;
+import org.springframework.richclient.forms.Form;
 
 /**
  * Helper implementation of the wizard interface.
@@ -159,7 +159,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
      *            the form page to be insterted
      * @return the WizardPage that wraps formPage
      */
-    public WizardPage addForm(FormPage formPage) {
+    public WizardPage addForm(Form formPage) {
         WizardPage page = new FormBackedWizardPage(formPage,
                 !autoConfigureChildPages);
         addPage(page);

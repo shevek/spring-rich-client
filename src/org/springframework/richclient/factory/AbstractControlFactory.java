@@ -35,15 +35,15 @@ public abstract class AbstractControlFactory extends
 
     private JComponent control;
 
-    protected boolean isSingleton() {
+    protected final boolean isSingleton() {
         return singleton;
     }
 
-    protected void setSingleton(boolean singleton) {
+    protected final void setSingleton(boolean singleton) {
         this.singleton = singleton;
     }
 
-    public JComponent getControl() {
+    public final JComponent getControl() {
         if (isSingleton()) {
             if (control == null) {
                 this.control = createControl();
@@ -55,7 +55,7 @@ public abstract class AbstractControlFactory extends
         }
     }
 
-    public boolean isControlCreated() {
+    public final boolean isControlCreated() {
         if (isSingleton()) {
             return control != null;
         }

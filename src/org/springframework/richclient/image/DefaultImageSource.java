@@ -86,7 +86,7 @@ public class DefaultImageSource implements ImageSource {
     private void debugPrintResources() {
         if (logger.isDebugEnabled()) {
             logger.debug("Initialing image source with resources: "
-                    + DefaultObjectStyler.evaluate(this.imageResources));
+                    + DefaultObjectStyler.call(this.imageResources));
         }
     }
 

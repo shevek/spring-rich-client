@@ -25,8 +25,7 @@ import org.springframework.richclient.factory.ControlFactory;
 /**
  * @author Keith Donald
  */
-public interface FormPage 
-extends ControlFactory {
+public interface Form extends ControlFactory {
     public String getId();
 
     public SwingFormModel getFormModel();

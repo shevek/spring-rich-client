@@ -15,15 +15,21 @@
  */
 package org.springframework.binding.form;
 
+import java.beans.PropertyChangeListener;
 import java.util.Map;
 
+import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 /**
  * @author Keith Donald
  */
-public interface FormModel {
+public interface FormModel extends PropertyChangePublisher {
+    public static final String ENABLED_PROPERTY = "enabled";
+
+    public static final String DIRTY_PROPERTY = "dirty";
+
     public ValueModel getFormObjectHolder();
 
     public Object getFormObject();
@@ -52,11 +58,17 @@ public interface FormModel {
 
     public void revert();
 
-    public void addValueChangeListener(String formPropertyPath,
+    public void addFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener);
 
-    public void removeValueChangeListener(String formPropertyPath,
+    public void removeFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener);
+
+    public void addFormPropertyChangeListener(String formPropertyPath,
+            PropertyChangeListener listener);
+
+    public void removeFormPropertyChangeListener(String formPropertyPath,
+            PropertyChangeListener listener);
 
     public void addValidationListener(ValidationListener listener);
 
