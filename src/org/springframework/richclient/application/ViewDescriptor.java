@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.support.ShowViewCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.util.Assert;
 
@@ -57,8 +58,6 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     /**
      * Sets the map of properties to inject when new view instances
      * are instantiated by this descriptor.
-     *
-     * @param viewClass
      */
     public void setViewProperties(Map viewProperties) {
         this.viewProperties = viewProperties;
@@ -142,27 +141,4 @@ public class ViewDescriptor extends LabeledObjectSupport implements
         return new ShowViewCommand(this, window);
     }
 
-    public static class ShowViewCommand extends ActionCommand {
-        private ApplicationWindow window;
-
-        private ViewDescriptor viewDescriptor;
-
-        public ShowViewCommand(ViewDescriptor viewDescriptor,
-                ApplicationWindow window) {
-            super(viewDescriptor.getDisplayName());
-            setLabel(viewDescriptor.getLabel());
-            setIcon(viewDescriptor.getImageIcon());
-            setCaption(viewDescriptor.getCaption());
-            this.viewDescriptor = viewDescriptor;
-            this.window = window;
-            setEnabled(true);
-        }
-
-        protected void doExecuteCommand() {
-            if (this.window == null) {
-                this.window = Application.instance().getActiveWindow();
-            }
-            this.window.showViewOnPage(viewDescriptor);
-        }
-    }
 }
