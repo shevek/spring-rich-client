@@ -23,8 +23,10 @@ import javax.swing.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.form.builder.AbstractFormBuilder;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
+import org.springframework.richclient.forms.SwingFormModel;
 
 /**
  * This provides an easy way to create panels using a {@link GridBagLayout}.
@@ -53,7 +55,7 @@ import org.springframework.richclient.factory.ComponentFactory;
  * @see #setShowGuidelines(boolean)
  * @see #setComponentFactory(ComponentFactory)
  */
-public class GridBagLayoutBuilder {
+public class GridBagLayoutBuilder extends AbstractFormBuilder {
     private static final Log LOG = LogFactory
         .getLog(GridBagLayoutBuilder.class);
 
@@ -63,8 +65,6 @@ public class GridBagLayoutBuilder {
 
     private boolean autoSpanLastComponent = true;
 
-    private ComponentFactory componentFactory;
-
     private int currentCol;
 
     private List rows;
@@ -73,13 +73,21 @@ public class GridBagLayoutBuilder {
 
     private int maxCol = 0;
 
-
     public GridBagLayoutBuilder() {
+        super(SwingFormModel.createUnbufferedFormModel(new Object()));
+        init();
+    }
+
+    public GridBagLayoutBuilder(SwingFormModel swingFormModel) {
+        super(swingFormModel);
+        init();
+    }
+
+    private void init() {
         currentCol = 0;
         rows = new ArrayList();
         currentRowList = new ArrayList();
     }
-
 
     /**
      * Returns the default {@link Insets}used when adding components
@@ -88,14 +96,12 @@ public class GridBagLayoutBuilder {
         return defaultInsets;
     }
 
-
     /**
      * Sets the default {@link Insets}used when adding components
      */
     public void setDefaultInsets(Insets defaultInsets) {
         this.defaultInsets = defaultInsets;
     }
-
 
     /**
      * Returns the current row (zero-based) that the builder is putting
@@ -105,7 +111,6 @@ public class GridBagLayoutBuilder {
         return rows.size();
     }
 
-
     /**
      * Returns the current column (zero-based) that the builder is putting
      * components in
@@ -113,31 +118,6 @@ public class GridBagLayoutBuilder {
     public int getCurrentCol() {
         return currentCol;
     }
-
-
-    /**
-     * Returns the {@link ComponentFactory}that this uses to create things like
-     * labels.
-     *
-     * @return if not explicitly set, this uses the {@link Application}'s
-     */
-    public ComponentFactory getComponentFactory() {
-        if (this.componentFactory == null) {
-            this.componentFactory = Application.services()
-                .getComponentFactory();
-        }
-        return this.componentFactory;
-    }
-
-
-    /**
-     * Sets the {@link ComponentFactory}that this uses to create things like
-     * labels.
-     */
-    public void setComponentFactory(ComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
-    }
-
 
     /**
      * Appends the given component to the end of the current line, using the
@@ -150,7 +130,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder append(Component component) {
         return append(component, 1, 1);
     }
-
 
     /**
      * Appends the given component to the end of the current line, using the
@@ -166,7 +145,6 @@ public class GridBagLayoutBuilder {
                                        int rowSpan) {
         return append(component, 1, 1, 0.0, 0.0);
     }
-
 
     /**
      * Appends the given component to the end of the current line, using the
@@ -186,7 +164,6 @@ public class GridBagLayoutBuilder {
         return append(component, colSpan, rowSpan, expandX, expandY,
             defaultInsets);
     }
-
 
     /**
      * Appends the given component to the end of the current line
@@ -213,7 +190,6 @@ public class GridBagLayoutBuilder {
             return append(component, colSpan, rowSpan, 0.0, 0.0, insets);
     }
 
-
     /**
      * Appends the given component to the end of the current line, using the
      * default insets
@@ -235,7 +211,6 @@ public class GridBagLayoutBuilder {
         return append(component, colSpan, rowSpan, xweight, yweight,
             defaultInsets);
     }
-
 
     /**
      * Appends the given component to the end of the current line
@@ -265,7 +240,6 @@ public class GridBagLayoutBuilder {
         return this;
     }
 
-
     /**
      * Appends the given label to the end of the current line. The label does
      * not "grow."
@@ -277,7 +251,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendLabel(JLabel label) {
         return appendLabel(label, 1);
     }
-
 
     /**
      * Appends the given label to the end of the current line. The label does
@@ -291,7 +264,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendLabel(JLabel label, int colSpan) {
         return append(label, colSpan, 1, false, false);
     }
-
 
     /**
      * Appends a right-justified label to the end of the given line, using the
@@ -307,7 +279,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendRightLabel(String labelKey) {
         return appendRightLabel(labelKey, 1);
     }
-
 
     /**
      * Appends a right-justified label to the end of the given line, using the
@@ -327,11 +298,10 @@ public class GridBagLayoutBuilder {
         return appendLabel(label, colSpan);
     }
 
-
     /**
      * Appends a left-justified label to the end of the given line, using the
      * provided string as the key to look in the
-     * {@link #setComponentFactory(ComponentFactory) ComponentFactory's}message
+     * {@link #setComponentFactory(ComponentFactory) ComponentFactory's} message
      * bundle for the text to use.
      *
      * @param labelKey the key into the message bundle; if not found the key is used
@@ -342,7 +312,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendLeftLabel(String labelKey) {
         return appendLeftLabel(labelKey, 1);
     }
-
 
     /**
      * Appends a left-justified label to the end of the given line, using the
@@ -362,7 +331,6 @@ public class GridBagLayoutBuilder {
         return appendLabel(label, colSpan);
     }
 
-
     /**
      * Appends the given component to the end of the current line. The component
      * will "grow" horizontally as space allows.
@@ -374,7 +342,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendField(Component component) {
         return appendField(component, 1);
     }
-
 
     /**
      * Appends the given component to the end of the current line. The component
@@ -389,6 +356,59 @@ public class GridBagLayoutBuilder {
         return append(component, colSpan, 1, true, false);
     }
 
+    /**
+     * Appends a label and field to the end of the current line.<p />
+     *
+     * The label will be to the left of the field, and be right-justified.<br />
+     * The field will "grow" horizontally as space allows.<p />
+     *
+     * @param propertyName the name of the property to create the controls for
+     *
+     * @return "this" to make it easier to string together append calls
+     *
+     * @see SwingFormModel#createLabel(String)
+     * @see SwingFormModel#createBoundControl(String)
+     * @see FormComponentInterceptor#processComponent(String, JComponent)
+     * @see FormComponentInterceptor#processLabel(String, JComponent)
+     */
+    public GridBagLayoutBuilder appendLabeledField(String propertyName) {
+        final JComponent field = processComponent(propertyName,
+            getDefaultComponent(propertyName));
+
+        final JLabel label = (JLabel)processLabel(propertyName,
+            getLabelFor(propertyName, field));
+        label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+
+        return this.appendLabel(label).appendField(field);
+    }
+
+    /**
+     * Appends a label and field to the end of the current line.<p />
+     *
+     * The label will be to the left of the field, and be right-justified.<br />
+     * The field will "grow" horizontally as space allows.<p />
+     *
+     * @param propertyName the name of the property to create the controls for
+     * @param colSpan      the number of columns the field should span
+     *
+     * @return "this" to make it easier to string together append calls
+     *
+     * @see SwingFormModel#createLabel(String)
+     * @see SwingFormModel#createBoundControl(String)
+     * @see FormComponentInterceptor#processComponent(String, JComponent)
+     * @see FormComponentInterceptor#processLabel(String, JComponent)
+     */
+    public GridBagLayoutBuilder appendLabeledField(String propertyName,
+                                                   int colSpan) {
+        final JComponent field = processComponent(propertyName,
+            getDefaultComponent(propertyName));
+
+        final JLabel label = (JLabel)processLabel(propertyName,
+            getLabelFor(propertyName, field));
+        label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+
+        return this.appendLabel(label).appendField(field, colSpan);
+    }
 
     /**
      * Appends a seperator (usually a horizonal line). Has an implicit
@@ -399,7 +419,6 @@ public class GridBagLayoutBuilder {
     public GridBagLayoutBuilder appendSeparator() {
         return appendSeparator(null);
     }
-
 
     /**
      * Appends a seperator (usually a horizonal line) using the provided string
@@ -414,11 +433,10 @@ public class GridBagLayoutBuilder {
         if (this.currentRowList.size() > 0) {
             nextLine();
         }
-        final JComponent separator = getComponentFactory()
-            .createLabeledSeparator(labelKey);
+        final JComponent separator =
+            getComponentFactory().createLabeledSeparator(labelKey);
         return append(separator, 1, 1, true, false).nextLine();
     }
-
 
     /**
      * Ends the current line and starts a new one
@@ -436,7 +454,6 @@ public class GridBagLayoutBuilder {
         this.currentCol = 0;
         return this;
     }
-
 
     private GridBagConstraints createGridBagConstraint(int colSpan,
                                                        int rowSpan,
@@ -461,14 +478,12 @@ public class GridBagLayoutBuilder {
         return gbc;
     }
 
-
     /**
      * Should this show "guidelines"? Useful for debugging layouts.
      */
     public void setShowGuidelines(boolean showGuidelines) {
         this.showGuidelines = showGuidelines;
     }
-
 
     /**
      * Creates and returns a JPanel with all the given components in it, using
@@ -491,7 +506,6 @@ public class GridBagLayoutBuilder {
         }
         return panel;
     }
-
 
     private void addRow(final List row, final int currentRowIndex,
                         final int lastRowIndex, final JPanel panel) {
@@ -516,7 +530,6 @@ public class GridBagLayoutBuilder {
             panel.add(item.component, gbc);
         }
     }
-
 
     private String getDebugString(Component component, GridBagConstraints gbc) {
         final StringBuffer buffer = new StringBuffer();
@@ -553,14 +566,12 @@ public class GridBagLayoutBuilder {
         return buffer.toString();
     }
 
-
     private void formatLastRow(final GridBagConstraints gbc) {
         // remove any insets at the bottom of the GBC
         final Insets oldInset = gbc.insets;
         gbc.insets =
             new Insets(oldInset.top, oldInset.left, 0, oldInset.right);
     }
-
 
     /**
      * Should the last column before a {@link #nextLine()}automaticly span to
@@ -581,7 +592,6 @@ public class GridBagLayoutBuilder {
     public void setAutoSpanLastComponent(boolean autoSpanLastComponent) {
         this.autoSpanLastComponent = autoSpanLastComponent;
     }
-
 
     private void formatLastColumn(final GridBagConstraints gbc,
                                   final int currentColIndex) {
@@ -613,7 +623,6 @@ public class GridBagLayoutBuilder {
         public Component component;
 
         public GridBagConstraints gbc;
-
 
         public Item(Component component, GridBagConstraints gbc) {
             this.component = component;
