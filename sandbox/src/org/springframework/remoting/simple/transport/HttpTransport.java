@@ -18,6 +18,7 @@ package org.springframework.remoting.simple.transport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -94,14 +95,20 @@ public class HttpTransport extends AbstractTransport {
             int responseCode = conn.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
-                        "Error contecting to server. HTTP response code ["
+                        "Error connecting to server. HTTP response code ["
                                 + responseCode + "], response message ["
                                 + conn.getResponseMessage() + "].");
             }
 
             return conn;
         } catch (IOException e) {
-            throw new SimpleRemotingException(SimpleRemotingException.MAYBE,
+            SimpleRemotingException.Recoverable recoverable;
+            if (e instanceof ConnectException) {
+                recoverable = SimpleRemotingException.YES;
+            } else {
+                recoverable  = SimpleRemotingException.MAYBE;
+            }
+            throw new SimpleRemotingException(recoverable,
                     "Error attempting to connect to server", e);
         } finally {
             if (os != null) {

@@ -16,11 +16,14 @@
 
 package org.springframework.remoting.simple.protocol;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.rmi.server.UID;
 
 import org.springframework.remoting.simple.SimpleRemotingException;
 import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
@@ -35,9 +38,7 @@ public class DefaultProtocol implements Protocol {
 
     public void writeRequest(OutputStream os, Request request)
             throws IOException {
-        ProtocolVersion.write(getProtocolVersion(), os);
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        oos.writeObject(request);
+        write(os, request);
     }
 
     public Request readRequest(InputStream is, Recoverable recoverable) {
@@ -53,12 +54,6 @@ public class DefaultProtocol implements Protocol {
         write(os, reply);
     }
 
-    public void writeReply(OutputStream os, Object reply) throws IOException {
-        ProtocolVersion.write(getProtocolVersion(), os);
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        oos.writeObject(reply);
-    }
-
     public Reply readReply(InputStream is, Recoverable recoverable) {
         Object reply = read(is, recoverable);
         if (reply instanceof Reply) {
@@ -68,32 +63,15 @@ public class DefaultProtocol implements Protocol {
         } else {
             throw new SimpleRemotingException(
                     "Received unexpected reply type [" + reply == null ? "null"
-                            : reply.getClass() + "]");
+                            : reply.getClass() + "].");
         }
     }
 
     private void write(OutputStream os, Object value) throws IOException {
-        ProtocolVersion.write(getProtocolVersion(), os);
+        writeHeader(os);
         ObjectOutputStream oos = new ObjectOutputStream(os);
         oos.writeObject(value);
-    }
-
-    private Object read(InputStream is, Recoverable recoverable) {
-        try {
-            checkProtocolVersion(ProtocolVersion.read(is, recoverable),
-                    recoverable);
-            ObjectInputStream ois = new ObjectInputStream(is);
-            Object in = ois.readObject();
-
-            return in;
-        } catch (ClassNotFoundException e) {
-            throw new SimpleRemotingException(recoverable,
-                    "Unable deserialize input stream", e);
-        } catch (IOException e) {
-            throw new SimpleRemotingException(recoverable,
-                    "Unable deserialize input stream", e);
-        }
-    }
+    }    
 
     private Object read(InputStream is, Class expectedClass,
             Recoverable recoverable) {
@@ -107,19 +85,48 @@ public class DefaultProtocol implements Protocol {
                     null);
         }
         return in;
+    }    
+
+    private Object read(InputStream is, Recoverable recoverable) {
+        try {
+            readHeader(is, recoverable);
+            ObjectInputStream ois = new ObjectInputStream(is);
+            Object in = ois.readObject();
+
+            return in;
+        } catch (ClassNotFoundException e) {
+            throw new SimpleRemotingException(recoverable,
+                    "Unable deserialize input stream", e);
+        } catch (IOException e) {
+            throw new SimpleRemotingException(recoverable,
+                    "Unable deserialize input stream", e);
+        }
+    }    
+    
+    protected void writeHeader(OutputStream os) throws IOException {
+        DataOutputStream dos = new DataOutputStream(os);
+        ProtocolVersion.write(getProtocolVersion(), dos);
+        new UID().write(dos);
+        dos.flush();
+    }    
+
+    protected void readHeader(InputStream is, Recoverable recoverable) throws IOException {
+        DataInputStream dis = new DataInputStream(is);
+        checkProtocolVersion(ProtocolVersion.read(dis, recoverable),
+                recoverable);
+        UID.read(dis);
     }
 
     protected ProtocolVersion getProtocolVersion() {
         return version;
     }
 
-    private void checkProtocolVersion(ProtocolVersion wireVersion,
+    protected void checkProtocolVersion(ProtocolVersion wireVersion,
             Recoverable recoverable) {
         if (!wireVersion.getProtocol().equals(
                 getProtocolVersion().getProtocol())) {
             throw new SimpleRemotingException(recoverable, "Protocol version ["
-                    + wireVersion.toString() + "] is not supported");
+                    + wireVersion.toString() + "] is not supported.");
         }
     }
-
 }

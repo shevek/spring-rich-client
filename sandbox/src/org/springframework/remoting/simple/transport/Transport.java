@@ -17,7 +17,6 @@ package org.springframework.remoting.simple.transport;
 
 import java.lang.reflect.Method;
 
-
 /**
  * @author oliverh
  */
@@ -25,10 +24,14 @@ public interface Transport {
 
     public Object invokeRemoteMethod(Class serviceInterface, Method method,
             Object[] args) throws Throwable;
-    
-    public void setAuthenticationCallback(AuthenticationCallback authenticationCallback);
-    
+
+    public void setRetryDecisionManager(
+            RetryDecisionManager retryDecisionManager);
+
+    public void setAuthenticationCallback(
+            AuthenticationCallback authenticationCallback);
+
     public void addInvocationListener(InvocationListener invocationListener);
-    
+
     public void addProgressListener(ProgressListener progressListener);
 }

@@ -38,5 +38,5 @@ public interface Protocol {
     public void writeReply(OutputStream os, Reply reply) throws IOException;
 
     public void writeException(OutputStream os,
-            SimpleRemotingException exception) throws IOException;;
+            SimpleRemotingException exception) throws IOException;
 }

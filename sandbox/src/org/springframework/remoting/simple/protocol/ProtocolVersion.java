@@ -18,8 +18,6 @@ package org.springframework.remoting.simple.protocol;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.springframework.remoting.simple.SimpleRemotingException;
 import org.springframework.remoting.simple.SimpleRemotingException.Recoverable;
@@ -31,11 +29,11 @@ public class ProtocolVersion {
         
     private static final String PROTOCOL_MAGIC = "simple";
     
-    String protocol;
+    private String protocol;
 
-    int majorVersion;
+    private int majorVersion;
 
-    int minorVersion;
+    private int minorVersion;
 
     public ProtocolVersion(String protocol, int majorVersion, int minorVersion) {
         this.protocol = protocol;
@@ -59,29 +57,26 @@ public class ProtocolVersion {
         return protocol + " v" + majorVersion + "." + minorVersion;
     }
 
-    public static void write(ProtocolVersion version, OutputStream os)
+    public static void write(ProtocolVersion version, DataOutputStream dos)
             throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
         dos.writeUTF(PROTOCOL_MAGIC);
         dos.writeUTF(version.getProtocol());
         dos.writeInt(version.getMajorVersion());
         dos.writeInt(version.getMinorVersion());
     }
 
-    public static ProtocolVersion read(InputStream is,
-            Recoverable recoverable) {
-        DataInputStream dis;
+    public static ProtocolVersion read(DataInputStream dis,
+            Recoverable recoverable) {        
         try {
-            dis = new DataInputStream(is);
             if (!dis.readUTF().equals(PROTOCOL_MAGIC)) {
                 throw new SimpleRemotingException(recoverable,
                         "InputStream returned incorrect magic number. "
-                                + "Check InputStream is configured correctly.");
+                                + "Check Protocol is configured correctly.");
             }
         } catch (IOException e) {
             throw new SimpleRemotingException(recoverable,
                     "Unable to read magic number. "
-                            + "Check InputStream is configured correctly.", e);
+                            + "Check Protocol is configured correctly.", e);
         }
 
         try {
