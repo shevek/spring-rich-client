@@ -29,7 +29,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.config.ApplicationLifecycle;
+import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBar;
@@ -67,11 +67,11 @@ public class ApplicationWindow implements PersistableElement {
 
     public ApplicationWindow(int number) {
         this.number = number;
-        getLifecycle().onPreWindowOpen(getWindowConfigurer());
-        this.commandManager = getLifecycle().getCommandManager();
-        this.menuBarCommandGroup = getLifecycle().getMenuBarCommandGroup();
-        this.toolBarCommandGroup = getLifecycle().getToolBarCommandGroup();
-        this.statusBarCommandGroup = getLifecycle().getStatusBarCommandGroup();
+        getLifecycleAdvisor().onPreWindowOpen(getWindowConfigurer());
+        this.commandManager = getLifecycleAdvisor().getCommandManager();
+        this.menuBarCommandGroup = getLifecycleAdvisor().getMenuBarCommandGroup();
+        this.toolBarCommandGroup = getLifecycleAdvisor().getToolBarCommandGroup();
+        this.statusBarCommandGroup = getLifecycleAdvisor().getStatusBarCommandGroup();
     }
 
     public int getNumber() {
@@ -98,8 +98,8 @@ public class ApplicationWindow implements PersistableElement {
         return Application.locator();
     }
 
-    protected ApplicationLifecycle getLifecycle() {
-        return getApplication().getLifecycle();
+    protected ApplicationAdvisor getLifecycleAdvisor() {
+        return getApplication().getAdvisor();
     }
 
     protected DefaultApplicationWindowConfigurer getWindowConfigurer() {
@@ -127,9 +127,9 @@ public class ApplicationWindow implements PersistableElement {
         if (page == activePage) { return; }
         if (control == null) {
             this.control = createWindowControl(page);
-            getLifecycle().showIntroIfNecessary(this);
+            getLifecycleAdvisor().showIntroIfNecessary(this);
             this.control.setVisible(true);
-            getLifecycle().onWindowOpened(this);
+            getLifecycleAdvisor().onWindowOpened(this);
         }
         this.activePage = page;
         this.pageId = pageId;
@@ -176,7 +176,7 @@ public class ApplicationWindow implements PersistableElement {
         control.pack();
         control.setSize(getInitialSize());
         control.setLocationRelativeTo(null);
-        getLifecycle().onWindowCreated(this);
+        getLifecycleAdvisor().onWindowCreated(this);
         return control;
     }
 
@@ -217,7 +217,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     public void close() {
-        getLifecycle().preWindowClose(this);
+        getLifecycleAdvisor().preWindowClose(this);
         control.dispose();
         control = null;
         if (windowManager != null) {

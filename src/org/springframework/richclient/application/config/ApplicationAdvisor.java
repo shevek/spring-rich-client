@@ -15,7 +15,10 @@
  */
 package org.springframework.richclient.application.config;
 
+import java.awt.Image;
+
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationInfo;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
@@ -25,15 +28,45 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
 /**
  * @author Keith Donald
  */
-public abstract class ApplicationLifecycle {
+public abstract class ApplicationAdvisor {
+    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationImage.default";
+
     private Application application;
+
+    private ApplicationInfo applicationInfo;
 
     private ApplicationWindow managedWindow;
 
     private boolean introShown;
-    
+
+    public void setApplicationInfo(ApplicationInfo info) {
+        this.applicationInfo = info;
+    }
+
     public void onPreInitialize(Application application) {
         this.application = application;
+    }
+
+    protected final Application getApplication() {
+        return application;
+    }
+
+    public String getApplicationName() {
+        if (applicationInfo != null) {
+            return applicationInfo.getDisplayName();
+        }
+        else {
+            return "Spring Rich Client Application";
+        }
+    }
+
+    public Image getApplicationImage() {
+        if (applicationInfo != null) {
+            return applicationInfo.getImage();
+        }
+        else {
+            return getApplication().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+        }
     }
 
     public void onPreStartup() {
@@ -48,6 +81,8 @@ public abstract class ApplicationLifecycle {
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         this.managedWindow = configurer.getWindow();
+        configurer.setTitle(getApplicationName());
+        configurer.setImage(getApplicationImage());
     }
 
     protected final ApplicationWindow getManagedWindow() {
@@ -80,9 +115,9 @@ public abstract class ApplicationLifecycle {
             introShown = true;
         }
     }
-    
+
     protected void showIntro(ApplicationWindow window) {
-        
+
     }
 
     public void onWindowOpened(ApplicationWindow window) {

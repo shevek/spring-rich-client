@@ -33,9 +33,8 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.richclient.application.config.ApplicationLifecycle;
+import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.application.config.JGoodiesLooksConfigurer;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
@@ -43,10 +42,10 @@ import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
 import org.springframework.richclient.image.AwtImageResource;
-import org.springframework.richclient.image.ImageSource;
-import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.DefaultIconSource;
+import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.IconSource;
+import org.springframework.richclient.image.ImageSource;
 import org.springframework.rules.DefaultRulesSource;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
@@ -65,8 +64,8 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class Application extends ApplicationObjectSupport implements
-        MessageSource, ImageSource, IconSource, RulesSource,
-        ObjectConfigurer, CommandConfigurer {
+        MessageSource, ImageSource, IconSource, RulesSource, ObjectConfigurer,
+        CommandConfigurer {
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -102,16 +101,16 @@ public class Application extends ApplicationObjectSupport implements
 
     private WindowManager windowManager = new WindowManager();
 
-    private ApplicationLifecycle lifecycle;
-
-    private ApplicationInfo applicationInfo;
+    private ApplicationAdvisor advisor;
 
     private Map attributes;
-    
-    public Application(ApplicationLifecycle lifecycle) {
-        setLifecycle(lifecycle);
-        Assert.isTrue(sharedInstance == null,
-                "Only one instance of a RCP Application allowed per VM.");
+
+    public Application(ApplicationAdvisor advisor) {
+        setAdvisor(advisor);
+        Assert
+                .isTrue(
+                    sharedInstance == null,
+                    "Only one instance of a rich client application instance is allowed per Java VM.");
         load(this);
     }
 
@@ -125,41 +124,26 @@ public class Application extends ApplicationObjectSupport implements
      * @return The application
      */
     public static Application locator() {
-        Assert
-                .notNull(sharedInstance,
-                        "The global application instance has not yet been initialized.");
+        Assert.notNull(sharedInstance,
+            "The global application instance has not yet been initialized.");
         return sharedInstance;
     }
 
     public String getName() {
-        if (applicationInfo != null) {
-            return applicationInfo.getDisplayName();
-        }
-        else {
-            return "Spring Rich Client Application";
-        }
+        return advisor.getApplicationName();
     }
 
     public Image getImage() {
-        if (applicationInfo != null) {
-            return applicationInfo.getImage();
-        }
-        else {
-            return null;
-        }
+        return advisor.getApplicationImage();
     }
 
-    void setLifecycle(ApplicationLifecycle lifecycle) {
-        Assert.notNull(lifecycle);
-        this.lifecycle = lifecycle;
+    private void setAdvisor(ApplicationAdvisor advisor) {
+        Assert.notNull(advisor);
+        this.advisor = advisor;
     }
 
-    ApplicationLifecycle getLifecycle() {
-        return lifecycle;
-    }
-
-    public void setApplicationInfo(ApplicationInfo applicationInfo) {
-        this.applicationInfo = applicationInfo;
+    protected ApplicationAdvisor getAdvisor() {
+        return advisor;
     }
 
     public ComponentFactory getComponentFactory() {
@@ -179,28 +163,28 @@ public class Application extends ApplicationObjectSupport implements
         Assert.notNull(registry);
         this.viewRegistry = registry;
     }
-    
+
     protected Map getAttributes() {
         if (attributes == null) {
             attributes = new HashMap();
         }
         return attributes;
     }
-    
+
     public void setAttribute(String attributeName, Object attribute) {
         getAttributes().put(attributeName, attribute);
     }
-    
+
     public Object getAttribute(String attributeName) {
         return getAttributes().get(attributeName);
     }
 
     protected void initApplicationContext() throws BeansException {
-        getLifecycle().onPreInitialize(this);
+        getAdvisor().onPreInitialize(this);
         initStandardServices();
-        getLifecycle().onPreStartup();
+        getAdvisor().onPreStartup();
         openFirstTimeApplicationWindow();
-        getLifecycle().onStarted();
+        getAdvisor().onStarted();
     }
 
     protected void initStandardServices() {
@@ -217,7 +201,7 @@ public class Application extends ApplicationObjectSupport implements
     private void initImageSource() {
         try {
             this.imageSource = (ImageSource)getApplicationContext().getBean(
-                    IMAGE_SOURCE_BEAN_KEY);
+                IMAGE_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No image source bean found in context under name '"
@@ -229,7 +213,7 @@ public class Application extends ApplicationObjectSupport implements
     private void initIconSource() {
         try {
             this.iconSource = (IconSource)getApplicationContext().getBean(
-                    ICON_SOURCE_BEAN_KEY);
+                ICON_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No icon source bean found under name "
@@ -259,7 +243,7 @@ public class Application extends ApplicationObjectSupport implements
         if (rulesSource == null) {
             try {
                 rulesSource = (RulesSource)getApplicationContext().getBean(
-                        RULES_SOURCE_BEAN_KEY);
+                    RULES_SOURCE_BEAN_KEY);
             }
             catch (NoSuchBeanDefinitionException e) {
                 logger.info("No rule source found in context under name '"
@@ -312,14 +296,13 @@ public class Application extends ApplicationObjectSupport implements
             logger
                     .info("No look and feel configurer found in context under name '"
                             + LOOK_AND_FEEL_CONFIGURER_BEAN_KEY
-                            + "'; configuring defaults.");
-            new JGoodiesLooksConfigurer().setPlasticLookAndFeel(null);
+                            + "'; not configuring L&F...");
         }
     }
 
     protected void openFirstTimeApplicationWindow() {
         ApplicationWindow mainWindow = createNewWindow();
-        mainWindow.openPage(getLifecycle().getStartingPageId());
+        mainWindow.openPage(getAdvisor().getStartingPageId());
         this.activeWindow = mainWindow;
     }
 
@@ -384,7 +367,7 @@ public class Application extends ApplicationObjectSupport implements
     public String getMessage(String code, Object[] args, String defaultMessage,
             Locale locale) {
         return getApplicationContext().getMessage(code, args, defaultMessage,
-                locale);
+            locale);
     }
 
     public Image getImage(String key) {

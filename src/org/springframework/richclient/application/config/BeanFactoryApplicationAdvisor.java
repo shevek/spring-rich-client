@@ -27,21 +27,18 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 
 /**
  * @author Keith Donald
  */
-public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
+public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
     private String commandManagerBeanName = "commandManager";
 
     private String toolBarBeanName = "toolBar";
 
     private String menuBarBeanName = "menuBar";
-
-    private ApplicationInfo applicationInfo;
 
     private String startingPageId;
 
@@ -49,21 +46,8 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
 
     private XmlBeanFactory currentWindowCommands;
 
-    public ConfigurableApplicationLifecycle() {
-
-    }
-
-    public void setApplicationInfo(ApplicationInfo info) {
-        this.applicationInfo = info;
-    }
-
     public void setCommandFactoryResource(Resource resource) {
         this.commandFactoryResource = resource;
-    }
-
-    public void onPreInitialize(Application application) {
-        super.onPreInitialize(application);
-        application.setApplicationInfo(applicationInfo);
     }
 
     public String getStartingPageId() {
@@ -90,12 +74,6 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
         this.toolBarBeanName = toolbarBeanName;
     }
 
-    public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
-        super.onPreWindowOpen(configurer);
-        configurer.setTitle(applicationInfo.getDisplayName());
-        configurer.setImage(applicationInfo.getImage());
-    }
-
     public CommandManager getCommandManager() {
         this.currentWindowCommands = new XmlBeanFactory(commandFactoryResource,
                 Application.locator().getApplicationContext());
@@ -119,13 +97,12 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
                     String beanName) {
                 return bean;
             }
-
         };
     }
 
     private void registerBeanPostProcessors() throws BeansException {
         String[] beanNames = getBeanFactory().getBeanDefinitionNames(
-                BeanPostProcessor.class);
+            BeanPostProcessor.class);
         if (beanNames.length > 0) {
             List beanProcessors = new ArrayList();
             for (int i = 0; i < beanNames.length; i++) {
@@ -134,9 +111,13 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
             Collections.sort(beanProcessors, new OrderComparator());
             for (Iterator it = beanProcessors.iterator(); it.hasNext();) {
                 getBeanFactory().addBeanPostProcessor(
-                        (BeanPostProcessor)it.next());
+                    (BeanPostProcessor)it.next());
             }
         }
+    }
+
+    public void onPreInitialize(Application application) {
+        super.onPreInitialize(application);
     }
 
     public CommandGroup getMenuBarCommandGroup() {
