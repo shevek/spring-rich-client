@@ -136,7 +136,7 @@
 		</zip>
 	</target>
 
-	<target name="alljars" depends="modulejars,fulljar,srczip" description="Create all JAR files"/>
+	<target name="alljars" depends="modulejars,fulljar,sandboxjar,srczip" description="Create all JAR files"/>
 
 	<target name="javadoc" description="Generate framework Javadocs.">
 		<mkdir dir="${javadocs.dir}"/>
