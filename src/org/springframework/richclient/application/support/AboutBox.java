@@ -16,39 +16,22 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.ImageView;
 
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -57,12 +40,14 @@ import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CloseAction;
+import org.springframework.richclient.text.HtmlPane;
 import org.springframework.util.FileCopyUtils;
 
 /**
  * An implementation of an about box..
  * 
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
 public class AboutBox {
 
@@ -147,11 +132,11 @@ public class AboutBox {
     /**
      * A panel that scrolls the content of a HTML document.
      * 
-     * @author oliverh
+     * @author Oliver Hutchison
      */
     private class HtmlScroller extends JViewport {
 
-        private JTextPane htmlPane;
+        private HtmlPane htmlPane;
 
         private Timer timer;
 
@@ -162,8 +147,6 @@ public class AboutBox {
         private double currentY = 0;
 
         private double currentX = 0;
-
-        private boolean inLink;
 
         /**
          * Created a new HtmlScroller.
@@ -182,37 +165,15 @@ public class AboutBox {
 
             incY = (double)speedPixSec / (double)fps;
 
-            htmlPane = antiAlias ? new AntiAliasedTextPane() : new JTextPane();
-            htmlPane.setEnabled(false);
-            htmlPane.setEditable(false);
-            htmlPane.setEditorKit(new NotLazyHTMLEditorKit());
-            htmlPane.addMouseListener(new MouseAdapter() {
-                public void mouseExited(MouseEvent e) {
-                    if (inLink) {
-                        exitedLink();
-                    }
-                }
-
-                public void mouseEntered(MouseEvent e) {
-                    if (inLink) {
-                        enteredLink();
-                    }
-                }
-            });
+            htmlPane = new HtmlPane();
+            htmlPane.setAntiAlias(antiAlias);
             htmlPane.addHyperlinkListener(new HyperlinkListener() {
                 public void hyperlinkUpdate(HyperlinkEvent e) {
-
                     if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
-                        inLink = true;
                         enteredLink();
                     }
                     else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
-                        inLink = false;
                         exitedLink();
-                    }
-                    else if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                        System.out.println(e.getURL()); // XXX need to open a
-                        // browser
                     }
                 }
             });
@@ -234,10 +195,8 @@ public class AboutBox {
          * Sets the HTML that will be rendered by this component.
          */
         public void setHtml(String html) {
-
             htmlPane.setText(html);
             setPreferredSize(htmlPane.getPreferredSize());
-            installLaFStyleSheet();
         }
 
         /**
@@ -273,60 +232,12 @@ public class AboutBox {
             super.setViewPosition(p);
         }
 
-        public void installLaFStyleSheet() {
-            Font defaultFont = UIManager.getFont("Button.font");
-
-            String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: "
-                    + defaultFont.getSize() + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName()
-                    + "; font-size: " + defaultFont.getSize() + "pt;  }";
-
-            HTMLDocument doc = (HTMLDocument)htmlPane.getDocument();
-            try {
-                doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
-            }
-            catch (IOException e) {
-            }
-        }
-
         private void enteredLink() {
             pauseScrolling();
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
 
         private void exitedLink() {
             startScrolling();
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
-    }
-
-    private static class NotLazyHTMLEditorKit extends HTMLEditorKit {
-
-        public Document createDefaultDocument() {
-            HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
-            doc.setAsynchronousLoadPriority(-1);
-            return doc;
-        }
-
-        public ViewFactory getViewFactory() {
-            return new HTMLFactory() {
-                public View create(Element elem) {
-                    View view = super.create(elem);
-                    if (view instanceof ImageView) {
-                        ((ImageView)view).setLoadsSynchronously(true);
-                    }
-                    return view;
-
-                }
-            };
-        }
-    }
-
-    private static class AntiAliasedTextPane extends JTextPane {
-        public void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D)g;
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            super.paintComponent(g2);
         }
     }
 }

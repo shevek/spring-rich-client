@@ -15,19 +15,12 @@
  */
 package org.springframework.richclient.application.setup;
 
-import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -35,6 +28,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.ExclusiveCommandGroup;
 import org.springframework.richclient.command.ToggleCommand;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
+import org.springframework.richclient.text.HtmlPane;
 import org.springframework.richclient.util.LabelUtils;
 import org.springframework.richclient.wizard.AbstractWizardPage;
 import org.springframework.util.Assert;
@@ -47,7 +41,7 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
 
     private ExclusiveCommandGroup licenseAcceptGroup;
 
-    private JEditorPane licenseTextPane;
+    private HtmlPane licenseTextPane;
 
     private Resource licenseTextLocation;
 
@@ -95,26 +89,8 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
     }
 
     protected void initLicenseTextPane() {
-        this.licenseTextPane = new JTextPane();
-        licenseTextPane.setEditable(false);
-        licenseTextPane.setEditorKit(new HTMLEditorKit());
-        licenseTextPane.setContentType("text/html");
-        installLaFStyleSheet();
+        this.licenseTextPane = new HtmlPane();
         updateLicenseTextPane();
-    }
-
-    private void installLaFStyleSheet() {
-        Font defaultFont = UIManager.getFont("Button.font");
-        String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
-                + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: "
-                + defaultFont.getSize() + "pt;  }";
-
-        HTMLDocument doc = (HTMLDocument)licenseTextPane.getDocument();
-        try {
-            doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
-        }
-        catch (IOException e) {
-        }
     }
 
     private void updateLicenseTextPane() {

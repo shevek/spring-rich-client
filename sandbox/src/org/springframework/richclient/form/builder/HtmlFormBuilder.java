@@ -16,12 +16,7 @@
 package org.springframework.richclient.form.builder;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,26 +26,20 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.html.FormView;
 import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.ImageView;
 
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.text.HtmlPane;
+import org.springframework.richclient.text.SynchronousHTMLEditorKit;
 
 /**
- * @author oliverh
+ * @author Oliver Hutchison
  */
 public class HtmlFormBuilder extends AbstractFormBuilder {
 
@@ -66,7 +55,7 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
         super(formModel);
         formViewMap = new HashMap();
         panel = new JPanel(new BorderLayout());
-        htmlPane = new JTextPane();
+        htmlPane = new HtmlPane();
         panel.add(htmlPane);
         htmlPane.setEditorKit(new InternalHTMLEditorKit());
         htmlPane.setFocusCycleRoot(false);
@@ -81,52 +70,12 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
 
             }
         });
-        htmlPane.addMouseListener(new MouseAdapter() {
-            public void mouseExited(MouseEvent e) {
-                if (inLink) {
-                    exitedLink();
-                }
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                if (inLink) {
-                    enteredLink();
-                }
-            }
-        });
-        htmlPane.addHyperlinkListener(new HyperlinkListener() {
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-
-                if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
-                    inLink = true;
-                    enteredLink();
-                }
-                else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
-                    inLink = false;
-                    exitedLink();
-                }
-                else if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                    System.out.println(e.getURL()); // XXX need to open a
-                    // browser
-                }
-            }
-        });
         setHtml(html);
-    }
-
-    private void enteredLink() {
-        Application.instance().getActiveWindow().getControl().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }
-
-    private void exitedLink() {
-        Application.instance().getActiveWindow().getControl().setCursor(
-                Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void setHtml(String html) {
         htmlPane.setText(html);
         htmlPane.setEditable(false);
-        installLaFStyleSheet((HTMLDocument)htmlPane.getDocument());
 
         for (Iterator i = formViewMap.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry)i.next();
@@ -157,35 +106,13 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
         return panel;
     }
 
-    public void installLaFStyleSheet(HTMLDocument doc) {
-        Font defaultFont = UIManager.getFont("Button.font");
-
-        String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
-                + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: "
-                + defaultFont.getSize() + "pt;  }";
-        try {
-            doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
-        }
-        catch (IOException e) {
-        }
-    }
-
-    private class InternalHTMLEditorKit extends HTMLEditorKit {
-
-        public Document createDefaultDocument() {
-            HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
-            doc.setAsynchronousLoadPriority(-1);
-            return doc;
-        }
+    private class InternalHTMLEditorKit extends SynchronousHTMLEditorKit {
 
         public ViewFactory getViewFactory() {
             return new HTMLFactory() {
                 public View create(Element elem) {
                     View view = super.create(elem);
-                    if (view instanceof ImageView) {
-                        ((ImageView)view).setLoadsSynchronously(true);
-                    }
-                    else if (view instanceof FormView) {
+                    if (view instanceof FormView) {
                         formViewMap.put(elem, view);
                     }
                     return view;
