@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
@@ -37,7 +38,7 @@ import org.springframework.util.Assert;
 
 /**
  * Provides a standard implementation of {@link ViewDescriptor}.
- * 
+ *
  * @author Keith Donald
  */
 public class DefaultViewDescriptor extends LabeledObjectSupport implements InitializingBean, ViewDescriptor,
@@ -83,7 +84,7 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements Initi
         Assert.notNull(viewClass, "The viewClass property must be specified");
     }
 
-    public View createView() {
+    public PageComponent createPageComponent() {
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
@@ -113,11 +114,11 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements Initi
         return view;
     }
 
-    public CommandButtonLabelInfo getShowViewCommandLabel() {
+    public CommandButtonLabelInfo getShowPageComponentCommandLabel() {
         return getLabel();
     }
 
-    public ActionCommand createShowViewCommand(ApplicationWindow window) {
+    public ActionCommand createShowPageComponentCommand(ApplicationWindow window) {
         return new ShowViewCommand(this, window);
     }
 

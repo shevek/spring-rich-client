@@ -16,11 +16,20 @@
 package org.springframework.richclient.application;
 
 import org.springframework.binding.value.PropertyChangePublisher;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.VisualizedElement;
 
-public interface PageComponentDescriptor extends PropertyChangePublisher,
-        DescribedElement, VisualizedElement {
+/**
+ * Metadata about a page component; a page component is effectively a
+ * singleton page component definition. A descriptor also acts as a factory
+ * which produces new instances of a given page component when requested,
+ * typically by a requesting application page. A page component descriptor
+ * can also produce a command which launches a page component for display
+ * on the page within the current active window.
+ */
+public interface PageComponentDescriptor extends PropertyChangePublisher, DescribedElement, VisualizedElement {
 
     public String getId();
 
@@ -37,5 +46,18 @@ public interface PageComponentDescriptor extends PropertyChangePublisher,
      * @return The new page component prototype
      */
     public PageComponent createPageComponent();
+
+    /**
+     * Create a command that when executed, will attempt to show the
+     * page component described by this descriptor in the provided
+     * application window.
+     *
+     * @param window The window
+     *
+     * @return The show page component command.
+     */
+    public ActionCommand createShowPageComponentCommand(ApplicationWindow window);
+
+    public CommandButtonLabelInfo getShowPageComponentCommandLabel();
 
 }

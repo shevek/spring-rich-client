@@ -47,7 +47,7 @@ public class ShowViewMenu extends CommandGroup implements ApplicationWindowAware
         ViewDescriptor[] views = Application.services().getViewDescriptorRegistry().getViewDescriptors();
         for (int i = 0; i < views.length; i++) {
             ViewDescriptor view = views[i];
-            addInternal(view.createShowViewCommand(window));
+            addInternal(view.createShowPageComponentCommand(window));
         }
     }
 }

@@ -41,7 +41,7 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
 
     public final void setViewDescriptor(ViewDescriptor viewDescriptor) {
         setId(viewDescriptor.getDisplayName());
-        setLabel(viewDescriptor.getShowViewCommandLabel());
+        setLabel(viewDescriptor.getShowPageComponentCommandLabel());
         setIcon(viewDescriptor.getIcon());
         setCaption(viewDescriptor.getCaption());
         this.viewDescriptor = viewDescriptor;
