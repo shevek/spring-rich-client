@@ -29,6 +29,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
@@ -283,9 +284,18 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
     private void initStandardCommands() {
         finishCommand = new ActionCommand(getFinishFaceConfigurationKey()) {
             public void doExecuteCommand() {
-                boolean result = onFinish();
-                if (result) {
-                    hide();
+                try {
+                    boolean result = onFinish();
+                    if (result) {
+                        hide();
+                    }
+                }
+                catch (Exception e) {
+                    logger
+                            .warn(
+                                "Exception occured executing dialog finish command.",
+                                e);
+                    onFinishException(e);
                 }
             }
         };
@@ -313,7 +323,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
     private void addCancelByEscapeKey() {
         int noModifiers = 0;
         KeyStroke escapeKey = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
-                noModifiers, false);
+            noModifiers, false);
         addActionKeyBinding(escapeKey, cancelCommand.getId());
     }
 
@@ -344,7 +354,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
 
     protected InputMap getInputMap() {
         return getDialog().getRootPane().getInputMap(
-                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     /**
@@ -388,7 +398,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
      */
     protected JComponent createButtonBar() {
         this.dialogCommandGroup = CommandGroup.createCommandGroup(null,
-                getCommandGroupMembers());
+            getCommandGroupMembers());
         JComponent buttonBar = this.dialogCommandGroup.createButtonBar();
         GuiStandardUtils.attachBorder(buttonBar, Borders.DIALOG_BORDER);
         return buttonBar;
@@ -524,4 +534,9 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
      */
     protected abstract boolean onFinish();
 
+    protected void onFinishException(Exception e) {
+        JOptionPane.showMessageDialog(getDialog(),
+            "Unable to execute finish action", Application.locator().getName(),
+            JOptionPane.ERROR_MESSAGE);
+    }
 }

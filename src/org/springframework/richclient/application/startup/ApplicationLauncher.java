@@ -128,8 +128,8 @@ public class ApplicationLauncher {
             setApplicationContext(new ClassPathXmlApplicationContext(
                     contextPaths));
         }
-        catch (RuntimeException e) {
-            logger.warn("Exception occured initializing context.", e);
+        catch (Exception e) {
+            logger.warn("Exception occured initializing application startup context.", e);
         }
         launch();
     }
@@ -144,8 +144,8 @@ public class ApplicationLauncher {
             Application console = (Application)applicationContext
                     .getBean(APPLICATION_BEAN_NAME);
         }
-        catch (RuntimeException e) {
-            logger.error("Exception occured initializing console.", e);
+        catch (Exception e) {
+            logger.error("Exception occured initializing root application context", e);
         }
         finally {
             destroySplashScreen();

@@ -104,7 +104,11 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
                 logger.debug("Setting newly selected item on value holder to "
                         + selectedItem);
             }
-            selectedItemHolder.set(selectedItem);
+            //if (selectedItem == null && size() > 0) {
+           //     selectedItemHolder.set(get(0));
+            //} else {
+                selectedItemHolder.set(selectedItem);
+            //}
         }
         else {
             super.setSelectedItem(selectedItem);

@@ -104,9 +104,6 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         return control;
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
-     */
     protected final boolean onFinish() {
         onConfirm();
         return true;

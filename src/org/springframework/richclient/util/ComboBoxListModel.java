@@ -52,26 +52,20 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         }
     }
 
-    /**
-     * @see javax.swing.ComboBoxModel#getSelectedItem()
-     */
     public Object getSelectedItem() {
         return selectedItem;
     }
 
-    /**
-     * @see javax.swing.ComboBoxModel#setSelectedItem(java.lang.Object)
-     */
     public void setSelectedItem(Object anItem) {
         if (!ObjectUtils.nullSafeEquals(selectedItem, anItem)) {
             this.selectedItem = anItem;
+            if (this.selectedItem == null) {
+                setSelectedItemOnNullValue();
+            }
             fireContentsChanged(this, -1, -1);
         }
     }
 
-    /**
-     * @see java.util.List#add(int, java.lang.Object)
-     */
     public void add(int index, Object o) {
         super.add(index, o);
         setSelectedItemIfNecessary(o);
@@ -82,7 +76,7 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
     }
 
     protected void setSelectedItemIfNecessary(Object o) {
-        if (getItems().size() >= 1 && getSelectedItem() == null) {
+        if (getItems().size() > 0 && getSelectedItem() == null) {
             if (o != null) {
                 setSelectedItem(o);
             }
@@ -92,9 +86,6 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         }
     }
 
-    /**
-     * @see java.util.Collection#add(java.lang.Object)
-     */
     public boolean add(Object o) {
         boolean result = super.add(o);
         if (result) {
@@ -103,9 +94,6 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         return result;
     }
 
-    /**
-     * @see java.util.Collection#addAll(java.util.Collection)
-     */
     public boolean addAll(Collection c) {
         boolean result = super.addAll(c);
         if (result) {
@@ -114,9 +102,6 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         return result;
     }
 
-    /**
-     * @see java.util.List#addAll(int, java.util.Collection)
-     */
     public boolean addAll(int index, Collection c) {
         boolean result = super.addAll(index, c);
         if (result) {
@@ -125,17 +110,11 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         return result;
     }
 
-    /**
-     * @see java.util.Collection#clear()
-     */
     public void clear() {
         super.clear();
         this.selectedItem = null;
     }
 
-    /**
-     * @see java.util.List#remove(int)
-     */
     public Object remove(int index) {
         if (get(index) == selectedItem) {
             if (index == 0) {
@@ -148,31 +127,18 @@ public class ComboBoxListModel extends ListListModel implements ComboBoxModel,
         return super.remove(index);
     }
 
-    /**
-     * @see javax.swing.MutableComboBoxModel#addElement(java.lang.Object)
-     */
     public void addElement(Object anObject) {
         add(anObject);
     }
 
-    /**
-     * @see javax.swing.MutableComboBoxModel#insertElementAt(java.lang.Object,
-     *      int)
-     */
     public void insertElementAt(Object anObject, int index) {
         add(index, anObject);
     }
 
-    /**
-     * @see javax.swing.MutableComboBoxModel#removeElementAt(int)
-     */
     public void removeElementAt(int index) {
         remove(index);
     }
 
-    /**
-     * @see javax.swing.MutableComboBoxModel#removeElement(java.lang.Object)
-     */
     public void removeElement(Object o) {
         remove(o);
     }
