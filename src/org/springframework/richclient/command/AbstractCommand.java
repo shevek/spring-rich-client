@@ -45,11 +45,11 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         implements InitializingBean, BeanNameAware, Guarded {
 
+    protected final Log logger = LogFactory.getLog(getClass());
+
     public static final String ENABLED_PROPERTY_NAME = "enabled";
 
     public static final String VISIBLE_PROPERTY_NAME = "visible";
-
-    protected final Log logger = LogFactory.getLog(getClass());
 
     private String id;
 

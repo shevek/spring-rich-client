@@ -25,25 +25,24 @@ import org.springframework.richclient.forms.AbstractFormPage;
  * 
  * @author oliverh
  */
-public class FormPageBackedDialogPage extends AbstractDialogPage {
-    AbstractFormPage backingFormPage;
+public class FormBackedDialogPage extends AbstractDialogPage {
+    private AbstractFormPage backingFormPage;
 
     /**
-     * Creates a new FormPageBackedDialogPage. 
+     * Creates a new FormPageBackedDialogPage.
      * 
      * @param pageId
-     *            the id of this page. This will be used to configure
-     *            page titles/description
+     *            the id of this page. This will be used to configure page
+     *            titles/description
      * @param backingFormPage
      *            the AbstractFormPage which will provide the control for this
      *            page.
      */
-    public FormPageBackedDialogPage(String pageId,
-            AbstractFormPage backingFormPage) {
+    public FormBackedDialogPage(String pageId, AbstractFormPage backingFormPage) {
         super(pageId);
         this.backingFormPage = backingFormPage;
     }
-    
+
     protected AbstractFormPage getBackingFormPage() {
         return backingFormPage;
     }
@@ -53,7 +52,7 @@ public class FormPageBackedDialogPage extends AbstractDialogPage {
     }
 
     public JComponent createControl() {
-        backingFormPage.newSingleLineResultsReporter(this.getPageCompleteGuarded(), this);
+        backingFormPage.newSingleLineResultsReporter(this, this);
         return backingFormPage.getControl();
     }
 

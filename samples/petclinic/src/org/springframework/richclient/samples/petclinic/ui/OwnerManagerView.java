@@ -43,8 +43,8 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.support.AbstractCommandDelegate;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
-import org.springframework.richclient.dialog.DialogPageDialog;
-import org.springframework.richclient.dialog.FormPageBackedDialogPage;
+import org.springframework.richclient.dialog.TitledPageApplicationDialog;
+import org.springframework.richclient.dialog.FormBackedDialogPage;
 import org.springframework.richclient.dialog.InputApplicationDialog;
 import org.springframework.richclient.dialog.TabbedDialogPage;
 import org.springframework.richclient.forms.SwingFormModel;
@@ -285,12 +285,12 @@ public class OwnerManagerView extends AbstractView implements
 
             ownerGeneralPanel = new OwnerGeneralPanel(ownerFormModel);
             tabbedPage = new TabbedDialogPage("ownerEditTabs");
-            tabbedPage.addPage(new FormPageBackedDialogPage(
+            tabbedPage.addPage(new FormBackedDialogPage(
                     "ownerEditTabs.general", ownerGeneralPanel));
-            tabbedPage.addPage(new FormPageBackedDialogPage(
+            tabbedPage.addPage(new FormBackedDialogPage(
                     "ownerEditTabs.address", new AddressPanel(ownerFormModel)));
 
-            DialogPageDialog dialog = new DialogPageDialog(tabbedPage,
+            TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage,
                     getParentWindowControl()) {
                 protected void onWindowGainedFocus() {
                     ownerGeneralPanel.requestFocusInWindow();

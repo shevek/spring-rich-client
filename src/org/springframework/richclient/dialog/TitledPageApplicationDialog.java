@@ -24,61 +24,61 @@ import javax.swing.JComponent;
 import org.springframework.util.Assert;
 
 /**
- * A TitledApplicationDialog that delegates to an AbstractFormPage for its title,
- * content and messages.
+ * A TitledApplicationDialog that delegates to a single DialogPage for its
+ * title, content and messages.
  * 
  * @author oliverh
  */
-public abstract class DialogPageDialog extends TitledApplicationDialog {
+public abstract class TitledPageApplicationDialog extends
+        TitledApplicationDialog implements PropertyChangeListener {
 
     private DialogPage dialogPage;
 
-    public DialogPageDialog(DialogPage dialogPage) {
+    public TitledPageApplicationDialog(DialogPage dialogPage) {
         super();
         setDialogPage(dialogPage);
-    }    
+    }
 
-    public DialogPageDialog(DialogPage dialogPage, Window parent) {
-        super("", parent);
+    public TitledPageApplicationDialog(DialogPage dialogPage, Window parent) {
+        super(dialogPage.getTitle(), parent);
         setDialogPage(dialogPage);
     }
 
-    public DialogPageDialog(DialogPage dialogPage, Window parent,
+    public TitledPageApplicationDialog(DialogPage dialogPage, Window parent,
             CloseAction closeAction) {
-        super("", parent, closeAction);
+        super(dialogPage.getTitle(), parent, closeAction);
         setDialogPage(dialogPage);
     }
-    
-    public DialogPage getDialogPage() {
+
+    protected DialogPage getDialogPage() {
         return dialogPage;
     }
 
-    public void setDialogPage(DialogPage dialogPage) {
+    private void setDialogPage(DialogPage dialogPage) {
         this.dialogPage = dialogPage;
     }
 
     protected JComponent createTitledDialogContentPane() {
         Assert.notNull(dialogPage);
-        
         dialogPage.addMessageListener(new MessageListener() {
             public void messageUpdated(MessageReceiver source) {
                 update();
             }
         });
-        dialogPage.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent e) {
-                if ("pageComplete".equals(e.getPropertyName())) {
-                    setEnabled(dialogPage.isPageComplete());
-                } else {
-                    update();                    
-                }
-            }                
-        });
-
+        dialogPage.addPropertyChangeListener(this);
         update();
         return dialogPage.getControl();
     }
-    
+
+    public void propertyChange(PropertyChangeEvent e) {
+        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+            setEnabled(dialogPage.isPageComplete());
+        }
+        else {
+            update();
+        }
+    }
+
     public String getDescription() {
         return dialogPage.getDescription();
     }
@@ -88,7 +88,7 @@ public abstract class DialogPageDialog extends TitledApplicationDialog {
         updateTitleBar();
         updateMessage();
     }
-    
+
     protected void updateTitleBar() {
         setTitleAreaText(dialogPage.getTitle());
         setTitleAreaImage(dialogPage.getImage());

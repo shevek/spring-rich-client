@@ -16,12 +16,16 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Image;
-import java.beans.PropertyChangeListener;
 
+import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.rules.reporting.Severity;
+import org.springframework.rules.values.PropertyChangePublisher;
 
-public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
+public interface DialogPage extends ControlFactory, MessageReceiver, Guarded,
+        PropertyChangePublisher {
+
+    public static final String PAGE_COMPLETE_PROPERTY = "pageComplete";
 
     /**
      * Returns this page's name.
@@ -51,7 +55,14 @@ public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
      * @return the message, or <code>null</code> if none
      */
     public String getMessage();
-    
+
+    /**
+     * Returns the current error message for this dialog page.
+     * 
+     * @return the error message, or <code>null</code> if none
+     */
+    public String getErrorMessage();
+
     /**
      * Returns the current message severity for this dialog page.
      * 
@@ -79,38 +90,16 @@ public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
      *            <code>false</code> to hide it
      */
     public void setVisible(boolean visible);
-    
 
     /**
      * Returns whether this page is complete or not.
      * <p>
-     * This information is typically to decide when it is
-     * okay to submit a form.
+     * This information is typically to decide when it is okay to submit a form.
      * </p>
      * 
      * @return <code>true</code> if this page is complete, and
      *         <code>false</code> otherwise
      */
-    public boolean isPageComplete();    
-
-    /**
-     * Adds a PropertyChangeListener to the listener list. The listener is
-     * registered for all properties.
-     * 
-     * @param listener
-     *            the PropertyChangeListener to be added
-     */
-    public void addPropertyChangeListener(PropertyChangeListener listener);
-
-    /**
-     * Adds a PropertyChangeListener for a specific property.
-     *
-     * @param propertyName
-     *             the name of the property to listen on
-     * @param listener
-     *            the PropertyChangeListener to be added
-     */
-    public void addPropertyChangeListener(String propertyName,
-            PropertyChangeListener listener);
+    public boolean isPageComplete();
 
 }

@@ -37,10 +37,10 @@ import org.springframework.util.Assert;
  * @see DialogPage
  */
 public abstract class AbstractDialogPage extends LabeledObjectSupport implements
-        DialogPage, ControlFactory {
+        DialogPage, ControlFactory, Guarded {
 
     private String pageId;
-    
+
     private boolean pageComplete = true;
 
     private MessageBuffer messageBuffer;
@@ -56,7 +56,8 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      * configured using the default ObjectConfigurer.
      * 
      * @param pageId
-     *            the id of this dialog page. This will be used to configure the page.
+     *            the id of this dialog page. This will be used to configure the
+     *            page.
      */
     protected AbstractDialogPage(String pageId) {
         this(pageId, true);
@@ -178,7 +179,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     public void addMessageListener(MessageListener messageListener) {
         messageBuffer.addMessageListener(messageListener);
     }
-    
+
     public void removeMessageListener(MessageListener messageListener) {
         messageBuffer.removeMessageListener(messageListener);
     }
@@ -188,7 +189,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         getControl().setVisible(visible);
         firePropertyChange("visible", oldValue, visible);
     }
-    
+
     public boolean isPageComplete() {
         return pageComplete;
     }
@@ -196,15 +197,11 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     public void setPageComplete(boolean pageComplete) {
         boolean oldValue = this.pageComplete;
         this.pageComplete = pageComplete;
-        firePropertyChange("pageComplete", oldValue, pageComplete);        
+        firePropertyChange("pageComplete", oldValue, pageComplete);
     }
-    
-    protected Guarded getPageCompleteGuarded() {
-        return new Guarded() {
-            public void setEnabled(boolean enabled) {
-                setPageComplete(enabled);
-            }            
-        };
+
+    public void setEnabled(boolean enabled) {
+        setPageComplete(enabled);
     }
 
     public JComponent getControl() {

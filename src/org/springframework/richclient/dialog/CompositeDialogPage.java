@@ -42,7 +42,7 @@ import org.springframework.util.Assert;
  * largest sized of these controls.
  * <li>keeping track of an active page that will be used to provide
  * messages/titles for the composite.
- * <li>pageComplete property of composite is true iff all child pages are
+ * <li>pageComplete property of composite is true if all child pages are
  * complete
  * </ul>
  * 
