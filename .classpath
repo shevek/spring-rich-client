@@ -18,14 +18,17 @@
 	<classpathentry kind="lib" path="lib/junit/junit.jar"/>
 	<classpathentry kind="lib" path="lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/burlap.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies-forms/forms.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/hessian.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies-looks/looks.jar"/>
+	<classpathentry kind="src" path="/spring"/>
 	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-sandbox.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/forms.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/looks.jar"/>
+	<classpathentry kind="lib" path="lib/foxtrot/foxtrot.jar"/>
+	<classpathentry kind="lib" path="lib/spin/spin.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-attributes-api.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-collections.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
