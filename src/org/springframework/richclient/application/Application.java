@@ -56,7 +56,7 @@ public class Application extends ApplicationObjectSupport {
         setApplicationServices(applicationServices);
         setApplicationAdvisor(advisor);
         Assert.isTrue(INSTANCE == null,
-                "Only one instance of a RCP Application allowed per VM.");
+                "Only one instance of a Spring Rich Application allowed per VM.");
         load(this);
     }
 
