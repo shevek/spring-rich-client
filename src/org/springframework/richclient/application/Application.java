@@ -18,6 +18,7 @@ package org.springframework.richclient.application;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -105,6 +106,8 @@ public class Application extends ApplicationObjectSupport implements
 
     private ApplicationInfo applicationInfo;
 
+    private Map attributes;
+    
     public Application(ApplicationLifecycle lifecycle) {
         setLifecycle(lifecycle);
         Assert.isTrue(sharedInstance == null,
@@ -175,6 +178,21 @@ public class Application extends ApplicationObjectSupport implements
     public void setViewRegistry(ViewRegistry registry) {
         Assert.notNull(registry);
         this.viewRegistry = registry;
+    }
+    
+    protected Map getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap();
+        }
+        return attributes;
+    }
+    
+    public void setAttribute(String attributeName, Object attribute) {
+        getAttributes().put(attributeName, attribute);
+    }
+    
+    public Object getAttribute(String attributeName) {
+        return getAttributes().get(attributeName);
     }
 
     protected void initApplicationContext() throws BeansException {
