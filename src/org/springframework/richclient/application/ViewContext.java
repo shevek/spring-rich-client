@@ -18,8 +18,7 @@ package org.springframework.richclient.application;
 import org.springframework.richclient.command.CommandDelegate;
 
 public interface ViewContext {
-
-    public ApplicationWindow getParentWindow();
+    public ApplicationWindow getApplicationWindow();
 
     public String getViewName();
 
@@ -28,5 +27,4 @@ public interface ViewContext {
     public void registerGlobalCommandDelegate(String globalCommandId,
             CommandDelegate localCommandDelegate);
 
-    public boolean pageHasActiveView();
 }

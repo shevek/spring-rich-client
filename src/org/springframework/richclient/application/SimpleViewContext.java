@@ -44,7 +44,7 @@ public class SimpleViewContext implements ViewContext {
         this.page = page;
     }
 
-    public ApplicationWindow getParentWindow() {
+    public ApplicationWindow getApplicationWindow() {
         return page.getParentWindow();
     }
 
@@ -61,10 +61,6 @@ public class SimpleViewContext implements ViewContext {
             CommandDelegate delegate) {
         Assert.notNull(commandId);
         commandDelegates.put(commandId, delegate);
-    }
-
-    public boolean pageHasActiveView() {
-        return false;
     }
 
 }

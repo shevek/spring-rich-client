@@ -47,17 +47,4 @@ public class GlobalCommandTargeterViewListener extends AbstractViewListener {
         }
     }
 
-    public void viewDeactivated(View view) {
-        super.viewDeactivated(view);
-        ViewContext viewContext = view.getContext();
-        if (!viewContext.pageHasActiveView()) {
-            for (Iterator i = globalCommandRegistry.getGlobalCommands(); i
-                    .hasNext();) {
-                TargetableActionCommand globalCommand = (TargetableActionCommand)i
-                        .next();
-                globalCommand.setCommandDelegate(null);
-            }
-        }
-    }
-
 }
