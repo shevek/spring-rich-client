@@ -19,6 +19,9 @@ import org.springframework.richclient.application.config.ApplicationWindowConfig
 import org.springframework.richclient.application.config.ConfigurableApplicationLifecycle;
 
 /**
+ * Custom application lifecycle implementation that configures the petclinic app
+ * at well defined points within its lifecycle.
+ * 
  * @author Keith Donald
  */
 public class PetClinicApplicationLifecycle extends
@@ -26,6 +29,8 @@ public class PetClinicApplicationLifecycle extends
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
+        // comment out to hide the toolbar or reduce window size...
         //configurer.setShowToolBar(false);
+        //configurer.setInitialSize(new Dimension(640, 480));
     }
 }
