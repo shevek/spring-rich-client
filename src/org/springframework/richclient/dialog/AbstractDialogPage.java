@@ -25,6 +25,7 @@ import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.rules.reporting.Severity;
+import org.springframework.util.Assert;
 
 /**
  * A convenience implementation of the DialogPage interface.
@@ -37,6 +38,8 @@ import org.springframework.rules.reporting.Severity;
 public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         DialogPage, ControlFactory {
 
+    private String pageId;
+
     private MessageBuffer messageBuffer = new MessageBuffer();
 
     private AbstractControlFactory factory = new AbstractControlFactory() {
@@ -46,33 +49,79 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     };
 
     /**
-     * Creates a new empty dialog page.
+     * Creates a new dialog page. This titles of this dialog page will be
+     * configured using the default ObjectConfigurer.
+     * 
+     * @param pageId
+     *            the id of this dialog page. This will be used to configure the page.
      */
-    protected AbstractDialogPage() {
+    protected AbstractDialogPage(String pageId) {
+        this(pageId, true);
+    }
 
+    /**
+     * Creates a new dialog page.
+     * 
+     * @param pageId
+     *            the id of this dialog page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this dialog page using the given pageId
+     */
+    protected AbstractDialogPage(String pageId, boolean autoConfigure) {
+        setId(pageId, autoConfigure);
     }
 
     /**
      * Creates a new dialog page with the given title.
      * 
+     * @param pageId
+     *            the id of this dialog page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this dialog page using the given pageId
      * @param title
      *            the title of this dialog page, or <code>null</code> if none
      */
-    protected AbstractDialogPage(String title) {
-        setTitle(title);
+    protected AbstractDialogPage(String pageId, boolean autoConfigure,
+            String title) {
+        this(pageId);
+        if (title != null) {
+            setTitle(title);
+        }
     }
 
     /**
      * Creates a new dialog page with the given title and image.
      * 
+     * @param pageId
+     *            the id of this dialog page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this dialog page using the given pageId
      * @param title
      *            the title of this dialog page, or <code>null</code> if none
      * @param image
      *            the image for this dialog page, or <code>null</code> if none
      */
-    protected AbstractDialogPage(String title, Image icon) {
-        this(title);
-        setImage(icon);
+    protected AbstractDialogPage(String pageId, boolean autoConfigure,
+            String title, Image icon) {
+        this(pageId, autoConfigure, title);
+        if (icon != null) {
+            setImage(icon);
+        }
+    }
+
+    public String getId() {
+        return pageId;
+    }
+
+    protected void setId(String pageId, boolean autoConfigure) {
+        Assert.hasText(pageId);
+        this.pageId = pageId;
+        if (autoConfigure) {
+            getObjectConfigurer().configure(this, pageId);
+        }
     }
 
     public String getTitle() {

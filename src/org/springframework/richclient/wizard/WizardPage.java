@@ -21,13 +21,6 @@ import org.springframework.richclient.dialog.DialogPage;
 public interface WizardPage extends DialogPage, Guarded {
 
     /**
-     * Returns this page's name.
-     * 
-     * @return the name of this page
-     */
-    public String getId();
-
-    /**
      * Returns the wizard page that would to be shown if the user was to press
      * the Next button.
      * 

@@ -50,7 +50,6 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
 
         public OwnerGeneralWizardPage() {
             super(ID);
-            getObjectConfigurer().configure(this, ID);
         }
 
         public void setVisible(boolean bool) {

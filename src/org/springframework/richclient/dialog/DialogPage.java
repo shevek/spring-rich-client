@@ -20,6 +20,13 @@ import java.awt.Image;
 import org.springframework.richclient.factory.ControlFactory;
 
 public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
+    
+    /**
+     * Returns this page's name.
+     * 
+     * @return the name of this page
+     */
+    public String getId();
 
     /**
      * Returns this dialog page's title.

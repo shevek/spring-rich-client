@@ -21,18 +21,14 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.dialog.AbstractDialogPage;
 import org.springframework.richclient.dialog.MessageListener;
-import org.springframework.util.Assert;
 import org.springframework.util.ToStringBuilder;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements
-        WizardPage, DescriptionConfigurable {
+        WizardPage {
     private static final Log logger = LogFactory
             .getLog(AbstractWizardPage.class);
-
-    private String pageId;
 
     private Wizard wizard;
 
@@ -41,12 +37,11 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     private WizardPage previousPage;
 
     protected AbstractWizardPage(String pageId) {
-        this(pageId, null, (Image)null);
+        this(pageId, true, null, (Image)null);
     }
 
-    protected AbstractWizardPage(String pageId, String title, Image titleImage) {
-        super(title, titleImage);
-        setId(pageId);
+    protected AbstractWizardPage(String pageId, boolean autoConfigure, String title, Image titleImage) {
+        super(pageId, autoConfigure, title, titleImage);
         this.addMessageListener(new MessageListener() {
             public void messageUpdated() {
                 if (isCurrentPage()) {
@@ -54,15 +49,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
                 }
             }            
         });
-    }
-
-    public String getId() {
-        return pageId;
-    }
-
-    private void setId(String pageId) {
-        Assert.hasText(pageId);
-        this.pageId = pageId;
     }
 
     public Image getImage() {
