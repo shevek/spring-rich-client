@@ -37,9 +37,7 @@ import org.springframework.richclient.list.ListListModel;
 
 /**
  * Test cases for {@link BufferedCollectionValueModel}
- * 
- * TODO: add listener tests
- * 
+ *
  * @author oliverh
  */
 public class TestBufferedCollectionValueModel extends TestCase {
@@ -286,6 +284,43 @@ public class TestBufferedCollectionValueModel extends TestCase {
         catch (IllegalArgumentException e) {
             // expected
         }
+    }
+    
+    public void testValueChangeNotification() {
+        Object[] backingArray = getArray(100);
+        BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingArray);
+        TestableValueChangeListener vl = new TestableValueChangeListener();
+        vm.addValueChangeListener(vl);
+        
+        ListListModel llm = (ListListModel)vm.getValue();
+        assertEquals(vl.getEventCount(), 1);
+        
+        vl.reset();
+        llm.add(new Integer(100));
+        assertEquals(vl.getEventCount(), 1);        
+        llm.add(1, new Integer(102));
+        assertEquals(vl.getEventCount(), 2);
+        
+        
+        vl.reset();
+        llm.addAll(getCollection(ArrayList.class, 101));
+        assertEquals(vl.getEventCount(), 1);  
+        llm.addAll(1, getCollection(ArrayList.class, 101));
+        assertEquals(vl.getEventCount(), 2);  
+        
+        vl.reset();
+        llm.remove(1);
+        assertEquals(vl.getEventCount(), 1);  
+        llm.removeAll(getCollection(ArrayList.class, 101));
+        assertEquals(vl.getEventCount(), 2);  
+        
+        vl.reset();
+        llm.set(1, llm.get(1));
+        assertEquals(vl.getEventCount(), 0); 
+        
+        vl.reset();
+        llm.clear();
+        assertEquals(vl.getEventCount(), 1); 
     }
 
     public void testRevert() {
