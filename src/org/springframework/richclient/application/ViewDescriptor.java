@@ -107,7 +107,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
                 && getApplicationEventMulticaster() != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Registering new view instance '"
-                        + view.getDisplayName()
+                        + getDisplayName()
                         + "' as an application event listener...");
             }
             getApplicationEventMulticaster().addApplicationListener(

@@ -27,6 +27,8 @@ import javax.swing.tree.TreeCellRenderer;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.ClassUtils;
+import org.springframework.rules.reporting.BeanPropertyNameRenderer;
+import org.springframework.rules.reporting.DefaultBeanPropertyNameRenderer;
 
 /**
  * Responsible for rendering a BeanFeatureNode object in the

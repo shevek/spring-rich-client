@@ -29,7 +29,7 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
  * @author Keith Donald
  */
 public abstract class ApplicationAdvisor {
-    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationImage.default";
+    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
     private Application application;
 

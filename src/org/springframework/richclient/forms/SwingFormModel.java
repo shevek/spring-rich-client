@@ -184,7 +184,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     private ValueModel getOrCreateValueModel(String domainObjectProperty) {
-        ValueModel model = getValueModel(domainObjectProperty);
+        ValueModel model = formModel.getValueModel(domainObjectProperty);
         if (model == null) {
             model = createFormValueModel(domainObjectProperty);
         }
@@ -533,7 +533,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * @return The bound list model.
      */
     public ListModel createBoundListModel(String formProperty) {
-        ValueModel valueModel = getValueModel(formProperty);
+        ValueModel valueModel = formModel.getValueModel(formProperty);
         if (valueModel == null) {
             AspectAdapter adapter = new AspectAdapter(formModel
                     .getAspectAccessStrategy(), formProperty);
