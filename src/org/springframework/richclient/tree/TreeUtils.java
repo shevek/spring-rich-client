@@ -18,6 +18,7 @@ package org.springframework.richclient.tree;
 import java.util.Enumeration;
 
 import javax.swing.JTree;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -36,8 +37,7 @@ public class TreeUtils {
             TreeObject p = parent.getParent();
             if (p == null) {
                 if (includeRoot) {
-                    buffer.insert(0, "/"
-                            + parent.getDisplayName() + "/");
+                    buffer.insert(0, "/" + parent.getDisplayName() + "/");
                 }
             }
             else {
@@ -65,7 +65,9 @@ public class TreeUtils {
     // If expand is true, expands all nodes in the tree.
     // Otherwise, collapses all nodes in the tree.
     public static void expandLevels(JTree tree, int levels, boolean expand) {
-        TreeNode root = (TreeNode)tree.getModel().getRoot();
+        TreeModel model = tree.getModel();
+        if (model == null) { return; }
+        TreeNode root = (TreeNode)model.getRoot();
         // Traverse tree from root
         expandLevels(tree, new TreePath(root), levels, expand);
     }

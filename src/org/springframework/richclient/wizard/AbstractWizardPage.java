@@ -34,15 +34,15 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     private WizardPage previousPage;
 
     /**
-     * Creates a wizard page. This titles of this dialog page will be
-     * configured using the default ObjectConfigurer.
+     * Creates a wizard page. This titles of this dialog page will be configured
+     * using the default ObjectConfigurer.
      * 
      * @param pageId
      *            the id of this wizard page. This will be used to configure the
      *            page.
      */
     protected AbstractWizardPage(String pageId) {
-        this(pageId, true);
+        this(pageId, false);
     }
 
     /**
@@ -92,6 +92,10 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         super(pageId, autoConfigure, title, icon);
     }
 
+    public String getKey() {
+        return getWizard().getId() + "." + getId();
+    }
+
     public Image getImage() {
         Image image = super.getImage();
         if (image != null) { return image; }
@@ -122,7 +126,7 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         if (wizard == null) { return null; }
         return wizard.getContainer();
     }
-    
+
     public Wizard getWizard() {
         return wizard;
     }

@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.application.ApplicationWindow;
@@ -546,8 +547,20 @@ public abstract class ApplicationDialog extends
     protected abstract boolean onFinish();
 
     protected void onFinishException(Exception e) {
-        JOptionPane.showMessageDialog(getDialog(),
-                "Unable to finish; an application exception occured.",
+        String exceptionMessage;
+        if (e instanceof MessageSourceResolvable) {
+            exceptionMessage = getMessageSourceAccessor().getMessage(
+                    (MessageSourceResolvable)e);
+        }
+        else {
+            exceptionMessage = e.getLocalizedMessage();
+        }
+        if (!StringUtils.hasText(exceptionMessage)) {
+            String defaultMessage = "Unable to finish; an application exception occured.\n Please contact your administrator.";
+            exceptionMessage = getMessageSourceAccessor().getMessage(
+                    "applicationDialog.defaultFinishException", defaultMessage);
+        }
+        JOptionPane.showMessageDialog(getDialog(), exceptionMessage,
                 Application.instance().getName(), JOptionPane.ERROR_MESSAGE);
     }
 }

@@ -29,22 +29,20 @@ import java.awt.Image;
  * @see Wizard
  */
 public interface Wizard {
-    
+
     /**
      * Returns this wizards name.
      * 
      * @return the name of this wizard
      */
-    public String getWizardId();    
+    public String getId();
 
     /**
-     * Adds any last-minute pages to this wizard.
-     * <p>
-     * This method is called just before the wizard becomes visible, to give the
-     * wizard the opportunity to add any lazily created pages.
-     * </p>
+     * Returns the window title string for this wizard.
+     * 
+     * @return the window title string, or <code>null</code> for no title
      */
-    public void addPages();
+    public String getTitle();
 
     /**
      * Returns the default page image for this wizard.
@@ -55,6 +53,15 @@ public interface Wizard {
      * @return the default page image
      */
     public Image getDefaultPageImage();
+
+    /**
+     * Adds any last-minute pages to this wizard.
+     * <p>
+     * This method is called just before the wizard becomes visible, to give the
+     * wizard the opportunity to add any lazily created pages.
+     * </p>
+     */
+    public void addPages();
 
     /**
      * Returns the first page to be shown in this wizard.
@@ -104,13 +111,6 @@ public interface Wizard {
      * @return a list of pages
      */
     public WizardPage[] getPages();
-
-    /**
-     * Returns the window title string for this wizard.
-     * 
-     * @return the window title string, or <code>null</code> for no title
-     */
-    public String getTitle();
 
     /**
      * Returns the container managing the display of this wizard. Generally a
