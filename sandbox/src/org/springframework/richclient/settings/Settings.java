@@ -86,4 +86,6 @@ public interface Settings
 	public void removePropertyChangeListener(String key, PropertyChangeListener l);
 	
 	public boolean contains(String key);
+	
+	public void remove(String key);
 }

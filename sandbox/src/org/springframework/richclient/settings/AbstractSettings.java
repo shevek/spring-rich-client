@@ -560,6 +560,12 @@ public abstract class AbstractSettings implements Settings {
             internalRemove(key);
         }
     }
+    
+    public void remove(String key) {
+        if (contains(key)) {
+            internalRemove(key);
+        }
+    }
 
     /*
      * (non-Javadoc)

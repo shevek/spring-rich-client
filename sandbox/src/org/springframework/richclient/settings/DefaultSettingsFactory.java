@@ -66,16 +66,26 @@ public class DefaultSettingsFactory implements SettingsFactory {
         }
         return userSettings;
     }
+    
+    private Preferences getForId(Preferences root, String id) {
+        Assert.notNull(root);
+        Preferences result = root;
+        String[] idParts = id.split("\\.");
+        for (int i = 0; i < idParts.length; i++) {
+            result = result.node(id);
+        }
+        return result;
+    }
 
     private Settings createSettings(String name) {
         Assert.notNull(id, "An id must be assigned.");
         Settings settings = null;
         if (preferencesFactory == null) {
-            settings = new PreferencesSettings(Preferences.userRoot().node(id).node(name));
+            settings = new PreferencesSettings(getForId(Preferences.userRoot(), id).node(name));
         }
         else
         {
-            settings = new PreferencesSettings(preferencesFactory.userRoot().node(id).node(name));
+            settings = new PreferencesSettings(getForId(preferencesFactory.userRoot(), id).node(name));
         }
         
         try {
