@@ -119,6 +119,21 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return new SwingFormModel(groupingModel.createChild(pageName));
     }
 
+    /**
+     * Create a child form model nested by this form model identified by the
+     * provided name. The form object associated with the created child model is
+     * the value model at the specified parent property path.
+     * 
+     * @param groupingModel
+     *            the model to create the SwingFormModel in
+     * @param childPageName
+     *            the name to associate the created SwingFormModel with in the
+     *            groupingModel
+     * @param parentPropertyFormObjectPath
+     *            the path into the groupingModel that the SwingFormModel is for
+     * 
+     * @return The child form model
+     */
     public static SwingFormModel createChildPageFormModel(
             NestingFormModel groupingModel, String childPageName,
             String parentPropertyFormObjectPath) {
@@ -296,8 +311,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComponent createBoundControl(String formProperty) {
         PropertyEditor propertyEditor = formModel.getPropertyAccessStrategy()
                 .findCustomEditor(formProperty);
-        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) { return bindCustomEditor(
-                propertyEditor, formProperty); }
+        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
+            return bindCustomEditor(propertyEditor, formProperty);
+        }
 
         final ApplicationServices applicationServices = Application.services();
         final PropertyEditorRegistry propertyEditorRegistry = applicationServices
