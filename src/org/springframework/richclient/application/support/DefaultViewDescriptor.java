@@ -27,7 +27,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
@@ -41,8 +40,7 @@ import org.springframework.util.Assert;
  *
  * @author Keith Donald
  */
-public class DefaultViewDescriptor extends LabeledObjectSupport implements InitializingBean, ViewDescriptor,
-        BeanNameAware {
+public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewDescriptor, BeanNameAware {
     private String id;
 
     private Class viewClass;
@@ -80,11 +78,8 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements Initi
         return null;
     }
 
-    public void afterPropertiesSet() {
-        Assert.notNull(viewClass, "The viewClass property must be specified");
-    }
-
-    public PageComponent createPageComponent() {
+    public View createView() {
+        Assert.state(viewClass != null, "View class to instantiate is not set");
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
@@ -110,15 +105,14 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements Initi
                 throw new BeanInitializationException("Problem running on " + view, e);
             }
         }
-
         return view;
     }
 
-    public CommandButtonLabelInfo getShowPageComponentCommandLabel() {
+    public CommandButtonLabelInfo getShowViewCommandLabel() {
         return getLabel();
     }
 
-    public ActionCommand createShowPageComponentCommand(ApplicationWindow window) {
+    public ActionCommand createShowViewCommand(ApplicationWindow window) {
         return new ShowViewCommand(this, window);
     }
 

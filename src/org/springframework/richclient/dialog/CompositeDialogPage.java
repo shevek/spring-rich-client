@@ -53,13 +53,13 @@ import org.springframework.util.Assert;
 public abstract class CompositeDialogPage extends AbstractDialogPage {
     private List pages = new ArrayList();
 
-    private DialogPage activePage;
-
     private int largestPageWidth;
 
     private int largestPageHeight;
 
     private boolean autoConfigureChildPages = true;
+
+    private DialogPage activePage;
 
     public CompositeDialogPage(String pageId) {
         super(pageId);
@@ -161,7 +161,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
                     if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
                         CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
                     }
-                    else if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+                    else if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
                         if (getActivePage() == e.getSource()) {
                             updateMessage();
                         }
@@ -204,7 +204,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
     protected void updateMessage() {
         if (activePage != null) {
             setDescription(activePage.getDescription());
-            setMessage(activePage.getMessage(), activePage.getSeverity());
+            setMessage(activePage.getMessage());
         }
         else {
             setDescription(null);

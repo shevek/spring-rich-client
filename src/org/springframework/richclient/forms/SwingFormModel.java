@@ -64,7 +64,7 @@ import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
@@ -850,13 +850,13 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         }
     }
 
-    public ValidationListener createSingleLineResultsReporter(Guarded guardedComponent, MessageAreaModel messageAreaPane) {
-        return createSingleLineResultsReporter(this, guardedComponent, messageAreaPane);
+    public ValidationListener createSingleLineResultsReporter(Guarded guardedComponent, Messagable messageReceiver) {
+        return createSingleLineResultsReporter(this, guardedComponent, messageReceiver);
     }
 
     public static ValidationListener createSingleLineResultsReporter(FormModel formModel, Guarded guardedComponent,
-            MessageAreaModel messageAreaPane) {
-        return new SimpleValidationResultsReporter(formModel, guardedComponent, messageAreaPane);
+            Messagable messageReceiver) {
+        return new SimpleValidationResultsReporter(formModel, guardedComponent, messageReceiver);
     }
 
     public void validate() {

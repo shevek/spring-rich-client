@@ -7,23 +7,26 @@ scripts, Eclipse classpath and sample application batch files.
 Each of the versions currently in use are provided below:
 
 acegisecurity/acegi-security.jar: From CVS snapshot 2004-08-01
-ant/ant-junit.jar:
-ant/ant-launcher.jar:
-ant/ant.jar:
+ant/ant-junit.jar: 1.6.2
+ant/ant-launcher.jar: 1.6.2
+ant/ant.jar: 1.62
 aopappliance/aopalliance.jar:
 caucho/burlap.jar: 2.1.12
 caucho/hessian.jar: 2.1.12
-concurrent/concurrent.jar:
+concurrent/concurrent.jar: 1.3.2
+foxtrot/foxtrot.jar: 2.0
 hsqldb/hsqldb.jar: 1.7.2 Release Candidate 6d
 j2ee/servlet.jar:
 jakarta-commons/commons-codec.jar: 
 jakarta-commons/commons-logging.jar:
-javahelp/jh.jar:
-jgoodies-forms/forms.jar: 1.0.4
-jgoodies-looks/looks.jar: 1.2.2
-junit/junit.jar:
+javahelp/jh.jar: 2.0
+jgoodies/forms.jar: 1.0.5
+jgoodies/looks.jar: 1.2.2
+junit/junit.jar: 3.8.1
 log4j/log4j.jar: 1.2.8
-spring/spring.jar: CVS Snapshot 710
+spin/spin.jar: 1.3
+spring/spring.jar: CVS Snapshot 101
 spring/spring-mock.jar: CVS Snapshot
-spring/spring-petclinic.jar: CVS snapshot 710
-spring/spring-sandbox.jar: CVS Snapshot
+spring/spring-petclinic.jar: CVS snapshot 101
+spring/spring-sandbox.jar: CVS Snapshot 101
+

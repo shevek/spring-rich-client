@@ -30,15 +30,30 @@ import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 public interface ViewDescriptor extends PageComponentDescriptor {
 
     /**
-     * Create a command that when executed, will attempt to show the view
-     * described by this descriptor in the provided application window.
+     * Factory method that produces a new instance of the PageComponent
+     * described by this descriptor each time it is called. The new
+     * page component instance is instantiated (it must have a default
+     * constructor), and any configured properties are injected. If the
+     * page component is an instance of ApplicationListener, and an
+     * ApplicationEventMulticaster is configured in this application's
+     * ApplicationContext, the component is registered as an
+     * ApplicationListener.
+     *
+     * @return The new page component prototype
+     */
+    public View createView();
+
+    /**
+     * Create a command that when executed, will attempt to show the
+     * page component described by this descriptor in the provided
+     * application window.
      *
      * @param window The window
      *
-     * @return The show view command.
+     * @return The show page component command.
      */
-    public ActionCommand createShowPageComponentCommand(ApplicationWindow window);
+    public ActionCommand createShowViewCommand(ApplicationWindow window);
 
-    public CommandButtonLabelInfo getShowPageComponentCommandLabel();
+    public CommandButtonLabelInfo getShowViewCommandLabel();
 
 }

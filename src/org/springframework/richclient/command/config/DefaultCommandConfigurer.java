@@ -22,7 +22,8 @@ import org.springframework.richclient.application.config.ApplicationObjectConfig
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.support.DefaultCommandServices;
-import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
@@ -62,12 +63,19 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
 
     public AbstractCommand configure(AbstractCommand command, ApplicationObjectConfigurer configurer) {
         command.setCommandServices(getCommandServices());
-        Assert.state(!command.isAnonymous(), "A command must have an id to be auto configured");
+        String objectName = command.getId();
+        if (command.isAnonymous()) {
+            objectName = ClassUtils.getShortNameAsProperty(command.getClass());
+            int lastDot = objectName.lastIndexOf('.');
+            if (lastDot != -1) {
+                objectName = StringUtils.uncapitalize(objectName.substring(lastDot + 1));
+            }
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Configuring faces (aka visual appearance descriptors) for " + command);
         }
         CommandFaceDescriptor face = new CommandFaceDescriptor();
-        command.setFaceDescriptor((CommandFaceDescriptor)configurer.configure(face, command.getId()));
+        command.setFaceDescriptor((CommandFaceDescriptor)configurer.configure(face, objectName));
         if (face.isBlank()) {
             face.setButtonLabelInfo("&" + command.getId());
         }

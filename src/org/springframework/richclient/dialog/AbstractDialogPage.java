@@ -25,9 +25,9 @@ import javax.swing.SwingUtilities;
 
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.LabeledObjectSupport;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.factory.ControlFactory;
-import org.springframework.rules.reporting.Severity;
 import org.springframework.util.Assert;
 
 /**
@@ -147,12 +147,8 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         return getDisplayName();
     }
 
-    public String getMessage() {
+    public Message getMessage() {
         return messageBuffer.getMessage();
-    }
-
-    public Severity getSeverity() {
-        return messageBuffer.getSeverity();
     }
 
     /**
@@ -161,30 +157,20 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      * @param newMessage
      *            the message, or <code>null</code> to clear the message
      */
-    public void setMessage(String newMessage) {
+    public void setMessage(Message newMessage) {
         messageBuffer.setMessage(newMessage);
     }
 
-    public void setMessage(String newMessage, Severity severity) {
-        messageBuffer.setMessage(newMessage, severity);
-    }
-
-    public String getErrorMessage() {
-        return hasErrorMessage() ? getMessage() : null;
-    }
-
     public boolean hasErrorMessage() {
-        return messageBuffer.getSeverity() != null && messageBuffer.getSeverity().equals(Severity.ERROR);
+        return messageBuffer.hasErrorMessage();
     }
-
-    /**
-     * Sets or clears the error message for this page.
-     * 
-     * @param newMessage
-     *            the message, or <code>null</code> to clear the error message
-     */
-    public void setErrorMessage(String newMessage) {
-        messageBuffer.setErrorMessage(newMessage);
+    
+    public boolean hasWarningMessage() {
+        return messageBuffer.hasWarningMessage();
+    }
+    
+    public boolean hasInfoMessage() {
+        return messageBuffer.hasInfoMessage();
     }
 
     public void setVisible(boolean visible) {

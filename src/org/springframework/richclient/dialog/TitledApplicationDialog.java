@@ -24,22 +24,17 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.reporting.Severity;
-import org.springframework.util.StringUtils;
 
-public abstract class TitledApplicationDialog extends ApplicationDialog implements MessageAreaPane
-{
+public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable {
+    private TitlePane titleAreaPane = new TitlePane();
 
-    private TitleAreaPane titleAreaPane = new TitleAreaPane();
-
-    private String description = "Title area description";
+    private Message description = new Message("Title area description");
 
     private JComponent pageControl;
 
     private JComponent contentPane;
-
-    private boolean resetMessagePaneOnDisplay;
 
     public TitledApplicationDialog() {
         super();
@@ -55,54 +50,45 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
         super(title, parent, closeAction);
         init();
     }
-    
+
     private void init() {
-        
+
     }
 
-    public void setTitleAreaText(String titleAreaText) {
+    public void setTitlePaneText(String titleAreaText) {
         titleAreaPane.setTitle(titleAreaText);
     }
 
-    public void setTitleAreaImage(Image image) {
+    public void setTitlePaneImage(Image image) {
         titleAreaPane.setImage(image);
     }
 
     public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public JComponent getControl() {
-        return titleAreaPane.getControl();
+        this.description = new Message(description);
     }
 
     public boolean messageShowing() {
-        return true;
+        return titleAreaPane.messageShowing();
     }
 
-    public void setMessage(String message) {
-        setMessage(message, null);
-    }
-
-    public void setMessage(String message, Severity severity) {
-        if (StringUtils.hasText(message)) {
-            titleAreaPane.setMessage(message, severity);
+    public void setMessage(Message message) {
+        if (message == null) {
+            message = Message.EMPTY_MESSAGE;
+        }
+        if (!message.isEmpty()) {
+            titleAreaPane.setMessage(message);
         }
         else {
-            updateDescription();
+            updateTitlePaneWithDescription();
         }
     }
 
-    public void setErrorMessage(String message) {
-        setMessage(message, Severity.ERROR);
+    public void updateTitlePaneWithDescription() {
+        titleAreaPane.setMessage(getDescription());
     }
 
-    public void updateDescription() {
-        titleAreaPane.setMessage(getDescription());
+    protected Message getDescription() {
+        return description;
     }
 
     protected void setContentPane(JComponent c) {
@@ -135,7 +121,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
             contentPane.setPreferredSize(getPreferredSize());
         }
         GuiStandardUtils.attachDialogBorder(contentPane);
-        updateDescription();
+        updateTitlePaneWithDescription();
         pageControl.add(contentPane);
         return pageControl;
     }
@@ -143,25 +129,19 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
     protected abstract JComponent createTitledDialogContentPane();
 
     protected void onAboutToShow() {
-        if (resetMessagePaneOnDisplay) {
-            titleAreaPane.setMessage(description);
-        }
+
     }
 
-    public void setResetMessagePaneOnDisplay(boolean reset) {
-        this.resetMessagePaneOnDisplay = reset;
-    }
-    
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        titleAreaPane.addPropertyChangeListener(listener);        
+        titleAreaPane.addPropertyChangeListener(listener);
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        titleAreaPane.addPropertyChangeListener(propertyName, listener);        
+        titleAreaPane.addPropertyChangeListener(propertyName, listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        titleAreaPane.removePropertyChangeListener(listener);        
+        titleAreaPane.removePropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {

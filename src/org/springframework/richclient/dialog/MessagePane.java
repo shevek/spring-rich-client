@@ -23,7 +23,7 @@ import org.springframework.richclient.factory.ControlFactory;
  * 
  * @author Keith Donald
  */
-public interface MessageAreaPane extends ControlFactory, MessageAreaModel {
+public interface MessagePane extends ControlFactory, Messagable {
 
     /**
      * Is this pane currently showing a message?

@@ -19,7 +19,7 @@ package org.springframework.richclient.forms;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
@@ -42,7 +42,7 @@ public interface Form extends ControlFactory {
 
     public void removeValidationListener(ValidationListener listener);
 
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded, MessageAreaModel messageAreaPane);
+    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageAreaPane);
 
     public boolean hasErrors();
 

@@ -75,7 +75,6 @@ public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecu
     public void execute() {
         if (wizardDialog == null) {
             wizardDialog = new WizardDialog(this);
-            wizardDialog.setResetMessagePaneOnDisplay(true);
             wizardForm = new CompoundForm();
         }
         wizardForm.setFormObject(new Owner());

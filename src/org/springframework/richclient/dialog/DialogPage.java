@@ -19,10 +19,10 @@ import java.awt.Image;
 
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.ControlFactory;
-import org.springframework.rules.reporting.Severity;
 
-public interface DialogPage extends ControlFactory, MessageAreaModel, Guarded, PropertyChangePublisher {
+public interface DialogPage extends ControlFactory, Messagable, Guarded, PropertyChangePublisher {
 
     public static final String DESCRIPTION_PROPERTY = "description";
 
@@ -55,21 +55,7 @@ public interface DialogPage extends ControlFactory, MessageAreaModel, Guarded, P
      * 
      * @return the message, or <code>null</code> if none
      */
-    public String getMessage();
-
-    /**
-     * Returns the current error message for this dialog page.
-     * 
-     * @return the error message, or <code>null</code> if none
-     */
-    public String getErrorMessage();
-
-    /**
-     * Returns the current message severity for this dialog page.
-     * 
-     * @return the severity, or <code>null</code> if none
-     */
-    public Severity getSeverity();
+    public Message getMessage();
 
     /**
      * Returns this dialog page's image.

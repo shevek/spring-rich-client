@@ -62,7 +62,7 @@ public class ColorValidationInterceptorFactory implements FormComponentIntercept
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 ColorChanger colorChanger = new ColorChanger(component);
-                registerErrorGuarded(propertyName, colorChanger);
+                registerGuarded(propertyName, colorChanger);
             }
         }
     }

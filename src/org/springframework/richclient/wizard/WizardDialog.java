@@ -25,11 +25,10 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.dialog.DialogPage;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * Dialog for wizards.
@@ -76,7 +75,7 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
         }
     }
 
-    protected String getFinishFaceConfigurationKey() {
+    protected String getFinishCommandFaceDescriptorId() {
         return "finishCommand";
     }
 
@@ -97,7 +96,9 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
     }
 
     protected Object[] getCommandGroupMembers() {
-        if (!wizard.needsPreviousAndNextButtons()) { return super.getCommandGroupMembers(); }
+        if (!wizard.needsPreviousAndNextButtons()) {
+            return super.getCommandGroupMembers();
+        }
         nextCommand = new ActionCommand("nextCommand") {
             public void doExecuteCommand() {
                 onNext();
@@ -156,13 +157,17 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
 
     protected void onBack() {
         WizardPage newPage = currentPage.getPreviousPage();
-        if (newPage == null || newPage == currentPage) { throw new IllegalStateException("No such page."); }
+        if (newPage == null || newPage == currentPage) {
+            throw new IllegalStateException("No such page.");
+        }
         showPage(newPage);
     }
 
     protected void onNext() {
         WizardPage newPage = currentPage.getNextPage();
-        if (newPage == null || newPage == currentPage) { throw new IllegalStateException("No such page."); }
+        if (newPage == null || newPage == currentPage) {
+            throw new IllegalStateException("No such page.");
+        }
         showPage(newPage);
     }
 
@@ -180,14 +185,15 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
      * Updates this dialog's controls to reflect the current page.
      */
     protected void updateDialog() {
-        if (!isControlCreated()) { throw new IllegalStateException(
-                "Container controls not initialized - update not allowed."); }
+        if (!isControlCreated()) {
+            throw new IllegalStateException("Container controls not initialized - update not allowed.");
+        }
 
-        // Update the title bar
-        updateTitleBar();
+        // Update the title pane
+        updateTitlePane();
 
         // Update the message line
-        updateMessage();
+        updateMessagePane();
 
         // Update the buttons
         updateButtons();
@@ -197,9 +203,9 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
      * Updates the title bar (title, description, and image) to reflect the
      * state of the currently active page in this container.
      */
-    protected void updateTitleBar() {
-        setTitleAreaText(currentPage.getTitle());
-        setTitleAreaImage(currentPage.getImage());
+    protected void updateTitlePane() {
+        setTitlePaneText(currentPage.getTitle());
+        setTitlePaneImage(currentPage.getImage());
         setDescription(currentPage.getDescription());
     }
 
@@ -207,14 +213,8 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
      * Updates the message (or error message) shown in the message line to
      * reflect the state of the currently active page in this container.
      */
-    protected void updateMessage() {
-        String errorMessage = currentPage.getErrorMessage();
-        if (StringUtils.hasText(errorMessage)) {
-            setErrorMessage(errorMessage);
-        }
-        else {
-            setMessage(currentPage.getMessage());
-        }
+    protected void updateMessagePane() {
+        setMessage(currentPage.getMessage());
     }
 
     private void updateButtons() {
@@ -236,14 +236,14 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
     }
 
     public void propertyChange(PropertyChangeEvent e) {
-        if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
-            updateMessage();
+        if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+            updateMessagePane();
         }
         else if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
             updateButtons();
         }
         else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
-            updateTitleBar();
+            updateTitlePane();
         }
     }
 }

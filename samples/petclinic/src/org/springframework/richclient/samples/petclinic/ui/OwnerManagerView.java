@@ -114,7 +114,8 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                 Owner selectedOwner = getSelectedOwner();
                 if (selectedOwner != null) {
                     return selectedOwner.getFirstName() + " " + selectedOwner.getLastName();
-                } else {
+                }
+                else {
                     return "Owners";
                 }
             }
@@ -133,17 +134,19 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     private Owner getSelectedOwner() {
         DefaultMutableTreeNode node = getSelectedOwnerNode();
         if (node != null) {
-            return (Owner) node.getUserObject();
-        } else {
+            return (Owner)node.getUserObject();
+        }
+        else {
             return null;
         }
     }
 
     private DefaultMutableTreeNode getSelectedOwnerNode() {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) ownersTree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree.getLastSelectedPathComponent();
         if (node == null || !(node.getUserObject() instanceof Owner)) {
             return null;
-        } else {
+        }
+        else {
             return node;
         }
     }
@@ -154,11 +157,13 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             renameCommand.setEnabled(false);
             deleteExecutor.setEnabled(false);
             propertiesExecutor.setEnabled(false);
-        } else if (treeSelectionCount == 1) {
+        }
+        else if (treeSelectionCount == 1) {
             renameCommand.setEnabled(true);
             deleteExecutor.setEnabled(true);
             propertiesExecutor.setEnabled(true);
-        } else if (treeSelectionCount > 1) {
+        }
+        else if (treeSelectionCount > 1) {
             renameCommand.setEnabled(false);
             deleteExecutor.setEnabled(true);
             propertiesExecutor.setEnabled(false);
@@ -170,11 +175,12 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
                 this.setIcon(getIconSource().getIcon("folder.icon"));
-            } else {
-                Owner o = (Owner) node.getUserObject();
+            }
+            else {
+                Owner o = (Owner)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
                 this.setIcon(getIconSource().getIcon("owner.bullet"));
             }
@@ -195,10 +201,10 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     public void onApplicationEvent(ApplicationEvent e) {
         if (e instanceof LifecycleApplicationEvent) {
-            LifecycleApplicationEvent le = (LifecycleApplicationEvent) e;
+            LifecycleApplicationEvent le = (LifecycleApplicationEvent)e;
             if (le.getEventType() == LifecycleApplicationEvent.CREATED && le.objectIs(Owner.class)) {
                 if (ownersTree != null) {
-                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) ownersTreeModel.getRoot();
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode)ownersTreeModel.getRoot();
                     root.add(new DefaultMutableTreeNode(le.getObject()));
                     ownersTreeModel.nodeStructureChanged(root);
                 }
@@ -207,7 +213,6 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     private class RenameCommand extends ActionCommand {
-
         public RenameCommand() {
             super("renameCommand");
         }
@@ -236,18 +241,16 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     private class DeleteCommandExecutor extends AbstractActionCommandExecutor {
-
         public void execute() {
             ConfirmationDialog dialog = new ConfirmationDialog() {
-
                 protected void onConfirm() {
                     TreePath[] paths = ownersTree.getSelectionPaths();
                     for (int i = 0; i < paths.length; i++) {
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[i].getLastPathComponent();
                         if (node.isRoot()) {
                             continue;
                         }
-                        Owner owner = (Owner) node.getUserObject();
+                        Owner owner = (Owner)node.getUserObject();
                         //clinic.deleteOwner(owner);
                         ownersTreeModel.removeNodeFromParent(node);
                     }
@@ -272,19 +275,19 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
             ownerGeneralForm = new OwnerGeneralForm(ownerFormModel);
 
-            PreferenceStore ps = (PreferenceStore) getApplicationContext().getBean("preferenceStore");
-            CompositeDialogPageType type = (CompositeDialogPageType) ps
+            PreferenceStore ps = (PreferenceStore)getApplicationContext().getBean("preferenceStore");
+            CompositeDialogPageType type = (CompositeDialogPageType)ps
                     .getCodedEnum(PetClinicAppearance.DIALOG_PAGE_TYPE);
-            if (type.equals(CompositeDialogPageType.TABBED)) {
+            if (type == null || type.equals(CompositeDialogPageType.TABBED)) {
                 compositePage = new TabbedDialogPage("ownerProperties");
-            } else {
+            }
+            else {
                 compositePage = new TreeCompositeDialogPage("ownerProperties");
             }
             compositePage.addForm(ownerGeneralForm);
             compositePage.addForm(new OwnerAddressForm(ownerFormModel));
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(compositePage, getWindowControl()) {
-
                 protected void onAboutToShow() {
                     ownerGeneralForm.requestFocusInWindow();
                     setEnabled(compositePage.isPageComplete());
@@ -297,7 +300,6 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                     return true;
                 }
             };
-
             dialog.showDialog();
         }
     }

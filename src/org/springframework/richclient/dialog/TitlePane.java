@@ -27,11 +27,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.layout.TableLayoutBuilder;
-import org.springframework.rules.reporting.Severity;
 
 import com.jgoodies.forms.factories.FormFactory;
 
@@ -40,29 +40,28 @@ import com.jgoodies.forms.factories.FormFactory;
  * image as well as a common area for displaying a description, a message, or an
  * error message.
  */
-public class TitleAreaPane extends AbstractControlFactory implements MessageAreaPane, TitleConfigurable,
-        ImageConfigurable {
+public class TitlePane extends AbstractControlFactory implements MessagePane, TitleConfigurable, ImageConfigurable {
 
     /**
      * Image source key for banner image (value <code>dialog_title_banner</code>).
      */
-    public static final String DEFAULT_TITLE_IMAGE = "titledDialog.icon";
+    public static final String DEFAULT_TITLE_IMAGE = "titledDialog.image";
 
-    private JComponent titleArea;
+    private String title;
+
+    private Image image;
 
     private JLabel titleLabel;
 
     private JLabel iconLabel;
 
-    private Image image;
+    private MessagePane messageAreaPane;
 
-    private MessageAreaPane messageAreaPane;
-
-    public TitleAreaPane() {
+    public TitlePane() {
         this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
     }
 
-    public TitleAreaPane(int linesToDisplay) {
+    public TitlePane(int linesToDisplay) {
         this.messageAreaPane = new DefaultMessageAreaPane(linesToDisplay, this);
     }
 
@@ -70,12 +69,14 @@ public class TitleAreaPane extends AbstractControlFactory implements MessageArea
         if (newTitle == null) {
             newTitle = "";
         }
-        createControlIfNecessary();
-        titleLabel.setText(newTitle);
+        this.title = newTitle;
+        if (isControlCreated()) {
+            titleLabel.setText(newTitle);
+        }
     }
 
-    public void setImage(Image titleImage) {
-        this.image = titleImage;
+    public void setImage(Image image) {
+        this.image = image;
         if (isControlCreated()) {
             iconLabel.setIcon(getIcon());
         }
@@ -106,15 +107,11 @@ public class TitleAreaPane extends AbstractControlFactory implements MessageArea
     }
 
     private Icon getIcon() {
-        return new ImageIcon(getImage());
-    }
-
-    private Image getImage() {
         if (image != null) {
-            return image;
+            return new ImageIcon(image);
         }
         else {
-            return getImageSource().getImage(DEFAULT_TITLE_IMAGE);
+            return new ImageIcon(getImageSource().getImage(DEFAULT_TITLE_IMAGE));
         }
     }
 
@@ -130,24 +127,20 @@ public class TitleAreaPane extends AbstractControlFactory implements MessageArea
         return messageAreaPane.messageShowing();
     }
 
-    public void setMessage(String errorMessage, Severity severity) {
-        messageAreaPane.setMessage(errorMessage, severity);
-    }
-
-    public void setMessage(String newMessage) {
+    public void setMessage(Message newMessage) {
         messageAreaPane.setMessage(newMessage);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaPane.addPropertyChangeListener(listener);        
+        messageAreaPane.addPropertyChangeListener(listener);
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        messageAreaPane.addPropertyChangeListener(propertyName, listener);        
+        messageAreaPane.addPropertyChangeListener(propertyName, listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaPane.removePropertyChangeListener(listener);        
+        messageAreaPane.removePropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {

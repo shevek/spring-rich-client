@@ -16,7 +16,7 @@
 package org.springframework.richclient.dialog;
 
 import org.springframework.binding.value.PropertyChangePublisher;
-import org.springframework.rules.reporting.Severity;
+import org.springframework.richclient.core.Message;
 
 /**
  * Interface to be implemented by object capable of receiving messages to the
@@ -24,22 +24,12 @@ import org.springframework.rules.reporting.Severity;
  * 
  * @author Keith Donald
  */
-public interface MessageAreaModel extends PropertyChangePublisher {
-    
+public interface Messagable extends PropertyChangePublisher {
     public static final String MESSAGE_PROPERTY = "message";
 
     /**
-     * Set the message text. If the message line currently displays an error,
-     * the message is stored and will be shown after a call to
-     * setErrorMessage(null)
+     * Set the message.
      */
-    public void setMessage(String newMessage);
+    public void setMessage(Message message);
 
-    /**
-     * Display the given error message of the provided severity.
-     * 
-     * @param newMessage
-     * @param severity
-     */
-    public void setMessage(String newMessage, Severity severity);
 }

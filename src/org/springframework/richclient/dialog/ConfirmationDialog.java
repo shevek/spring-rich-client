@@ -23,16 +23,17 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import org.springframework.richclient.core.Message;
 import org.springframework.util.Assert;
 
 public abstract class ConfirmationDialog extends ApplicationDialog {
-    private static final String NO_KEY = "noCommand";
+    private static final String YES_FACE_DESCRIPTOR_ID = "yesCommand";
 
-    private static final String YES_KEY = "yesCommand";
+    private static final String NO_FACE_DESCRIPTOR_ID = "noCommand";
 
     private static final String CONFIRMATION_DIALOG_ICON = "confirmationDialog.icon";
 
-    private MessageAreaPane messageAreaPane;
+    private DefaultMessageAreaPane messageAreaPane;
 
     private String confirmationMessage;
 
@@ -54,12 +55,12 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         this.confirmationMessage = message;
     }
 
-    protected String getFinishFaceConfigurationKey() {
-        return YES_KEY;
+    protected String getFinishCommandFaceDescriptorId() {
+        return YES_FACE_DESCRIPTOR_ID;
     }
 
-    protected String getCancelFaceConfigurationKey() {
-        return NO_KEY;
+    protected String getCancelCommandFaceDescriptorId() {
+        return NO_FACE_DESCRIPTOR_ID;
     }
 
     protected void registerDefaultCommand() {
@@ -84,14 +85,13 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     }
 
     protected JComponent createDialogContentPane() {
-        DefaultMessageAreaPane pane = new DefaultMessageAreaPane(5);
+        this.messageAreaPane = new DefaultMessageAreaPane(5);
         Icon icon = getIconSource().getIcon(CONFIRMATION_DIALOG_ICON);
         if (icon == null) {
             icon = UIManager.getIcon("OptionPane.questionIcon");
         }
-        pane.setDefaultIcon(icon);
-        this.messageAreaPane = pane;
-        this.messageAreaPane.setMessage(confirmationMessage, null);
+        this.messageAreaPane.setDefaultIcon(icon);
+        this.messageAreaPane.setMessage(new Message(confirmationMessage));
         JComponent control = messageAreaPane.getControl();
         return control;
     }

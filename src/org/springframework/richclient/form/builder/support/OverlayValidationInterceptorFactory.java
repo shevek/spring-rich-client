@@ -22,8 +22,9 @@ import javax.swing.JTextField;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.DefaultMessageAreaModel;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.util.OverlayHelper;
@@ -53,7 +54,6 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
-
         public OverlayValidationInterceptor(FormModel formModel) {
             super(formModel);
         }
@@ -66,17 +66,13 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             OverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
                     textCompHeight));
 
-            registerErrorGuarded(propertyName, overlay);
-            registerErrorMessageReceiver(propertyName, overlay);
+            registerGuarded(propertyName, overlay);
+            registerMessageReceiver(propertyName, overlay);
         }
     }
 
-    private class ErrorReportingOverlay extends JLabel implements MessageAreaModel, Guarded {
-
+    private class ErrorReportingOverlay extends JLabel implements Messagable, Guarded {
         private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
-
-        public ErrorReportingOverlay() {
-        }
 
         public boolean isEnabled() {
             return true;
@@ -86,18 +82,11 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             setVisible(!enabled);
         }
 
-        public void setMessage(String newMessage) {
-            setMessage(newMessage, Severity.INFO);
-        }
-
-        public void setMessage(String newMessage, Severity severity) {
-            messageBuffer.setMessage(newMessage, severity);
-            setToolTipText(messageBuffer.getMessage());
-            setIcon(Application.services().getIcon("severity." + severity.getShortCode() + ".overlay"));
-        }
-
-        public void setErrorMessage(String errorMessage) {
-            setMessage(errorMessage, Severity.ERROR);
+        public void setMessage(Message message) {
+            messageBuffer.setMessage(message);
+            message = messageBuffer.getMessage();
+            setToolTipText(message.getText());
+            setIcon(message.getIcon());
         }
     }
 }

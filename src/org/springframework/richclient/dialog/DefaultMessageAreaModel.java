@@ -18,25 +18,25 @@ package org.springframework.richclient.dialog;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JComponent;
+
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.util.ListenerListHelper;
-import org.springframework.rules.reporting.Severity;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A concrete implementation of the MessageReceiver interface. Primarily
+ * A concrete implementation of the Messageable interface. Primarily
  * intended to be used as a delegate for the MessageReceiver functionality of
  * more complex classes.
  * 
  * @author oliverh
- * @see DefaultMessageAreaPane
+ * @see DefaultMessagePane
  */
-public class DefaultMessageAreaModel implements MessageAreaModel {
+public class DefaultMessageAreaModel implements Messagable {
 
-    private MessageAreaModel delegate;
+    private Messagable delegate;
 
-    private String message;
-
-    private Severity severity;
+    private Message message = Message.EMPTY_MESSAGE;
 
     private ListenerListHelper listenerList = new ListenerListHelper(PropertyChangeListener.class);
 
@@ -44,40 +44,48 @@ public class DefaultMessageAreaModel implements MessageAreaModel {
         this.delegate = this;
     }
 
-    public DefaultMessageAreaModel(MessageAreaModel delegate) {
+    public DefaultMessageAreaModel(Messagable delegate) {
         this.delegate = delegate;
     }
 
     /**
      * @return Returns the delegateFor.
      */
-    protected MessageAreaModel getDelegateFor() {
+    protected Messagable getDelegateFor() {
         return delegate;
     }
 
-    public String getMessage() {
+    public Message getMessage() {
         return message;
     }
 
-    public Severity getSeverity() {
-        return severity;
+    public boolean hasInfoMessage() {
+        return message.isWarningMessage();
     }
 
-    public void setMessage(String newMessage) {
-        setMessage(newMessage, Severity.INFO);
+    public boolean hasErrorMessage() {
+        return message.isErrorMessage();
     }
 
-    public void setErrorMessage(String errorMessage) {
-        setMessage(errorMessage, Severity.ERROR);
+    public boolean hasWarningMessage() {
+        return message.isWarningMessage();
     }
 
-    public void setMessage(String message, Severity severity) {
-        if (ObjectUtils.nullSafeEquals(this.message, message) && ObjectUtils.nullSafeEquals(this.severity, severity)) { return; }
+    public void setMessage(Message message) {
+        if (message == null) {
+            message = Message.EMPTY_MESSAGE;
+        }
+        if (ObjectUtils.nullSafeEquals(this.message, message)) {
+            return;
+        }
         this.message = message;
-        this.severity = severity;
         fireMessageUpdated();
     }
 
+    public void renderMessage(JComponent component) {
+        message.renderMessage(component);
+    }
+    
     protected void fireMessageUpdated() {
         listenerList.fire("propertyChange", new PropertyChangeEvent(delegate, MESSAGE_PROPERTY, null, null));
     }

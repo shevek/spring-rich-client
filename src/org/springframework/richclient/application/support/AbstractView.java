@@ -54,6 +54,7 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
     }
 
     public ViewDescriptor getDescriptor() {
+        Assert.state(descriptor != null, "View descriptor property is not set; it is required");
         return descriptor;
     }
 

@@ -24,7 +24,8 @@ import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.core.Message;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
@@ -44,16 +45,15 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
     }
 
-    protected void registerErrorMessageReceiver(String propertyName, MessageAreaModel messageReceiver) {
+    protected void registerMessageReceiver(String propertyName, Messagable messageReceiver) {
         propertyValidatonReporter.registerMessageReceiver(propertyName, messageReceiver);
     }
 
-    protected void registerErrorGuarded(String propertyName, Guarded guarded) {
+    protected void registerGuarded(String propertyName, Guarded guarded) {
         propertyValidatonReporter.registerGuarded(propertyName, guarded);
     }
 
     private class SimplePropertyValidationResultsReporter implements ValidationListener {
-
         private Map propertyMessages = new HashMap();
 
         private Map propertyGuarded = new HashMap();
@@ -78,7 +78,7 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
             return guards;
         }
 
-        public void registerMessageReceiver(String propertyName, MessageAreaModel messageReceiver) {
+        public void registerMessageReceiver(String propertyName, Messagable messageReceiver) {
             getMessageReceivers(propertyName).add(messageReceiver);
             update(propertyName);
         }
@@ -86,7 +86,7 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         private ListenerListHelper getMessageReceivers(String propertyName) {
             ListenerListHelper messageReceivers = (ListenerListHelper)propertyMessage.get(propertyName);
             if (messageReceivers == null) {
-                messageReceivers = new ListenerListHelper(MessageAreaModel.class);
+                messageReceivers = new ListenerListHelper(Messagable.class);
                 propertyMessage.put(propertyName, messageReceivers);
             }
             return messageReceivers;
@@ -152,12 +152,11 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
                 enabled = false;
             }
             else {
-                severity = Severity.INFO;
+                severity = null;
                 message = "";
                 enabled = true;
             }
-
-            getMessageReceivers(propertyName).fire("setMessage", message, severity);
+            getMessageReceivers(propertyName).fire("setMessage", new Message(message, severity));
             getGuards(propertyName).fire("setEnabled", Boolean.valueOf(enabled));
         }
 

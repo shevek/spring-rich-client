@@ -32,7 +32,7 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.list.ObservableList;
 import org.springframework.util.Assert;
@@ -215,7 +215,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected final JComponent createControl() {
-        Assert.notNull(getFormModel(), "This form's FormModel cannot be null once control creation is triggered!");
+        Assert
+                .state(getFormModel() != null,
+                        "This form's FormModel cannot be null once control creation is triggered!");
         initStandardLocalFormCommands();
         JComponent formControl = createFormControl();
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
@@ -323,7 +325,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     private ActionCommand createNewFormObjectCommand() {
-        String commandId = getNewFormObjectFaceConfigurationKey();
+        String commandId = getNewFormObjectCommandId();
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
@@ -357,7 +359,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     private final ActionCommand createCommitCommand() {
-        String commandId = getCommitFaceConfigurationKey();
+        String commandId = getCommitCommandFaceDescriptorId();
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
@@ -392,7 +394,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     private final ActionCommand createRevertCommand() {
-        String commandId = getRevertFaceConfigurationKey();
+        String commandId = getRevertCommandFaceDescriptorId();
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
@@ -405,26 +407,26 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected final JButton createNewFormObjectButton() {
-        Assert.notNull(newFormObjectCommand, "New form object command has not been created!");
+        Assert.state(newFormObjectCommand != null, "New form object command has not been created!");
         return (JButton)newFormObjectCommand.createButton();
     }
 
     protected final JButton createCommitButton() {
-        Assert.notNull(commitCommand, "Commit command has not been created!");
+        Assert.state(commitCommand != null, "Commit command has not been created!");
         return (JButton)commitCommand.createButton();
     }
 
-    protected String getNewFormObjectFaceConfigurationKey() {
+    protected String getNewFormObjectCommandId() {
         return "new"
                 + StringUtils
                         .capitalize(ClassUtils.getShortName(getFormModel().getFormObject().getClass() + "Command"));
     }
 
-    protected String getCommitFaceConfigurationKey() {
+    protected String getCommitCommandFaceDescriptorId() {
         return null;
     }
 
-    protected String getRevertFaceConfigurationKey() {
+    protected String getRevertCommandFaceDescriptorId() {
         return null;
     }
 
@@ -469,8 +471,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         formModel.removeValidationListener(listener);
     }
 
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded, MessageAreaModel messageAreaPane) {
-        return getFormModel().createSingleLineResultsReporter(guarded, messageAreaPane);
+    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+        return getFormModel().createSingleLineResultsReporter(guarded, messageReceiver);
     }
 
     public void addFormObjectChangeListener(ValueChangeListener listener) {

@@ -18,9 +18,10 @@ package org.springframework.richclient.dialog;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.springframework.rules.reporting.Severity;
-
 import junit.framework.TestCase;
+
+import org.springframework.richclient.core.Message;
+import org.springframework.rules.reporting.Severity;
 
 /**
  * @author Peter De Bruycker
@@ -35,42 +36,26 @@ public class DefaultMessageAreaModelTests extends TestCase {
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
 
         buffer.addPropertyChangeListener(ml1);
-        buffer.setMessage("Msg");
+        buffer.setMessage(new Message("Msg"));
         assertEquals(buffer, ml1.lastUpdated);
-        
+
         ml1.lastUpdated = null;
         buffer.removePropertyChangeListener(ml1);
-        buffer.setMessage("Msg1");
+        buffer.setMessage(new Message("Msg1"));
         assertEquals(null, ml1.lastUpdated);
-        
-        
-        buffer.addPropertyChangeListener(MessageAreaModel.MESSAGE_PROPERTY, ml1);
-        buffer.setMessage("Msg");
+
+        buffer.addPropertyChangeListener(Messagable.MESSAGE_PROPERTY, ml1);
+        buffer.setMessage(new Message("Msg"));
         assertEquals(buffer, ml1.lastUpdated);
-        
+
         ml1.lastUpdated = null;
-        buffer.removePropertyChangeListener(MessageAreaModel.MESSAGE_PROPERTY, ml1);
-        buffer.setMessage("Msg1");
+        buffer.removePropertyChangeListener(Messagable.MESSAGE_PROPERTY, ml1);
+        buffer.setMessage(new Message("Msg1"));
         assertEquals(null, ml1.lastUpdated);
 
         buffer.addPropertyChangeListener("Some Other Property", ml1);
-        buffer.setMessage("Msg");
-        assertEquals(null, ml1.lastUpdated);        
-    }
-
-    public void testConstructor() {
-        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        assertNull(buffer.getMessage());
-        assertNull(buffer.getSeverity());
-        assertEquals(buffer, buffer.getDelegateFor());
-    }
-
-    public void testConstructorWithDelegate() {
-        DefaultMessageAreaModel delegateFor = new DefaultMessageAreaModel();
-        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel(delegateFor);
-        assertNull(buffer.getMessage());
-        assertNull(buffer.getSeverity());
-        assertEquals(delegateFor, buffer.getDelegateFor());
+        buffer.setMessage(new Message("Msg"));
+        assertEquals(null, ml1.lastUpdated);
     }
 
     public void testSetMessage() {
@@ -80,8 +65,7 @@ public class DefaultMessageAreaModelTests extends TestCase {
         buffer.addPropertyChangeListener(ml1);
         buffer.addPropertyChangeListener(ml2);
 
-        buffer.setMessage(msg);
-
+        buffer.setMessage(new Message(msg));
         assertMessageAndSeveritySet(buffer, msg, Severity.INFO);
 
         // with delegate
@@ -89,15 +73,13 @@ public class DefaultMessageAreaModelTests extends TestCase {
         buffer = new DefaultMessageAreaModel(delegate);
         buffer.addPropertyChangeListener(ml1);
         buffer.addPropertyChangeListener(ml2);
-
-        buffer.setMessage(msg);
-
+        buffer.setMessage(new Message(msg));
         assertMessageAndSeveritySet(buffer, msg, Severity.INFO);
     }
 
     private void assertMessageAndSeveritySet(DefaultMessageAreaModel buffer, String msg, Severity severity) {
         assertEquals("message was not set", msg, buffer.getMessage());
-        assertEquals("severity must be info", severity, buffer.getSeverity());
+        assertEquals("severity must be info", severity, buffer.getMessage().getSeverity());
         assertEquals("listener not notified", buffer.getDelegateFor(), ml1.lastUpdated);
         assertEquals("listener not notified", buffer.getDelegateFor(), ml2.lastUpdated);
     }
@@ -109,8 +91,7 @@ public class DefaultMessageAreaModelTests extends TestCase {
         buffer.addPropertyChangeListener(ml1);
         buffer.addPropertyChangeListener(ml2);
 
-        buffer.setErrorMessage(msg);
-
+        buffer.setMessage(new Message(msg, Severity.ERROR));
         assertMessageAndSeveritySet(buffer, msg, Severity.ERROR);
 
         // with delegate
@@ -119,32 +100,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         buffer.addPropertyChangeListener(ml1);
         buffer.addPropertyChangeListener(ml2);
 
-        buffer.setErrorMessage(msg);
-
+        buffer.setMessage(new Message(msg, Severity.ERROR));
         assertMessageAndSeveritySet(buffer, msg, Severity.ERROR);
-    }
-
-    public void testSetMessageAndSeverity() {
-        String msg = "Error message";
-        Severity severity = Severity.WARNING;
-
-        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        buffer.addPropertyChangeListener(ml1);
-        buffer.addPropertyChangeListener(ml2);
-
-        buffer.setMessage(msg, severity);
-
-        assertMessageAndSeveritySet(buffer, msg, severity);
-
-        // with delegate
-        DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
-        buffer = new DefaultMessageAreaModel(delegate);
-        buffer.addPropertyChangeListener(ml1);
-        buffer.addPropertyChangeListener(ml2);
-
-        buffer.setMessage(msg, severity);
-
-        assertMessageAndSeveritySet(buffer, msg, severity);
     }
 
     public void testSetSameMessage() {
@@ -155,14 +112,14 @@ public class DefaultMessageAreaModelTests extends TestCase {
         buffer.addPropertyChangeListener(ml1);
         buffer.addPropertyChangeListener(ml2);
 
-        buffer.setMessage(msg, severity);
+        buffer.setMessage(new Message(msg, severity));
 
         assertMessageAndSeveritySet(buffer, msg, severity);
         ml1.lastUpdated = null;
         ml2.lastUpdated = null;
 
         // and again
-        buffer.setMessage(msg, severity);
+        buffer.setMessage(new Message(msg, severity));
         assertNull(ml1.lastUpdated);
         assertNull(ml2.lastUpdated);
     }
@@ -181,11 +138,11 @@ public class DefaultMessageAreaModelTests extends TestCase {
 
     private static class TestMessageAreaChangeListener implements PropertyChangeListener {
 
-        private MessageAreaModel lastUpdated;
+        private Messagable lastUpdated;
 
         public void propertyChange(PropertyChangeEvent evt) {
-            this.lastUpdated = (MessageAreaModel) evt.getSource();
-            
+            this.lastUpdated = (Messagable)evt.getSource();
+
         }
 
     }

@@ -24,7 +24,8 @@ import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaModel;
+import org.springframework.richclient.core.Message;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.ValidationResults;
@@ -40,21 +41,21 @@ public class SimpleValidationResultsReporter implements ValidationListener {
 
     private Guarded guarded;
 
-    private MessageAreaModel messageAreaPane;
+    private Messagable messageReceiver;
 
     private Stack messages = new Stack();
 
-    public SimpleValidationResultsReporter(FormModel formModel, Guarded guarded, MessageAreaModel messagePane) {
-        Assert.notNull(formModel);
-        Assert.notNull(guarded);
-        Assert.notNull(messagePane);
+    public SimpleValidationResultsReporter(FormModel formModel, Guarded guarded, Messagable messageReceiver) {
+        Assert.notNull(formModel, "formModel is required");
+        Assert.notNull(guarded, "guarded is required");
+        Assert.notNull(messageReceiver, "messagePane is required");
         this.formModel = formModel;
         this.guarded = guarded;
-        this.messageAreaPane = messagePane;
-        initialize();
+        this.messageReceiver = messageReceiver;
+        init();
     }
 
-    private void initialize() {
+    private void init() {
         if (formModel.getHasErrors()) {
             guarded.setEnabled(false);
         }
@@ -91,17 +92,17 @@ public class SimpleValidationResultsReporter implements ValidationListener {
 
     public void clearErrors() {
         messages.clear();
-        messageAreaPane.setMessage("", null);
+        messageReceiver.setMessage(null);
         guarded.setEnabled(true);
     }
 
     private void update(ValidationEvent event) {
         if (!event.getFormModel().getHasErrors()) {
-            messageAreaPane.setMessage("", null);
-            guarded.setEnabled(true);
             if (logger.isDebugEnabled()) {
                 logger.debug("Form has no errors; enabling guarded component and clearing error message.");
             }
+            messageReceiver.setMessage(null);
+            guarded.setEnabled(true);
         }
         else {
             if (logger.isDebugEnabled()) {
@@ -110,10 +111,14 @@ public class SimpleValidationResultsReporter implements ValidationListener {
             guarded.setEnabled(false);
             if (messages.size() > 0) {
                 ValidationEvent error = (ValidationEvent)messages.peek();
-                messageAreaPane.setMessage(translate(error.getResults()), error.getResults().getSeverity());
+                System.out.println("setting message");
+                messageReceiver
+                        .setMessage(new Message(translate(error.getResults()), error.getResults().getSeverity()));
             }
             else {
-                messageAreaPane.setMessage("", null);
+                System.out.println("setting message null");
+
+                messageReceiver.setMessage(null);
             }
         }
     }

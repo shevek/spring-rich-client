@@ -26,11 +26,9 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.EmptyIcon;
-import org.springframework.richclient.image.NoSuchImageResourceException;
-import org.springframework.richclient.util.LabelUtils;
-import org.springframework.rules.reporting.Severity;
 import org.springframework.util.StringUtils;
 
 import com.jgoodies.forms.layout.Sizes;
@@ -39,8 +37,7 @@ import com.jgoodies.forms.layout.Sizes;
  * @author Keith Donald
  * @author Oliver Hutchison
  */
-public class DefaultMessageAreaPane extends AbstractControlFactory implements MessageAreaPane, PropertyChangeListener {
-
+public class DefaultMessageAreaPane extends AbstractControlFactory implements MessagePane, PropertyChangeListener {
     private static final Log logger = LogFactory.getLog(DefaultMessageAreaPane.class);
 
     private static final int ONE_LINE_IN_DLU = 10;
@@ -63,15 +60,15 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         init(linesToDisplay, this);
     }
 
-    public DefaultMessageAreaPane(MessageAreaModel delegateFor) {
+    public DefaultMessageAreaPane(Messagable delegateFor) {
         this(DEFAULT_LINES_TO_DISPLAY, delegateFor);
     }
 
-    public DefaultMessageAreaPane(int linesToDisplay, MessageAreaModel delegateFor) {
+    public DefaultMessageAreaPane(int linesToDisplay, Messagable delegateFor) {
         init(linesToDisplay, delegateFor);
     }
 
-    private void init(int linesToDisplay, MessageAreaModel delegateFor) {
+    private void init(int linesToDisplay, Messagable delegateFor) {
         this.linesToDisplay = linesToDisplay;
         this.messageAreaModel = new DefaultMessageAreaModel(delegateFor);
         this.messageAreaModel.addPropertyChangeListener(this);
@@ -81,13 +78,10 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         this.defaultIcon = defaultIcon;
     }
 
-    private Icon getDefaultIcon() {
-        return defaultIcon;
-    }
-
     protected JComponent createControl() {
         if (messageLabel == null) {
-            this.messageLabel = new JLabel(" ");
+            this.messageLabel = new JLabel();
+            this.messageAreaModel.renderMessage(messageLabel);
         }
         int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay * ONE_LINE_IN_DLU, messageLabel);
         int prefWidth = messageLabel.getPreferredSize().width;
@@ -99,44 +93,26 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         return messageLabel;
     }
 
-    public boolean messageShowing() {
-        if (messageLabel == null) { return false; }
-        return StringUtils.hasText(messageLabel.getText());
+    private Icon getDefaultIcon() {
+        return defaultIcon;
     }
 
-    public void setMessage(String newMessage) {
-        messageAreaModel.setMessage(newMessage);
-    }
-
-    public void setInfoMessage(String infoMessage) {
-        messageAreaModel.setMessage(infoMessage, Severity.INFO);
-    }
-
-    public void setWarningMessage(String warningMessage) {
-        messageAreaModel.setMessage(warningMessage, Severity.WARNING);
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        messageAreaModel.setErrorMessage(errorMessage);
-    }
-
-    public void setMessage(String message, Severity severity) {
-        messageAreaModel.setMessage(message, severity);
-    }
-
-    private Icon getIcon(Severity severity) {
-        if (severity == null) { return getDefaultIcon(); }
-        try {
-            return getIconSource().getIcon("severity." + severity.getCode());
-        }
-        catch (NoSuchImageResourceException e) {
-            logger.info("No severity icon found for severity " + severity + "; returning default icon.");
-            return getDefaultIcon();
+    public void setMessage(Message message) {
+        messageAreaModel.setMessage(message);
+        if (messageLabel != null) {
+            messageAreaModel.renderMessage(messageLabel);
         }
     }
 
     public void clearMessage() {
-        setMessage("");
+        messageAreaModel.setMessage(null);
+    }
+
+    public boolean messageShowing() {
+        if (messageLabel == null) {
+            return false;
+        }
+        return StringUtils.hasText(messageLabel.getText()) && messageLabel.isVisible();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -159,21 +135,6 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         if (messageLabel == null) {
             messageLabel = new JLabel();
         }
-        String message = messageAreaModel.getMessage();
-        Severity severity = messageAreaModel.getSeverity();
-        if (StringUtils.hasText(message)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("[Setting message '" + message + ", severity=" + severity + "]");
-            }
-            messageLabel.setText(LabelUtils.htmlBlock(message));
-            messageLabel.setIcon(getIcon(severity));
-        }
-        else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("[Clearing message area]");
-            }
-            messageLabel.setText(" ");
-            messageLabel.setIcon(getDefaultIcon());
-        }
+        messageAreaModel.getMessage().renderMessage(messageLabel);
     }
 }

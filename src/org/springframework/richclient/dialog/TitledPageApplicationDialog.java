@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
+import org.springframework.richclient.core.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -49,23 +50,27 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
         setDialogPage(dialogPage);
     }
 
+    private void setDialogPage(DialogPage dialogPage) {
+        Assert.notNull(dialogPage, "The single dialog page to display is required");
+        this.dialogPage = dialogPage;
+    }
+
     protected DialogPage getDialogPage() {
         return dialogPage;
     }
 
-    private void setDialogPage(DialogPage dialogPage) {
-        this.dialogPage = dialogPage;
-    }
-
     protected JComponent createTitledDialogContentPane() {
-        Assert.notNull(dialogPage);
         dialogPage.addPropertyChangeListener(this);
         update();
         return dialogPage.getControl();
     }
 
+    protected Message getDescription() {
+        return new Message(dialogPage.getDescription());
+    }
+
     public void propertyChange(PropertyChangeEvent e) {
-        if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+        if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
             update();
         }
         else if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
@@ -76,24 +81,20 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
         }
     }
 
-    public String getDescription() {
-        return dialogPage.getDescription();
-    }
-
     protected void update() {
         if (!StringUtils.hasText(getTitle())) {
             setTitle(dialogPage.getTitle());
         }
-        updateTitleBar();
-        updateMessage();
+        updateTitlePane();
+        updateMessagePane();
     }
 
-    protected void updateTitleBar() {
-        setTitleAreaText(dialogPage.getTitle());
-        setTitleAreaImage(dialogPage.getImage());
+    protected void updateTitlePane() {
+        setTitlePaneText(dialogPage.getTitle());
+        setTitlePaneImage(dialogPage.getImage());
     }
 
-    protected void updateMessage() {
-        setMessage(dialogPage.getMessage(), dialogPage.getSeverity());
+    protected void updateMessagePane() {
+        setMessage(dialogPage.getMessage());
     }
 }

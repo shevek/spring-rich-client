@@ -32,7 +32,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
 
     private AuthenticationManager authenticationManager;
 
-    private boolean displayFinishSuccessMessage = true;
+    private boolean displaySuccessMessage = true;
 
     public LoginCommand() {
         super(ID);
@@ -57,8 +57,8 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
      *            displays an information message upon successful login if true,
      *            otherwise false
      */
-    public void setDisplaySuccess(boolean displaySuccess) {
-        this.displayFinishSuccessMessage = displaySuccess;
+    public void setDisplaySuccess(boolean displaySuccessMessage) {
+        this.displaySuccessMessage = displaySuccessMessage;
     }
 
     public void afterPropertiesSet() {
@@ -84,7 +84,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 return LoginCommand.this;
             }
         };
-        dialog.setDisplayFinishSuccessMessage(displayFinishSuccessMessage);
+        dialog.setDisplayFinishSuccessMessage(displaySuccessMessage);
         dialog.showDialog();
     }
 }

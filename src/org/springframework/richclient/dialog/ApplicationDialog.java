@@ -74,13 +74,13 @@ import org.springframework.util.StringUtils;
 public abstract class ApplicationDialog extends ApplicationServicesAccessor implements TitleConfigurable, Guarded {
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected static final String DEFAULT_FINISH_COMMAND_ID = "okCommand";
 
-    protected static final String DEFAULT_FINISH_KEY = "okCommand";
-
-    protected static final String DEFAULT_CANCEL_KEY = "cancelCommand";
+    protected static final String DEFAULT_CANCEL_COMMAND_ID = "cancelCommand";
 
     protected static final String DEFAULT_SUCCESS_MESSAGE_KEY = "defaultFinishSuccessMessage";
+
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private String title;
 
@@ -106,8 +106,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private boolean displayFinishSuccessMessage;
 
-    public ApplicationDialog() {
+    private ActionCommand callingCommand;
 
+    public ApplicationDialog() {
     }
 
     public ApplicationDialog(String title, Window parent) {
@@ -133,6 +134,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         setCloseAction(closeAction);
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+        if (dialog != null) {
+            dialog.setTitle(getTitle());
+        }
+    }
+
     protected String getTitle() {
         if (!StringUtils.hasText(this.title)) {
             if (StringUtils.hasText(getCallingCommandText())) {
@@ -143,13 +151,6 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             }
         }
         return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        if (dialog != null) {
-            dialog.setTitle(getTitle());
-        }
     }
 
     public void setParent(Window parent) {
@@ -205,18 +206,14 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         this.displayFinishSuccessMessage = displayFinishSuccessMessage;
     }
 
+    public void setCallingCommand(ActionCommand callingCommand) {
+        this.callingCommand = callingCommand;
+    }
+
     protected void setFinishEnabled(boolean enabled) {
         if (isControlCreated()) {
             finishCommand.setEnabled(enabled);
         }
-    }
-
-    protected Dimension getPreferredSize() {
-        return preferredSize;
-    }
-
-    protected boolean getDisplayFinishSuccessMessage() {
-        return displayFinishSuccessMessage;
     }
 
     public boolean isEnabled() {
@@ -244,7 +241,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected Container getDialogContentPane() {
-        Assert.state(isControlCreated(), "Dialog control has not yet been created.");
+        Assert.state(isControlCreated(), "The wrapped JDialog control has not yet been created.");
         return dialog.getContentPane();
     }
 
@@ -318,7 +315,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     private void initStandardCommands() {
-        finishCommand = new ActionCommand(getFinishFaceConfigurationKey()) {
+        this.finishCommand = new ActionCommand(getFinishCommandFaceDescriptorId()) {
             public void doExecuteCommand() {
                 try {
                     boolean result = onFinish();
@@ -335,9 +332,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                 }
             }
         };
-        finishCommand.setEnabled(defaultEnabled);
+        this.finishCommand.setEnabled(defaultEnabled);
 
-        cancelCommand = new ActionCommand(getCancelFaceConfigurationKey()) {
+        this.cancelCommand = new ActionCommand(getCancelCommandFaceDescriptorId()) {
             public void doExecuteCommand() {
                 onCancel();
             }
@@ -350,8 +347,20 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * 
      * @return The message key to use for the finish ("ok") button
      */
-    protected String getFinishFaceConfigurationKey() {
-        return DEFAULT_FINISH_KEY;
+    protected String getFinishCommandFaceDescriptorId() {
+        return DEFAULT_FINISH_COMMAND_ID;
+    }
+
+    /**
+     * Request invocation of the action taken when the user hits the
+     * <code>OK</code> (finish) button.
+     * 
+     * @return true if action completed succesfully; false otherwise.
+     */
+    protected abstract boolean onFinish();
+
+    protected boolean getDisplayFinishSuccessMessage() {
+        return displayFinishSuccessMessage;
     }
 
     protected void showFinishSuccessMessageDialog() {
@@ -371,6 +380,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         }
     }
 
+    protected ActionCommand getCallingCommand() {
+        return callingCommand;
+    }
+
     protected Object[] getFinishSuccessMessageArguments() {
         return new Object[0];
     }
@@ -388,17 +401,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         }
     }
 
-    protected ActionCommand getCallingCommand() {
-        return null;
-    }
-
     private String getCallingCommandText() {
-        if (getCallingCommand() != null) {
-            return getCallingCommand().getText();
-        }
-        else {
-            return null;
-        }
+        return getCallingCommand() != null ? getCallingCommand().getText() : null;
     }
 
     protected void onFinishException(Exception e) {
@@ -414,6 +418,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             exceptionMessage = getMessages().getMessage("applicationDialog.defaultFinishException", defaultMessage);
         }
         JOptionPane.showMessageDialog(getDialog(), exceptionMessage, getApplicationName(), JOptionPane.ERROR_MESSAGE);
+    }
+
+    protected String getCancelCommandFaceDescriptorId() {
+        return DEFAULT_CANCEL_COMMAND_ID;
     }
 
     protected ActionCommand getFinishCommand() {
@@ -471,6 +479,17 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         getDialogContentPane().add(dialogContentPane);
         getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
     }
+
+    protected Dimension getPreferredSize() {
+        return preferredSize;
+    }
+
+    /**
+     * Return the GUI which allows the user to manipulate the business objects
+     * related to this dialog; this GUI will be placed above the <code>OK</code>
+     * and <code>Cancel</code> buttons, in a standard manner.
+     */
+    protected abstract JComponent createDialogContentPane();
 
     protected final void attachListeners() {
         dialog.addWindowFocusListener(new WindowFocusListener() {
@@ -547,10 +566,6 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         }
     }
 
-    protected String getCancelFaceConfigurationKey() {
-        return DEFAULT_CANCEL_KEY;
-    }
-
     /**
      * Template lifecycle method invoked after the dialog control is
      * initialized.
@@ -623,20 +638,4 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         onWindowClosing();
         this.dialog.setVisible(false);
     }
-
-    /**
-     * Return the GUI which allows the user to manipulate the business objects
-     * related to this dialog; this GUI will be placed above the <code>OK</code>
-     * and <code>Cancel</code> buttons, in a standard manner.
-     */
-    protected abstract JComponent createDialogContentPane();
-
-    /**
-     * Request invocation of the action taken when the user hits the
-     * <code>OK</code> (finish) button.
-     * 
-     * @return true if action completed succesfully; false otherwise.
-     */
-    protected abstract boolean onFinish();
-
 }
