@@ -1,3 +1,18 @@
+/*
+ * Copyright 2002-2004 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.springframework.richclient.dialog.selection;
 
 import java.awt.Window;
@@ -6,7 +21,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.Observable;
 
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -14,71 +28,42 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.layout.TableLayoutBuilder;
-import org.springframework.richclient.list.FilteredListModel;
-import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.text.TextComponentPopup;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.util.closure.Constraint;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.EventListModel;
+import ca.odell.glazedlists.swing.TextFilterList;
 
 /**
- * This class is not yet finished, there is still some work to do here...
  * A <code>ListSelectionDialog</code> can be used to select an item from a list.
  * <br/>
- * It has optional support for a filter field.
  * @author peter.de.bruycker
  */
 public abstract class ListSelectionDialog extends ApplicationDialog {
 
-    private JTextField filterField;
-
-    private SelectionFilterConstraint constraint;
-
-    private SelectionFilter filter;
-
     private String description;
-
-    private ListListModel model;
 
     private ListCellRenderer renderer;
 
     private JList list;
 
-    private List items;
+    private EventList eventList;
 
     public ListSelectionDialog(String title, Window parent, List items) {
-        this(title, parent, items, null);
+        this(title, parent, new BasicEventList(items));
     }
 
-    public ListSelectionDialog(String title, Window parent, List items, SelectionFilter filter) {
+    public ListSelectionDialog(String title, Window parent, EventList eventList) {
         super(title, parent);
-        setFilter(filter);
-        this.items = items;
-        setDescription("&Select an item");
-    }
-
-    /**
-     * Method setFilter.
-     * @param filter
-     */
-    private void setFilter(SelectionFilter filter) {
-        this.filter = filter;
-        if (filter != null) {
-            constraint = new SelectionFilterConstraint(filter);
-        }
-        else {
-            constraint = null;
-        }
-
+        this.eventList = eventList;
     }
 
     public void setDescription(String desc) {
@@ -94,90 +79,38 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
         this.renderer = renderer;
     }
 
-    private void setListModel() {
-        model = new ListListModel(items);
-        if (constraint != null) {
-            list.setModel(new FilteredListModel(model, constraint));
-        }
-        else {
-            list.setModel(model);
-        }
-    }
-
-    private static class SelectionFilterConstraint extends Observable implements Constraint, DocumentListener {
-        private String text;
-
-        private SelectionFilter filter;
-
-        /** 
-         * @see org.springframework.util.closure.Constraint#test(java.lang.Object)
-         */
-        public boolean test(Object obj) {
-            return filter.accept(obj, text);
-        }
-
-        /**
-         * Constructs a new <code>ConstraintAdapter</code> instance.
-         * @param filter
-         */
-        public SelectionFilterConstraint(SelectionFilter filter) {
-            this.filter = filter;
-        }
-
-        /** 
-         * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-         */
-        public void changedUpdate(DocumentEvent e) {
-            // not used
-        }
-
-        /** 
-         * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-         */
-        public void insertUpdate(DocumentEvent e) {
-            contentChanged(e.getDocument());
-        }
-
-        private void contentChanged(Document doc) {
-            try {
-                text = doc.getText(0, doc.getLength());
-            }
-            catch (BadLocationException e) {
-                // if this happens, somethings really wrong
-                throw new RuntimeException(e);
-            }
-            setChanged();
-            notifyObservers();
-        }
-
-        /** 
-         * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-         */
-        public void removeUpdate(DocumentEvent e) {
-            contentChanged(e.getDocument());
-        }
-    }
-
     /** 
      * @see org.springframework.richclient.dialog.ApplicationDialog#createDialogContentPane()
      */
     protected JComponent createDialogContentPane() {
         createListControl();
-        createFilterControl();
-
-        setListModel();
-
+        
+        JTextField filter = null;        
+        
+        if(eventList instanceof TextFilterList) {
+            filter = ((TextFilterList)eventList).getFilterEdit();
+            TextComponentPopup.attachPopup(filter);
+            filter.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        // transfer focus to list
+                        list.requestFocusInWindow();
+                    }
+                }
+            });
+        }
+        
         setFinishEnabled(false);
 
-        if (!model.isEmpty()) {
+        if (!eventList.isEmpty()) {
             list.setSelectedIndex(0);
         }
 
         TableLayoutBuilder builder = new TableLayoutBuilder();
 
         if (StringUtils.hasText(description)) {
-            if (filterField != null) {
-                builder.cell(getComponentFactory().createLabelFor(description, filterField));
+            if (filter != null) {
+                builder.cell(getComponentFactory().createLabelFor(description, filter));
             }
             else {
                 builder.cell(getComponentFactory().createLabelFor(description, list));
@@ -185,30 +118,18 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
             builder.row();
         }
 
-        builder.cell(filterField);
-        builder.row();
+        if (filter != null) {
+            builder.cell(filter);
+            builder.row();
+        }
 
         builder.cell(new JScrollPane(list));
 
         return builder.getPanel();
     }
 
-    private void createFilterControl() {
-        filterField = getComponentFactory().createTextField();
-        TextComponentPopup.attachPopup(filterField);
-        filterField.getDocument().addDocumentListener(constraint);
-        filterField.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    // transfer focus to list
-                    list.requestFocusInWindow();
-                }
-            }
-        });
-    }
-
     private void createListControl() {
-        list = new JList();
+        list = new JList(new EventListModel(eventList));
 
         list.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -222,8 +143,10 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
                 }
 
                 if (list.getSelectionModel().isSelectionEmpty() && lastIndex > -1) {
-                    list.setSelectedIndex(lastIndex);
-                    return;
+                    if(list.getModel().getSize() > 0) {
+                        list.setSelectedIndex(lastIndex);
+                        return;
+                    }
                 }
 
                 setFinishEnabled(!list.getSelectionModel().isSelectionEmpty());
@@ -253,7 +176,7 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
     }
 
     private Object getSelectedObject() {
-        return model.get(list.getSelectedIndex());
+        return eventList.get(list.getSelectedIndex());
     }
 
     protected abstract void onSelect(Object selection);
