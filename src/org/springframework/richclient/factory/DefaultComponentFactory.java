@@ -16,7 +16,7 @@
 package org.springframework.richclient.factory;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -299,7 +299,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public void configureForEnum(JComboBox comboBox, String enumType) {
-        Set enumValues = enumResolver.getEnumsAsSet(enumType, null);
+        Collection enumValues = enumResolver.getEnumsAsCollection(enumType, null);
         if (logger.isDebugEnabled()) {
             logger.debug("Populating combo box model with enums of type '" + enumType + "'; enums are [" + enumValues
                     + "]");
