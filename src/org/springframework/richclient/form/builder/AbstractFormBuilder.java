@@ -42,7 +42,7 @@ public abstract class AbstractFormBuilder {
     protected AbstractFormBuilder(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
-        this.interceptor = Application.services().getInterceptor(formModel);        
+        this.interceptor = Application.services().getInterceptor(formModel);
     }
 
     protected ComponentFactory getComponentFactory() {
@@ -56,7 +56,7 @@ public abstract class AbstractFormBuilder {
         this.componentFactory = componentFactory;
     }
 
-    protected FormComponentInterceptor getInterceptor() {        
+    protected FormComponentInterceptor getInterceptor() {
         return interceptor;
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractFormBuilder {
             component = getInterceptor().processComponent(propertyName,
                     component);
         }
-        return new JComponent[] { label, component };
+        return new JComponent[]{label, component};
     }
 
     protected JComponent getDefaultComponent(String propertyName) {
@@ -108,8 +108,8 @@ public abstract class AbstractFormBuilder {
     }
 
     protected JLabel getLabelFor(String propertyName, JComponent component) {
-        return getComponentFactory().createLabelFor(
-                new String[] { "label." + propertyName, propertyName },
-                component);
+        JLabel label = formModel.createLabel(propertyName);
+        label.setLabelFor(component);
+        return label;
     }
 }

@@ -76,15 +76,22 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.util.comparator.BeanPropertyComparator;
 
 /**
  * @author Keith Donald
  */
 public class SwingFormModel extends ApplicationServicesAccessorSupport
-        implements FormModel, PropertyChangePublisher {
+        implements
+            FormModel,
+            PropertyChangePublisher {
 
-    private static final String CHECK_BOX_LABEL_SUFFIX = "checkBox";
+    private static final String LABEL_MESSAGE_KEY_PREFIX = "label";
+
+    private static final String CHECK_BOX_MESSAGE_KEY_PREFIX = "checkBox";
+
+    private String id;
 
     private ConfigurableFormModel formModel;
 
@@ -160,6 +167,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             String parentPropertyFormObjectPath) {
         return groupingModel.createCompoundChild(childPageName,
                 parentPropertyFormObjectPath);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void registerCustomEditor(Class clazz,
@@ -358,11 +373,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      */
     public JComponent[] createBoundLabeledControl(String formPropertyPath) {
         JComponent editorControl = createBoundControl(formPropertyPath);
-        JLabel label = getComponentFactory().createLabelFor(
-                new String[] { "label." + formPropertyPath, formPropertyPath },
-                editorControl);
+        JLabel label = createLabel(formPropertyPath);
         label.setLabelFor(editorControl);
-        return new JComponent[] { label, editorControl };
+        return new JComponent[]{label, editorControl};
     }
 
     /**
@@ -422,6 +435,23 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     protected JComponent bindControl(JComponent component, String formProperty) {
         component.setName(formProperty);
         return component;
+    }
+
+    public JLabel createLabel(String formProperty) {
+        return getComponentFactory().createLabel(
+                getMessageKeys(formProperty, LABEL_MESSAGE_KEY_PREFIX));
+    }
+
+    protected String[] getMessageKeys(String formProperty, String preffix) {
+        boolean hasFormId = StringUtils.hasText(id);
+        String[] keys = new String[hasFormId ? 3 : 2];
+        int i = 0;
+        if (hasFormId) {
+            keys[i++] = id + "." + preffix + "." + formProperty;
+        }
+        keys[i++] = preffix + "." + formProperty;
+        keys[i++] = formProperty;
+        return keys;
     }
 
     public JFormattedTextField createBoundFormattedTextField(String formProperty) {
@@ -537,6 +567,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         else {
             component.setEditable(false);
             valueModel.addValueChangeListener(new ValueChangeListener() {
+
                 public void valueChanged() {
                     component.setText((String)valueModel.getValue());
                 }
@@ -557,11 +588,12 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     protected JTextComponent bindAsLabel(final JTextComponent component,
             String formProperty) {
         final ValueModel value = getOrCreateDisplayValueModel(formProperty);
-        component.setText((String)value.getValue());
+        component.setText(String.valueOf(value.getValue()));
         component.setEditable(false);
         value.addValueChangeListener(new ValueChangeListener() {
+
             public void valueChanged() {
-                component.setText((String)value.getValue());
+                component.setText(String.valueOf(value.getValue()));
             }
         });
         return (JTextComponent)bindControl(component, formProperty);
@@ -573,10 +605,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ValueModel value = getOrCreateDisplayValueModel(parentProperty);
         final ValueModel nestedAccessor = newNestedAspectAdapter(value,
                 childPropertyToDisplay);
-        component.setText((String)nestedAccessor.getValue());
+        component.setText(String.valueOf(nestedAccessor.getValue()));
         nestedAccessor.addValueChangeListener(new ValueChangeListener() {
+
             public void valueChanged() {
-                component.setText((String)nestedAccessor.getValue());
+                component.setText(String.valueOf(nestedAccessor.getValue()));
             }
         });
         return (JTextComponent)bindControl(component, parentProperty);
@@ -592,8 +625,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     protected JCheckBox createNewCheckBox(String labelKey) {
         return getComponentFactory().createCheckBox(
-                new String[] { labelKey + "." + CHECK_BOX_LABEL_SUFFIX,
-                        labelKey });
+                getMessageKeys(labelKey, CHECK_BOX_MESSAGE_KEY_PREFIX));
     }
 
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
@@ -645,8 +677,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox createBoundComboBox(ValueModel selectedItemHolder,
             ValueModel selectableItemsHolder, String renderedProperty) {
-        Comparator comparator = (renderedProperty != null ? new BeanPropertyComparator(
-                renderedProperty)
+        Comparator comparator = (renderedProperty != null
+                ? new BeanPropertyComparator(renderedProperty)
                 : null);
         JComboBox comboBox = bind(createNewComboBox(), selectedItemHolder,
                 selectableItemsHolder, comparator);
@@ -770,8 +802,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JList createBoundList(String selectionFormProperty,
             ValueModel selectableItemsHolder, String renderedProperty) {
-        Comparator itemsComparator = (renderedProperty != null ? new BeanPropertyComparator(
-                renderedProperty)
+        Comparator itemsComparator = (renderedProperty != null
+                ? new BeanPropertyComparator(renderedProperty)
                 : null);
         JList list = bind(createNewList(), selectionFormProperty,
                 selectableItemsHolder, itemsComparator);
@@ -812,8 +844,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return list;
     }
 
-    private static class ListSelectedValueMediator implements
-            ListSelectionListener {
+    private static class ListSelectedValueMediator
+            implements
+                ListSelectionListener {
+
         private JList list;
 
         private ValueModel selectedValueModel;
@@ -830,6 +864,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         private void subscribe() {
             selectedValueModel
                     .addValueChangeListener(new ValueChangeListener() {
+
                         public void valueChanged() {
                             if (selectedValueModel.getValue() != null) {
                                 if (!updating) {
@@ -877,5 +912,4 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return new SimpleValidationResultsReporter(formModel, guardedComponent,
                 messageAreaPane);
     }
-
 }
