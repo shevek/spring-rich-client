@@ -55,6 +55,9 @@
 		<property name="iconSource">
 			<ref bean="iconSource"/>
 		</property>
+		<property name="messageSource">
+			<ref bean="messageSource"/>
+		</property>
 	</bean>
 	
 	<bean id="lookAndFeelConfigurer" 
@@ -120,6 +123,11 @@
 				</bean>
 				<bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
 				<bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
+				<bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory">
+					<property name="messageSource">
+						<ref bean="messageSource"/>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>
