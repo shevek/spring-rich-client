@@ -245,7 +245,7 @@ public class OverlayHelper implements SwingConstants {
         Container overlayCapableParent = component.getParent();
         while (overlayCapableParent != null && !(overlayCapableParent instanceof JRootPane)
                 && !(overlayCapableParent instanceof JViewport)) {
-            overlayCapableParent = (JComponent)overlayCapableParent.getParent();
+            overlayCapableParent = overlayCapableParent.getParent();
         }
         return overlayCapableParent;
     }
@@ -263,7 +263,7 @@ public class OverlayHelper implements SwingConstants {
             layeredPane = new JLayeredPane();
             Component view = viewPort.getView();
             viewPort.remove(view);
-            layeredPane.setLayout(new SingleComponentLayoutManager(view));
+            layeredPane.setLayout(new SingleComponentLayoutManager(view, viewPort));
             layeredPane.add(view);
             layeredPane.setLayer(view, JLayeredPane.DEFAULT_LAYER.intValue());
             viewPort.setView(layeredPane);
@@ -275,11 +275,13 @@ public class OverlayHelper implements SwingConstants {
         }
     }
 
-    public class SingleComponentLayoutManager implements LayoutManager {
+    public static class SingleComponentLayoutManager implements LayoutManager {
         private Component singleComponent;
+        private JViewport m_viewport;
 
-        public SingleComponentLayoutManager(Component singleComponent) {
+        public SingleComponentLayoutManager(Component singleComponent, JViewport viewPort) {
             this.singleComponent = singleComponent;
+            m_viewport = viewPort;
         }
 
         public void removeLayoutComponent(Component comp) {
@@ -289,8 +291,12 @@ public class OverlayHelper implements SwingConstants {
         }
 
         public void layoutContainer(Container parent) {
-            Dimension prefSize = singleComponent.getPreferredSize();
-            singleComponent.setBounds(0, 0, prefSize.width, prefSize.height);
+            final Dimension prefSize = singleComponent.getPreferredSize();
+            final Dimension viewSize = m_viewport.getExtentSize();
+            final int maxWidth = Math.max(prefSize.width, viewSize.width);
+            final int maxHeight = Math.max(prefSize.height, viewSize.height);
+
+            singleComponent.setBounds(0, 0, maxWidth, maxHeight);
         }
 
         public Dimension minimumLayoutSize(Container parent) {
