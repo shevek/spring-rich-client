@@ -16,7 +16,7 @@ import org.springframework.rules.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesProvider;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.constraint.bean.BeanPropertyConstraint;
+import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.factory.Constraints;
 import org.springframework.rules.support.DefaultRulesSource;
 
@@ -66,7 +66,7 @@ public class SessionDetails implements Serializable, RulesProvider {
         return rules;
     }
 
-    public BeanPropertyConstraint getRules(String property) {
+    public PropertyConstraint getRules(String property) {
         return rulesSource.getRules(getClass(), property);
     }
 

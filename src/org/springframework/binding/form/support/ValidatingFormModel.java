@@ -33,7 +33,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueModelWrapper;
 import org.springframework.rules.RulesProvider;
-import org.springframework.rules.constraint.bean.BeanPropertyConstraint;
+import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.TypeResolvable;
@@ -91,7 +91,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         Iterator it = this.validationErrors.keySet().iterator();
         boolean hadErrorsBefore = getHasErrors();
         while (it.hasNext()) {
-            BeanPropertyConstraint exp = (BeanPropertyConstraint)it.next();
+            PropertyConstraint exp = (PropertyConstraint)it.next();
             it.remove();
             fireConstraintSatisfied(exp);
         }
@@ -180,9 +180,9 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    protected BeanPropertyConstraint getValidationRule(
+    protected PropertyConstraint getValidationRule(
             String domainObjectProperty) {
-        BeanPropertyConstraint constraint = null;
+        PropertyConstraint constraint = null;
         //@TODO if form object changes, rules aren't updated...introduces
         // subtle bugs...
         // ... for rules dependent on instance...
@@ -205,14 +205,14 @@ public class ValidatingFormModel extends DefaultFormModel implements
     }
 
     private class ValidatingFormValueModel extends ValueModelWrapper {
-        private BeanPropertyConstraint setterConstraint;
+        private PropertyConstraint setterConstraint;
 
-        private BeanPropertyConstraint validationRule;
+        private PropertyConstraint validationRule;
 
         private boolean valueIsSetting;
 
         public ValidatingFormValueModel(String domainObjectProperty,
-                ValueModel model, BeanPropertyConstraint validationRule) {
+                ValueModel model, PropertyConstraint validationRule) {
             super(model);
             this.setterConstraint = new ValueSetterConstraint(
                     getWrappedModel(), domainObjectProperty);
@@ -274,7 +274,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
 
     }
 
-    private class ValueSetterConstraint implements BeanPropertyConstraint,
+    private class ValueSetterConstraint implements PropertyConstraint,
             TypeResolvable {
         private ValueModel valueModel;
 
@@ -327,7 +327,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    protected void constraintSatisfied(BeanPropertyConstraint exp) {
+    protected void constraintSatisfied(PropertyConstraint exp) {
         if (logger.isDebugEnabled()) {
             logger.debug("Value constraint '" + exp
                     + "' [satisfied] for value model '" + exp.getPropertyName()
@@ -347,7 +347,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    private void fireConstraintSatisfied(BeanPropertyConstraint constraint) {
+    private void fireConstraintSatisfied(PropertyConstraint constraint) {
         Iterator it = validationListeners.iterator();
         while (it.hasNext()) {
             ((ValidationListener)it.next())
@@ -355,7 +355,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    protected void constraintViolated(BeanPropertyConstraint exp,
+    protected void constraintViolated(PropertyConstraint exp,
             PropertyResults results) {
         if (logger.isDebugEnabled()) {
             logger.debug("Value constraint '" + exp + "' [rejected], results='"
@@ -376,7 +376,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    private void fireConstraintViolated(BeanPropertyConstraint constraint,
+    private void fireConstraintViolated(PropertyConstraint constraint,
             PropertyResults results) {
         Iterator it = validationListeners.iterator();
         while (it.hasNext()) {

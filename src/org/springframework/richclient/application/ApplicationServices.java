@@ -45,7 +45,7 @@ import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.constraint.bean.BeanPropertyConstraint;
+import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
@@ -383,7 +383,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return getIconSource().getIcon(key);
     }
 
-    public BeanPropertyConstraint getRules(Class beanClass, String propertyName) {
+    public PropertyConstraint getRules(Class beanClass, String propertyName) {
         return getRulesSource().getRules(beanClass, propertyName);
     }
 
