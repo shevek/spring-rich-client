@@ -70,6 +70,7 @@ import org.springframework.richclient.list.DynamicComboBoxListModel;
 import org.springframework.richclient.list.DynamicListModel;
 import org.springframework.richclient.list.FilteredComboBoxListModel;
 import org.springframework.richclient.list.ListListModel;
+import org.springframework.richclient.list.ObservableList;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
@@ -715,7 +716,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * @param formProperty
      * @return The bound list model.
      */
-    public ListModel createBoundListModel(String formProperty) {
+    public ObservableList createBoundListModel(String formProperty) {
         ValueModel valueModel = formModel.getValueModel(formProperty);
         if (valueModel == null) {
             PropertyAdapter adapter = new PropertyAdapter(formModel
@@ -724,7 +725,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                     getMetadataAccessStrategy().getPropertyType(formProperty));
             formModel.add(formProperty, valueModel);
         }
-        return (ListModel)valueModel.getValue();
+        return (ObservableList)valueModel.getValue();
     }
 
     public JList createBoundList(String formProperty) {

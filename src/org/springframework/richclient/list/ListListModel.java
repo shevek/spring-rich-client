@@ -28,7 +28,7 @@ import javax.swing.AbstractListModel;
 /**
  * @author Keith Donald
  */
-public class ListListModel extends AbstractListModel implements List {
+public class ListListModel extends AbstractListModel implements ObservableList {
     private List items;
 
     private Comparator sorter;

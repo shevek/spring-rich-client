@@ -194,6 +194,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
         this.formEnabledGuarded = formEnabledGuarded;
+        updateFormEnabledGuarded();
     }
 
     protected JButton getDefaultButton() {
@@ -240,9 +241,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         }
 
         private void handleEnabledChange(boolean enabled) {
-            if (formEnabledGuarded != null) {
-                formEnabledGuarded.setEnabled(enabled);
-            }
+            updateFormEnabledGuarded();
+
             if (enabled) {
                 if (getCommitCommand() != null) {
                     if (lastDefaultButton == null) {
@@ -262,6 +262,12 @@ public abstract class AbstractForm extends AbstractControlFactory implements
             }
         }
     };
+
+    private void updateFormEnabledGuarded() {
+        if (this.formEnabledGuarded != null) {
+            this.formEnabledGuarded.setEnabled(formModel.isEnabled());
+        }
+    }
 
     private ActionCommand getCommitCommand() {
         return commitCommand;
