@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.form.ValidationEvent;
@@ -41,8 +42,6 @@ import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 import org.springframework.util.DefaultObjectStyler;
-
-import com.sun.corba.se.internal.io.TypeMismatchException;
 
 /**
  * @author Keith Donald
@@ -226,7 +225,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		private boolean valueIsSetting;
 
 		private String domainObjectProperty;
-		
+
 		public ValidatingFormValueModel(String domainObjectProperty, ValueModel model, PropertyConstraint validationRule) {
 			super(model);
 			this.setterConstraint = new ValueSetterConstraint(getWrappedModel(), domainObjectProperty,
