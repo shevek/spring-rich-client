@@ -40,7 +40,7 @@ import org.springframework.richclient.list.ListListModel;
  *
  * @author oliverh
  */
-public class TestBufferedCollectionValueModel extends TestCase {
+public class BufferedCollectionValueModelTest extends TestCase {
 
     private Class[] supportedIterfaces = new Class[] { Collection.class,
             List.class, Set.class, SortedSet.class, };

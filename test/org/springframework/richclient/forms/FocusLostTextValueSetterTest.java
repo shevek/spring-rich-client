@@ -21,11 +21,11 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
 /**
- * Test cases for {@link AsYouTypeTextValueSetter}
+ * Test cases for {@link FocusLostTextValueSetter}
  * 
  * @author oliverh
  */
-public class TestAsYouTypeTextValueSetter extends TestCase {
+public class FocusLostTextValueSetterTest extends TestCase {
 
     private ValueModel valueModel;
     
@@ -33,7 +33,7 @@ public class TestAsYouTypeTextValueSetter extends TestCase {
 
     private TestableJTextComponent comp;
 
-    private AsYouTypeTextValueSetter valueSetter;
+    private FocusLostTextValueSetter valueSetter;
     
     public void setUp() throws Exception {
         super.setUp();
@@ -41,12 +41,12 @@ public class TestAsYouTypeTextValueSetter extends TestCase {
         valueListener = new TestableValueChangeListener();
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
-        valueSetter = new AsYouTypeTextValueSetter(comp, valueModel);
+        valueSetter = new FocusLostTextValueSetter(comp, valueModel);
     }
 
     public void testContructor() {
         try {
-            new AsYouTypeTextValueSetter(null);
+            new FocusLostTextValueSetter(null);
             fail("null component not allowed");
         }
         catch (IllegalArgumentException e) {
@@ -54,39 +54,30 @@ public class TestAsYouTypeTextValueSetter extends TestCase {
         }
     }
 
-    public void testComponentChangeUpdatesValueModel() {
+    public void testComponentChangeDoesNotUpdateValueModel() {
         comp.setText("newValue");
-        assertEquals(valueModel.getValue(), "newValue");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertTrue(!valueModel.getValue().equals("newValue"));
+        assertEquals(valueListener.getEventCount(), 0);
     }
 
     public void testValueModelChangeUpdatesComponent() {
-        comp.setText("originalValue");
         valueModel.setValue("newValue");
         assertEquals(comp.getText(), "newValue");
         assertEquals(valueListener.getEventCount(), 1);
     }
-
-    public void testTypingUpdatesValueModel() {
-        comp.typeText("a");
-        assertEquals(valueModel.getValue(), "a");
-        assertEquals(valueListener.getEventCount(), 1);
+    
+    public void testFocusChangeUpdatesValueModel() {        
+        comp.typeText("a");        
+        assertEquals(valueModel.getValue(), "originalValue");  
+        assertEquals(valueListener.getEventCount(), 0);
         
-        valueListener.reset();
-        comp.typeText("bc");
-        assertEquals(valueModel.getValue(), "abc");
-        assertEquals(valueListener.getEventCount(), 2);
+        comp.gainFocus();        
+        comp.typeText("b");        
+        assertEquals(valueModel.getValue(), "originalValue");  
+        assertEquals(valueListener.getEventCount(), 0);
         
-        valueListener.reset();
-        comp.setCaretPosition(1);
-        comp.typeText("d");
-        assertEquals(valueModel.getValue(), "adbc");
+        comp.loseFocus();                
+        assertEquals(valueModel.getValue(), "ab");  
         assertEquals(valueListener.getEventCount(), 1);
-        
-        valueListener.reset();
-        comp.setCaretPosition(1);
-        comp.typeBackSpace();
-        assertEquals(valueModel.getValue(), "dbc");
-        assertEquals(valueListener.getEventCount(), 1);
-    }
+    } 
 }
