@@ -19,6 +19,12 @@ import java.util.List;
 
 import javax.swing.ListModel;
 
+/**
+ * Simple sub interface that combines <code>List</code> and
+ * <code>ListModel</code>.
+ * 
+ * @author Keith Donald
+ */
 public interface ObservableList extends List, ListModel {
-    
+
 }
