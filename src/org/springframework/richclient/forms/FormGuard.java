@@ -27,8 +27,7 @@ import org.springframework.richclient.core.Guarded;
  */
 public class FormGuard implements ValidationListener {
 
-    private static final Log logger = LogFactory
-            .getLog(FormGuard.class);
+    private static final Log logger = LogFactory.getLog(FormGuard.class);
 
     private Guarded guarded;
 
@@ -50,7 +49,9 @@ public class FormGuard implements ValidationListener {
             guarded.setEnabled(false);
         }
         else {
-            guarded.setEnabled(true);
+            if (formModel.isEnabled()) {
+                guarded.setEnabled(true);
+            }
         }
     }
 
