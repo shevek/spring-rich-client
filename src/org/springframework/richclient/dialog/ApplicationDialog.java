@@ -270,7 +270,13 @@ public abstract class ApplicationDialog extends
                                 + parent
                                 + ". Using current active window as parent by default.");
             }
-            dialog = new JDialog(getActiveWindow().getControl(), title, modal);
+            if (getActiveWindow() != null) {
+                dialog = new JDialog(getActiveWindow().getControl(), title,
+                        modal);
+            }
+            else {
+                dialog = new JDialog((JFrame)null, title, modal);
+            }
         }
         dialog.getContentPane().setLayout(new BorderLayout());
         dialog.setDefaultCloseOperation(this.closeAction.getValue());
@@ -291,8 +297,8 @@ public abstract class ApplicationDialog extends
                 catch (Exception e) {
                     logger
                             .warn(
-                                "Exception occured executing dialog finish command.",
-                                e);
+                                    "Exception occured executing dialog finish command.",
+                                    e);
                     onFinishException(e);
                 }
             }
@@ -321,7 +327,7 @@ public abstract class ApplicationDialog extends
     private void addCancelByEscapeKey() {
         int noModifiers = 0;
         KeyStroke escapeKey = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
-            noModifiers, false);
+                noModifiers, false);
         addActionKeyBinding(escapeKey, cancelCommand.getId());
     }
 
@@ -352,7 +358,7 @@ public abstract class ApplicationDialog extends
 
     protected InputMap getInputMap() {
         return getDialog().getRootPane().getInputMap(
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     /**
@@ -396,7 +402,7 @@ public abstract class ApplicationDialog extends
      */
     protected JComponent createButtonBar() {
         this.dialogCommandGroup = CommandGroup.createCommandGroup(null,
-            getCommandGroupMembers());
+                getCommandGroupMembers());
         JComponent buttonBar = this.dialogCommandGroup.createButtonBar();
         GuiStandardUtils.attachBorder(buttonBar, Borders.DIALOG_BORDER);
         return buttonBar;
@@ -534,7 +540,7 @@ public abstract class ApplicationDialog extends
 
     protected void onFinishException(Exception e) {
         JOptionPane.showMessageDialog(getDialog(),
-            "Unable to execute finish action", Application.instance().getName(),
-            JOptionPane.ERROR_MESSAGE);
+                "Unable to execute finish action", Application.instance()
+                        .getName(), JOptionPane.ERROR_MESSAGE);
     }
 }
