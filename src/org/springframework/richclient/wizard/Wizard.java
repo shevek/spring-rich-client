@@ -29,6 +29,13 @@ import java.awt.Image;
  * @see Wizard
  */
 public interface Wizard {
+    
+    /**
+     * Returns this wizards name.
+     * 
+     * @return the name of this wizard
+     */
+    public String getWizardId();    
 
     /**
      * Adds any last-minute pages to this wizard.

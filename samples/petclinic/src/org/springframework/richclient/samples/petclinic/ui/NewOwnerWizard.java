@@ -31,6 +31,10 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     private CompoundForm wizardForm;
 
     private Clinic clinic;
+    
+    public NewOwnerWizard() {
+        super("newOwnerWizard");
+    }
 
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic);
@@ -43,8 +47,9 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     }
 
     public class OwnerGeneralWizardPage extends FormBackedWizardPage {
+
         public OwnerGeneralWizardPage() {
-            super(new OwnerGeneralPanel(wizardForm.getFormModel()));
+            super(new OwnerGeneralPanel(wizardForm.getFormModel()), false);
         }
 
         public void setVisible(boolean bool) {
@@ -56,8 +61,9 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     }
     
     public class OwnerAddressWizardPage extends FormBackedWizardPage {
+
         public OwnerAddressWizardPage() {
-            super(new AddressPanel(wizardForm.getFormModel()));
+            super(new AddressPanel(wizardForm.getFormModel()), false);
         }
 
         public void setVisible(boolean bool) {

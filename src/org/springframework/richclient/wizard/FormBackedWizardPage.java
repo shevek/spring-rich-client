@@ -36,7 +36,29 @@ public class FormBackedWizardPage extends AbstractWizardPage {
      *            wizard page.
      */
     public FormBackedWizardPage(FormPage backingFormPage) {
-        super(backingFormPage.getId());
+        this(backingFormPage, true);
+    }
+
+    public FormBackedWizardPage(FormPage backingFormPage, boolean autoConfigure) {
+        super(backingFormPage.getId(), autoConfigure);
+        this.backingFormPage = backingFormPage;
+    }
+
+    /**
+     * Creates a new FormBackedWizardPage.
+     * 
+     * @param parentPageId
+     *            the id of a containing parent page. This will be used to
+     *            configure page titles/description
+     * @param backingFormPage
+     *            the names form page which will provide the control for this
+     *            wizard page.
+     */
+    public FormBackedWizardPage(String parentPageId,
+            FormPage backingFormPage) {
+        super(parentPageId
+                + (backingFormPage.getId() != null ? "."
+                        + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
     

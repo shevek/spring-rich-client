@@ -24,6 +24,7 @@ import javax.swing.event.EventListenerList;
 
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.TitleConfigurable;
+import org.springframework.richclient.forms.FormPage;
 
 /**
  * Helper implementation of the wizard interface.
@@ -33,6 +34,8 @@ import org.springframework.richclient.core.TitleConfigurable;
 public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
         implements Wizard, TitleConfigurable {
     public static final String DEFAULT_IMAGE_KEY = "wizard.pageIcon";
+    
+    private String wizardId;
 
     private String title;
 
@@ -43,6 +46,25 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     private WizardContainer container;
 
     private EventListenerList listeners = new EventListenerList();
+    
+    private boolean autoConfigureChildPages = true;
+    
+    public AbstractWizard(String wizardId) {
+        this.wizardId = wizardId;        
+    }
+    
+    /**
+     * Returns this wizards name.
+     * 
+     * @return the name of this wizard
+     */
+    public String getWizardId() {
+        return wizardId;
+    }
+    
+    public void setAutoConfigureChildPages(boolean autoConfigure) {
+        this.autoConfigureChildPages = autoConfigure;
+    }
 
     /**
      * Controls whether the wizard needs Previous and Next buttons even if it
@@ -101,6 +123,25 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     public void addPage(WizardPage page) {
         pages.add(page);
         page.setWizard(this);
+        if (autoConfigureChildPages) {
+            String id = getWizardId() + "." + page.getId();
+            getObjectConfigurer().configure(page, id);
+        }
+    }
+
+    /**
+     * Adds a new page to this wizard. The page is created by wrapping the form
+     * page in a FormBackedWizardPage and is inserted at the end of the page
+     * list.
+     * 
+     * @param formPage
+     *            the form page to be insterted
+     * @return the WizardPage that wraps formPage
+     */
+    public WizardPage addForm(FormPage formPage) {
+        WizardPage page = new FormBackedWizardPage(formPage);
+        addPage(page);
+        return page;
     }
 
     /**
@@ -127,8 +168,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         for (int i = 0; i < pages.size(); i++) {
-            if (!((WizardPage)pages.get(i)).isPageComplete())
-                return false;
+            if (!((WizardPage) pages.get(i)).isPageComplete()) return false;
         }
         return true;
     }
@@ -143,13 +183,13 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
             // last page or page not found
             return null;
         }
-        return (WizardPage)pages.get(index + 1);
+        return (WizardPage) pages.get(index + 1);
     }
 
     public WizardPage getPage(String pageId) {
         Iterator it = pages.iterator();
         while (it.hasNext()) {
-            WizardPage page = (WizardPage)it.next();
+            WizardPage page = (WizardPage) it.next();
             if (page.getId().equals(pageId)) { return page; }
         }
         return null;
@@ -160,7 +200,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     }
 
     public WizardPage[] getPages() {
-        return (WizardPage[])pages.toArray(new WizardPage[pages.size()]);
+        return (WizardPage[]) pages.toArray(new WizardPage[pages.size()]);
     }
 
     public WizardPage getPreviousPage(WizardPage page) {
@@ -171,13 +211,13 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
         }
         else {
             logger.debug("Returning previous page...");
-            return (WizardPage)pages.get(index - 1);
+            return (WizardPage) pages.get(index - 1);
         }
     }
 
     public WizardPage getStartingPage() {
         if (pages.size() == 0) { return null; }
-        return (WizardPage)pages.get(0);
+        return (WizardPage) pages.get(0);
     }
 
     public boolean needsPreviousAndNextButtons() {
@@ -198,7 +238,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     protected void fireFinishedPerformed(boolean result) {
         Object[] array = listeners.getListenerList();
         for (int i = 0; i < array.length; i++) {
-            WizardListener listener = (WizardListener)array[i];
+            WizardListener listener = (WizardListener) array[i];
             try {
                 listener.onPerformFinish(this, result);
             }
@@ -214,7 +254,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     protected void fireCancelPerformed(boolean result) {
         Object[] array = listeners.getListenerList();
         for (int i = 0; i < array.length; i++) {
-            WizardListener listener = (WizardListener)array[i];
+            WizardListener listener = (WizardListener) array[i];
             try {
                 listener.onPerformCancel(this, result);
             }

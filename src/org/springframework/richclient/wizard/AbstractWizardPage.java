@@ -33,12 +33,63 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
 
     private WizardPage previousPage;
 
+    /**
+     * Creates a wizard page. This titles of this dialog page will be
+     * configured using the default ObjectConfigurer.
+     * 
+     * @param pageId
+     *            the id of this wizard page. This will be used to configure the
+     *            page.
+     */
     protected AbstractWizardPage(String pageId) {
-        this(pageId, true, null, (Image)null);
+        this(pageId, true);
     }
 
-    protected AbstractWizardPage(String pageId, boolean autoConfigure, String title, Image titleImage) {
-        super(pageId, autoConfigure, title, titleImage);
+    /**
+     * Creates a new wizard page.
+     * 
+     * @param pageId
+     *            the id of this wizard page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this dialog page using the given pageId
+     */
+    protected AbstractWizardPage(String pageId, boolean autoConfigure) {
+        super(pageId, autoConfigure);
+    }
+
+    /**
+     * Creates a new wizard page with the given title.
+     * 
+     * @param pageId
+     *            the id of this wizard page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this dialog page using the given pageId
+     * @param title
+     *            the title of this wizard page, or <code>null</code> if none
+     */
+    protected AbstractWizardPage(String pageId, boolean autoConfigure,
+            String title) {
+        super(pageId, autoConfigure, title);
+    }
+
+    /**
+     * Creates a new wizard page with the given title and image.
+     * 
+     * @param pageId
+     *            the id of this wizard page
+     * @param autoConfigure
+     *            whether or not to use an ObjectConfigurer to configure the
+     *            titles of this wizard page using the given pageId
+     * @param title
+     *            the title of this wizard page, or <code>null</code> if none
+     * @param image
+     *            the image for this wizard page, or <code>null</code> if none
+     */
+    protected AbstractWizardPage(String pageId, boolean autoConfigure,
+            String title, Image icon) {
+        super(pageId, autoConfigure, title, icon);
     }
 
     public Image getImage() {
