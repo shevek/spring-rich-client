@@ -17,6 +17,8 @@ import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.DefaultPropertyEditorRegistry;
@@ -35,6 +37,7 @@ public class FormModelTest extends TestCase {
                 new BeanFactoryApplicationAdvisor());
         Application.services().setPropertyEditorRegistry(
                 new DefaultPropertyEditorRegistry());
+        Application.services().setApplicationContext(new StaticApplicationContext());
     }
 
     public static class Employee {
@@ -255,6 +258,8 @@ public class FormModelTest extends TestCase {
     // this fails right now - we can't exactly instantiate supervisor employee
     // abitrarily by default on all employees - stack overflow!
     public void testOptionalPageFormModel() {
+        fail("this fails right now - we can't exactly instantiate supervisor employee abitrarily by default on all employees - stack overflow!");
+        
         SwingFormModel employeePage = SwingFormModel
                 .createFormModel(new Employee());
         JTextField field = (JTextField)employeePage
