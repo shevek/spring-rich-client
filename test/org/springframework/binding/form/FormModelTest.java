@@ -2,7 +2,7 @@
  * $Header$
  * $Revision$
  * $Date$
- * 
+ *
  * Copyright Computer Science Innovations (CSI), 2004. All rights reserved.
  */
 package org.springframework.binding.form;
@@ -40,8 +40,8 @@ import org.springframework.util.closure.Closure;
 public class FormModelTest extends TestCase {
 
     static {
-        Application application = new Application(new ApplicationServices(),
-                new BeanFactoryApplicationAdvisor());
+        Application application = new Application(new BeanFactoryApplicationAdvisor(),
+            new ApplicationServices());
         Application.services().setPropertyEditorRegistry(
                 new DefaultPropertyEditorRegistry());
         Application.services().setApplicationContext(
@@ -58,7 +58,7 @@ public class FormModelTest extends TestCase {
         private int age;
 
         private Date hireDate;
-        
+
         private Map editors = new HashMap();
 
         public int getAge() {
@@ -100,12 +100,12 @@ public class FormModelTest extends TestCase {
         public void setAddress(Address address) {
             this.address = address;
         }
-        
+
         private void setPropertyEditor(String domainProperty, PropertyEditor propertyEditor) {
             editors.put(domainProperty, propertyEditor);
         }
-        
-        public PropertyEditor getPropertyEditor(String domainProperty) {            
+
+        public PropertyEditor getPropertyEditor(String domainProperty) {
             return (PropertyEditor) editors.get(domainProperty);
         }
 
@@ -293,40 +293,40 @@ public class FormModelTest extends TestCase {
         ValidatingFormModel fm = new ValidatingFormModel(employee);
         ValueModel vm = fm.add("age");
         assertHasNoPropertyEditor(vm);
-        
+
         per.setPropertyEditor(int.class, PropertyEditorA.class);
         fm = new ValidatingFormModel(employee);
-        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class); 
-        
+        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class);
+
         per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);
         fm = new ValidatingFormModel(employee);
-        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class); 
-        
+        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class);
+
         PropertyEditor pe1 = new PropertyEditorA();
         fm = new ValidatingFormModel(employee);
         fm.getPropertyAccessStrategy().registerCustomEditor(int.class, pe1);
         assertTrue(getPropertyEditor(fm.add("age")) == pe1);
-                
+
         PropertyEditor pe2 = new PropertyEditorA();
         fm = new ValidatingFormModel(employee);
         fm.getPropertyAccessStrategy().registerCustomEditor("age", pe2);
-        assertTrue(getPropertyEditor(fm.add("age")) == pe2);        
-        
+        assertTrue(getPropertyEditor(fm.add("age")) == pe2);
+
         PropertyEditor pe3 = new PropertyEditorA();
         employee.setPropertyEditor("age", pe3);
         fm = new ValidatingFormModel(employee);
         fm.getPropertyAccessStrategy().registerCustomEditor("age", pe3);
-        assertTrue(getPropertyEditor(fm.add("age")) == pe3);     
+        assertTrue(getPropertyEditor(fm.add("age")) == pe3);
     }
-    
+
     private void assertHasNoPropertyEditor(ValueModel vm) {
         ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
-        assertTrue(wrappedModel instanceof BufferedValueModel);    
+        assertTrue(wrappedModel instanceof BufferedValueModel);
     }
 
     private PropertyEditor getPropertyEditor(ValueModel vm) {
         ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
-        assertTrue(wrappedModel instanceof TypeConverter);        
+        assertTrue(wrappedModel instanceof TypeConverter);
         Closure c = (Closure) getFieldValue(wrappedModel, "convertFrom");
         PropertyEditor pe = (PropertyEditor) getFieldValue(c, "val$propertyEditor");
         return pe;
@@ -334,16 +334,16 @@ public class FormModelTest extends TestCase {
 
     private Object getFieldValue(Object object, String fieldName) {
         Class clazz = object.getClass();
-        Field field = null;        
+        Field field = null;
         do {
             try {
-                field = clazz.getDeclaredField(fieldName); 
-            } catch(NoSuchFieldException e) {                
+                field = clazz.getDeclaredField(fieldName);
+            } catch(NoSuchFieldException e) {
                 clazz = clazz.getSuperclass();
             }
         }
-        while (field == null && clazz != null);            
-        assertNotNull("unable to find field", field);        
+        while (field == null && clazz != null);
+        assertNotNull("unable to find field", field);
         try {
             field.setAccessible(true);
             return field.get(object);
