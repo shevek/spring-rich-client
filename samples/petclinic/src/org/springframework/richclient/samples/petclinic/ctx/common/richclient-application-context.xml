@@ -7,15 +7,15 @@
 	<bean id="application" 
 		class="org.springframework.richclient.application.Application">
 		<constructor-arg index="0">
+			<ref bean="applicationDescriptor"/>
+		</constructor-arg>
+		<constructor-arg index="1">
 			<ref bean="petclinicLifecycleAdvisor"/>
 		</constructor-arg>
 	</bean>
 	
 	<bean id="petclinicLifecycleAdvisor" 
 		class="org.springframework.richclient.samples.petclinic.PetClinicLifecycleAdvisor">
-		<property name="applicationDescriptor">
-			<ref bean="applicationDescriptor"/>
-		</property>
 		<property name="windowCommandBarDefinitions">
 			<value>org/springframework/richclient/samples/petclinic/ui/commands-context.xml</value>
 		</property>
