@@ -19,7 +19,7 @@ public interface ApplicationPage extends ControlFactory {
 
     public void openEditor(Object editorInput);
 
-    public void closeAllEditors();
+    public boolean closeAllEditors();
     
-    public void close();
+    public boolean close();
 }

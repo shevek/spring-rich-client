@@ -174,8 +174,8 @@ public class DefaultApplicationPage implements ApplicationPage,
         // todo
     }
 
-    public void closeAllEditors() {
-        // todo
+    public boolean closeAllEditors() {
+        return true;
     }
 
     public void addPageComponentListener(PageComponentListener listener) {
@@ -209,7 +209,7 @@ public class DefaultApplicationPage implements ApplicationPage,
         this.control.add(view.getContext().getPane().getControl());
     }
 
-    public void close() {
+    public boolean close() {
         if (activeComponent != null) {
             fireFocusLost(activeComponent);
         }
@@ -219,5 +219,6 @@ public class DefaultApplicationPage implements ApplicationPage,
             component.dispose();
             fireClosed(component);
         }
+        return true;
     }
 }
