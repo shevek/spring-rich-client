@@ -30,7 +30,7 @@ import org.springframework.richclient.image.ImageSource;
  * 
  * @author Keith Donald
  */
-public class TestImageSource extends TestCase {
+public class ImageSourceTest extends TestCase {
     private ApplicationContext context;
 
     public void testValidImageAccess() throws IOException {

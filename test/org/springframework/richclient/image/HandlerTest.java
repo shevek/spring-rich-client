@@ -28,7 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author oliverh
  */
-public class TestHandler extends TestCase {
+public class HandlerTest extends TestCase {
 
     /**
      * NOTE: This must be one big test method because of the static dependency
