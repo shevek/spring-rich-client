@@ -126,24 +126,15 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public void showPage(String pageId) {
         if (this.currentPage == null) {
-            ApplicationPage page = createPage(this, pageId);
-            GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
-                    getCommandManager());
-            page.addViewListener(commandTargeter);
-            this.currentPage = page;
-            configureWindow();
+            this.currentPage = createPage(this, pageId);
+            initWindow();
         }
         else {
-            currentPage.showView(pageId);
+            if (!currentPage.getId().equals(pageId)) {
+                this.currentPage = createPage(this, pageId);
+                updatePageControl();
+            }
         }
-    }
-
-    private void configureWindow() {
-        this.control = createWindowControl();
-        getApplicationAdvisor().onWindowCreated(this);
-        getApplicationAdvisor().showIntroComponentIfNecessary(this);
-        this.control.setVisible(true);
-        getApplicationAdvisor().onWindowOpened(this);
     }
 
     protected ApplicationPage createPage(ApplicationWindow window,
@@ -168,16 +159,16 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         }
     }
 
-    public JFrame getControl() {
-        return control;
+    private void initWindow() {
+        initWindowControl();
+        getApplicationAdvisor().onWindowCreated(this);
+        getApplicationAdvisor().showIntroComponentIfNecessary(this);
+        this.control.setVisible(true);
+        getApplicationAdvisor().onWindowOpened(this);
     }
 
-    public boolean isControlCreated() {
-        return control != null;
-    }
-
-    protected JFrame createWindowControl() {
-        JFrame control = createNewWindowControl();
+    protected void initWindowControl() {
+        this.control = createNewWindowControl();
         ApplicationWindowConfigurer configurer = getWindowConfigurer();
         control.setTitle(configurer.getTitle());
         control.setIconImage(configurer.getImage());
@@ -186,8 +177,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
         control.getContentPane().setLayout(new BorderLayout());
         control.getContentPane().add(createToolBar(), BorderLayout.NORTH);
-        control.getContentPane().add(this.currentPage.getControl(),
-                BorderLayout.CENTER);
+        control.getContentPane().add(this.currentPage.getControl());
         control.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
         control.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         control.addWindowListener(new WindowAdapter() {
@@ -198,11 +188,24 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         control.pack();
         control.setSize(configurer.getInitialSize());
         control.setLocationRelativeTo(null);
-        return control;
     }
 
     protected JFrame createNewWindowControl() {
         return new JFrame();
+    }
+
+    protected void updatePageControl() {
+        control.getContentPane().remove(this.currentPage.getControl());
+        control.getContentPane().add(this.currentPage.getControl());
+        control.validate();
+    }
+
+    public JFrame getControl() {
+        return control;
+    }
+
+    public boolean isControlCreated() {
+        return control != null;
     }
 
     protected JComponent createToolBar() {

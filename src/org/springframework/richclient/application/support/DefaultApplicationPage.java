@@ -67,6 +67,7 @@ public class DefaultApplicationPage implements ApplicationPage,
                 .getViewDescriptorRegistry();
         this.parentWindow = window;
         this.pageDescriptor = pageDescriptor;
+        addViewListener(new GlobalCommandTargeter(window.getCommandManager()));
     }
 
     public String getId() {
