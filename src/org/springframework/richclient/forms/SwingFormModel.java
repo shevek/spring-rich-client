@@ -487,8 +487,6 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JTextComponent bind(final JTextComponent component,
             String formProperty, ValueCommitPolicy valueCommitPolicy) {
         final ValueModel valueModel = getOrCreateDisplayValueModel(formProperty);
-        System.out.println("formProperty: " + formProperty + "; "
-                + valueModel.getClass());
         try {
             component.setText((String)valueModel.getValue());
         }
