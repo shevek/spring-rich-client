@@ -16,7 +16,6 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Window;
-import java.awt.event.KeyEvent;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -26,7 +25,12 @@ import javax.swing.UIManager;
 import org.springframework.richclient.core.Message;
 import org.springframework.util.Assert;
 
+/**
+ * Dialog for asking confirmation to the user. The <code>onConfirm</code> is
+ * called when the user presses the yes button.
+ */
 public abstract class ConfirmationDialog extends ApplicationDialog {
+
     private static final String YES_FACE_DESCRIPTOR_ID = "yesCommand";
 
     private static final String NO_FACE_DESCRIPTOR_ID = "noCommand";
@@ -77,11 +81,11 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     }
 
     protected int getYesKey() {
-        return KeyEvent.VK_Y;
+        return getFinishCommand().getMnemonic();
     }
 
     protected int getNoKey() {
-        return KeyEvent.VK_N;
+        return getCancelCommand().getMnemonic();
     }
 
     protected JComponent createDialogContentPane() {
