@@ -57,37 +57,4 @@ public interface WizardContainer {
 	 */
     public void showPage(WizardPage page);
     
-    /**
-	 * Adjusts the enable state of the Back, Next, and Finish buttons to
-	 * reflect the state of the currently active page in this container.
-	 * <p>
-	 * This method is called by the container itself when its wizard page
-	 * changes and may be called by the page at other times to force a button
-	 * state update.
-	 * </p>
-	 */
-    public void updateButtons();
-    
-    /**
-	 * Updates the message (or error message) shown in the message line to
-	 * reflect the state of the currently active page in this container.
-	 * <p>
-	 * This method is called by the container itself when its wizard page
-	 * changes and may be called by the page at other times to force a message
-	 * update.
-	 * </p>
-	 */
-    public void updateMessage();
-    
-    /**
-	 * Updates the title bar (title, description, and image) to reflect the
-	 * state of the currently active page in this container.
-	 * <p>
-	 * This method is called by the container itself when its wizard page
-	 * changes and may be called by the page at other times to force a title
-	 * bar update.
-	 * </p>
-	 */
-    public void updateTitleBar();
-
 }

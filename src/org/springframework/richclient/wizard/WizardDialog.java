@@ -203,13 +203,21 @@ public class WizardDialog extends TitledApplicationDialog implements
         updateButtons();
     }
 
-    public void updateTitleBar() {
+    /**
+     * Updates the title bar (title, description, and image) to reflect the
+     * state of the currently active page in this container.
+     */
+    protected void updateTitleBar() {
         setTitleAreaText(currentPage.getTitle());
         setTitleAreaImage(currentPage.getImage());
         setDescription(currentPage.getDescription());
     }
 
-    public void updateMessage() {
+    /**
+     * Updates the message (or error message) shown in the message line to
+     * reflect the state of the currently active page in this container.
+     */
+    protected void updateMessage() {
         String errorMessage = currentPage.getErrorMessage();
         if (StringUtils.hasText(errorMessage)) {
             setErrorMessage(errorMessage);
@@ -219,7 +227,7 @@ public class WizardDialog extends TitledApplicationDialog implements
         }
     }
 
-    public void updateButtons() {
+    private void updateButtons() {
         if (wizard.needsPreviousAndNextButtons()) {
             backCommand.setEnabled(currentPage.getPreviousPage() != null);
             nextCommand.setEnabled(canFlipToNextPage());
@@ -242,10 +250,11 @@ public class WizardDialog extends TitledApplicationDialog implements
     }
 
     public void propertyChange(PropertyChangeEvent e) {
-       if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
-           updateButtons();
-       } else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
-           updateTitleBar();
-       }
+        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+            updateButtons();
+        }
+        else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
+            updateTitleBar();
+        }
     }
 }
