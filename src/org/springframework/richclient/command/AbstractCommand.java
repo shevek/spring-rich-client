@@ -22,6 +22,7 @@ import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -131,6 +132,21 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     public String getText() {
         if (faceDescriptor != null) { return getFaceDescriptor().getText(); }
         return CommandFaceDescriptor.EMPTY_LABEL.getText();
+    }
+    
+    public int getMnemonic() {
+        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getMnemonic(); }
+        return CommandFaceDescriptor.EMPTY_LABEL.getMnemonic();
+    }
+
+    public int getMnemonicIndex() {
+        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getMnemonicIndex(); }
+        return CommandFaceDescriptor.EMPTY_LABEL.getMnemonicIndex();
+    }
+
+    public KeyStroke getAccelerator() {
+        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getAccelerator(); }
+        return CommandFaceDescriptor.EMPTY_LABEL.getAccelerator();
     }
 
     public void setLabel(String encodedLabel) {
