@@ -17,17 +17,16 @@ package org.springframework.richclient.util;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.LayoutFocusTraversalPolicy;
-import javax.swing.WindowConstants;
 
 /**
  * A LayoutFocusTraversalPolicy that allows for individual containers to have a
@@ -64,6 +63,9 @@ public class CustomizableFocusTraversalPolicy extends
      */
     public static void customizeFocusTraversalOrder(JComponent container,
             List componentsInOrder) {
+        if (container instanceof OverlayPanel) {
+            container = ((OverlayPanel)container).getContentPanel();
+        }
         for (Iterator i = componentsInOrder.iterator(); i.hasNext();) {
             Component comp = (Component)i.next();
             if (comp.getParent() != container) { throw new IllegalArgumentException(
@@ -71,7 +73,15 @@ public class CustomizableFocusTraversalPolicy extends
                             + "]."); }
         }
         container.putClientProperty(FOCUS_ORDER_PROPERTY_NAME,
-                componentsInOrder);
+                createOrderMapFromList(componentsInOrder));
+    }
+
+    private static Map createOrderMapFromList(List componentsInOrder) {
+        HashMap orderMap = new HashMap(componentsInOrder.size());
+        for (int i = 0; i < componentsInOrder.size(); i++) {
+            orderMap.put(componentsInOrder.get(i), new Integer(i));
+        }
+        return orderMap;
     }
 
     /**
@@ -94,67 +104,77 @@ public class CustomizableFocusTraversalPolicy extends
             Component comp1 = (Component)o1;
             Component comp2 = (Component)o2;
             if (comp1 == comp2) { return 0; }
-            if (comp1.getParent() == comp2.getParent()) {
-                List order = getFocusOrder(comp1);
-                if (order != null) {
-                    int index1 = order.indexOf(comp1);
-                    int index2 = order.indexOf(comp2);
-                    if (index1 != -1 && index2 != -1) {
-                        return index1 - index2;
-                    }
-                    else if (index1 != -1) {
-                        return -1;
-                    }
-                    else if (index2 != -1) { return 1; }
-                }
+            Map order = getFocusOrder(comp1);
+            if (order != null && comp1.getParent() == comp2.getParent()) {
+                return compareSameParent(order, comp1, comp2);
             }
-            return layoutComparator.compare(comp1, comp2);
+            else if (comp1.getParent() != comp2.getParent()) {
+                return compareClosestAncestor(comp1, comp2);
+            }
+            else {
+                return layoutComparator.compare(comp1, comp2);
+            }
         }
 
-        private List getFocusOrder(Component comp) {
+        private Map getFocusOrder(Component comp) {
             Component parent = comp.getParent();
-            return (List)((parent instanceof JComponent) ? ((JComponent)parent)
+            return (Map)((parent instanceof JComponent) ? ((JComponent)parent)
                     .getClientProperty(FOCUS_ORDER_PROPERTY_NAME) : null);
         }
-    }
 
-    public static void main(String[] args) {
+        private int compareSameParent(Map order, Component comp1,
+                Component comp2) {
+            Integer index1 = (Integer)order.get(comp1);
+            Integer index2 = (Integer)order.get(comp2);
+            if (index1 != null && index2 != null) {
+                return index1.intValue() - index2.intValue();
+            }
+            else if (index1 != null) {
+                return -1;
+            }
+            else if (index2 != null) {
+                return 1;
+            }
+            else {
+                return layoutComparator.compare(comp1, comp2);
+            }
+        }
 
-        installCustomizableFocusTraversalPolicy();
+        public int compareClosestAncestor(Component comp1, Component comp2) {
+            List comp1Ancestors = getAncestors(comp1);
+            List comp2Ancestors = getAncestors(comp2);
+            int index1 = comp1Ancestors.size();
+            int index2 = comp2Ancestors.size();
+            while (true) {
+                if (index1 > 0) {
+                    comp1 = (Component)comp1Ancestors.get(--index1); 
+                }
+                else {
+                    return -1;
+                }
+                if (index2 > 0) {
+                    comp2 = (Component)comp2Ancestors.get(--index2); 
+                }
+                else {
+                    return 1;
+                }
+                if (comp1 != comp2) {
+                    break;
+                }
+            }
+            return compare(comp1, comp2);
+        }
 
-        JFrame frame = new JFrame();
-        frame.setFocusTraversalPolicy(new CustomizableFocusTraversalPolicy());
-        frame.setFocusCycleRoot(true);
-        frame.setTitle("Focus Fun");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JComponent panel = buildPanel();
-        frame.getContentPane().add(panel);
-        frame.pack();
-        frame.show();
-    }
-
-    private static JComponent buildPanel() {
-        JFormattedTextField t1 = new JFormattedTextField("1st");
-        JFormattedTextField t2 = new JFormattedTextField("2nd");
-        JFormattedTextField t3 = new JFormattedTextField("3rd");
-        JFormattedTextField t4 = new JFormattedTextField("4th");
-
-        JPanel panel = new JPanel();
-        panel.add(new JFormattedTextField("noOrder1st"));
-        panel.add(t2);
-        panel.add(t3);
-        panel.add(t1);
-        panel.add(new JFormattedTextField("noOrder2nd"));
-        panel.add(t4);
-
-        List order = new ArrayList();
-        order.add(t1);
-        order.add(t2);
-        order.add(t3);
-        order.add(t4);
-
-        customizeFocusTraversalOrder(panel, order);
-
-        return panel;
+        private List getAncestors(Component comp) {
+            List ancestors = new ArrayList();
+            while (comp != null) {
+                if (comp instanceof Window) {
+                    break;
+                }
+                ancestors.add(comp);
+                comp = comp.getParent();
+            }
+            return ancestors;
+        }
     }
 }
