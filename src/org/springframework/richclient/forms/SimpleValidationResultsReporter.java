@@ -53,7 +53,7 @@ public class SimpleValidationResultsReporter implements ValidationListener {
     }
 
     private void initialize() {
-        if (formModel.hasErrors()) {
+        if (formModel.getHasErrors()) {
             guarded.setEnabled(false);
         }
         else {
@@ -94,7 +94,7 @@ public class SimpleValidationResultsReporter implements ValidationListener {
     }
     
     private void update(ValidationEvent event) {
-        if (!event.getFormModel().hasErrors()) {
+        if (!event.getFormModel().getHasErrors()) {
             messageAreaPane.setMessage("", null);
             guarded.setEnabled(true);
             if (logger.isDebugEnabled()) {

@@ -206,8 +206,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.setParent(parent);
     }
 
-    public boolean hasErrors() {
-        return formModel.hasErrors();
+    public boolean getHasErrors() {
+        return formModel.getHasErrors();
     }
 
     public Map getErrors() {
@@ -216,6 +216,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public boolean isDirty() {
         return formModel.isDirty();
+    }
+
+    public boolean isEnabled() {
+        return formModel.isEnabled();
+    }
+
+    public void setEnabled(boolean enabled) {
+        formModel.setEnabled(enabled);
     }
 
     public boolean getBufferChanges() {

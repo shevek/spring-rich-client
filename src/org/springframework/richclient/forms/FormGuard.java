@@ -46,7 +46,7 @@ public class FormGuard implements ValidationListener {
     }
 
     protected void update(FormModel formModel) {
-        if (formModel.hasErrors()) {
+        if (formModel.getHasErrors()) {
             guarded.setEnabled(false);
         }
         else {

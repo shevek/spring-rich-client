@@ -160,7 +160,7 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
     }
 
     public boolean hasErrors() {
-        return pageFormModel.hasErrors();
+        return pageFormModel.getHasErrors();
     }
 
     public void commit() {
