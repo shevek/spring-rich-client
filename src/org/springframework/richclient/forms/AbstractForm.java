@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 import org.springframework.binding.form.CommitListener;
@@ -206,7 +207,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected void setDefaultButton(JButton button) {
-        SwingUtilities.getRootPane(getControl()).setDefaultButton(button);
+        JRootPane rootPane = SwingUtilities.getRootPane(getControl());
+        if (rootPane != null) {
+            rootPane.setDefaultButton(button);
+        }
     }
 
     protected final JComponent createControl() {
@@ -291,10 +295,15 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                     setDefaultButton(lastDefaultButton);
                 }
             }
+            AbstractForm.this.handleEnabledChange(enabled);
         }
 
     };
 
+    protected void handleEnabledChange(boolean enabled) {
+        
+    }
+    
     protected ActionCommand getNewFormObjectCommand() {
         return newFormObjectCommand;
     }
