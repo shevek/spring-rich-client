@@ -16,26 +16,25 @@
 package org.springframework.richclient.filechooser;
 
 import java.awt.Component;
+import java.io.File;
 
 import javax.swing.JFileChooser;
 
-
 /**
- * Utility functions for file choosers.  Designed to be used by a single
- * event dispatching thread.
- *
- * @author  Keith Donald
+ * Utility functions for file choosers. Designed to be used by a single event
+ * dispatching thread.
+ * 
+ * @author Keith Donald
  */
 public class FileChooserUtils {
     private static JFileChooser fileChooser;
-    
+
     private FileChooserUtils() {
     }
 
-    public static String showFileChooserDialog(Component parent,
-        String defaultExtension,     
-        String approveButtonName,
-        String fileTypeDescription) {
+    public static File showFileChooser(Component parent,
+            String defaultExtension, String approveButtonName,
+            String fileTypeDescription) {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
         }
@@ -43,12 +42,12 @@ public class FileChooserUtils {
         filter.addExtension(defaultExtension);
         filter.setDescription(fileTypeDescription);
         fileChooser.setFileFilter(filter);
-        int returnVal =
-            fileChooser.showDialog(parent, approveButtonName);
-        String fileName = null;
+        int returnVal = fileChooser.showDialog(parent, approveButtonName);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            fileName = fileChooser.getSelectedFile().getAbsolutePath();
+            return fileChooser.getSelectedFile();
         }
-        return fileName;
+        else {
+            return null;
+        }
     }
 }
