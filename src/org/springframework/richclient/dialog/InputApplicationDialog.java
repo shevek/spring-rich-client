@@ -59,8 +59,12 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     public InputApplicationDialog(Object bean, String propertyName,
             boolean bufferChanges) {
+        this( SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
+    }
+    
+    public InputApplicationDialog(SwingFormModel formModel, String propertyName) {
         this();
-        this.formModel = SwingFormModel.createFormModel(bean, bufferChanges);
+        this.formModel = formModel;
         setInputField(formModel.createBoundControl(propertyName));
     }
 
