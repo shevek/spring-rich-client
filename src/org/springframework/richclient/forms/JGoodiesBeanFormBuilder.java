@@ -71,8 +71,10 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     }
 
     public JPasswordField addPasswordField(String propertyName) {
-        return (JPasswordField)formModel.bind(new JPasswordField(8),
+        JPasswordField field = (JPasswordField)formModel.bind(new JPasswordField(8),
                 propertyName);
+        formBuilder.add(getPropertyLabelCode(propertyName), field);
+        return field;
     }
 
     public JTextArea addTextArea(String propertyName) {
