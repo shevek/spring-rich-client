@@ -13,13 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application.startup;
+package org.springframework.richclient.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.richclient.application.Application;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -111,6 +112,22 @@ public class ApplicationLauncher {
         this.applicationContext = context;
     }
 
+    /**
+     * Launch this rich client application; with the startup context loading
+     * first, built from the <code>startupContextPath</code> location in the
+     * classpath.
+     * 
+     * It is recommended that the startup context contain contain a splash
+     * screen definition for quick loading & display.
+     * 
+     * Once the splash screen is displayed, the main application context is then
+     * initialized, built from the <code>contextPaths</code> location(s) in
+     * the classpath. The root application bean is retrieved and the startup
+     * lifecycle begins.
+     * 
+     * @param startupContextPath
+     * @param contextPaths
+     */
     private void launch(String startupContextPath, String[] contextPaths) {
         logger.info("Launching Application...");
         try {
@@ -129,7 +146,10 @@ public class ApplicationLauncher {
                     contextPaths));
         }
         catch (Exception e) {
-            logger.warn("Exception occured initializing application startup context.", e);
+            logger
+                    .warn(
+                            "Exception occured initializing application startup context.",
+                            e);
         }
         launch();
     }
@@ -141,11 +161,19 @@ public class ApplicationLauncher {
             displaySplashScreen(applicationContext);
         }
         try {
-            Application console = (Application)applicationContext
-                    .getBean(APPLICATION_BEAN_NAME);
+            Application application = (Application)applicationContext.getBean(
+                    APPLICATION_BEAN_NAME, Application.class);
+            application.openFirstTimeApplicationWindow();
+            application.getApplicationAdvisor().onPostStartup();
         }
-        catch (Exception e) {
-            logger.error("Exception occured initializing root application context", e);
+        catch (NoSuchBeanDefinitionException e) {
+            logger
+                    .error(
+                            "A single org.springframework.richclient.Application bean definition must be defined "
+                                    + "in the main application context", e);
+        }
+        catch (BeansException e) {
+            logger.error("Exception occured initializing Application bean", e);
         }
         finally {
             destroySplashScreen();

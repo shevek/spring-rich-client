@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.samples.petclinic;
 
-import org.springframework.richclient.application.startup.ApplicationLauncher;
+import org.springframework.richclient.application.ApplicationLauncher;
 
 /**
  * Main driver that starts the pet clinic rich client sample application.
@@ -23,11 +23,23 @@ import org.springframework.richclient.application.startup.ApplicationLauncher;
 public class PetClinicClientServer {
     public static void main(String[] args) {
         try {
-            new ApplicationLauncher(
-                    "/org/springframework/richclient/samples/petclinic/ctx/common/rcp-startup-context.xml",
-					new String[] {"/org/springframework/richclient/samples/petclinic/ctx/common/rcp-application-context.xml", 
-                    	"/org/springframework/richclient/samples/petclinic/ctx/clientserver/client-context.xml",
-                    	"/org/springframework/richclient/samples/petclinic/ctx/clientserver/security-context-client.xml"});
+            String rootContextDirectoryClassPath = "/org/springframework/richclient/samples/petclinic/ctx";
+
+            String startupContextPath = rootContextDirectoryClassPath
+                    + "/common/richclient-startup-context.xml";
+
+            String richclientApplicationContextPath = rootContextDirectoryClassPath
+                    + "/common/richclient-application-context.xml";
+
+            String businessLayerClientContextPath = rootContextDirectoryClassPath
+                    + "/clientserver/client-context.xml";
+
+            String securityContextPath = rootContextDirectoryClassPath
+                    + "/clientserver/security-context-client.xml";
+
+            new ApplicationLauncher(startupContextPath, new String[] {
+                    richclientApplicationContextPath,
+                    businessLayerClientContextPath, securityContextPath });
         }
         catch (Exception e) {
             System.exit(1);

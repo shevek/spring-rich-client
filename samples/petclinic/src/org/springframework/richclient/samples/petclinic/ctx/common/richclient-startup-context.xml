@@ -5,7 +5,7 @@
 
 <beans>
   	<bean        id="splashScreen"
- 	          class="org.springframework.richclient.application.startup.SplashScreen"
+ 	          class="org.springframework.richclient.application.SplashScreen"
   	      singleton="false">
       <property name="imageResourcePath">
 		<value>/images/splash-screen.jpg</value>

@@ -16,8 +16,6 @@
 package org.springframework.richclient.application;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -30,6 +28,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
+import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBar;
@@ -55,7 +54,7 @@ public class ApplicationWindow implements PersistableElement {
 
     private StatusBarCommandGroup statusBarCommandGroup;
 
-    private DefaultApplicationWindowConfigurer windowConfigurer;
+    private ApplicationWindowConfigurer windowConfigurer;
 
     private JFrame control;
 
@@ -67,22 +66,35 @@ public class ApplicationWindow implements PersistableElement {
 
     public ApplicationWindow(int number) {
         this.number = number;
-        getLifecycleAdvisor().onPreWindowOpen(getWindowConfigurer());
-        this.commandManager = getLifecycleAdvisor().getCommandManager();
-        this.menuBarCommandGroup = getLifecycleAdvisor()
-                .getMenuBarCommandGroup();
-        this.toolBarCommandGroup = getLifecycleAdvisor()
-                .getToolBarCommandGroup();
-        this.statusBarCommandGroup = getLifecycleAdvisor()
-                .getStatusBarCommandGroup();
-        getLifecycleAdvisor().onCommandsInitialized(this);
+        ApplicationAdvisor advisor = getApplicationAdvisor();
+        advisor.onPreWindowOpen(getWindowConfigurer());
+        this.commandManager = advisor.createWindowCommandManager();
+        this.menuBarCommandGroup = advisor.getMenuBarCommandGroup();
+        this.toolBarCommandGroup = advisor.getToolBarCommandGroup();
+        this.statusBarCommandGroup = advisor.getStatusBarCommandGroup();
+        advisor.onCommandsCreated(this);
     }
 
     public int getNumber() {
         return number;
     }
 
-    public CommandManager getCommandRegistry() {
+    protected ApplicationAdvisor getApplicationAdvisor() {
+        return getApplication().getApplicationAdvisor();
+    }
+
+    protected ApplicationWindowConfigurer getWindowConfigurer() {
+        if (windowConfigurer == null) {
+            this.windowConfigurer = createWindowConfigurer();
+        }
+        return windowConfigurer;
+    }
+
+    protected ApplicationWindowConfigurer createWindowConfigurer() {
+        return new DefaultApplicationWindowConfigurer(this);
+    }
+
+    public CommandManager getCommandManager() {
         return commandManager;
     }
 
@@ -102,17 +114,6 @@ public class ApplicationWindow implements PersistableElement {
         return Application.instance();
     }
 
-    protected ApplicationAdvisor getLifecycleAdvisor() {
-        return getApplication().getAdvisor();
-    }
-
-    protected DefaultApplicationWindowConfigurer getWindowConfigurer() {
-        if (windowConfigurer == null) {
-            windowConfigurer = new DefaultApplicationWindowConfigurer(this);
-        }
-        return windowConfigurer;
-    }
-
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
@@ -127,20 +128,21 @@ public class ApplicationWindow implements PersistableElement {
             Perspective perspective = (Perspective)getPageTemplate(pageId);
             ApplicationPage page = new ApplicationPage(this);
             page.addViewListener(new GlobalCommandTargeterViewListener(
-                    getCommandRegistry()));
+                    getCommandManager()));
             page.showView(perspective.getView());
             this.activePage = page;
             this.activePageId = pageId;
-        } else {
+        }
+        else {
             Application.instance().openWindow(pageId);
         }
     }
 
     public void open() {
         this.control = createWindowControl();
-        getLifecycleAdvisor().showIntroIfNecessary(this);
+        getApplicationAdvisor().showIntroComponentIfNecessary(this);
         this.control.setVisible(true);
-        getLifecycleAdvisor().onWindowOpened(this);
+        getApplicationAdvisor().onWindowOpened(this);
     }
 
     protected Perspective getPageTemplate(String pageId) {
@@ -165,11 +167,12 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     protected JFrame createWindowControl() {
-        JFrame control = new JFrame();
-        control.setTitle(getTitle());
-        control.setIconImage(getImage());
+        JFrame control = createNewWindowControl();
+        ApplicationWindowConfigurer configurer = getWindowConfigurer();
+        control.setTitle(configurer.getTitle());
+        control.setIconImage(configurer.getImage());
         control.setJMenuBar(menuBarCommandGroup.createMenuBar());
-        menuBarCommandGroup.setVisible(getShowMenuBar());
+        menuBarCommandGroup.setVisible(configurer.getShowMenuBar());
 
         control.getContentPane().setLayout(new BorderLayout());
         control.getContentPane().add(createToolBar(), BorderLayout.NORTH);
@@ -183,50 +186,31 @@ public class ApplicationWindow implements PersistableElement {
             }
         });
         control.pack();
-        control.setSize(getInitialSize());
+        control.setSize(configurer.getInitialSize());
         control.setLocationRelativeTo(null);
-        getLifecycleAdvisor().onWindowCreated(this);
+        getApplicationAdvisor().onWindowCreated(this);
         return control;
     }
 
-    protected String getTitle() {
-        return getWindowConfigurer().title;
-    }
-
-    protected Image getImage() {
-        return getWindowConfigurer().image;
-    }
-
-    protected Dimension getInitialSize() {
-        return getWindowConfigurer().initialSize;
-    }
-
-    protected boolean getShowMenuBar() {
-        return getWindowConfigurer().showMenuBar;
-    }
-
-    protected boolean getShowToolBar() {
-        return getWindowConfigurer().showToolBar;
-    }
-
-    protected boolean getShowStatusBar() {
-        return getWindowConfigurer().showStatusBar;
+    protected JFrame createNewWindowControl() {
+        return new JFrame();
     }
 
     protected JComponent createToolBar() {
         JToolBar toolBar = toolBarCommandGroup.createToolBar();
-        toolBarCommandGroup.setVisible(getShowToolBar());
+        toolBarCommandGroup.setVisible(getWindowConfigurer().getShowToolBar());
         return toolBar;
     }
 
     protected JComponent createStatusBar() {
         StatusBar statusBar = statusBarCommandGroup.createStatusBar();
-        statusBarCommandGroup.setVisible(getShowStatusBar());
+        statusBarCommandGroup.setVisible(getWindowConfigurer()
+                .getShowStatusBar());
         return statusBar;
     }
 
     public void close() {
-        getLifecycleAdvisor().preWindowClose(this);
+        getApplicationAdvisor().onPreWindowClose(this);
         control.dispose();
         control = null;
         if (windowManager != null) {

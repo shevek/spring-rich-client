@@ -44,7 +44,7 @@ public abstract class AbstractView extends AbstractControlFactory implements
     }
 
     protected CommandManager getCommandManager() {
-        return context.getApplicationWindow().getCommandRegistry();
+        return context.getApplicationWindow().getCommandManager();
     }
 
     protected StatusBarCommandGroup getStatusBar() {

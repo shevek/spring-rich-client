@@ -51,6 +51,30 @@ public class DefaultApplicationWindowConfigurer implements
         return window;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public Dimension getInitialSize() {
+        return initialSize;
+    }
+
+    public boolean getShowMenuBar() {
+        return showMenuBar;
+    }
+
+    public boolean getShowToolBar() {
+        return showToolBar;
+    }
+
+    public boolean getShowStatusBar() {
+        return showStatusBar;
+    }
+
     public void setTitle(String title) {
         Assert.notNull(title);
         this.title = title;

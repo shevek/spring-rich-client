@@ -74,7 +74,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
         this.toolBarBeanName = toolbarBeanName;
     }
 
-    public CommandManager getCommandManager() {
+    public CommandManager createWindowCommandManager() {
         this.currentWindowCommands = new XmlBeanFactory(commandFactoryResource,
                 Application.instance().getApplicationContext());
         this.currentWindowCommands

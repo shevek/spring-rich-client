@@ -22,7 +22,19 @@ import org.springframework.richclient.application.ApplicationWindow;
 
 public interface ApplicationWindowConfigurer {
     public ApplicationWindow getWindow();
-    
+
+    public String getTitle();
+
+    public Image getImage();
+
+    public Dimension getInitialSize();
+
+    public boolean getShowMenuBar();
+
+    public boolean getShowToolBar();
+
+    public boolean getShowStatusBar();
+
     public void setTitle(String title);
 
     public void setImage(Image image);

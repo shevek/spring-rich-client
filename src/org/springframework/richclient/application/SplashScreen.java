@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.richclient.application.startup;
+package org.springframework.richclient.application;
 
 import java.awt.Dimension;
 import java.awt.Frame;

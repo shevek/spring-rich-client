@@ -35,9 +35,9 @@ import org.springframework.util.Assert;
 public class Application extends ApplicationObjectSupport {
     private static Application INSTANCE;
 
-    private ApplicationServices services;
+    private ApplicationServices applicationServices;
 
-    private ApplicationAdvisor advisor;
+    private ApplicationAdvisor applicationAdvisor;
 
     private ApplicationWindow activeWindow;
 
@@ -49,30 +49,44 @@ public class Application extends ApplicationObjectSupport {
 
     public Application(ApplicationServices applicationServices,
             ApplicationAdvisor advisor) {
-        setServices(applicationServices);
-        setAdvisor(advisor);
+        setApplicationServices(applicationServices);
+        setApplicationAdvisor(advisor);
         Assert.isTrue(INSTANCE == null,
-            "Only one instance of a RCP Application allowed per VM.");
+                "Only one instance of a RCP Application allowed per VM.");
         load(this);
     }
 
-    private void setServices(ApplicationServices services) {
-        this.services = services;
+    public ApplicationServices getApplicationServices() {
+        return applicationServices;
     }
 
-    public ApplicationServices getServices() {
-        return services;
+    private void setApplicationServices(ApplicationServices services) {
+        this.applicationServices = services;
     }
 
-    private void setAdvisor(ApplicationAdvisor advisor) {
+    protected ApplicationAdvisor getApplicationAdvisor() {
+        return applicationAdvisor;
+    }
+
+    private void setApplicationAdvisor(ApplicationAdvisor advisor) {
         Assert.notNull(advisor);
-        this.advisor = advisor;
+        this.applicationAdvisor = advisor;
     }
 
-    protected ApplicationAdvisor getAdvisor() {
-        return advisor;
+    public String getName() {
+        return getApplicationAdvisor().getApplicationName();
     }
 
+    public Image getImage() {
+        return getApplicationAdvisor().getApplicationImage();
+    }
+
+    /**
+     * Load the single application instance.
+     * 
+     * @param instance
+     *            The application
+     */
     public static void load(Application instance) {
         INSTANCE = instance;
     }
@@ -83,8 +97,9 @@ public class Application extends ApplicationObjectSupport {
      * @return The application
      */
     public static Application instance() {
-        Assert.notNull(INSTANCE,
-            "The global application instance has not yet been initialized.");
+        Assert
+                .notNull(INSTANCE,
+                        "The global application instance has not yet been initialized.");
         return INSTANCE;
     }
 
@@ -94,40 +109,36 @@ public class Application extends ApplicationObjectSupport {
      * @return The application services locator.
      */
     public static ApplicationServices services() {
-        return instance().getServices();
-    }
-
-    public String getName() {
-        return advisor.getApplicationName();
-    }
-
-    public Image getImage() {
-        return advisor.getApplicationImage();
+        return instance().getApplicationServices();
     }
 
     protected void initApplicationContext() throws BeansException {
-        getAdvisor().onPreInitialize(this);
+        getApplicationAdvisor().onPreInitialize(this);
         initApplicationServices();
-        getAdvisor().onPreStartup();
-        openFirstTimeApplicationWindow();
-        getAdvisor().onPostStartup();
     }
 
     protected void initApplicationServices() {
-        if (this.services == null) {
-            this.services = new ApplicationServices();
-            this.services.setApplicationContext(getApplicationContext());
+        if (this.applicationServices == null) {
+            this.applicationServices = new ApplicationServices();
+            this.applicationServices
+                    .setApplicationContext(getApplicationContext());
         }
     }
 
-    protected void openFirstTimeApplicationWindow() {
-        openWindow(getAdvisor().getStartingPageId());
+    void openFirstTimeApplicationWindow() {
+        openWindow(getApplicationAdvisor().getStartingPageId());
     }
 
-    private ApplicationWindow createNewWindow() {
-        ApplicationWindow newWindow = new ApplicationWindow(windowManager
-                .size());
-        windowManager.add(newWindow);
+    public void openWindow(String pageId) {
+        ApplicationWindow newWindow = initWindow(createNewWindow());
+        newWindow.openPage(pageId);
+        newWindow.open();
+        // @TODO track active window...
+        this.activeWindow = newWindow;
+    }
+
+    private ApplicationWindow initWindow(ApplicationWindow window) {
+        windowManager.add(window);
         windowManager.addObserver(new Observer() {
             public void update(Observable o, Object arg) {
                 if (windowManager.getWindows().length == 0) {
@@ -135,15 +146,11 @@ public class Application extends ApplicationObjectSupport {
                 }
             }
         });
-        return newWindow;
+        return window;
     }
 
-    public void openWindow(String pageId) {
-        ApplicationWindow newWindow = createNewWindow();
-        newWindow.openPage(pageId);
-        newWindow.open();
-        // @TODO track active window...
-        this.activeWindow = newWindow;
+    protected ApplicationWindow createNewWindow() {
+        return new ApplicationWindow(windowManager.size());
     }
 
     public ApplicationWindow getActiveWindow() {

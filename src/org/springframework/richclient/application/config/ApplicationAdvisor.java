@@ -33,8 +33,7 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
 public abstract class ApplicationAdvisor {
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
-    private static final Log logger = LogFactory
-            .getLog(ApplicationAdvisor.class);
+    private final Log logger = LogFactory.getLog(getClass());
 
     private Application application;
 
@@ -61,16 +60,13 @@ public abstract class ApplicationAdvisor {
      */
     public static class EventExceptionHandler {
         public void handle(Throwable t) {
-            logger.error(t.getMessage(), t);
+            LogFactory.getLog(ApplicationAdvisor.class)
+                    .error(t.getMessage(), t);
         }
     }
 
     public void setApplicationInfo(ApplicationInfo info) {
         this.applicationInfo = info;
-    }
-
-    public void onPreInitialize(Application application) {
-        this.application = application;
     }
 
     protected final Application getApplication() {
@@ -96,6 +92,10 @@ public abstract class ApplicationAdvisor {
         }
     }
 
+    public void onPreInitialize(Application application) {
+        this.application = application;
+    }
+
     public void onPreStartup() {
 
     }
@@ -116,7 +116,7 @@ public abstract class ApplicationAdvisor {
         return managedWindow;
     }
 
-    public CommandManager getCommandManager() {
+    public CommandManager createWindowCommandManager() {
         return new DefaultCommandManager();
     }
 
@@ -132,15 +132,15 @@ public abstract class ApplicationAdvisor {
         return new StatusBarCommandGroup();
     }
 
-    public void onCommandsInitialized(ApplicationWindow window) {
-        
+    public void onCommandsCreated(ApplicationWindow window) {
+
     }
-    
+
     public void onWindowCreated(ApplicationWindow window) {
 
     }
 
-    public void showIntroIfNecessary(ApplicationWindow window) {
+    public void showIntroComponentIfNecessary(ApplicationWindow window) {
         if (introShown) {
             showIntro(window);
             introShown = true;
@@ -155,7 +155,7 @@ public abstract class ApplicationAdvisor {
 
     }
 
-    public boolean preWindowClose(ApplicationWindow window) {
+    public boolean onPreWindowClose(ApplicationWindow window) {
         return true;
     }
 
