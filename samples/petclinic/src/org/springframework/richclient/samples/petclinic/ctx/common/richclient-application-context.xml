@@ -80,10 +80,14 @@
       <list>
         <bean 
           class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+            <property name="errorColor"><value>255,245,245</value></property>
         </bean>
         <bean 
-          class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory">
-        </bean>
+          class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory" 
+          />
+        <bean 
+          class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory" 
+          />
       </list>
     </property>
   </bean>
