@@ -20,10 +20,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationInfo;
-import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.*;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.support.DefaultCommandManager;
@@ -129,7 +126,7 @@ public abstract class ApplicationAdvisor implements InitializingBean {
     }
 
     /**
-     * Returns the {@link ViewDescriptor}that is the default view when the
+     * Returns the {@link ViewDescriptor} that is the default view when the
      * application is started.
      */
     public abstract ViewDescriptor getStartingViewDescriptor();

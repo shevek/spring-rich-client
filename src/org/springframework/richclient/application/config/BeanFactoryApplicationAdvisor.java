@@ -15,10 +15,7 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;

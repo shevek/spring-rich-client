@@ -15,9 +15,7 @@
  */
 package org.springframework.richclient.command.support;
 
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.View;
-import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.*;
 
 public class NewWindowCommand extends ApplicationWindowAwareCommand {
 

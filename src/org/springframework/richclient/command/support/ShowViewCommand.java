@@ -19,7 +19,7 @@ import org.springframework.richclient.application.*;
 import org.springframework.richclient.command.ActionCommand;
 
 /**
- * {@link ActionCommand}for displaying a {@link View}based on the provided
+ * {@link ActionCommand}for displaying a {@link View} based on the provided
  * {@link ViewDescriptor}.
  */
 public class ShowViewCommand extends ApplicationWindowAwareCommand {
