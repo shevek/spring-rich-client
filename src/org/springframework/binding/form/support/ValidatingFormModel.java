@@ -136,19 +136,17 @@ public class ValidatingFormModel extends DefaultFormModel implements
     protected ValueModel preProcessNewFormValueModel(
             String domainObjectProperty, ValueModel formValueModel) {
         if (!(formValueModel instanceof TypeConverter)) {
+            PropertyEditor editor = null;
             if (getFormObject() instanceof PropertyEditorProvider) {
                 PropertyEditorProvider provider = (PropertyEditorProvider)getFormObject();
-                PropertyEditor editor = provider
-                        .getPropertyEditor(domainObjectProperty);
-                formValueModel = installTypeConverter(formValueModel,
-                        domainObjectProperty, editor);
+                editor = provider.getPropertyEditor(domainObjectProperty);
             }
-            else {
-                PropertyEditor editor = getPropertyAccessStrategy()
-                        .findCustomEditor(domainObjectProperty);
-                formValueModel = installTypeConverter(formValueModel,
-                        domainObjectProperty, editor);
+            if (editor == null) {
+                editor = getPropertyAccessStrategy().findCustomEditor(
+                        domainObjectProperty);
             }
+            formValueModel = installTypeConverter(formValueModel,
+                    domainObjectProperty, editor);
         }
         return new ValidatingFormValueModel(domainObjectProperty,
                 formValueModel, getValidationRule(domainObjectProperty));
@@ -166,6 +164,10 @@ public class ValidatingFormModel extends DefaultFormModel implements
             return converter;
         }
         else {
+            if (logger.isDebugEnabled()) {
+                logger
+                        .debug("No type converter found to install; returning value model as is");
+            }
             return formValueModel;
         }
     }
