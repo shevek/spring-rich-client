@@ -15,6 +15,9 @@
  */
 package org.springframework.richclient.settings.support;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
@@ -23,6 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.settings.Settings;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 
 /**
  * Helper class for saving various <code>JTable</code> settings.
@@ -337,5 +342,48 @@ public class TableSettings {
         Assert.hasText(table.getName(), "Name attribute of table must be filled in.");
 
         restoreState(s, table.getName(), table);
+    }
+
+    /**
+     * write sorting state as [index,comparatorIndex,reverse],...
+     * 
+     * @param s
+     * @param key
+     * @param tableComparatorChooser
+     */
+    public static void saveSortingState(Settings s, String key, TableComparatorChooser tableComparatorChooser) {
+        List sortingColumns = tableComparatorChooser.getSortingColumns();
+        StringBuffer sb = new StringBuffer();
+        for (Iterator iter = sortingColumns.iterator(); iter.hasNext();) {
+            int column = ((Integer) iter.next()).intValue();
+            String settings = "[" + column + "," + tableComparatorChooser.getColumnComparatorIndex(column) + ","
+                    + Boolean.toString(tableComparatorChooser.isColumnReverse(column)) + "]";
+            sb.append(settings);
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+        System.out.println(sb);
+    }
+
+    public static void restoreSortingState(Settings s, JTable table, TableComparatorChooser chooser) {
+        restoreSortingState(s, table.getName(), chooser);
+    }
+
+    public static void restoreSortingState(Settings s, String key, TableComparatorChooser chooser) {
+        if (s.contains(key + "." + "sorting")) {
+            String state = s.getString(key + "." + "sorting");
+            if (StringUtils.hasText(state)) {
+                state = state.substring(1, state.length() - 1);
+                String[] colStates = state.split("\\],\\[");
+                for (int i = 0; i < colStates.length; i++) {
+                    String[] parts = colStates[i].split(",");
+                    int column = Integer.parseInt(parts[0]);
+                    int comparator = Integer.parseInt(parts[1]);
+                    boolean reverse = Boolean.getBoolean(parts[2]);
+                    chooser.chooseComparator(column, comparator, reverse);
+                }
+            }
+        }
     }
 }
