@@ -35,11 +35,11 @@ import org.springframework.richclient.command.CommandManager;
  * @author Keith Donald
  */
 public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
-    private static final String COMMAND_MANAGER_BEAN_NAME = "commandManager";
+    private String commandManagerBeanName = "commandManager";
 
-    private static final String TOOL_BAR_BEAN_NAME = "toolBar";
+    private String toolBarBeanName = "toolBar";
 
-    private static final String MENU_BAR_BEAN_NAME = "menuBar";
+    private String menuBarBeanName = "menuBar";
 
     private ApplicationInfo applicationInfo;
 
@@ -74,6 +74,22 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
         this.startingPageId = pageId;
     }
 
+    public void setCommandManagerBeanName(String commandManagerBeanName) {
+        this.commandManagerBeanName = commandManagerBeanName;
+    }
+
+    public void setCurrentWindowCommands(XmlBeanFactory currentWindowCommands) {
+        this.currentWindowCommands = currentWindowCommands;
+    }
+
+    public void setMenubarBeanName(String menubarBeanName) {
+        this.menuBarBeanName = menubarBeanName;
+    }
+
+    public void setToolbarBeanName(String toolbarBeanName) {
+        this.toolBarBeanName = toolbarBeanName;
+    }
+
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
         configurer.setTitle(applicationInfo.getDisplayName());
@@ -89,20 +105,24 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
         this.currentWindowCommands.addBeanPostProcessor(newObjectConfigurer());
         registerBeanPostProcessors();
         return (CommandManager)currentWindowCommands
-                .getBean(COMMAND_MANAGER_BEAN_NAME);
+                .getBean(commandManagerBeanName);
     }
 
     protected BeanPostProcessor newObjectConfigurer() {
         return new BeanPostProcessor() {
-            public Object postProcessBeforeInitialization(Object bean, String beanName) {
+            public Object postProcessBeforeInitialization(Object bean,
+                    String beanName) {
                 return Application.locator().configure(bean, beanName);
             }
-            public Object postProcessAfterInitialization(Object bean, String beanName) {
+
+            public Object postProcessAfterInitialization(Object bean,
+                    String beanName) {
                 return bean;
             }
 
         };
     }
+
     private void registerBeanPostProcessors() throws BeansException {
         String[] beanNames = getBeanFactory().getBeanDefinitionNames(
                 BeanPostProcessor.class);
@@ -120,15 +140,20 @@ public class ConfigurableApplicationLifecycle extends ApplicationLifecycle {
     }
 
     public CommandGroup getMenuBarCommandGroup() {
-        return (CommandGroup)currentWindowCommands.getBean(MENU_BAR_BEAN_NAME);
+        if (menuBarBeanName == null
+                || !currentWindowCommands.containsBean(menuBarBeanName)) { return super
+                .getMenuBarCommandGroup(); }
+        return (CommandGroup)currentWindowCommands.getBean(menuBarBeanName);
     }
 
     public CommandGroup getToolBarCommandGroup() {
-        return (CommandGroup)currentWindowCommands.getBean(TOOL_BAR_BEAN_NAME);
+        if (toolBarBeanName == null
+                || !currentWindowCommands.containsBean(toolBarBeanName)) { return super
+                .getToolBarCommandGroup(); }
+        return (CommandGroup)currentWindowCommands.getBean(toolBarBeanName);
     }
 
     protected ConfigurableListableBeanFactory getBeanFactory() {
         return currentWindowCommands;
     }
-
 }

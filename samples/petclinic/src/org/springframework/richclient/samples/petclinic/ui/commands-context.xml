@@ -31,6 +31,7 @@
       </property>
     </bean>
 
+<!--
     <bean       id="toolBar"
              class="org.springframework.richclient.command.CommandGroupFactoryBean">
       <property name="members">
@@ -40,6 +41,7 @@
         </list>
       </property>
     </bean>
+-->
 
     <bean       id="fileMenu"
              class="org.springframework.richclient.command.CommandGroupFactoryBean">
