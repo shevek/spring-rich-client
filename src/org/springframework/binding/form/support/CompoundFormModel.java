@@ -123,6 +123,7 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
             ValueModel childFormObjectHolder, boolean enabled) {
         MutablePropertyAccessStrategy childObjectAccessStrategy = getPropertyAccessStrategy()
                 .newPropertyAccessStrategy(childFormObjectHolder);
+        childModel.setId(childFormModelName);
         childModel.setPropertyAccessStrategy(childObjectAccessStrategy);
         childModel.setEnabled(enabled);
         childModel.setBufferChangesDefault(getBufferChangesDefault());

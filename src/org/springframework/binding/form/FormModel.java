@@ -29,6 +29,11 @@ public interface FormModel extends PropertyChangePublisher {
     public static final String ENABLED_PROPERTY = "enabled";
 
     public static final String DIRTY_PROPERTY = "dirty";
+    
+    /**
+     * Returns the ID of this form model (may be empty or <code>null</code>).
+     */
+    public String getId();
 
     public Object getFormObject();
 
@@ -45,6 +50,16 @@ public interface FormModel extends PropertyChangePublisher {
     public Object getValue(String formPropertyPath);
 
     public Map getErrors();
+    
+    /**
+     * Returns the FormPropertyState for the specified formPropertyPath.
+     */
+    public FormPropertyState getFormPropertyState(String formPropertyPath);
+    
+    /**
+     * Returns the FormPropertyFaceDescriptor for the specified formPropertyPath.
+     */
+    public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String formPropertyPath);
 
     public boolean getHasErrors();
 

@@ -27,6 +27,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
+import org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -81,6 +83,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
 
     public static final String FORM_INTERCEPTOR_FACTORY_BEAN_ID = "formComponentInterceptorFactory";
 
+    private static final String FORM_PROPERTY_FACE_DESCRIPTOR_SOURCE_BEAN_ID = "formPropertyFaceDescriptorSource";
+
     private final Log logger = LogFactory.getLog(getClass());
 
     private ComponentFactory componentFactory;
@@ -106,6 +110,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private ApplicationContext applicationContext;
 
     private MessageSourceAccessor messageSourceAccessor;
+
+    private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -334,6 +340,29 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         return getFormComponentInterceptorFactory().getInterceptor(formModel);
     }
 
+    public FormPropertyFaceDescriptorSource getFormPropertyFaceDescriptorSource() {
+        if (formPropertyFaceDescriptorSource == null) {
+            initFormPropertyFaceDescriptorSource();
+        }
+        return formPropertyFaceDescriptorSource;
+    }
+
+    private void initFormPropertyFaceDescriptorSource() {
+        try {
+            this.formPropertyFaceDescriptorSource = (FormPropertyFaceDescriptorSource)getApplicationContext().getBean(
+                    FORM_PROPERTY_FACE_DESCRIPTOR_SOURCE_BEAN_ID, FormPropertyFaceDescriptorSource.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + FORM_PROPERTY_FACE_DESCRIPTOR_SOURCE_BEAN_ID
+                    + " found; configuring defaults.");
+            this.formPropertyFaceDescriptorSource = new MessageSourceFormPropertyFaceDescriptorSource();
+        }
+    }
+    
+    public void setFormPropertyFaceDescriptorSource(FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource) {
+        this.formPropertyFaceDescriptorSource = formPropertyFaceDescriptorSource;
+    }
+
     protected void initApplicationContext() throws BeansException {
         if (!lazyInit) {
             initStandardServices();
@@ -426,5 +455,4 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public AbstractCommand configure(AbstractCommand command) {
         return getCommandConfigurer().configure(command);
     }
-
 }

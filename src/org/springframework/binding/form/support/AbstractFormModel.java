@@ -16,14 +16,19 @@
 package org.springframework.binding.form.support;
 
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.FormPropertyFaceDescriptor;
+import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
+import org.springframework.binding.form.FormPropertyState;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.value.BoundValueModel;
@@ -39,7 +44,12 @@ import org.springframework.util.Assert;
  * @author Oliver Hutchison
  */
 public abstract class AbstractFormModel extends AbstractPropertyChangePublisher implements NestableFormModel {
+    private String id;
+
     private NestingFormModel parent;
+
+    /* Holds all of the FormPropertyStates for this FormModel */
+    private Map propertyStates = new HashMap();
 
     private RulesSource rulesSource;
 
@@ -51,11 +61,21 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     private Set commitListeners;
 
+    private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
+
     protected AbstractFormModel() {
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
         this.domainObjectAccessStrategy = domainObjectAccessStrategy;
+    }
+
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Object getFormObject() {
@@ -141,6 +161,44 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     public Object getValue(String formPropertyPath) {
         return getRequiredValueModel(formPropertyPath).getValue();
+    }
+
+    public FormPropertyState getFormPropertyState(String formPropertyPath) {
+        assertValueModelNotNull(getDisplayValueModel(formPropertyPath), formPropertyPath);
+        FormPropertyState propertyState = (FormPropertyState)propertyStates.get(formPropertyPath);
+        if (propertyState == null) {
+            propertyState = new DefaultFormPropertyMetadata(this, formPropertyPath,
+                    !getMetadataAccessStrategy().isWriteable(formPropertyPath));
+            propertyStates.put(formPropertyPath, propertyState);
+        }
+        return propertyState;
+    }
+
+    /**
+     * Sets the FormPropertyFaceDescriptorSource that this will be used to resolve 
+     * FormPropertyFaceDescriptors. 
+     * <p>If this value is <code>null</code> the default FormPropertyFaceDescriptorSource from
+     * <code>ApplicationServices</code> instance will be used.
+     */
+    public void setFormPropertyFaceDescriptorSource(
+            FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource) {
+        this.formPropertyFaceDescriptorSource = formPropertyFaceDescriptorSource;
+    }
+
+    /**
+     * Returns the FormPropertyFaceDescriptorSource that should be used to resolve 
+     * FormPropertyFaceDescriptors for this form model.   
+     */
+    protected FormPropertyFaceDescriptorSource getFormPropertyFaceDescriptorSource() {
+        if (formPropertyFaceDescriptorSource == null) {
+            formPropertyFaceDescriptorSource = Application.services().getFormPropertyFaceDescriptorSource();
+        }
+        return formPropertyFaceDescriptorSource;
+    }
+
+    public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String formPropertyPath) {
+        assertValueModelNotNull(getDisplayValueModel(formPropertyPath), formPropertyPath);
+        return getFormPropertyFaceDescriptorSource().getFormPropertyFaceDescriptor(this, formPropertyPath);
     }
 
     public void addFormObjectChangeListener(ValueChangeListener listener) {

@@ -305,7 +305,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             AbstractForm.this.handleEnabledChange(enabled);
         }
 
-    };
+    }
 
     protected void handleEnabledChange(boolean enabled) {
 

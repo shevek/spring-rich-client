@@ -130,6 +130,9 @@
 
 	<bean id="rulesSource" 
 		class="org.springframework.richclient.samples.petclinic.domain.PetClinicValidationRulesSource"/>
+        
+    <bean id="formPropertyFaceDescriptorSource" 
+		class="org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource"/>    
 		
 	<bean id="ownerManagerView"
 		class="org.springframework.richclient.application.support.DefaultViewDescriptor">

@@ -28,7 +28,7 @@ public interface ConfigurableFormModel extends NestableFormModel {
     public MutablePropertyAccessStrategy getPropertyAccessStrategy();
 
     public PropertyMetadataAccessStrategy getMetadataAccessStrategy();
-
+    
     public ValueModel add(String formPropertyPath);
 
     public ValueModel add(String formPropertyPath, boolean bufferChanges);

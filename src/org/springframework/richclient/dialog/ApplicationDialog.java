@@ -327,7 +327,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                         executeCloseAction();
                     }
                 } catch (Exception e) {
-                    logger.warn("Exception occured executing dialog finish command.", e);
+                    logger.warn("Exception occurred executing dialog finish command.", e);
                     onFinishException(e);
                 }
             }
@@ -356,7 +356,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * Request invocation of the action taken when the user hits the
      * <code>OK</code> (finish) button.
      * 
-     * @return true if action completed succesfully; false otherwise.
+     * @return true if action completed successfully; false otherwise.
      */
     protected abstract boolean onFinish();
 
@@ -412,7 +412,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             exceptionMessage = e.getLocalizedMessage();
         }
         if (!StringUtils.hasText(exceptionMessage)) {
-            String defaultMessage = "Unable to finish; an application exception occured.\nPlease contact your administrator.";
+            String defaultMessage = "Unable to finish; an application exception occurred.\nPlease contact your administrator.";
             exceptionMessage = getMessages().getMessage("applicationDialog.defaultFinishException", defaultMessage);
         }
         JOptionPane.showMessageDialog(getDialog(), exceptionMessage, getApplicationName(), JOptionPane.ERROR_MESSAGE);

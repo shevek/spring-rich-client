@@ -22,11 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.support.FormModelAwareMessageTranslator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
-import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.util.Assert;
@@ -121,7 +121,7 @@ public class SimpleValidationResultsReporter implements ValidationListener {
     }
 
     private String translate(ValidationResults results) {
-        DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(Application.services());
+        FormModelAwareMessageTranslator messageTranslator = new FormModelAwareMessageTranslator(formModel, Application.services());
         return messageTranslator.getMessage((PropertyResults)results);
     }
 

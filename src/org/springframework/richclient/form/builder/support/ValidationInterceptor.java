@@ -22,13 +22,13 @@ import java.util.Stack;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.support.FormModelAwareMessageTranslator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.constraint.property.PropertyConstraint;
-import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.rules.reporting.ValidationResults;
@@ -161,7 +161,7 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         }
 
         private String translate(ValidationResults results) {
-            DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(Application.services());
+            FormModelAwareMessageTranslator messageTranslator = new FormModelAwareMessageTranslator(getFormModel(), Application.services());
             return messageTranslator.getMessage((PropertyResults)results);
         }
     }

@@ -23,6 +23,8 @@ import org.springframework.binding.value.ValueModel;
  */
 public interface NestableFormModel extends FormModel {
     public void setParent(NestingFormModel parent);
+    
+    public NestingFormModel getParent();
 
     public ValueModel getDisplayValueModel(String formPropertyPath, boolean queryParent);
 }
