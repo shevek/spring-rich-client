@@ -26,11 +26,15 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerDateModel;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -111,9 +115,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public static SwingFormModel createChildPageFormModel(
             NestingFormModel groupingModel, String pageName) {
-        SwingFormModel childPageFormModel = new SwingFormModel(groupingModel
-                .createChild(pageName));
-        return childPageFormModel;
+        return new SwingFormModel(groupingModel.createChild(pageName));
+    }
+
+    public static SwingFormModel createChildPageFormModel(
+            NestingFormModel groupingModel, String childPageName,
+            String parentPropertyFormObjectPath) {
+        return new SwingFormModel(groupingModel.createChild(childPageName,
+                parentPropertyFormObjectPath));
     }
 
     public void registerCustomEditor(Class clazz,
@@ -301,6 +310,24 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     protected JTextField createNewTextField() {
         return getComponentFactory().createTextField();
+    }
+
+    public JSpinner createBoundSpinner(String formProperty) {
+        final ValueModel model = getOrCreateValueModel(formProperty);
+        final JSpinner spinner = createNewSpinner();
+        if (getMetaAspectAccessor().isDate(formProperty)) {
+            spinner.setModel(new SpinnerDateModel());
+        }
+        spinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                model.set(spinner.getValue());
+            }
+        });
+        return spinner;
+    }
+
+    protected JSpinner createNewSpinner() {
+        return new JSpinner();
     }
 
     private JComponent bindCustomEditor(PropertyEditor propertyEditor,
@@ -517,7 +544,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     private static class BufferedListValueModel extends BufferedValueModel {
         private ListListModel items;
-        
+
         private boolean updating;
 
         public BufferedListValueModel(ValueModel wrappedModel) {
@@ -549,10 +576,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 });
             }
             else {
-                try {   
+                try {
                     updating = true;
                     this.items.clear();
-                } finally {
+                }
+                finally {
                     updating = false;
                 }
             }
@@ -566,9 +594,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         protected void onWrappedValueChanged() {
             super.set(internalGet());
         }
-        
+
         protected void fireValueChanged() {
-            if (! updating) {
+            if (!updating) {
                 super.fireValueChanged();
             }
         }

@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public abstract class AbstractFormPage extends AbstractControlFactory {
+    private NestingFormModel parent;
 
     private SwingFormModel pageFormModel;
 
@@ -36,10 +37,30 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
 
     }
 
-    public AbstractFormPage(FormModel formModel, String pageName) {
+    protected AbstractFormPage(NestingFormModel parent) {
+        this.parent = parent;
+    }
+
+    protected AbstractFormPage(NestingFormModel parent, String pageName) {
+        this(SwingFormModel.createChildPageFormModel(parent, pageName));
+    }
+
+    protected AbstractFormPage(NestingFormModel parent, String pageName,
+            String parentFormObjectPropertyPath) {
+        this.parent = parent;
+        setFormModel(SwingFormModel.createChildPageFormModel(parent, pageName,
+                parentFormObjectPropertyPath));
+    }
+
+    protected AbstractFormPage(SwingFormModel pageFormModel) {
+        setFormModel(pageFormModel);
+    }
+
+    protected AbstractFormPage(FormModel formModel, String pageName) {
         if (formModel instanceof NestingFormModel) {
-            setFormModel(SwingFormModel.createChildPageFormModel(
-                    (NestingFormModel)formModel, pageName));
+            this.parent = (NestingFormModel)formModel;
+            setFormModel(SwingFormModel.createChildPageFormModel(this.parent,
+                    pageName));
         }
         else if (formModel instanceof SwingFormModel) {
             setFormModel((SwingFormModel)formModel);
@@ -50,14 +71,6 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
         }
     }
 
-    public AbstractFormPage(NestingFormModel parent, String pageName) {
-        this(SwingFormModel.createChildPageFormModel(parent, pageName));
-    }
-
-    public AbstractFormPage(SwingFormModel pageFormModel) {
-        setFormModel(pageFormModel);
-    }
-
     public SwingFormModel getFormModel() {
         return pageFormModel;
     }
@@ -65,6 +78,10 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
     protected void setFormModel(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.pageFormModel = formModel;
+    }
+
+    protected NestingFormModel getParent() {
+        return this.parent;
     }
 
     public Object getFormObject() {
