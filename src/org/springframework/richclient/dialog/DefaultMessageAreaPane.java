@@ -76,6 +76,10 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         return defaultIcon;
     }
 
+    public Message getMessage() {
+        return messageAreaModel.getMessage();
+    }
+    
     public void setMessage(Message message) {
         messageAreaModel.setMessage(message);
         if (messageLabel != null) {

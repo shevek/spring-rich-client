@@ -123,6 +123,10 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
         return messagePane.isMessageShowing();
     }
 
+    public Message getMessage() {
+        return messagePane.getMessage();
+    }
+
     public void setMessage(Message newMessage) {
         messagePane.setMessage(newMessage);
     }
@@ -142,4 +146,5 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         messagePane.removePropertyChangeListener(propertyName, listener);
     }
+
 }

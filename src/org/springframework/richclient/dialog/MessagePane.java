@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.dialog;
 
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
@@ -25,6 +26,8 @@ import org.springframework.richclient.factory.ControlFactory;
  */
 public interface MessagePane extends ControlFactory, Messagable {
 
+    public Message getMessage();
+    
     /**
      * Is this pane currently showing a message?
      * 

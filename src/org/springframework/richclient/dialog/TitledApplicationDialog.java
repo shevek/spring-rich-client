@@ -25,9 +25,11 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.util.ObjectUtils;
 
-public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable {
+public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable, ImageConfigurable {
     private TitlePane titlePane = new TitlePane();
 
     private Message description = new Message("Title pane description");
@@ -49,7 +51,14 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
     }
 
     public void setDescription(String description) {
-        this.description = new Message(description);
+        Message old = this.description;
+        Message message = new Message(description);
+        if (!ObjectUtils.nullSafeEquals(old, message)) {
+            this.description = message;
+            if (titlePane.getMessage().equals(old)) {
+                titlePane.setMessage(this.description);
+            }
+        }
     }
 
     public void setTitlePaneTitle(String titleAreaText) {
@@ -60,6 +69,14 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
         titlePane.setImage(image);
     }
 
+    public void setImage(Image image) {
+        setTitlePaneImage(image);
+    }
+
+    public Message getMessage() {
+        return titlePane.getMessage();
+    }
+    
     public void setMessage(Message message) {
         if (message == null) {
             message = Message.EMPTY_MESSAGE;
