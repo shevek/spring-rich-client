@@ -17,7 +17,6 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.CommandDelegate;
 import org.springframework.richclient.dialog.CompoundForm;
@@ -52,7 +51,7 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
 
         public OwnerGeneralWizardPage() {
             super(ID);
-            Application.locator().configure(this, ID);
+            getObjectConfigurer().configure(this, ID);
         }
 
         public void setVisible(boolean bool) {
