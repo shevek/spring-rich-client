@@ -27,7 +27,6 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 /**
- * 
  * @author Keith Donald
  */
 public class JGoodiesFormBuilder implements FormBuilder {
@@ -61,15 +60,24 @@ public class JGoodiesFormBuilder implements FormBuilder {
     public JComponent[] add(String labelKey, JComponent labeledComponent) {
         JLabel label = componentFactory.createLabelFor(labelKey,
                 labeledComponent);
+        return add(label, labeledComponent);
+    }
+
+    public JComponent[] add(JComponent label, JComponent labeledComponent) {
         Assert.notNull(labeledComponent);
         formBuilder.append(label, labeledComponent);
         return new JComponent[] { label, labeledComponent };
     }
-
+    
     public JComponent[] add(String labelKey, String labelConstraints,
             JComponent labeledComponent) {
         JLabel label = componentFactory.createLabelFor(labelKey,
                 labeledComponent);
+        return add(label, labelConstraints, labeledComponent);
+    }
+
+    public JComponent[] add(JComponent label, String labelConstraints,
+            JComponent labeledComponent) {        
         Assert.notNull(labeledComponent);
         formBuilder.nextLine();
         formBuilder.appendRelatedComponentsGapRow();

@@ -197,6 +197,23 @@ public class ListenerListHelper implements Serializable {
             fireEventWithReflection(methodName, new Object[] { arg });
         }
     }
+    
+    /**
+     * Invokes the specified method on each of the listeners registered with
+     * this list.
+     * 
+     * @param methodName
+     *            the name of the method to invoke.
+     * @param arg1
+     *            the first argument to pass to each invocation.
+     * @param arg2
+     *            the second argument to pass to each invocation. 
+     */
+    public void fire(String methodName, Object arg1, Object arg2) {
+        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
+            fireEventWithReflection(methodName, new Object[] { arg1, arg2 });
+        }
+    }
 
     /**
      * Invokes the specified method on each of the listeners registered with

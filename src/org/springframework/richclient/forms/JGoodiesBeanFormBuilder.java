@@ -16,15 +16,11 @@
 package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
-import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.richclient.form.builder.AbstractFormBuilder;
 import org.springframework.rules.Constraint;
-import org.springframework.util.Assert;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -32,14 +28,10 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * @author Keith Donald
  */
-public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
-    private static final String LABEL_PREFIX = "label";
-
-    private SwingFormModel formModel;
+public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements
+        BeanFormBuilder {
 
     private JGoodiesFormBuilder formBuilder;
-
-    private ComponentFactory componentFactory;
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,
             FormLayout formLayout) {
@@ -49,9 +41,9 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,
             FormLayout formLayout, ComponentFactory componentFactory) {
-        this.formModel = formModel;
+        super(formModel);
         this.formBuilder = new JGoodiesFormBuilder(formLayout, componentFactory);
-        this.componentFactory = componentFactory;
+        setComponentFactory(componentFactory);
     }
 
     public JGoodiesFormBuilder getWrappedFormBuilder() {
@@ -67,40 +59,28 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     }
 
     public JComponent[] add(String formPropertyPath) {
-        JComponent propertyEditor = formModel
-                .createBoundControl(formPropertyPath);
-        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
-                propertyEditor);
+        JComponent[] components = processComponent(formPropertyPath,
+                getLabel(formPropertyPath),
+                getDefaultComponent(formPropertyPath));
+        return formBuilder.add(components[0], components[1]);
     }
 
-    public JComponent[] addSelector(String formPropertyPath,
-            Constraint filter) {
-        JComponent propertyEditor = null;
-        if (formModel.isEnumeration(formPropertyPath)) {
-            propertyEditor = formModel.createBoundEnumComboBox(
-                    formPropertyPath, filter);
-        }
-        Assert.notNull(propertyEditor, "Unsupported filterable property "
-                + formPropertyPath);
-        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
-                propertyEditor);
+    public JComponent[] addSelector(String formPropertyPath, Constraint filter) {
+        JComponent[] components = processComponent(formPropertyPath,
+                getLabel(formPropertyPath), getSelector(formPropertyPath,
+                        filter));
+        return formBuilder.add(components[0], components[1]);
     }
 
     public JComponent[] addPasswordField(String formPropertyPath) {
-        JPasswordField field = (JPasswordField)formModel.bind(
-                new JPasswordField(8), formPropertyPath);
-        return formBuilder.add(getPropertyLabelCode(formPropertyPath), field);
+        JComponent[] components = processComponent(formPropertyPath,
+                getLabel(formPropertyPath), getPasswordField(formPropertyPath));
+        return formBuilder.add(components[0], components[1]);
     }
 
     public JComponent[] addTextArea(String formPropertyPath) {
-        JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
-                "left,top", new JScrollPane(formModel.bind(textArea,
-                        formPropertyPath)));
+        JComponent[] components = processComponent(formPropertyPath,
+                getLabel(formPropertyPath), getTextArea(formPropertyPath));
+        return formBuilder.add(components[0], "left,top", components[1]);
     }
-
-    private String getPropertyLabelCode(String propertyName) {
-        return LABEL_PREFIX + "." + propertyName;
-    }
-
 }
