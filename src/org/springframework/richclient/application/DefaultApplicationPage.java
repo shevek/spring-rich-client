@@ -33,7 +33,7 @@ public class DefaultApplicationPage implements ApplicationPage {
 
     private SimpleInternalFrame viewPane;
 
-    private ApplicationWindow window;
+    private ApplicationWindow parentWindow;
 
     private ViewRegistry viewRegistry;
 
@@ -41,16 +41,24 @@ public class DefaultApplicationPage implements ApplicationPage {
 
     private List viewListeners = new ArrayList();
 
-    public DefaultApplicationPage(ApplicationWindow window) {
-        this.window = window;
+    public DefaultApplicationPage() {
         this.viewRegistry = Application.services().getViewRegistry();
         this.pageControl = new JPanel(new BorderLayout());
         this.viewPane = new SimpleInternalFrame("");
         this.pageControl.add(viewPane, BorderLayout.CENTER);
     }
 
+    public DefaultApplicationPage(ApplicationWindow window) {
+        this();
+        this.parentWindow = window;
+    }
+
+    public void setParentWindow(ApplicationWindow parentWindow) {
+        this.parentWindow = parentWindow;
+    }
+
     public ApplicationWindow getParentWindow() {
-        return window;
+        return parentWindow;
     }
 
     public JComponent getControl() {
