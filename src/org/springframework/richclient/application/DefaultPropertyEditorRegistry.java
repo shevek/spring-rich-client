@@ -19,6 +19,7 @@ import java.beans.PropertyEditor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -41,6 +42,22 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     private Map propertyEditorByClass = new HashMap();
     
     private Map propertyEditorByClassAndProperty = new HashMap();
+    
+    /**
+     * Adds a list of property editors to the registry extracting the object
+     * class, property name and property editor class from the properties
+     * "objectClass", "propertyName" and "propertyEditorClass".
+     * 
+     * @param propertyEditors
+     *            the list of property editors. Each element is expected to be
+     *            an instance of <code>java.lang.Properties</code>.
+     * @see DefaultPropertyEditorRegistry#setPropertyEditor(Properties)
+     */
+    public void setPropertyEditors(List propertyEditors) {
+        for (Iterator i = propertyEditors.iterator(); i.hasNext();) {
+            setPropertyEditor((Properties)i.next());            
+        }
+    }
     
     /**
      * Adds a property editor to the registry extracting the object class,
