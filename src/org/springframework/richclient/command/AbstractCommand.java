@@ -303,7 +303,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     public AbstractButton createButton(String faceDescriptorId, ButtonFactory buttonFactory,
             CommandButtonConfigurer buttonConfigurer) {
         JButton button = buttonFactory.createButton();
-        attach(button, buttonConfigurer);
+        attach(button, faceDescriptorId, buttonConfigurer);
         return button;
     }
 
@@ -330,7 +330,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     public JMenuItem createMenuItem(String faceDescriptorId, MenuFactory menuFactory,
             CommandButtonConfigurer buttonConfigurer) {
         JMenuItem menuItem = menuFactory.createMenuItem();
-        attach(menuItem, buttonConfigurer);
+        attach(menuItem, faceDescriptorId, buttonConfigurer);
         return menuItem;
     }
 
