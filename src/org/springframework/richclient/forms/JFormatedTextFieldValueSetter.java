@@ -22,30 +22,25 @@ import javax.swing.JFormattedTextField;
 
 import org.springframework.rules.values.ValueModel;
 
-
 /**
  * @author oliverh
  */
-public class JFormatedTextFieldValueSetter
-extends AbstractValueSetter
-implements PropertyChangeListener
-{
+public class JFormatedTextFieldValueSetter extends AbstractValueSetter
+        implements PropertyChangeListener {
     private JFormattedTextField component;
-    
+
     public JFormatedTextFieldValueSetter(JFormattedTextField component,
-        ValueModel valueModel)
-    {
+            ValueModel valueModel) {
         super(valueModel);
-        this.component = component;       
-        this.component.addPropertyChangeListener("value", this);       
+        this.component = component;
+        this.component.addPropertyChangeListener("value", this);
     }
-    
+
     protected void setComponentValue(Object value) {
         component.setValue(value);
     }
-	
-	public void propertyChange(PropertyChangeEvent e)
-    {	    
+
+    public void propertyChange(PropertyChangeEvent e) {
         componentValueChanged(component.getValue());
-	}
+    }
 }
