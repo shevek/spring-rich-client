@@ -25,25 +25,24 @@ import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class OwnerGeneralForm extends AbstractForm {
-    public static final String GENERAL_FORM_PAGE = "generalPage";
+	public static final String GENERAL_FORM_PAGE = "generalPage";
 
-    private JComponent firstNameField;
+	private JComponent firstNameField;
 
-    public OwnerGeneralForm(FormModel formModel) {
-        super(formModel, GENERAL_FORM_PAGE);
-    }
+	public OwnerGeneralForm(FormModel formModel) {
+		super(formModel, GENERAL_FORM_PAGE);
+	}
 
-    protected JComponent createFormControl() {
-        FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-        BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
-                getFormModel(), layout);
-        this.firstNameField = formBuilder.add("firstName")[1];
-        formBuilder.add("lastName");
-        return formBuilder.getForm();
-    }
+	protected JComponent createFormControl() {
+		FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
+		BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+		this.firstNameField = formBuilder.add("firstName")[1];
+		formBuilder.add("lastName");
+		return formBuilder.getForm();
+	}
 
-    public boolean requestFocusInWindow() {
-        return firstNameField.requestFocusInWindow();
-    }
+	public boolean requestFocusInWindow() {
+		return firstNameField.requestFocusInWindow();
+	}
 
 }

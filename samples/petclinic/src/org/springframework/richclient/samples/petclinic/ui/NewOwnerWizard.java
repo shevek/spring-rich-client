@@ -25,76 +25,73 @@ import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
 
-public class NewOwnerWizard extends AbstractWizard implements
-        ActionCommandExecutor {
-    private WizardDialog wizardDialog;
+public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecutor {
+	private WizardDialog wizardDialog;
 
-    private CompoundForm wizardForm;
+	private CompoundForm wizardForm;
 
-    private Clinic clinic;
+	private Clinic clinic;
 
-    public NewOwnerWizard() {
-        super("newOwnerWizard");
-    }
+	public NewOwnerWizard() {
+		super("newOwnerWizard");
+	}
 
-    public void setClinic(Clinic clinic) {
-        Assert.notNull(clinic, "The clinic property is required");
-        this.clinic = clinic;
-    }
+	public void setClinic(Clinic clinic) {
+		Assert.notNull(clinic, "The clinic property is required");
+		this.clinic = clinic;
+	}
 
-    public void addPages() {
-        addPage(new OwnerGeneralWizardPage());
-        addPage(new OwnerAddressWizardPage());
-    }
+	public void addPages() {
+		addPage(new OwnerGeneralWizardPage());
+		addPage(new OwnerAddressWizardPage());
+	}
 
-    public class OwnerGeneralWizardPage extends FormBackedWizardPage {
-        public OwnerGeneralWizardPage() {
-            super(new OwnerGeneralForm(wizardForm.getFormModel()), false);
-        }
+	public class OwnerGeneralWizardPage extends FormBackedWizardPage {
+		public OwnerGeneralWizardPage() {
+			super(new OwnerGeneralForm(wizardForm.getFormModel()), false);
+		}
 
-        public void setVisible(boolean bool) {
-            super.setVisible(bool);
-            if (bool) {
-                ((OwnerGeneralForm)getBackingFormPage()).requestFocusInWindow();
-            }
-        }
-    }
+		public void setVisible(boolean bool) {
+			super.setVisible(bool);
+			if (bool) {
+				((OwnerGeneralForm)getBackingFormPage()).requestFocusInWindow();
+			}
+		}
+	}
 
-    public class OwnerAddressWizardPage extends FormBackedWizardPage {
-        public OwnerAddressWizardPage() {
-            super(new OwnerAddressForm(wizardForm.getFormModel()), false);
-        }
+	public class OwnerAddressWizardPage extends FormBackedWizardPage {
+		public OwnerAddressWizardPage() {
+			super(new OwnerAddressForm(wizardForm.getFormModel()), false);
+		}
 
-        public void setVisible(boolean bool) {
-            super.setVisible(bool);
-            if (bool) {
-                ((OwnerAddressForm)getBackingFormPage()).requestFocusInWindow();
-            }
-        }
-    }
+		public void setVisible(boolean bool) {
+			super.setVisible(bool);
+			if (bool) {
+				((OwnerAddressForm)getBackingFormPage()).requestFocusInWindow();
+			}
+		}
+	}
 
-    public void execute() {
-        if (wizardDialog == null) {
-            wizardDialog = new WizardDialog(this);
-            wizardDialog.setResetMessagePaneOnDisplay(true);
-            wizardForm = new CompoundForm();
-        }
-        wizardForm.setFormObject(new Owner());
-        wizardDialog.showDialog();
-    }
+	public void execute() {
+		if (wizardDialog == null) {
+			wizardDialog = new WizardDialog(this);
+			wizardDialog.setResetMessagePaneOnDisplay(true);
+			wizardForm = new CompoundForm();
+		}
+		wizardForm.setFormObject(new Owner());
+		wizardDialog.showDialog();
+	}
 
-    protected boolean onFinish() {
-        Owner newOwner = (Owner)getNewOwner();
-        clinic.storeOwner(newOwner);
-        getApplicationContext().publishEvent(
-                new LifecycleApplicationEvent(
-                        LifecycleApplicationEvent.CREATED, newOwner));
-        return true;
-    }
+	protected boolean onFinish() {
+		Owner newOwner = (Owner)getNewOwner();
+		clinic.storeOwner(newOwner);
+		getApplicationContext().publishEvent(new LifecycleApplicationEvent(LifecycleApplicationEvent.CREATED, newOwner));
+		return true;
+	}
 
-    private Owner getNewOwner() {
-        wizardForm.commit();
-        return (Owner)wizardForm.getFormObject();
-    }
+	private Owner getNewOwner() {
+		wizardForm.commit();
+		return (Owner)wizardForm.getFormObject();
+	}
 
 }
