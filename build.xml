@@ -230,7 +230,7 @@
 	<target name="tests" depends="buildtests" description="Run tests.">
 		<property name="reports.dir" value="${target.junit.reports.dir}"/>
 		<mkdir dir="${reports.dir}"/>
-		<junit printsummary="yes" haltonfailure="yes">
+		<junit printsummary="yes" haltonfailure="no" failureproperty="tests-failed">
 			<!-- Must go first to ensure any jndi.properties files etc take precedence  -->
 			<classpath location="${target.testclasses.dir}"/>
 			<classpath location="${target.classes.dir}"/>
@@ -244,6 +244,7 @@
 				<fileset dir="${target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
 			</batchtest>
 		</junit>
+		<fail if="tests-failed" message="One or more tests failed"/>
 	</target>
 
 	<target name="clover.build" description="Compile main source tree java files WITH CLOVER into class files">
