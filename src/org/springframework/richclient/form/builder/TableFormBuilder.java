@@ -29,10 +29,8 @@ import org.springframework.util.closure.Constraint;
 public class TableFormBuilder extends AbstractFormBuilder {
 
     private static final String DEFAULT_LABEL_ATTRIBUTES = "colGrId=label colSpec=left:pref";
-    
-    private TableLayoutBuilder builder;
 
-    private boolean skipRow;
+    private TableLayoutBuilder builder;
 
     private String labelAttributes = DEFAULT_LABEL_ATTRIBUTES;
 
@@ -44,7 +42,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public void row() {
         builder.relatedGapRow();
     }
-    
+
     public JComponent[] add(String propertyName) {
         return add(propertyName, "");
     }
@@ -58,7 +56,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] add(String propertyName, JComponent component, String attributes) {
-        return addComponents(component, "", propertyName, getLabelAttributes());
+        return addComponents(component, attributes, propertyName, getLabelAttributes());
     }
 
     public JComponent[] addSelector(String propertyName, Constraint filter) {
@@ -92,7 +90,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public void addSeparator(String text, String attributes) {
         builder.separator(text, attributes);
     }
-    
+
     public TableLayoutBuilder getLayoutBuilder() {
         return builder;
     }
@@ -109,7 +107,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public void setLabelAttributes(String labelAttributes) {
         this.labelAttributes = labelAttributes;
     }
-    
+
     private JComponent[] addComponents(JComponent component, String attributes, String propertyName,
             String labelAttributes) {
         JLabel label = getLabelFor(propertyName, component);
