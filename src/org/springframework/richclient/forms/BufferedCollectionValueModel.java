@@ -278,10 +278,6 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         return listListModel;
     }
 
-    private Object getWrappedValue() {
-        return super.getWrappedModel().getValue();
-    }
-
     protected void onWrappedValueChanged() {
         if (!updating) {
             updateListListModelFromWrappedCollection();

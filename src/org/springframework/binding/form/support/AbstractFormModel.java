@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.CommitListener;
@@ -67,6 +68,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
     }
 
     public void setFormObject(Object formObject) {
+        if (formObject == null) {
+            if (logger.isInfoEnabled()) {
+                logger
+                        .info("New form object value is null; resetting to a new fresh object instance");
+                formObject = BeanUtils.instantiateClass(getFormObjectClass());
+            }
+        }
         getFormObjectHolder().setValue(formObject);
     }
 

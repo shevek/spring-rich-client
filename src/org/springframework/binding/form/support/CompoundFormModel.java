@@ -50,6 +50,7 @@ public class CompoundFormModel extends AbstractFormModel implements
     private Map childFormModels = new LinkedHashMap(9);
 
     public CompoundFormModel() {
+
     }
 
     public CompoundFormModel(Object domainObject) {

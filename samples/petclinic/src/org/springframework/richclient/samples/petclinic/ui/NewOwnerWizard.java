@@ -25,7 +25,8 @@ import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
 
-public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecutor {
+public class NewOwnerWizard extends AbstractWizard implements
+        ActionCommandExecutor {
     private WizardDialog wizardDialog;
 
     private CompoundForm wizardForm;
@@ -76,11 +77,9 @@ public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecu
         if (wizardDialog == null) {
             wizardDialog = new WizardDialog(this);
             wizardDialog.setResetMessagePaneOnDisplay(true);
-            wizardForm = new CompoundForm(new Owner());
+            wizardForm = new CompoundForm();
         }
-        else {
-            wizardForm.setFormObject(new Owner());
-        }
+        wizardForm.setFormObject(new Owner());
         wizardDialog.showDialog();
     }
 
