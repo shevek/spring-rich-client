@@ -104,6 +104,8 @@ public abstract class ApplicationDialog extends
 
     private CommandGroup dialogCommandGroup;
 
+    private boolean displayFinishSuccessMessage;
+
     public ApplicationDialog() {
 
     }
@@ -190,6 +192,15 @@ public abstract class ApplicationDialog extends
 
     public void setEnabled(boolean enabled) {
         setFinishEnabled(enabled);
+    }
+
+    public void setDisplayFinishSuccessMessage(
+            boolean displayFinishSuccessMessage) {
+        this.displayFinishSuccessMessage = displayFinishSuccessMessage;
+    }
+
+    protected boolean getDisplayFinishSuccessMessage() {
+        return displayFinishSuccessMessage;
     }
 
     protected void setFinishEnabled(boolean enabled) {
@@ -299,6 +310,9 @@ public abstract class ApplicationDialog extends
                 try {
                     boolean result = onFinish();
                     if (result) {
+                        if (getDisplayFinishSuccessMessage()) {
+                            showFinishSuccessMessageDialog();
+                        }
                         hide();
                     }
                 }
@@ -318,6 +332,66 @@ public abstract class ApplicationDialog extends
                 onCancel();
             }
         };
+    }
+
+    /**
+     * Subclasses may override to return a custom message key, default is
+     * "dialog.ok", corresponding to the "&OK" label.
+     * 
+     * @return The message key to use for the finish ("ok") button
+     */
+    protected String getFinishFaceConfigurationKey() {
+        return DEFAULT_FINISH_KEY;
+    }
+
+    protected void showFinishSuccessMessageDialog() {
+        JOptionPane.showMessageDialog(getDialog(), getFinishSuccessMessage(),
+                getFinishSuccessTitle(), JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    protected String getFinishSuccessMessage() {
+        return getMessage(getFinishCommand().getId() + ".successMessage",
+                getFinishSuccessMessageArguments());
+    }
+
+    protected Object[] getFinishSuccessMessageArguments() {
+        return new Object[0];
+    }
+
+    protected String getFinishSuccessTitle() {
+        return getMessage("finishSuccessTitle",
+                getFinishSuccessTitleArguments());
+    }
+
+    protected Object[] getFinishSuccessTitleArguments() {
+        if (StringUtils.hasText(getCallingCommandText())) {
+            return new Object[] { getCallingCommandText() };
+        }
+        else {
+            return new Object[0];
+        }
+    }
+
+    protected String getCallingCommandText() {
+        return null;
+    }
+
+    protected void onFinishException(Exception e) {
+        String exceptionMessage;
+        if (e instanceof MessageSourceResolvable) {
+            exceptionMessage = getMessageSourceAccessor().getMessage(
+                    (MessageSourceResolvable)e);
+        }
+        else {
+            exceptionMessage = e.getLocalizedMessage();
+        }
+        if (!StringUtils.hasText(exceptionMessage)) {
+            String defaultMessage = "Unable to finish; an application exception occured.\nPlease contact your administrator.";
+            exceptionMessage = getMessageSourceAccessor().getMessage(
+                    "applicationDialog.defaultFinishException", defaultMessage);
+        }
+        JOptionPane.showMessageDialog(getDialog(), exceptionMessage,
+                Application.instance().getName(), JOptionPane.ERROR_MESSAGE);
     }
 
     protected ActionCommand getFinishCommand() {
@@ -418,16 +492,6 @@ public abstract class ApplicationDialog extends
 
     protected Object[] getCommandGroupMembers() {
         return new AbstractCommand[] { getFinishCommand(), getCancelCommand() };
-    }
-
-    /**
-     * Subclasses may override to return a custom message key, default is
-     * "dialog.ok", corresponding to the "&OK" label.
-     * 
-     * @return The message key to use for the finish ("ok") button
-     */
-    protected String getFinishFaceConfigurationKey() {
-        return DEFAULT_FINISH_KEY;
     }
 
     /**
@@ -546,21 +610,4 @@ public abstract class ApplicationDialog extends
      */
     protected abstract boolean onFinish();
 
-    protected void onFinishException(Exception e) {
-        String exceptionMessage;
-        if (e instanceof MessageSourceResolvable) {
-            exceptionMessage = getMessageSourceAccessor().getMessage(
-                    (MessageSourceResolvable)e);
-        }
-        else {
-            exceptionMessage = e.getLocalizedMessage();
-        }
-        if (!StringUtils.hasText(exceptionMessage)) {
-            String defaultMessage = "Unable to finish; an application exception occured.\nPlease contact your administrator.";
-            exceptionMessage = getMessageSourceAccessor().getMessage(
-                    "applicationDialog.defaultFinishException", defaultMessage);
-        }
-        JOptionPane.showMessageDialog(getDialog(), exceptionMessage,
-                Application.instance().getName(), JOptionPane.ERROR_MESSAGE);
-    }
 }

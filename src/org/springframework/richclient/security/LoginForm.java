@@ -17,6 +17,7 @@ package org.springframework.richclient.security;
 
 import javax.swing.JComponent;
 
+import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
 
 import org.springframework.richclient.forms.AbstractFormPage;
@@ -26,13 +27,13 @@ import org.springframework.richclient.forms.SwingFormModel;
 
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LoginPanel extends AbstractFormPage {
+public class LoginForm extends AbstractFormPage {
     private SessionDetails sessionDetails;
 
     private JComponent usernameField;
 
-    public LoginPanel(AuthenticationManager manager) {
-        super();
+    public LoginForm(AuthenticationManager manager) {
+        super("general");
         this.sessionDetails = createSessionDetails();
         setFormModel(SwingFormModel.createFormModel(this.sessionDetails));
         setAuthenticationManager(manager);
@@ -55,7 +56,7 @@ public class LoginPanel extends AbstractFormPage {
         return formBuilder.getForm();
     }
 
-    public void commit() {
+    public void commit() throws AuthenticationException {
         super.commit();
         sessionDetails.login();
     }

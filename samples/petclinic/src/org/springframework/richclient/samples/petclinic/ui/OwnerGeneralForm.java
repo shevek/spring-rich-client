@@ -24,12 +24,12 @@ import org.springframework.rules.values.FormModel;
 
 import com.jgoodies.forms.layout.FormLayout;
 
-public class OwnerGeneralPanel extends AbstractFormPage {
+public class OwnerGeneralForm extends AbstractFormPage {
     public static final String GENERAL_FORM_PAGE = "generalPage";
 
     private JComponent firstNameField;
 
-    public OwnerGeneralPanel(FormModel formModel) {
+    public OwnerGeneralForm(FormModel formModel) {
         super(formModel, GENERAL_FORM_PAGE);
     }
 

@@ -69,11 +69,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
     public void setImage(Image titleImage) {
         this.image = titleImage;
         if (isControlCreated()) {
-            if (titleImage == null) {
-                iconLabel.setIcon(null);
-            } else {
-                iconLabel.setIcon(new ImageIcon(titleImage));
-            }
+            iconLabel.setIcon(getIcon());
         }
     }
 
@@ -108,7 +104,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
     private Icon getIcon() {
         return new ImageIcon(getImage());
     }
-    
+
     private Image getImage() {
         if (image != null) {
             return image;
@@ -130,7 +126,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
     public boolean messageShowing() {
         return messageAreaPane.messageShowing();
     }
-    
+
     public void setMessage(String errorMessage, Severity severity) {
         messageAreaPane.setMessage(errorMessage, severity);
     }
@@ -144,11 +140,11 @@ public class TitleAreaPane extends AbstractControlFactory implements
     }
 
     public void addMessageListener(MessageListener messageListener) {
-        messageAreaPane.addMessageListener(messageListener);        
+        messageAreaPane.addMessageListener(messageListener);
     }
 
     public void removeMessageListener(MessageListener messageListener) {
-        messageAreaPane.removeMessageListener(messageListener);        
+        messageAreaPane.removeMessageListener(messageListener);
     }
-    
+
 }

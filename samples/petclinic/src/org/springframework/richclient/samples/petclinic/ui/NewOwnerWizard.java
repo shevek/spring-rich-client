@@ -49,13 +49,13 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     public class OwnerGeneralWizardPage extends FormBackedWizardPage {
 
         public OwnerGeneralWizardPage() {
-            super(new OwnerGeneralPanel(wizardForm.getFormModel()), false);
+            super(new OwnerGeneralForm(wizardForm.getFormModel()), false);
         }
 
         public void setVisible(boolean bool) {
             super.setVisible(bool);
             if (bool) {
-                ((OwnerGeneralPanel) getBackingFormPage()).requestFocusInWindow();
+                ((OwnerGeneralForm) getBackingFormPage()).requestFocusInWindow();
             }
         }
     }

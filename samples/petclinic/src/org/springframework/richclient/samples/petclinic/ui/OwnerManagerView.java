@@ -271,7 +271,7 @@ public class OwnerManagerView extends AbstractView implements
     }
 
     private class PropertiesCommandDelegate extends AbstractCommandDelegate {
-        private OwnerGeneralPanel ownerGeneralPanel;
+        private OwnerGeneralForm ownerGeneralPanel;
 
         private NestingFormModel ownerFormModel;
 
@@ -282,7 +282,7 @@ public class OwnerManagerView extends AbstractView implements
 
             ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
 
-            ownerGeneralPanel = new OwnerGeneralPanel(ownerFormModel);
+            ownerGeneralPanel = new OwnerGeneralForm(ownerFormModel);
             tabbedPage = new TabbedDialogPage("ownerProperties");
             tabbedPage.addForm(ownerGeneralPanel);
             tabbedPage.addForm(new AddressPanel(ownerFormModel));

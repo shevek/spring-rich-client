@@ -15,8 +15,10 @@
  */
 package org.springframework.richclient.samples.petclinic;
 
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
+import org.springframework.richclient.command.ActionCommand;
 
 /**
  * Custom application lifecycle implementation that configures the petclinic app
@@ -24,8 +26,7 @@ import org.springframework.richclient.application.config.BeanFactoryApplicationA
  * 
  * @author Keith Donald
  */
-public class PetClinicApplicationAdvisor extends
-        BeanFactoryApplicationAdvisor {
+public class PetClinicApplicationAdvisor extends BeanFactoryApplicationAdvisor {
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
@@ -34,4 +35,11 @@ public class PetClinicApplicationAdvisor extends
         //configurer.setShowToolBar(false);
         //configurer.setInitialSize(new Dimension(640, 480));
     }
+
+    public void onCommandsCreated(ApplicationWindow window) {
+        ActionCommand command = window.getCommandManager().getActionCommand(
+                "loginCommand");
+        command.execute();
+    }
+
 }

@@ -83,21 +83,21 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
             getObjectConfigurer().configure(page, id);
         }
     }
-    
+
     /**
-     * Adds a new page to the list of pages managed by this
-     * CompositeDialogPage. The page is created by wrapping the form
-     * page in a FormBackedDialogPage.
+     * Adds a new page to the list of pages managed by this CompositeDialogPage.
+     * The page is created by wrapping the form page in a FormBackedDialogPage.
      * 
      * @param formPage
      *            the form page to be insterted
      * @return the DialogPage that wraps formPage
      */
     public DialogPage addForm(FormPage formPage) {
-        DialogPage page = new FormBackedDialogPage(formPage, ! autoConfigureChildPages);
+        DialogPage page = new FormBackedDialogPage(formPage,
+                !autoConfigureChildPages);
         addPage(page);
         return page;
-    }    
+    }
 
     /**
      * Adds an array DialogPage to the list of pages managed by this

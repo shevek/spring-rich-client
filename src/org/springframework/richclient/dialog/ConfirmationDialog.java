@@ -73,9 +73,9 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
 
     private void setupKeyBindings() {
         addActionKeyBinding(KeyStroke.getKeyStroke(getYesKey(), 0),
-            getFinishCommand().getId());
+                getFinishCommand().getId());
         addActionKeyBinding(KeyStroke.getKeyStroke(getNoKey(), 0),
-            getCancelCommand().getId());
+                getCancelCommand().getId());
     }
 
     protected int getYesKey() {
