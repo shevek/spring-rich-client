@@ -19,8 +19,17 @@ public class PopupMenuMouseListener extends MouseAdapter {
         this.popupMenu = popupMenu;
     }
     
-    public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
+    
+    public void mousePressed(MouseEvent e) {
+        checkEvent(e);
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+        checkEvent(e);
+    }
+    
+    private void checkEvent(MouseEvent e) {
+        if (e.isPopupTrigger()) {
             onAboutToShow(e);
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
             popupMenu.setVisible(true);
