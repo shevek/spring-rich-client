@@ -34,7 +34,7 @@ import org.springframework.richclient.factory.ControlFactory;
  * @author Keith Donald
  */
 public interface View extends ManagedElement, ControlFactory {
-    public Icon getIcon();
+    public Icon getImageIcon();
 
     public void initialize(ViewDescriptor descriptor, ViewContext context);
 

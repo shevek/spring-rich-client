@@ -16,6 +16,8 @@
 package org.springframework.richclient.application;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,65 +27,80 @@ import javax.swing.JPanel;
 
 import org.springframework.richclient.control.SimpleInternalFrame;
 
-public class ApplicationPage {
-    private JComponent pageControl = new JPanel(new BorderLayout());
+public class ApplicationPage implements PropertyChangeListener {
+	private JComponent pageControl;
+	
+	private SimpleInternalFrame viewPane;
 
-    private ApplicationWindow window;
+	private ApplicationWindow window;
 
-    private ViewRegistry viewRegistry;
+	private ViewRegistry viewRegistry;
 
-    private View view;
+	private View view;
 
-    private List viewListeners = new ArrayList();
+	private List viewListeners = new ArrayList();
 
-    public ApplicationPage(ApplicationWindow window) {
-        this.window = window;
-        this.viewRegistry = Application.services().getViewRegistry();
-    }
+	public ApplicationPage(ApplicationWindow window) {
+		this.window = window;
+		this.viewRegistry = Application.services().getViewRegistry();
+		this.pageControl = new JPanel(new BorderLayout());
+		this.viewPane = new SimpleInternalFrame("");
+		this.pageControl.add(viewPane, BorderLayout.CENTER);
+	}
 
-    public ApplicationWindow getParentWindow() {
-        return window;
-    }
+	public ApplicationWindow getParentWindow() {
+		return window;
+	}
 
-    public JComponent getControl() {
-        return pageControl;
-    }
+	public JComponent getControl() {		
+		return pageControl;
+	}
 
-    public void addViewListener(ViewListener listener) {
-        viewListeners.add(listener);
-    }
+	public void addViewListener(ViewListener listener) {
+		viewListeners.add(listener);
+	}
 
-    public void showView(String viewName) {
-        ViewDescriptor descriptor = viewRegistry.getViewDescriptor(viewName);
-        if (descriptor != null) {
-            showView(descriptor);
-        }
-    }
+	public void showView(String viewName) {
+		ViewDescriptor descriptor = viewRegistry.getViewDescriptor(viewName);
+		if (descriptor != null) {
+			showView(descriptor);
+		}
+	}
 
-    public void showView(ViewDescriptor viewDescriptor) {
-        // todo - views are always being recreated when switched...we should cache open views...
-        this.view = viewDescriptor.createView();
-        this.view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
-                .getDisplayName(), this));
-        SimpleInternalFrame viewPane = new SimpleInternalFrame(viewDescriptor
-                .getImageIcon(), viewDescriptor.getDisplayName());
-        viewPane.setToolTipText(viewDescriptor.getCaption());
-        viewPane.add(this.view.getControl());
-        pageControl.removeAll();
-        pageControl.add(viewPane, BorderLayout.CENTER);
-        pageControl.revalidate();
-        fireViewActivated(this.view);
-    }
+	public void showView(ViewDescriptor viewDescriptor) {
+		// todo - views are always being recreated when switched...we should
+		// cache open views...
+		if (view != null) {
+			view.removePropertyChangeListener(this);
+			viewPane.remove(view.getControl());
+		}
+		view = viewDescriptor.createView();
+		view.initialize(viewDescriptor, new SimpleViewContext(
+				viewDescriptor.getDisplayName(), this));
+		viewPane.add(view.getControl());
+		view.addPropertyChangeListener(this);
+		updateViewPane();
+		fireViewActivated(view);
+	}
 
-    public View getView() {
-        return view;
-    }
+	public View getView() {
+		return view;
+	}
 
-    protected void fireViewActivated(View view) {
-        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
-            ViewListener l = (ViewListener)i.next();
-            l.viewActivated(view);
-        }
-    }
-
+	protected void fireViewActivated(View view) {
+		for (Iterator i = viewListeners.iterator(); i.hasNext();) {
+			ViewListener l = (ViewListener) i.next();
+			l.viewActivated(view);
+		}
+	}
+	
+	public void propertyChange(PropertyChangeEvent evt) {
+		updateViewPane();		
+	}
+	
+	private void updateViewPane() {
+		viewPane.setTitle(view.getDisplayName());
+		viewPane.setFrameIcon(view.getImageIcon());
+		viewPane.setToolTipText(view.getCaption());
+	}
 }

@@ -17,24 +17,35 @@ package org.springframework.richclient.application;
 
 import java.awt.Window;
 
-import javax.swing.Icon;
+import javax.swing.JComponent;
 
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandManager;
+import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 
-public abstract class AbstractView extends AbstractControlFactory implements
+public abstract class AbstractView extends LabeledObjectSupport implements
         View {
+	
     private ViewDescriptor descriptor;
-
     private ViewContext context;
+    private AbstractControlFactory controlFactory = new AbstractControlFactory() {
+		protected JComponent createControl() {
+			return AbstractView.this.createControl();
+		}
+    	
+    };
 
     public final void initialize(ViewDescriptor descriptor, ViewContext context) {
         Assert.isTrue(context != null, "View context must be non-null");
         Assert.isTrue(descriptor != null, "View descriptor must be non-null");
         this.descriptor = descriptor;
+        setTitle(descriptor.getDisplayName());
+        setCaption(descriptor.getCaption());
+        setDescription(descriptor.getDescription());
+        setImage(descriptor.getImage());
         this.context = context;
         setGlobalCommandExecutors(context);
     }
@@ -59,26 +70,16 @@ public abstract class AbstractView extends AbstractControlFactory implements
         return getContext().getApplicationWindow().getControl();
     }
 
-    public String getDisplayName() {
-        return descriptor.getDisplayName();
-    }
-
-    public String getCaption() {
-        return descriptor.getCaption();
-    }
-
-    public String getDescription() {
-        return descriptor.getDescription();
-    }
-
     public ActionCommand createActionCommand() {
         return null;
     }
-
-    public Icon getIcon() {
-        return descriptor.getImageIcon();
-    }
-
+    
+	public JComponent getControl() {
+		return controlFactory.getControl();
+	}
+    
+    protected abstract JComponent createControl();
+    
     /**
      * Template method called when this view is initialized in a context; allows
      * subclasses to register global actions with the context.
@@ -88,5 +89,4 @@ public abstract class AbstractView extends AbstractControlFactory implements
     protected void setGlobalCommandExecutors(ViewContext context) {
 
     }
-
 }

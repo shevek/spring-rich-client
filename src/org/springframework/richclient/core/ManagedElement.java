@@ -15,12 +15,18 @@
  */
 package org.springframework.richclient.core;
 
+import org.springframework.binding.value.PropertyChangePublisher;
+
 /**
  * A interface for managed elements that can be displayed in a GUI.
  * 
  * @author Keith Donald
  */
-public interface ManagedElement {
+public interface ManagedElement extends PropertyChangePublisher {
+	public static final String DISPLAY_NAME_PROPERTY = "displayName";
+	public static final String CAPTION_PROPERTY = "caption";
+	public static final String DESCRIPTION_PROPERTY = "description";
+	
     public String getDisplayName();
 
     public String getCaption();

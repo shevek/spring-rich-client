@@ -64,7 +64,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
         int oldMnemonicIndex = getMnemonicIndex();
         KeyStroke oldAccelerator = getAccelerator();
         this.label = label;
-        firePropertyChange("displayName", oldDisplayName, getDisplayName());
+        firePropertyChange(DISPLAY_NAME_PROPERTY, oldDisplayName, getDisplayName());
         firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
         firePropertyChange("mnemonicIndex", oldMnemonicIndex,
                 getMnemonicIndex());
@@ -74,19 +74,19 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
     public void setCaption(String caption) {
         String oldValue = caption;
         this.caption = caption;
-        firePropertyChange("caption", oldValue, caption);
+        firePropertyChange(CAPTION_PROPERTY, oldValue, caption);
     }
 
     public void setDescription(String description) {
         String oldValue = description;
         this.description = description;
-        firePropertyChange("description", oldValue, description);
+        firePropertyChange(DESCRIPTION_PROPERTY, oldValue, description);
     }
 
     public void setTitle(String title) {
         String oldValue = getDisplayName();
         this.title = title;
-        firePropertyChange("displayName", oldValue, getDisplayName());
+        firePropertyChange(DISPLAY_NAME_PROPERTY, oldValue, getDisplayName());
     }
 
     public void setImage(Image image) {
