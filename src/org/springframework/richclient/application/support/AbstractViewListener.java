@@ -25,7 +25,7 @@ public abstract class AbstractViewListener implements ViewListener {
         return activeView;
     }
 
-    public void viewCreated(View view) {
+    public void viewOpened(View view) {
 
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractViewListener implements ViewListener {
         this.activeView = null;
     }
 
-    public void viewDisposed(View view) {
+    public void viewClosed(View view) {
 
     }
 

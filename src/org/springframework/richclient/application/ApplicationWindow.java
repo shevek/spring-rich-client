@@ -36,7 +36,7 @@ public interface ApplicationWindow extends PersistableElement {
     public CommandManager getCommandManager();
 
     public Iterator getSharedCommands();
-    
+
     public CommandGroup getMenuBar();
 
     public CommandGroup getToolBar();
@@ -51,4 +51,7 @@ public interface ApplicationWindow extends PersistableElement {
 
     public void setWindowManager(WindowManager windowManager);
 
+    public void addPageListener(PageListener listener);
+
+    public void removePageListener(PageListener listener);
 }

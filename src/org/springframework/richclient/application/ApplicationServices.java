@@ -18,13 +18,13 @@ package org.springframework.richclient.application;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.swing.Icon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.binding.form.FormModel;
 import org.springframework.context.MessageSource;
@@ -32,8 +32,10 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.application.support.BeanFactoryViewDescriptorRegistry;
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.command.AbstractCommand;
@@ -63,50 +65,48 @@ import org.springframework.rules.support.DefaultRulesSource;
  * @author Keith Donald
  */
 public class ApplicationServices extends ApplicationObjectSupport implements
-        MessageSource, ImageSource, IconSource, RulesSource, ObjectConfigurer,
-        CommandConfigurer, FormComponentInterceptorFactory {
+        ApplicationObjectConfigurer, CommandConfigurer, ResourceLoader, MessageSource,
+        ImageSource, IconSource, RulesSource, FormComponentInterceptorFactory {
 
-    public static final String IMAGE_SOURCE_BEAN_KEY = "imageSource";
+    public static final String IMAGE_SOURCE_BEAN_ID = "imageSource";
 
-    public static final String ICON_SOURCE_BEAN_KEY = "iconSource";
+    public static final String ICON_SOURCE_BEAN_ID = "iconSource";
 
-    public static final String COMPONENT_FACTORY_BEAN_KEY = "componentFactory";
+    public static final String COMPONENT_FACTORY_BEAN_ID = "componentFactory";
 
-    public static final String RULES_SOURCE_BEAN_KEY = "rulesSource";
+    public static final String RULES_SOURCE_BEAN_ID = "rulesSource";
 
-    public static final String PROPERTY_EDITOR_REGISTRY_BEAN_KEY = "propertyEditorRegistry";
+    public static final String PROPERTY_EDITOR_REGISTRY_BEAN_ID = "propertyEditorRegistry";
 
-    public static final String OBJECT_CONFIGURER_BEAN_KEY = "applicationObjectConfigurer";
+    public static final String OBJECT_CONFIGURER_BEAN_ID = "applicationObjectConfigurer";
 
-    public static final String COMMAND_CONFIGURER_BEAN_KEY = "commandConfigurer";
+    public static final String COMMAND_CONFIGURER_BEAN_ID = "commandConfigurer";
 
-    public static final String LOOK_AND_FEEL_CONFIGURER_BEAN_KEY = "lookAndFeelConfigurer";
+    public static final String LOOK_AND_FEEL_CONFIGURER_BEAN_ID = "lookAndFeelConfigurer";
 
-    public static final String INTERCEPTOR_FACTORY_BEAN_KEY = "formComponentInterceptorFactory";
+    public static final String FORM_INTERCEPTOR_FACTORY_BEAN_ID = "formComponentInterceptorFactory";
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    private ObjectConfigurer objectConfigurer;
-
-    private CommandConfigurer commandConfigurer;
-
     private ComponentFactory componentFactory;
 
-    private RulesSource rulesSource;
+    private FormComponentInterceptorFactory formComponentInterceptorFactory;
 
-    private ViewDescriptorRegistry viewRegistry;
+    private ApplicationObjectConfigurer objectConfigurer;
+
+    private CommandConfigurer commandConfigurer;
 
     private ImageSource imageSource;
 
     private IconSource iconSource;
 
-    private Map attributes;
+    private ViewDescriptorRegistry viewRegistry;
+
+    private RulesSource rulesSource;
 
     private PropertyEditorRegistry propertyEditorRegistry;
 
     private boolean lazyInit = true;
-
-    private FormComponentInterceptorFactory formComponentInterceptorFactory;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -119,19 +119,99 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return componentFactory;
     }
 
+    private void initComponentFactory() {
+        try {
+            this.componentFactory = (ComponentFactory)getApplicationContext()
+                    .getBean(COMPONENT_FACTORY_BEAN_ID, ComponentFactory.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No component factory bean found under name "
+                    + COMPONENT_FACTORY_BEAN_ID
+                    + "; creating using existing image source.");
+            DefaultComponentFactory f = new DefaultComponentFactory();
+            f.setApplicationContext(getApplicationContext());
+            this.componentFactory = f;
+        }
+        catch (IllegalArgumentException e) {
+            this.componentFactory = new DefaultComponentFactory();
+        }
+    }
+
     public void setComponentFactory(ComponentFactory factory) {
         this.componentFactory = factory;
     }
 
-    public ViewDescriptorRegistry getViewDescriptorRegistry() {
-        if (viewRegistry == null) {
-            initViewRegistry();
+    public FormComponentInterceptorFactory getFormComponentInterceptorFactory() {
+        if (formComponentInterceptorFactory == null) {
+            initFormComponentInterceptorFactory();
         }
-        return viewRegistry;
+        return formComponentInterceptorFactory;
     }
 
-    public void setViewRegistry(ViewDescriptorRegistry registry) {
-        this.viewRegistry = registry;
+    private void initFormComponentInterceptorFactory() {
+        try {
+            this.formComponentInterceptorFactory = (FormComponentInterceptorFactory)getApplicationContext()
+                    .getBean(FORM_INTERCEPTOR_FACTORY_BEAN_ID,
+                            FormComponentInterceptorFactory.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + FORM_INTERCEPTOR_FACTORY_BEAN_ID
+                    + " found. Using empty interceptor.");
+            this.formComponentInterceptorFactory = new FormComponentInterceptorFactory() {
+                public FormComponentInterceptor getInterceptor(
+                        FormModel formModel) {
+                    return null;
+                }
+            };
+        }
+    }
+
+    public ApplicationObjectConfigurer getObjectConfigurer() {
+        if (objectConfigurer == null) {
+            initObjectConfigurer();
+        }
+        return objectConfigurer;
+    }
+
+    private void initObjectConfigurer() {
+        try {
+            this.objectConfigurer = (ApplicationObjectConfigurer)getApplicationContext()
+                    .getBean(OBJECT_CONFIGURER_BEAN_ID, ApplicationObjectConfigurer.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No object configurer found in context under name '"
+                    + OBJECT_CONFIGURER_BEAN_ID + "'; configuring defaults.");
+            this.objectConfigurer = new DefaultApplicationObjectConfigurer(
+                    getApplicationContext(), getImageSource(), getIconSource());
+        }
+    }
+
+    public void setObjectConfigurer(ApplicationObjectConfigurer objectConfigurer) {
+        this.objectConfigurer = objectConfigurer;
+    }
+
+    public CommandConfigurer getCommandConfigurer() {
+        if (commandConfigurer == null) {
+            initCommandConfigurer();
+        }
+        return commandConfigurer;
+    }
+
+    private void initCommandConfigurer() {
+        try {
+            this.commandConfigurer = (CommandConfigurer)getApplicationContext()
+                    .getBean(COMMAND_CONFIGURER_BEAN_ID,
+                            CommandConfigurer.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No command configurer found in context under name '"
+                    + COMMAND_CONFIGURER_BEAN_ID + "'; configuring defaults.");
+            this.commandConfigurer = new ApplicationCommandConfigurer();
+        }
+    }
+
+    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
+        this.commandConfigurer = commandConfigurer;
     }
 
     public ImageSource getImageSource() {
@@ -139,6 +219,18 @@ public class ApplicationServices extends ApplicationObjectSupport implements
             initImageSource();
         }
         return imageSource;
+    }
+
+    private void initImageSource() {
+        try {
+            this.imageSource = (ImageSource)getApplicationContext().getBean(
+                    IMAGE_SOURCE_BEAN_ID, ImageSource.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No image source bean found in context under name '"
+                    + IMAGE_SOURCE_BEAN_ID + "'; configuring defaults.");
+            this.imageSource = new DefaultImageSource(new HashMap());
+        }
     }
 
     public void setImageSource(ImageSource imageSource) {
@@ -156,37 +248,34 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         this.iconSource = iconSource;
     }
 
-    public PropertyEditorRegistry getPropertyEditorRegistry() {
-        if (propertyEditorRegistry == null) {
-            initPropertyEditorRegistry();
+    private void initIconSource() {
+        try {
+            this.iconSource = (IconSource)getApplicationContext().getBean(
+                    ICON_SOURCE_BEAN_ID, IconSource.class);
         }
-        return propertyEditorRegistry;
-    }
-
-    public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
-        this.propertyEditorRegistry = preReg;
-    }
-
-    public ObjectConfigurer getObjectConfigurer() {
-        if (objectConfigurer == null) {
-            initObjectConfigurer();
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No icon source bean found under name "
+                    + ICON_SOURCE_BEAN_ID
+                    + "; creating using existing image source.");
+            this.iconSource = new DefaultIconSource(getImageSource());
         }
-        return objectConfigurer;
     }
 
-    public void setObjectConfigurer(ObjectConfigurer objectConfigurer) {
-        this.objectConfigurer = objectConfigurer;
-    }
-
-    public CommandConfigurer getCommandConfigurer() {
-        if (commandConfigurer == null) {
-            initCommandConfigurer();
+    public ViewDescriptorRegistry getViewDescriptorRegistry() {
+        if (viewRegistry == null) {
+            initViewRegistry();
         }
-        return commandConfigurer;
+        return viewRegistry;
     }
 
-    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
-        this.commandConfigurer = commandConfigurer;
+    private void initViewRegistry() {
+        BeanFactoryViewDescriptorRegistry r = new BeanFactoryViewDescriptorRegistry();
+        r.setApplicationContext(getApplicationContext());
+        this.viewRegistry = r;
+    }
+
+    public void setViewRegistry(ViewDescriptorRegistry registry) {
+        this.viewRegistry = registry;
     }
 
     public RulesSource getRulesSource() {
@@ -196,23 +285,52 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return rulesSource;
     }
 
+    private void initRulesSource() {
+        try {
+            this.rulesSource = (RulesSource)getApplicationContext().getBean(
+                    RULES_SOURCE_BEAN_ID, RulesSource.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No rule source found in context under name '"
+                    + RULES_SOURCE_BEAN_ID + "'; configuring defaults.");
+            this.rulesSource = new DefaultRulesSource();
+        }
+        catch (IllegalArgumentException e) {
+            this.rulesSource = new DefaultRulesSource();
+        }
+    }
+
     public void setRulesSource(RulesSource rulesSource) {
         this.rulesSource = rulesSource;
     }
 
-    protected Map getAttributes() {
-        if (attributes == null) {
-            attributes = new HashMap();
+    public PropertyEditorRegistry getPropertyEditorRegistry() {
+        if (propertyEditorRegistry == null) {
+            initPropertyEditorRegistry();
         }
-        return attributes;
+        return propertyEditorRegistry;
     }
 
-    public void setAttribute(String attributeName, Object attribute) {
-        getAttributes().put(attributeName, attribute);
+    private void initPropertyEditorRegistry() {
+        try {
+            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext()
+                    .getBean(PROPERTY_EDITOR_REGISTRY_BEAN_ID,
+                            PropertyEditorRegistry.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No rule source found in context under name '"
+                    + PROPERTY_EDITOR_REGISTRY_BEAN_ID
+                    + "'; configuring defaults.");
+            this.propertyEditorRegistry = new DefaultPropertyEditorRegistry();
+        }
     }
 
-    public Object getAttribute(String attributeName) {
-        return getAttributes().get(attributeName);
+    public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
+        this.propertyEditorRegistry = preReg;
+    }
+
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        return getFormComponentInterceptorFactory().getInterceptor(formModel);
     }
 
     protected void initApplicationContext() throws BeansException {
@@ -223,144 +341,38 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     public void initStandardServices() {
-        getImageSource();
-        getIconSource();
         getComponentFactory();
-        getViewDescriptorRegistry();
-        getRulesSource();
         getObjectConfigurer();
         getCommandConfigurer();
-    }
-
-    private void initImageSource() {
-        try {
-            this.imageSource = (ImageSource)getApplicationContext().getBean(
-                    IMAGE_SOURCE_BEAN_KEY, ImageSource.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No image source bean found in context under name '"
-                    + IMAGE_SOURCE_BEAN_KEY + "'; configuring defaults.");
-            this.imageSource = new DefaultImageSource(new HashMap());
-        }
-    }
-
-    private void initIconSource() {
-        try {
-            this.iconSource = (IconSource)getApplicationContext().getBean(
-                    ICON_SOURCE_BEAN_KEY, IconSource.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No icon source bean found under name "
-                    + ICON_SOURCE_BEAN_KEY
-                    + "; creating using existing image source.");
-            this.iconSource = new DefaultIconSource(getImageSource());
-        }
-    }
-
-    private void initComponentFactory() {
-        try {
-            this.componentFactory = (ComponentFactory)getApplicationContext()
-                    .getBean(COMPONENT_FACTORY_BEAN_KEY, ComponentFactory.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No component factory bean found under name "
-                    + COMPONENT_FACTORY_BEAN_KEY
-                    + "; creating using existing image source.");
-            DefaultComponentFactory f = new DefaultComponentFactory();
-            f.setApplicationContext(getApplicationContext());
-            this.componentFactory = f;
-        }
-        catch (IllegalArgumentException e) {
-            this.componentFactory = new DefaultComponentFactory();
-        }
-    }
-
-    private void initViewRegistry() {
-        BeanFactoryViewDescriptorRegistry r = new BeanFactoryViewDescriptorRegistry();
-        r.setApplicationContext(getApplicationContext());
-        this.viewRegistry = r;
-    }
-
-    private void initRulesSource() {
-        try {
-            this.rulesSource = (RulesSource)getApplicationContext().getBean(
-                    RULES_SOURCE_BEAN_KEY, RulesSource.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No rule source found in context under name '"
-                    + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
-            this.rulesSource = new DefaultRulesSource();
-        }
-        catch (IllegalArgumentException e) {
-            this.rulesSource = new DefaultRulesSource();
-        }
-    }
-
-    private void initPropertyEditorRegistry() {
-        try {
-            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext()
-                    .getBean(PROPERTY_EDITOR_REGISTRY_BEAN_KEY,
-                            PropertyEditorRegistry.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No rule source found in context under name '"
-                    + PROPERTY_EDITOR_REGISTRY_BEAN_KEY
-                    + "'; configuring defaults.");
-            this.propertyEditorRegistry = new DefaultPropertyEditorRegistry();
-        }
-    }
-
-    private void initObjectConfigurer() {
-        try {
-            this.objectConfigurer = (ObjectConfigurer)getApplicationContext()
-                    .getBean(OBJECT_CONFIGURER_BEAN_KEY, ObjectConfigurer.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No object configurer found in context under name '"
-                    + OBJECT_CONFIGURER_BEAN_KEY + "'; configuring defaults.");
-            ApplicationObjectConfigurer objectConfigurer = new ApplicationObjectConfigurer();
-            objectConfigurer.setApplicationContext(getApplicationContext());
-            objectConfigurer.afterPropertiesSet();
-            this.objectConfigurer = objectConfigurer;
-        }
-    }
-
-    private void initCommandConfigurer() {
-        try {
-            this.commandConfigurer = (CommandConfigurer)getApplicationContext()
-                    .getBean(COMMAND_CONFIGURER_BEAN_KEY,
-                            CommandConfigurer.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No command configurer found in context under name '"
-                    + COMMAND_CONFIGURER_BEAN_KEY + "'; configuring defaults.");
-            this.commandConfigurer = new ApplicationCommandConfigurer();
-        }
+        getImageSource();
+        getIconSource();
+        getViewDescriptorRegistry();
+        getRulesSource();
+        getPropertyEditorRegistry();
     }
 
     public void initLookAndFeelConfigurer() {
         try {
-            getApplicationContext().getBean(LOOK_AND_FEEL_CONFIGURER_BEAN_KEY);
+            getApplicationContext().getBean(LOOK_AND_FEEL_CONFIGURER_BEAN_ID);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger
                     .info("No look and feel configurer found in context under name '"
-                            + LOOK_AND_FEEL_CONFIGURER_BEAN_KEY
+                            + LOOK_AND_FEEL_CONFIGURER_BEAN_ID
                             + "'; configuring defaults.");
         }
     }
 
-    public AbstractCommand configure(AbstractCommand command) {
-        return getCommandConfigurer().configure(command);
+    public Object getBean(String beanName) {
+        return getApplicationContext().getBean(beanName);
     }
 
-    public AbstractCommand configure(AbstractCommand command,
-            String faceConfigurationKey) {
-        return getCommandConfigurer().configure(command, faceConfigurationKey);
+    public Object getBean(String beanName, Class requiredType) {
+        return getApplicationContext().getBean(beanName, requiredType);
     }
 
-    public Object configure(Object applicationObject, String objectName) {
-        return getObjectConfigurer().configure(applicationObject, objectName);
+    public BeanFactory getBeanFactory() {
+        return getApplicationContext();
     }
 
     public MessageSourceAccessor getMessages() {
@@ -395,6 +407,16 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return getIconSource().getIcon(key);
     }
 
+    public Resource getResource(String location) {
+        if (location.startsWith(AwtImageResource.RESOURCE_PREFIX)) {
+            return getImageResource(location
+                    .substring(AwtImageResource.RESOURCE_PREFIX.length()));
+        }
+        else {
+            return getApplicationContext().getResource(location);
+        }
+    }
+
     public PropertyConstraint getRules(Class beanClass, String propertyName) {
         return getRulesSource().getRules(beanClass, propertyName);
     }
@@ -403,32 +425,17 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return getRulesSource().getRules(bean);
     }
 
-    public FormComponentInterceptorFactory getFormComponentInterceptorFactory() {
-        if (formComponentInterceptorFactory == null) {
-            initFormComponentInterceptorFactory();
-        }
-        return formComponentInterceptorFactory;
+    public Object configure(Object applicationObject, String objectName) {
+        return getObjectConfigurer().configure(applicationObject, objectName);
     }
 
-    private void initFormComponentInterceptorFactory() {
-        try {
-            this.formComponentInterceptorFactory = (FormComponentInterceptorFactory)getApplicationContext()
-                    .getBean(INTERCEPTOR_FACTORY_BEAN_KEY,
-                            FormComponentInterceptorFactory.class);
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.info("No bean named " + INTERCEPTOR_FACTORY_BEAN_KEY
-                    + " found. Using empty interceptor.");
-            this.formComponentInterceptorFactory = new FormComponentInterceptorFactory() {
-                public FormComponentInterceptor getInterceptor(
-                        FormModel formModel) {
-                    return null;
-                }
-            };
-        }
+    public AbstractCommand configure(AbstractCommand command) {
+        return getCommandConfigurer().configure(command);
     }
 
-    public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        return getFormComponentInterceptorFactory().getInterceptor(formModel);
+    public AbstractCommand configure(AbstractCommand command,
+            String faceDescriptorId) {
+        return getCommandConfigurer().configure(command, faceDescriptorId);
     }
+
 }

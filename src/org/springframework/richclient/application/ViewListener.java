@@ -23,7 +23,7 @@ public interface ViewListener {
      * @param view
      *            the view that was created
      */
-    public void viewCreated(View view);
+    public void viewOpened(View view);
 
     /**
      * Notifies this listener that the given view has been opened.
@@ -47,7 +47,7 @@ public interface ViewListener {
      * @param view
      *            the view that wasdisposed
      */
-    public void viewDisposed(View view);
+    public void viewClosed(View view);
 
 }
 

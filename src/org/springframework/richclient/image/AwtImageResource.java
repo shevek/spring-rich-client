@@ -41,6 +41,8 @@ public class AwtImageResource extends AbstractResource implements ImageObserver 
 
     private boolean imageError;
 
+    public static final String RESOURCE_PREFIX = "image:";
+
     /**
      * Constructs a AwtImageResource for the following io.core.Resource. This
      * assumes the wrapped resource actually points to a underlying image.

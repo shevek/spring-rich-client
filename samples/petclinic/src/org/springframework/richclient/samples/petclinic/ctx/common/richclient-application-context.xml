@@ -34,8 +34,18 @@
 		</property>
 	</bean>
 	
-	<bean id="applicationObjectConfigurer" 
-		class="org.springframework.richclient.application.config.ApplicationObjectConfigurer"/>
+	<bean id="applicationObjectConfigurer"
+		class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
+		<constructor-arg index="0">
+			<ref bean="messageSource"/>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<ref bean="imageSource"/>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<ref bean="iconSource"/>
+		</constructor-arg>
+	</bean>
 		
 	<bean id="applicationEventMulticaster" 
 		class="org.springframework.context.event.SimpleApplicationEventMulticaster"/>
@@ -47,9 +57,6 @@
 		</property>
 	</bean>
 	
-	<bean id="rulesSource" 
-		class="org.springframework.richclient.samples.petclinic.domain.PetClinicValidationRulesSource"/>
-		
 	<bean id="lookAndFeelConfigurer" 
 		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
 		<property name="plasticLookAndFeel">
@@ -115,7 +122,10 @@
 			</list>
 		</property>
 	</bean>
-	
+
+	<bean id="rulesSource" 
+		class="org.springframework.richclient.samples.petclinic.domain.PetClinicValidationRulesSource"/>
+		
 	<bean id="ownerManagerView"
 		class="org.springframework.richclient.application.support.DefaultViewDescriptor">
 		<property name="viewClass">

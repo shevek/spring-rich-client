@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.springframework.beans.BeansException;
 import org.springframework.util.Assert;
@@ -75,7 +76,7 @@ public class ListenerListHelper implements Serializable {
         }
     };
 
-    private static final CachingMapTemplate methodCache = new CachingMapTemplate() {
+    private static final Map methodCache = new CachingMapTemplate() {
         protected Object create(Object o) {
             MethodCacheKey key = (MethodCacheKey)o;
             Method fireMethod = null;

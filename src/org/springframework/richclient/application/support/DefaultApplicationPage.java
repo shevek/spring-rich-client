@@ -195,14 +195,14 @@ public class DefaultApplicationPage implements ApplicationPage,
     protected void fireViewCreated(View view) {
         for (Iterator i = viewListeners.iterator(); i.hasNext();) {
             ViewListener l = (ViewListener)i.next();
-            l.viewCreated(view);
+            l.viewOpened(view);
         }
     }
 
     protected void fireViewDisposed(View view) {
         for (Iterator i = viewListeners.iterator(); i.hasNext();) {
             ViewListener l = (ViewListener)i.next();
-            l.viewDisposed(view);
+            l.viewClosed(view);
         }
     }
 

@@ -108,7 +108,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
 
     public ApplicationWindowCommandManager createWindowCommandManager() {
         this.currentWindowCommands = new XmlBeanFactory(commandFactoryResource,
-                Application.instance().getApplicationContext());
+                Application.services().getBeanFactory());
         this.currentWindowCommands
                 .addBeanPostProcessor(new ApplicationWindowSetter(
                         getManagedWindow()));

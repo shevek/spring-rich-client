@@ -19,9 +19,10 @@ import java.awt.Image;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.support.ApplicationObjectSupport;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.util.Assert;
@@ -34,10 +35,12 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class Application extends ApplicationObjectSupport {
+public class Application implements InitializingBean, ApplicationContextAware {
     private static final String APPLICATION_WINDOW_BEAN_ID = "applicationWindowPrototype";
 
-    private static Application INSTANCE;
+    private static Application SOLE_INSTANCE;
+
+    private ApplicationContext applicationContext;
 
     private ApplicationServices applicationServices;
 
@@ -47,45 +50,6 @@ public class Application extends ApplicationObjectSupport {
 
     private WindowManager windowManager = new WindowManager();
 
-    public Application(ApplicationAdvisor advisor) {
-        this(null, advisor);
-    }
-
-    public Application(ApplicationServices applicationServices,
-            ApplicationAdvisor advisor) {
-        setApplicationServices(applicationServices);
-        setApplicationAdvisor(advisor);
-        Assert
-                .isTrue(INSTANCE == null,
-                        "Only one instance of a Spring Rich Application allowed per VM.");
-        load(this);
-    }
-
-    public ApplicationServices getApplicationServices() {
-        return applicationServices;
-    }
-
-    private void setApplicationServices(ApplicationServices services) {
-        this.applicationServices = services;
-    }
-
-    public ApplicationAdvisor getApplicationAdvisor() {
-        return applicationAdvisor;
-    }
-
-    private void setApplicationAdvisor(ApplicationAdvisor advisor) {
-        Assert.notNull(advisor, "The application advisor is required");
-        this.applicationAdvisor = advisor;
-    }
-
-    public String getName() {
-        return getApplicationAdvisor().getApplicationName();
-    }
-
-    public Image getImage() {
-        return getApplicationAdvisor().getApplicationImage();
-    }
-
     /**
      * Load the single application instance.
      * 
@@ -93,7 +57,7 @@ public class Application extends ApplicationObjectSupport {
      *            The application
      */
     public static void load(Application instance) {
-        INSTANCE = instance;
+        SOLE_INSTANCE = instance;
     }
 
     /**
@@ -103,9 +67,14 @@ public class Application extends ApplicationObjectSupport {
      */
     public static Application instance() {
         Assert
-                .notNull(INSTANCE,
-                        "The global rich client application instance has not yet been initialized.");
-        return INSTANCE;
+                .state(
+                        isLoaded(),
+                        "The global rich client application instance has not yet been initialized; it must be created and loaded first.");
+        return SOLE_INSTANCE;
+    }
+
+    public static boolean isLoaded() {
+        return SOLE_INSTANCE != null;
     }
 
     /**
@@ -114,24 +83,65 @@ public class Application extends ApplicationObjectSupport {
      * @return The application services locator.
      */
     public static ApplicationServices services() {
-        return instance().getApplicationServices();
+        return instance().getServices();
     }
 
-    protected void initApplicationContext() throws BeansException {
-        getApplicationAdvisor().onPreInitialize(this);
-        initApplicationServices();
+    public Application(ApplicationAdvisor advisor) {
+        this(advisor, null);
     }
 
-    protected void initApplicationServices() {
-        if (this.applicationServices == null) {
-            this.applicationServices = new ApplicationServices();
-            this.applicationServices
-                    .setApplicationContext(getApplicationContext());
+    public Application(ApplicationAdvisor advisor, ApplicationServices services) {
+        setAdvisor(advisor);
+        setServices(services);
+        Assert
+                .state(!isLoaded(),
+                        "Only one instance of a Spring Rich Application allowed per VM.");
+        load(this);
+    }
+
+    public void setServices(ApplicationServices services) {
+        this.applicationServices = services;
+    }
+
+    private void setAdvisor(ApplicationAdvisor advisor) {
+        this.applicationAdvisor = advisor;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        Assert
+                .notNull(
+                        this.applicationAdvisor,
+                        "The application advisor is required, for processing of application lifecycle events");
+        getAdvisor().onPreInitialize(this);
+        getServices();
+    }
+
+    public ApplicationAdvisor getAdvisor() {
+        return applicationAdvisor;
+    }
+
+    protected ApplicationServices getServices() {
+        if (applicationServices == null) {
+            applicationServices = new ApplicationServices();
+            applicationServices.setApplicationContext(applicationContext);
         }
+        return applicationServices;
+    }
+
+    public String getName() {
+        return getAdvisor().getApplicationName();
+    }
+
+    public Image getImage() {
+        return getAdvisor().getApplicationImage();
     }
 
     void openFirstApplicationWindow() {
-        openWindow(getApplicationAdvisor().getStartingPageId());
+        openWindow(getAdvisor().getStartingPageId());
     }
 
     public void openWindow(String pageDescriptorId) {
@@ -155,7 +165,7 @@ public class Application extends ApplicationObjectSupport {
 
     protected ApplicationWindow createNewWindow() {
         try {
-            return (ApplicationWindow)getApplicationContext().getBean(
+            return (ApplicationWindow)services().getBean(
                     APPLICATION_WINDOW_BEAN_ID, ApplicationWindow.class);
         }
         catch (NoSuchBeanDefinitionException e) {

@@ -1,36 +1,40 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application.config;
+package org.springframework.richclient.application;
 
 /**
- * Facade interface for configuring application objects. Relieves the burden of
- * the objects having to configure themselves.
- * 
- * @author Keith Donald
+ * Client interface for listening to page lifecycle events.
+ * <p>
  */
-public interface ObjectConfigurer {
+public interface PageListener {
 
     /**
-     * Configure the specified object with the provided object name.
+     * Notifies this listener that the given page has been opened.
      * 
-     * @param applicationObject
-     *            the object to configure
-     * @param objectName
-     *            a unique name for the object
-     * @return the configured object
+     * @param page
+     *            the page that was opened
      */
-    public Object configure(Object applicationObject, String objectName);
+    public void pageOpened(ApplicationPage page);
+
+    /**
+     * Notifies this listener that the given page has been closed.
+     * 
+     * @param page
+     *            the page that was closed
+     */
+    public void pageClosed(ApplicationPage page);
+
 }

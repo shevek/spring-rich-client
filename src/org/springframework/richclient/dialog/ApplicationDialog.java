@@ -406,7 +406,7 @@ public abstract class ApplicationDialog extends
     protected void onFinishException(Exception e) {
         String exceptionMessage;
         if (e instanceof MessageSourceResolvable) {
-            exceptionMessage = getMessageSourceAccessor().getMessage(
+            exceptionMessage = getMessages().getMessage(
                     (MessageSourceResolvable)e);
         }
         else {
@@ -414,7 +414,7 @@ public abstract class ApplicationDialog extends
         }
         if (!StringUtils.hasText(exceptionMessage)) {
             String defaultMessage = "Unable to finish; an application exception occured.\nPlease contact your administrator.";
-            exceptionMessage = getMessageSourceAccessor().getMessage(
+            exceptionMessage = getMessages().getMessage(
                     "applicationDialog.defaultFinishException", defaultMessage);
         }
         JOptionPane.showMessageDialog(getDialog(), exceptionMessage,

@@ -32,7 +32,9 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationPageDescriptor;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.PageListener;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationAdvisor;
@@ -40,6 +42,7 @@ import org.springframework.richclient.application.config.ApplicationWindowConfig
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.richclient.util.Memento;
 
 /**
@@ -68,15 +71,21 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private WindowManager windowManager;
 
+    private ListenerListHelper pageListeners = new ListenerListHelper(
+            PageListener.class);
+
     public DefaultApplicationWindow() {
-        this.number = getApplication().getWindowManager().size();
-        ApplicationAdvisor advisor = getApplicationAdvisor();
-        advisor.onPreWindowOpen(getWindowConfigurer());
-        this.commandManager = advisor.createWindowCommandManager();
-        this.menuBarCommandGroup = advisor.getMenuBarCommandGroup();
-        this.toolBarCommandGroup = advisor.getToolBarCommandGroup();
-        this.statusBarCommandGroup = advisor.getStatusBarCommandGroup();
-        advisor.onCommandsCreated(this);
+        this(Application.instance().getWindowManager().size());
+    }
+
+    public DefaultApplicationWindow(int number) {
+        this.number = number;
+        getAdvisor().onPreWindowOpen(getWindowConfigurer());
+        this.commandManager = getAdvisor().createWindowCommandManager();
+        this.menuBarCommandGroup = getAdvisor().getMenuBarCommandGroup();
+        this.toolBarCommandGroup = getAdvisor().getToolBarCommandGroup();
+        this.statusBarCommandGroup = getAdvisor().getStatusBarCommandGroup();
+        getAdvisor().onCommandsCreated(this);
     }
 
     public int getNumber() {
@@ -87,22 +96,22 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return currentPage;
     }
 
-    protected final ApplicationAdvisor getApplicationAdvisor() {
-        return getApplication().getApplicationAdvisor();
+    protected ApplicationAdvisor getAdvisor() {
+        return Application.instance().getAdvisor();
     }
 
-    protected final Application getApplication() {
-        return Application.instance();
+    protected ApplicationServices getServices() {
+        return Application.services();
     }
 
-    protected final ApplicationWindowConfigurer getWindowConfigurer() {
+    protected ApplicationWindowConfigurer getWindowConfigurer() {
         if (windowConfigurer == null) {
-            this.windowConfigurer = createWindowConfigurer();
+            this.windowConfigurer = initWindowConfigurer();
         }
         return windowConfigurer;
     }
 
-    protected ApplicationWindowConfigurer createWindowConfigurer() {
+    protected ApplicationWindowConfigurer initWindowConfigurer() {
         return new DefaultApplicationWindowConfigurer(this);
     }
 
@@ -159,9 +168,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
      */
     protected ApplicationPage createPage(ApplicationPageDescriptor descriptor) {
         try {
-            DefaultApplicationPage page = (DefaultApplicationPage)getApplication()
-                    .getApplicationContext().getBean(
-                            DEFAULT_APPLICATION_PAGE_BEAN_ID,
+            DefaultApplicationPage page = (DefaultApplicationPage)getServices()
+                    .getBean(DEFAULT_APPLICATION_PAGE_BEAN_ID,
                             DefaultApplicationPage.class);
             page.setApplicationWindow(this);
             page.setDescriptor(descriptor);
@@ -175,8 +183,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     protected ApplicationPageDescriptor getPageDescriptor(
             String pageDescriptorId) {
-        Object desc = getApplication().getApplicationContext().getBean(
-                pageDescriptorId);
+        Object desc = getServices().getBean(pageDescriptorId);
         if (desc instanceof ApplicationPageDescriptor) {
             return (ApplicationPageDescriptor)desc;
         }
@@ -191,10 +198,10 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private void initWindow() {
         initWindowControl();
-        getApplicationAdvisor().onWindowCreated(this);
-        getApplicationAdvisor().showIntroComponentIfNecessary(this);
+        getAdvisor().onWindowCreated(this);
+        getAdvisor().showIntroComponentIfNecessary(this);
         this.control.setVisible(true);
-        getApplicationAdvisor().onWindowOpened(this);
+        getAdvisor().onWindowOpened(this);
     }
 
     protected void initWindowControl() {
@@ -251,8 +258,16 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return statusBar;
     }
 
+    public void addPageListener(PageListener listener) {
+        this.pageListeners.add(listener);
+    }
+
+    public void removePageListener(PageListener listener) {
+        this.pageListeners.remove(PageListener.class);
+    }
+
     public boolean close() {
-        boolean canClose = getApplicationAdvisor().onPreWindowClose(this);
+        boolean canClose = getAdvisor().onPreWindowClose(this);
         if (canClose) {
             currentPage.close();
             control.dispose();

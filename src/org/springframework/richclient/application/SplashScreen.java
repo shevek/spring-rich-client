@@ -51,17 +51,6 @@ public class SplashScreen {
     }
 
     /**
-     * Initialize and show a splash screen of the specified image.
-     * 
-     * @param image
-     *            the image to splash.
-     */
-    public SplashScreen(Image image) {
-        Assert.notNull(image);
-        this.image = image;
-    }
-
-    /**
      * Initialize and show a splash screen of the image at the specified URL.
      * 
      * @param imageURL
@@ -69,6 +58,17 @@ public class SplashScreen {
      */
     public SplashScreen(String imageResourcePath) {
         setImageResourcePath(imageResourcePath);
+    }
+
+    /**
+     * Initialize and show a splash screen of the specified image.
+     * 
+     * @param image
+     *            the image to splash.
+     */
+    public SplashScreen(Image image) {
+        Assert.notNull(image, "The splash screen image is required");
+        this.image = image;
     }
 
     public void setImageResourcePath(String path) {

@@ -18,7 +18,7 @@ package org.springframework.richclient.command.config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.ObjectConfigurer;
+import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.support.DefaultCommandServices;
@@ -31,7 +31,7 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
 
     private CommandServices commandServices;
 
-    private ObjectConfigurer objectConfigurer;
+    private ApplicationObjectConfigurer objectConfigurer;
 
     public ApplicationCommandConfigurer() {
     }
@@ -40,7 +40,7 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
         setCommandServices(services);
     }
 
-    public void setObjectConfigurer(ObjectConfigurer configurer) {
+    public void setObjectConfigurer(ApplicationObjectConfigurer configurer) {
         this.objectConfigurer = configurer;
     }
 
@@ -57,13 +57,13 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
         return configure(command, faceConfigurationKey, getObjectConfigurer());
     }
 
-    protected ObjectConfigurer getObjectConfigurer() {
+    protected ApplicationObjectConfigurer getObjectConfigurer() {
         if (objectConfigurer == null) { return Application.services(); }
         return objectConfigurer;
     }
 
     public AbstractCommand configure(AbstractCommand command,
-            String faceConfigurationKey, ObjectConfigurer configurer) {
+            String faceConfigurationKey, ApplicationObjectConfigurer configurer) {
         command.setCommandServices(getCommandServices());
         if (faceConfigurationKey == null) {
             faceConfigurationKey = command.getId();
