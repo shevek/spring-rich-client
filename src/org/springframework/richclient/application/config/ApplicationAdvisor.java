@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.awt.*;
+import java.awt.Image;
 import java.util.Properties;
 
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +34,7 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
  */
 public abstract class ApplicationAdvisor implements InitializingBean {
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
+
     private static final String EXCEPTION_HANDLER_KEY = "sun.awt.exception.handler";
 
     private Application application;
@@ -46,10 +47,9 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     private Class eventExceptionHandler;
 
-
     /**
      * Logs any event loop exception not caught.
-     *
+     * 
      * @see ApplicationAdvisor#setEventExceptionHandler(Class)
      */
     public static class DefaultEventExceptionHandler {
@@ -59,7 +59,6 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         }
     }
 
-
     public Class getEventExceptionHandler() {
         if (this.eventExceptionHandler == null) {
             this.eventExceptionHandler = DefaultEventExceptionHandler.class;
@@ -67,29 +66,27 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         return this.eventExceptionHandler;
     }
 
-
     /**
      * Sets the class to use to handle exceptions that happen in the
-     * {@link EventDispatchThread}.  The class must have a no-arg public
+     * {@link EventDispatchThread}. The class must have a no-arg public
      * constructor and a method "public void handle(Throwable)".
-     *
-     * @param eventExceptionHandler the class to use
-     *
+     * 
+     * @param eventExceptionHandler
+     *            the class to use
+     * 
      * @see EventDispatchThread#handleException(Throwable)
      */
     public void setEventExceptionHandler(Class eventExceptionHandler) {
         this.eventExceptionHandler = eventExceptionHandler;
     }
 
-
     public void afterPropertiesSet() throws Exception {
         final Properties systemProperties = System.getProperties();
         if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
             systemProperties.put(EXCEPTION_HANDLER_KEY,
-                getEventExceptionHandler().getName());
+                    getEventExceptionHandler().getName());
         }
     }
-
 
     public void setApplicationInfo(ApplicationInfo info) {
         this.applicationInfo = info;

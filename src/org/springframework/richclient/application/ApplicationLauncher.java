@@ -17,7 +17,6 @@ package org.springframework.richclient.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -171,9 +170,11 @@ public class ApplicationLauncher {
                     .error(
                             "A single org.springframework.richclient.Application bean definition must be defined "
                                     + "in the main application context", e);
+            throw e;
         }
-        catch (BeansException e) {
+        catch (RuntimeException e) {
             logger.error("Exception occured initializing Application bean", e);
+            throw e;
         }
         finally {
             destroySplashScreen();
