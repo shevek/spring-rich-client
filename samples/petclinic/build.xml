@@ -154,7 +154,7 @@
 		</jar>
 
 		<!-- Will not re-sign already signed JARs due to lazy=true (causes JWS issues if >1 signature) -->
-<!--		<signjar lazy="true"
+		<signjar lazy="true"
 		         alias="${signature.alias}"
 		         storepass="${signature.storepass}"
 		         keystore="${signature.keystore}">
@@ -163,7 +163,7 @@
 			</fileset>
 		</signjar> 
 
-		<delete dir="${tmp.dir}" />-->
+		<delete dir="${tmp.dir}" />
 
 	</target>
 
