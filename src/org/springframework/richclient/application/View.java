@@ -29,11 +29,12 @@ package org.springframework.richclient.application;
  * @author Keith Donald
  */
 public interface View extends PageComponent {
+    public void setContext(ViewContext context);
+
+    public void setDescriptor(ViewDescriptor viewDescriptor);
+
     public String getId();
 
-    public void initialize(ViewContext context);
-
     public void dispose();
-    
-    public void setDescriptor(ViewDescriptor viewDescriptor);
+
 }

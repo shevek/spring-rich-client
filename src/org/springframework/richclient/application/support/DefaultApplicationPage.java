@@ -159,7 +159,7 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     protected View createView(ViewDescriptor viewDescriptor) {
         View view = viewDescriptor.createView();
-        view.initialize(new DefaultViewContext(this,
+        view.setContext(new DefaultViewContext(this,
                 new PageComponentPane(view)));
         pageComponents.add(view);
         fireOpened(view);

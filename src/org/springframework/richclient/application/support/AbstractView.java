@@ -38,12 +38,18 @@ public abstract class AbstractView extends AbstractControlFactory implements
     private ViewContext context;
 
     public void setDescriptor(ViewDescriptor viewDescriptor) {
+        Assert.notNull(context,
+                "The view descriptor is required");
+        Assert.state(this.descriptor == null,
+                "A view's descriptor may only be set once");
         this.descriptor = viewDescriptor;
     }
 
-    public final void initialize(ViewContext context) {
+    public final void setContext(ViewContext context) {
         Assert.notNull(context,
                 "This view's page component context is required");
+        Assert.state(this.context == null,
+                "A view's context may only be set once");
         this.context = context;
         registerLocalCommandExecutors(context);
     }
