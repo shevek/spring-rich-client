@@ -20,12 +20,9 @@ import javax.swing.JComponent;
 import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
 
+import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.forms.AbstractForm;
-import org.springframework.richclient.forms.BeanFormBuilder;
-import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
 import org.springframework.richclient.forms.SwingFormModel;
-
-import com.jgoodies.forms.layout.FormLayout;
 
 public class LoginForm extends AbstractForm {
     private SessionDetails sessionDetails;
@@ -48,9 +45,9 @@ public class LoginForm extends AbstractForm {
     }
 
     protected JComponent createFormControl() {
-        FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-        BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+        TableFormBuilder formBuilder = new TableFormBuilder(getFormModel());
         this.usernameField = formBuilder.add(SessionDetails.PROPERTY_USERNAME)[1];
+        formBuilder.row();
         formBuilder.addPasswordField(SessionDetails.PROPERTY_PASSWORD);
         return formBuilder.getForm();
     }

@@ -18,11 +18,8 @@ package org.springframework.richclient.samples.petclinic.ui;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.forms.AbstractForm;
-import org.springframework.richclient.forms.BeanFormBuilder;
-import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
-
-import com.jgoodies.forms.layout.FormLayout;
 
 public class OwnerAddressForm extends AbstractForm {
     public static final String ADDRESS_FORM_PAGE = "addressPage";
@@ -34,9 +31,9 @@ public class OwnerAddressForm extends AbstractForm {
     }
 
     protected JComponent createFormControl() {
-        FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-        BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+        TableFormBuilder formBuilder = new TableFormBuilder(getFormModel());
         this.address = formBuilder.add("address")[1];
+        formBuilder.row();
         formBuilder.add("city");
         return formBuilder.getForm();
     }
