@@ -101,11 +101,9 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
 
                 JTabbedPane tabbedPane = getComponentFactory()
                         .createTabbedPane();
-                getComponentFactory().addConfiguredTab(
-                        tabbedPane,
-                        "General",
-                        new LoginPanel(authenticationManager)
-                                .getControl());
+                this.loginGeneralPanel = new LoginPanel(authenticationManager);
+                getComponentFactory().addConfiguredTab(tabbedPane, "General",
+                        loginGeneralPanel.getControl());
                 return tabbedPane;
             }
 
@@ -114,21 +112,20 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
             }
 
             protected boolean onFinish() {
-                // todo EXCEPTION workflow! this joption pane stuff has got to go...:-)
+                // todo EXCEPTION workflow! this joption pane stuff has got to
+                // go...:-)
                 try {
                     loginGeneralPanel.commit();
                 }
                 catch (AuthenticationException authentication) {
-                    JOptionPane
-                            .showMessageDialog(getParentWindowControl(),
-                                    authentication.getMessage(),
-                                    "Authentication Failure",
-                                    JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(getDialog(), authentication
+                            .getMessage(), "Authentication Failure",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
 
                 if (displaySuccess)
-                    JOptionPane.showMessageDialog(getParentWindowControl(),
+                    JOptionPane.showMessageDialog(getDialog(),
                             "You have logged in as '"
                                     + loginGeneralPanel.getValue("userName")
                                     + "'.", "Authentication Successful",
