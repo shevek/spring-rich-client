@@ -155,7 +155,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      */
     public GridBagLayoutBuilder append(Component component, int colSpan,
                                        int rowSpan) {
-        return append(component, 1, 1, 0.0, 0.0);
+        return append(component, colSpan, rowSpan, 0.0, 0.0);
     }
 
     /**
@@ -306,15 +306,15 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
 
         insertPlaceholdersIfNeeded(rowSpan, y, col, component, colSpan);
 
-        final GridBagConstraints gbc = createGridBagConstraint(col, y, colSpan,
-                rowSpan, xweight, yweight, insets);
+        final GridBagConstraints gbc = createGridBagConstraint(col, y,
+                colSpan, rowSpan, xweight, yweight, insets);
 
         rowList.set(col, new Item(component, gbc));
 
         // keep track of the largest column this has seen...
         this.maxCol = Math.max(this.maxCol, col);
 
-        currentCol = col + 1;
+        currentCol += colSpan;
 
         return this;
     }
@@ -325,9 +325,9 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
                                             final int colSpan) {
         if (rowSpan > 1) {
             growRowsIfNeeded(rowSpan);
-            for (int i = 1; i < (y + rowSpan - 1); i++) {
+            for (int i = 1; i < (y + rowSpan); i++) {
                 final List row = getRow(i);
-                ensureCapacity(row, col + 1);
+                ensureCapacity(row, col + colSpan + 1);
                 if (row.get(col) != null) {
                     // sanity check -- shouldn't ever happen
                     throw new IllegalStateException("Trying to overwrite another component: " +
