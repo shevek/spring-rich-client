@@ -49,7 +49,7 @@ public class CommandButtonLabelInfo implements ButtonConfigurer {
     }
 
     public int getMnemonic() {
-        return labelInfo.getMnemonicIndex();
+        return labelInfo.getMnemonic();
     }
 
     public int getMnemonicIndex() {
