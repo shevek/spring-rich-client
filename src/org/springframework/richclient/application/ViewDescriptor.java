@@ -21,6 +21,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.util.Assert;
@@ -40,12 +42,18 @@ public class ViewDescriptor extends LabeledObjectSupport implements
 
     private Map viewProperties;
 
+    private ApplicationEventMulticaster eventMulticaster;
+
     public void setViewClass(Class viewClass) {
         this.viewClass = viewClass;
     }
 
     public void setViewProperties(Map viewProperties) {
         this.viewProperties = viewProperties;
+    }
+
+    public void setApplicationEventMulticaster(ApplicationEventMulticaster e) {
+        this.eventMulticaster = e;
     }
 
     public void afterPropertiesSet() {
@@ -57,6 +65,9 @@ public class ViewDescriptor extends LabeledObjectSupport implements
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
         View view = (View)o;
+        if (eventMulticaster != null && view instanceof ApplicationListener) {
+            eventMulticaster.addApplicationListener((ApplicationListener)view);
+        }
         if (viewProperties != null) {
             BeanWrapper wrapper = new BeanWrapperImpl(view);
             wrapper.setPropertyValues(viewProperties);
@@ -73,7 +84,8 @@ public class ViewDescriptor extends LabeledObjectSupport implements
 
         private ViewDescriptor viewDescriptor;
 
-        public ShowViewCommand(ViewDescriptor viewDescriptor, ApplicationWindow window) {
+        public ShowViewCommand(ViewDescriptor viewDescriptor,
+                ApplicationWindow window) {
             super(viewDescriptor.getDisplayName());
             setLabel(viewDescriptor.getLabel());
             setIcon(viewDescriptor.getImageIcon());
