@@ -33,8 +33,6 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -123,6 +121,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             String parentPropertyFormObjectPath) {
         return new SwingFormModel(groupingModel.createChild(childPageName,
                 parentPropertyFormObjectPath));
+    }
+
+    public static SwingFormModel createChildPageFormModel(
+            NestingFormModel groupingModel, String childPageName,
+            ValueModel childFormObjectHolder) {
+        return new SwingFormModel(groupingModel.createChild(childPageName,
+                childFormObjectHolder));
     }
 
     public void registerCustomEditor(Class clazz,
@@ -318,11 +323,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         if (getMetaAspectAccessor().isDate(formProperty)) {
             spinner.setModel(new SpinnerDateModel());
         }
-        spinner.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                model.set(spinner.getValue());
-            }
-        });
+        new SpinnerValueSetter(spinner, model);
         return spinner;
     }
 

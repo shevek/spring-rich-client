@@ -52,6 +52,13 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
                 parentFormObjectPropertyPath));
     }
 
+    protected AbstractFormPage(NestingFormModel parent, String pageName,
+            ValueModel childFormObjectHolder) {
+        this.parent = parent;
+        setFormModel(SwingFormModel.createChildPageFormModel(parent, pageName,
+                childFormObjectHolder));
+    }
+
     protected AbstractFormPage(SwingFormModel pageFormModel) {
         setFormModel(pageFormModel);
     }
