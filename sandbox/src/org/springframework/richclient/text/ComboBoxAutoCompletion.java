@@ -36,7 +36,7 @@ import org.springframework.util.Assert;
  * make the conversion between strings and the objects of the JComboBox model.
  * @author Peter De Bruycker
  */
-public class AutoCompletion extends PlainDocument {
+public class ComboBoxAutoCompletion extends PlainDocument {
     private final class FocusHandler implements FocusListener {
         // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
         private boolean hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
@@ -48,7 +48,7 @@ public class AutoCompletion extends PlainDocument {
         public void focusLost(FocusEvent e) {
             // Workaround for Bug 5100422 - Hide Popup on focus loss
             if (hidePopupOnFocusLoss)
-                AutoCompletion.this.comboBox.setPopupVisible(false);
+                ComboBoxAutoCompletion.this.comboBox.setPopupVisible(false);
         }
     }
     private final class KeyHandler extends KeyAdapter {
@@ -69,7 +69,7 @@ public class AutoCompletion extends PlainDocument {
                     // ignore delete key
                 case KeyEvent.VK_DELETE :
                     e.consume();
-                    AutoCompletion.this.comboBox.getToolkit().beep();
+                    ComboBoxAutoCompletion.this.comboBox.getToolkit().beep();
                     break;
             }
         }
@@ -81,7 +81,11 @@ public class AutoCompletion extends PlainDocument {
     private Map item2string = new HashMap();
     private ComboBoxModel model;
 
-    public AutoCompletion(JComboBox comboBox) {
+    /**
+     * Adds autocompletion support to the given <code>JComboBox</code>.
+     * @param comboBox the combobox
+     */
+    public ComboBoxAutoCompletion(JComboBox comboBox) {
         Assert.notNull(comboBox, "The ComboBox cannot be null.");
         Assert.isTrue(!comboBox.isEditable(), "The ComboBox must not be editable.");
         Assert.isTrue(
@@ -131,6 +135,9 @@ public class AutoCompletion extends PlainDocument {
         editor.moveCaretPosition(start);
     }
 
+    /**
+     * @see javax.swing.text.Document#insertString(int, java.lang.String, javax.swing.text.AttributeSet)
+     */
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         // ignore empty insert
         if (str == null || str.length() == 0)
@@ -199,6 +206,9 @@ public class AutoCompletion extends PlainDocument {
         return null;
     }
 
+    /**
+     * @see javax.swing.text.Document#remove(int, int)
+     */
     public void remove(int offs, int length) throws BadLocationException {
         // ignore no deletion
         if (length == 0)

@@ -28,7 +28,7 @@ import org.springframework.richclient.list.CodedEnumListRenderer;
 /**
  * @author Peter De Bruycker
  */
-public class AutoCompletionInterceptorFactory implements FormComponentInterceptorFactory {
+public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentInterceptorFactory {
 
     private MessageSource messages;
 
@@ -36,10 +36,10 @@ public class AutoCompletionInterceptorFactory implements FormComponentIntercepto
      * @see org.springframework.richclient.form.builder.FormComponentInterceptorFactory#getInterceptor(org.springframework.binding.form.FormModel)
      */
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        return new AutoCompletionInterceptor(formModel);
+        return new ComboBoxAutoCompletionInterceptor(formModel);
     }
 
-    public class AutoCompletionInterceptor extends AbstractFormComponentInterceptor {
+    public class ComboBoxAutoCompletionInterceptor extends AbstractFormComponentInterceptor {
         /** 
          * @see org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor#processComponent(java.lang.String, javax.swing.JComponent)
          */
@@ -49,9 +49,9 @@ public class AutoCompletionInterceptorFactory implements FormComponentIntercepto
                 // if combobox is showing CodedEnum's, install customer editor
                 if (((JComboBox)inner).getRenderer() instanceof CodedEnumListRenderer) {
                     ((JComboBox) inner).setEditor(
-                        new CodedEnumEditor(messages, ((JComboBox) inner).getEditor()));
+                        new CodedEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
                 }
-                new AutoCompletion((JComboBox) inner);
+                new ComboBoxAutoCompletion((JComboBox) inner);
             }
         }
 
@@ -59,7 +59,7 @@ public class AutoCompletionInterceptorFactory implements FormComponentIntercepto
          * Constructs a new <code>AutoCompletionInterceptor</code> instance.
          * @param formModel the formModel
          */
-        public AutoCompletionInterceptor(FormModel formModel) {
+        public ComboBoxAutoCompletionInterceptor(FormModel formModel) {
             super(formModel);
         }
 

@@ -11,9 +11,14 @@ import org.springframework.enums.CodedEnum;
 import org.springframework.util.Assert;
 
 /**
+ * <code>ComboBoxEditor</code> that wraps another editor, but performs conversion
+ * between <code>CodedEnum</code>s and <code>String</code>s.
+ * <br/>
+ * It wraps another <code>ComboBoxEditor</code> to avoid visual differences between
+ * the default editor and this editor.
  * @author peter.de.bruycker
  */
-public class CodedEnumEditor implements ComboBoxEditor {
+public class CodedEnumComboBoxEditor implements ComboBoxEditor {
 
     private Object current;
 
@@ -21,7 +26,12 @@ public class CodedEnumEditor implements ComboBoxEditor {
 
     private ComboBoxEditor inner;
 
-    public CodedEnumEditor(MessageSource messageSource, ComboBoxEditor editor) {
+    /**
+     * Constructs a new <code>CodedEnumComboBoxEditor</code> instance.
+     * @param messageSource the <code>MessageSource</code> to use for conversion
+     * @param editor the <code>ComboBoxEditor</code> to use internally
+     */
+    public CodedEnumComboBoxEditor(MessageSource messageSource, ComboBoxEditor editor) {
         Assert.notNull(editor, "Editor cannot be null");
         this.inner = editor;
         messages = messageSource;
