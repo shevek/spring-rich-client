@@ -16,11 +16,12 @@
 package org.springframework.richclient.command;
 
 import org.springframework.rules.values.ValueListener;
+import org.springframework.richclient.core.Guarded;
 
 /**
  * @author Keith Donald
  */
-public interface GuardedCommandDelegate extends CommandDelegate {
+public interface GuardedCommandDelegate extends Guarded, CommandDelegate {
     public boolean isEnabled();
 
     public void addEnabledListener(ValueListener listener);
