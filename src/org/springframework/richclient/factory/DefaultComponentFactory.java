@@ -63,6 +63,7 @@ import org.springframework.util.comparator.CompoundComparator;
  * @author Keith Donald
  */
 public class DefaultComponentFactory implements ComponentFactory {
+
     private final Log logger = LogFactory.getLog(getClass());
 
     private MessageSourceAccessor messages;
@@ -75,7 +76,10 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     private CodedEnumResolver enumResolver = StaticCodedEnumResolver.instance();
 
+    private MessageSource messageSource;
+
     public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
         this.messages = new MessageSourceAccessor(messageSource);
     }
 
@@ -117,6 +121,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     protected String getRequiredMessage(final String[] messageKeys) {
         MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+
             public String[] getCodes() {
                 return messageKeys;
             }
@@ -128,15 +133,14 @@ public class DefaultComponentFactory implements ComponentFactory {
             public String getDefaultMessage() {
                 if (messageKeys.length > 0) {
                     return messageKeys[0];
-                }
-                else {
+                } else {
                     return "";
                 }
             }
         };
         return getMessages().getMessage(resolvable);
     }
-    
+
     private MessageSourceAccessor getMessages() {
         if (messages == null) {
             return Application.services().getMessages();
@@ -149,6 +153,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     private class LabelTextRefresher implements ValueChangeListener {
+
         private String labelKey;
 
         private JLabel label;
@@ -192,8 +197,7 @@ public class DefaultComponentFactory implements ComponentFactory {
         try {
             String message = getMessages().getMessage(messageKey, args);
             return message;
-        }
-        catch (NoSuchMessageException e) {
+        } catch (NoSuchMessageException e) {
             return messageKey;
         }
     }
@@ -223,7 +227,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public JButton createButton(String labelKey) {
-        return (JButton)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(getButtonFactory().createButton());
+        return (JButton) getButtonLabelInfo(getRequiredMessage(labelKey)).configure(getButtonFactory().createButton());
     }
 
     protected CommandButtonLabelInfo getButtonLabelInfo(String label) {
@@ -242,11 +246,11 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public JCheckBox createCheckBox(String labelKey) {
-        return (JCheckBox)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(createNewCheckBox());
+        return (JCheckBox) getButtonLabelInfo(getRequiredMessage(labelKey)).configure(createNewCheckBox());
     }
 
     public JCheckBox createCheckBox(String[] labelKeys) {
-        return (JCheckBox)getButtonLabelInfo(getRequiredMessage(labelKeys)).configure(createNewCheckBox());
+        return (JCheckBox) getButtonLabelInfo(getRequiredMessage(labelKeys)).configure(createNewCheckBox());
     }
 
     protected JCheckBox createNewCheckBox() {
@@ -254,7 +258,8 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public JMenuItem createMenuItem(String labelKey) {
-        return (JMenuItem)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(getMenuFactory().createMenuItem());
+        return (JMenuItem) getButtonLabelInfo(getRequiredMessage(labelKey))
+                .configure(getMenuFactory().createMenuItem());
     }
 
     protected MenuFactory getMenuFactory() {
@@ -266,7 +271,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     public JComponent createLabeledSeparator(String labelKey, Alignment alignment) {
         return com.jgoodies.forms.factories.DefaultComponentFactory.getInstance().createSeparator(
-                getRequiredMessage(labelKey), ((Number)alignment.getCode()).intValue());
+                getRequiredMessage(labelKey), ((Number) alignment.getCode()).intValue());
     }
 
     public JList createList() {
@@ -302,7 +307,7 @@ public class DefaultComponentFactory implements ComponentFactory {
         comparator.addComparator(AbstractCodedEnum.LABEL_ORDER);
         comparator.addComparator(ComparableComparator.instance());
         comboBox.setModel(new ComboBoxListModel(enumValues, comparator));
-        comboBox.setRenderer(new CodedEnumListRenderer());
+        comboBox.setRenderer(new CodedEnumListRenderer(messageSource));
     }
 
     public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
@@ -349,7 +354,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     protected String getOptionalMessage(String messageKey) {
-        return getMessages().getMessage(messageKey, (String)null);
+        return getMessages().getMessage(messageKey, (String) null);
     }
 
     private Icon getIcon(String labelKey) {
