@@ -19,7 +19,7 @@ import org.springframework.richclient.application.events.LifecycleApplicationEve
 import org.springframework.richclient.command.CommandDelegate;
 import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
-import org.springframework.richclient.wizard.FormPageBackedWizardPage;
+import org.springframework.richclient.wizard.FormBackedWizardPage;
 import org.springframework.richclient.wizard.WizardDialog;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
@@ -42,11 +42,9 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
         addPage(new OwnerAddressWizardPage());
     }
 
-    public class OwnerGeneralWizardPage extends FormPageBackedWizardPage {
-        public static final String ID = "newOwnerWizard.general";
-
+    public class OwnerGeneralWizardPage extends FormBackedWizardPage {
         public OwnerGeneralWizardPage() {
-            super(ID, new OwnerGeneralPanel(wizardForm.getFormModel()));
+            super(new OwnerGeneralPanel(wizardForm.getFormModel()));
         }
 
         public void setVisible(boolean bool) {
@@ -57,11 +55,9 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
         }
     }
     
-    public class OwnerAddressWizardPage extends FormPageBackedWizardPage {
-        public static final String ID = "newOwnerWizard.address";
-
+    public class OwnerAddressWizardPage extends FormBackedWizardPage {
         public OwnerAddressWizardPage() {
-            super(ID, new AddressPanel(wizardForm.getFormModel()));
+            super(new AddressPanel(wizardForm.getFormModel()));
         }
 
         public void setVisible(boolean bool) {

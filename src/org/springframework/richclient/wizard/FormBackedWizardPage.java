@@ -17,34 +17,30 @@ package org.springframework.richclient.wizard;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.forms.AbstractFormPage;
+import org.springframework.richclient.forms.FormPage;
 
 /**
- * An implementation of WizardPage that delegates to an AbstractFormPage for its
+ * An implementation of WizardPage that delegates to a FormPage for its
  * control, pageComplete status and messages.
  * 
  * @author oliverh
  */
-public class FormPageBackedWizardPage extends AbstractWizardPage {
-    AbstractFormPage backingFormPage;
+public class FormBackedWizardPage extends AbstractWizardPage {
+    FormPage backingFormPage;
 
     /**
-     * Creates a new FormPageBackedWizardPage. 
+     * Createa a new FormBackedWizardPage
      * 
-     * @param pageId
-     *            the id of this wizard page. This will be used to configure
-     *            page titles/description
      * @param backingFormPage
-     *            the AbstractFormPage which will provide the control for this
+     *            the named form page which will provide the control for this
      *            wizard page.
      */
-    public FormPageBackedWizardPage(String pageId,
-            AbstractFormPage backingFormPage) {
-        super(pageId);
+    public FormBackedWizardPage(FormPage backingFormPage) {
+        super(backingFormPage.getId());
         this.backingFormPage = backingFormPage;
     }
     
-    protected AbstractFormPage getBackingFormPage() {
+    protected FormPage getBackingFormPage() {
         return backingFormPage;
     }
 
@@ -52,9 +48,13 @@ public class FormPageBackedWizardPage extends AbstractWizardPage {
         setEnabled(!backingFormPage.hasErrors());
     }
 
-    public JComponent createControl() {
-        backingFormPage.newSingleLineResultsReporter(this, this);
+    protected JComponent createControl() {
+        initPageValidationReporter();
         return backingFormPage.getControl();
+    }
+
+    protected void initPageValidationReporter() {
+        backingFormPage.newSingleLineResultsReporter(this, this);
     }
 
     public void setEnabled(boolean enabled) {

@@ -17,16 +17,16 @@ package org.springframework.richclient.dialog;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.forms.AbstractFormPage;
+import org.springframework.richclient.forms.FormPage;
 
 /**
- * An implementation of DialogPage that delegates to an AbstractFormPage for its
+ * An implementation of DialogPage that delegates to a FormPage for its
  * control, pageComplete status and messages.
  * 
  * @author oliverh
  */
 public class FormBackedDialogPage extends AbstractDialogPage {
-    private AbstractFormPage backingFormPage;
+    private FormPage backingFormPage;
 
     /**
      * Createa a new FormBackedDialogPage
@@ -35,11 +35,11 @@ public class FormBackedDialogPage extends AbstractDialogPage {
      *            a named form page that will provide the control for this
      *            dialog page
      */
-    public FormBackedDialogPage(AbstractFormPage backingFormPage) {
+    public FormBackedDialogPage(FormPage backingFormPage) {
         this(backingFormPage, true);
     }
 
-    public FormBackedDialogPage(AbstractFormPage backingFormPage, boolean autoConfigure) {
+    public FormBackedDialogPage(FormPage backingFormPage, boolean autoConfigure) {
         super(backingFormPage.getId(), autoConfigure);
         this.backingFormPage = backingFormPage;
     }
@@ -51,18 +51,18 @@ public class FormBackedDialogPage extends AbstractDialogPage {
      *            the id of a containing parent page. This will be used to
      *            configure page titles/description
      * @param backingFormPage
-     *            the AbstractFormPage which will provide the control for this
+     *            the FormPage which will provide the control for this
      *            page.
      */
     public FormBackedDialogPage(String parentPageId,
-            AbstractFormPage backingFormPage) {
+            FormPage backingFormPage) {
         super(parentPageId
                 + (backingFormPage.getId() != null ? "."
                         + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
     
-    protected AbstractFormPage getBackingFormPage() {
+    protected FormPage getBackingFormPage() {
         return backingFormPage;
     }
 

@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
 /**
  * @author Keith Donald
  */
-public abstract class AbstractFormPage extends AbstractControlFactory {
+public abstract class AbstractFormPage extends AbstractControlFactory implements FormPage {
     private NestingFormModel parent;
 
     private SwingFormModel pageFormModel;
