@@ -73,7 +73,11 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected AbstractForm(String formId) {
-        this.formId = formId;
+        setId(formId);
+    }
+
+    protected AbstractForm(Object formObject) {
+        this(SwingFormModel.createFormModel(formObject));
     }
 
     protected AbstractForm(SwingFormModel pageFormModel) {
@@ -82,27 +86,26 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId) {
         this(SwingFormModel.createChildPageFormModel(parentFormModel, formId));
-        this.formId = formId;
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId,
             String childFormObjectPropertyPath) {
+        setId(formId);
         this.parentFormModel = parentFormModel;
         setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel,
                 formId, childFormObjectPropertyPath));
-        this.formId = formId;
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId,
             ValueModel childFormObjectHolder) {
+        setId(formId);
         this.parentFormModel = parentFormModel;
         setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel,
                 formId, childFormObjectHolder));
-        this.formId = formId;
     }
 
     protected AbstractForm(FormModel formModel, String formId) {
-        this.formId = formId;
+        setId(formId);
         if (formModel instanceof NestingFormModel) {
             this.parentFormModel = (NestingFormModel)formModel;
             setFormModel(SwingFormModel.createChildPageFormModel(
@@ -121,18 +124,273 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         return formId;
     }
 
+    protected void setId(String formId) {
+        this.formId = formId;
+    }
+
     public SwingFormModel getFormModel() {
         return formModel;
     }
 
     protected void setFormModel(SwingFormModel formModel) {
         Assert.notNull(formModel);
+        if (this.formModel != null && isControlCreated()) { throw new UnsupportedOperationException(
+                "Cannot reset form model once form control has been created"); }
+        if (this.formModel != null) {
+            this.formModel.removeCommitListener(this);
+        }
         this.formModel = formModel;
         this.formModel.addCommitListener(this);
     }
 
     protected NestingFormModel getParent() {
         return this.parentFormModel;
+    }
+
+    protected void setEditableFormObjects(List editableFormObjects) {
+        this.editableFormObjects = editableFormObjects;
+    }
+
+    protected void setEditingFormObjectIndexHolder(ValueModel valueModel) {
+        this.editingFormObjectIndexHolder = valueModel;
+        this.editingFormObjectIndexHolder
+                .addValueChangeListener(new EditingFormObjectSetter());
+    }
+
+    private class EditingFormObjectSetter implements ValueChangeListener {
+        public void valueChanged() {
+            int selectionIndex = getEditingFormObjectIndex();
+            if (selectionIndex == -1) {
+                reset();
+                setEnabled(false);
+            }
+            else {
+                setFormObject(getEditableFormObject(selectionIndex));
+                setEnabled(true);
+            }
+        }
+    }
+
+    protected int getEditingFormObjectIndex() {
+        return ((Integer)editingFormObjectIndexHolder.getValue()).intValue();
+    }
+
+    protected Object getEditableFormObject(int selectionIndex) {
+        return editableFormObjects.get(selectionIndex);
+    }
+
+    public void setClearFormOnCommit(boolean clearFormOnCommit) {
+        this.clearFormOnCommit = clearFormOnCommit;
+    }
+
+    public boolean preEditCommitted(Object formObject) {
+        return true;
+    }
+
+    protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
+        this.formEnabledGuarded = formEnabledGuarded;
+        updateFormEnabledGuarded();
+    }
+
+    private void updateFormEnabledGuarded() {
+        if (formEnabledGuarded != null) {
+            formEnabledGuarded.setEnabled(formModel.isEnabled());
+        }
+    }
+
+    protected JButton getDefaultButton() {
+        if (isControlCreated()) {
+            return SwingUtilities.getRootPane(getControl()).getDefaultButton();
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected void setDefaultButton(JButton button) {
+        SwingUtilities.getRootPane(getControl()).setDefaultButton(button);
+    }
+
+    protected final JComponent createControl() {
+        Assert
+                .notNull(getFormModel(),
+                        "This form's FormModel cannot be null once control creation is triggered!");
+        initStandardLocalFormCommands();
+        JComponent formControl = createFormControl();
+        this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
+        getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
+                formEnabledChangeHandler);
+        addFormObjectChangeListener(new FormObjectChangeHandler());
+        ActionCommand commitCommand = getCommitCommand();
+        if (getCommitCommand() != null) {
+            attachFormErrorGuard(getCommitCommand());
+            getFormModel().addCommitListener(this);
+        }
+        return formControl;
+    }
+
+    private void initStandardLocalFormCommands() {
+        initNewFormObjectCommand();
+        initCommitCommand();
+        initRevertCommand();
+    }
+
+    protected abstract JComponent createFormControl();
+
+    private class FormObjectChangeHandler implements ValueChangeListener {
+        public FormObjectChangeHandler() {
+            valueChanged();
+        }
+
+        public void valueChanged() {
+            setFormModelDefaultEnabledState();
+        }
+
+        /**
+         * Set the form's enabled state based on a default policy--specifically,
+         * disable if the form object is null or the form object is guarded and
+         * is marked as disabled.
+         */
+        protected void setFormModelDefaultEnabledState() {
+            if (getFormObject() == null) {
+                getFormModel().setEnabled(false);
+            }
+            else {
+                if (getFormObject() instanceof Guarded) {
+                    setEnabled(((Guarded)getFormObject()).isEnabled());
+                }
+            }
+        }
+    }
+
+    private class FormEnabledPropertyChangeHandler implements
+            PropertyChangeListener {
+        public FormEnabledPropertyChangeHandler() {
+            handleEnabledChange(getFormModel().isEnabled());
+        }
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            handleEnabledChange(getFormModel().isEnabled());
+        }
+
+        private void handleEnabledChange(boolean enabled) {
+            updateFormEnabledGuarded();
+
+            if (enabled) {
+                if (getCommitCommand() != null) {
+                    if (lastDefaultButton == null) {
+                        lastDefaultButton = getDefaultButton();
+                    }
+                    getCommitCommand().setDefaultButton();
+                }
+            }
+            else {
+                if (getCommitCommand() != null) {
+                    getCommitCommand().setEnabled(false);
+                }
+                // set previous default button
+                if (lastDefaultButton != null) {
+                    setDefaultButton(lastDefaultButton);
+                }
+            }
+        }
+
+    };
+
+    protected ActionCommand getNewFormObjectCommand() {
+        return newFormObjectCommand;
+    }
+
+    protected ActionCommand getCommitCommand() {
+        return commitCommand;
+    }
+
+    protected ActionCommand getRevertCommand() {
+        return revertCommand;
+    }
+
+    private ActionCommand initNewFormObjectCommand() {
+        String commandId = getNewFormObjectFaceConfigurationKey();
+        if (!StringUtils.hasText(commandId)) { return null; }
+
+        this.newFormObjectCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().reset();
+                getFormModel().setEnabled(true);
+                editingNewFormObject = true;
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(
+                newFormObjectCommand);
+    }
+
+    private final ActionCommand initCommitCommand() {
+        String commandId = getCommitFaceConfigurationKey();
+        if (!StringUtils.hasText(commandId)) { return null; }
+        this.commitCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().commit();
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+    }
+
+    private final ActionCommand initRevertCommand() {
+        String commandId = getRevertFaceConfigurationKey();
+        if (!StringUtils.hasText(commandId)) { return null; }
+        this.commitCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().revert();
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+    }
+
+    protected final JButton createNewFormObjectButton() {
+        Assert.notNull(newFormObjectCommand,
+                "New form object command has not been created!");
+        return (JButton)newFormObjectCommand.createButton();
+    }
+
+    protected final JButton createCommitButton() {
+        Assert.notNull(commitCommand, "Commit command has not been created!");
+        return (JButton)commitCommand.createButton();
+    }
+
+    protected String getNewFormObjectFaceConfigurationKey() {
+        return "new"
+                + StringUtils.capitalize(ClassUtils.getShortName(getFormModel()
+                        .getFormObject().getClass()
+                        + "Command"));
+    }
+
+    protected String getCommitFaceConfigurationKey() {
+        return null;
+    }
+
+    protected String getRevertFaceConfigurationKey() {
+        return null;
+    }
+
+    protected void attachFormErrorGuard(Guarded guarded) {
+        FormGuard guard = new FormGuard(getFormModel(), guarded);
+        addValidationListener(guard);
+    }
+
+    public void postEditCommitted(Object formObject) {
+        if (editableFormObjects != null) {
+            if (editingNewFormObject) {
+                editableFormObjects.add(formObject);
+            }
+            else {
+                editableFormObjects
+                        .set(getEditingFormObjectIndex(), formObject);
+            }
+        }
+        if (clearFormOnCommit) {
+            setFormObject(null);
+        }
+        editingNewFormObject = false;
     }
 
     public Object getFormObject() {
@@ -211,248 +469,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     public void reset() {
         formModel.reset();
-    }
-
-    protected void setEditableFormObjects(List editableFormObjects) {
-        this.editableFormObjects = editableFormObjects;
-    }
-
-    protected void setEditingFormObjectIndexHolder(ValueModel valueModel) {
-        this.editingFormObjectIndexHolder = valueModel;
-        this.editingFormObjectIndexHolder
-                .addValueChangeListener(new EditingFormObjectSetter());
-    }
-
-    private class EditingFormObjectSetter implements ValueChangeListener {
-        public void valueChanged() {
-            int selectionIndex = getEditingFormObjectIndex();
-            if (selectionIndex == -1) {
-                reset();
-                setEnabled(false);
-            }
-            else {
-                setFormObject(getEditableFormObject(selectionIndex));
-                setEnabled(true);
-            }
-        }
-    }
-
-    protected int getEditingFormObjectIndex() {
-        return ((Integer)editingFormObjectIndexHolder.getValue()).intValue();
-    }
-
-    protected Object getEditableFormObject(int selectionIndex) {
-        return editableFormObjects.get(selectionIndex);
-    }
-
-    public void setClearFormOnCommit(boolean clearFormOnCommit) {
-        this.clearFormOnCommit = clearFormOnCommit;
-    }
-
-    public boolean preEditCommitted(Object formObject) {
-        return true;
-    }
-
-    public void postEditCommitted(Object formObject) {
-        if (editableFormObjects != null) {
-            if (editingNewFormObject) {
-                editableFormObjects.add(formObject);
-            }
-            else {
-                editableFormObjects
-                        .set(getEditingFormObjectIndex(), formObject);
-            }
-        }
-        if (clearFormOnCommit) {
-            setFormObject(null);
-        }
-        editingNewFormObject = false;
-    }
-
-    protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
-        this.formEnabledGuarded = formEnabledGuarded;
-        updateFormEnabledGuarded();
-    }
-
-    protected JButton getDefaultButton() {
-        if (isControlCreated()) {
-            return SwingUtilities.getRootPane(getControl()).getDefaultButton();
-        }
-        else {
-            return null;
-        }
-    }
-
-    protected void setDefaultButton(JButton button) {
-        SwingUtilities.getRootPane(getControl()).setDefaultButton(button);
-    }
-
-    protected final JComponent createControl() {
-        initStandardLocalFormCommands();
-        JComponent formControl = createFormControl();
-        this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
-        getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
-                formEnabledChangeHandler);
-        addFormObjectChangeListener(new FormEnabledStateController());
-        ActionCommand commitCommand = getCommitCommand();
-        if (getCommitCommand() != null) {
-            attachFormErrorGuard(getCommitCommand());
-            getFormModel().addCommitListener(this);
-        }
-        return formControl;
-    }
-
-    private void initStandardLocalFormCommands() {
-        initNewFormObjectCommand();
-        initCommitCommand();
-        initRevertCommand();
-    }
-
-    protected abstract JComponent createFormControl();
-
-    private class FormEnabledStateController implements ValueChangeListener {
-        public FormEnabledStateController() {
-            valueChanged();
-        }
-
-        public void valueChanged() {
-            setFormModelDefaultEnabledState();
-        }
-    }
-
-    private class FormEnabledPropertyChangeHandler implements
-            PropertyChangeListener {
-        public FormEnabledPropertyChangeHandler() {
-            handleEnabledChange(getFormModel().isEnabled());
-        }
-
-        public void propertyChange(PropertyChangeEvent evt) {
-            handleEnabledChange(getFormModel().isEnabled());
-        }
-
-        private void handleEnabledChange(boolean enabled) {
-            updateFormEnabledGuarded();
-
-            if (enabled) {
-                if (getCommitCommand() != null) {
-                    if (lastDefaultButton == null) {
-                        lastDefaultButton = getDefaultButton();
-                    }
-                    getCommitCommand().setDefaultButton();
-                }
-            }
-            else {
-                if (getCommitCommand() != null) {
-                    getCommitCommand().setEnabled(false);
-                }
-                // set previous default button
-                if (lastDefaultButton != null) {
-                    setDefaultButton(lastDefaultButton);
-                }
-            }
-        }
-    };
-
-    private void updateFormEnabledGuarded() {
-        if (this.formEnabledGuarded != null) {
-            this.formEnabledGuarded.setEnabled(formModel.isEnabled());
-        }
-    }
-
-    protected void attachFormErrorGuard(Guarded guarded) {
-        FormGuard guard = new FormGuard(getFormModel(), guarded);
-        addValidationListener(guard);
-    }
-
-    protected ActionCommand getNewFormObjectCommand() {
-        return newFormObjectCommand;
-    }
-
-    protected ActionCommand getCommitCommand() {
-        return commitCommand;
-    }
-
-    protected ActionCommand getRevertCommand() {
-        return revertCommand;
-    }
-
-    /**
-     * Set the form's enabled state based on a default policy--specifically,
-     * disable if the form object is null or the form object is guarded and is
-     * marked as disabled.
-     */
-    protected void setFormModelDefaultEnabledState() {
-        if (getFormObject() == null) {
-            getFormModel().setEnabled(false);
-        }
-        else {
-            if (getFormObject() instanceof Guarded) {
-                setEnabled(((Guarded)getFormObject()).isEnabled());
-            }
-        }
-    }
-
-    private ActionCommand initNewFormObjectCommand() {
-        String commandId = getNewFormObjectFaceConfigurationKey();
-        if (!StringUtils.hasText(commandId)) { return null; }
-
-        this.newFormObjectCommand = new ActionCommand(commandId) {
-            protected void doExecuteCommand() {
-                getFormModel().reset();
-                getFormModel().setEnabled(true);
-                editingNewFormObject = true;
-            }
-        };
-        return (ActionCommand)getCommandConfigurer().configure(
-                newFormObjectCommand);
-    }
-
-    protected final JButton createNewFormObjectButton() {
-        Assert.notNull(newFormObjectCommand,
-                "New form object command has not been created!");
-        return (JButton)newFormObjectCommand.createButton();
-    }
-
-    protected final JButton createCommitButton() {
-        Assert.notNull(commitCommand, "Commit command has not been created!");
-        return (JButton)commitCommand.createButton();
-    }
-
-    protected String getNewFormObjectFaceConfigurationKey() {
-        return "new"
-                + StringUtils.capitalize(ClassUtils.getShortName(getFormModel()
-                        .getFormObject().getClass()
-                        + "Command"));
-    }
-
-    protected String getCommitFaceConfigurationKey() {
-        return null;
-    }
-
-    protected String getRevertFaceConfigurationKey() {
-        return null;
-    }
-
-    private final ActionCommand initCommitCommand() {
-        String commandId = getCommitFaceConfigurationKey();
-        if (!StringUtils.hasText(commandId)) { return null; }
-        this.commitCommand = new ActionCommand(commandId) {
-            protected void doExecuteCommand() {
-                getFormModel().commit();
-            }
-        };
-        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
-    }
-
-    private final ActionCommand initRevertCommand() {
-        String commandId = getRevertFaceConfigurationKey();
-        if (!StringUtils.hasText(commandId)) { return null; }
-        this.commitCommand = new ActionCommand(commandId) {
-            protected void doExecuteCommand() {
-                getFormModel().revert();
-            }
-        };
-        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
     }
 
 }
