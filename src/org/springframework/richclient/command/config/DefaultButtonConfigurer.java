@@ -25,7 +25,8 @@ import org.springframework.util.Assert;
 public class DefaultButtonConfigurer implements CommandButtonConfigurer {
     public void configure(CommandFaceDescriptor face, AbstractButton button) {
         Assert.notNull(face, "The command face descriptor cannot be null.");
-        if (button == null) { return; }
+        Assert.notNull(button, "The button cannot be null.");
+
         face.getButtonLabelInfo().configure(button);
         if (face.getButtonIconInfo() != null) {
             face.getButtonIconInfo().configure(button);
