@@ -21,7 +21,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JFormattedTextField;
 
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ValueModelWrapper;
 
 /**
  * Sets the value of the value model associated with a formatted text field when
@@ -66,24 +65,13 @@ public class JFormattedTextFieldValueSetter extends AbstractValueSetter
                 };
             }
         }
-        // not needed now as type converter is committing edit
-        //this.component.addPropertyChangeListener("value", this);
     }
 
     public void valueChanged() {
-        if (getValueModel() instanceof ValueModelWrapper) {
-            if (!isUpdating()) {
-                Object valueToFormat = ((ValueModelWrapper)getValueModel())
-                        .getInnerMostValue();
-                setComponentValue(valueToFormat);
-            }
-        }
-        else {
-            super.valueChanged();
-        }
+        setControlValue(getInnerMostValue());
     }
 
-    protected void setComponentValue(Object value) {
+    protected void setControlValue(Object value) {
         component.setValue(value);
     }
 

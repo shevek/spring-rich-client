@@ -25,51 +25,51 @@ import org.springframework.util.Assert;
 public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
         DocumentListener {
 
-    private JTextComponent component;
+    private JTextComponent control;
 
     private boolean settingText;
 
-    protected AsYouTypeTextValueSetter(JTextComponent component) {
-        this(component, null);
+    protected AsYouTypeTextValueSetter(JTextComponent control) {
+        this(control, null);
     }
 
-    public AsYouTypeTextValueSetter(JTextComponent component,
+    public AsYouTypeTextValueSetter(JTextComponent control,
             ValueModel valueModel) {
         super(valueModel);
-        Assert.notNull(component);
-        this.component = component;
-        this.component.getDocument().addDocumentListener(this);
+        Assert.notNull(control);
+        this.control = control;
+        this.control.getDocument().addDocumentListener(this);
     }
 
-    protected void setComponentValue(Object value) {
+    public void removeUpdate(DocumentEvent e) {
+        controlTextValueChanged();
+    }
+
+    public void insertUpdate(DocumentEvent e) {
+        controlTextValueChanged();
+    }
+
+    public void changedUpdate(DocumentEvent e) {
+        controlTextValueChanged();
+    }
+
+    private void controlTextValueChanged() {
+        if (!settingText) {
+            componentValueChanged(control.getText());
+        }
+    }
+
+    protected void setControlValue(Object value) {
         // this try block will coalesce the 2 DocumentEvents that
         // JTextComponent.setText() fires into 1 call to
         // componentValueChanged()
         try {
             settingText = true;
-            component.setText((String)value);
+            control.setText((String)value);
         }
         finally {
             settingText = false;
         }
-        componentValueChanged();
     }
 
-    public void removeUpdate(DocumentEvent e) {
-        componentValueChanged();
-    }
-
-    public void insertUpdate(DocumentEvent e) {
-        componentValueChanged();
-    }
-
-    public void changedUpdate(DocumentEvent e) {
-        componentValueChanged();
-    }
-
-    private void componentValueChanged() {
-        if (!settingText) {
-            componentValueChanged(component.getText());
-        }
-    }
 }

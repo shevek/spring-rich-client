@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueModelWrapper;
 
 /**
  * @author oliverh
@@ -27,43 +28,40 @@ public abstract class AbstractValueSetter implements ValueChangeListener {
     protected static final Log logger = LogFactory
             .getLog(AbstractValueSetter.class);
 
-    private ValueModel valueModel;
+    private ValueModel displayValueModel;
 
-    private boolean updating;
-
-    public AbstractValueSetter(ValueModel valueModel) {
-        this.valueModel = valueModel;
-        if (this.valueModel != null) {
-            this.valueModel.addValueChangeListener(this);
+    public AbstractValueSetter(ValueModel displayValueModel) {
+        this.displayValueModel = displayValueModel;
+        if (this.displayValueModel != null) {
+            this.displayValueModel.addValueChangeListener(this);
         }
     }
 
     protected ValueModel getValueModel() {
-        return valueModel;
-    }
-
-    protected boolean isUpdating() {
-        return updating;
+        return displayValueModel;
     }
 
     protected void componentValueChanged(Object newValue) {
-        if (valueModel != null) {
-            try {
-                updating = true;
-                valueModel.setValue(newValue);
-            }
-            finally {
-                updating = false;
-            }
+        if (displayValueModel != null) {
+            displayValueModel.removeValueChangeListener(this);
+            displayValueModel.setValue(newValue);
+            displayValueModel.addValueChangeListener(this);
         }
     }
 
     public void valueChanged() {
-        if (!updating) {
-            setComponentValue(valueModel.getValue());
-        }
+        setControlValue((String)displayValueModel.getValue());
     }
 
-    protected abstract void setComponentValue(Object value);
+    protected abstract void setControlValue(Object value);
+
+    protected Object getInnerMostValue() {
+        if (getValueModel() instanceof ValueModelWrapper) {
+            return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
+        }
+        else {
+            return getValueModel().getValue();
+        }
+    }
 
 }

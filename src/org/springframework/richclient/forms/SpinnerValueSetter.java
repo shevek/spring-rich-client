@@ -20,7 +20,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ValueModelWrapper;
 
 public class SpinnerValueSetter extends AbstractValueSetter implements
         ChangeListener {
@@ -38,21 +37,10 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
     }
 
     public void valueChanged() {
-        if (!isUpdating()) {
-            setComponentValue(getInnerMostValue());
-        }
+        setControlValue(getInnerMostValue());
     }
 
-    protected Object getInnerMostValue() {
-        if (getValueModel() instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
-        }
-        else {
-            return getValueModel().getValue();
-        }
-    }
-
-    protected void setComponentValue(Object value) {
+    protected void setControlValue(Object value) {
         if (value == null) {
             spinner.setValue(new Integer(0));
         }

@@ -32,7 +32,7 @@ public class PropertyEditorValueSetter extends AbstractValueSetter implements
         this.propertyEditor.addPropertyChangeListener(this);
     }
 
-    protected void setComponentValue(Object value) {
+    protected void setControlValue(Object value) {
         propertyEditor.setValue(value);
     }
 
