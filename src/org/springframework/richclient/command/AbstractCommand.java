@@ -251,7 +251,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
             Iterator it = buttonIterator();
             while (it.hasNext()) {
                 AbstractButton button = (AbstractButton)it.next();
-                button.setEnabled(enabled);
+                // it's possible for the itterator to return nulls...
+                if (button != null) {
+                  button.setEnabled(enabled);
+                }
             }
             firePropertyChange(ENABLED_PROPERTY_NAME, !enabled, enabled);
         }
