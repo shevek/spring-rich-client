@@ -9,18 +9,18 @@ package org.springframework.richclient.util;
 
 import javax.swing.SwingConstants;
 
-import org.springframework.enums.ShortCodedEnum;
+import org.springframework.util.enums.support.ShortCodedLabeledEnum;
 
 /**
  * 
  * @author Keith Donald
  */
-public class Alignment extends ShortCodedEnum {
-    public static final Alignment LEFT = new Alignment(SwingConstants.LEFT, "Left");
+public class Alignment extends ShortCodedLabeledEnum {
+	public static final Alignment LEFT = new Alignment(SwingConstants.LEFT, "Left");
 
-    public static final Alignment RIGHT = new Alignment(SwingConstants.RIGHT, "Right");
+	public static final Alignment RIGHT = new Alignment(SwingConstants.RIGHT, "Right");
 
-    private Alignment(int code, String label) {
-        super(code, label);
-    }
+	private Alignment(int code, String label) {
+		super(code, label);
+	}
 }

@@ -2,18 +2,18 @@ package org.springframework.richclient.layout;
 
 import javax.swing.SwingConstants;
 
-import org.springframework.enums.ShortCodedEnum;
+import org.springframework.util.enums.support.ShortCodedLabeledEnum;
 
-public final class LabelOrientation extends ShortCodedEnum {
-    public static final LabelOrientation TOP = new LabelOrientation(SwingConstants.TOP, "Top");
+public final class LabelOrientation extends ShortCodedLabeledEnum {
+	public static final LabelOrientation TOP = new LabelOrientation(SwingConstants.TOP, "Top");
 
-    public static final LabelOrientation BOTTOM = new LabelOrientation(SwingConstants.BOTTOM, "Bottom");
+	public static final LabelOrientation BOTTOM = new LabelOrientation(SwingConstants.BOTTOM, "Bottom");
 
-    public static final LabelOrientation LEFT = new LabelOrientation(SwingConstants.LEFT, "Left");
+	public static final LabelOrientation LEFT = new LabelOrientation(SwingConstants.LEFT, "Left");
 
-    public static final LabelOrientation RIGHT = new LabelOrientation(SwingConstants.RIGHT, "Right");
+	public static final LabelOrientation RIGHT = new LabelOrientation(SwingConstants.RIGHT, "Right");
 
-    private LabelOrientation(int code, String label) {
-        super(code, label);
-    }
+	private LabelOrientation(int code, String label) {
+		super(code, label);
+	}
 }

@@ -17,9 +17,9 @@ package org.springframework.richclient.factory;
 
 import javax.swing.KeyStroke;
 
-import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-
 import junit.framework.TestCase;
+
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 
 /**
  * @author Peter De Bruycker

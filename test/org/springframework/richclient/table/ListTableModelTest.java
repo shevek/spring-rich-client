@@ -1,10 +1,10 @@
 package org.springframework.richclient.table;
 
-import junit.framework.TestCase;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 /**
  * @author peter.de.bruycker

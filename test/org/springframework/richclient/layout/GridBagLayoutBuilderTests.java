@@ -15,9 +15,12 @@
  */
 package org.springframework.richclient.layout;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import junit.framework.TestCase;
 

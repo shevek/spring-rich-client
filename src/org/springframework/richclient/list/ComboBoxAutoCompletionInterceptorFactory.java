@@ -151,12 +151,12 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
             if (inner instanceof JComboBox && !((JComboBox) inner).isEditable()) {
                 JComboBox comboBox = (JComboBox) inner;
                 // if combobox is showing CodedEnum's, install customer editor
-                if (comboBox.getRenderer() instanceof CodedEnumListRenderer) {
+                if (comboBox.getRenderer() instanceof LabeledEnumListRenderer) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Registering CodedEnumComboBoxEditor on ComboBox for property[" + propertyName
                                 + "]");
                     }
-                    comboBox.setEditor(new CodedEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
+                    comboBox.setEditor(new LabeledEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
                 } else {
                     if (comboBox.getRenderer() instanceof BeanPropertyValueListRenderer) {
                         if (logger.isDebugEnabled()) {

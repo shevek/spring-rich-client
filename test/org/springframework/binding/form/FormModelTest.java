@@ -27,7 +27,6 @@ import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.SwingFormModel;

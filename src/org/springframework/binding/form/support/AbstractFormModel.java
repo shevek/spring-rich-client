@@ -31,9 +31,9 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.binding.value.support.ValueModelWrapper;
+import org.springframework.richclient.application.Application;
 import org.springframework.rules.RulesSource;
 import org.springframework.util.Assert;
-import org.springframework.richclient.application.Application;
 
 /**
  * @author Oliver Hutchison

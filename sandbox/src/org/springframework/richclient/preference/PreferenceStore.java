@@ -19,7 +19,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.springframework.enums.CodedEnum;
+import org.springframework.util.enums.LabeledEnum;
 
 /**
  * A <code>PreferenceStore</code> holds preferences.
@@ -28,76 +28,76 @@ import org.springframework.enums.CodedEnum;
  */
 public interface PreferenceStore {
 
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+	public void addPropertyChangeListener(PropertyChangeListener listener);
 
-    public boolean getBoolean(String name);
+	public boolean getBoolean(String name);
 
-    public boolean getDefaultBoolean(String name);
+	public boolean getDefaultBoolean(String name);
 
-    public double getDefaultDouble(String name);
+	public double getDefaultDouble(String name);
 
-    public float getDefaultFloat(String name);
+	public float getDefaultFloat(String name);
 
-    public int getDefaultInt(String name);
+	public int getDefaultInt(String name);
 
-    public long getDefaultLong(String name);
+	public long getDefaultLong(String name);
 
-    public String getDefaultString(String name);
+	public String getDefaultString(String name);
 
-    public CodedEnum getDefaultCodedEnum(String name);
+	public LabeledEnum getDefaultLabeledEnum(String name);
 
-    public double getDouble(String name);
+	public double getDouble(String name);
 
-    public float getFloat(String name);
+	public float getFloat(String name);
 
-    public int getInt(String name);
+	public int getInt(String name);
 
-    public long getLong(String name);
+	public long getLong(String name);
 
-    public String getString(String name);
+	public String getString(String name);
 
-    public CodedEnum getCodedEnum(String name);
+	public LabeledEnum getLabeledEnum(String name);
 
-    public boolean isDefault(String name);
+	public boolean isDefault(String name);
 
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+	public void removePropertyChangeListener(PropertyChangeListener listener);
 
-    public void setDefault(String name, double value);
+	public void setDefault(String name, double value);
 
-    public void setDefault(String name, float value);
+	public void setDefault(String name, float value);
 
-    public void setDefault(String name, int value);
+	public void setDefault(String name, int value);
 
-    public void setDefault(String name, long value);
+	public void setDefault(String name, long value);
 
-    public void setDefault(String name, String defaultObject);
+	public void setDefault(String name, String defaultObject);
 
-    public void setDefault(String name, boolean value);
+	public void setDefault(String name, boolean value);
 
-    public void setDefault(String name, CodedEnum value);
+	public void setDefault(String name, LabeledEnum value);
 
-    public void setToDefault(String name);
+	public void setToDefault(String name);
 
-    public void setValue(String name, double value);
+	public void setValue(String name, double value);
 
-    public void setValue(String name, float value);
+	public void setValue(String name, float value);
 
-    public void setValue(String name, int value);
+	public void setValue(String name, int value);
 
-    public void setValue(String name, long value);
+	public void setValue(String name, long value);
 
-    public void setValue(String name, String value);
+	public void setValue(String name, String value);
 
-    public void setValue(String name, boolean value);
+	public void setValue(String name, boolean value);
 
-    public void setValue(String name, CodedEnum value);
+	public void setValue(String name, LabeledEnum value);
 
-    public boolean isDirty();
+	public boolean isDirty();
 
-    public void export(OutputStream out) throws IOException;
+	public void export(OutputStream out) throws IOException;
 
-    public void save() throws IOException;
+	public void save() throws IOException;
 
-    public void load() throws IOException;
+	public void load() throws IOException;
 
 }

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.richclient.image.ImageSource;
 
 /**
  * Tests the image loading and caching library.

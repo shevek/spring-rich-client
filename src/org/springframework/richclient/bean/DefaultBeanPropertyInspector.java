@@ -27,11 +27,11 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.springframework.enums.CodedEnum;
 import org.springframework.richclient.table.TableUtils;
 import org.springframework.richclient.table.renderer.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderer.OptimizedTableCellRenderer;
 import org.springframework.richclient.treetable.JTreeTable;
+import org.springframework.util.enums.LabeledEnum;
 
 /**
  * A base implementation of a BeanPropertyInspector implemented as a tree table.
@@ -90,8 +90,8 @@ public class DefaultBeanPropertyInspector implements BeanPropertyInspector {
             if (r == null) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (value != null) {
-                    if (CodedEnum.class.isAssignableFrom(value.getClass())) {
-                        setText(((CodedEnum)value).getLabel());
+                    if (LabeledEnum.class.isAssignableFrom(value.getClass())) {
+                        setText(((LabeledEnum)value).getLabel());
                     }
                 }
                 setHorizontalAlignment(SwingConstants.LEFT);

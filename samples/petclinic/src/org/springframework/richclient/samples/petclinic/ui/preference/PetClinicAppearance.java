@@ -19,25 +19,25 @@ import org.springframework.richclient.preference.PreferenceStore;
 
 public class PetClinicAppearance {
 
-    public final static String DIALOG_PAGE_TYPE = "appearance.dialogPageType";
+	public final static String DIALOG_PAGE_TYPE = "appearance.dialogPageType";
 
-    public PetClinicAppearance() {
-    }
+	public PetClinicAppearance() {
+	}
 
-    public void load(PreferenceStore preferenceStore) {
-        dialogPageType = (CompositeDialogPageType) preferenceStore.getCodedEnum(DIALOG_PAGE_TYPE);
-        if(dialogPageType == null) {
-            dialogPageType = (CompositeDialogPageType) preferenceStore.getDefaultCodedEnum(DIALOG_PAGE_TYPE);
-        }
-    }
+	public void load(PreferenceStore preferenceStore) {
+		dialogPageType = (CompositeDialogPageType)preferenceStore.getLabeledEnum(DIALOG_PAGE_TYPE);
+		if (dialogPageType == null) {
+			dialogPageType = (CompositeDialogPageType)preferenceStore.getDefaultLabeledEnum(DIALOG_PAGE_TYPE);
+		}
+	}
 
-    private CompositeDialogPageType dialogPageType;
+	private CompositeDialogPageType dialogPageType;
 
-    public CompositeDialogPageType getDialogPageType() {
-        return dialogPageType;
-    }
+	public CompositeDialogPageType getDialogPageType() {
+		return dialogPageType;
+	}
 
-    public void setDialogPageType(CompositeDialogPageType type) {
-        dialogPageType = type;
-    }
+	public void setDialogPageType(CompositeDialogPageType type) {
+		dialogPageType = type;
+	}
 }

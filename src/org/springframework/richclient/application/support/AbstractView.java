@@ -23,8 +23,8 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.application.PageComponentContext;
-import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.PageComponentDescriptor;
+import org.springframework.richclient.application.View;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;

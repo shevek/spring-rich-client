@@ -26,7 +26,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableModel;
 
 import org.springframework.util.Assert;
-import org.springframework.util.DefaultObjectStyler;
+import org.springframework.util.Styler;
 
 /**
  * A sorter for TableModels. The sorter has a model (conforming to TableModel)
@@ -141,7 +141,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
     public int[] sortByColumns(ColumnToSort[] columnsToSort, int[] preSortSelectedRows) {
         int[] modelIndexes = new int[preSortSelectedRows.length];
         if (logger.isDebugEnabled()) {
-            logger.debug("Selected row indexes before sort" + DefaultObjectStyler.call(preSortSelectedRows));
+            logger.debug("Selected row indexes before sort" + Styler.call(preSortSelectedRows));
         }
         for (int i = 0; i < preSortSelectedRows.length; i++) {
             modelIndexes[i] = convertSortedIndexToDataIndex(preSortSelectedRows[i]);
@@ -153,7 +153,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
             postSortSelectedRows[i] = convertModelToRowIndex(modelIndexes[i]);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Selected row indexes after sort" + DefaultObjectStyler.call(postSortSelectedRows));
+            logger.debug("Selected row indexes after sort" + Styler.call(postSortSelectedRows));
         }
         notifyTableChanged();
         return postSortSelectedRows;

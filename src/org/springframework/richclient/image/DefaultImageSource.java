@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapTemplate;
-import org.springframework.util.DefaultObjectStyler;
+import org.springframework.util.Styler;
 import org.springframework.util.ToStringCreator;
 
 /**
@@ -39,142 +39,139 @@ import org.springframework.util.ToStringCreator;
  * @author Keith Donald
  */
 public class DefaultImageSource implements ImageSource {
-    protected static final Log logger = LogFactory.getLog(DefaultImageSource.class);
+	protected static final Log logger = LogFactory.getLog(DefaultImageSource.class);
 
-    private Map imageResources;
+	private Map imageResources;
 
-    private ImageCache imageCache;
+	private ImageCache imageCache;
 
-    private AwtImageResource brokenImageIndicatorResource;
+	private AwtImageResource brokenImageIndicatorResource;
 
-    private Image brokenImageIndicator;
+	private Image brokenImageIndicator;
 
-    /**
-     * Creates a image resource bundle containing the specified map of keys to
-     * resource paths.
-     * <p>
-     * A custom URL protocol {@link Handler handler}will be installed for the
-     * "image:" protocol. This allows for images in this image source to be
-     * located using the Java URL classes: <br>
-     * <code>URL imageUrl = new URL("image:the.image.key")</code>
-     * 
-     * @param imageResources
-     *            a map of key-to-image-resources.
-     */
-    public DefaultImageSource(Map imageResources) {
-        this(true, imageResources);
-    }
+	/**
+	 * Creates a image resource bundle containing the specified map of keys to
+	 * resource paths.
+	 * <p>
+	 * A custom URL protocol {@link Handler handler}will be installed for the
+	 * "image:" protocol. This allows for images in this image source to be
+	 * located using the Java URL classes: <br>
+	 * <code>URL imageUrl = new URL("image:the.image.key")</code>
+	 * 
+	 * @param imageResources a map of key-to-image-resources.
+	 */
+	public DefaultImageSource(Map imageResources) {
+		this(true, imageResources);
+	}
 
-    /**
-     * Creates a image resource bundle containing the specified map of keys to
-     * resource paths.
-     * 
-     * @param installUrlHandler
-     *            should a URL handler be installed.
-     * @param imageResources
-     *            a map of key-to-image-resources.
-     */
-    public DefaultImageSource(boolean installUrlHandler, Map imageResources) {
-        Assert.notNull(imageResources);
-        this.imageResources = new HashMap(imageResources);
-        debugPrintResources();
-        this.imageCache = new ImageCache();
-        if (installUrlHandler) {
-            Handler.installImageUrlHandler(this);
-        }
-    }
+	/**
+	 * Creates a image resource bundle containing the specified map of keys to
+	 * resource paths.
+	 * 
+	 * @param installUrlHandler should a URL handler be installed.
+	 * @param imageResources a map of key-to-image-resources.
+	 */
+	public DefaultImageSource(boolean installUrlHandler, Map imageResources) {
+		Assert.notNull(imageResources);
+		this.imageResources = new HashMap(imageResources);
+		debugPrintResources();
+		this.imageCache = new ImageCache();
+		if (installUrlHandler) {
+			Handler.installImageUrlHandler(this);
+		}
+	}
 
-    private void debugPrintResources() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Initialing image source with resources: " + DefaultObjectStyler.call(this.imageResources));
-        }
-    }
+	private void debugPrintResources() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Initialing image source with resources: " + Styler.call(this.imageResources));
+		}
+	}
 
-    public Image getImage(String key) {
-        Assert.notNull(key);
-        AwtImageResource resource = getImageResource(key);
-        try {
-            return (Image)imageCache.get(resource);
-        }
-        catch (RuntimeException e) {
-            if (brokenImageIndicator != null) {
-                return returnBrokenImageIndicator(resource);
-            }
-            throw e;
-        }
-    }
+	public Image getImage(String key) {
+		Assert.notNull(key);
+		AwtImageResource resource = getImageResource(key);
+		try {
+			return (Image)imageCache.get(resource);
+		}
+		catch (RuntimeException e) {
+			if (brokenImageIndicator != null) {
+				return returnBrokenImageIndicator(resource);
+			}
+			throw e;
+		}
+	}
 
-    public AwtImageResource getImageResource(String key) {
-        Assert.notNull(key);
-        Resource resource = (Resource)imageResources.get(key);
-        if (resource == null) {
-            throw new NoSuchImageResourceException(key);
-        }
-        try {
-            resource.getInputStream();
-            return new AwtImageResource(resource);
-        }
-        catch (IOException e) {
-            if (brokenImageIndicatorResource == null) {
-                throw new NoSuchImageResourceException(resource, e);
-            }
-            logger.warn("Unable to load image resource at '" + resource + "'; returning the broken image indicator.");
-            return brokenImageIndicatorResource;
-        }
-    }
+	public AwtImageResource getImageResource(String key) {
+		Assert.notNull(key);
+		Resource resource = (Resource)imageResources.get(key);
+		if (resource == null) {
+			throw new NoSuchImageResourceException(key);
+		}
+		try {
+			resource.getInputStream();
+			return new AwtImageResource(resource);
+		}
+		catch (IOException e) {
+			if (brokenImageIndicatorResource == null) {
+				throw new NoSuchImageResourceException(resource, e);
+			}
+			logger.warn("Unable to load image resource at '" + resource + "'; returning the broken image indicator.");
+			return brokenImageIndicatorResource;
+		}
+	}
 
-    public boolean containsKey(Object key) {
-        return imageResources.containsKey(key);
-    }
+	public boolean containsKey(Object key) {
+		return imageResources.containsKey(key);
+	}
 
-    private Image returnBrokenImageIndicator(Resource resource) {
-        logger.warn("Unable to load image resource at '" + resource + "'; returning the broken image indicator.");
-        return brokenImageIndicator;
-    }
+	private Image returnBrokenImageIndicator(Resource resource) {
+		logger.warn("Unable to load image resource at '" + resource + "'; returning the broken image indicator.");
+		return brokenImageIndicator;
+	}
 
-    public Image getImageAtLocation(Resource location) {
-        try {
-            return new AwtImageResource(location).getImage();
-        }
-        catch (IOException e) {
-            if (brokenImageIndicator == null) {
-                throw new NoSuchImageResourceException(location, e);
-            }
-            return returnBrokenImageIndicator(location);
-        }
-    }
+	public Image getImageAtLocation(Resource location) {
+		try {
+			return new AwtImageResource(location).getImage();
+		}
+		catch (IOException e) {
+			if (brokenImageIndicator == null) {
+				throw new NoSuchImageResourceException(location, e);
+			}
+			return returnBrokenImageIndicator(location);
+		}
+	}
 
-    public int size() {
-        return imageResources.size();
-    }
+	public int size() {
+		return imageResources.size();
+	}
 
-    public void setBrokenImageIndicator(Resource resource) {
-        try {
-            brokenImageIndicatorResource = new AwtImageResource(resource);
-            brokenImageIndicator = brokenImageIndicatorResource.getImage();
-        }
-        catch (IOException e) {
-            brokenImageIndicatorResource = null;
-            throw new NoSuchImageResourceException(resource, e);
-        }
-    }
+	public void setBrokenImageIndicator(Resource resource) {
+		try {
+			brokenImageIndicatorResource = new AwtImageResource(resource);
+			brokenImageIndicator = brokenImageIndicatorResource.getImage();
+		}
+		catch (IOException e) {
+			brokenImageIndicatorResource = null;
+			throw new NoSuchImageResourceException(resource, e);
+		}
+	}
 
-    public String toString() {
-        return new ToStringCreator(this).append("imageResources", imageResources).toString();
-    }
+	public String toString() {
+		return new ToStringCreator(this).append("imageResources", imageResources).toString();
+	}
 
-    private static class ImageCache extends CachingMapTemplate {
-        public ImageCache() {
-            super(true);
-        }
+	private static class ImageCache extends CachingMapTemplate {
+		public ImageCache() {
+			super(true);
+		}
 
-        public Object create(Object resource) {
-            try {
-                return ((AwtImageResource)resource).getImage();
-            }
-            catch (IOException e) {
-                throw new NoSuchImageResourceException("No image found at resource '" + resource + '"', e);
-            }
-        }
-    }
+		public Object create(Object resource) {
+			try {
+				return ((AwtImageResource)resource).getImage();
+			}
+			catch (IOException e) {
+				throw new NoSuchImageResourceException("No image found at resource '" + resource + '"', e);
+			}
+		}
+	}
 }

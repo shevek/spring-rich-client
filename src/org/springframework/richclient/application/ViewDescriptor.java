@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 
 /**
  * Metadata about a view; a view descriptor is effectively a singleton view

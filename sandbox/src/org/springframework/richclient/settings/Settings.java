@@ -18,74 +18,95 @@ package org.springframework.richclient.settings;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-import org.springframework.enums.CodedEnum;
+import org.springframework.util.enums.LabeledEnum;
 
 /**
  * @author Peter De Bruycker
  */
-public interface Settings
-{
+public interface Settings {
 	public void setString(String key, String value);
+
 	public String getString(String key);
 
 	public void setDefaultString(String key, String value);
+
 	public String getDefaultString(String key);
 
 	public void setInt(String key, int value);
+
 	public int getInt(String key);
 
 	public void setLong(String key, long value);
+
 	public long getLong(String key);
 
 	public void setDefaultInt(String key, int value);
+
 	public int getDefaultInt(String key);
 
 	public void setDefaultLong(String key, long value);
+
 	public long getDefaultLong(String key);
 
 	public void setFloat(String key, float value);
+
 	public float getFloat(String key);
 
 	public void setDefaultFloat(String key, float value);
+
 	public float getDefaultFloat(String key);
 
 	public void setDouble(String key, double value);
+
 	public double getDouble(String key);
 
 	public void setDefaultDouble(String key, double value);
+
 	public double getDefaultDouble(String key);
 
 	public void setBoolean(String key, boolean value);
+
 	public boolean getBoolean(String key);
 
 	public void setDefaultBoolean(String key, boolean value);
+
 	public boolean getDefaultBoolean(String key);
 
-	public void setCodedEnum(String key, CodedEnum value);
-	public CodedEnum getCodedEnum(String key);
+	public void setLabeledEnum(String key, LabeledEnum value);
 
-	public void setDefaultCodedEnum(String key, CodedEnum value);
-	public CodedEnum getDefaultCodedEnum(String key);
+	public LabeledEnum getLabeledEnum(String key);
+
+	public void setDefaultLabeledEnum(String key, LabeledEnum value);
+
+	public LabeledEnum getDefaultLabeledEnum(String key);
 
 	public boolean isDefault(String key);
 
 	public String[] getKeys();
+
 	public String[] getDefaultKeys();
+
 	public String[] getAllKeys();
 
 	public void save() throws IOException;
+
 	public void load() throws IOException;
 
 	public Settings getSettings(String name);
+
 	public String getName();
+
 	public Settings getParent();
 
 	public void addPropertyChangeListener(PropertyChangeListener l);
+
 	public void addPropertyChangeListener(String key, PropertyChangeListener l);
+
 	public void removePropertyChangeListener(PropertyChangeListener l);
+
 	public void removePropertyChangeListener(String key, PropertyChangeListener l);
-	
+
 	public boolean contains(String key);
-	
+
 	public void remove(String key);
 }

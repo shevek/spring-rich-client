@@ -15,15 +15,15 @@
  */
 package org.springframework.richclient.samples.petclinic.ui.preference;
 
-import org.springframework.enums.StringCodedEnum;
+import org.springframework.util.enums.support.StringCodedLabeledEnum;
 
-public class CompositeDialogPageType extends StringCodedEnum {
+public class CompositeDialogPageType extends StringCodedLabeledEnum {
 
-    public static final CompositeDialogPageType TABBED = new CompositeDialogPageType("tabbed");
+	public static final CompositeDialogPageType TABBED = new CompositeDialogPageType("tabbed");
 
-    public static final CompositeDialogPageType TREE = new CompositeDialogPageType("tree");
+	public static final CompositeDialogPageType TREE = new CompositeDialogPageType("tree");
 
-    private CompositeDialogPageType(String name) {
-        super(name);
-    }
+	private CompositeDialogPageType(String name) {
+		super(name);
+	}
 }
