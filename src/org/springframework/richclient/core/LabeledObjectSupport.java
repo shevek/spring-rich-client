@@ -23,6 +23,7 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.command.config.CommandButtonLabelConfigurable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.image.config.ImageConfigurable;
@@ -34,9 +35,9 @@ import org.springframework.util.ToStringBuilder;
  * 
  * @author Keith Donald
  */
-public class LabeledObjectSupport implements ManagedElement,
-        CommandButtonLabelConfigurable, ImageConfigurable,
-        DescriptionConfigurable, TitleConfigurable {
+public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
+        implements ManagedElement, CommandButtonLabelConfigurable,
+        ImageConfigurable, DescriptionConfigurable, TitleConfigurable {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private CommandButtonLabelInfo label;

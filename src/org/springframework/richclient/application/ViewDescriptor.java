@@ -23,6 +23,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.util.Assert;
@@ -42,31 +43,74 @@ public class ViewDescriptor extends LabeledObjectSupport implements
 
     private Map viewProperties;
 
-    private ApplicationEventMulticaster eventMulticaster;
-
+    /**
+     * Sets the class that is the implementation of the View described by this
+     * descriptor.
+     * 
+     * @param viewClass
+     */
     public void setViewClass(Class viewClass) {
         this.viewClass = viewClass;
     }
 
+    /**
+     * Sets the map of properties to inject when new view instances 
+     * are instantiated by this descriptor.
+     * 
+     * @param viewClass
+     */
     public void setViewProperties(Map viewProperties) {
         this.viewProperties = viewProperties;
     }
 
-    public void setApplicationEventMulticaster(ApplicationEventMulticaster e) {
-        this.eventMulticaster = e;
+    /**
+     * Lookup and return the event multicaster (broadcaster) stored within the
+     * application context (service registry) of this application. If no
+     * multicaster, bean is defined, null is returned, and View instances
+     * created by this ViewDescriptor will not be wired as ApplicationListeners.
+     * 
+     * @return The event multicaster
+     */
+    public ApplicationEventMulticaster getApplicationEventMulticaster() {
+        if (getApplicationContext() != null) {
+            if (getApplicationContext()
+                    .containsBean(
+                            AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) { return (ApplicationEventMulticaster)getApplicationContext()
+                    .getBean(
+                            AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME); }
+        }
+        return null;
     }
 
     public void afterPropertiesSet() {
         Assert.notNull(viewClass, "The viewClass property must be specified");
     }
 
+    /**
+     * Factory method that produces a new instance of the View described by this
+     * view descriptor each time it is called. The new view instance is
+     * instantiated (it must have a default constructor), and any configured
+     * view properties are injected. If the view is an instance of
+     * ApplicationListener, and an ApplicationEventMulticaster is configured in
+     * this application's ApplicationContext, the view is registered as an
+     * ApplicationListener.
+     * 
+     * @return The new view prototype
+     */
     public View createView() {
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
         View view = (View)o;
-        if (eventMulticaster != null && view instanceof ApplicationListener) {
-            eventMulticaster.addApplicationListener((ApplicationListener)view);
+        if (view instanceof ApplicationListener
+                && getApplicationEventMulticaster() != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Registering new view instance '"
+                        + view.getDisplayName()
+                        + "' as an application event listener...");
+            }
+            getApplicationEventMulticaster().addApplicationListener(
+                    (ApplicationListener)view);
         }
         if (viewProperties != null) {
             BeanWrapper wrapper = new BeanWrapperImpl(view);
@@ -75,6 +119,14 @@ public class ViewDescriptor extends LabeledObjectSupport implements
         return view;
     }
 
+    /**
+     * Create a command that when executed, will attempt to show the view
+     * described by this descriptor in the provided application window.
+     * 
+     * @param window
+     *            The window
+     * @return The show view command.
+     */
     public ActionCommand createActionCommand(ApplicationWindow window) {
         return new ShowViewCommand(this, window);
     }

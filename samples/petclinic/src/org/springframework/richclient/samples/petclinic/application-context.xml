@@ -22,6 +22,8 @@
 
 	<bean id="applicationObjectConfigurer" class="org.springframework.richclient.application.config.ApplicationObjectConfigurer"/>
 
+	<bean id="applicationEventMulticaster" class="org.springframework.context.event.SimpleApplicationEventMulticaster"/>
+	
   	<bean id="componentFactory" class="org.springframework.richclient.factory.DefaultComponentFactory">
   		<property name="iconSource"><ref bean="iconSource"/></property>
   	</bean>
