@@ -62,18 +62,12 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
         return formBuilder.getForm();
     }
 
-    /**
-     * @see org.springframework.richclient.forms.BeanFormBuilder#add(java.lang.String)
-     */
     public JComponent add(String propertyName) {
         JComponent propertyEditor = formModel.createBoundControl(propertyName);
         formBuilder.add(getPropertyLabelCode(propertyName), propertyEditor);
         return propertyEditor;
     }
 
-    /**
-     * @see org.springframework.richclient.forms.BeanFormBuilder#addTextArea(java.lang.String)
-     */
     public JTextArea addTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
         formBuilder.add(getPropertyLabelCode(propertyName), "left,top",
