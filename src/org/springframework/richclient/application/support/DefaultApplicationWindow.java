@@ -16,6 +16,8 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -39,10 +41,6 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
-import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
-import org.springframework.richclient.application.support.DefaultApplicationPage;
-import org.springframework.richclient.application.support.DefaultApplicationWindowConfigurer;
-import org.springframework.richclient.application.support.SingleViewPageDescriptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
@@ -191,7 +189,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
         Assert.state(getServices().containsBean(pageDescriptorId),
                 "Do not know about page or view descriptor with name '" + pageDescriptorId
-                        + "' - check your context config");
+                + "' - check your context config");
         Object desc = getServices().getBean(pageDescriptorId);
         if (desc instanceof PageDescriptor) {
             return (PageDescriptor)desc;
@@ -221,7 +219,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         prepareWindowForView(windowControl, configurer);
     }
 
-    protected void applyStandardLayout(JFrame windowControl, ApplicationWindowConfigurer configurer) {
+    protected void applyStandardLayout(JFrame windowControl,
+                                       ApplicationWindowConfigurer configurer) {
         windowControl.setTitle(configurer.getTitle());
         windowControl.setIconImage(configurer.getImage());
         windowControl.setJMenuBar(createMenuBarControl());
@@ -234,10 +233,29 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         windowControl.getContentPane().add(this.currentPage.getControl());
     }
 
-    protected void prepareWindowForView(JFrame windowControl, ApplicationWindowConfigurer configurer) {
+    protected void prepareWindowForView(JFrame windowControl,
+                                        ApplicationWindowConfigurer configurer) {
         windowControl.pack();
         windowControl.setSize(configurer.getInitialSize());
-        windowControl.setLocationRelativeTo(null);
+
+        // This works around a bug in setLocationRelativeTo(...): it currently
+        // does not take multiple monitors into accounts on all operating
+        // systems.
+        try {
+            // Note that if this is running on a JVM prior to 1.4, then an
+            // exception will be thrown and we will fall back to
+            // setLocationRelativeTo(...).
+            final Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getMaximumWindowBounds();
+
+            final Dimension windowSize = windowControl.getSize();
+            final int x = screenBounds.x + ((screenBounds.width - windowSize.width) / 2);
+            final int y = screenBounds.y + ((screenBounds.height - windowSize.height) / 2);
+            windowControl.setLocation(x, y);
+        }
+        catch (Throwable t) {
+            windowControl.setLocationRelativeTo(null);
+        }
     }
 
     protected JFrame createNewWindowControl() {
