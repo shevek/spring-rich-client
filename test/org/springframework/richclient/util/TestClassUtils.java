@@ -38,12 +38,16 @@ public class TestClassUtils extends TestCase {
         assertTrue(ClassUtils.isAProperty(B.class, "something"));
         assertTrue(ClassUtils.isAProperty(E.class, "something"));
         assertTrue(ClassUtils.isAProperty(A.class, "something"));
+        assertTrue(ClassUtils.isAProperty(F.class, "eeProperty.deProperty"));
     }
 
 
     public void testGetPropertyClass() throws Exception {
         assertEquals(String.class,
             ClassUtils.getPropertyClass(B.class, "something"));
+
+        assertEquals(D.class,
+            ClassUtils.getPropertyClass(F.class, "eeProperty.deProperty"));
     }
 
 
@@ -73,6 +77,31 @@ public class TestClassUtils extends TestCase {
     }
 
     static class E extends D {
+        private D deProperty;
+
+
+        public D getDeProperty() {
+            return deProperty;
+        }
+
+
+        public void setDeProperty(D deProperty) {
+            this.deProperty = deProperty;
+        }
+    }
+
+    static class F {
+        private E eeProperty;
+
+
+        public E getEeProperty() {
+            return eeProperty;
+        }
+
+
+        public void setEeProperty(E eeProperty) {
+            this.eeProperty = eeProperty;
+        }
     }
 
 }

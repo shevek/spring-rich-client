@@ -342,6 +342,16 @@ public class ClassUtils {
 
 
     private static Method getGetterMethod(Class theClass, String propertyName) {
+        // handle "embedded/dotted" properties
+        if (propertyName.indexOf('.') > -1) {
+            final int index = propertyName.indexOf('.');
+            final String firstPropertyName = propertyName.substring(0, index);
+            final String restOfPropertyName = propertyName.substring(index+1, propertyName.length());
+            final Class firstPropertyClass =
+                getPropertyClass(theClass, firstPropertyName);
+            return getGetterMethod(firstPropertyClass, restOfPropertyName);
+        }
+
         final String getterName = "get" +
             propertyName.substring(0, 1).toUpperCase() +
             (propertyName.length() == 1 ? "" : propertyName.substring(1));
@@ -372,6 +382,16 @@ public class ClassUtils {
 
 
     private static Method getSetterMethod(Class theClass, String propertyName) {
+        // handle "embedded/dotted" properties
+        if (propertyName.indexOf('.') > -1) {
+            final int index = propertyName.indexOf('.');
+            final String firstPropertyName = propertyName.substring(0, index);
+            final String restOfPropertyName = propertyName.substring(index+1, propertyName.length());
+            final Class firstPropertyClass =
+                getPropertyClass(theClass, firstPropertyName);
+            return getSetterMethod(firstPropertyClass, restOfPropertyName);
+        }
+
         final String setterName = "set" +
             propertyName.substring(0, 1).toUpperCase() +
             (propertyName.length() == 1 ? "" : propertyName.substring(1));
