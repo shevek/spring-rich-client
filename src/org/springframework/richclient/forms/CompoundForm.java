@@ -13,11 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.dialog;
+package org.springframework.richclient.forms;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.richclient.forms.SwingFormModel;
 
 /**
  * @author Keith Donald
