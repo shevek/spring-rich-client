@@ -17,6 +17,8 @@ package org.springframework.richclient.application.config;
 
 import java.awt.Image;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationInfo;
 import org.springframework.richclient.application.ApplicationWindow;
@@ -31,6 +33,9 @@ import org.springframework.richclient.progress.StatusBarCommandGroup;
 public abstract class ApplicationAdvisor {
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
+    private static final Log logger = LogFactory
+            .getLog(ApplicationAdvisor.class);
+
     private Application application;
 
     private ApplicationInfo applicationInfo;
@@ -38,6 +43,27 @@ public abstract class ApplicationAdvisor {
     private ApplicationWindow managedWindow;
 
     private boolean introShown;
+
+    static {
+        System
+                .getProperties()
+                .put(
+                        "sun.awt.exception.handler",
+                        "org.springframework.richclient.application.config.ApplicationAdvisor$EventExceptionHandler");
+    }
+
+    /**
+     * Logs any event loop exception not caught; makes use of the hack Sun
+     * created to get around not having a good API for doing this. Doesn't work
+     * for JDK 1.1.
+     * 
+     * See java.awt.EventDispatchThread#handleException(Throwable)
+     */
+    public static class EventExceptionHandler {
+        public void handle(Throwable t) {
+            logger.error(t.getMessage(), t);
+        }
+    }
 
     public void setApplicationInfo(ApplicationInfo info) {
         this.applicationInfo = info;
@@ -66,7 +92,7 @@ public abstract class ApplicationAdvisor {
         }
         else {
             return Application.services().getImage(
-                DEFAULT_APPLICATION_IMAGE_KEY);
+                    DEFAULT_APPLICATION_IMAGE_KEY);
         }
     }
 
