@@ -42,7 +42,7 @@ public class GlobalCommandTargeter extends AbstractViewListener {
                 .hasNext();) {
             TargetableActionCommand globalCommand = (TargetableActionCommand)i
                     .next();
-            globalCommand.setCommandDelegate(viewContext
+            globalCommand.setCommandExecutor(viewContext
                     .findGlobalCommandDelegate(globalCommand.getId()));
         }
     }

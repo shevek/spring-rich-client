@@ -71,7 +71,7 @@
 	
 	<bean id="newOwnerCommand" 
 		class="org.springframework.richclient.command.TargetableActionCommand">
-		<property name="commandDelegate">
+		<property name="commandExecutor">
 			<ref bean="newOwnerWizard"/>
 		</property>
 	</bean>

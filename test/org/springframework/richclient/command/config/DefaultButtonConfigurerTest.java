@@ -18,9 +18,9 @@ package org.springframework.richclient.command.config;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 
-import org.springframework.richclient.image.EmptyIcon;
-
 import junit.framework.TestCase;
+
+import org.springframework.richclient.image.EmptyIcon;
 
 /**
  * @author Peter De Bruycker
@@ -28,7 +28,9 @@ import junit.framework.TestCase;
 public class DefaultButtonConfigurerTest extends TestCase {
 
     private CommandFaceDescriptor descriptor;
+
     private TestableIconInfo iconInfo;
+
     private TestableLabelInfo labelInfo;
 
     /*
@@ -40,41 +42,43 @@ public class DefaultButtonConfigurerTest extends TestCase {
         descriptor = new CommandFaceDescriptor();
         iconInfo = new TestableIconInfo();
         labelInfo = new TestableLabelInfo();
-        descriptor.setCommandButtonIconInfo(iconInfo);
-        descriptor.setCommandButtonLabelInfo(labelInfo);
+        descriptor.setIconInfo(iconInfo);
+        descriptor.setLabelInfo(labelInfo);
         descriptor.setCaption("Tool tip");
     }
 
     public void testConfigureWithNullDescriptor() {
         DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
         try {
-            configurer.configure(null, new JButton());
+            configurer.configure(new JButton(), null, null);
             fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
     }
-    
+
     public void testConfigureWithNullButton() {
         DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
         try {
-            configurer.configure(descriptor, null);
+            configurer.configure(null, null, descriptor);
             fail("Should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             pass();
         }
     }
-    
+
     public void testConfigure() {
         JButton button = new JButton();
         DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
-        configurer.configure(descriptor, button);
-        
+        configurer.configure(button, null, descriptor);
+
         assertEquals(labelInfo.configuredButton, button);
         assertEquals(iconInfo.configuredButton, button);
         assertEquals("Tool tip", button.getToolTipText());
     }
-    
+
     private static void pass() {
         // test passes
     }

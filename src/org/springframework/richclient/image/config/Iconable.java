@@ -13,18 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.command.config;
+package org.springframework.richclient.image.config;
+
+import javax.swing.Icon;
 
 /**
- * An object that can be labeled; where a label consists of text, mnemonic, and
- * potentially an accelerator key.
- * 
  * @author Keith Donald
  */
-public interface CommandButtonLabelConfigurable {
-
-    /**
-     * @param label
-     */
-    public void setCommandButtonLabelInfo(CommandButtonLabelInfo label);
+public interface Iconable {
+    public void setIcon(Icon icon);
 }

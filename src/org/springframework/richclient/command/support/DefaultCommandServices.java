@@ -21,6 +21,7 @@ import java.awt.SystemColor;
 import javax.swing.AbstractButton;
 import javax.swing.SwingConstants;
 
+import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
@@ -48,8 +49,9 @@ public class DefaultCommandServices implements CommandServices {
     private CommandButtonConfigurer defaultButtonConfigurer = new DefaultButtonConfigurer();
 
     private CommandButtonConfigurer toolBarButtonConfigurer = new DefaultButtonConfigurer() {
-        public void configure(CommandFaceDescriptor face, AbstractButton button) {
-            super.configure(face, button);
+        public void configure(AbstractButton button, AbstractCommand command,
+                CommandFaceDescriptor faceDescriptor) {
+            super.configure(button, command, faceDescriptor);
             if (button.getIcon() != null) {
                 button.setText("");
             }
@@ -58,26 +60,52 @@ public class DefaultCommandServices implements CommandServices {
     };
 
     private CommandButtonConfigurer menuItemButtonConfigurer = new DefaultButtonConfigurer() {
-        public void configure(CommandFaceDescriptor face, AbstractButton button) {
-            super.configure(face, button);
+        public void configure(AbstractButton button, AbstractCommand command,
+                CommandFaceDescriptor faceDescriptor) {
+            super.configure(button, command, faceDescriptor);
             button.setToolTipText(null);
         }
     };
 
     private CommandButtonConfigurer pullDownMenuButtonConfigurer = new DefaultButtonConfigurer() {
-        public void configure(CommandFaceDescriptor face, AbstractButton button) {
-            super.configure(face, button);
+        public void configure(AbstractButton button, AbstractCommand command,
+                CommandFaceDescriptor faceDescriptor) {
+            super.configure(button, command, faceDescriptor);
             button.setIcon(PULL_DOWN_ICON);
             button.setHorizontalTextPosition(SwingConstants.LEADING);
         }
     };
 
-    private DefaultCommandServices() {
-
-    }
-
     public static final CommandServices instance() {
         return INSTANCE;
+    }
+
+    public void setButtonFactory(ButtonFactory buttonFactory) {
+        this.buttonFactory = buttonFactory;
+    }
+
+    public void setMenuFactory(MenuFactory menuFactory) {
+        this.menuFactory = menuFactory;
+    }
+
+    public void setDefaultButtonConfigurer(
+            CommandButtonConfigurer defaultButtonConfigurer) {
+        this.defaultButtonConfigurer = defaultButtonConfigurer;
+    }
+
+    public void setToolBarButtonConfigurer(
+            CommandButtonConfigurer toolBarButtonConfigurer) {
+        this.toolBarButtonConfigurer = toolBarButtonConfigurer;
+    }
+
+    public void setMenuItemButtonConfigurer(
+            CommandButtonConfigurer menuItemButtonConfigurer) {
+        this.menuItemButtonConfigurer = menuItemButtonConfigurer;
+    }
+
+    public void setPullDownMenuButtonConfigurer(
+            CommandButtonConfigurer pullDownMenuButtonConfigurer) {
+        this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
     }
 
     public ButtonFactory getButtonFactory() {
@@ -102,34 +130,6 @@ public class DefaultCommandServices implements CommandServices {
 
     public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
         return pullDownMenuButtonConfigurer;
-    }
-
-    public void setButtonFactory(ButtonFactory buttonFactory) {
-        this.buttonFactory = buttonFactory;
-    }
-
-    public void setDefaultButtonConfigurer(
-            CommandButtonConfigurer defaultButtonConfigurer) {
-        this.defaultButtonConfigurer = defaultButtonConfigurer;
-    }
-
-    public void setMenuFactory(MenuFactory menuFactory) {
-        this.menuFactory = menuFactory;
-    }
-
-    public void setMenuItemButtonConfigurer(
-            CommandButtonConfigurer menuItemButtonConfigurer) {
-        this.menuItemButtonConfigurer = menuItemButtonConfigurer;
-    }
-
-    public void setPullDownMenuButtonConfigurer(
-            CommandButtonConfigurer pullDownMenuButtonConfigurer) {
-        this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
-    }
-
-    public void setToolBarButtonConfigurer(
-            CommandButtonConfigurer toolBarButtonConfigurer) {
-        this.toolBarButtonConfigurer = toolBarButtonConfigurer;
     }
 
 }

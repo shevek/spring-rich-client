@@ -13,22 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.core;
+package org.springframework.richclient.command.config;
 
 /**
- * Implemented by object that can be described for display in a GUI.
+ * An object that can be labeled; where a label consists of text, mnemonic, and
+ * potentially an accelerator key.
  * 
  * @author Keith Donald
  */
-public interface DescriptionConfigurable {
-
-    /**
-     * @param shortDescription
-     */
-    public void setCaption(String shortDescription);
-
-    /**
-     * @param longDescription
-     */
-    public void setDescription(String longDescription);
+public interface CommandLabelable {
+    public void setLabelInfo(CommandButtonLabelInfo labelInfo);
 }

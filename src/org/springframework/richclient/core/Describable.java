@@ -15,18 +15,20 @@
  */
 package org.springframework.richclient.core;
 
-import org.springframework.richclient.factory.LabelInfo;
-
 /**
- * An object that can be labeled; where a label consists of text, mnemonic, and
- * potentially an accelerator key.
+ * Implemented by object that can be described for display in a GUI.
  * 
  * @author Keith Donald
  */
-public interface LabelConfigurable {
+public interface Describable {
 
     /**
-     * @param label
+     * @param shortDescription
      */
-    public void setLabel(LabelInfo label);
+    public void setCaption(String shortDescription);
+
+    /**
+     * @param longDescription
+     */
+    public void setDescription(String longDescription);
 }

@@ -15,11 +15,11 @@
  */
 package org.springframework.richclient.image.config;
 
-import javax.swing.Icon;
+import java.awt.Image;
 
 /**
  * @author Keith Donald
  */
-public interface IconConfigurable {
-    public void setIcon(Icon icon);
+public interface Imageable {
+    public void setImage(Image image);
 }

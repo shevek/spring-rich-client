@@ -20,7 +20,7 @@ package org.springframework.richclient.command;
  */
 public interface CommandFactory {
     public TargetableActionCommand createTargetableActionCommand(
-            String commandId, ActionCommandExecutor delegate);
+            String commandId, ActionCommandExecutor commandExecutor);
 
     public CommandGroup createCommandGroup(String groupId, Object[] members);
 

@@ -18,6 +18,8 @@ package org.springframework.richclient.command.config;
 /**
  * @author Keith Donald
  */
-public interface CommandButtonIconInfoConfigurable {
-    public void setCommandButtonIconInfo(CommandButtonIconInfo buttonIconInfo);
+public interface CommandIconable {
+    public void setIconInfo(CommandButtonIconInfo buttonIconInfo);
+
+    public void setLargeIconInfo(CommandButtonIconInfo buttonIconInfo);
 }

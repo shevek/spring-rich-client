@@ -387,37 +387,34 @@ public class CommandGroup extends AbstractCommand {
         }
     }
 
-    /**
-     * Creates a pull down button that, when clicked, displays a popup menu that
-     * displays this group's members.
-     * 
-     * @see org.springframework.richclient.command.AbstractCommand#createButton()
-     */
-    public AbstractButton createButton() {
-        return createButton(getButtonFactory(), getMenuFactory());
-    }
-
-    public AbstractButton createButton(ButtonFactory factory) {
-        return createButton(factory, getMenuFactory());
-    }
-
-    public AbstractButton createButton(ButtonFactory factory,
-            CommandButtonConfigurer configurer) {
-        return createButton(factory, getMenuFactory(), configurer);
+    public AbstractButton createButton(String faceDescriptorKey,
+            ButtonFactory buttonFactory,
+            CommandButtonConfigurer buttonConfigurer) {
+        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+                getMenuFactory(), buttonConfigurer);
     }
 
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory) {
-        return createButton(buttonFactory, menuFactory,
-                getPullDownMenuButtonConfigurer());
+        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+                menuFactory, getPullDownMenuButtonConfigurer());
     }
 
-    protected CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
-        return getCommandServices().getPullDownMenuButtonConfigurer();
+    public AbstractButton createButton(String faceDescriptorKey,
+            ButtonFactory buttonFactory, MenuFactory menuFactory) {
+        return createButton(faceDescriptorKey, buttonFactory, menuFactory,
+                getPullDownMenuButtonConfigurer());
     }
 
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory, CommandButtonConfigurer buttonConfigurer) {
+        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+                menuFactory, buttonConfigurer);
+    }
+
+    public AbstractButton createButton(String faceDescriptorKey,
+            ButtonFactory buttonFactory, MenuFactory menuFactory,
+            CommandButtonConfigurer buttonConfigurer) {
         JToggleButton button = buttonFactory.createToggleButton();
         attach(button, buttonConfigurer);
         JPopupMenu popup = menuFactory.createPopupMenu();
@@ -426,14 +423,15 @@ public class CommandGroup extends AbstractCommand {
         return button;
     }
 
-    public JMenuItem createMenuItem() {
-        return createMenuItem(getMenuFactory());
+    protected CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
+        return getCommandServices().getPullDownMenuButtonConfigurer();
     }
 
-    public JMenuItem createMenuItem(MenuFactory factory) {
+    public JMenuItem createMenuItem(String faceDescriptorKey,
+            MenuFactory factory, CommandButtonConfigurer buttonConfigurer) {
         JMenu menu = factory.createMenu();
         attach(menu);
-        bindMembers(menu, menu, factory, getMenuItemButtonConfigurer());
+        bindMembers(menu, menu, factory, buttonConfigurer);
         return menu;
     }
 

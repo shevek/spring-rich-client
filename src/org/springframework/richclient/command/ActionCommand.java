@@ -131,7 +131,7 @@ public abstract class ActionCommand extends AbstractCommand implements
                 .intValue();
     }
 
-    public Action getSwingActionAdapter() {
+    public Action getActionAdapter() {
         if (swingActionAdapter == null) {
             this.swingActionAdapter = new SwingActionAdapter(this);
         }

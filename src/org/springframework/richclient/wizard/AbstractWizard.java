@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
-import org.springframework.richclient.core.TitleConfigurable;
+import org.springframework.richclient.core.Titleable;
 import org.springframework.richclient.forms.Form;
 import org.springframework.richclient.util.ListenerListHelper;
 
@@ -31,7 +31,7 @@ import org.springframework.richclient.util.ListenerListHelper;
  * @author keith
  */
 public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
-        implements Wizard, TitleConfigurable {
+        implements Wizard, Titleable {
     public static final String DEFAULT_IMAGE_KEY = "wizard.pageIcon";
 
     private String wizardId;

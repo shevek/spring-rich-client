@@ -189,6 +189,7 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
     protected void configureIfNecessary(AbstractCommand command) {
         if (commandConfigurer != null) {
             if (!command.isFaceConfigured()) {
+                System.out.println("configuring command " + command.getId());
                 commandConfigurer.configure(command);
             }
         }

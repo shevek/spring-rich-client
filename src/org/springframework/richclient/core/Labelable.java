@@ -13,13 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.image.config;
+package org.springframework.richclient.core;
 
-import java.awt.Image;
+import org.springframework.richclient.factory.LabelInfo;
 
 /**
+ * An object that can be labeled; where a label consists of text and mnemonic.
+ * 
  * @author Keith Donald
  */
-public interface ImageConfigurable {
-    public void setImage(Image image);
+public interface Labelable {
+    public void setLabelInfo(LabelInfo label);
 }

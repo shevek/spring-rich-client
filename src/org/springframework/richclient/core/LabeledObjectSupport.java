@@ -27,9 +27,9 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
-import org.springframework.richclient.command.config.CommandButtonLabelConfigurable;
+import org.springframework.richclient.command.config.CommandLabelable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-import org.springframework.richclient.image.config.ImageConfigurable;
+import org.springframework.richclient.image.config.Imageable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
@@ -41,8 +41,8 @@ import org.springframework.util.ToStringCreator;
  * @author Keith Donald
  */
 public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
-        implements ManagedElement, CommandButtonLabelConfigurable,
-        ImageConfigurable, DescriptionConfigurable, TitleConfigurable {
+        implements ManagedElement, CommandLabelable,
+        Imageable, Describable, Titleable {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private CommandButtonLabelInfo label;
@@ -57,7 +57,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
 
     private PropertyChangeSupport propertyChangeSupport;
 
-    public void setCommandButtonLabelInfo(CommandButtonLabelInfo label) {
+    public void setLabelInfo(CommandButtonLabelInfo label) {
         CommandButtonLabelInfo oldLabel = label;
         String oldDisplayName = getDisplayName();
         int oldMnemonic = getMnemonic();

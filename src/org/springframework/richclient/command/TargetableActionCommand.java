@@ -22,7 +22,7 @@ import org.springframework.util.ObjectUtils;
  * @author Keith Donald
  */
 public class TargetableActionCommand extends ActionCommand {
-    private ActionCommandExecutor commandDelegate;
+    private ActionCommandExecutor commandExecutor;
 
     private ValueChangeListener guardRelay;
 
@@ -38,26 +38,26 @@ public class TargetableActionCommand extends ActionCommand {
             ActionCommandExecutor delegate) {
         super(commandId);
         setEnabled(false);
-        setCommandDelegate(delegate);
+        setCommandExecutor(delegate);
     }
 
-    public void setCommandDelegate(ActionCommandExecutor delegate) {
-        if (ObjectUtils.nullSafeEquals(this.commandDelegate, delegate)) { return; }
-        if (delegate == null) {
-            removeCommandDelegate();
+    public void setCommandExecutor(ActionCommandExecutor commandExecutor) {
+        if (ObjectUtils.nullSafeEquals(this.commandExecutor, commandExecutor)) { return; }
+        if (commandExecutor == null) {
+            detachCommandExecutor();
         }
         else {
-            if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
+            if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
                 unsubscribeFromGuardedCommandDelegate();
             }
-            this.commandDelegate = delegate;
-            handlerSet();
+            this.commandExecutor = commandExecutor;
+            attachCommandExecutor();
         }
     }
 
-    private void handlerSet() {
-        if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
-            GuardedActionCommandExecutor dynamicHandler = (GuardedActionCommandExecutor)commandDelegate;
+    private void attachCommandExecutor() {
+        if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
+            GuardedActionCommandExecutor dynamicHandler = (GuardedActionCommandExecutor)commandExecutor;
             setEnabled(dynamicHandler.isEnabled());
             subscribeToGuardedCommandDelegate();
         }
@@ -65,7 +65,7 @@ public class TargetableActionCommand extends ActionCommand {
             setEnabled(true);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Command delegate '" + this.commandDelegate
+            logger.debug("Command delegate '" + this.commandExecutor
                     + "' attached.");
         }
     }
@@ -73,35 +73,35 @@ public class TargetableActionCommand extends ActionCommand {
     private void subscribeToGuardedCommandDelegate() {
         this.guardRelay = new ValueChangeListener() {
             public void valueChanged() {
-                setEnabled(((GuardedActionCommandExecutor)commandDelegate)
+                setEnabled(((GuardedActionCommandExecutor)commandExecutor)
                         .isEnabled());
             }
         };
-        ((GuardedActionCommandExecutor)commandDelegate)
+        ((GuardedActionCommandExecutor)commandExecutor)
                 .addEnabledListener(guardRelay);
     }
 
-    public void removeCommandDelegate() {
-        if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
+    public void detachCommandExecutor() {
+        if (this.commandExecutor instanceof GuardedActionCommandExecutor) {
             unsubscribeFromGuardedCommandDelegate();
         }
-        this.commandDelegate = null;
+        this.commandExecutor = null;
         setEnabled(false);
         logger.debug("Command delegate detached.");
     }
 
     private void unsubscribeFromGuardedCommandDelegate() {
-        ((GuardedActionCommandExecutor)this.commandDelegate)
+        ((GuardedActionCommandExecutor)this.commandExecutor)
                 .removeEnabledListener(guardRelay);
     }
 
     protected void doExecuteCommand() {
-        if (commandDelegate instanceof ParameterizableActionCommandExecutor) {
-            ((ParameterizableActionCommandExecutor)commandDelegate)
+        if (commandExecutor instanceof ParameterizableActionCommandExecutor) {
+            ((ParameterizableActionCommandExecutor)commandExecutor)
                     .execute(getParameters());
         }
         else {
-            commandDelegate.execute();
+            commandExecutor.execute();
         }
     }
 

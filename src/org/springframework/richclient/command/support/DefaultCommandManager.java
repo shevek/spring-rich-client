@@ -38,6 +38,7 @@ import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
@@ -57,7 +58,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
     private MenuFactory menuFactory;
 
     private CommandConfigurer commandConfigurer = new ApplicationCommandConfigurer(
-            this, this);
+            this);
 
     private CommandButtonConfigurer defaultButtonConfigurer;
 
@@ -111,6 +112,11 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         if (menuFactory == null) { return DefaultCommandServices.instance()
                 .getMenuFactory(); }
         return menuFactory;
+    }
+
+    public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command,
+            String faceDescriptorKey) {
+        return null;
     }
 
     public void setToolBarButtonConfigurer(CommandButtonConfigurer configurer) {
@@ -182,15 +188,14 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
      * a configured ObjectConfigurer.
      * 
      * @param command
-     * @param faceConfigurationKey
+     * @param faceDescriptorKey
      */
-    public void addNewCommand(AbstractCommand command,
-            String faceConfigurationKey) {
+    public void addNewCommand(AbstractCommand command, String faceDescriptorKey) {
         if (logger.isDebugEnabled()) {
             logger.debug("Configuring and adding new command '"
                     + command.getId() + "'");
         }
-        configure(command, faceConfigurationKey);
+        configure(command, faceDescriptorKey);
         registerCommand(command);
     }
 
@@ -209,8 +214,8 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
     }
 
     public void setTargetableActionCommandExecutor(String commandId,
-            ActionCommandExecutor delegate) {
-        commandRegistry.setTargetableActionCommandExecutor(commandId, delegate);
+            ActionCommandExecutor executor) {
+        commandRegistry.setTargetableActionCommandExecutor(commandId, executor);
     }
 
     public void addCommandRegistryListener(CommandRegistryListener l) {
@@ -228,6 +233,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         TargetableActionCommand newCommand = new TargetableActionCommand(
                 commandId, delegate);
         configure(newCommand);
+        System.out.println(newCommand.isFaceConfigured());
         registerCommand(newCommand);
         return newCommand;
     }
@@ -256,8 +262,8 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
     }
 
     public AbstractCommand configure(AbstractCommand command,
-            String faceConfigurationKey) {
-        return commandConfigurer.configure(command, faceConfigurationKey);
+            String faceDescriptorKey) {
+        return commandConfigurer.configure(command, faceDescriptorKey);
     }
 
     public Object postProcessAfterInitialization(Object bean, String beanName)

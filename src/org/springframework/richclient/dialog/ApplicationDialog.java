@@ -41,7 +41,7 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.core.TitleConfigurable;
+import org.springframework.richclient.core.Titleable;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -71,7 +71,7 @@ import org.springframework.util.StringUtils;
  * </ul>
  */
 public abstract class ApplicationDialog extends
-        ApplicationServicesAccessorSupport implements TitleConfigurable,
+        ApplicationServicesAccessorSupport implements Titleable,
         Guarded {
     private static final String DEFAULT_DIALOG_TITLE = "Application Dialog";
 
@@ -443,11 +443,11 @@ public abstract class ApplicationDialog extends
     protected void addActionKeyBinding(KeyStroke key, String actionKey) {
         if (actionKey == finishCommand.getId()) {
             addActionKeyBinding(key, actionKey, finishCommand
-                    .getSwingActionAdapter());
+                    .getActionAdapter());
         }
         else if (actionKey == cancelCommand.getId()) {
             addActionKeyBinding(key, actionKey, cancelCommand
-                    .getSwingActionAdapter());
+                    .getActionAdapter());
         }
         else {
             throw new IllegalArgumentException("Unknown action key "

@@ -17,20 +17,19 @@ package org.springframework.richclient.command.config;
 
 import javax.swing.AbstractButton;
 
+import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
  */
 public class DefaultButtonConfigurer implements CommandButtonConfigurer {
-    public void configure(CommandFaceDescriptor face, AbstractButton button) {
-        Assert.notNull(face, "The command face descriptor cannot be null.");
+    public void configure(AbstractButton button, AbstractCommand command,
+            CommandFaceDescriptor faceDescriptor) {
+        Assert.notNull(faceDescriptor, "The command face descriptor cannot be null.");
         Assert.notNull(button, "The button cannot be null.");
-
-        face.getButtonLabelInfo().configure(button);
-        if (face.getButtonIconInfo() != null) {
-            face.getButtonIconInfo().configure(button);
-        }
-        button.setToolTipText(face.getCaption());
+        faceDescriptor.configureLabel(button);
+        faceDescriptor.configureIcon(button);
+        button.setToolTipText(faceDescriptor.getCaption());
     }
 }

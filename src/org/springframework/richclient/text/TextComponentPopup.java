@@ -143,7 +143,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
             ActionCommand command = commandManager
                     .getActionCommand(COMMANDS[i]);
             keymap.addActionForKeyStroke(command.getAccelerator(), command
-                    .getSwingActionAdapter());
+                    .getActionAdapter());
         }
     }
 

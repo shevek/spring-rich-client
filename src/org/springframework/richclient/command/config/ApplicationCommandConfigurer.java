@@ -20,10 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
-import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.support.DefaultCommandServices;
-import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
@@ -31,34 +29,22 @@ import org.springframework.util.Assert;
 public class ApplicationCommandConfigurer implements CommandConfigurer {
     private final Log logger = LogFactory.getLog(getClass());
 
-    private CommandServices commandServices = DefaultCommandServices.instance();
+    private CommandServices commandServices;
 
     private ObjectConfigurer objectConfigurer;
 
     public ApplicationCommandConfigurer() {
     }
 
-    public ApplicationCommandConfigurer(CommandServices services,
-            CommandRegistry registry) {
+    public ApplicationCommandConfigurer(CommandServices services) {
         setCommandServices(services);
     }
 
-    protected ObjectConfigurer getObjectConfigurer() {
-        if (this.objectConfigurer == null) {
-            return Application.services();
-        }
-        else {
-            return objectConfigurer;
-        }
-    }
-
     public void setObjectConfigurer(ObjectConfigurer configurer) {
-        Assert.notNull(objectConfigurer);
         this.objectConfigurer = configurer;
     }
 
     public void setCommandServices(CommandServices services) {
-        Assert.notNull(services);
         this.commandServices = services;
     }
 
@@ -71,9 +57,14 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
         return configure(command, faceConfigurationKey, getObjectConfigurer());
     }
 
+    protected ObjectConfigurer getObjectConfigurer() {
+        if (objectConfigurer == null) { return Application.services(); }
+        return objectConfigurer;
+    }
+
     public AbstractCommand configure(AbstractCommand command,
-            String faceConfigurationKey, ObjectConfigurer faceConfigurer) {
-        command.setCommandServices(commandServices);
+            String faceConfigurationKey, ObjectConfigurer configurer) {
+        command.setCommandServices(getCommandServices());
         if (faceConfigurationKey == null) {
             faceConfigurationKey = command.getId();
         }
@@ -84,13 +75,18 @@ public class ApplicationCommandConfigurer implements CommandConfigurer {
                                 + faceConfigurationKey);
             }
             CommandFaceDescriptor face = new CommandFaceDescriptor();
-            command.setFaceDescriptor((CommandFaceDescriptor)faceConfigurer
+            command.setFaceDescriptor((CommandFaceDescriptor)configurer
                     .configure(face, faceConfigurationKey));
-            if (face.isEmpty()) {
-                face.setCommandButtonLabelInfo("&" + faceConfigurationKey);
+            if (face.isBlank()) {
+                face.setButtonLabelInfo("&" + faceConfigurationKey);
             }
         }
         return command;
+    }
+
+    protected CommandServices getCommandServices() {
+        if (commandServices == null) { return DefaultCommandServices.instance(); }
+        return commandServices;
     }
 
 }

@@ -29,7 +29,11 @@ import org.springframework.util.StringUtils;
  * <pre>
  * 
  *  
- *                te&amp;xt@ctrl-T
+ *   
+ *    
+ *                  te&amp;xt@ctrl-T
+ *     
+ *    
  *   
  *  
  * </pre>
@@ -44,6 +48,9 @@ public class LabelInfoFactory {
     private static final Log logger = LogFactory.getLog(LabelInfoFactory.class);
 
     public String encodedLabel;
+
+    public static final CommandButtonLabelInfo BLANK_BUTTON_LABEL = new CommandButtonLabelInfo(
+            "commandLabel");
 
     public LabelInfoFactory() {
     }
@@ -88,7 +95,12 @@ public class LabelInfoFactory {
      */
     public static CommandButtonLabelInfo createButtonLabelInfo(
             String encodedLabel) {
-        return new LabelInfoFactory(encodedLabel).createButtonLabelInfo();
+        if (StringUtils.hasText(encodedLabel)) {
+            return new LabelInfoFactory(encodedLabel).createButtonLabelInfo();
+        }
+        else {
+            return BLANK_BUTTON_LABEL;
+        }
     }
 
     /**

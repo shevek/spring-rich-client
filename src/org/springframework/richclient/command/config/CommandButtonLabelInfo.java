@@ -24,6 +24,7 @@ import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.richclient.factory.LabelInfo;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald
@@ -92,5 +93,9 @@ public class CommandButtonLabelInfo implements ButtonConfigurer {
         if ((button instanceof JMenuItem) && !(button instanceof JMenu)) {
             ((JMenuItem)button).setAccelerator(accelerator);
         }
+    }
+
+    public String toString() {
+        return new ToStringCreator(this).appendProperties().toString();
     }
 }

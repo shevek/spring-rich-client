@@ -22,11 +22,18 @@ import javax.swing.JMenuItem;
 
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.util.Assert;
+import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald
  */
 public class CommandButtonIconInfo implements ButtonConfigurer {
+
+    public static final CommandButtonIconInfo BLANK_SMALL_ICON_INFO = new CommandButtonIconInfo(
+            null);
+
+    public static final CommandButtonIconInfo BLANK_LARGE_ICON_INFO = new CommandButtonIconInfo(
+            null);
 
     private Icon icon;
 
@@ -63,8 +70,7 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
     }
 
     public AbstractButton configure(AbstractButton button) {
-        Assert.notNull(button, "button is null");
-
+        Assert.notNull(button, "The button to configure is required");
         if (button instanceof JMenu) {
             button.setIcon(null);
             button.setSelectedIcon(null);
@@ -77,6 +83,7 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
             button.setDisabledIcon(disabledIcon);
         }
         else {
+            // jbutton or togglebuttons
             button.setIcon(icon);
             button.setSelectedIcon(selectedIcon);
             button.setDisabledIcon(disabledIcon);
@@ -124,5 +131,9 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
 
     public void setSelectedIcon(Icon selectedIcon) {
         this.selectedIcon = selectedIcon;
+    }
+
+    public String toString() {
+        return new ToStringCreator(this).appendProperties().toString();
     }
 }

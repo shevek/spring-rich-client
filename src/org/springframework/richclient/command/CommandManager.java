@@ -18,18 +18,18 @@ package org.springframework.richclient.command;
 import java.util.Iterator;
 
 import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 
 /**
  * @author Keith Donald
  */
 public interface CommandManager extends CommandServices, CommandRegistry,
-        CommandConfigurer, CommandFactory {
+        CommandFaceDescriptorRegistry, CommandConfigurer, CommandFactory {
     public Iterator getGlobalCommands();
 
     public void addNewCommand(AbstractCommand command);
 
-    public void addNewCommand(AbstractCommand command,
-            String faceConfigurationKey);
+    public void addNewCommand(AbstractCommand command, String faceDescriptorKey);
 
     public void addCommandInterceptor(String commandId,
             ActionCommandInterceptor interceptor);

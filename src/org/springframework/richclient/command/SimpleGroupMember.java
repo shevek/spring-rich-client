@@ -24,6 +24,7 @@ import javax.swing.JMenuItem;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
+import org.springframework.util.ToStringCreator;
 
 public class SimpleGroupMember extends GroupMember {
     private CommandGroup parent;
@@ -48,7 +49,8 @@ public class SimpleGroupMember extends GroupMember {
         if (controlFactory instanceof MenuFactory) {
             JMenuItem menu = findMenu(command, previousButtons);
             if (menu == null) {
-                menu = command.createMenuItem(((MenuFactory)controlFactory));
+                menu = command.createMenuItem(((MenuFactory)controlFactory),
+                        buttonConfigurer);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Adding menu item to container");
@@ -115,5 +117,9 @@ public class SimpleGroupMember extends GroupMember {
             ((ExclusiveCommandGroup)parent).getController().remove(
                     (ToggleCommand)command);
         }
+    }
+
+    public String toString() {
+        return new ToStringCreator(this).append("command", command).toString();
     }
 }

@@ -150,7 +150,7 @@ public class DefaultCommandRegistry implements CommandRegistry,
             TargetableActionCommand command = (TargetableActionCommand)getActionCommand(commandId);
             Assert.isTrue(command != null,
                     "No targetable command found with id " + commandId);
-            command.setCommandDelegate(delegate);
+            command.setCommandExecutor(delegate);
         }
         catch (ClassCastException e) {
             throw new IllegalArgumentException(
