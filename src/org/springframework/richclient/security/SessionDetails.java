@@ -30,7 +30,10 @@ import org.springframework.rules.predicates.beans.BeanPropertyExpression;
  */
 public class SessionDetails implements Serializable, RulesProvider {
     private transient AuthenticationManager authenticationManager;
-
+    
+    public static final String PROPERTY_USERNAME = "username";
+    public static final String PROPERTY_PASSWORD = "password";
+    
     private String username;
 
     private String password;
@@ -55,9 +58,9 @@ public class SessionDetails implements Serializable, RulesProvider {
     protected Rules getRules() {
         Rules rules = Rules.createRules(getClass());
         Constraints c = Constraints.instance();
-        rules.add("username", c.all(new UnaryPredicate[] { c.required(),
+        rules.add(PROPERTY_USERNAME, c.all(new UnaryPredicate[] { c.required(),
                 c.maxLength(getUsernameMaxLength()) }));
-        rules.add("password", c.all(new UnaryPredicate[] { c.required(),
+        rules.add(PROPERTY_PASSWORD, c.all(new UnaryPredicate[] { c.required(),
                 c.minLength(getPasswordMinLength()) }));
         return rules;
     }
@@ -83,7 +86,7 @@ public class SessionDetails implements Serializable, RulesProvider {
     }
 
     protected int getPasswordMinLength() {
-        return 6;
+        return 2;
     }
 
     public void setPassword(String password) {

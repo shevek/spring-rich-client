@@ -128,7 +128,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 if (displaySuccess)
                     JOptionPane.showMessageDialog(getDialog(),
                             "You have logged in as '"
-                                    + loginGeneralPanel.getValue("userName")
+                                    + loginGeneralPanel.getValue(SessionDetails.PROPERTY_USERNAME)
                                     + "'.", "Authentication Successful",
                             JOptionPane.INFORMATION_MESSAGE);
 

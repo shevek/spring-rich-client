@@ -50,8 +50,8 @@ public class LoginPanel extends AbstractFormPage {
         FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
         BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
                 getFormModel(), layout);
-        this.usernameField = formBuilder.add("username");
-        formBuilder.addPasswordField("password");
+        this.usernameField = formBuilder.add(SessionDetails.PROPERTY_USERNAME);
+        formBuilder.addPasswordField(SessionDetails.PROPERTY_PASSWORD);
         return formBuilder.getForm();
     }
 
