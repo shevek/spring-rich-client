@@ -1,4 +1,4 @@
-package org.springframework.richclient.wizard.setup;
+package org.springframework.richclient.application.setup;
 
 import java.awt.Color;
 import java.awt.Dimension;

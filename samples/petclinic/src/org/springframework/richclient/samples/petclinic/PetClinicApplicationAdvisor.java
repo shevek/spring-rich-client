@@ -18,8 +18,8 @@ package org.springframework.richclient.samples.petclinic;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
+import org.springframework.richclient.application.setup.SetupWizard;
 import org.springframework.richclient.command.ActionCommand;
-import org.springframework.richclient.wizard.setup.SetupWizard;
 
 /**
  * Custom application lifecycle implementation that configures the petclinic app

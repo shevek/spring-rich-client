@@ -1,4 +1,4 @@
-package org.springframework.richclient.wizard.setup;
+package org.springframework.richclient.application.setup;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

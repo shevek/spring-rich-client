@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.richclient.wizard.setup;
+package org.springframework.richclient.application.setup;
 
 import java.awt.Font;
 import java.io.BufferedReader;

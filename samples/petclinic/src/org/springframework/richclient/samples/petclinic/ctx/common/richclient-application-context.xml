@@ -162,7 +162,7 @@
 	</bean>
 	
 	<bean id="setupWizard" 
-		class="org.springframework.richclient.wizard.setup.SetupWizard">
+		class="org.springframework.richclient.application.setup.SetupWizard">
 		<property name="licenseTextLocation">
 			<value>/org/springframework/richclient/samples/petclinic/license.html</value>
 		</property>
