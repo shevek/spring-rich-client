@@ -15,15 +15,13 @@
  */
 package org.springframework.richclient.settings.support;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
 import org.springframework.richclient.settings.Settings;
+import org.springframework.util.StringUtils;
 
 public class TableSettings {
 
@@ -35,13 +33,39 @@ public class TableSettings {
         saveSelectedRows(s, key, table);
         saveColumnOrder(s, key, table);
     }
-    
+
     public static void saveColumnWidths(Settings s, String key, JTable table) {
-        
+        StringBuffer sb = new StringBuffer();
+        int columnCount = table.getColumnCount();
+        for (int i = 0; i < columnCount; i++) {
+            sb.append(table.getColumnModel().getColumn(i).getWidth());
+            if (i < columnCount - 1) {
+                sb.append(",");
+            }
+        }
+        s.setString(key + ".columnWidths", sb.toString());
     }
-    
+
     public static void restoreColumnWidths(Settings s, String key, JTable table) {
-        
+        table.getSelectionModel().clearSelection();
+        String widthSetting = s.getString(key + ".columnWidths");
+        if (StringUtils.hasText(widthSetting)) {
+
+            String[] stringWidths = widthSetting.split(",");
+
+            try {
+                int[] widths = ArrayUtil.toIntArray(stringWidths);
+
+                if (widths.length == table.getColumnCount()) {
+                    for (int i = 0; i < widths.length; i++) {
+                        table.getColumnModel().getColumn(i).setWidth(widths[i]);
+                        table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                // TODO log this exception
+            }
+        }
     }
 
     public static void saveColumnOrder(Settings s, String key, JTable table) {
@@ -90,41 +114,59 @@ public class TableSettings {
     public static void restoreSelectedRows(Settings s, String key, JTable table) {
         table.getSelectionModel().clearSelection();
         String selection = s.getString(key + ".selectedRows");
-        if (!selection.equals("")) {
-            String[] indexes = selection.split(",");
-            for (int i = 0; i < indexes.length; i++) {
-                int index = Integer.parseInt(indexes[i]);
-                table.addRowSelectionInterval(index, index);
+        if (StringUtils.hasText(selection)) {
+            String[] parts = selection.split(",");
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].indexOf('-') >= 0) {
+                    String[] tmp = parts[i].split("-");
+                    table.addRowSelectionInterval(Integer.parseInt(tmp[0]), Integer.parseInt(tmp[2]));
+                } else {
+                    int index = Integer.parseInt(parts[i]);
+                    table.addRowSelectionInterval(index, index);
+                }
             }
         }
     }
 
     public static void restoreColumnOrder(Settings s, String key, JTable table) {
-        String columnOrder = s.getString(key + ".columnOrder");
-        if (!columnOrder.equals("")) {
-            List columns = new ArrayList();
-            Enumeration columnEnum = table.getColumnModel().getColumns();
-            while (columnEnum.hasMoreElements()) {
-                columns.add(columnEnum.nextElement());
-            }
-            System.out.println(columns);
+        table.getSelectionModel().clearSelection();
+        String orderSetting = s.getString(key + ".selectedRows");
+        if (StringUtils.hasText(orderSetting)) {
+            String[] stringColumns = orderSetting.split(",");
 
-            String[] columnIndexes = columnOrder.split(",");
-            for (int i = 0; i < columnIndexes.length; i++) {
-                TableColumn column = (TableColumn) columns.get(i);
-                int newIndex = Integer.parseInt(columnIndexes[i]);
-                System.out.println("old=" + i + ", new = " + newIndex);
-                System.out.println("index of column " + columns.indexOf(column));
-                if (columns.indexOf(column) != newIndex) {
-                    System.out.println("old <> newIndex: move column");
-                    // move the column
-                    table.getColumnModel().moveColumn(i, newIndex);
-                    columns.remove(column);
-                    columns.add(newIndex, column);
-                    System.out.println(columns);
+            try {
+                int[] columns = ArrayUtil.toIntArray(stringColumns);
+
+                if (columns.length == table.getColumnCount()) {
+                    for (int i = 0; i < columns.length; i++) {
+                        table.moveColumn(getPosition(table, columns[i]), i);
+                    }
                 }
+            } catch (IllegalArgumentException e) {
+                // TODO log this
             }
         }
+    }
+
+    /**
+     * Returns the position of the column for the given model index. The model
+     * index remains constant, but the position changes as the columns are
+     * moved.
+     * 
+     * @param table
+     *            the table
+     * @param modelIndex
+     *            the modelIndex
+     * @return the position
+     */
+    private static int getPosition(JTable table, int modelIndex) {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            if (column.getModelIndex() == modelIndex) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("No column with modelIndex " + modelIndex + " found");
     }
 
     public static void restoreState(Settings s, String key, JTable table) {
