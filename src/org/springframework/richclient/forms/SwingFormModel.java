@@ -77,6 +77,8 @@ import org.springframework.util.comparators.BeanPropertyComparator;
 public class SwingFormModel extends ApplicationServicesAccessorSupport
         implements FormModel {
 
+    private static final String CHECK_BOX_LABEL_SUFFIX = "checkBox";
+
     private MutableFormModel formModel;
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
@@ -145,6 +147,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             ValueModel childFormObjectHolder) {
         return new SwingFormModel(groupingModel.createChild(childPageName,
                 childFormObjectHolder));
+    }
+
+    public static NestingFormModel createChildCompoundFormModel(
+            NestingFormModel groupingModel, String childPageName,
+            String parentPropertyFormObjectPath) {
+        return groupingModel.createCompoundChild(childPageName,
+                parentPropertyFormObjectPath);
     }
 
     public void registerCustomEditor(Class clazz,
@@ -508,7 +517,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     protected JCheckBox createNewCheckBox(String labelKey) {
-        return getComponentFactory().createCheckBox(labelKey);
+        return getComponentFactory().createCheckBox(labelKey+"."+CHECK_BOX_LABEL_SUFFIX);
     }
 
     public JCheckBox bind(JCheckBox checkBox, String formProperty) {
