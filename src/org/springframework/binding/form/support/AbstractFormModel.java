@@ -245,7 +245,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
         if (commitListeners == null) { return; }
         for (Iterator i = commitListeners.iterator(); i.hasNext();) {
             CommitListener l = (CommitListener)i.next();
-            l.postEditCommitted(getFormObject());
+            Object formObject = getFormObject();
+            l.postEditCommitted(formObject);
         }
     }
 
