@@ -20,9 +20,9 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
 
 	public static final String SEPARATOR_MEMBER_CODE = "separator";
 
-	public static final String COMMAND_MEMBER_CODE = "command:";
+	public static final String COMMAND_MEMBER_PREFIX = "command:";
 
-	public static final String GROUP_MEMBER_CODE = "group:";
+	public static final String GROUP_MEMBER_PREFIX = "group:";
 
 	private String groupId;
 
@@ -126,10 +126,10 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
 				else if (str.equalsIgnoreCase(GLUE_MEMBER_CODE)) {
 					group.addGlueInternal();
 				}
-				else if (str.startsWith(COMMAND_MEMBER_CODE)) {
+				else if (str.startsWith(COMMAND_MEMBER_PREFIX)) {
 					addCommandMember(str.substring(8), false, group);
 				}
-				else if (str.startsWith(GROUP_MEMBER_CODE)) {
+				else if (str.startsWith(GROUP_MEMBER_PREFIX)) {
 					addCommandMember(str.substring(6), true, group);
 				}
 				else {
