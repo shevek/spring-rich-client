@@ -21,9 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
@@ -34,12 +37,14 @@ import org.springframework.richclient.command.CommandManager;
 /**
  * @author Keith Donald
  */
-public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
+public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements BeanFactoryAware {
     private String commandManagerBeanName = "commandManager";
 
     private String toolBarBeanName = "toolBar";
 
     private String menuBarBeanName = "menuBar";
+
+    private String startingViewDescriptorBeanName;
 
     private ViewDescriptor startingViewDescriptor;
 
@@ -47,17 +52,62 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
 
     private XmlBeanFactory currentWindowCommands;
 
+    private BeanFactory beanFactory;
+
     public void setCommandFactoryResource(Resource resource) {
         this.commandFactoryResource = resource;
     }
 
     public ViewDescriptor getStartingViewDescriptor() {
-        return startingViewDescriptor;
+        if (this.startingViewDescriptor == null) {
+            this.startingViewDescriptor =
+                    (ViewDescriptor)this.beanFactory.getBean(startingViewDescriptorBeanName,
+                            ViewDescriptor.class);
+        }
+        return this.startingViewDescriptor;
     }
 
     public void setStartingViewDescriptor(
             ViewDescriptor startingViewDescriptor) {
         this.startingViewDescriptor = startingViewDescriptor;
+    }
+
+    /**
+     * This is used to allow the ViewDescriptor to be lazily created
+     * when the ApplicationWindow is opened.  Useful when the
+     * ApplicationAdvisor needs to do things before ViewDescriptor should be
+     * created, such as setting up a security context.
+     *
+     * @param startingViewDescriptorBeanName the name of the bean to create
+     *
+     * @see #getStartingViewDescriptor()
+     */
+    public void setStartingViewDescriptorBeanName(
+            String startingViewDescriptorBeanName) {
+        this.startingViewDescriptorBeanName = startingViewDescriptorBeanName;
+    }
+
+    public void setBeanFactory(BeanFactory beanFactory)
+            throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+        if (this.startingViewDescriptor == null) {
+            if (this.startingViewDescriptorBeanName == null) {
+                throw new FatalBeanException("Either startingViewDescriptor " +
+                        "or startingViewDescriptorBeanName must be set.");
+            }
+            else {
+                final BeanFactory beanFactory = this.beanFactory;
+                if (!beanFactory.containsBean(this.startingViewDescriptorBeanName)) {
+                    throw new FatalBeanException("Do not know about the " +
+                            "bean definition for '" +
+                            this.startingViewDescriptorBeanName+"'");
+                }
+            }
+        }
     }
 
     public void setCommandManagerBeanName(String commandManagerBeanName) {
@@ -103,16 +153,16 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
     }
 
     private void registerBeanPostProcessors() throws BeansException {
-        String[] beanNames = getBeanFactory().getBeanDefinitionNames(
+        String[] beanNames = getCommandsBeanFactory().getBeanDefinitionNames(
             BeanPostProcessor.class);
         if (beanNames.length > 0) {
             List beanProcessors = new ArrayList();
             for (int i = 0; i < beanNames.length; i++) {
-                beanProcessors.add(getBeanFactory().getBean(beanNames[i]));
+                beanProcessors.add(getCommandsBeanFactory().getBean(beanNames[i]));
             }
             Collections.sort(beanProcessors, new OrderComparator());
             for (Iterator it = beanProcessors.iterator(); it.hasNext();) {
-                getBeanFactory().addBeanPostProcessor(
+                getCommandsBeanFactory().addBeanPostProcessor(
                     (BeanPostProcessor)it.next());
             }
         }
@@ -136,7 +186,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor {
         return (CommandGroup)currentWindowCommands.getBean(toolBarBeanName);
     }
 
-    protected ConfigurableListableBeanFactory getBeanFactory() {
+    protected ConfigurableListableBeanFactory getCommandsBeanFactory() {
         return currentWindowCommands;
     }
 }
