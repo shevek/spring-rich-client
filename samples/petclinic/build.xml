@@ -54,8 +54,6 @@
 	<target name="build-dependencies" depends="compile" description="Build jar dist dependencies">
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}/lib" />
-		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-standalone.bat" />
-		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-clientserver.bat" />
 		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient.jar" />
 		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-sandbox.jar" />
 		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-resources.jar" />
@@ -80,6 +78,8 @@
 	</target>
 
 	<target name="build-standalone" depends="build-dependencies" description="Build standalone version">
+		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-standalone.bat" />
+
 		<jar jarfile="${dist.dir}/petclinic-standalone.jar">
 			<fileset dir="${build.dir}">
 				<include name="**/*" />
@@ -96,10 +96,11 @@
 				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
-
 	</target>
 
 	<target name="build-clientserver" depends="build-dependencies" description="Build client server version">
+		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-clientserver.bat" />
+
 		<jar jarfile="${dist.dir}/petclinic-clientserver.jar">
 			<fileset dir="${build.dir}">
 				<include name="**/*" />
