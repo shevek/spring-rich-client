@@ -47,7 +47,8 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     private ApplicationWindow window;
 
-    private ViewDescriptorRegistry viewDescriptorRegistry;
+    private ViewDescriptorRegistry viewDescriptorRegistry = Application
+            .services().getViewDescriptorRegistry();
 
     private Set viewPanes = new LinkedHashSet();
 
@@ -56,14 +57,10 @@ public class DefaultApplicationPage implements ApplicationPage,
     private ViewPane activeView;
 
     protected DefaultApplicationPage() {
-        this.viewDescriptorRegistry = Application.services()
-                .getViewDescriptorRegistry();
     }
 
     public DefaultApplicationPage(ApplicationWindow window,
             ApplicationPageDescriptor pageDescriptor) {
-        this.viewDescriptorRegistry = Application.services()
-                .getViewDescriptorRegistry();
         setApplicationWindow(window);
         setDescriptor(pageDescriptor);
     }
