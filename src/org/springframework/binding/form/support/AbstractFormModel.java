@@ -70,16 +70,20 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
 
     public void setFormObject(Object formObject) {
         if (formObject == null) {
-            if (logger.isInfoEnabled()) {
-                logger
-                        .info("New form object value is null; resetting to a new fresh object instance and disabling form");
-            }
-            reset();
-            setEnabled(false);
+            handleSetNullFormObject();
         }
         else {
             getFormObjectHolder().setValue(formObject);
         }
+    }
+    
+    protected void handleSetNullFormObject() {
+        if (logger.isInfoEnabled()) {
+            logger
+                    .info("New form object value is null; resetting to a new fresh object instance and disabling form");
+        }
+        reset();
+        setEnabled(false);
     }
 
     public ValueModel getFormObjectHolder() {

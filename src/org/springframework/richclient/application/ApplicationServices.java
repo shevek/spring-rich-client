@@ -47,15 +47,16 @@ import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.support.DefaultRulesSource;
+import org.springframework.util.Assert;
 
 /**
  * A singleton service locator of a rich client application.
- *
+ * 
  * The application provides a point of reference and context for an entire
  * application. It provides data about the application: name, version, and build
  * ID. It also acts as service locator / facade for a number of commonly needed
  * rich client interfaces.
- *
+ * 
  * @author Keith Donald
  */
 public class ApplicationServices extends ApplicationObjectSupport implements
@@ -148,7 +149,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         this.iconSource = iconSource;
     }
 
-
     public PropertyEditorRegistry getPropertyEditorRegistry() {
         if (propertyEditorRegistry == null) {
             initPropertyEditorRegistry();
@@ -156,11 +156,9 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return propertyEditorRegistry;
     }
 
-
     public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
         this.propertyEditorRegistry = preReg;
     }
-
 
     public ObjectConfigurer getObjectConfigurer() {
         if (objectConfigurer == null) {
@@ -230,7 +228,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initImageSource() {
         try {
             this.imageSource = (ImageSource)getApplicationContext().getBean(
-                IMAGE_SOURCE_BEAN_KEY, ImageSource.class);
+                    IMAGE_SOURCE_BEAN_KEY, ImageSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No image source bean found in context under name '"
@@ -242,7 +240,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initIconSource() {
         try {
             this.iconSource = (IconSource)getApplicationContext().getBean(
-                ICON_SOURCE_BEAN_KEY, IconSource.class);
+                    ICON_SOURCE_BEAN_KEY, IconSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No icon source bean found under name "
@@ -254,6 +252,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initComponentFactory() {
         try {
+            Assert.isTrue(getApplicationContext() != null);
             this.componentFactory = (ComponentFactory)getApplicationContext()
                     .getBean(COMPONENT_FACTORY_BEAN_KEY, ComponentFactory.class);
         }
@@ -264,6 +263,9 @@ public class ApplicationServices extends ApplicationObjectSupport implements
             DefaultComponentFactory f = new DefaultComponentFactory();
             f.setApplicationContext(getApplicationContext());
             this.componentFactory = f;
+        }
+        catch (IllegalArgumentException e) {
+            this.componentFactory = new DefaultComponentFactory();
         }
     }
 
@@ -276,7 +278,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initRulesSource() {
         try {
             this.rulesSource = (RulesSource)getApplicationContext().getBean(
-                RULES_SOURCE_BEAN_KEY, RulesSource.class);
+                    RULES_SOURCE_BEAN_KEY, RulesSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No rule source found in context under name '"
@@ -285,15 +287,16 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         }
     }
 
-
     private void initPropertyEditorRegistry() {
         try {
-            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext().getBean(
-                PROPERTY_EDITOR_REGISTRY_BEAN_KEY, PropertyEditorRegistry.class);
+            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext()
+                    .getBean(PROPERTY_EDITOR_REGISTRY_BEAN_KEY,
+                            PropertyEditorRegistry.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No rule source found in context under name '"
-                    + PROPERTY_EDITOR_REGISTRY_BEAN_KEY + "'; configuring defaults.");
+                    + PROPERTY_EDITOR_REGISTRY_BEAN_KEY
+                    + "'; configuring defaults.");
             this.propertyEditorRegistry = new DefaultPropertyEditorRegistry();
         }
     }
@@ -317,7 +320,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         try {
             this.commandConfigurer = (CommandConfigurer)getApplicationContext()
                     .getBean(COMMAND_CONFIGURER_BEAN_KEY,
-                        CommandConfigurer.class);
+                            CommandConfigurer.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No command configurer found in context under name '"
@@ -368,7 +371,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public String getMessage(String code, Object[] args, String defaultMessage,
             Locale locale) {
         return getApplicationContext().getMessage(code, args, defaultMessage,
-            locale);
+                locale);
     }
 
     public Image getImage(String key) {

@@ -213,7 +213,7 @@ public class DefaultFormModel extends AbstractFormModel implements
             if (logger.isDebugEnabled()) {
                 logger.debug("Form is not enabled; commiting null value.");
             }
-            getFormObjectHolder().setValue(null);
+            setFormObject(null);
             if (getFormObjectHolder() instanceof BufferedValueModel) {
                 ((BufferedValueModel)getFormObjectHolder()).commit();
             }
@@ -225,6 +225,9 @@ public class DefaultFormModel extends AbstractFormModel implements
             if (preEditCommit()) {
                 commitTrigger.setValue(Boolean.TRUE);
                 commitTrigger.setValue(null);
+                if (getFormObjectHolder() instanceof BufferedValueModel) {
+                    ((BufferedValueModel)getFormObjectHolder()).commit();
+                }
                 postEditCommit();
             }
         }

@@ -15,22 +15,19 @@
  */
 package org.springframework.binding.form.support;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.PropertyAdapter;
@@ -44,8 +41,6 @@ import org.springframework.util.Assert;
  */
 public class CompoundFormModel extends AbstractFormModel implements
         NestingFormModel {
-
-    private List childFormObjectBuffers = new ArrayList(9);
 
     private Map childFormModels = new LinkedHashMap(9);
 
@@ -100,39 +95,19 @@ public class CompoundFormModel extends AbstractFormModel implements
                 getPropertyAccessStrategy(), childFormObjectPath);
         if (getBufferChangesDefault()) {
             valueHolder = new BufferedValueModel(valueHolder);
-            childFormObjectBuffers.add(valueHolder);
         }
         boolean enabledDefault = valueHolder.getValue() != null;
         Class valueClass = getMetadataAccessStrategy().getPropertyType(
                 childFormObjectPath);
-        new ChildFormObjectSetter(valueHolder, valueClass);
+        if (valueHolder.getValue() == null) {
+            if (logger.isDebugEnabled()) {
+                logger
+                        .debug("Backing form object set to null; instantiating fresh instance to prevent null pointer exceptions");
+            }
+            valueHolder.setValue(BeanUtils.instantiateClass(valueClass));
+        }
         return createChildInternal(childFormModel, childFormModelName,
                 valueHolder, enabledDefault);
-    }
-
-    private static class ChildFormObjectSetter implements ValueChangeListener {
-        private ValueModel formObjectHolder;
-
-        private Class formObjectClass;
-
-        public ChildFormObjectSetter(ValueModel formObjectHolder,
-                Class formObjectClass) {
-            this.formObjectHolder = formObjectHolder;
-            this.formObjectClass = formObjectClass;
-            this.formObjectHolder.addValueChangeListener(this);
-            setIfNull();
-        }
-
-        public void valueChanged() {
-            setIfNull();
-        }
-
-        public void setIfNull() {
-            if (formObjectHolder.getValue() == null) {
-                formObjectHolder.setValue(BeanUtils
-                        .instantiateClass(formObjectClass));
-            }
-        }
     }
 
     public ConfigurableFormModel createChild(String childFormModelName,
@@ -311,12 +286,8 @@ public class CompoundFormModel extends AbstractFormModel implements
                 }
             }.forEach(childFormModels.values());
 
-            if (getBufferChangesDefault()) {
-                new Block() {
-                    protected void handle(Object bufferedValueModel) {
-                        ((BufferedValueModel)bufferedValueModel).commit();
-                    }
-                }.forEach(childFormObjectBuffers);
+            if (getFormObjectHolder() instanceof BufferedValueModel) {
+                ((BufferedValueModel)getFormObjectHolder()).commit();
             }
             postEditCommit();
         }
