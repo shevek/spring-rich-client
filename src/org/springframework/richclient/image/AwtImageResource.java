@@ -56,9 +56,6 @@ public class AwtImageResource
         this.wrappedResource = resource;
     }
 
-    /**
-     * @see org.springframework.core.io.Resource#getDescription()
-     */
     public String getDescription() {
         return wrappedResource.getDescription();
     }
@@ -75,9 +72,6 @@ public class AwtImageResource
         return wrappedResource.hashCode();
     }
 
-    /**
-     * @see org.springframework.core.io.Resource#getInputStream()
-     */
     public InputStream getInputStream() throws IOException {
         return wrappedResource.getInputStream();
     }

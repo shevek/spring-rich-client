@@ -87,9 +87,6 @@ public class ArrowIcon implements Icon {
         setColor(color);
     }
 
-    /* Overridden
-     * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
-     */
     public void paintIcon(Component c, Graphics g, int x, int y) {
         g.setColor(color);
         for (int i = 0; i < size; i++) {
@@ -101,16 +98,10 @@ public class ArrowIcon implements Icon {
         }
     }
 
-    /* Overridden
-     * @see javax.swing.Icon#getIconWidth()
-     */
     public int getIconWidth() {
         return size * 2;
     }
 
-    /* Overridden
-     * @see javax.swing.Icon#getIconHeight()
-     */
     public int getIconHeight() {
         return size;
     }

@@ -18,20 +18,18 @@ package org.springframework.richclient.application;
 public interface ViewListener {
 
     /**
-     * Notifies this listener that the given part has been opened.
+     * Notifies this listener that the given view has been opened.
      * 
-     * @param part
-     *            the part that was opened
-     * @see IWorkbenchPage#showView
+     * @param view
+     *            the view that was opened
      */
     public void viewActivated(View view);
 
     /**
-     * Notifies this listener that the given part has been closed.
+     * Notifies this listener that the given view has been closed.
      * 
-     * @param part
-     *            the part that was closed
-     * @see IWorkbenchPage#hideView
+     * @param view
+     *            the view that was closed
      */
     public void viewDeactivated(View view);
 

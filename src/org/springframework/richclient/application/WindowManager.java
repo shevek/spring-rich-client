@@ -94,7 +94,6 @@ public class WindowManager extends Observable {
     /**
      * Adds the given window manager to the list of window managers that have
      * this one as a parent.
-     * </p>
      * 
      * @param wm
      *            the child window manager

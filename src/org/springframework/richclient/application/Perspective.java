@@ -15,15 +15,21 @@
  */
 package org.springframework.richclient.application;
 
+/**
+ * A template for a page, or page configuration / specification.
+ * 
+ * @TODO not much here yet, only one view per page supported currently.
+ * @author Keith Donald
+ */
 public class Perspective {
     private String viewId;
-    
+
     public String getView() {
         return viewId;
     }
-    
+
     public void setView(String viewId) {
         this.viewId = viewId;
     }
-  
+
 }
