@@ -56,7 +56,8 @@ public class DefaultApplicationPage implements ApplicationPage,
     private ViewPane activeView;
 
     protected DefaultApplicationPage() {
-
+        this.viewDescriptorRegistry = Application.services()
+                .getViewDescriptorRegistry();
     }
 
     public DefaultApplicationPage(ApplicationWindow window,
