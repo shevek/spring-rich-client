@@ -160,4 +160,11 @@
 			</map>
 		</property>
 	</bean>
+	
+	<bean id="setupWizard" 
+		class="org.springframework.richclient.wizard.setup.SetupWizard">
+		<property name="licenseTextLocation">
+			<value>/org/springframework/richclient/samples/petclinic/license.html</value>
+		</property>
+	</bean>
 </beans>

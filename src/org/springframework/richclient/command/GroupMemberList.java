@@ -93,10 +93,10 @@ public class GroupMemberList {
         }
     }
 
-    public boolean contains(String commandId) {
+    public boolean contains(AbstractCommand command) {
         for (int i = 0; i < members.size(); i++) {
             GroupMember member = (GroupMember)members.get(i);
-            if (member.managesCommand(commandId)) {
+            if (member.managesCommand(command.getId())) {
                 return true;
             }
         }

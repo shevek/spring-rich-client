@@ -19,13 +19,16 @@ import java.util.Iterator;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
+import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
 import javax.swing.RootPaneContainer;
 
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
+import org.springframework.util.Assert;
 
 public abstract class ToggleCommand extends ActionCommand {
 
@@ -33,7 +36,7 @@ public abstract class ToggleCommand extends ActionCommand {
 
     private boolean selected;
 
-    private ExclusiveCommandGroupController exclusiveController;
+    private ExclusiveCommandGroupSelectionController exclusiveController;
 
     public ToggleCommand() {
     }
@@ -54,7 +57,7 @@ public abstract class ToggleCommand extends ActionCommand {
         super(id, encodedLabel, icon, caption);
     }
 
-    public void setExclusiveController(ExclusiveCommandGroupController exclusiveController) {
+    public void setExclusiveController(ExclusiveCommandGroupSelectionController exclusiveController) {
         this.exclusiveController = exclusiveController;
     }
 
@@ -62,7 +65,7 @@ public abstract class ToggleCommand extends ActionCommand {
         return exclusiveController != null;
     }
 
-    public JMenuItem createMenuItem(String faceDescriptorKey, MenuFactory factory,
+    public JMenuItem createMenuItem(String faceDescriptorId, MenuFactory factory,
             CommandButtonConfigurer buttonConfigurer) {
         JMenuItem menuItem;
         if (isExclusiveGroupMember()) {
@@ -71,15 +74,55 @@ public abstract class ToggleCommand extends ActionCommand {
         else {
             menuItem = factory.createCheckBoxMenuItem();
         }
-        attach(menuItem, buttonConfigurer);
+        attach(menuItem, faceDescriptorId, buttonConfigurer);
         return menuItem;
     }
 
-    public AbstractButton createButton(String faceDescriptorKey, ButtonFactory factory,
+    public AbstractButton createButton(String faceDescriptorId, ButtonFactory buttonFactory,
             CommandButtonConfigurer configurer) {
-        AbstractButton button = factory.createToggleButton();
-        attach(button, configurer);
+        AbstractButton button = buttonFactory.createToggleButton();
+        attach(button, faceDescriptorId, configurer);
         return button;
+    }
+
+    public final JCheckBox createCheckBox() {
+        return createCheckBox(getDefaultFaceDescriptorId(), getButtonFactory(), getDefaultButtonConfigurer());
+    }
+
+    public final JCheckBox createCheckBox(ButtonFactory buttonFactory) {
+        return createCheckBox(getDefaultFaceDescriptorId(), buttonFactory, getDefaultButtonConfigurer());
+    }
+
+    public final JCheckBox createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory) {
+        return createCheckBox(faceDescriptorId, buttonFactory, getDefaultButtonConfigurer());
+    }
+
+    public JCheckBox createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory,
+            CommandButtonConfigurer configurer) {
+        JCheckBox checkBox = buttonFactory.createCheckBox();
+        attach(checkBox, configurer);
+        return checkBox;
+    }
+
+    public final JRadioButton createRadioButton() {
+        return createRadioButton(getDefaultFaceDescriptorId(), getButtonFactory(), getDefaultButtonConfigurer());
+    }
+
+    public final JRadioButton createRadioButton(ButtonFactory buttonFactory) {
+        return createRadioButton(getDefaultFaceDescriptorId(), buttonFactory, getDefaultButtonConfigurer());
+    }
+
+    public final JRadioButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory) {
+        return createRadioButton(faceDescriptorId, buttonFactory, getDefaultButtonConfigurer());
+    }
+
+    public JRadioButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory,
+            CommandButtonConfigurer configurer) {
+        Assert.state(isExclusiveGroupMember(),
+                "Can't create radio buttons for toggle commands that aren't members of an exclusive group");
+        JRadioButton radioButton = buttonFactory.createRadioButton();
+        attach(radioButton, faceDescriptorId, configurer);
+        return radioButton;
     }
 
     protected void onButtonAttached(AbstractButton button) {
@@ -96,7 +139,6 @@ public abstract class ToggleCommand extends ActionCommand {
             boolean oldState = isSelected();
 
             exclusiveController.handleSelectionRequest(this, selected);
-
             // set back button state if controller didn't change this command;
             // needed b/c of natural button check box toggling in swing
             if (oldState == isSelected()) {

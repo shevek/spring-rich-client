@@ -93,10 +93,6 @@ public class ExpansionPointGroupMember extends GroupMember {
         }
     }
 
-    public boolean managesCommandDirectly(String commandId) {
-        return getMemberFor(commandId) != null;
-    }
-
     public GroupMember getMemberFor(String commandId) {
         for (Iterator it = members.iterator(); it.hasNext();) {
             GroupMember member = (GroupMember)it.next();

@@ -88,7 +88,9 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
         WizardPage startPage = wizard.getStartingPage();
         Assert.notNull(startPage, "No starting page returned; unable to show wizard.");
         JComponent control = startPage.getControl();
-        control.setPreferredSize(getLargestPageSize());
+        if (getPreferredSize() == null) {
+            control.setPreferredSize(getLargestPageSize());
+        }
         return control;
     }
 

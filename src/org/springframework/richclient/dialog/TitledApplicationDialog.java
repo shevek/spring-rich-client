@@ -118,7 +118,8 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
     }
 
     protected void addDialogComponents() {
-        getDialog().getContentPane().add(createDialogContentPane(), BorderLayout.CENTER);
+        JComponent dialogContentPane = createDialogContentPane();
+        getDialog().getContentPane().add(dialogContentPane, BorderLayout.CENTER);
         getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
     }
 
@@ -129,6 +130,9 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
         titlePanel.add(new JSeparator(), BorderLayout.SOUTH);
         pageControl.add(titlePanel, BorderLayout.NORTH);
         contentPane = createTitledDialogContentPane();
+        if (getPreferredSize() != null) {
+            contentPane.setPreferredSize(getPreferredSize());
+        }
         GuiStandardUtils.attachDialogBorder(contentPane);
         updateDescription();
         pageControl.add(contentPane);

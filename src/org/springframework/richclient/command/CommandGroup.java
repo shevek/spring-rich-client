@@ -98,30 +98,29 @@ public class CommandGroup extends AbstractCommand {
         return createCommandGroup(null, new Object[] { member });
     }
 
-    /**
-     * Creates a command group, configuring the group using the ObjectConfigurer
-     * service (pulling visual configuration properties from an external
-     * source). This method will also auto-configure contained Command members
-     * that have not yet been configured.
-     * 
-     * @param members
-     */
     public static CommandGroup createCommandGroup(Object[] members) {
-        return createCommandGroup(null, members, null);
+        return createCommandGroup(null, members, false, null);
     }
 
-    /**
-     * Creates a command group, configuring the group using the ObjectConfigurer
-     * service (pulling visual configuration properties from an external
-     * source). This method will also auto-configure contained Command members
-     * that have not yet been configured.
-     * 
-     * @param groupId
-     * @param members
-     * @return
-     */
     public static CommandGroup createCommandGroup(String groupId, Object[] members) {
-        return createCommandGroup(groupId, members, null);
+        return createCommandGroup(groupId, members, false, null);
+    }
+
+    public static CommandGroup createCommandGroup(String groupId, Object[] members, CommandConfigurer configurer) {
+        return createCommandGroup(groupId, members, false, configurer);
+    }
+
+    public static CommandGroup createExclusiveCommandGroup(Object[] members) {
+        return createCommandGroup(null, members, true, null);
+    }
+
+    public static CommandGroup createExclusiveCommandGroup(String groupId, Object[] members) {
+        return createCommandGroup(groupId, members, true, null);
+    }
+
+    public static CommandGroup createExclusiveCommandGroup(String groupId, Object[] members,
+            CommandConfigurer configurer) {
+        return createCommandGroup(groupId, members, true, configurer);
     }
 
     /**
@@ -134,11 +133,13 @@ public class CommandGroup extends AbstractCommand {
      * @param members
      * @return
      */
-    public static CommandGroup createCommandGroup(String groupId, Object[] members, CommandConfigurer configurer) {
+    private static CommandGroup createCommandGroup(String groupId, Object[] members, boolean exclusive,
+            CommandConfigurer configurer) {
         if (configurer == null) {
             configurer = Application.services();
         }
         CommandGroupFactoryBean groupFactory = new CommandGroupFactoryBean(groupId, null, configurer, members);
+        groupFactory.setExclusive(exclusive);
         return groupFactory.getCommandGroup();
     }
 
@@ -350,12 +351,8 @@ public class CommandGroup extends AbstractCommand {
         return getMemberList().size();
     }
 
-    public boolean contains(AbstractCommand c) {
-        return contains(c.getId());
-    }
-
-    boolean contains(String commandId) {
-        return getMemberList().contains(commandId);
+    public boolean contains(AbstractCommand command) {
+        return getMemberList().contains(command);
     }
 
     public void reset() {

@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationDescriptor;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
@@ -90,8 +91,12 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         this.applicationDescriptor = info;
     }
 
-    protected final Application getApplication() {
+    protected Application getApplication() {
         return application;
+    }
+    
+    protected ApplicationServices getApplicationServices() {
+        return getApplication().getServices();
     }
 
     public String getApplicationName() {

@@ -347,6 +347,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements App
         }
     }
 
+    public boolean containsBean(String beanName) {
+        return getApplicationContext().containsBean(beanName);
+    }
+
     public Object getBean(String beanName) {
         return getApplicationContext().getBean(beanName);
     }

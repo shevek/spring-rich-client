@@ -119,7 +119,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return applicationAdvisor;
     }
 
-    protected ApplicationServices getServices() {
+    public ApplicationServices getServices() {
         if (applicationServices == null) {
             applicationServices = new ApplicationServices();
             applicationServices.setApplicationContext(applicationContext);

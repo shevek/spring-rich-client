@@ -98,13 +98,13 @@ public class SimpleGroupMember extends GroupMember {
 
     protected void onAdded() {
         if (parent instanceof ExclusiveCommandGroup) {
-            ((ExclusiveCommandGroup)parent).getController().add((ToggleCommand)command);
+            ((ExclusiveCommandGroup)parent).getSelectionController().add((ToggleCommand)command);
         }
     }
 
     protected void onRemoved() {
         if (parent instanceof ExclusiveCommandGroup) {
-            ((ExclusiveCommandGroup)parent).getController().remove((ToggleCommand)command);
+            ((ExclusiveCommandGroup)parent).getSelectionController().remove((ToggleCommand)command);
         }
     }
 

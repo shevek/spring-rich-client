@@ -19,6 +19,7 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.wizard.setup.SetupWizard;
 
 /**
  * Custom application lifecycle implementation that configures the petclinic app
@@ -27,9 +28,12 @@ import org.springframework.richclient.command.ActionCommand;
  * @author Keith Donald
  */
 public class PetClinicApplicationAdvisor extends BeanFactoryApplicationAdvisor {
-
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
+        if (getApplicationServices().containsBean("setupWizard")) {
+            SetupWizard setupWizard = (SetupWizard)getApplicationServices().getBean("setupWizard", SetupWizard.class);
+            setupWizard.execute();
+        }
         // comment out to hide the menubar, toolbar, or reduce window size...
         //configurer.setShowMenuBar(false);
         //configurer.setShowToolBar(false);

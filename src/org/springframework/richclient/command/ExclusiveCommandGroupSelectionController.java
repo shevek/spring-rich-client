@@ -19,14 +19,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ExclusiveCommandGroupController {
-
+public class ExclusiveCommandGroupSelectionController {
     private List commands = new ArrayList();
 
     private boolean allowsEmptySelection;
-
-    public ExclusiveCommandGroupController() {
-    }
 
     public boolean getAllowsEmptySelection() {
         return allowsEmptySelection;
@@ -49,28 +45,24 @@ public class ExclusiveCommandGroupController {
         }
     }
 
-    public void handleSelectionRequest(ToggleCommand delegatingCommand, boolean requestsSelection) {
-        if (requestsSelection) {
-            ToggleCommand previousSelectedCommand = null;
-
+    public void handleSelectionRequest(ToggleCommand delegatingCommand, boolean requestingSelection) {
+        if (requestingSelection) {
+            ToggleCommand currentSelectedCommand = null;
             for (Iterator iterator = commands.iterator(); iterator.hasNext();) {
                 ToggleCommand command = (ToggleCommand)iterator.next();
                 if (command.isSelected()) {
-                    previousSelectedCommand = command;
+                    currentSelectedCommand = command;
                     break;
                 }
             }
-
-            if (previousSelectedCommand == null) {
+            if (currentSelectedCommand == null) {
                 delegatingCommand.requestSetSelection(true);
             }
             else {
-                previousSelectedCommand.requestSetSelection(false);
-
-                delegatingCommand.requestSetSelection(!previousSelectedCommand.isSelected());
-
-                if (!delegatingCommand.isSelected() && previousSelectedCommand != null) {
-                    previousSelectedCommand.requestSetSelection(true);
+                currentSelectedCommand.requestSetSelection(false);
+                delegatingCommand.requestSetSelection(!currentSelectedCommand.isSelected());
+                if (!delegatingCommand.isSelected() && currentSelectedCommand != null) {
+                    currentSelectedCommand.requestSetSelection(true);
                 }
             }
         }

@@ -21,7 +21,7 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 
 public class ExclusiveCommandGroup extends CommandGroup {
 
-    private ExclusiveCommandGroupController controller = new ExclusiveCommandGroupController();
+    private ExclusiveCommandGroupSelectionController controller = new ExclusiveCommandGroupSelectionController();
 
     public ExclusiveCommandGroup() {
         super();
@@ -31,8 +31,8 @@ public class ExclusiveCommandGroup extends CommandGroup {
         super(groupId);
     }
 
-    public ExclusiveCommandGroup(String groupId, CommandFaceDescriptor face) {
-        super(groupId, face);
+    public ExclusiveCommandGroup(String groupId, CommandFaceDescriptor faceDescriptor) {
+        super(groupId, faceDescriptor);
     }
 
     public ExclusiveCommandGroup(String groupId, CommandRegistry commandRegistry) {
@@ -47,16 +47,16 @@ public class ExclusiveCommandGroup extends CommandGroup {
         super(id, encodedLabel, icon, caption);
     }
 
-    protected ExclusiveCommandGroupController getController() {
-        return controller;
-    }
-
     public void setAllowsEmptySelection(boolean allowsEmptySelection) {
         controller.setAllowsEmptySelection(allowsEmptySelection);
     }
 
     public boolean getAllowsEmptySelection() {
         return controller.getAllowsEmptySelection();
+    }
+
+    protected ExclusiveCommandGroupSelectionController getSelectionController() {
+        return controller;
     }
 
     public boolean isAllowedMember(AbstractCommand prospectiveMember) {

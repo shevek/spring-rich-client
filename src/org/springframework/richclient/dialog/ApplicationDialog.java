@@ -17,6 +17,7 @@ package org.springframework.richclient.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -94,6 +95,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private boolean modal = true;
 
     private boolean resizable = true;
+
+    private Dimension preferredSize;
 
     private ActionCommand finishCommand;
 
@@ -190,13 +193,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         this.resizable = resizable;
     }
 
-    public boolean isEnabled() {
-        if (isControlCreated()) {
-            return finishCommand.isEnabled();
-        }
-        else {
-            return false;
-        }
+    public void setPreferredSize(Dimension preferredSize) {
+        this.preferredSize = preferredSize;
     }
 
     public void setEnabled(boolean enabled) {
@@ -207,13 +205,26 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         this.displayFinishSuccessMessage = displayFinishSuccessMessage;
     }
 
+    protected void setFinishEnabled(boolean enabled) {
+        if (isControlCreated()) {
+            finishCommand.setEnabled(enabled);
+        }
+    }
+
+    protected Dimension getPreferredSize() {
+        return preferredSize;
+    }
+
     protected boolean getDisplayFinishSuccessMessage() {
         return displayFinishSuccessMessage;
     }
 
-    protected void setFinishEnabled(boolean enabled) {
+    public boolean isEnabled() {
         if (isControlCreated()) {
-            finishCommand.setEnabled(enabled);
+            return finishCommand.isEnabled();
+        }
+        else {
+            return false;
         }
     }
 
@@ -233,7 +244,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected Container getDialogContentPane() {
-        Assert.isTrue(isControlCreated(), "Dialog control has not yet been created.");
+        Assert.state(isControlCreated(), "Dialog control has not yet been created.");
         return dialog.getContentPane();
     }
 
@@ -454,6 +465,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected void addDialogComponents() {
         JComponent dialogContentPane = createDialogContentPane();
         GuiStandardUtils.attachDialogBorder(dialogContentPane);
+        if (getPreferredSize() != null) {
+            dialogContentPane.setSize(getPreferredSize());
+        }
         getDialogContentPane().add(dialogContentPane);
         getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
     }
@@ -474,7 +488,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         });
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                executeCloseAction();
+                getCancelCommand().execute();
             }
         });
     }

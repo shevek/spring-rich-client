@@ -1,0 +1,68 @@
+package org.springframework.richclient.wizard.setup;
+
+import java.awt.Dimension;
+
+import javax.swing.JOptionPane;
+
+import org.springframework.core.io.Resource;
+import org.springframework.richclient.command.ActionCommandExecutor;
+import org.springframework.richclient.wizard.AbstractWizard;
+import org.springframework.richclient.wizard.WizardDialog;
+
+/**
+ * @author Claudio Romano
+ * @author Keith Donald
+ */
+public class SetupWizard extends AbstractWizard implements ActionCommandExecutor {
+    private WizardDialog wizardDialog;
+
+    private Resource licenseLocation;
+
+    private SetupLicenseWizardPage licensePage = new SetupLicenseWizardPage();
+
+    public SetupWizard() {
+        super("setup");
+    }
+
+    public void setLicenseTextLocation(Resource location) {
+        licensePage.setLicenseTextLocation(location);
+    }
+
+    public void execute() {
+        if (wizardDialog == null) {
+            wizardDialog = new SetupWizardDialog(this);
+            wizardDialog.setPreferredSize(new Dimension(600, 400));
+        }
+        wizardDialog.showDialog();
+    }
+
+    public void addPages() {
+        addPage(new SetupIntroWizardPage());
+        addPage(licensePage);
+    }
+
+    public boolean onFinish() {
+        return true;
+    }
+
+    public boolean onCancel() {
+        if (showCancelLicenseDialog()) {
+            System.exit(1);
+        }
+        return false;
+    }
+
+    protected boolean showCancelLicenseDialog() {
+        return JOptionPane.showConfirmDialog(wizardDialog.getDialog(), getCancelMessage(), getCancelTitle(),
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.NO_OPTION;
+    }
+
+    protected String getCancelTitle() {
+        return getMessage("setup.cancel.title");
+    }
+
+    protected String getCancelMessage() {
+        return getMessage("setup.cancel.message");
+    }
+
+}
