@@ -1,7 +1,8 @@
 /*
- * $Header$
- * $Revision$
- * $Date$
+ * $Header:
+ * /cvsroot/spring-rich-c/spring-richclient/src/org/springframework/richclient/forms/BufferedListValueModel.java,v
+ * 1.1 2004/08/03 04:53:31 kdonald Exp $ $Revision$ $Date: 2004/08/03
+ * 04:53:31 $
  * 
  * Copyright Computer Science Innovations (CSI), 2004. All rights reserved.
  */
@@ -15,7 +16,6 @@ import javax.swing.event.ListDataListener;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.rules.values.BufferedValueModel;
 import org.springframework.rules.values.ValueModel;
-
 
 class BufferedListValueModel extends BufferedValueModel {
     private ListListModel items;
@@ -61,13 +61,21 @@ class BufferedListValueModel extends BufferedValueModel {
         }
         List list = (List)getWrappedModel().get();
         if (list != null) {
-            this.items.addAll(list);
+            try {
+                updating = true;
+                this.items.addAll(list);
+            }
+            finally {
+                updating = false;
+            }
         }
         return this.items;
     }
 
     protected void onWrappedValueChanged() {
-        super.set(internalGet());
+        if (!updating) {
+            super.set(internalGet());
+        }
     }
 
     protected void fireValueChanged() {
