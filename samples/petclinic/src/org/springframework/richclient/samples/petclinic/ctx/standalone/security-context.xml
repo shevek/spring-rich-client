@@ -11,8 +11,6 @@
 		<property name="dataSource"><ref bean="dataSource"/></property>
 	</bean>
 
-	<bean id="secureCommandConfigurer" class="org.springframework.richclient.security.SecureCommandConfigurer"/>
-
 	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
 	
 	<bean id="daoAuthenticationProvider" class="net.sf.acegisecurity.providers.dao.DaoAuthenticationProvider">
