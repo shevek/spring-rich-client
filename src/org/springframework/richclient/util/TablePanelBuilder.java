@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.util;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -28,20 +29,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.util.StringUtils;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -58,11 +51,11 @@ import com.jgoodies.forms.layout.RowSpec;
  * <li>support for gap rows and columns. You don't need to keep track of gap
  * rows or columns when specifying row or column spans</li>
  * <li>need only define colSpec and rowSpec when it varies from the default.
- * Save you having to work out column specs before you start laying out the 
- * form</li>
- * <li>rows and columns can be aliased with a group ID which save you having 
- * to keep track of row or column indexes for grouping. This also makes 
- * grouping less fragile when the table layout changes</li>
+ * Save you having to work out column specs before you start laying out the form
+ * </li>
+ * <li>rows and columns can be aliased with a group ID which save you having to
+ * keep track of row or column indexes for grouping. This also makes grouping
+ * less fragile when the table layout changes</li>
  * </ul>
  * <strong>Example: </strong> <br>
  * 
@@ -103,24 +96,21 @@ import com.jgoodies.forms.layout.RowSpec;
  */
 public class TablePanelBuilder {
 
-    private static final Log logger = LogFactory
-            .getLog(TablePanelBuilder.class);
+    public static final String ALIGN = "align";
 
-    private static final String VALIGN = "valign";
+    public static final String VALIGN = "valign";
 
-    private static final String ALIGN = "align";
+    public static final String ROWSPEC = "rowSpec";
 
-    private static final String ROWSPEC = "rowspec";
+    public static final String COLSPEC = "colSpec";
 
-    private static final String COLSPEC = "colspec";
+    public static final String ROWSPAN = "rowSpan";
 
-    private static final String ROWSPAN = "rowspan";
+    public static final String COLSPAN = "colSpan";
 
-    private static final String COLSPAN = "colspan";
+    public static final String ROWGROUPID = "rowGrId";
 
-    private static final String ROWGROUPID = "rowgrid";
-
-    private static final String COLGROUPID = "colgrid";
+    public static final String COLGROUPID = "colGrId";
 
     private List rowSpecs = new ArrayList();
 
@@ -140,113 +130,223 @@ public class TablePanelBuilder {
 
     private int[][] adjustedRowGroupIndices;
 
-    private InternalCellConstraints lastCC = null;
+    private Cell lastCC = null;
 
     private int maxColumns = 0;
 
-    private int currentRow = 0;
+    private int currentRow = -1;
 
     private int currentCol = 0;
 
-    private Map items = new HashMap();
-
-    private FormLayout layout;
+    private List items = new ArrayList();
 
     private JPanel panel;
-    
-//    private List focusOrder; 
 
+    private List focusOrder;
+
+    private ComponentFactory componentFactory;
+
+    /** 
+     * Creates a new TablePanelBuilder.
+     */
     public TablePanelBuilder() {
         this(new JPanel());
     }
 
+    /** 
+     * Creates a new TablePanelBuilder which will build in the supplied JPanel
+     */
     public TablePanelBuilder(JPanel panel) {
-        this.layout = new FormLayout(new ColumnSpec[0], new RowSpec[0]);
         this.panel = panel;
     }
 
-    public TablePanelBuilder table() {
-        return this;
+    /**
+     * Returns the {@link ComponentFactory} that this uses to create things like
+     * labels.
+     * 
+     * @return if not explicitly set, this uses the {@link Application}'s
+     */
+    public ComponentFactory getComponentFactory() {
+        if (this.componentFactory == null) {
+            this.componentFactory = Application.services()
+                    .getComponentFactory();
+        }
+        return this.componentFactory;
     }
 
+    /**
+     * Sets the {@link ComponentFactory} that this uses to create things like
+     * labels.
+     */
+    public void setComponentFactory(ComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
+    }
+
+    /**
+     * Returns the current row (zero-based) that the builder is putting
+     * components in.
+     */
+    public int getCurrentRow() {
+        return currentRow == -1 ? 0 : currentRow;
+    }
+
+    /**
+     * Returns the current column (zero-based) that the builder is putting
+     * components in.
+     */
+    public int getCurrentCol() {
+        return currentCol;
+    }
+
+    /**
+     * Inserts a new row. A related component gap row will be inserted before
+     * this row.
+     * <p>
+     * NOTE: no gap row will be inserted if this is called on the first row of
+     * the table.
+     */
     public TablePanelBuilder row() {
-        if (currentRow == 0) {
-            ++currentRow;
+        if (currentRow == -1) {
+            currentRow = 0;
             return this;
         }
         return row(FormFactory.RELATED_GAP_ROWSPEC);
     }
 
+    /**
+     * Inserts a new row. A gap row with specified rowSpec will be inserted
+     * before this row.
+     */
     public TablePanelBuilder row(String rowSpec) {
         return row(new RowSpec(rowSpec));
     }
 
-    public TablePanelBuilder row(RowSpec rowSpec) {        
-        gapRows.put(new Integer(currentRow), rowSpec);
+    /**
+     * Inserts a new row. A gap row with specified rowSpec will be inserted
+     * before this row.
+     */
+    public TablePanelBuilder row(RowSpec rowSpec) {
         ++currentRow;
+        gapRows.put(new Integer(currentRow), rowSpec);        
         lastCC = null;
         maxColumns = Math.max(maxColumns, currentCol);
         currentCol = 0;
         return this;
     }
 
+    /**
+     * Inserts a new row. An unrelated component gap row will be inserted before
+     * this row.
+     */
     public TablePanelBuilder unrelatedGapRow() {
         return row(FormFactory.UNRELATED_GAP_ROWSPEC);
     }
 
+    /**
+     * Inserts an empty cell at the current row/column.
+     */
     public TablePanelBuilder cell() {
         return cell("");
     }
 
+    /**
+     * Inserts an empty cell at the current row/column. Attibutes may be zero or
+     * more of rowSpec, columnSpec, colGrId and rowGrId.
+     */
     public TablePanelBuilder cell(String attributes) {
-        cellInternal(attributes);
+        cellInternal(null, attributes);
         return this;
     }
 
+    /**
+     * Inserts a component at the current row/column.
+     */
     public TablePanelBuilder cell(JComponent component) {
         return cell(component, "");
     }
 
+    /**
+     * Inserts a component at the current row/column. Attibutes may be zero or
+     * more of rowSpec, columnSpec, colGrId, rowGrId, align and valign.
+     */
     public TablePanelBuilder cell(JComponent component, String attributes) {
-        InternalCellConstraints cc = cellInternal(attributes);
+        Cell cc = cellInternal(component, attributes);
         lastCC = cc;
-        items.put(component, cc);
+        items.add(cc);
         return this;
     }
 
+    /**
+     * Inserts a related componet gap column.
+     */
     public TablePanelBuilder gapCol() {
         return gapCol(FormFactory.RELATED_GAP_COLSPEC);
     }
 
+    /**
+     * Inserts a gap column with the specified colSpec.
+     */
     public TablePanelBuilder gapCol(String colSpec) {
         return gapCol(new ColumnSpec(colSpec));
     }
 
+    /**
+     * Inserts a gap column with the specified colSpec.
+     */
     public TablePanelBuilder gapCol(ColumnSpec colSpec) {
         gapCols.put(new Integer(currentCol), colSpec);
         return this;
     }
 
+    /**
+     * Inserts a label componet gap column.
+     */
     public TablePanelBuilder labelGapCol() {
         return gapCol(FormFactory.LABEL_COMPONENT_GAP_COLSPEC);
     }
 
+    /**
+     * Inserts a unrelated componet gap column.
+     */
     public TablePanelBuilder unrelatedGapCol() {
         return gapCol(FormFactory.UNRELATED_GAP_COLSPEC);
     }
 
-    public TablePanelBuilder separator(String text) {
-        return separator(text, "");
+    /**
+     * Inserts a separator with the given label.
+     */
+    public TablePanelBuilder separator(String labelKey) {
+        return separator(labelKey, "");
     }
 
-    public TablePanelBuilder separator(String text, String attributes) {
-        InternalCellConstraints cc = cellInternal(attributes);
+    /**
+     * Inserts a separator with the given label. Attibutes my be zero or more of
+     * rowSpec, columnSpec, colGrId, rowGrId, align and valign.
+     */
+    public TablePanelBuilder separator(String labelKey, String attributes) {
+        Cell cc = cellInternal(getComponentFactory().createLabeledSeparator(
+                labelKey), attributes);
         lastCC = cc;
-        items.put(text, cc);
+        items.add(cc);
         return this;
     }
 
-    private InternalCellConstraints cellInternal(String attributes) {
+    /**
+     * Creates and returns a JPanel with all the given components in it, using
+     * the "hints" that were provided to the builder.
+     *
+     * @return a new JPanel with the components laid-out in it
+     */
+    public JPanel getPanel() {
+        insertMissingSpecs();
+        fixColSpans();
+        fillInGaps();
+        //        buildFocusOrder();
+        fillPanel();
+        return panel;
+    }
+
+    private Cell cellInternal(JComponent component, String attributes) {
         nextCol();
         Map attributeMap = getAttributes(attributes);
         RowSpec rowSpec = getRowSpec(getAttribute(ROWSPEC, attributeMap, ""));
@@ -261,7 +361,7 @@ public class TablePanelBuilder {
         addRowGroup(getAttribute(ROWGROUPID, attributeMap, null));
         addColGroup(getAttribute(COLGROUPID, attributeMap, null));
 
-        InternalCellConstraints cc = getCellConstraints(attributeMap);
+        Cell cc = createCell(component, attributeMap);
         currentCol = cc.endCol < cc.startCol ? cc.startCol : cc.endCol;
         markContained(cc);
         return cc;
@@ -274,7 +374,7 @@ public class TablePanelBuilder {
                 group = new HashSet();
                 rowGroups.put(groupId, group);
             }
-            group.add(new Integer(currentRow));
+            group.add(new Integer(getCurrentRow()));
         }
     }
 
@@ -311,7 +411,7 @@ public class TablePanelBuilder {
     }
 
     private RowSpec getRowSpec(String rowSpec) {
-        if (org.springframework.util.StringUtils.hasText(rowSpec)) {
+        if (StringUtils.hasText(rowSpec)) {
             return new RowSpec(rowSpec);
         }
         else {
@@ -333,7 +433,10 @@ public class TablePanelBuilder {
             lastCC.endCol = lastCC.startCol;
             lastCC = null;
         }
-        BitSet currentColCells = getRowBitSet(currentRow);
+        if (currentRow == -1) {
+            row();
+        }
+        BitSet currentColCells = getRowBitSet(getCurrentRow());
         do {
             ++currentCol;
         }
@@ -341,7 +444,6 @@ public class TablePanelBuilder {
     }
 
     private BitSet getRowBitSet(int row) {
-        row = row - 1;
         if (row >= rowBitsSets.size()) {
             int missingBitSets = (row - rowBitsSets.size()) + 1;
             for (int i = 0; i < missingBitSets; i++) {
@@ -351,14 +453,14 @@ public class TablePanelBuilder {
         return (BitSet)rowBitsSets.get(row);
     }
 
-    private void markContained(InternalCellConstraints cc) {
+    private void markContained(Cell cc) {
         for (int row = cc.startRow; row <= cc.endRow; row++) {
             getRowBitSet(row).set(cc.startCol,
                     cc.endCol < cc.startCol ? cc.startCol + 1 : cc.endCol + 1);
         }
     }
 
-    private InternalCellConstraints getCellConstraints(Map attributes) {
+    private Cell createCell(JComponent component, Map attributes) {
         String align = getAttribute(ALIGN, attributes, "default");
         String valign = getAttribute(VALIGN, attributes, "default");
         int colSpan;
@@ -378,13 +480,13 @@ public class TablePanelBuilder {
                     "Attribute 'rowspan' must be an integer.");
         }
 
-        return new InternalCellConstraints(currentCol, currentRow, colSpan,
-                rowSpan, align + "," + valign);
+        return new Cell(component, getCurrentCol(), getCurrentRow(), colSpan, rowSpan,
+                align + "," + valign);
     }
 
     private void fixColSpans() {
-        for (Iterator i = items.values().iterator(); i.hasNext();) {
-            InternalCellConstraints cc = (InternalCellConstraints)i.next();
+        for (Iterator i = items.iterator(); i.hasNext();) {
+            Cell cc = (Cell)i.next();
             if (cc.endCol < cc.startCol) {
                 int endCol = cc.startCol;
                 BitSet currentColCells = getRowBitSet(cc.startRow);
@@ -417,16 +519,16 @@ public class TablePanelBuilder {
                 rowSpecs.add(adjustedRow, rowSpec);
                 adjustedRow++;
             }
-            adjustedRows.add(new Integer(adjustedRow + 1));
+            adjustedRows.add(new Integer(adjustedRow));
         }
-        for (Iterator i = items.values().iterator(); i.hasNext();) {
-            InternalCellConstraints cc = (InternalCellConstraints)i.next();
+        for (Iterator i = items.iterator(); i.hasNext();) {
+            Cell cc = (Cell)i.next();
             cc.startCol = ((Integer)adjustedCols.get(cc.startCol - 1))
                     .intValue();
             cc.endCol = ((Integer)adjustedCols.get(cc.endCol - 1)).intValue();
-            cc.startRow = ((Integer)adjustedRows.get(cc.startRow - 1))
+            cc.startRow = ((Integer)adjustedRows.get(cc.startRow))
                     .intValue();
-            cc.endRow = ((Integer)adjustedRows.get(cc.endRow - 1)).intValue();
+            cc.endRow = ((Integer)adjustedRows.get(cc.endRow)).intValue();
         }
         adjustedColGroupIndices = new int[colGroups.size()][];
         int groupsCount = 0;
@@ -454,71 +556,56 @@ public class TablePanelBuilder {
             groupsCount++;
         }
     }
-    
-//    private void buildFocusOrder() {
-//        focusOrder = new ArrayList(items.size());
-//        for (Iterator i = items.values().iterator(); i.hasNext();) {
-//             Object o = i.next();
-//             if (o instanceof JComponent) {
-//                 focusOrder.add(o);
-//             }            
-//        }
-//        Collections.reverse(focusOrder);
-//    }
-    
 
-    public JPanel getPanel() {
+    //    private void buildFocusOrder() {
+    //        focusOrder = new ArrayList(items.size());
+    //        for (Iterator i = items.iterator(); i.hasNext();) {
+    //            Cell cc = (Cell)i.next();
+    //            if (cc.getComponent() instanceof JComponent) {
+    //                focusOrder.add(cc.getComponent());
+    //            }
+    //        }
+    //        panel.putClientProperty(
+    //                CustomizableFocusTraversalPolicy.FOCUS_ORDER_PROPERTY_NAME,
+    //                focusOrder);
+    //
+    //        if (!(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+    //                .getDefaultFocusTraversalPolicy() instanceof
+    // CustomizableFocusTraversalPolicy)) {
+    //            KeyboardFocusManager.getCurrentKeyboardFocusManager()
+    //                    .setDefaultFocusTraversalPolicy(
+    //                            new CustomizableFocusTraversalPolicy());
+    //        }
+    //    }
+
+    private void fillPanel() {
+        panel.setLayout(createLayout());
+        for (Iterator i = items.iterator(); i.hasNext();) {
+            Cell cc = (Cell)i.next();
+            panel.add((Component)cc.getComponent(), cc.getCellConstraints());
+        }
+    }
+
+    private FormLayout createLayout() {
+        ColumnSpec[] columnSpecsArray = (ColumnSpec[])columnSpecs
+                .toArray(new ColumnSpec[columnSpecs.size()]);
+        RowSpec[] rowSpecArray = (RowSpec[])rowSpecs
+                .toArray(new RowSpec[rowSpecs.size()]);
+        FormLayout layout = new FormLayout(columnSpecsArray, rowSpecArray);
+        layout.setColumnGroups(adjustedColGroupIndices);
+        layout.setRowGroups(adjustedRowGroupIndices);
+        return layout;
+    }
+
+    private void insertMissingSpecs() {
         maxColumns = Math.max(maxColumns, currentCol);
         if (columnSpecs.size() < maxColumns) {
             setColumnSpec(maxColumns, getDefaultColSpec());
         }
-        if (rowSpecs.size() < currentRow) {
-            setRowSpec(currentRow, getDefaultRowSpec());
+
+        if (rowSpecs.size() < getCurrentRow()) {
+            setRowSpec(getCurrentRow(), getDefaultRowSpec());
         }
-        fixColSpans();
-        fillInGaps();        
-        for (Iterator i = columnSpecs.iterator(); i.hasNext();) {
-            layout.appendColumn((ColumnSpec)i.next());
-        }
-        for (Iterator i = rowSpecs.iterator(); i.hasNext();) {
-            layout.appendRow((RowSpec)i.next());
-        }
-        layout.setColumnGroups(adjustedColGroupIndices);
-        layout.setRowGroups(adjustedRowGroupIndices);
-        
-//        buildFocusOrder();
-//        panel.setFocusTraversalPolicy(new SortingFocusTraversalPolicy(new Comparator() {
-//
-//            public int compare(Object c1, Object c2) {
-//                int offset1 = focusOrder.indexOf(c1);
-//                if (offset1 < 0) {
-//                    System.out.println("Unknow comp1 " + c1);
-//                }
-//                int offset2 = focusOrder.indexOf(c2);
-//                if (offset2 < 0) {
-//                    System.out.println("Unknow comp2 " + c2);
-//                }
-//                
-//                return offset2-offset1;
-//            }
-//            
-//        }));
-        
-        PanelBuilder builder = new PanelBuilder(panel, layout);        
-        for (Iterator i = items.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry)i.next();
-            if (entry.getKey() instanceof JComponent) {
-                builder.add((JComponent)entry.getKey(),
-                        ((InternalCellConstraints)entry.getValue())
-                                .getCellConstraints());
-            }
-            else {
-                builder.addSeparator((String)entry.getKey(),
-                        ((InternalCellConstraints)entry.getValue())
-                                .getCellConstraints());
-            }
-        }
-        return builder.getPanel();
     }
 
     private RowSpec getDefaultRowSpec() {
@@ -532,19 +619,19 @@ public class TablePanelBuilder {
     private static final Set allowedAttributes;
     static {
         allowedAttributes = new HashSet();
-        allowedAttributes.add(COLSPAN);
-        allowedAttributes.add(ROWSPAN);
-        allowedAttributes.add(COLSPEC);
-        allowedAttributes.add(ROWSPEC);
-        allowedAttributes.add(ALIGN);
-        allowedAttributes.add(VALIGN);
-        allowedAttributes.add(ROWGROUPID);
-        allowedAttributes.add(COLGROUPID);
+        allowedAttributes.add(COLSPAN.toLowerCase());
+        allowedAttributes.add(ROWSPAN.toLowerCase());
+        allowedAttributes.add(COLSPEC.toLowerCase());
+        allowedAttributes.add(ROWSPEC.toLowerCase());
+        allowedAttributes.add(ALIGN.toLowerCase());
+        allowedAttributes.add(VALIGN.toLowerCase());
+        allowedAttributes.add(ROWGROUPID.toLowerCase());
+        allowedAttributes.add(COLGROUPID.toLowerCase());
     }
 
     private String getAttribute(String name, Map attributeMap,
             String defaultValue) {
-        String value = (String)attributeMap.get(name);
+        String value = (String)attributeMap.get(name.toLowerCase());
         if (value == null) {
             value = defaultValue;
         }
@@ -601,73 +688,36 @@ public class TablePanelBuilder {
         return attributeMap;
     }
 
-    private class InternalCellConstraints {
-        int startCol;
+    private class Cell {
+        private JComponent component;
 
-        int startRow;
+        private int startCol;
 
-        int endCol;
+        private int startRow;
 
-        int endRow;
+        private int endCol;
 
-        String align;
+        private int endRow;
 
-        public InternalCellConstraints(int x, int y, int w, int h, String align) {
-            startCol = x;
-            startRow = y;
-            endCol = x + w - 1;
-            endRow = y + h - 1;
+        private String align;
+
+        public Cell(JComponent component, int x, int y, int w, int h,
+                String align) {
+            this.component = component;
+            this.startCol = x;
+            this.startRow = y;
+            this.endCol = x + w - 1;
+            this.endRow = y + h - 1;
             this.align = align;
         }
 
+        public Object getComponent() {
+            return component;
+        }
+
         public CellConstraints getCellConstraints() {
-            return new CellConstraints().xywh(startCol, startRow, endCol
+            return new CellConstraints().xywh(startCol, startRow+1, endCol
                     - startCol + 1, endRow - startRow + 1, align);
         }
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.setTitle("Layout Fun");
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JComponent panel = buildPanel();
-        frame.getContentPane().add(panel);
-        frame.pack();
-        frame.show();
-    }
-
-    private static JComponent buildPanel() {
-
-        TablePanelBuilder table = new TablePanelBuilder(new FormDebugPanel(
-                true, false));
-        table
-            .row()
-                .separator("General 1")
-            .row()
-                .cell(new JLabel("Company"),"colSpec=right:pref colGrId=labels")
-                .labelGapCol()
-                .cell(new JFormattedTextField())
-            .row()
-                .cell(new JLabel("Contact"))
-                .cell(new JFormattedTextField())
-                .unrelatedGapRow()
-                .separator("Propeller")
-            .row()
-                .cell(new JLabel("PTI [kW]"))
-                .cell(new JFormattedTextField())
-                .unrelatedGapCol()
-                .cell(new JLabel("Description"), "colSpec=right:pref colGrId=labels")
-                .labelGapCol()
-                .cell(new JScrollPane(new JTextArea()), "rowspan=3")
-            .row()
-                .cell(new JLabel("R [mm]"))
-                .cell(new JFormattedTextField())
-                .cell()
-            .row()
-                .cell(new JLabel("D [mm]"))
-                .cell(new JFormattedTextField())
-                .cell();
-
-        return table.getPanel();
     }
 }
