@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -47,6 +48,8 @@ import org.springframework.binding.form.SingleConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.swing.ComboBoxModelAdapter;
+import org.springframework.binding.swing.SelectableItemsListModel;
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
@@ -572,6 +575,15 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
     }
 
+    public JComboBox createBoundComboBox(String selectionFormProperty,
+            Object[] selectableItems) {
+        ValueModel selectionValueModel = getOrCreateValueModel(selectionFormProperty);
+        ComboBoxModelAdapter comboBoxModel = new ComboBoxModelAdapter(
+                new SelectableItemsListModel(selectableItems,
+                        selectionValueModel));
+        return createNewComboBox(comboBoxModel);
+    }
+
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty) {
         ValueModel selectedValueModel = getOrCreateValueModel(selectionFormProperty);
         comboBox.setModel(new DynamicComboBoxListModel(selectedValueModel));
@@ -658,6 +670,12 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         model.setComparator(comparator);
         comboBox.setModel(model);
         return comboBox;
+    }
+
+    protected JComboBox createNewComboBox(ComboBoxModel model) {
+        JComboBox box = createNewComboBox();
+        box.setModel(model);
+        return box;
     }
 
     protected JComboBox createNewComboBox() {

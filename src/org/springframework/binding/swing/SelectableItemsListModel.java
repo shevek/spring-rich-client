@@ -47,8 +47,9 @@ import org.springframework.util.ObjectUtils;
  * <code>JList</code>. If you want to use a <code>SelectionInList</code>
  * with a <code>JComboBox</code> or <code>JTable</code>, you can convert
  * the <code>SelectionInList</code> to the associated component model
- * interfaces using the classes {@link ComboBoxModelAdapter}and {@link ListModelTableModelAdapter}
- * respectively. These classes are part of the Binding library too.
+ * interfaces using the classes {@link ComboBoxModelAdapter}and
+ * {@link ListModelTableModelAdapter}respectively. These classes are part of
+ * the Binding library too.
  * <p>
  * 
  * The <code>SelectionInList</code> supports two list types as content of its
@@ -260,6 +261,11 @@ public final class SelectableItemsListModel extends AbstractValueModel
         this(Arrays.asList(listItems));
     }
 
+    public SelectableItemsListModel(Object[] listItems,
+            ValueModel selectionHolder) {
+        this(new ValueHolder(Arrays.asList(listItems)), selectionHolder);
+    }
+
     /**
      * Constructs a <code>SelectionInList</code> on the given list model using
      * defaults for the selection holder and selection index holder.
@@ -297,7 +303,7 @@ public final class SelectableItemsListModel extends AbstractValueModel
      *             is <code>null</code>
      */
     public SelectableItemsListModel(ValueModel selectableItemsHolder,
-            BoundValueModel selectionHolder) {
+            ValueModel selectionHolder) {
         this(selectableItemsHolder, selectionHolder, new ValueHolder(
                 new Integer(EMPTY_SELECTION_INDEX)));
     }
@@ -317,13 +323,13 @@ public final class SelectableItemsListModel extends AbstractValueModel
      *             or <code>selectionIndexHolder</code> is <code>null</code>
      */
     public SelectableItemsListModel(ValueModel selectableItemsHolder,
-            BoundValueModel selectionHolder, ValueModel selectionIndexHolder) {
+            ValueModel selectionHolder, ValueModel selectionIndexHolder) {
         Assert.notNull(selectableItemsHolder);
         Assert.notNull(selectionHolder);
         Assert.notNull(selectionIndexHolder);
 
         this.selectableItemsHolder = selectableItemsHolder;
-        this.selectionHolder = selectionHolder;
+        this.selectionHolder = (BoundValueModel)selectionHolder;
         this.selectionIndexHolder = selectionIndexHolder;
         initSelectionIndex();
 
@@ -335,7 +341,8 @@ public final class SelectableItemsListModel extends AbstractValueModel
         this.selectableItemsHolder
                 .addValueChangeListener(selectableItemsChangeHandler);
         this.selectionHolder.addPropertyChangeListener(selectionChangeHandler);
-        this.selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
+        this.selectionIndexHolder
+                .addValueChangeListener(selectionIndexChangeHandler);
 
         // If the ValueModel holds a ListModel observe list data changes too.
         this.list = selectableItemsHolder.getValue();
@@ -690,7 +697,8 @@ public final class SelectableItemsListModel extends AbstractValueModel
             selectionIndexHolder
                     .removeValueChangeListener(selectionIndexChangeHandler);
             selectionIndexHolder.setValue(new Integer(newSelectionIndex));
-            selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
+            selectionIndexHolder
+                    .addValueChangeListener(selectionIndexChangeHandler);
             firePropertyChange(SELECTION_INDEX_PROPERTY, oldSelectionIndex,
                     newSelectionIndex);
         }

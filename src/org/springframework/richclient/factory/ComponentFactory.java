@@ -51,6 +51,31 @@ public interface ComponentFactory {
     public JLabel createLabel(String labelKey);
 
     /**
+     * Creates and configure a label with the specified label key and
+     * parameterized arguments. Argument values are resolved to {digit
+     * placeholder} characters in the resolved message string.
+     * 
+     * @param labelKey
+     * @param arguments
+     * @return The configured label.
+     */
+    public JLabel createLabel(String labelKey, Object[] arguments);
+
+    /**
+     * Creates and configure a label with the specified label key and
+     * parameterized arguments. Argument values are resolved to {digit
+     * placeholder} characters in the resolved message string. Argument values
+     * are pulled from the provided value model, and this component factory will
+     * auto-subscribe for changes, dynamically updating the label when
+     * underlying arguments change.
+     * 
+     * @param labelKey
+     * @param argumentValueHolders The value model of the arguments;
+     * @return The configured label.
+     */
+    public JLabel createLabel(String labelKey, ValueModel[] argumentValueHolders);
+
+    /**
      * Create and configure a title label with the specified label key. A title
      * label's text matches that of a titled border title (bold, highlighted.)
      * 

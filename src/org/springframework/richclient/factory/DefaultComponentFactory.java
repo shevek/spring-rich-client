@@ -32,8 +32,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
+import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.enums.CodedEnumResolver;
@@ -90,6 +92,49 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
     public JLabel createLabel(String labelKey) {
         return getLabelInfo(getRequiredMessage(labelKey)).configureLabel(
                 createNewLabel());
+    }
+
+    public JLabel createLabel(String labelKey, Object[] arguments) {
+        return getLabelInfo(getRequiredMessage(labelKey, arguments))
+                .configureLabel(createNewLabel());
+    }
+
+    public JLabel createLabel(String labelKey, ValueModel[] argumentValueHolders) {
+        return new LabelTextRefresher(labelKey, argumentValueHolders)
+                .getLabel();
+    }
+
+    private class LabelTextRefresher implements ValueChangeListener {
+        private String labelKey;
+
+        private JLabel label;
+
+        private ValueModel[] argumentHolders;
+
+        public LabelTextRefresher(String labelKey, ValueModel[] argumentHolders) {
+            this.labelKey = labelKey;
+            this.argumentHolders = argumentHolders;
+            this.label = createNewLabel();
+            updateLabel();
+        }
+
+        public JLabel getLabel() {
+            return label;
+        }
+
+        public void valueChanged() {
+            updateLabel();
+        }
+
+        private void updateLabel() {
+            Object[] argValues = new Object[argumentHolders.length];
+            for (int i = 0; i < argumentHolders.length; i++) {
+                ValueModel argHolder = argumentHolders[i];
+                argValues[i] = argHolder.getValue();
+            }
+            getLabelInfo(getRequiredMessage(labelKey, argValues))
+                    .configureLabel(label);
+        }
     }
 
     public JLabel createTitleLabel(String labelKey) {
@@ -291,9 +336,19 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
     }
 
     protected String getRequiredMessage(String messageKey) {
+        return getRequiredMessage(messageKey, null);
+    }
+
+    protected String getRequiredMessage(String messageKey, Object[] args) {
         if (getMessageSourceAccessor() != null) {
-            return getMessageSourceAccessor()
-                    .getMessage(messageKey, messageKey);
+            try {
+                String message = getMessageSourceAccessor().getMessage(
+                        messageKey, args);
+                return message;
+            }
+            catch (NoSuchMessageException e) {
+                return messageKey;
+            }
         }
         else {
             logger

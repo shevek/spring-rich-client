@@ -60,16 +60,22 @@ public class TableUtils {
     }
 
     public static JTable createStandardSortableTable(TableModel tableModel) {
-        JTable table = new JTable();
+        JTable table = new JTable(tableModel);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        installDefaultRenderers(table);
+        attachSorter(table);
+        sizeColumnsToFitRowData(table);
+        return table;
+    }
+    
+    public static JTable attachSorter(JTable table) {
+        TableModel tableModel = table.getModel();
         ShuttleSortableTableModel sortedModel = new ShuttleSortableTableModel(
                 tableModel);
         table.setAutoCreateColumnsFromModel(true);
         table.setModel(sortedModel);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        installDefaultRenderers(table);
         TableSortIndicator sortIndicator = new TableSortIndicator(table);
         new SortTableCommand(table, sortIndicator.getColumnSortList());
-        sizeColumnsToFitRowData(table);
         return table;
     }
 
