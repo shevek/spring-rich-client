@@ -440,7 +440,12 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JComboBox createBoundComboBox(String formProperty) {
-        return bind(createNewComboBox(), formProperty);
+        if (isEnumeration(formProperty)) {
+            return createBoundComboBoxFromEnum(formProperty);
+        }
+        else {
+            return bind(createNewComboBox(), formProperty);
+        }
     }
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty) {
@@ -555,64 +560,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return (ListModel)valueModel.get();
     }
 
-    private static class BufferedListValueModel extends BufferedValueModel {
-        private ListListModel items;
-
-        private boolean updating;
-
-        public BufferedListValueModel(ValueModel wrappedModel) {
-            super(wrappedModel);
-        }
-
-        public Object get() {
-            if (!isChangeBuffered()) {
-                super.set(internalGet());
-            }
-            return super.get();
-        }
-
-        protected Object internalGet() {
-            if (this.items == null) {
-                this.items = new ListListModel();
-                this.items.addListDataListener(new ListDataListener() {
-                    public void contentsChanged(ListDataEvent e) {
-                        fireValueChanged();
-                    }
-
-                    public void intervalAdded(ListDataEvent e) {
-                        fireValueChanged();
-                    }
-
-                    public void intervalRemoved(ListDataEvent e) {
-                        fireValueChanged();
-                    }
-                });
-            }
-            else {
-                try {
-                    updating = true;
-                    this.items.clear();
-                }
-                finally {
-                    updating = false;
-                }
-            }
-            List list = (List)getWrappedModel().get();
-            if (list != null) {
-                this.items.addAll(list);
-            }
-            return this.items;
-        }
-
-        protected void onWrappedValueChanged() {
-            super.set(internalGet());
-        }
-
-        protected void fireValueChanged() {
-            if (!updating) {
-                super.fireValueChanged();
-            }
-        }
+    public JList createBoundList(String formProperty) {
+        ListModel listModel = createBoundListModel(formProperty);
+        JList list = createNewList();
+        list.setModel(listModel);
+        return list;
     }
 
     public JList createBoundList(String selectionFormProperty,
