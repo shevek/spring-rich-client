@@ -23,7 +23,6 @@ import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.AbstractWizardPage;
 import org.springframework.richclient.wizard.WizardDialog;
-import org.springframework.rules.values.NestingFormModel;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
@@ -66,7 +65,7 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
         }
 
         public JComponent createControl() {
-            ownerGeneralPanel = new OwnerGeneralPanel(getFormModel());
+            ownerGeneralPanel = new OwnerGeneralPanel(wizardForm.getFormModel());
             ownerGeneralPanel.newSingleLineResultsReporter(this, this);
             JComponent form = ownerGeneralPanel.getControl();
             return form;
@@ -76,14 +75,6 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
             setPageComplete(enabled);
         }
 
-    }
-
-    private Object getFormObject() {
-        return wizardForm.getFormObject();
-    }
-
-    private NestingFormModel getFormModel() {
-        return wizardForm.getFormModel();
     }
 
     public void execute() {
@@ -99,13 +90,17 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     }
 
     protected boolean onFinish() {
-        getFormModel().commit();
-        Owner newOwner = (Owner)getFormObject();
+        Owner newOwner = (Owner)getNewOwner();
         clinic.storeOwner(newOwner);
         getApplicationContext().publishEvent(
                 new LifecycleApplicationEvent(
                         LifecycleApplicationEvent.CREATED, newOwner));
         return true;
+    }
+
+    private Owner getNewOwner() {
+        wizardForm.commit();
+        return (Owner)wizardForm.getFormObject();
     }
 
 }

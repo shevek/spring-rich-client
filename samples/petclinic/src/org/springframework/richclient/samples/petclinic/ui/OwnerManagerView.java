@@ -232,7 +232,6 @@ public class OwnerManagerView extends AbstractView implements
             renameDialog.setParent(getParentWindowControl());
             renameDialog.setFinishAction(new UnaryProcedure() {
                 public void run(Object o) {
-                    String newName = (String)o;
                     clinic.storeOwner(owner);
                     getSelectedOwnerNode().setUserObject(owner);
                     ownersTreeModel.nodeChanged(getSelectedOwnerNode());
