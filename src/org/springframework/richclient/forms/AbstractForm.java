@@ -17,6 +17,7 @@ package org.springframework.richclient.forms;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -25,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.support.CommitListenerAdapter;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
@@ -57,6 +59,12 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     private ActionCommand commitCommand;
 
     private ActionCommand revertCommand;
+
+    private boolean editingNewFormObject;
+
+    private List editableFormObjects;
+
+    private ValueModel editingFormObjectIndexHolder;
 
     protected AbstractForm() {
 
@@ -198,6 +206,52 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         formModel.revert();
     }
 
+    public void reset() {
+        formModel.reset();
+    }
+
+    protected void setEditableFormObjects(List editableFormObjects) {
+        this.editableFormObjects = editableFormObjects;
+    }
+
+    protected void setEditingFormObjectIndexHolder(ValueModel valueModel) {
+        this.editingFormObjectIndexHolder = valueModel;
+        this.editingFormObjectIndexHolder
+                .addValueChangeListener(new EditingFormObjectSetter());
+    }
+
+    private class EditingFormObjectSetter implements ValueChangeListener {
+        public void valueChanged() {
+            int selectionIndex = getEditingFormObjectIndex();
+            if (selectionIndex == -1) {
+                reset();
+                setEnabled(false);
+            }
+            else {
+                setFormObject(getEditableFormObject(selectionIndex));
+                setEnabled(true);
+            }
+        }
+    }
+
+    protected int getEditingFormObjectIndex() {
+        return ((Integer)editingFormObjectIndexHolder.getValue()).intValue();
+    }
+
+    protected Object getEditableFormObject(int selectionIndex) {
+        return editableFormObjects.get(selectionIndex);
+    }
+
+    protected void formObjectEditCommitted(Object formObject,
+            boolean newFormObject) {
+        if (newFormObject) {
+            editableFormObjects.add(formObject);
+        }
+        else {
+            editableFormObjects.set(getEditingFormObjectIndex(), formObject);
+        }
+    }
+
     protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
         this.formEnabledGuarded = formEnabledGuarded;
         updateFormEnabledGuarded();
@@ -226,6 +280,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         ActionCommand commitCommand = getCommitCommand();
         if (getCommitCommand() != null) {
             attachFormErrorGuard(getCommitCommand());
+            getFormModel().addCommitListener(new PostCommitHandler());
         }
         return formControl;
     }
@@ -236,12 +291,17 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         initRevertCommand();
     }
 
-    protected void attachFormErrorGuard(Guarded guarded) {
-        FormGuard guard = new FormGuard(getFormModel(), guarded);
-        addValidationListener(guard);
-    }
-
     protected abstract JComponent createFormControl();
+
+    private class FormEnabledStateController implements ValueChangeListener {
+        public FormEnabledStateController() {
+            valueChanged();
+        }
+
+        public void valueChanged() {
+            setFormModelDefaultEnabledState();
+        }
+    }
 
     private class FormEnabledPropertyChangeHandler implements
             PropertyChangeListener {
@@ -282,26 +342,21 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         }
     }
 
+    protected void attachFormErrorGuard(Guarded guarded) {
+        FormGuard guard = new FormGuard(getFormModel(), guarded);
+        addValidationListener(guard);
+    }
+
     protected ActionCommand getNewFormObjectCommand() {
         return newFormObjectCommand;
     }
-    
+
     protected ActionCommand getCommitCommand() {
         return commitCommand;
     }
 
     protected ActionCommand getRevertCommand() {
         return revertCommand;
-    }
-
-    private class FormEnabledStateController implements ValueChangeListener {
-        public FormEnabledStateController() {
-            valueChanged();
-        }
-
-        public void valueChanged() {
-            setFormModelDefaultEnabledState();
-        }
     }
 
     /**
@@ -328,6 +383,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
             protected void doExecuteCommand() {
                 getFormModel().reset();
                 getFormModel().setEnabled(true);
+                editingNewFormObject = true;
             }
         };
         return (ActionCommand)getCommandConfigurer().configure(
@@ -369,6 +425,15 @@ public abstract class AbstractForm extends AbstractControlFactory implements
             }
         };
         return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+    }
+
+    private final class PostCommitHandler extends CommitListenerAdapter {
+        public void postEditCommitted(Object formObject) {
+            System.out.println("post edit committed");
+            formObjectEditCommitted(formObject, editingNewFormObject);
+            setFormObject(null);
+            editingNewFormObject = false;
+        }
     }
 
     private final ActionCommand initRevertCommand() {

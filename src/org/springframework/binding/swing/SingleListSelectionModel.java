@@ -25,6 +25,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.springframework.binding.value.BoundValueModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 
 /**
  * A {@link ListSelectionModel}implementation that has the list index bound to
@@ -69,6 +70,14 @@ public final class SingleListSelectionModel implements ListSelectionModel {
     private PropertyChangeListener selectionIndexChangeHandler;
 
     /**
+     * Constructs a <code>SingleListSelectionAdapter</code> with a empty
+     * default selection index holder.
+     */
+    public SingleListSelectionModel() {
+        this(new ValueHolder());
+    }
+
+    /**
      * Constructs a <code>SingleListSelectionAdapter</code> with the given
      * selection index holder.
      * 
@@ -97,13 +106,17 @@ public final class SingleListSelectionModel implements ListSelectionModel {
         }
     }
 
-    private int getSelectionIndex() {
-        Object value = selectionIndexHolder.getValue();
-        return (value == null) ? MIN : ((Integer)value).intValue();
+    public BoundValueModel getSelectionIndexHolder() {
+        return selectionIndexHolder;
     }
 
     private void setSelectionIndex(int newSelectionIndex) {
         setSelectionIndex(getSelectionIndex(), newSelectionIndex);
+    }
+
+    private int getSelectionIndex() {
+        Object value = selectionIndexHolder.getValue();
+        return (value == null) ? MIN : ((Integer)value).intValue();
     }
 
     private void setSelectionIndex(int oldSelectionIndex, int newSelectionIndex) {
