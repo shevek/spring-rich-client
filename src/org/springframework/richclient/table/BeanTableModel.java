@@ -86,7 +86,7 @@ public abstract class BeanTableModel extends BaseTableModel {
             String className = ClassUtils.getShortNameAsProperty(beanClass);
             String columnPropertyName = columnPropertyNames[i];
             columnNames[i] = messages.getMessage(className + "."
-                    + columnPropertyName);
+                    + columnPropertyName, columnPropertyName);
         }
         return columnNames;
     }
