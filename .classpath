@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="lib/hsqldb/hsqldb-1.7.2-rc6d.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry output="target/test-classes" kind="src" path="test"/>
 	<classpathentry kind="src" path="resources"/>
@@ -12,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/javahelp/jh.jar"/>
 	<classpathentry sourcepath="/java-tools/ui/jgoodies-forms/forms-1_0_4-expanded-archive/forms-1.0.4/forms-1.0.4-src.zip" kind="lib" path="lib/jgoodies-forms/forms-1.0.4.jar"/>
 	<classpathentry sourcepath="/java-tools/ui/jgoodies-looks/looks-1.2.2-expanded-archive/looks-1.2.2-src.zip" kind="lib" path="lib/jgoodies-looks/looks-1.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/hsqldb/hsqldb-1.7.2-rc6d.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-sandbox-SNAPSHOT-710.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-SNAPSHOT-710.jar"/>
