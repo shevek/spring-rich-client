@@ -99,7 +99,7 @@ public class ApplicationLauncher {
                 .notEmpty(rootContextPath,
                         "One or more root rich client application context paths must be provided");
         this.startupContext = loadStartupContext(startupContextPath);
-        this.rootApplicationContext = loadRichClientApplicationContext(rootContextPath);
+        this.rootApplicationContext = loadRootApplicationContext(rootContextPath);
         launchMyRichClient();
     }
 
@@ -145,8 +145,7 @@ public class ApplicationLauncher {
         return null;
     }
 
-    private ApplicationContext loadRichClientApplicationContext(
-            String[] contextPaths) {
+    private ApplicationContext loadRootApplicationContext(String[] contextPaths) {
         try {
             return new ClassPathXmlApplicationContext(contextPaths);
         }
@@ -184,7 +183,8 @@ public class ApplicationLauncher {
         try {
             Application application = (Application)rootApplicationContext
                     .getBean(APPLICATION_BEAN_ID, Application.class);
-            application.openWindow(application.getAdvisor().getStartingPageId());
+            application
+                    .openWindow(application.getAdvisor().getStartingPageId());
             application.getAdvisor().onPostStartup();
         }
         catch (NoSuchBeanDefinitionException e) {
