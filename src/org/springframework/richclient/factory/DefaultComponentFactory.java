@@ -120,9 +120,17 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
             this.labelKey = labelKey;
             this.argumentHolders = argumentHolders;
             this.label = createNewLabel();
+            subscribe();
             updateLabel();
         }
 
+        private void subscribe() {
+            for (int i = 0; i < argumentHolders.length; i++) {
+                ValueModel argHolder = argumentHolders[i];
+                argHolder.addValueChangeListener(this);
+            }
+        }
+        
         public JLabel getLabel() {
             return label;
         }
