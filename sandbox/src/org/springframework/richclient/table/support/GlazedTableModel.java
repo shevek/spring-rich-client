@@ -20,6 +20,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -30,6 +31,7 @@ import ca.odell.glazedlists.swing.WritableTableFormat;
 
 /**
  * <code>TableModel</code> that accepts a <code>EventList</code>.
+ * 
  * @author Peter De Bruycker
  */
 public abstract class GlazedTableModel extends EventTableModel {
@@ -125,7 +127,7 @@ public abstract class GlazedTableModel extends EventTableModel {
                 }
             };
 
-            columnNames[i] = messages.getMessage(resolvable);
+            columnNames[i] = LabelInfoFactory.createLabelInfo(messages.getMessage(resolvable)).getText();
         }
 
         return columnNames;
