@@ -15,6 +15,9 @@
  */
 package org.springframework.richclient.dialog;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.event.EventListenerList;
 
 import org.springframework.rules.reporting.Severity;
@@ -46,6 +49,13 @@ public class MessageBuffer implements MessageReceiver {
         this.delegateFor = delegateFor;
     }
 
+    /**
+     * @return Returns the delegateFor.
+     */
+    protected MessageReceiver getDelegateFor() {
+        return delegateFor;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -64,7 +74,9 @@ public class MessageBuffer implements MessageReceiver {
 
     public void setMessage(String message, Severity severity) {
         if (ObjectUtils.nullSafeEquals(this.message, message)
-                && ObjectUtils.nullSafeEquals(this.severity, severity)) { return; }
+            && ObjectUtils.nullSafeEquals(this.severity, severity)) {
+            return;
+        }
         this.message = message;
         this.severity = severity;
         fireMessageUpdated();
@@ -79,10 +91,14 @@ public class MessageBuffer implements MessageReceiver {
     }
 
     protected void fireMessageUpdated() {
-        MessageListener[] listeners = (MessageListener[])listenerList
-                .getListeners(MessageListener.class);
+        MessageListener[] listeners =
+            (MessageListener[]) listenerList.getListeners(MessageListener.class);
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].messageUpdated(delegateFor);
         }
+    }
+
+    protected List getMessageListeners() {
+        return Arrays.asList(listenerList.getListeners(MessageListener.class));
     }
 }
