@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.springframework.richclient.image;
 
 import java.awt.Image;
@@ -32,11 +32,11 @@ import org.springframework.util.FileCopyUtils;
  * 
  * @author Keith Donald
  */
-public class AwtImageResource
-    extends AbstractResource
-    implements ImageObserver {
+public class AwtImageResource extends AbstractResource implements ImageObserver {
     private Resource wrappedResource;
+
     private boolean imageLoaded;
+
     private boolean imageError;
 
     /**
@@ -50,9 +50,8 @@ public class AwtImageResource
      */
     public AwtImageResource(Resource resource) {
         Assert.notNull(resource);
-        if (resource instanceof AwtImageResource) {
-            throw new IllegalArgumentException("Wrapping another AwtImageResource instance is illegal.");
-        }
+        if (resource instanceof AwtImageResource) { throw new IllegalArgumentException(
+                "Wrapping another AwtImageResource instance is illegal."); }
         this.wrappedResource = resource;
     }
 
@@ -61,9 +60,7 @@ public class AwtImageResource
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof AwtImageResource)) {
-            return false;
-        }
+        if (!(o instanceof AwtImageResource)) { return false; }
         AwtImageResource r = (AwtImageResource)o;
         return wrappedResource.equals(r.wrappedResource);
     }
@@ -105,8 +102,7 @@ public class AwtImageResource
      * @throws java.io.IOException
      *             If an error occurred while reading from the stream.
      */
-    private synchronized Image loadImage(InputStream stream)
-        throws IOException {
+    private synchronized Image loadImage(InputStream stream) throws IOException {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         byte data[] = FileCopyUtils.copyToByteArray(stream);
 
@@ -118,26 +114,22 @@ public class AwtImageResource
         while (!imageLoaded && !imageError) {
             try {
                 wait();
-            } catch (InterruptedException ex) {
+            }
+            catch (InterruptedException ex) {
             }
         }
-        if (imageError) {
-            throw new IOException("Error preparing image from resource.");
-        }
+        if (imageError) { throw new IOException(
+                "Error preparing image from resource."); }
         return image;
     }
 
-    public synchronized boolean imageUpdate(
-        Image img,
-        int infoflags,
-        int x,
-        int y,
-        int w,
-        int h) {
+    public synchronized boolean imageUpdate(Image img, int infoflags, int x,
+            int y, int w, int h) {
         if ((infoflags & (ALLBITS | FRAMEBITS)) != 0) {
             imageLoaded = true;
             notifyAll();
-        } else {
+        }
+        else {
             if ((infoflags & ERROR) != 0) {
                 imageError = true;
                 notifyAll();
