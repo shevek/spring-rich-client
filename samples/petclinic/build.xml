@@ -17,7 +17,6 @@
     	<fileset dir="${spring.lib.dir}">
     		<include name="**/*.jar"/>
    		</fileset>
-    	<pathelement path="${petclinic.build.dir}"/>
     </path>
 
 	<target name="copy-dist-dependencies">
