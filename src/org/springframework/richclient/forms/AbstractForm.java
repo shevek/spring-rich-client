@@ -70,6 +70,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     private ValueModel editingFormObjectIndexHolder;
 
+    private ValueChangeListener editingFormObjectSetter;
+
     protected AbstractForm() {
 
     }
@@ -156,8 +158,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     protected void setEditingFormObjectIndexHolder(ValueModel valueModel) {
         this.editingFormObjectIndexHolder = valueModel;
+        this.editingFormObjectSetter = new EditingFormObjectSetter();
         this.editingFormObjectIndexHolder
-                .addValueChangeListener(new EditingFormObjectSetter());
+                .addValueChangeListener(editingFormObjectSetter);
     }
 
     private class EditingFormObjectSetter implements ValueChangeListener {
@@ -325,10 +328,32 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 getFormModel().reset();
                 getFormModel().setEnabled(true);
                 editingNewFormObject = true;
+                if (isEditingFormObjectSelected()) {
+                    setEditingFormObjectIndexSilently(-1);
+                }
             }
         };
         return (ActionCommand)getCommandConfigurer().configure(
                 newFormObjectCommand);
+    }
+
+    private boolean isEditingFormObjectSelected() {
+        if (editingFormObjectIndexHolder == null) {
+            return false;
+        }
+        else {
+            int value = ((Integer)editingFormObjectIndexHolder.getValue())
+                    .intValue();
+            return value != -1;
+        }
+    }
+
+    private void setEditingFormObjectIndexSilently(int index) {
+        editingFormObjectIndexHolder
+                .removeValueChangeListener(editingFormObjectSetter);
+        editingFormObjectIndexHolder.setValue(new Integer(index));
+        editingFormObjectIndexHolder
+                .addValueChangeListener(editingFormObjectSetter);
     }
 
     private final ActionCommand initCommitCommand() {
@@ -350,8 +375,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         if (editableFormObjects != null) {
             if (editingNewFormObject) {
                 editableFormObjects.add(formObject);
-                editingFormObjectIndexHolder.setValue(new Integer(
-                        editableFormObjects.size() - 1));
+                setEditingFormObjectIndexSilently(editableFormObjects.size() - 1);
             }
             else {
                 IndexAdapter adapter = editableFormObjects
