@@ -69,15 +69,16 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
         formBuilder.add(getPropertyLabelCode(propertyName), propertyEditor);
         return propertyEditor;
     }
-    
+
     public JPasswordField addPasswordField(String propertyName) {
-        return (JPasswordField)formModel.bind(new JPasswordField(), propertyName);
+        return (JPasswordField)formModel.bind(new JPasswordField(8),
+                propertyName);
     }
 
     public JTextArea addTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
         formBuilder.add(getPropertyLabelCode(propertyName), "left,top",
-            new JScrollPane(formModel.bind(textArea, propertyName)));
+                new JScrollPane(formModel.bind(textArea, propertyName)));
         return textArea;
     }
 
