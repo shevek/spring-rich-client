@@ -85,7 +85,8 @@
 		      file="${lib.dir}/jgoodies/forms.jar" />
 		<copy todir="${dist.dir}/lib"
 		      file="${lib.dir}/jgoodies/looks.jar" />
-		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-core.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-context.jar" />
 		<copy todir="${dist.dir}/lib"
 		      file="${lib.dir}/spring/spring-sandbox.jar" />
 		<copy todir="${dist.dir}/lib"
@@ -106,7 +107,7 @@
 				<attribute name="Main-Class"
 				           value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
 				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
+				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
@@ -125,7 +126,7 @@
 				<attribute name="Main-Class"
 				           value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
 				<attribute name="Class-Path"
-				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
+				           value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
