@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,24 +19,33 @@ import java.util.Map;
 
 import org.springframework.context.support.ApplicationObjectSupport;
 
+
 /**
  * Simple <code>ViewRegistry</code> that pulls singleton view definitions out
  * of a spring application context.
- * 
+ *
  * @author Keith Donald
  */
 public class ApplicationContextViewRegistry extends ApplicationObjectSupport
-        implements ViewRegistry {
+    implements ViewRegistry {
 
     public ViewDescriptor[] getViewDescriptors() {
-        Map beans = getApplicationContext().getBeansOfType(
-                ViewDescriptor.class, false, false);
-        return (ViewDescriptor[])beans.values().toArray(
-                new ViewDescriptor[beans.size()]);
+        Map beans = getApplicationContext().getBeansOfType(ViewDescriptor.class, false, false);
+        return (ViewDescriptor[])beans.values().toArray(new ViewDescriptor[beans.size()]);
     }
 
+
     public ViewDescriptor getViewDescriptor(String viewName) {
-        return (ViewDescriptor)getApplicationContext().getBean(viewName);
+        final Object bean = getApplicationContext().getBean(viewName);
+        try {
+            return (ViewDescriptor)bean;
+        }
+        catch (ClassCastException e) {
+            ClassCastException exp = new ClassCastException(bean.getClass() + " is not a " + ViewDescriptor.class +
+                " when looking up '" + viewName + "'");
+            exp.setStackTrace(e.getStackTrace());
+            throw exp;
+        }
     }
 
 }
