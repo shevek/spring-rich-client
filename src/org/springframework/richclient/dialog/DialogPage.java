@@ -25,6 +25,8 @@ import org.springframework.rules.values.PropertyChangePublisher;
 public interface DialogPage extends ControlFactory, MessageReceiver, Guarded,
         PropertyChangePublisher {
 
+    public static final String DESCRIPTION_PROPERTY = "description";
+    
     public static final String PAGE_COMPLETE_PROPERTY = "pageComplete";
 
     /**

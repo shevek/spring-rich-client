@@ -22,8 +22,6 @@ import javax.swing.JComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.dialog.AbstractDialogPage;
-import org.springframework.richclient.dialog.MessageListener;
-import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.util.ToStringBuilder;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements
@@ -41,13 +39,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
 
     protected AbstractWizardPage(String pageId, boolean autoConfigure, String title, Image titleImage) {
         super(pageId, autoConfigure, title, titleImage);
-        this.addMessageListener(new MessageListener() {
-            public void messageUpdated(MessageReceiver source) {
-                if (isCurrentPage()) {
-                    getContainer().updateMessage();
-                }
-            }            
-        });
     }
 
     public Image getImage() {
@@ -81,24 +72,8 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         return wizard.getContainer();
     }
     
-    public void setPageComplete(boolean complete) {        
-        if (isPageComplete() != complete) {
-            super.setPageComplete(complete);
-            if (isCurrentPage()) {
-                getContainer().updateButtons();
-            }
-        }
-    }
-
     public Wizard getWizard() {
         return wizard;
-    }
-
-    public void setDescription(String description) {
-        super.setDescription(description);
-        if (isCurrentPage()) {
-            getContainer().updateTitleBar();
-        }
     }
 
     public void setPreviousPage(WizardPage page) {
@@ -124,7 +99,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     }
 
     public void onAboutToShow() {
-
     }
 
     public String toString() {

@@ -16,12 +16,17 @@
 package org.springframework.richclient.wizard;
 
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.UIConstants;
+import org.springframework.richclient.dialog.DialogPage;
+import org.springframework.richclient.dialog.MessageListener;
+import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
@@ -33,7 +38,7 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class WizardDialog extends TitledApplicationDialog implements
-        WizardContainer {
+        WizardContainer, MessageListener, PropertyChangeListener {
     private static final String NEXT_MESSAGE_CODE = "wizard.next";
 
     private static final String BACK_MESSAGE_CODE = "wizard.back";
@@ -144,9 +149,15 @@ public class WizardDialog extends TitledApplicationDialog implements
 
     public void showPage(WizardPage page) {
         if (currentPage == page) { return; }
+        if (currentPage != null) {
+            currentPage.removeMessageListener(this);
+            currentPage.removePropertyChangeListener(this);
+        }
         page.onAboutToShow();
         this.currentPage = page;
         update();
+        this.currentPage.addMessageListener(this);
+        this.currentPage.addPropertyChangeListener(this);
         setContentPane(page.getControl());
         this.currentPage.setVisible(true);
     }
@@ -237,5 +248,17 @@ public class WizardDialog extends TitledApplicationDialog implements
 
     private boolean canFlipToNextPage() {
         return currentPage.canFlipToNextPage();
+    }
+
+    public void messageUpdated(MessageReceiver source) {
+        updateMessage();
+    }
+
+    public void propertyChange(PropertyChangeEvent e) {
+       if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+           updateButtons();
+       } else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {
+           updateTitleBar();
+       }
     }
 }
