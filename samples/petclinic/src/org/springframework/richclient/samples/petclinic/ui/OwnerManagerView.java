@@ -232,7 +232,7 @@ public class OwnerManagerView extends AbstractView implements
             renameDialog.setInputLabelMessage("renameDialog.label");
             renameDialog.setParent(getParentWindowControl());
             renameDialog.setFinishAction(new Block() {
-                protected void doCallAction(Object o) {
+                public void handle(Object o) {
                     clinic.storeOwner(owner);
                     getSelectedOwnerNode().setUserObject(owner);
                     ownersTreeModel.nodeChanged(getSelectedOwnerNode());
@@ -305,6 +305,6 @@ public class OwnerManagerView extends AbstractView implements
 
             dialog.showDialog();
         }
-    };
+    }
 
 }
