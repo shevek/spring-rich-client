@@ -198,14 +198,17 @@ public class ApplicationWindow implements PersistableElement {
         return statusBar;
     }
 
-    public void close() {
-        getApplicationAdvisor().onPreWindowClose(this);
-        control.dispose();
-        control = null;
-        if (windowManager != null) {
-            windowManager.remove(this);
+    public boolean close() {
+        boolean canClose = getApplicationAdvisor().onPreWindowClose(this);
+        if (canClose) {
+            control.dispose();
+            control = null;
+            if (windowManager != null) {
+                windowManager.remove(this);
+            }
+            windowManager = null;
         }
-        windowManager = null;
+        return canClose;
     }
 
     public void saveState(Memento memento) {

@@ -115,20 +115,23 @@ public class WindowManager extends Observable {
      * @return <code>true</code> if all windows were sucessfully closed, and
      *         <code>false</code> if any window refused to close
      */
-    public void close() {
+    public boolean close() {
         List t = (List)((ArrayList)windows).clone();
         Iterator e = t.iterator();
         while (e.hasNext()) {
             ApplicationWindow window = (ApplicationWindow)e.next();
-            window.close();
+            if (!window.close())
+                return false;
         }
         if (subManagers != null) {
             e = subManagers.iterator();
             while (e.hasNext()) {
                 WindowManager wm = (WindowManager)e.next();
-                wm.close();
+                if (!wm.close())
+                    return false;
             }
         }
+        return true;
     }
 
     /**
@@ -162,7 +165,7 @@ public class WindowManager extends Observable {
             notifyObservers();
         }
     }
-    
+
     public int size() {
         return windows.size();
     }

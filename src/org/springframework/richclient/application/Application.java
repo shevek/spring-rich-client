@@ -158,7 +158,8 @@ public class Application extends ApplicationObjectSupport {
     }
 
     public void close() {
-        System.exit(0);
+        if (windowManager.close())
+            System.exit(0);
     }
 
 }
