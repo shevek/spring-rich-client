@@ -47,7 +47,7 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
      */
     public static final String DEFAULT_TITLE_IMAGE = "titledDialog.image";
 
-    private String title;
+    private String title = "Title Pane Title";
 
     private Image image;
 
@@ -55,14 +55,14 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
 
     private JLabel iconLabel;
 
-    private MessagePane messageAreaPane;
+    private MessagePane messagePane;
 
     public TitlePane() {
         this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
     }
 
     public TitlePane(int linesToDisplay) {
-        this.messageAreaPane = new DefaultMessageAreaPane(linesToDisplay, this);
+        this.messagePane = new DefaultMessageAreaPane(linesToDisplay, this);
     }
 
     public void setTitle(String newTitle) {
@@ -86,7 +86,7 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
         titleLabel = new JLabel();
         titleLabel.setOpaque(false);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        titleLabel.setText(" ");
+        titleLabel.setText(title);
 
         iconLabel = new JLabel();
         iconLabel.setBackground(getBackgroundColor());
@@ -101,7 +101,7 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
         table.gapCol();
         table.cell(iconLabel, "rowspan=2 colspec=pref");
         table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
-        table.cell(messageAreaPane.getControl());
+        table.cell(messagePane.getControl());
         table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
         return table.getPanel();
     }
@@ -123,27 +123,27 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
         return c;
     }
 
-    public boolean messageShowing() {
-        return messageAreaPane.messageShowing();
+    public boolean isMessageShowing() {
+        return messagePane.isMessageShowing();
     }
 
     public void setMessage(Message newMessage) {
-        messageAreaPane.setMessage(newMessage);
+        messagePane.setMessage(newMessage);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaPane.addPropertyChangeListener(listener);
+        messagePane.addPropertyChangeListener(listener);
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        messageAreaPane.addPropertyChangeListener(propertyName, listener);
+        messagePane.addPropertyChangeListener(propertyName, listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaPane.removePropertyChangeListener(listener);
+        messagePane.removePropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        messageAreaPane.removePropertyChangeListener(propertyName, listener);
+        messagePane.removePropertyChangeListener(propertyName, listener);
     }
 }

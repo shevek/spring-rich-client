@@ -204,7 +204,7 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
      * state of the currently active page in this container.
      */
     protected void updateTitlePane() {
-        setTitlePaneText(currentPage.getTitle());
+        setTitlePaneTitle(currentPage.getTitle());
         setTitlePaneImage(currentPage.getImage());
         setDescription(currentPage.getDescription());
     }

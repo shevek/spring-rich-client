@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.forms.Form;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -38,6 +39,10 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
     public TitledPageApplicationDialog(DialogPage dialogPage) {
         super();
         setDialogPage(dialogPage);
+    }
+
+    public TitledPageApplicationDialog(Form form, Window parent) {
+        this(new FormBackedDialogPage(form), parent);
     }
 
     public TitledPageApplicationDialog(DialogPage dialogPage, Window parent) {
@@ -90,7 +95,7 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
     }
 
     protected void updateTitlePane() {
-        setTitlePaneText(dialogPage.getTitle());
+        setTitlePaneTitle(dialogPage.getTitle());
         setTitlePaneImage(dialogPage.getImage());
     }
 

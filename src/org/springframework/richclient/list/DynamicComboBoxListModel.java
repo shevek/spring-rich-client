@@ -54,6 +54,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Value
                         logger.debug("Notifying combo box view selected value changed; new value is '"
                                 + selectedItemHolder.getValue() + "'");
                     }
+                    /*
                     if (selectedItemHolder.getValue() == null) {
                         if (size() > 0 && get(0) != null) {
                             if (logger.isDebugEnabled()) {
@@ -65,6 +66,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Value
                         }
                     }
                     else {
+                    */
                         if (logger.isDebugEnabled()) {
                             logger.debug("Firing contents change event; selected item may have changed");
                         }
@@ -72,7 +74,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Value
                         if (logger.isDebugEnabled()) {
                             logger.debug("Fired contents change event!");
                         }
-                    }
+                    //}
                 }
             });
         }

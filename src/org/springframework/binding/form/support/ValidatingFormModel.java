@@ -318,6 +318,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             this.valueModel = valueModel;
             this.property = property;
             this.valueChangeValidator = validator;
+            valueModel.addValueChangeListener(validator);
         }
 
         public String getType() {
@@ -341,7 +342,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             try {
                 if (logger.isDebugEnabled()) {
                     Class valueClass = (value != null ? value.getClass() : null);
-                    logger.debug("Setting value to convert/validate '" + value + "', class=" + valueClass);
+                    logger.debug("Setting '" + property + "' value to convert/validate '" + value + "', class=" + valueClass);
                 }
                 setValueSilently(value);
                 return true;

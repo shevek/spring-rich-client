@@ -108,7 +108,7 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         messageAreaModel.setMessage(null);
     }
 
-    public boolean messageShowing() {
+    public boolean isMessageShowing() {
         if (messageLabel == null) {
             return false;
         }

@@ -109,11 +109,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private ActionCommand callingCommand;
 
     public ApplicationDialog() {
+        init();
     }
 
     public ApplicationDialog(String title, Window parent) {
         setTitle(title);
         setParent(parent);
+        init();
     }
 
     /**
@@ -132,6 +134,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         setTitle(title);
         setParent(parent);
         setCloseAction(closeAction);
+        init();
+    }
+
+    protected void init() {
+
     }
 
     public void setTitle(String title) {

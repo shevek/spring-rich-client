@@ -30,6 +30,6 @@ public interface MessagePane extends ControlFactory, Messagable {
      * 
      * @return true or false
      */
-    public boolean messageShowing();
+    public boolean isMessageShowing();
 
 }
