@@ -375,14 +375,14 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
         }
         else if (labelOrientation == LabelOrientation.TOP) {
             label.setHorizontalAlignment(JLabel.LEFT);
-            append(label, col, row, colSpan, 1, false, expandY, insets);
+            append(label, col, row, colSpan, 1, expandX, false, insets);
             append(field, col, row + 1, colSpan, rowSpan, expandX,
                 expandY, insets);
         }
         else if (labelOrientation == LabelOrientation.BOTTOM) {
             label.setHorizontalAlignment(JLabel.LEFT);
             append(field, col, row, colSpan, rowSpan, expandX, expandY, insets);
-            append(label, col, row + rowSpan, colSpan, 1, false, expandY,
+            append(label, col, row + rowSpan, colSpan, 1, expandX, false,
                 insets);
         }
 
