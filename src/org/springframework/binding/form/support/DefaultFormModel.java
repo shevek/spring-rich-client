@@ -127,9 +127,9 @@ public class DefaultFormModel extends AbstractFormModel implements
     }
 
     public ValueModel add(String formPropertyPath, ValueModel formValueModel) {
-        if (formValueModel instanceof BufferedValueModel) {
-            ((BufferedValueModel)formValueModel)
-                    .setCommitTrigger(commitTrigger);
+        ValueModel wrapped = getWrappedModel(formValueModel);
+        if (wrapped instanceof BufferedValueModel) {
+            ((BufferedValueModel)wrapped).setCommitTrigger(commitTrigger);
         }
         formValueModel = preProcessNewFormValueModel(formPropertyPath,
                 formValueModel);
@@ -142,6 +142,15 @@ public class DefaultFormModel extends AbstractFormModel implements
         }
         postProcessNewFormValueModel(formPropertyPath, formValueModel);
         return formValueModel;
+    }
+
+    private ValueModel getWrappedModel(ValueModel valueModel) {
+        if (valueModel instanceof ValueModelWrapper) {
+            return ((ValueModelWrapper)valueModel).getWrappedModel();
+        }
+        else {
+            return valueModel;
+        }
     }
 
     protected ValueModel preProcessNewFormValueModel(String formPropertyPath,
