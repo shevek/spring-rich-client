@@ -17,7 +17,7 @@ package org.springframework.richclient.samples.petclinic;
 
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
-import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.setup.SetupWizard;
 import org.springframework.richclient.command.ActionCommand;
 
@@ -27,7 +27,7 @@ import org.springframework.richclient.command.ActionCommand;
  * 
  * @author Keith Donald
  */
-public class PetClinicApplicationAdvisor extends BeanFactoryApplicationAdvisor {
+public class PetClinicApplicationLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
         if (getApplicationServices().containsBean("setupWizard")) {

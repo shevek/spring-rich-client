@@ -23,7 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.richclient.application.config.ApplicationAdvisor;
+import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.util.Assert;
 
@@ -44,7 +44,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private ApplicationServices applicationServices;
 
-    private ApplicationAdvisor applicationAdvisor;
+    private ApplicationLifecycleAdvisor applicationAdvisor;
 
     private ApplicationWindow activeWindow;
 
@@ -85,11 +85,11 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return instance().getServices();
     }
 
-    public Application(ApplicationAdvisor advisor) {
+    public Application(ApplicationLifecycleAdvisor advisor) {
         this(advisor, null);
     }
 
-    public Application(ApplicationAdvisor advisor, ApplicationServices services) {
+    public Application(ApplicationLifecycleAdvisor advisor, ApplicationServices services) {
         setAdvisor(advisor);
         setServices(services);
         windowManager = new WindowManager();
@@ -102,7 +102,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
         this.applicationServices = services;
     }
 
-    private void setAdvisor(ApplicationAdvisor advisor) {
+    private void setAdvisor(ApplicationLifecycleAdvisor advisor) {
         this.applicationAdvisor = advisor;
     }
 
@@ -117,7 +117,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
         getServices();
     }
 
-    public ApplicationAdvisor getAdvisor() {
+    public ApplicationLifecycleAdvisor getAdvisor() {
         return applicationAdvisor;
     }
 

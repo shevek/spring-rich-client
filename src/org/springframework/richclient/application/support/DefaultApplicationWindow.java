@@ -36,13 +36,14 @@ import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageListener;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
-import org.springframework.richclient.application.config.ApplicationAdvisor;
+import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.richclient.util.Memento;
+import org.springframework.util.Assert;
 
 /**
  * Provides a default implementation of {@link ApplicationWindow}
@@ -94,7 +95,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return currentPage;
     }
 
-    protected ApplicationAdvisor getAdvisor() {
+    protected ApplicationLifecycleAdvisor getAdvisor() {
         return Application.instance().getAdvisor();
     }
 
@@ -179,6 +180,9 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     }
 
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
+        Assert.state(getServices().containsBean(pageDescriptorId),
+                "Do not know about page or view descriptor with name '" + pageDescriptorId
+                        + "' - check your context config");
         Object desc = getServices().getBean(pageDescriptorId);
         if (desc instanceof PageDescriptor) {
             return (PageDescriptor)desc;

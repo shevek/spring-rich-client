@@ -28,7 +28,7 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
-import org.springframework.richclient.application.config.BeanFactoryApplicationAdvisor;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.util.ToStringCreator;
@@ -40,7 +40,7 @@ import org.springframework.util.closure.Closure;
 public class FormModelTest extends TestCase {
 
     static {
-        Application application = new Application(new BeanFactoryApplicationAdvisor(), new ApplicationServices());
+        Application application = new Application(new DefaultApplicationLifecycleAdvisor(), new ApplicationServices());
         Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
         Application.services().setApplicationContext(new StaticApplicationContext());
     }

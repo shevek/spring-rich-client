@@ -27,13 +27,14 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
  * @author Jim Moore
  */
-public abstract class ApplicationAdvisor implements InitializingBean {
+public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
     private static final String EXCEPTION_HANDLER_KEY = "sun.awt.exception.handler";
@@ -42,28 +43,31 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     private ApplicationDescriptor applicationDescriptor;
 
-    private ApplicationWindow managedWindow;
+    private ApplicationWindow openingWindow;
+
+    private String startingPageId;
 
     private boolean introShown;
 
     private Class eventExceptionHandler;
 
-    /**
-     * Logs any event loop exception not caught.
-     * 
-     * @see ApplicationAdvisor#setEventExceptionHandler(Class)
-     */
-    public static class DefaultEventExceptionHandler {
-        public void handle(Throwable t) {
-            LogFactory.getLog(ApplicationAdvisor.class).error(t.getMessage(), t);
-        }
+    public void setApplicationDescriptor(ApplicationDescriptor info) {
+        this.applicationDescriptor = info;
     }
 
-    public Class getEventExceptionHandler() {
-        if (this.eventExceptionHandler == null) {
-            this.eventExceptionHandler = DefaultEventExceptionHandler.class;
-        }
-        return this.eventExceptionHandler;
+    /**
+     * This is used to allow the ViewDescriptor to be lazily created when the
+     * ApplicationWindow is opened. Useful when the ApplicationAdvisor needs to
+     * do things before ViewDescriptor should be created, such as setting up a
+     * security context.
+     * 
+     * @param startingViewDescriptorBeanName
+     *            the name of the bean to create
+     * 
+     * @see #getStartingViewDescriptor()
+     */
+    public void setStartingPageId(String pageDescriptorId) {
+        this.startingPageId = pageDescriptorId;
     }
 
     /**
@@ -85,16 +89,19 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
             systemProperties.put(EXCEPTION_HANDLER_KEY, getEventExceptionHandler().getName());
         }
+        Assert
+                .state(startingPageId != null,
+                        "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
     }
 
-    public void setApplicationDescriptor(ApplicationDescriptor info) {
-        this.applicationDescriptor = info;
+    public String getStartingPageId() {
+        return startingPageId;
     }
 
     protected Application getApplication() {
         return application;
     }
-    
+
     protected ApplicationServices getApplicationServices() {
         return getApplication().getServices();
     }
@@ -129,20 +136,14 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     }
 
-    /**
-     * Returns the id for the default page to load when the application is
-     * started.
-     */
-    public abstract String getStartingPageId();
-
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
-        this.managedWindow = configurer.getWindow();
+        this.openingWindow = configurer.getWindow();
         configurer.setTitle(getApplicationName());
         configurer.setImage(getApplicationImage());
     }
 
-    protected final ApplicationWindow getManagedWindow() {
-        return managedWindow;
+    protected final ApplicationWindow getOpeningWindow() {
+        return openingWindow;
     }
 
     public ApplicationWindowCommandManager createWindowCommandManager() {
@@ -186,6 +187,24 @@ public abstract class ApplicationAdvisor implements InitializingBean {
 
     public boolean onPreWindowClose(ApplicationWindow window) {
         return true;
+    }
+
+    /**
+     * Logs any event loop exception not caught.
+     * 
+     * @see ApplicationLifecycleAdvisor#setEventExceptionHandler(Class)
+     */
+    public static class DefaultEventExceptionHandler {
+        public void handle(Throwable t) {
+            LogFactory.getLog(ApplicationLifecycleAdvisor.class).error(t.getMessage(), t);
+        }
+    }
+
+    public Class getEventExceptionHandler() {
+        if (this.eventExceptionHandler == null) {
+            this.eventExceptionHandler = DefaultEventExceptionHandler.class;
+        }
+        return this.eventExceptionHandler;
     }
 
 }
