@@ -237,17 +237,17 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder
 
         if (labelOrientation == LabelOrientation.LEFT ||
                 labelOrientation == null) {
-            label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+            label.setHorizontalAlignment(JLabel.RIGHT);
             builder.appendLabel(label).append(field, colSpan, rowSpan,
                     expandX, expandY);
         }
         else if (labelOrientation == LabelOrientation.RIGHT) {
-            label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            label.setHorizontalAlignment(JLabel.LEFT);
             builder.append(field, colSpan, rowSpan, expandX, expandY)
                     .appendLabel(label);
         }
         else if (labelOrientation == LabelOrientation.TOP) {
-            label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            label.setHorizontalAlignment(JLabel.LEFT);
             final int col = builder.getCurrentCol();
             final int row = builder.getCurrentRow();
             final Insets insets = builder.getDefaultInsets();
@@ -256,7 +256,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder
                             expandX, expandY, insets);
         }
         else if (labelOrientation == LabelOrientation.BOTTOM) {
-            label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            label.setHorizontalAlignment(JLabel.LEFT);
             final int col = builder.getCurrentCol();
             final int row = builder.getCurrentRow();
             final Insets insets = builder.getDefaultInsets();
