@@ -5,7 +5,7 @@ import org.springframework.richclient.factory.ControlFactory;
 public interface ApplicationPage extends ControlFactory {
     public String getId();
 
-    public ApplicationWindow getApplicationWindow();
+    public ApplicationWindow geWindow();
 
     public void addPageComponentListener(PageComponentListener listener);
 

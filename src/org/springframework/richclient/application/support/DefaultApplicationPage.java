@@ -91,7 +91,7 @@ public class DefaultApplicationPage implements ApplicationPage,
         return descriptor.getId();
     }
 
-    public ApplicationWindow getApplicationWindow() {
+    public ApplicationWindow geWindow() {
         return window;
     }
 
