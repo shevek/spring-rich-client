@@ -27,9 +27,13 @@
     <jar href="lib/forms.jar"/>
     <jar href="lib/hessian.jar"/>
     <jar href="lib/hsqldb.jar"/>
-    <jar href="lib/jh.jar"/>
+    <jar href="lib/javahelp.jar"/>
     <jar href="lib/looks.jar"/>
-    <jar href="lib/spring.jar"/>
+    <jar href="lib/spring-core.jar"/>
+    <jar href="lib/spring-context.jar"/>
+    <jar href="lib/spring-aop.jar"/>
+    <jar href="lib/spring-dao.jar"/>
+    <jar href="lib/spring-orm.jar"/>
     <jar href="lib/spring-sandbox.jar"/>
     <jar href="lib/spring-petclinic.jar"/>
     <jar href="lib/spring-richclient.jar"/>
