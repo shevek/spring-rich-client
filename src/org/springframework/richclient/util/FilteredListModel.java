@@ -22,7 +22,6 @@ import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
 
 import org.springframework.rules.UnaryPredicate;
-import org.springframework.util.DefaultObjectStyler;
 
 /**
  * @author Keith Donald
@@ -68,15 +67,14 @@ public class FilteredListModel extends AbstractListModel implements Observer {
             }
         }
         onFilterApplied();
-        System.out.println(DefaultObjectStyler.evaluate(indexes));
     }
-    
+
     protected void onMatchingElement(Object element) {
-        
+
     }
-    
+
     protected void onFilterApplied() {
-        
+
     }
 
     public int getSize() {
