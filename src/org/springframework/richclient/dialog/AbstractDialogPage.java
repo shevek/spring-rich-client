@@ -218,6 +218,10 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     public JComponent getControl() {
         return factory.getControl();
     }
+    
+    public boolean isControlCreated() {
+        return factory.isControlCreated();
+    }
 
     public Window getParentWindowControl() {
         return SwingUtilities.getWindowAncestor(getControl());

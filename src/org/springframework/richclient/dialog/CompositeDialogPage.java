@@ -92,9 +92,8 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
      *            the form page to be insterted
      * @return the DialogPage that wraps formPage
      */
-    public DialogPage addForm(Form formPage) {
-        DialogPage page = new FormBackedDialogPage(formPage,
-                !autoConfigureChildPages);
+    public DialogPage addForm(Form form) {
+        DialogPage page = createDialogPage(form);
         addPage(page);
         return page;
     }
@@ -144,6 +143,11 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
      */
     public DialogPage getActivePage() {
         return activePage;
+    }
+    
+    protected DialogPage createDialogPage(Form form) {
+        return new FormBackedDialogPage(form,
+                !autoConfigureChildPages);
     }
 
     protected void createPageControls() {
