@@ -23,10 +23,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.StringUtils;
-
-import com.jgoodies.forms.factories.Borders;
 
 public abstract class TitledApplicationDialog extends ApplicationDialog
         implements MessageAreaPane {
@@ -133,7 +132,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
         titlePanel.add(new JSeparator(), BorderLayout.SOUTH);
         pageControl.add(titlePanel, BorderLayout.NORTH);
         contentPane = createTitledDialogContentPane();
-        contentPane.setBorder(Borders.DIALOG_BORDER);
+        GuiStandardUtils.attachDialogBorder(contentPane);
         updateDescription();
         pageControl.add(contentPane);
         return pageControl;

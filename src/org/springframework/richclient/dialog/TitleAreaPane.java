@@ -17,8 +17,6 @@ package org.springframework.richclient.dialog;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 
 import javax.swing.Icon;
@@ -29,12 +27,12 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.config.ImageConfigurable;
-import org.springframework.richclient.util.GridBagCellConstraints;
-import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.richclient.util.TablePanelBuilder;
 import org.springframework.rules.reporting.Severity;
+
+import com.jgoodies.forms.factories.FormFactory;
 
 /**
  * A container class that that has a title area for displaying a title and an
@@ -57,7 +55,15 @@ public class TitleAreaPane extends AbstractControlFactory implements
 
     private Image image;
 
-    private MessageAreaPane messageAreaPane = new SimpleMessageAreaPane(this);
+    private MessageAreaPane messageAreaPane;
+    
+    public TitleAreaPane() {
+        this(SimpleMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
+    }
+    
+    public TitleAreaPane(int linesToDisplay) {
+        this.messageAreaPane = new SimpleMessageAreaPane(linesToDisplay, this);
+    }
 
     public void setTitle(String newTitle) {
         if (newTitle == null) {
@@ -82,23 +88,19 @@ public class TitleAreaPane extends AbstractControlFactory implements
         iconLabel = new JLabel();
         iconLabel.setBackground(getBackgroundColor());
         iconLabel.setIcon(getIcon());
-
-        JPanel leftPanel = new JPanel(new GridBagLayout());
-        GridBagCellConstraints cc = new GridBagCellConstraints();
-        leftPanel.setOpaque(false);
-        leftPanel.setBorder(GuiStandardUtils
-                .createEvenlySpacedBorder(UIConstants.TWO_SPACES));
-        leftPanel.add(titleLabel, cc.xyaf(0, 0, GridBagConstraints.WEST,
-                GridBagConstraints.BOTH));
-        leftPanel.add(messageAreaPane.getControl(), cc.xyaf(0, 1,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH));
-
-        titleArea = new JPanel(new GridBagLayout());
-        titleArea.setBackground(getBackgroundColor());
-        titleArea.add(leftPanel, cc.xyaf(0, 0, GridBagConstraints.WEST,
-                GridBagConstraints.BOTH));
-        titleArea.add(iconLabel, cc.xya(1, 0, GridBagConstraints.EAST));
-        return titleArea;
+        
+        JPanel panel = new JPanel();
+        panel.setBackground(getBackgroundColor());        
+        TablePanelBuilder table = new TablePanelBuilder(panel);
+        table.row(FormFactory.LINE_GAP_ROWSPEC);
+        table.gapCol();
+        table.cell(titleLabel);        
+        table.gapCol();
+        table.cell(iconLabel, "rowspan=2 colspec=pref");
+        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
+        table.cell(messageAreaPane.getControl());
+        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);                
+        return table.getPanel();
     }
 
     private Icon getIcon() {

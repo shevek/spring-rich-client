@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -33,6 +34,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.util.Assert;
+
+import com.jgoodies.forms.factories.Borders;
 
 /**
  * Utility functions that help enforce a standard look and feel in accordance
@@ -51,6 +54,15 @@ public class GuiStandardUtils {
 
     public static JComponent attachBorder(JComponent c, Border border) {
         c.setBorder(border);
+        return c;
+    }
+    
+    public static JComponent attachDialogBorder(JComponent c) {
+        if (c instanceof JTabbedPane) {
+            c.setBorder(Borders.TABBED_DIALOG_BORDER);
+        } else {
+            c.setBorder(Borders.DIALOG_BORDER);
+        }
         return c;
     }
 

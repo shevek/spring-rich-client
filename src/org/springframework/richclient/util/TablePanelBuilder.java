@@ -170,6 +170,10 @@ public class TablePanelBuilder {
     }
 
     public TablePanelBuilder row() {
+        if (currentRow == 0) {
+            ++currentRow;
+            return this;
+        }
         return row(FormFactory.RELATED_GAP_ROWSPEC);
     }
 
@@ -177,7 +181,7 @@ public class TablePanelBuilder {
         return row(new RowSpec(rowSpec));
     }
 
-    public TablePanelBuilder row(RowSpec rowSpec) {
+    public TablePanelBuilder row(RowSpec rowSpec) {        
         gapRows.put(new Integer(currentRow), rowSpec);
         ++currentRow;
         lastCC = null;
@@ -500,8 +504,7 @@ public class TablePanelBuilder {
 //            
 //        }));
         
-        PanelBuilder builder = new PanelBuilder(panel, layout);
-        builder.setDefaultDialogBorder();
+        PanelBuilder builder = new PanelBuilder(panel, layout);        
         for (Iterator i = items.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry)i.next();
             if (entry.getKey() instanceof JComponent) {

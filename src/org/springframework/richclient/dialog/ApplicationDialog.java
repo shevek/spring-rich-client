@@ -46,8 +46,6 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.jgoodies.forms.factories.Borders;
-
 /**
  * Abstract Base Class for a dialog with standard layout, buttons, and behavior.
  * <p>
@@ -477,7 +475,7 @@ public abstract class ApplicationDialog extends
      */
     protected void addDialogComponents() {
         JComponent dialogContentPane = createDialogContentPane();
-        dialogContentPane.setBorder(Borders.DIALOG_BORDER);
+        GuiStandardUtils.attachDialogBorder(dialogContentPane);
         getDialogContentPane().add(dialogContentPane);
         getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
     }
@@ -512,7 +510,7 @@ public abstract class ApplicationDialog extends
         this.dialogCommandGroup = CommandGroup.createCommandGroup(null,
                 getCommandGroupMembers());
         JComponent buttonBar = this.dialogCommandGroup.createButtonBar();
-        GuiStandardUtils.attachBorder(buttonBar, Borders.DIALOG_BORDER);
+        GuiStandardUtils.attachDialogBorder(buttonBar);
         return buttonBar;
     }
 

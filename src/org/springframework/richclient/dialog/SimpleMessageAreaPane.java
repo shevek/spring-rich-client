@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.dialog;
 
+import java.awt.Dimension;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -29,6 +31,8 @@ import org.springframework.richclient.util.LabelUtils;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.StringUtils;
 
+import com.jgoodies.forms.layout.Sizes;
+
 /**
  * @author Keith Donald
  */
@@ -37,20 +41,36 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
 
     private static final Log logger = LogFactory
             .getLog(SimpleMessageAreaPane.class);
+    
+    private static final int ONE_LINE_IN_DLU = 10;
+
+    public static final int DEFAULT_LINES_TO_DISPLAY = 2;
+
+    private int linesToDisplay;
 
     private JLabel messageLabel;
 
     private Icon defaultIcon = EmptyIcon.SMALL;
-    
+
     private MessageBuffer messageBuffer;
-    
-    public SimpleMessageAreaPane(MessageReceiver delegateFor) {
-        this.messageBuffer = new MessageBuffer(delegateFor);
+
+    public SimpleMessageAreaPane() {
+        this(DEFAULT_LINES_TO_DISPLAY);
+    }
+
+    public SimpleMessageAreaPane(int linesToDisplay) {
+        this.linesToDisplay = linesToDisplay;
+        this.messageBuffer = new MessageBuffer(this);
         this.messageBuffer.addMessageListener(this);
     }
-    
-    public SimpleMessageAreaPane() {
-        this.messageBuffer = new MessageBuffer(this);
+
+    public SimpleMessageAreaPane(MessageReceiver delegateFor) {
+        this(DEFAULT_LINES_TO_DISPLAY, delegateFor);
+    }
+
+    public SimpleMessageAreaPane(int linesToDisplay, MessageReceiver delegateFor) {
+        this.linesToDisplay = linesToDisplay;
+        this.messageBuffer = new MessageBuffer(delegateFor);
         this.messageBuffer.addMessageListener(this);
     }
 
@@ -64,7 +84,11 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
 
     protected JComponent createControl() {
         this.messageLabel = new JLabel();
-        messageLabel.setOpaque(false);
+        int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay * ONE_LINE_IN_DLU, messageLabel);
+        int prefWidth = messageLabel.getPreferredSize().width;
+        messageLabel.setPreferredSize(new Dimension(prefWidth, prefHeight));        
+        messageLabel.setOpaque(false);        
+        messageLabel.setVerticalAlignment(SwingConstants.TOP);
         messageLabel.setVerticalTextPosition(SwingConstants.TOP);
         messageLabel.setIcon(getDefaultIcon());
         messageLabel.setText(" ");
@@ -112,11 +136,11 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     }
 
     public void addMessageListener(MessageListener messageListener) {
-        messageBuffer.addMessageListener(messageListener);        
+        messageBuffer.addMessageListener(messageListener);
     }
-    
+
     public void removeMessageListener(MessageListener messageListener) {
-        messageBuffer.removeMessageListener(messageListener);        
+        messageBuffer.removeMessageListener(messageListener);
     }
 
     public void messageUpdated(MessageReceiver source) {
@@ -136,6 +160,6 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
             }
             messageLabel.setText(" ");
             messageLabel.setIcon(null);
-        }        
+        }
     }
 }
