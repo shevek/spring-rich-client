@@ -68,19 +68,37 @@ public class DefaultImageSource implements ImageSource {
 
     /**
      * Creates a image resource bundle containing the specified map of keys to
-     * resource paths. The imageBaseName is prepended to all paths when loading
-     * resolved images.
+     * resource paths.
+     * <p>
+     * A custom URL protocol {@link Handler handler}will be installed for the
+     * "image:" protocol. This allows for images in this image source to be
+     * located using the Java URL classes: <br>
+     * <code>URL imageUrl = new URL("image:the.image.key")</code>
      * 
      * @param imageResources
-     *            A map of key-to-image-resources.
-     * @param imageBaseName
-     *            The basepath to prepend to each resource.
+     *            a map of key-to-image-resources.
      */
     public DefaultImageSource(Map imageResources) {
+        this(true, imageResources);
+    }
+
+    /**
+     * Creates a image resource bundle containing the specified map of keys to
+     * resource paths.
+     * 
+     * @param installUrlHandler
+     *            should a URL handler be installed
+     * @param imageResources
+     *            a map of key-to-image-resources.
+     */
+    public DefaultImageSource(boolean installUrlHandler, Map imageResources) {
         Assert.notNull(imageResources);
         this.imageResources = new HashMap(imageResources);
         debugPrintResources();
         this.imageCache = new ImageCache();
+        if (installUrlHandler) {
+            Handler.installImageUrlHandler(this);
+        }
     }
 
     private void debugPrintResources() {
@@ -123,9 +141,6 @@ public class DefaultImageSource implements ImageSource {
         return brokenImageIndicator;
     }
 
-    /**
-     * @see com.csi.commons.ui.image.ImageSource#getImageAtLocation(org.springframework.core.io.Resource)
-     */
     public Image getImageAtLocation(Resource location) {
         try {
             return new AwtImageResource(location).getImage();
@@ -149,6 +164,10 @@ public class DefaultImageSource implements ImageSource {
         catch (IOException e) {
             throw new NoSuchImageResourceException(resource, e);
         }
+    }
+
+    public void installImageUrlHandler() {
+
     }
 
     public String toString() {

@@ -18,8 +18,10 @@ package org.springframework.richclient.image;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
@@ -59,16 +61,34 @@ public class AwtImageResource extends AbstractResource implements ImageObserver 
         return wrappedResource.getDescription();
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof AwtImageResource)) { return false; }
-        AwtImageResource r = (AwtImageResource)o;
-        return wrappedResource.equals(r.wrappedResource);
+    public Resource createRelative(String relativePath) throws IOException {
+        return wrappedResource.createRelative(relativePath);
+    }
+    
+    public boolean exists() {
+        return wrappedResource.exists();
+    }
+    
+    
+    public boolean isOpen() {
+        return wrappedResource.isOpen();
+    }
+    
+    
+    public URL getURL() throws IOException {
+        return wrappedResource.getURL();
+    }
+    
+    public File getFile() throws IOException {
+        return wrappedResource.getFile();
+    }
+    
+    public String getFilename() throws IllegalStateException {
+        return wrappedResource.getFilename();
     }
 
-    public int hashCode() {
-        return wrappedResource.hashCode();
-    }
 
+    
     public InputStream getInputStream() throws IOException {
         return wrappedResource.getInputStream();
     }
@@ -137,5 +157,14 @@ public class AwtImageResource extends AbstractResource implements ImageObserver 
         }
         return true;
     }
+    
+    public boolean equals(Object o) {
+        if (!(o instanceof AwtImageResource)) { return false; }
+        AwtImageResource r = (AwtImageResource)o;
+        return wrappedResource.equals(r.wrappedResource);
+    }
 
+    public int hashCode() {
+        return wrappedResource.hashCode();
+    }
 }
