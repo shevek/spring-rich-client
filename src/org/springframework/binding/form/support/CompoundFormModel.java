@@ -34,8 +34,8 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.PropertyAdapter;
-import org.springframework.rules.Constraint;
-import org.springframework.rules.closure.ClosureWithoutResult;
+import org.springframework.rules.closure.Block;
+import org.springframework.rules.constraint.AbstractConstraint;
 import org.springframework.rules.support.Algorithms;
 import org.springframework.util.Assert;
 
@@ -187,12 +187,11 @@ public class CompoundFormModel extends AbstractFormModel implements
     }
 
     public void addValidationListener(final ValidationListener listener) {
-        Algorithms.instance().forEach(childFormModels.values(),
-                new ClosureWithoutResult() {
-                    public void doCallAction(Object formModel) {
-                        ((FormModel)formModel).addValidationListener(listener);
-                    }
-                });
+        Algorithms.instance().forEach(childFormModels.values(), new Block() {
+            public void handle(Object formModel) {
+                ((FormModel)formModel).addValidationListener(listener);
+            }
+        });
     }
 
     public void addValidationListener(ValidationListener listener,
@@ -216,13 +215,11 @@ public class CompoundFormModel extends AbstractFormModel implements
     }
 
     public void removeValidationListener(final ValidationListener listener) {
-        Algorithms.instance().forEach(childFormModels.values(),
-                new ClosureWithoutResult() {
-                    public void doCallAction(Object childFormModel) {
-                        ((FormModel)childFormModel)
-                                .removeValidationListener(listener);
-                    }
-                });
+        Algorithms.instance().forEach(childFormModels.values(), new Block() {
+            public void handle(Object childFormModel) {
+                ((FormModel)childFormModel).removeValidationListener(listener);
+            }
+        });
     }
 
     public ValueModel getDisplayValueModel(String formProperty) {
@@ -266,42 +263,37 @@ public class CompoundFormModel extends AbstractFormModel implements
     }
 
     protected void handleEnabledChange() {
-        Algorithms.instance().forEach(childFormModels.values(),
-                new ClosureWithoutResult() {
-                    public void doCallAction(Object childFormModel) {
-                        ((FormModel)childFormModel).setEnabled(isEnabled());
-                    }
-                });
+        new Block() {
+            public void handle(Object childFormModel) {
+                ((FormModel)childFormModel).setEnabled(isEnabled());
+            }
+        }.forEach(childFormModels.values());
     }
 
     public boolean getHasErrors() {
-        return Algorithms.instance().areAnyTrue(childFormModels.values(),
-                new Constraint() {
-                    public boolean test(Object childFormModel) {
-                        return ((FormModel)childFormModel).getHasErrors();
-                    }
-                });
+        return new AbstractConstraint() {
+            public boolean test(Object childFormModel) {
+                return ((FormModel)childFormModel).getHasErrors();
+            }
+        }.any(childFormModels.values());
     }
 
     public Map getErrors() {
         final Map allErrors = new HashMap();
-        Algorithms.instance().forEach(childFormModels.values(),
-                new ClosureWithoutResult() {
-                    public void doCallAction(Object childFormModel) {
-                        allErrors.putAll(((FormModel)childFormModel)
-                                .getErrors());
-                    }
-                });
+        new Block() {
+            public void handle(Object childFormModel) {
+                allErrors.putAll(((FormModel)childFormModel).getErrors());
+            }
+        }.forEach(childFormModels.values());
         return allErrors;
     }
 
     public boolean isDirty() {
-        return Algorithms.instance().areAnyTrue(childFormModels.values(),
-                new Constraint() {
-                    public boolean test(Object childFormModel) {
-                        return ((FormModel)childFormModel).isDirty();
-                    }
-                });
+        return new AbstractConstraint() {
+            public boolean test(Object childFormModel) {
+                return ((FormModel)childFormModel).isDirty();
+            }
+        }.any(childFormModels.values());
     }
 
     public boolean hasErrors(String childModelName) {
@@ -313,31 +305,28 @@ public class CompoundFormModel extends AbstractFormModel implements
 
     public void commit() {
         if (preEditCommit()) {
-            Algorithms.instance().forEach(childFormModels.values(),
-                    new ClosureWithoutResult() {
-                        public void doCallAction(Object childFormModel) {
-                            ((FormModel)childFormModel).commit();
-                        }
-                    });
+            new Block() {
+                public void handle(Object childFormModel) {
+                    ((FormModel)childFormModel).commit();
+                }
+            }.forEach(childFormModels.values());
+
             if (getBufferChangesDefault()) {
-                Algorithms.instance().forEach(childFormObjectBuffers,
-                        new ClosureWithoutResult() {
-                            public void doCallAction(Object bufferedValueModel) {
-                                ((BufferedValueModel)bufferedValueModel)
-                                        .commit();
-                            }
-                        });
+                new Block() {
+                    public void handle(Object bufferedValueModel) {
+                        ((BufferedValueModel)bufferedValueModel).commit();
+                    }
+                }.forEach(childFormObjectBuffers);
             }
             postEditCommit();
         }
     }
 
     public void revert() {
-        Algorithms.instance().forEach(childFormModels.values(),
-                new ClosureWithoutResult() {
-                    public void doCallAction(Object childFormModel) {
-                        ((FormModel)childFormModel).revert();
-                    }
-                });
+        new Block() {
+            public void handle(Object childFormModel) {
+                ((FormModel)childFormModel).revert();
+            }
+        }.forEach(childFormModels.values());
     }
 }

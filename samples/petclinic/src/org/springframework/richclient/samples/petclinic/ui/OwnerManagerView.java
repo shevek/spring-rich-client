@@ -51,7 +51,7 @@ import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.PopupMenuMouseListener;
-import org.springframework.rules.closure.ClosureWithoutResult;
+import org.springframework.rules.closure.Block;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
@@ -230,7 +230,7 @@ public class OwnerManagerView extends AbstractView implements
             renameDialog.setTitle(getMessage("renameOwnerDialog.title"));
             renameDialog.setInputLabelMessage("renameDialog.label");
             renameDialog.setParent(getParentWindowControl());
-            renameDialog.setFinishAction(new ClosureWithoutResult() {
+            renameDialog.setFinishAction(new Block() {
                 protected void doCallAction(Object o) {
                     clinic.storeOwner(owner);
                     getSelectedOwnerNode().setUserObject(owner);
