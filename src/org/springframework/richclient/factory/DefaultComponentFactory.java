@@ -45,6 +45,7 @@ import org.springframework.richclient.list.CodedEnumListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.rules.values.ValueModel;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.comparators.ComparableComparator;
 import org.springframework.util.comparators.CompoundComparator;
@@ -157,6 +158,12 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         return comboBox;
     }
 
+    public JComboBox createListValueModelComboBox(
+            ValueModel selectedItemValueModel,
+            ValueModel selectableItemsListHolder, String renderedPropertyPath) {
+        return null;
+    }
+
     public void configureForEnum(JComboBox comboBox, Class enumClass) {
         configureForEnum(comboBox, ClassUtils.getShortNameAsProperty(enumClass));
     }
@@ -174,11 +181,12 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         comboBox
                 .setRenderer(new CodedEnumListRenderer(getApplicationContext()));
     }
-    
-    public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
+
+    public JFormattedTextField createFormattedTextField(
+            AbstractFormatterFactory formatterFactory) {
         return new PatchedJFormattedTextField(formatterFactory);
     }
-    
+
     public JTextField createTextField() {
         JTextField tf = new JTextField();
         tf.setColumns(25);

@@ -104,11 +104,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
                 logger.debug("Setting newly selected item on value holder to "
                         + selectedItem);
             }
-            //if (selectedItem == null && size() > 0) {
-           //     selectedItemHolder.set(get(0));
-            //} else {
-                selectedItemHolder.set(selectedItem);
-            //}
+            selectedItemHolder.set(selectedItem);
         }
         else {
             super.setSelectedItem(selectedItem);
@@ -127,16 +123,18 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
         clear();
         if (items != null) {
             if (items instanceof Collection) {
-                addAll((Collection) items); 
-            } else if (items instanceof Object[]) {
-                Object[] itemsArray = (Object[]) items;
+                addAll((Collection)items);
+            }
+            else if (items instanceof Object[]) {
+                Object[] itemsArray = (Object[])items;
                 for (int i = 0; i < itemsArray.length; i++) {
                     add(itemsArray[i]);
                 }
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException(
                         "selectableItemsHolder must hold a Collection or array");
-            }        
+            }
         }
         sort();
     }

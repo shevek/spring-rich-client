@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.richclient.util.Alignment;
+import org.springframework.rules.values.ValueModel;
 
 /**
  * A factory interface for encapsulating logic to create well-formed, configured
@@ -138,6 +139,22 @@ public interface ComponentFactory {
      * @return The new combo box.
      */
     public JComboBox createComboBox();
+
+    /**
+     * Create a combo box using this component factory. The list of selectable
+     * items is populated from the provided value model, which provides access
+     * to a list. When an item is selected in the list, the
+     * selectedItemValueModel is set.
+     * 
+     * @return The new combo box.
+     * @param the
+     *            value model for the list of selectable items
+     * @param the
+     *            property to render each item in the list.
+     */
+    public JComboBox createListValueModelComboBox(
+            ValueModel selectedItemValueModel,
+            ValueModel selectableItemsListHolder, String renderedPropertyPath);
 
     /**
      * Create a combo box using this component factory, to be populated by the
