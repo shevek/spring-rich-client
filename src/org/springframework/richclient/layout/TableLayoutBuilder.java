@@ -225,7 +225,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     public TableLayoutBuilder unrelatedGapRow() {
         return row(FormFactory.UNRELATED_GAP_ROWSPEC);
     }
-
+    
     /**
      * Inserts an empty cell at the current row/column.
      */
@@ -312,6 +312,20 @@ public class TableLayoutBuilder implements LayoutBuilder {
         lastCC = cc;
         items.add(cc);
         return this;
+    }
+    
+    /**
+     * Return true if there is a gap column to the left of the current cell
+     */
+    public boolean hasGapToLeft() {
+        return currentCol == 0 || gapCols.get(new Integer(currentCol)) != null;
+    }
+    
+    /**
+     * Return true if there is a gap row above of the current cell
+     */
+    public boolean hasGapAbove() {
+        return currentRow == 0 || gapRows.get(new Integer(currentRow)) != null;
     }
 
     /**

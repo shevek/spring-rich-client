@@ -32,8 +32,6 @@ public class TableFormBuilder extends AbstractFormBuilder {
     
     private TableLayoutBuilder builder;
 
-    private boolean hasSpaceToLeft = true;
-
     private boolean skipRow;
 
     public TableFormBuilder(SwingFormModel formModel) {
@@ -42,10 +40,9 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public void row() {
-        hasSpaceToLeft = true;
         builder.row();
     }
-
+    
     public JComponent[] add(String propertyName) {
         return add(propertyName, "");
     }
@@ -111,10 +108,9 @@ public class TableFormBuilder extends AbstractFormBuilder {
             String labelAttributes) {
         JLabel label = getLabelFor(propertyName, component);
 
-        if (!hasSpaceToLeft) {
+        if (!builder.hasGapToLeft()) {
             builder.gapCol();
         }
-        hasSpaceToLeft = false;
         builder.cell(label, labelAttributes);
         builder.labelGapCol();
         builder.cell(component, attributes);
