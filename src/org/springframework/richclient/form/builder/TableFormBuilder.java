@@ -15,12 +15,10 @@
  */
 package org.springframework.richclient.form.builder;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.richclient.util.TablePanelBuilder;
+import org.springframework.richclient.layout.TablePanelBuilder;
 import org.springframework.rules.Constraint;
 
 /**

@@ -13,32 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.util;
+package org.springframework.richclient.layout;
 
-import java.awt.Component;
+import java.awt.*;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.factory.ComponentFactory;
-import org.springframework.util.StringUtils;
+import javax.swing.*;
 
 import com.jgoodies.forms.factories.FormFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.*;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.util.CustomizableFocusTraversalPolicy;
+import org.springframework.util.StringUtils;
 
 /**
  * A panel builder that provides the capability to quickly build grid based
@@ -77,7 +68,7 @@ import com.jgoodies.forms.layout.RowSpec;
  * 
  * @author oliverh
  */
-public class TablePanelBuilder {
+public class TablePanelBuilder implements LayoutBuilder {
 
     public static final String ALIGN = "align";
 

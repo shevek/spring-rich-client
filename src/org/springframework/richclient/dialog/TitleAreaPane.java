@@ -15,24 +15,16 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;
+import java.awt.*;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
+import javax.swing.*;
 
+import com.jgoodies.forms.factories.FormFactory;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.config.ImageConfigurable;
-import org.springframework.richclient.util.TablePanelBuilder;
+import org.springframework.richclient.layout.TablePanelBuilder;
 import org.springframework.rules.reporting.Severity;
-
-import com.jgoodies.forms.factories.FormFactory;
 
 /**
  * A container class that that has a title area for displaying a title and an
