@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="preferenceStore" class="org.springframework.richclient.preference.PropertiesPreferenceStore">
+		<property name="fileName"><value>prefs.ini</value></property>
+	</bean>
+
+	<bean id="preferenceManager" class="org.springframework.richclient.preference.PreferenceManager">
+		<property name="preferenceStore"><ref bean="preferenceStore"/></property>
+		<property name="preferencePages">
+			<list>
+				<ref bean="appearancePreferencePage"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="appearancePreferencePage" class="org.springframework.richclient.samples.petclinic.ui.preference.AppearancePreferencePage"/>
+	
+</beans>
