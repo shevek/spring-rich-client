@@ -107,10 +107,10 @@ public class DefaultApplicationPage implements ApplicationPage,
             giveFocusTo(viewPane);
         }
         if (this.activeView != null) {
-            fireViewDeactivated(this.activeView.getView());
+            fireViewFocusLost(this.activeView.getView());
         }
         this.activeView = viewPane;
-        fireViewActivated(this.activeView.getView());
+        fireViewFocusGained(this.activeView.getView());
     }
 
     private ViewPane findViewPane(final String viewDescriptorId) {
@@ -142,35 +142,62 @@ public class DefaultApplicationPage implements ApplicationPage,
         View view = viewDescriptor.createView();
         view.initialize(viewDescriptor, new DefaultViewContext(viewDescriptor
                 .getId(), this));
+        fireViewCreated(view);
         return view;
     }
 
     private ViewDescriptor getViewDescriptor(String viewDescriptorId) {
         return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
     }
-    
+
     public View getActiveView() {
         return activeView.getView();
     }
 
-    protected void fireViewActivated(View view) {
+    protected void fireViewFocusGained(View view) {
         for (Iterator i = viewListeners.iterator(); i.hasNext();) {
             ViewListener l = (ViewListener)i.next();
-            l.viewActivated(view);
+            l.viewFocusGained(view);
         }
     }
 
-    protected void fireViewDeactivated(View view) {
+    protected void fireViewFocusLost(View view) {
         for (Iterator i = viewListeners.iterator(); i.hasNext();) {
             ViewListener l = (ViewListener)i.next();
-            l.viewDeactivated(view);
+            l.viewFocusLost(view);
+        }
+    }
+
+    protected void fireViewCreated(View view) {
+        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
+            ViewListener l = (ViewListener)i.next();
+            l.viewCreated(view);
+        }
+    }
+
+    protected void fireViewDisposed(View view) {
+        for (Iterator i = viewListeners.iterator(); i.hasNext();) {
+            ViewListener l = (ViewListener)i.next();
+            l.viewDisposed(view);
         }
     }
 
     // Initial Application Page Layout Builder methods
-    
+
     public void addView(String viewDescriptorId) {
         ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
         this.pageControl.add(viewPane.getControl());
+    }
+
+    public void close() {
+        if (activeView != null) {
+            fireViewFocusLost(activeView.getView());
+        }
+        Iterator it = viewPanes.iterator();
+        while (it.hasNext()) {
+            View view = ((ViewPane)it.next()).getView();
+            view.dispose();
+            fireViewDisposed(view);
+        }
     }
 }

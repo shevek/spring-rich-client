@@ -44,4 +44,5 @@ public interface View extends PropertyChangePublisher, DescribedElement,
 
     public ViewContext getContext();
 
+    public void dispose();
 }

@@ -25,12 +25,20 @@ public abstract class AbstractViewListener implements ViewListener {
         return activeView;
     }
 
-    public void viewActivated(View view) {
+    public void viewCreated(View view) {
+
+    }
+
+    public void viewFocusGained(View view) {
         this.activeView = view;
     }
 
-    public void viewDeactivated(View view) {
+    public void viewFocusLost(View view) {
         this.activeView = null;
+    }
+
+    public void viewDisposed(View view) {
+
     }
 
 }

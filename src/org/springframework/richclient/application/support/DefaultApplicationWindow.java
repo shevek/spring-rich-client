@@ -221,6 +221,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     public boolean close() {
         boolean canClose = getApplicationAdvisor().onPreWindowClose(this);
         if (canClose) {
+            currentPage.close();
             control.dispose();
             control = null;
             if (windowManager != null) {

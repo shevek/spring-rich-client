@@ -22,7 +22,6 @@ import javax.swing.JComponent;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.ViewDescriptor;
-import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
@@ -56,36 +55,32 @@ public abstract class AbstractView extends LabeledObjectSupport implements View 
     public String getId() {
         return descriptor.getId();
     }
-    
+
     public ViewContext getContext() {
         return context;
     }
 
-    public ViewDescriptor getViewDescriptor() {
-        return descriptor;
-    }
-
-    protected CommandManager getCommandManager() {
+    protected final CommandManager getCommandManager() {
         return context.getApplicationWindow().getCommandManager();
     }
 
-    protected StatusBarCommandGroup getStatusBar() {
+    protected final StatusBarCommandGroup getStatusBar() {
         return context.getApplicationWindow().getStatusBar();
     }
 
-    protected Window getParentWindowControl() {
+    protected final Window getParentWindowControl() {
         return getContext().getApplicationWindow().getControl();
     }
 
-    public ActionCommand createActionCommand() {
-        return null;
-    }
-
-    public JComponent getControl() {
+    public final JComponent getControl() {
         return controlFactory.getControl();
     }
 
     protected abstract JComponent createControl();
+
+    public final boolean isControlCreated() {
+        return controlFactory.isControlCreated();
+    }
 
     /**
      * Template method called when this view is initialized in a context; allows
@@ -94,11 +89,11 @@ public abstract class AbstractView extends LabeledObjectSupport implements View 
      * @param context
      */
     protected void setGlobalCommandExecutors(ViewContext context) {
-        // nothing
+
     }
 
-    public final boolean isControlCreated() {
-        return controlFactory.isControlCreated();
+    public void dispose() {
+
     }
 
 }

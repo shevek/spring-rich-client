@@ -14,4 +14,6 @@ public interface ApplicationPage extends ControlFactory {
     public void showView(String viewDescriptorId);
 
     public void showView(ViewDescriptor viewDescriptor);
+    
+    public void close();
 }

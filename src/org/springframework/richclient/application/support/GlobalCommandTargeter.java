@@ -37,8 +37,8 @@ public class GlobalCommandTargeter extends AbstractViewListener {
         this.globalCommandRegistry = commandRegistry;
     }
 
-    public void viewActivated(View view) {
-        super.viewActivated(view);
+    public void viewFocusGained(View view) {
+        super.viewFocusGained(view);
         ViewContext viewContext = view.getContext();
         for (Iterator i = globalCommandRegistry.getGlobalCommands(); i
                 .hasNext();) {

@@ -18,12 +18,20 @@ package org.springframework.richclient.application;
 public interface ViewListener {
 
     /**
+     * Notifies this listener that the given view has been created.
+     * 
+     * @param view
+     *            the view that was created
+     */
+    public void viewCreated(View view);
+
+    /**
      * Notifies this listener that the given view has been opened.
      * 
      * @param view
      *            the view that was opened
      */
-    public void viewActivated(View view);
+    public void viewFocusGained(View view);
 
     /**
      * Notifies this listener that the given view has been closed.
@@ -31,7 +39,15 @@ public interface ViewListener {
      * @param view
      *            the view that was closed
      */
-    public void viewDeactivated(View view);
+    public void viewFocusLost(View view);
+
+    /**
+     * Notifies this listener that the given view has been disposed.
+     * 
+     * @param view
+     *            the view that wasdisposed
+     */
+    public void viewDisposed(View view);
 
 }
 
