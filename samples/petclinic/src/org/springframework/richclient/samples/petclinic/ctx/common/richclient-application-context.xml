@@ -7,12 +7,12 @@
 	<bean id="application" 
 		class="org.springframework.richclient.application.Application">
 		<constructor-arg index="0">
-			<ref bean="applicationLifecycleAdvisor"/>
+			<ref bean="petclinicLifecycleAdvisor"/>
 		</constructor-arg>
 	</bean>
 	
-	<bean id="applicationLifecycleAdvisor" 
-		class="org.springframework.richclient.samples.petclinic.PetClinicApplicationLifecycleAdvisor">
+	<bean id="petclinicLifecycleAdvisor" 
+		class="org.springframework.richclient.samples.petclinic.PetClinicLifecycleAdvisor">
 		<property name="applicationDescriptor">
 			<ref bean="applicationDescriptor"/>
 		</property>
