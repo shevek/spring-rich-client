@@ -1,17 +1,12 @@
 /*
- * Copyright 2002-2004 the original author or authors.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Copyright 2002-2004 the original author or authors. Licensed under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 package org.springframework.richclient.samples.petclinic.ui;
 
@@ -85,9 +80,9 @@ public class OwnerManagerView extends AbstractView implements
 
     protected void registerGlobalCommandDelegates(ViewContext context) {
         context.registerGlobalCommandDelegate(GlobalCommandIds.DELETE,
-            deleteCommand);
+                deleteCommand);
         context.registerGlobalCommandDelegate(GlobalCommandIds.PROPERTIES,
-            propertiesCommand);
+                propertiesCommand);
     }
 
     protected JComponent createControl() {
@@ -134,7 +129,7 @@ public class OwnerManagerView extends AbstractView implements
     private Owner getSelectedOwner() {
         DefaultMutableTreeNode node = getSelectedOwnerNode();
         if (node != null) {
-            return (Owner)node.getUserObject();
+            return (Owner) node.getUserObject();
         }
         else {
             return null;
@@ -142,7 +137,7 @@ public class OwnerManagerView extends AbstractView implements
     }
 
     private DefaultMutableTreeNode getSelectedOwnerNode() {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) ownersTree
                 .getLastSelectedPathComponent();
         if (node == null || !(node.getUserObject() instanceof Owner)) {
             return null;
@@ -177,13 +172,13 @@ public class OwnerManagerView extends AbstractView implements
                 boolean sel, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                leaf, row, hasFocus);
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+                    leaf, row, hasFocus);
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
             if (node.isRoot()) {
                 this.setIcon(getIconSource().getIcon("folder.icon"));
             }
             else {
-                Owner o = (Owner)node.getUserObject();
+                Owner o = (Owner) node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
                 this.setIcon(getIconSource().getIcon("owner.bullet"));
             }
@@ -198,19 +193,19 @@ public class OwnerManagerView extends AbstractView implements
     private JPopupMenu createPopupContextMenu() {
         // rename, separator, delete, properties
         CommandGroup group = getCommandManager().createCommandGroup(
-            "ownerCommandGroup",
-            new Object[] { renameCommand, "separator", "deleteCommand",
-                    "separator", "propertiesCommand" });
+                "ownerCommandGroup",
+                new Object[] { renameCommand, "separator", "deleteCommand",
+                        "separator", "propertiesCommand" });
         return group.createPopupMenu();
     }
 
     public void onApplicationEvent(ApplicationEvent e) {
         if (e instanceof LifecycleApplicationEvent) {
-            LifecycleApplicationEvent le = (LifecycleApplicationEvent)e;
+            LifecycleApplicationEvent le = (LifecycleApplicationEvent) e;
             if (le.getEventType() == LifecycleApplicationEvent.CREATED
                     && le.objectIs(Owner.class)) {
                 if (ownersTree != null) {
-                    DefaultMutableTreeNode root = (DefaultMutableTreeNode)ownersTreeModel
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) ownersTreeModel
                             .getRoot();
                     root.add(new DefaultMutableTreeNode(le.getObject()));
                     ownersTreeModel.nodeStructureChanged(root);
@@ -253,12 +248,12 @@ public class OwnerManagerView extends AbstractView implements
                 protected void onConfirm() {
                     TreePath[] paths = ownersTree.getSelectionPaths();
                     for (int i = 0; i < paths.length; i++) {
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[i]
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i]
                                 .getLastPathComponent();
                         if (node.isRoot()) {
                             continue;
                         }
-                        Owner owner = (Owner)node.getUserObject();
+                        Owner owner = (Owner) node.getUserObject();
                         //clinic.deleteOwner(owner);
                         ownersTreeModel.removeNodeFromParent(node);
                     }
@@ -283,14 +278,14 @@ public class OwnerManagerView extends AbstractView implements
 
             ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
 
+            ownerGeneralPanel = new OwnerGeneralPanel(ownerFormModel);
             tabbedPage = new TabbedDialogPage("ownerEditTabs");
             tabbedPage.addPage(new FormPageBackedDialogPage(
-                    "ownerEditTabs.general", new OwnerGeneralPanel(
-                            ownerFormModel)));
+                    "ownerEditTabs.general", ownerGeneralPanel));
             tabbedPage.addPage(new FormPageBackedDialogPage(
                     "ownerEditTabs.address", new AddressPanel(ownerFormModel)));
 
-            DialogPageDialog dialog = new DialogPageDialog(tabbedPage, 
+            DialogPageDialog dialog = new DialogPageDialog(tabbedPage,
                     getParentWindowControl()) {
                 protected void onWindowGainedFocus() {
                     ownerGeneralPanel.requestFocusInWindow();
