@@ -36,7 +36,7 @@ import ca.odell.glazedlists.swing.WritableTableFormat;
  */
 public abstract class GlazedTableModel extends EventTableModel {
 
-    private static final EventList EMPTY = new BasicEventList();
+    private static final EventList EMPTY_LIST = new BasicEventList();
 
     private BeanWrapper beanWrapper = new BeanWrapperImpl();
 
@@ -44,24 +44,26 @@ public abstract class GlazedTableModel extends EventTableModel {
 
     private MessageSourceAccessor messages;
 
-    private String propertyColumnNames[];
+    private String columnPropertyNames[];
 
-    public GlazedTableModel() {
-        this((MessageSource) null);
+    public GlazedTableModel(String[] columnPropertyNames) {
+        this((MessageSource) null, columnPropertyNames);
     }
 
-    public GlazedTableModel(Class beanClass, EventList rows) {
-        this(rows, null);
+    public GlazedTableModel(Class beanClass, EventList rows, String[] columnPropertyNames) {
+        this(rows, null, columnPropertyNames);
     }
 
-    public GlazedTableModel(EventList rows, MessageSource messageSource) {
+    public GlazedTableModel(EventList rows, MessageSource messageSource, String[] columnPropertyNames) {
         super(rows, null);
+        Assert.notEmpty(columnPropertyNames, "ColumnPropertyNames parameter cannot be null.");
+        this.columnPropertyNames = columnPropertyNames;
         setMessageSource(messageSource);
         setTableFormat(createTableFormat());
     }
 
-    public GlazedTableModel(MessageSource messageSource) {
-        this(EMPTY, messageSource);
+    public GlazedTableModel(MessageSource messageSource, String[] columnPropertyNames) {
+        this(EMPTY_LIST, messageSource, columnPropertyNames);
     }
 
     public void setMessageSource(MessageSource messages) {
@@ -72,11 +74,9 @@ public abstract class GlazedTableModel extends EventTableModel {
         }
     }
 
-    protected abstract String[] createColumnPropertyNames();
-
     protected Object getColumnValue(Object row, int column) {
         beanWrapper.setWrappedInstance(row);
-        return beanWrapper.getPropertyValue(propertyColumnNames[column]);
+        return beanWrapper.getPropertyValue(columnPropertyNames[column]);
     }
 
     /**
@@ -91,12 +91,12 @@ public abstract class GlazedTableModel extends EventTableModel {
     protected boolean isEditable(Object row, int column) {
         beanWrapper.setWrappedInstance(row);
 
-        return beanWrapper.isWritableProperty(propertyColumnNames[column]);
+        return beanWrapper.isWritableProperty(columnPropertyNames[column]);
     }
 
     protected Object setColumnValue(Object row, Object value, int column) {
         beanWrapper.setWrappedInstance(row);
-        beanWrapper.setPropertyValue(propertyColumnNames[column], value);
+        beanWrapper.setPropertyValue(columnPropertyNames[column], value);
 
         return row;
     }
@@ -134,8 +134,7 @@ public abstract class GlazedTableModel extends EventTableModel {
     }
 
     private TableFormat createTableFormat() {
-        propertyColumnNames = createColumnPropertyNames();
-        columnLabels = createColumnNames(propertyColumnNames);
+        columnLabels = createColumnNames(columnPropertyNames);
         return new WritableTableFormat() {
 
             public int getColumnCount() {
