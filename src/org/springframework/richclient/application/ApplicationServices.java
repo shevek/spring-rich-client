@@ -27,11 +27,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.binding.form.FormModel;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
@@ -54,16 +56,12 @@ import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
- * A singleton service locator of a rich client application. The application
- * provides a point of reference and context for an entire application. It
- * provides data about the application: name, version, and build ID. It also
- * acts as service locator / facade for a number of commonly needed rich client
- * interfaces.
+ * A singleton service locator for common rich client application services.
  * 
  * @author Keith Donald
  */
-public class ApplicationServices extends ApplicationObjectSupport implements ApplicationObjectConfigurer,
-        CommandConfigurer, ResourceLoader, MessageSource, ImageSource, IconSource, FormComponentInterceptorFactory {
+public class ApplicationServices implements ApplicationObjectConfigurer, CommandConfigurer, ResourceLoader,
+        MessageSource, ImageSource, IconSource, FormComponentInterceptorFactory, ApplicationContextAware {
 
     public static final String IMAGE_SOURCE_BEAN_ID = "imageSource";
 
@@ -105,8 +103,27 @@ public class ApplicationServices extends ApplicationObjectSupport implements App
 
     private boolean lazyInit = true;
 
+    private ApplicationContext applicationContext;
+
+    private MessageSourceAccessor messageSourceAccessor;
+
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        if (this.applicationContext != null) {
+            this.messageSourceAccessor = new MessageSourceAccessor(this.applicationContext);
+        }
+    }
+
+    public ApplicationContext getApplicationContext() {
+        if (applicationContext == null) {
+            applicationContext = new StaticApplicationContext();
+            messageSourceAccessor = new MessageSourceAccessor(applicationContext);
+        }
+        return applicationContext;
     }
 
     public ComponentFactory getComponentFactory() {
@@ -359,6 +376,10 @@ public class ApplicationServices extends ApplicationObjectSupport implements App
 
     public BeanFactory getBeanFactory() {
         return getApplicationContext();
+    }
+
+    protected MessageSourceAccessor getMessageSourceAccessor() {
+        return messageSourceAccessor;
     }
 
     public MessageSourceAccessor getMessages() {

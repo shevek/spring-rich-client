@@ -49,8 +49,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private ApplicationLifecycleAdvisor lifecycleAdvisor;
 
-    private ApplicationContext context;
-
     private ApplicationWindow activeWindow;
 
     private WindowManager windowManager;
@@ -121,14 +119,13 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public void setApplicationContext(ApplicationContext context) {
-        this.context = context;
+        getServices().setApplicationContext(context);
     }
 
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(this.lifecycleAdvisor,
                 "The application advisor is required, for processing of application lifecycle events");
         getLifecycleAdvisor().onPreInitialize(this);
-        getServices();
     }
 
     public ApplicationLifecycleAdvisor getLifecycleAdvisor() {
@@ -138,7 +135,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public ApplicationServices getServices() {
         if (services == null) {
             services = new ApplicationServices();
-            services.setApplicationContext(context);
         }
         return services;
     }
