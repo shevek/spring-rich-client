@@ -47,7 +47,6 @@
 		<mkdir dir="${build.dir}" />
 
 		<javac destdir="${build.dir}"
-		       target="1.3"
 		       debug="true"
 		       deprecation="false"
 		       optimize="false"
