@@ -87,17 +87,15 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     }
 
     protected JComponent createDialogContentPane() {
-        SimpleMessageAreaPane pane = new SimpleMessageAreaPane();
-        this.messageAreaPane = pane;
-
+        SimpleMessageAreaPane pane = new SimpleMessageAreaPane(5);
         Icon icon = getIconSource().getIcon(CONFIRMATION_DIALOG_ICON);
         if (icon == null) {
             icon = UIManager.getIcon("OptionPane.questionIcon");
         }
         pane.setDefaultIcon(icon);
-
+        this.messageAreaPane = pane;
+        this.messageAreaPane.setMessage(confirmationMessage, null);
         JComponent control = messageAreaPane.getControl();
-        messageAreaPane.setMessage(confirmationMessage, null);
         return control;
     }
 

@@ -41,7 +41,7 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
 
     private static final Log logger = LogFactory
             .getLog(SimpleMessageAreaPane.class);
-    
+
     private static final int ONE_LINE_IN_DLU = 10;
 
     public static final int DEFAULT_LINES_TO_DISPLAY = 2;
@@ -83,19 +83,24 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     }
 
     protected JComponent createControl() {
-        this.messageLabel = new JLabel();
-        int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay * ONE_LINE_IN_DLU, messageLabel);
+        if (messageLabel == null) {
+            this.messageLabel = new JLabel(" ");
+        }
+        int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay
+                * ONE_LINE_IN_DLU, messageLabel);
         int prefWidth = messageLabel.getPreferredSize().width;
-        messageLabel.setPreferredSize(new Dimension(prefWidth, prefHeight));        
-        messageLabel.setOpaque(false);        
+        messageLabel.setPreferredSize(new Dimension(prefWidth, prefHeight));
+        messageLabel.setOpaque(false);
         messageLabel.setVerticalAlignment(SwingConstants.TOP);
         messageLabel.setVerticalTextPosition(SwingConstants.TOP);
         messageLabel.setIcon(getDefaultIcon());
-        messageLabel.setText(" ");
         return messageLabel;
     }
 
     public boolean messageShowing() {
+        if (messageLabel == null) {
+            return false;
+        }
         return StringUtils.hasText(messageLabel.getText());
     }
 
@@ -144,6 +149,9 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     }
 
     public void messageUpdated(MessageReceiver source) {
+        if (messageLabel == null) {
+            messageLabel = new JLabel();
+        }
         String message = messageBuffer.getMessage();
         Severity severity = messageBuffer.getSeverity();
         if (StringUtils.hasText(message)) {
