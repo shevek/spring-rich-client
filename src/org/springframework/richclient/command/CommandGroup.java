@@ -387,32 +387,32 @@ public class CommandGroup extends AbstractCommand {
         }
     }
 
-    public AbstractButton createButton(String faceDescriptorKey,
+    public AbstractButton createButton(String faceDescriptorId,
             ButtonFactory buttonFactory,
             CommandButtonConfigurer buttonConfigurer) {
-        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+        return createButton(getDefaultFaceDescriptorId(), buttonFactory,
                 getMenuFactory(), buttonConfigurer);
     }
 
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory) {
-        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+        return createButton(getDefaultFaceDescriptorId(), buttonFactory,
                 menuFactory, getPullDownMenuButtonConfigurer());
     }
 
-    public AbstractButton createButton(String faceDescriptorKey,
+    public AbstractButton createButton(String faceDescriptorId,
             ButtonFactory buttonFactory, MenuFactory menuFactory) {
-        return createButton(faceDescriptorKey, buttonFactory, menuFactory,
+        return createButton(faceDescriptorId, buttonFactory, menuFactory,
                 getPullDownMenuButtonConfigurer());
     }
 
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory, CommandButtonConfigurer buttonConfigurer) {
-        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+        return createButton(getDefaultFaceDescriptorId(), buttonFactory,
                 menuFactory, buttonConfigurer);
     }
 
-    public AbstractButton createButton(String faceDescriptorKey,
+    public AbstractButton createButton(String faceDescriptorId,
             ButtonFactory buttonFactory, MenuFactory menuFactory,
             CommandButtonConfigurer buttonConfigurer) {
         JToggleButton button = buttonFactory.createToggleButton();
@@ -427,7 +427,7 @@ public class CommandGroup extends AbstractCommand {
         return getCommandServices().getPullDownMenuButtonConfigurer();
     }
 
-    public JMenuItem createMenuItem(String faceDescriptorKey,
+    public JMenuItem createMenuItem(String faceDescriptorId,
             MenuFactory factory, CommandButtonConfigurer buttonConfigurer) {
         JMenu menu = factory.createMenu();
         attach(menu);

@@ -57,11 +57,11 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
 
     public static final String VISIBLE_PROPERTY_NAME = "visible";
 
-    private static final String DEFAULT_FACE_DESCRIPTOR_KEY = "default";
+    private static final String DEFAULT_FACE_DESCRIPTOR_ID = "default";
 
     private String id;
 
-    private String defaultFaceDescriptorKey = DEFAULT_FACE_DESCRIPTOR_KEY;
+    private String defaultFaceDescriptorId = DEFAULT_FACE_DESCRIPTOR_ID;
 
     private boolean enabled = true;
 
@@ -123,32 +123,32 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     public void setFaceDescriptor(CommandFaceDescriptor faceDescriptor) {
-        setFaceDescriptor(getDefaultFaceDescriptorKey(), faceDescriptor);
+        setFaceDescriptor(getDefaultFaceDescriptorId(), faceDescriptor);
     }
 
-    public void setFaceDescriptor(String faceDescriptorKey,
+    public void setFaceDescriptor(String faceDescriptorId,
             CommandFaceDescriptor faceDescriptor) {
-        getButtonManager(faceDescriptorKey).setFaceDescriptor(faceDescriptor);
+        getButtonManager(faceDescriptorId).setFaceDescriptor(faceDescriptor);
     }
 
     public void setFaceDescriptors(Map faceDescriptors) {
         Iterator it = faceDescriptors.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
-            String faceDescriptorKey = (String)entry.getKey();
+            String faceDescriptorId = (String)entry.getKey();
             CommandFaceDescriptor faceDescriptor = (CommandFaceDescriptor)entry
                     .getValue();
-            setFaceDescriptor(faceDescriptorKey, faceDescriptor);
+            setFaceDescriptor(faceDescriptorId, faceDescriptor);
         }
     }
 
-    public String getDefaultFaceDescriptorKey() {
-        if (!StringUtils.hasText(defaultFaceDescriptorKey)) { return DEFAULT_FACE_DESCRIPTOR_KEY; }
-        return defaultFaceDescriptorKey;
+    public String getDefaultFaceDescriptorId() {
+        if (!StringUtils.hasText(defaultFaceDescriptorId)) { return DEFAULT_FACE_DESCRIPTOR_ID; }
+        return defaultFaceDescriptorId;
     }
 
-    public void setDefaultFaceDescriptorKey(String defaultFaceDescriptorKey) {
-        this.defaultFaceDescriptorKey = defaultFaceDescriptorKey;
+    public void setDefaultFaceDescriptorId(String defaultFaceDescriptorKey) {
+        this.defaultFaceDescriptorId = defaultFaceDescriptorKey;
     }
 
     protected CommandFaceDescriptor getFaceDescriptor() {
@@ -286,33 +286,33 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     public final AbstractButton createButton() {
-        return createButton(getDefaultFaceDescriptorKey(), getButtonFactory(),
+        return createButton(getDefaultFaceDescriptorId(), getButtonFactory(),
                 getDefaultButtonConfigurer());
     }
 
-    public final AbstractButton createButton(String faceDescriptorKey) {
-        return createButton(faceDescriptorKey, getButtonFactory(),
+    public final AbstractButton createButton(String faceDescriptorId) {
+        return createButton(faceDescriptorId, getButtonFactory(),
                 getDefaultButtonConfigurer());
     }
 
     public final AbstractButton createButton(ButtonFactory buttonFactory) {
-        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+        return createButton(getDefaultFaceDescriptorId(), buttonFactory,
                 getDefaultButtonConfigurer());
     }
 
-    public final AbstractButton createButton(String faceDescriptorKey,
+    public final AbstractButton createButton(String faceDescriptorId,
             ButtonFactory buttonFactory) {
-        return createButton(faceDescriptorKey, buttonFactory,
+        return createButton(faceDescriptorId, buttonFactory,
                 getDefaultButtonConfigurer());
     }
 
     public final AbstractButton createButton(ButtonFactory buttonFactory,
             CommandButtonConfigurer buttonConfigurer) {
-        return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
+        return createButton(getDefaultFaceDescriptorId(), buttonFactory,
                 buttonConfigurer);
     }
 
-    public AbstractButton createButton(String faceDescriptorKey,
+    public AbstractButton createButton(String faceDescriptorId,
             ButtonFactory buttonFactory,
             CommandButtonConfigurer buttonConfigurer) {
         JButton button = buttonFactory.createButton();
@@ -321,33 +321,33 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     public final JMenuItem createMenuItem() {
-        return createMenuItem(getDefaultFaceDescriptorKey(), getMenuFactory(),
+        return createMenuItem(getDefaultFaceDescriptorId(), getMenuFactory(),
                 getMenuItemButtonConfigurer());
     }
 
-    public final JMenuItem createMenuItem(String faceDescriptorKey) {
-        return createMenuItem(faceDescriptorKey, getMenuFactory(),
+    public final JMenuItem createMenuItem(String faceDescriptorId) {
+        return createMenuItem(faceDescriptorId, getMenuFactory(),
                 getMenuItemButtonConfigurer());
     }
 
     public final JMenuItem createMenuItem(MenuFactory menuFactory) {
-        return createMenuItem(getDefaultFaceDescriptorKey(), menuFactory,
+        return createMenuItem(getDefaultFaceDescriptorId(), menuFactory,
                 getMenuItemButtonConfigurer());
     }
 
-    public final JMenuItem createMenuItem(String faceDescriptorKey,
+    public final JMenuItem createMenuItem(String faceDescriptorId,
             MenuFactory menuFactory) {
-        return createMenuItem(faceDescriptorKey, menuFactory,
+        return createMenuItem(faceDescriptorId, menuFactory,
                 getMenuItemButtonConfigurer());
     }
 
     public final JMenuItem createMenuItem(MenuFactory menuFactory,
             CommandButtonConfigurer buttonConfigurer) {
-        return createMenuItem(getDefaultFaceDescriptorKey(), menuFactory,
+        return createMenuItem(getDefaultFaceDescriptorId(), menuFactory,
                 buttonConfigurer);
     }
 
-    public JMenuItem createMenuItem(String faceDescriptorKey,
+    public JMenuItem createMenuItem(String faceDescriptorId,
             MenuFactory menuFactory, CommandButtonConfigurer buttonConfigurer) {
         JMenuItem menuItem = menuFactory.createMenuItem();
         attach(menuItem, buttonConfigurer);
@@ -355,17 +355,17 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     public void attach(AbstractButton button) {
-        attach(button, getDefaultFaceDescriptorKey(), getCommandServices()
+        attach(button, getDefaultFaceDescriptorId(), getCommandServices()
                 .getDefaultButtonConfigurer());
     }
 
     public void attach(AbstractButton button, CommandButtonConfigurer configurer) {
-        attach(button, getDefaultFaceDescriptorKey(), configurer);
+        attach(button, getDefaultFaceDescriptorId(), configurer);
     }
 
-    public void attach(AbstractButton button, String faceDescriptorKey,
+    public void attach(AbstractButton button, String faceDescriptorId,
             CommandButtonConfigurer configurer) {
-        getButtonManager(faceDescriptorKey).attachAndConfigure(button,
+        getButtonManager(faceDescriptorId).attachAndConfigure(button,
                 configurer);
         onButtonAttached(button);
     }
@@ -396,10 +396,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     }
 
     private CommandButtonManager getDefaultButtonManager() {
-        return getButtonManager(getDefaultFaceDescriptorKey());
+        return getButtonManager(getDefaultFaceDescriptorId());
     }
 
-    private CommandButtonManager getButtonManager(String faceDescriptorKey) {
+    private CommandButtonManager getButtonManager(String faceDescriptorId) {
         if (this.faceButtonManagers == null) {
             this.faceButtonManagers = new CachingMapTemplate() {
                 protected Object create(Object key) {
@@ -409,7 +409,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
             };
         }
         CommandButtonManager m = (CommandButtonManager)this.faceButtonManagers
-                .get(faceDescriptorKey);
+                .get(faceDescriptorId);
         return m;
     }
 
@@ -455,7 +455,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
     public String toString() {
         return new ToStringCreator(this).append("id", getId()).append(
                 "enabled", enabled).append("visible", visible).append(
-                "defaultFaceDescriptorKey", defaultFaceDescriptorKey)
+                "defaultFaceDescriptorKey", defaultFaceDescriptorId)
                 .toString();
     }
 
