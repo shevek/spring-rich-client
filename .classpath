@@ -26,5 +26,7 @@
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-sandbox.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-commons/commons-attributes-api.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-commons/commons-collections.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-    Build file for the Spring Framework Rich Client Project (spring-richclient or spring-rcp)
+    Build file for the Spring Framework Rich Client Project (spring-richclient)
 
     $Id$
 
@@ -22,6 +22,16 @@
 	<path id="all-libs">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+	
+	<path id="attribute-compiler-classpath">
+		<fileset dir="lib/jakarta-commons">
+			<include name="commons-attributes-compiler.jar"/>
+			<include name="commons-collections.jar"/>
+		</fileset>
+		<fileset dir="lib/xdoclet">
+			<include name="xjavadoc-1.0.jar"/>
 		</fileset>
 	</path>
 
@@ -181,18 +191,22 @@
 		</zip>
 	</target>
 
- 	<target name="compiletestattr" depends="build"> 		
-<!-- XXX: This is broken 	
+	<!--
+		Use Jakarta Commons Attributes to compile the attributes for the test source tree.
+	-->
+	<target name="compiletestattr">
+
+	 	<!-- Bring in Jakarta Commons attribute compilation -->
 		<taskdef resource="org/apache/commons/attributes/anttasks.properties">
 		  <classpath refid="attribute-compiler-classpath"/>
 		</taskdef>
--->		
-	 	<!-- Compile to a temp directory: Commons Attributes will place Java Source here. -->
-<!--  		
-		<attribute-compiler destdir="${commons.attributes.tempdir.test}">
-			<fileset dir="${test.dir}" includes="**/validator/*.java"/>
+
+		<!-- Compile to a temp directory: Commons Attributes will place Java Source here. -->
+		<attribute-compiler destdir="${commons.attributes.tempdir.test}" 
+			attributepackages="org.springframework.rules.constraint;org.springframework.rules.constraint.property">
+			<fileset dir="${test.dir}" includes="**/metadata/*.java"/>
 		</attribute-compiler>
--->			
+
  	</target>
 
 	<!--
@@ -208,7 +222,7 @@
 			deprecation="false" optimize="false" failonerror="true">
 			<src path="${test.dir}"/>
 			<!-- Include Commons Attributes generated Java sources -->
-<!--			<src path="${commons.attributes.tempdir.test}"/> -->
+			<src path="${commons.attributes.tempdir.test}"/> 
 			<classpath refid="all-libs"/>
 			<classpath location="${target.classes.dir}"/>
 		</javac>
@@ -418,9 +432,27 @@
 		</copy>
 
 	</target>
+	
+	<!--
+		Use Jakarta Commons Attributes to compile the attributes for the test source tree.
+	-->
+	<target name="compiletest-sandbox-attr">
+
+	 	<!-- Bring in Jakarta Commons attribute compilation -->
+		<taskdef resource="org/apache/commons/attributes/anttasks.properties">
+		  <classpath refid="attribute-compiler-classpath"/>
+		</taskdef>
+
+		<!-- Compile to a temp directory: Commons Attributes will place Java Source here. -->
+		<attribute-compiler destdir="${commons.attributes.tempdir.sandbox.test}" 
+			attributepackages="org.springframework.rules.constraint;org.springframework.rules.constraint.property">
+			<fileset dir="${sandbox.test.dir}" includes="**/metadata/*.java"/>
+		</attribute-compiler>
+
+ 	</target>
 
 
-	<target name="buildtests-sandbox" depends="buildtests"
+	<target name="buildtests-sandbox" depends="buildtests, compiletest-sandbox-attr"
 			description="Compile test source tree Java files into class files">
 
 		<mkdir dir="${sandbox.target.testclasses.dir}"/>
@@ -432,6 +464,7 @@
 			<classpath location="${target.classes.dir}"/>
 			<classpath location="${sandbox.target.classes.dir}"/>
 			<classpath location="${target.testclasses.dir}"/>
+			<classpath location="${commons.attributes.tempdir.sandbox.test}"/>
 		</javac>
 
 		<!-- Pick up logging config from test directory -->
@@ -453,7 +486,7 @@
 		the test.includes and (optionally) test.excludes properties through the command line, as below:
 			ant tests -Dtest.includes=org/springframework/jdbc/**/*Test*
 	-->
-	<target name="tests-sandbox" depends="build-sandbox,buildtests-sandbox" description="Run tests">
+	<target name="tests-sandbox" depends="build-sandbox,buildtests-sandbox" description="Run Sandbox Tests">
 
 		<property name="sandbox.reports.dir" value="${sandbox.target.junit.reports.dir}"/>
 
@@ -486,9 +519,9 @@
 
 	<target name="sandboxjar" depends="build,build-sandbox,initdist" description="Create jar with sandbox classes">
 
-		<delete file="${dist.dir}/spring-rcp-sandbox.jar"/>
+		<delete file="${dist.dir}/spring-richclient-sandbox.jar"/>
 
-		<jar jarfile="${dist.dir}/spring-rcp-sandbox.jar">
+		<jar jarfile="${dist.dir}/spring-richclient-sandbox.jar">
 			<fileset dir="${sandbox.target.classes.dir}">
 				<include name="META-INF/**"/>
 				<include name="org/springframework/**"/>
