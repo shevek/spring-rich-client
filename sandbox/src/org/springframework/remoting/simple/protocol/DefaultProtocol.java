@@ -62,8 +62,8 @@ public class DefaultProtocol implements Protocol {
             throw (SimpleRemotingException) reply;
         } else {
             throw new SimpleRemotingException(
-                    "Received unexpected reply type [" + reply == null ? "null"
-                            : reply.getClass() + "].");
+                    "Received unexpected reply type [" + ((reply == null) ? "null"
+                            : reply.getClass().toString()) + "].");
         }
     }
 

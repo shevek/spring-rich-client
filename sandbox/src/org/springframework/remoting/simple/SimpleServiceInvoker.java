@@ -30,13 +30,12 @@ import org.springframework.remoting.simple.protocol.DefaultProtocol;
 import org.springframework.remoting.simple.protocol.Protocol;
 import org.springframework.remoting.simple.protocol.Reply;
 import org.springframework.remoting.simple.protocol.Request;
+import org.springframework.remoting.simple.transport.AbstractInvoker;
 
 /**
- * 
- * 
  * @author oliverh
  */
-public class SimpleServiceInvoker {
+public class SimpleServiceInvoker extends AbstractInvoker {
 
     private Map serviceMap;
 
@@ -48,61 +47,66 @@ public class SimpleServiceInvoker {
     }
 
     private void populateServiceMap(List services) {
-        if (services.size() < 1) {
-            throw new IllegalArgumentException(
-                    "At least 1 service is required.");
-        }
+        if (services.size() < 1) { throw new IllegalArgumentException(
+                "At least 1 service is required."); }
         serviceMap = new HashMap(services.size());
         for (Iterator i = services.iterator(); i.hasNext();) {
             SimpleService service = (SimpleService) i.next();
             String serviceInterfaceName = service.getServiceInterface()
                     .getName();
-            if (serviceMap.containsKey(serviceInterfaceName)) {
-                throw new IllegalArgumentException(
-                        "More than one service implements service interface ["
-                                + serviceInterfaceName + "].");
-            }
+            if (serviceMap.containsKey(serviceInterfaceName)) { throw new IllegalArgumentException(
+                    "More than one service implements service interface ["
+                            + serviceInterfaceName + "]."); }
             serviceMap.put(serviceInterfaceName, service);
         }
     }
 
     public void invoke(InputStream is, OutputStream os) throws IOException {
         Object returnedValue = null;
-        
         Throwable returnedThrowable = null;
         SimpleRemotingException serverException = null;
-
+        Request request = null;
+        Reply reply = null;
         try {
-            Request request = protocol.readRequest(is, SimpleRemotingException.YES);
+            request = protocol.readRequest(is, SimpleRemotingException.YES);
+            firePreInvocation(request);
 
             SimpleService service = (SimpleService) serviceMap.get(request
                     .getServiceInterfaceName());
-            if (service == null) {
-                throw new SimpleRemotingException(
-                        "Unrecognized service interface ["
-                                + request.getServiceInterfaceName() + "].");
-            }
+            if (service == null) { throw new SimpleRemotingException(
+                    "Unrecognized service interface ["
+                            + request.getServiceInterfaceName() + "]."); }
             Method serviceMethod = (Method) service.getServiceMethod(request
                     .getMethodDesc());
 
             returnedValue = serviceMethod.invoke(service.getServiceObject(),
                     request.getArgs());
-        } catch (SimpleRemotingException e) {
+        }
+        catch (SimpleRemotingException e) {
             serverException = e;
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             serverException = new SimpleRemotingException(
                     "Unable to access service method", e);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             serverException = new SimpleRemotingException(
                     "Unable to invoke service method", e);
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             returnedThrowable = e.getTargetException();
         }
-
+        finally {
+            reply = new Reply(returnedValue, returnedThrowable);            
+            if (request != null) {                
+                firePostInvocation(request, serverException != null ? serverException :  (Object) reply);
+            }
+        }
         if (serverException != null) {
             protocol.writeException(os, serverException);
-        } else {
-            protocol.writeReply(os, new Reply(returnedValue, returnedThrowable));
+        }
+        else {
+            protocol.writeReply(os, (Reply) reply);
         }
     }
 }

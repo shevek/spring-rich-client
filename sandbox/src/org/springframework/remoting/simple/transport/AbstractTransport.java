@@ -34,7 +34,9 @@ import org.springframework.remoting.simple.protocol.DefaultProtocol;
 /**
  * @author oliverh
  */
-public abstract class AbstractTransport implements Transport {
+public abstract class AbstractTransport
+extends AbstractInvoker
+implements Transport {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -43,8 +45,6 @@ public abstract class AbstractTransport implements Transport {
     private RetryDecisionManager retryDecisionManager;
 
     private AuthenticationCallback authenticationCallback;
-
-    private List invocationListeners;
 
     private List progressListeners;
 
@@ -81,20 +81,6 @@ public abstract class AbstractTransport implements Transport {
         return authenticationCallback;
     }
 
-    public void addInvocationListener(InvocationListener invocationListener) {
-        if (invocationListeners == null) {
-            invocationListeners = new ArrayList();
-        }
-        invocationListeners.add(invocationListener);
-    }
-
-    public void removeInvocationListener(InvocationListener invocationListener) {
-        if (invocationListeners == null) {
-            return;
-        }
-        invocationListeners.remove(invocationListener);
-    }
-
     public void addProgressListener(ProgressListener progressListener) {
         if (progressListeners == null) {
             progressListeners = new ArrayList();
@@ -112,11 +98,7 @@ public abstract class AbstractTransport implements Transport {
 
     public Object invokeRemoteMethod(Class serviceInterface, Method method,
             Object[] args) throws Throwable {
-        
-
-
-
-        Request request = new Request(serviceInterface, method, args, null);
+        Request request = new Request(serviceInterface, method, args);
 
         Authentication authentication = authenticationCallback == null ? null
                 : authenticationCallback.authenticate(request);
@@ -168,24 +150,6 @@ public abstract class AbstractTransport implements Transport {
             return false;
         }
         return retryDecisionManager.shouldRetry(request, tries, e);
-    }
-
-    protected void firePreInvocation(Request request) {
-        if (invocationListeners == null) {
-            return;
-        }
-        for (Iterator i = invocationListeners.iterator(); i.hasNext();) {
-            ((InvocationListener) i.next()).invocationStarting(request);
-        }
-    }
-
-    protected void firePostInvocation(Request request, Object result) {
-        if (invocationListeners == null) {
-            return;
-        }
-        for (Iterator i = invocationListeners.iterator(); i.hasNext();) {
-            ((InvocationListener) i.next()).invocationComplete(request, result);
-        }
     }
 
     public class ProgressTracker extends Progress {
