@@ -76,14 +76,15 @@ public class GuardedGroup implements Guarded {
                 ValueModel valueModel) {
             this.guardedGroup = guardedGroup;
             this.guardedHolder = valueModel;
-            this.guardedHolder.addValueChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
-                    Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
-                    if (groupEnabled != null) {
-                        setEnabled(groupEnabled.booleanValue());
-                    }
-                }
-            });
+            this.guardedHolder
+                    .addValueChangeListener(new ValueChangeListener() {
+                        public void valueChanged() {
+                            Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
+                            if (groupEnabled != null) {
+                                setEnabled(groupEnabled.booleanValue());
+                            }
+                        }
+                    });
         }
 
         public boolean isEnabled() {
@@ -107,9 +108,9 @@ public class GuardedGroup implements Guarded {
     public static final Guarded createGuardedAdapter(final JComponent component) {
         if (component instanceof JTextComponent) {
             // JTextComponents are different from most JComponents in that
-            //   they are best disabled by invoking the setEditable method.
+            // they are best disabled by invoking the setEditable method.
             // setEnabled(false) completely disables the control -- including
-            //   the ability to copy to the clipboard.
+            // the ability to copy to the clipboard.
             final JTextComponent textComp = (JTextComponent)component;
             return new Guarded() {
                 public boolean isEnabled() {
@@ -134,8 +135,29 @@ public class GuardedGroup implements Guarded {
         }
     };
 
+    private static final Guarded createGuardedAdapter(final Object component) {
+        if (component.getClass().isArray()) {
+            return doCreateGuardedGroup((Object[])component);
+        }
+        else {
+            return createGuardedAdapter((JComponent)component);
+        }
+    }
+
+    public static final GuardedGroup createGuardedGroup(Object[] components) {
+        return doCreateGuardedGroup(components);
+    }
+    
     public static final GuardedGroup createGuardedGroup(
             final JComponent[] components) {
+        return doCreateGuardedGroup(components);
+    };
+
+    public static final GuardedGroup createGuardedGroup(JComponent[][] componentArrays) {
+        return doCreateGuardedGroup(componentArrays);
+    }
+
+    private static GuardedGroup doCreateGuardedGroup(Object[] components) {
         Set guardedSet = new HashSet(components.length);
         for (int i = 0; i < components.length; i++) {
             guardedSet.add(createGuardedAdapter(components[i]));
@@ -143,6 +165,6 @@ public class GuardedGroup implements Guarded {
         GuardedGroup g = new GuardedGroup();
         g.guardedGroup = guardedSet;
         return g;
-    };
+    }
 
 }

@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.config.ObjectConfigurer;
+import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
@@ -37,7 +38,7 @@ public class ApplicationServicesAccessorSupport {
     protected String getApplicationName() {
         return Application.instance().getName();
     }
-    
+
     protected ApplicationWindow getActiveWindow() {
         return Application.instance().getActiveWindow();
     }
@@ -98,10 +99,6 @@ public class ApplicationServicesAccessorSupport {
                 Locale.getDefault());
     }
 
-    protected ObjectConfigurer getObjectConfigurer() {
-        return Application.services().getObjectConfigurer();
-    }
-
     protected ComponentFactory getComponentFactory() {
         return Application.services().getComponentFactory();
     }
@@ -112,6 +109,14 @@ public class ApplicationServicesAccessorSupport {
 
     protected IconSource getIconSource() {
         return Application.services().getIconSource();
+    }
+
+    protected ObjectConfigurer getObjectConfigurer() {
+        return Application.services().getObjectConfigurer();
+    }
+
+    protected CommandConfigurer getCommandConfigurer() {
+        return Application.services().getCommandConfigurer();
     }
 
 }

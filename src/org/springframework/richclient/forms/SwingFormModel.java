@@ -26,6 +26,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -243,6 +244,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.setFormObject(formObject);
     }
 
+    public ValueModel getFormObjectHolder() {
+        return formModel.getFormObjectHolder();
+    }
+
     public String getDisplayValue(String formProperty) {
         return formModel.getDisplayValue(formProperty);
     }
@@ -307,6 +312,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.revert();
     }
 
+    public void reset() {
+        formModel.reset();
+    }
+
     public PropertyAccessStrategy getPropertyAccessStrategy() {
         return formModel.getPropertyAccessStrategy();
     }
@@ -336,6 +345,22 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     protected boolean isWriteable(String formProperty) {
         return getMetadataAccessStrategy().isWriteable(formProperty);
+    }
+
+    /**
+     * Creates a bound labeled editor control for the provided property path,
+     * returning a JComponent array where the first component is the field label
+     * and the second component is the editor control (e.g text field).
+     * 
+     * @param string
+     *            the form property path
+     * @return The labeled field array
+     */
+    public JComponent[] createBoundLabeledControl(String formPropertyPath) {
+        JLabel label = getComponentFactory().createLabel(formPropertyPath);
+        JComponent editorControl = createBoundControl(formPropertyPath);
+        label.setLabelFor(editorControl);
+        return new JComponent[] { label, editorControl };
     }
 
     /**

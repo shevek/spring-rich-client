@@ -32,6 +32,8 @@ import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
@@ -49,6 +51,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     private JButton lastDefaultButton;
 
     private PropertyChangeListener formEnabledChangeHandler;
+
+    private ActionCommand newFormObjectCommand;
 
     private ActionCommand commitCommand;
 
@@ -211,6 +215,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected final JComponent createControl() {
+        initFormCommands();
         JComponent formControl = createFormControl();
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
         getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
@@ -221,6 +226,11 @@ public abstract class AbstractForm extends AbstractControlFactory implements
             attachFormErrorGuard(getCommitCommand());
         }
         return formControl;
+    }
+
+    private void initFormCommands() {
+        initNewFormObjectCommand();
+        initCommitCommand();
     }
 
     protected void attachFormErrorGuard(Guarded guarded) {
@@ -301,6 +311,52 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 setEnabled(((Guarded)getFormObject()).isEnabled());
             }
         }
+    }
+
+    private ActionCommand initNewFormObjectCommand() {
+        String commandId = getNewFormObjectCommandId();
+        if (!StringUtils.hasText(commandId)) { return null; }
+
+        this.newFormObjectCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().reset();
+                getFormModel().setEnabled(true);
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(
+                newFormObjectCommand);
+    }
+
+    protected final JButton createNewFormObjectButton() {
+        Assert.notNull(newFormObjectCommand, "New form object command has not been created!");
+        return (JButton)newFormObjectCommand.createButton();
+    }
+    
+    protected final JButton createCommitButton() {
+        Assert.notNull(commitCommand, "Commit command has not been created!");
+        return (JButton)commitCommand.createButton();
+    }
+    
+    protected String getNewFormObjectCommandId() {
+        return "new"
+                + StringUtils.capitalize(ClassUtils.getShortName(getFormModel()
+                        .getFormObject().getClass()
+                        + "Command"));
+    }
+
+    protected String getCommitCommandId() {
+        return null;
+    }
+
+    private final ActionCommand initCommitCommand() {
+        String commandId = getCommitCommandId();
+        if (!StringUtils.hasText(commandId)) { return null; }
+        this.commitCommand = new ActionCommand(commandId) {
+            protected void doExecuteCommand() {
+                getFormModel().commit();
+            }
+        };
+        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
     }
 
 }

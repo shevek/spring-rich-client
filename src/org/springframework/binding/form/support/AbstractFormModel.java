@@ -73,8 +73,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
                 logger
                         .info("New form object value is null; resetting to a new fresh object instance and disabling form");
             }
-            getFormObjectHolder().setValue(
-                    BeanUtils.instantiateClass(getFormObjectClass()));
+            reset();
             setEnabled(false);
         }
         else {
@@ -82,7 +81,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
         }
     }
 
-    protected ValueModel getFormObjectHolder() {
+    public ValueModel getFormObjectHolder() {
         return getPropertyAccessStrategy().getDomainObjectHolder();
     }
 
@@ -234,5 +233,10 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
             CommitListener l = (CommitListener)i.next();
             l.postEditCommitted(getFormObject());
         }
+    }
+
+    public void reset() {
+        getFormObjectHolder().setValue(
+                BeanUtils.instantiateClass(getFormObjectClass()));
     }
 }

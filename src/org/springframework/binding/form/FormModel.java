@@ -34,6 +34,8 @@ public interface FormModel extends PropertyChangePublisher {
     
     public void setFormObject(Object formObject);
 
+    public ValueModel getFormObjectHolder();
+    
     public ValueModel getDisplayValueModel(String formPropertyPath);
 
     public ValueModel getValueModel(String formPropertyPath);
@@ -57,6 +59,8 @@ public interface FormModel extends PropertyChangePublisher {
     public void commit();
 
     public void revert();
+    
+    public void reset();
 
     public void addFormObjectChangeListener(ValueChangeListener listener);
 
