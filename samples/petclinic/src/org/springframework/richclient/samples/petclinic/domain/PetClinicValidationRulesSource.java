@@ -27,6 +27,7 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
 			protected void initRules() {
 				add("firstName", getNameValueConstraint());
 				add("lastName", getNameValueConstraint());
+				add(not(eqProperty("firstName", "lastName")));
 				add("address", required());
 			}
 

@@ -197,13 +197,24 @@ public class CompoundFormModel extends AbstractFormModel implements
         });
     }
 
-    public ValueModel getDisplayValueModel(String formProperty) {
-        // todo
-        return null;
+    public ValueModel getDisplayValueModel(String formPropertyPath) {
+        return getDisplayValueModel(formPropertyPath, true);
     }
 
     public ValueModel getValueModel(String formPropertyPath) {
         return unwrap(getDisplayValueModel(formPropertyPath, true));
+    }
+
+    public ValueModel getDisplayValueModel(String formPropertyPath,
+            boolean queryParent) {
+        ValueModel valueModel = findDisplayValueModelFor(null, formPropertyPath);
+        if (valueModel == null) {
+            if (getParent() != null && queryParent) {
+                valueModel = getParent().findDisplayValueModelFor(this,
+                        formPropertyPath);
+            }
+        }
+        return valueModel;
     }
 
     public ValueModel findDisplayValueModelFor(FormModel delegatingChild,
@@ -223,18 +234,6 @@ public class CompoundFormModel extends AbstractFormModel implements
                     + "' found on any nested form models... returning [null]");
         }
         return null;
-    }
-
-    public ValueModel getDisplayValueModel(String formPropertyPath,
-            boolean queryParent) {
-        ValueModel valueModel = findDisplayValueModelFor(null, formPropertyPath);
-        if (valueModel == null) {
-            if (getParent() != null && queryParent) {
-                valueModel = getParent().findDisplayValueModelFor(this,
-                        formPropertyPath);
-            }
-        }
-        return valueModel;
     }
 
     protected void handleEnabledChange() {

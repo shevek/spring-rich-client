@@ -192,7 +192,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 	protected void postProcessNewFormValueModel(String domainObjectProperty, ValueModel valueModel) {
 		// trigger validation to catch initial form errors
 		if (valueModel instanceof ValidatingFormValueModel && isEnabled()) {
-			((ValidatingFormValueModel)valueModel).validate();
+			//((ValidatingFormValueModel)valueModel).validate();
 		}
 	}
 
@@ -242,6 +242,14 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 			}
 		}
 
+		public String getProperty() {
+			return domainObjectProperty;
+		}
+
+		public PropertyConstraint getPropertyConstraint() {
+			return validationRule;
+		}
+
 		public boolean isCompoundRule() {
 			if (validationRule == null) {
 				return false;
@@ -256,14 +264,13 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		public void setValue(Object value) {
 			if (!setterConstraint.test(value)) {
 				if (isEnabled()) {
-					PropertyResults results = new PropertyResults(setterConstraint.getPropertyName(), value, setterConstraint);
+					PropertyResults results = new PropertyResults(getProperty(), value, setterConstraint);
 					constraintViolated(setterConstraint, results);
 				}
 			}
 			else {
 				if (isEnabled()) {
 					constraintSatisfied(setterConstraint);
-					// we validate after a set attempt
 					validate();
 				}
 			}
@@ -274,7 +281,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 			Iterator it = valueModelIterator();
 			while (it.hasNext()) {
 				ValidatingFormValueModel vm = (ValidatingFormValueModel)it.next();
-				if (vm.isCompoundRule() && vm.tests(domainObjectProperty)) {
+				if (vm.isCompoundRule() && vm.tests(getProperty())) {
 					vm.validatePropertyConstraint();
 				}
 			}
@@ -285,7 +292,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 				return;
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("[Validating domain object property '" + validationRule.getPropertyName() + "']");
+				logger.debug("[Validating domain object property '" + getProperty() + "']");
 			}
 			BeanValidationResultsCollector collector = new BeanValidationResultsCollector(ValidatingFormModel.this);
 			PropertyResults results = (PropertyResults)collector.collectPropertyResults(validationRule);
@@ -416,6 +423,14 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		Iterator it = validationListeners.iterator();
 		while (it.hasNext()) {
 			((ValidationListener)it.next()).constraintViolated(new ValidationEvent(this, constraint, results));
+		}
+	}
+
+	public void validate() {
+		Iterator it = valueModelIterator();
+		while (it.hasNext()) {
+			ValidatingFormValueModel vm = (ValidatingFormValueModel)it.next();
+			vm.validatePropertyConstraint();
 		}
 	}
 
