@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.util.ToStringBuilder;
 
 /**
@@ -50,15 +51,17 @@ public class LabelInfo {
     }
 
     public LabelInfo(String text, int mnemonic, int mnemonicIndex) {
-        Assert.hasText(text);
+        Assert.notNull(text);
         this.text = text;
-
+        if (!StringUtils.hasText(text)) {
+            mnemonicIndex = -1;
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Constructing label info, properties: text='" + text
                     + "', mnemonic=" + mnemonic + ", mnemonicIndex="
                     + mnemonicIndex);
         }
-        Assert.isTrue(mnemonic >= 0 && mnemonicIndex >= 0);
+        Assert.isTrue(mnemonic >= 0 && mnemonicIndex >= -1);
         Assert.isTrue(mnemonicIndex < text.length(),
                 "The mnemonic index cannot be greater than the text length.");
         this.mnemonic = mnemonic;
