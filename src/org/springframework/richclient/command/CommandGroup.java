@@ -16,10 +16,8 @@
 package org.springframework.richclient.command;
 
 import java.awt.Container;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -30,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
 import org.springframework.richclient.application.Application;
@@ -90,9 +89,9 @@ public class CommandGroup extends AbstractCommand {
     /**
      * Creates a command group with a single command member.
      * 
-     * @param groupId
-     * @param members
-     * @return
+     * @param member the command to put in the CommandGroup
+     *
+     * @return never null
      */
     public static CommandGroup createCommandGroup(AbstractCommand member) {
         return createCommandGroup(null, new Object[] { member });
@@ -133,12 +132,14 @@ public class CommandGroup extends AbstractCommand {
      * @param members
      * @return
      */
-    private static CommandGroup createCommandGroup(String groupId, Object[] members, boolean exclusive,
-            CommandConfigurer configurer) {
-        if (configurer == null) {
-            configurer = Application.services();
-        }
-        CommandGroupFactoryBean groupFactory = new CommandGroupFactoryBean(groupId, null, configurer, members);
+    private static CommandGroup createCommandGroup(final String groupId, final Object[] members,
+                                                   final boolean exclusive,
+                                                   final CommandConfigurer configurer) {
+        final CommandConfigurer theConfigurer = (configurer != null) ?
+                configurer : Application.services();
+
+        final CommandGroupFactoryBean groupFactory =
+                new CommandGroupFactoryBean(groupId, null, theConfigurer, members);
         groupFactory.setExclusive(exclusive);
         return groupFactory.getCommandGroup();
     }
@@ -159,7 +160,7 @@ public class CommandGroup extends AbstractCommand {
         this.memberList.add(new GlueGroupMember());
     }
 
-    public void setCommandRegistry(CommandRegistry registry) {
+    public final void setCommandRegistry(CommandRegistry registry) {
         if (!ObjectUtils.nullSafeEquals(this.commandRegistry, registry)) {
 
             //@TODO should groups listen to command registration events if
@@ -444,19 +445,43 @@ public class CommandGroup extends AbstractCommand {
 
     }
 
+    /**
+     * Create a button bar with buttons for all the commands in this.
+     *
+     * @return never null
+     */
     public JComponent createButtonBar() {
         return createButtonBar(null);
     }
 
+    /**
+     * Create a button bar with buttons for all the commands in this.
+     *
+     * @param minimumButtonSize if null, then there is no minimum size
+     *
+     * @return never null
+     */
     public JComponent createButtonBar(Size minimumButtonSize) {
-        Iterator members = getMemberList().iterator();
-        List buttons = new ArrayList();
+        return createButtonBar(minimumButtonSize, GuiStandardUtils
+                .createTopAndBottomBorder(UIConstants.TWO_SPACES));
+    }
 
-        ButtonBarGroupContainerPopulator container = new ButtonBarGroupContainerPopulator();
+    /**
+     * Create a button bar with buttons for all the commands in this.
+     *
+     * @param minimumButtonSize if null, then there is no minimum size
+     * @param border            if null, then don't use a border
+     *
+     * @return never null
+     */
+    public JComponent createButtonBar(final Size minimumButtonSize, final Border border) {
+        final Iterator members = getMemberList().iterator();
+
+        final ButtonBarGroupContainerPopulator container = new ButtonBarGroupContainerPopulator();
         container.setMinimumButtonSize(minimumButtonSize);
 
         while (members.hasNext()) {
-            GroupMember member = (GroupMember)members.next();
+            final GroupMember member = (GroupMember)members.next();
             if (member.getCommand() instanceof CommandGroup) {
                 member.fill(container, getButtonFactory(), getPullDownMenuButtonConfigurer(), Collections.EMPTY_LIST);
             }
@@ -465,8 +490,7 @@ public class CommandGroup extends AbstractCommand {
             }
         }
         container.onPopulated();
-        return GuiStandardUtils.attachBorder(container.getButtonBar(), GuiStandardUtils
-                .createTopAndBottomBorder(UIConstants.TWO_SPACES));
+        return GuiStandardUtils.attachBorder(container.getButtonBar(), border);
     }
 
     private void bindMembers(Object owner, Container memberContainer, Object controlFactory,
