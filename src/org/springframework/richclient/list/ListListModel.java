@@ -25,6 +25,8 @@ import java.util.ListIterator;
 
 import javax.swing.AbstractListModel;
 
+import org.springframework.binding.value.IndexAdapter;
+import org.springframework.binding.value.support.AbstractIndexAdapter;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -34,6 +36,8 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     private List items;
 
     private Comparator sorter;
+
+    private IndexAdapter indexAdapter;
 
     public ListListModel() {
         this(null);
@@ -80,6 +84,32 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     public void add(int index, Object o) {
         items.add(index, o);
         fireIntervalAdded(this, index, index);
+    }
+
+    public IndexAdapter getIndexAdapter(int index) {
+        if (indexAdapter == null) {
+            this.indexAdapter = new ThisIndexAdapter();
+        }
+        indexAdapter.setIndex(index);
+        return indexAdapter;
+    }
+
+    private class ThisIndexAdapter extends AbstractIndexAdapter {
+        public Object getValue() {
+            return get(getIndex());
+        }
+
+        public void setValue(Object value) {
+            Object oldValue = items.set(getIndex(), value);
+            if (hasChanged(oldValue, value)) {
+                fireContentsChanged(getIndex());
+                fireValueChanged(oldValue, value);
+            }
+        }
+        
+        public void fireIndexedObjectChanged() {
+            fireContentsChanged(getIndex());
+        }
     }
 
     public boolean add(Object o) {
@@ -184,7 +214,7 @@ public class ListListModel extends AbstractListModel implements ObservableList {
 
     public Object set(int index, Object element) {
         Object oldObject = items.set(index, element);
-        if (! ObjectUtils.nullSafeEquals(oldObject, element)) {
+        if (!ObjectUtils.nullSafeEquals(oldObject, element)) {
             fireContentsChanged(index);
         }
         return oldObject;

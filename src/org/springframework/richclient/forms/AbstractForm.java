@@ -17,7 +17,6 @@ package org.springframework.richclient.forms;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -27,12 +26,14 @@ import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.value.IndexAdapter;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.factory.AbstractControlFactory;
+import org.springframework.richclient.list.ObservableList;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -64,7 +65,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     private boolean clearFormOnCommit = false;
 
-    private List editableFormObjects;
+    private ObservableList editableFormObjects;
 
     private ValueModel editingFormObjectIndexHolder;
 
@@ -85,7 +86,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId), formId);
+        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId),
+                formId);
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId,
@@ -147,7 +149,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         return this.parentFormModel;
     }
 
-    protected void setEditableFormObjects(List editableFormObjects) {
+    protected void setEditableFormObjects(ObservableList editableFormObjects) {
         this.editableFormObjects = editableFormObjects;
     }
 
@@ -181,10 +183,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     public void setClearFormOnCommit(boolean clearFormOnCommit) {
         this.clearFormOnCommit = clearFormOnCommit;
-    }
-
-    public boolean preEditCommitted(Object formObject) {
-        return true;
     }
 
     protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
@@ -335,6 +333,28 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         return (ActionCommand)getCommandConfigurer().configure(commitCommand);
     }
 
+    public boolean preEditCommitted(Object formObject) {
+        return true;
+    }
+
+    public void postEditCommitted(Object formObject) {
+        if (editableFormObjects != null) {
+            if (editingNewFormObject) {
+                editableFormObjects.add(formObject);
+            }
+            else {
+                IndexAdapter adapter = editableFormObjects
+                        .getIndexAdapter(getEditingFormObjectIndex());
+                adapter.setValue(formObject);
+                adapter.fireIndexedObjectChanged();
+            }
+        }
+        if (clearFormOnCommit) {
+            setFormObject(null);
+        }
+        editingNewFormObject = false;
+    }
+
     private final ActionCommand initRevertCommand() {
         String commandId = getRevertFaceConfigurationKey();
         if (!StringUtils.hasText(commandId)) { return null; }
@@ -375,22 +395,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     protected void attachFormErrorGuard(Guarded guarded) {
         FormGuard guard = new FormGuard(getFormModel(), guarded);
         addValidationListener(guard);
-    }
-
-    public void postEditCommitted(Object formObject) {
-        if (editableFormObjects != null) {
-            if (editingNewFormObject) {
-                editableFormObjects.add(formObject);
-            }
-            else {
-                editableFormObjects
-                        .set(getEditingFormObjectIndex(), formObject);
-            }
-        }
-        if (clearFormOnCommit) {
-            setFormObject(null);
-        }
-        editingNewFormObject = false;
     }
 
     public Object getFormObject() {

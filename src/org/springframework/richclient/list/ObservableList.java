@@ -19,6 +19,8 @@ import java.util.List;
 
 import javax.swing.ListModel;
 
+import org.springframework.binding.value.IndexAdapter;
+
 /**
  * Simple sub interface that combines <code>List</code> and
  * <code>ListModel</code>.
@@ -26,5 +28,5 @@ import javax.swing.ListModel;
  * @author Keith Donald
  */
 public interface ObservableList extends List, ListModel {
-
+    public IndexAdapter getIndexAdapter(int index);
 }

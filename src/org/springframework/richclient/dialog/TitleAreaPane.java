@@ -69,6 +69,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
         if (newTitle == null) {
             newTitle = "";
         }
+        createControlIfNecessary();
         titleLabel.setText(newTitle);
     }
 

@@ -74,7 +74,7 @@ public final class SingleListSelectionModel implements ListSelectionModel {
      * default selection index holder.
      */
     public SingleListSelectionModel() {
-        this(new ValueHolder());
+        this(new ValueHolder(new Integer(Integer.MIN_VALUE)));
     }
 
     /**

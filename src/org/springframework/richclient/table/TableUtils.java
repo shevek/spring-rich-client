@@ -67,7 +67,7 @@ public class TableUtils {
         sizeColumnsToFitRowData(table);
         return table;
     }
-    
+
     public static JTable attachSorter(JTable table) {
         TableModel tableModel = table.getModel();
         ShuttleSortableTableModel sortedModel = new ShuttleSortableTableModel(
@@ -173,4 +173,5 @@ public class TableUtils {
             }
         }
     }
+
 }
