@@ -61,14 +61,14 @@ public class DefaultViewContext implements ViewContext {
         return viewDescriptor;
     }
 
-    public ActionCommandExecutor getSharedCommandExecutor(String commandId) {
+    public ActionCommandExecutor getLocalCommandExecutor(String commandId) {
         Assert.notNull(commandId, "The commandId is required");
         if (this.sharedCommandExecutors == null) { return null; }
         return (ActionCommandExecutor)this.sharedCommandExecutors
                 .get(commandId);
     }
 
-    public void setSharedCommandExecutor(String commandId,
+    public void register(String commandId,
             ActionCommandExecutor executor) {
         Assert.notNull(commandId, "The command id is required");
         Assert

@@ -37,7 +37,7 @@ public abstract class AbstractView extends AbstractControlFactory implements
     public final void initialize(ViewContext context) {
         Assert.notNull(context, "The View context must be non-null");
         this.context = context;
-        setSharedCommandExecutors(context);
+        registerLocalCommandExecutors(context);
     }
 
     public String getId() {
@@ -87,12 +87,14 @@ public abstract class AbstractView extends AbstractControlFactory implements
     protected abstract JComponent createControl();
 
     /**
-     * Template method called when this view is initialized in a context; allows
-     * subclasses to register global actions with the context.
+     * Template method called once when this view is initialized; allows
+     * subclasses to register local executors for shared commands with the view
+     * context.
      * 
      * @param context
+     *            the view context
      */
-    protected void setSharedCommandExecutors(ViewContext context) {
+    protected void registerLocalCommandExecutors(ViewContext context) {
 
     }
 

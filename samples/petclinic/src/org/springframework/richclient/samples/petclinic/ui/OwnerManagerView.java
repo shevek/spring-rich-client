@@ -69,9 +69,9 @@ public class OwnerManagerView extends AbstractView implements
 
     private RenameCommand renameCommand = new RenameCommand();
 
-    private DeleteCommandExecutor deleteCommand = new DeleteCommandExecutor();
+    private DeleteCommandExecutor deleteCommandExecutor = new DeleteCommandExecutor();
 
-    private PropertiesCommandExecutor propertiesCommand = new PropertiesCommandExecutor();
+    private PropertiesCommandExecutor propertiesCommandExecutor = new PropertiesCommandExecutor();
 
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic, "The clinic property is required");
@@ -82,12 +82,9 @@ public class OwnerManagerView extends AbstractView implements
         this.ownerLastName = ownerLastName;
     }
 
-    protected void setSharedCommandExecutors(ViewContext context) {
-        context
-                .setSharedCommandExecutor(GlobalCommandIds.DELETE,
-                        deleteCommand);
-        context.setSharedCommandExecutor(GlobalCommandIds.PROPERTIES,
-                propertiesCommand);
+    protected void registerLocalCommandExecutors(ViewContext context) {
+        context.register(GlobalCommandIds.DELETE, deleteCommandExecutor);
+        context.register(GlobalCommandIds.PROPERTIES, propertiesCommandExecutor);
     }
 
     protected JComponent createControl() {
@@ -157,18 +154,18 @@ public class OwnerManagerView extends AbstractView implements
         if (treeSelectionCount == 0
                 || (treeSelectionCount == 1 && ownersTree.isRowSelected(0))) {
             renameCommand.setEnabled(false);
-            deleteCommand.setEnabled(false);
-            propertiesCommand.setEnabled(false);
+            deleteCommandExecutor.setEnabled(false);
+            propertiesCommandExecutor.setEnabled(false);
         }
         else if (treeSelectionCount == 1) {
             renameCommand.setEnabled(true);
-            deleteCommand.setEnabled(true);
-            propertiesCommand.setEnabled(true);
+            deleteCommandExecutor.setEnabled(true);
+            propertiesCommandExecutor.setEnabled(true);
         }
         else if (treeSelectionCount > 1) {
             renameCommand.setEnabled(false);
-            deleteCommand.setEnabled(true);
-            propertiesCommand.setEnabled(false);
+            deleteCommandExecutor.setEnabled(true);
+            propertiesCommandExecutor.setEnabled(false);
         }
     }
 

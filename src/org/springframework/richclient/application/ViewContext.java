@@ -24,9 +24,8 @@ public interface ViewContext {
 
     public ViewDescriptor getViewDescriptor();
 
-    public ActionCommandExecutor getSharedCommandExecutor(String commandId);
+    public ActionCommandExecutor getLocalCommandExecutor(String commandId);
 
-    public void setSharedCommandExecutor(String commandId,
-            ActionCommandExecutor localExecutor);
+    public void register(String commandId, ActionCommandExecutor localExecutor);
 
 }
