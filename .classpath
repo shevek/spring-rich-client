@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/j2ee/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/burlap.jar"/>
 	<classpathentry kind="lib" path="lib/caucho/hessian.jar"/>
-	<classpathentry kind="src" path="/spring"/>
 	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
@@ -30,5 +29,6 @@
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-attributes-api.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-collections.jar"/>
 	<classpathentry kind="lib" path="lib/javahelp/javahelp.jar"/>
+	<classpathentry kind="lib" path="lib/jdnc/jdnc.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
