@@ -103,7 +103,7 @@ public class DefaultApplicationPage implements ApplicationPage,
             giveFocusTo(viewPane);
         }
         else {
-            viewPane = addViewPane(viewDescriptor);
+            viewPane = createViewPane(viewDescriptor);
             giveFocusTo(viewPane);
         }
         if (this.activeView != null) {
@@ -131,7 +131,7 @@ public class DefaultApplicationPage implements ApplicationPage,
         return true;
     }
 
-    private ViewPane addViewPane(ViewDescriptor viewDescriptor) {
+    private ViewPane createViewPane(ViewDescriptor viewDescriptor) {
         View view = createView(viewDescriptor);
         ViewPane viewPane = new ViewPane(view);
         this.viewPanes.add(viewPane);
@@ -152,7 +152,7 @@ public class DefaultApplicationPage implements ApplicationPage,
     // Initial Application Page Layout Builder methods
     
     public void addView(String viewDescriptorId) {
-        ViewPane viewPane = addViewPane(getViewDescriptor(viewDescriptorId));
+        ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
         this.pageControl.add(viewPane.getControl());
     }
 
