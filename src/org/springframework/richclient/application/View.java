@@ -17,16 +17,26 @@ package org.springframework.richclient.application;
 
 import javax.swing.Icon;
 
+import org.springframework.richclient.core.ManagedElement;
 import org.springframework.richclient.factory.ControlFactory;
 
-public interface View extends ControlFactory {
-    public String getTitle();
+/**
+ * A view is a panel-like component displayed within an area on the page
+ * associated with an application window.  There can be multiple views per page;
+ * a single view can only be displayed once on a single page.
+ *  
+ * View instances encapsulate the creation of and access to the visual
+ * presentation of the underlying control. A view's descriptor -- which is
+ * effectively a singleton -- can be asked to instantiate new instances of a
+ * single view for display within an application with multiple windows. In other
+ * words, a single view instance is never shared between windows.
+ * 
+ * @author Keith Donald
+ */
+public interface View extends ManagedElement, ControlFactory {
+    public Icon getIcon();
 
-    public Icon getTitleIcon();
-
-    public String getToolTip();
-
-    public void initialize(ViewContext context);
+    public void initialize(ViewDescriptor descriptor, ViewContext context);
 
     public ViewContext getContext();
 

@@ -15,19 +15,15 @@
  */
 package org.springframework.richclient.wizard;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.Icon;
 import javax.swing.event.EventListenerList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.image.IconSource;
 
 /**
  * Helper implementation of the wizard interface.
@@ -36,11 +32,7 @@ import org.springframework.richclient.image.IconSource;
  */
 public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
         implements Wizard, TitleConfigurable {
-    private static final Log logger = LogFactory.getLog(AbstractWizard.class);
-
-    public static final String DEFAULT_ICON_KEY = "wizard.pageIcon";
-
-    private IconSource icons = Application.locator();
+    public static final String DEFAULT_IMAGE_KEY = "wizard.pageIcon";
 
     private String title;
 
@@ -141,8 +133,8 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
         return true;
     }
 
-    public Icon getDefaultPageIcon() {
-        return icons.getIcon(DEFAULT_ICON_KEY);
+    public Image getDefaultPageImage() {
+        return getImageSource().getImage(DEFAULT_IMAGE_KEY);
     }
 
     public WizardPage getNextPage(WizardPage page) {

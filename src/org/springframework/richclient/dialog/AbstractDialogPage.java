@@ -15,9 +15,9 @@
  */
 package org.springframework.richclient.dialog;
 
+import java.awt.Image;
 import java.awt.Window;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
@@ -78,9 +78,9 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      * @param image
      *            the image for this dialog page, or <code>null</code> if none
      */
-    protected AbstractDialogPage(String title, Icon icon) {
+    protected AbstractDialogPage(String title, Image icon) {
         this(title);
-        setIcon(icon);
+        setImage(icon);
     }
 
     public String getTitle() {

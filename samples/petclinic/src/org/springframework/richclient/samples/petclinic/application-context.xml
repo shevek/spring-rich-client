@@ -60,7 +60,7 @@
   	</bean>
 
 	<bean  id="imageSource" 
-  	    class="org.springframework.richclient.image.DefaultAwtImageSource">
+  	    class="org.springframework.richclient.image.DefaultImageSource">
   	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
   	  <property name="brokenImageIndicator"><value>images/alert/error_obj.gif</value></property>
   	</bean>
@@ -76,9 +76,17 @@
     </bean>
 
     <bean      id="ownerManagerView"
-            class="org.springframework.richclient.samples.petclinic.ui.OwnerManagerView">
-        <property name="lastNameToDisplay"><value></value></property>
-		<property name="clinic"><ref bean="clinic"/></property>	
+            class="org.springframework.richclient.application.ViewDescriptor">
+        <property name="viewClass">
+        	<value>org.springframework.richclient.samples.petclinic.ui.OwnerManagerView</value>
+       	</property>
+       	<property name="viewProperties">
+       		<map>
+       			<entry key="clinic">
+       				<ref bean="clinic"/>
+       			</entry>
+       		</map>
+       	</property>
     </bean>
 
     <bean id="newOwnerWizard" class="org.springframework.richclient.samples.petclinic.ui.NewOwnerWizard">
@@ -91,8 +99,17 @@
     </bean>
 
     <bean      id="vetManagerView"
-            class="org.springframework.richclient.samples.petclinic.ui.VetManagerView">
-		<property name="clinic"><ref bean="clinic"/></property>	
+            class="org.springframework.richclient.application.ViewDescriptor">
+        <property name="viewClass">
+        	<value>org.springframework.richclient.samples.petclinic.ui.VetManagerView</value>
+       	</property>
+       	<property name="viewProperties">
+       		<map>
+       			<entry key="clinic">
+       				<ref bean="clinic"/>
+       			</entry>
+       		</map>
+       	</property>
     </bean>
 
 	<!-- CLINIC BUSINESS OBJECT RELATED -->

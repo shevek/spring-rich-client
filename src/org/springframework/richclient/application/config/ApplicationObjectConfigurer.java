@@ -36,7 +36,7 @@ import org.springframework.richclient.core.LabelConfigurable;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.LabelInfo;
 import org.springframework.richclient.factory.LabelInfoFactory;
-import org.springframework.richclient.image.AwtImageSource;
+import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.image.config.IconConfigurable;
@@ -52,7 +52,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
         implements ObjectConfigurer, BeanPostProcessor, InitializingBean {
     private MessageSource messages;
 
-    private AwtImageSource images;
+    private ImageSource images;
 
     private IconSource icons;
 
@@ -61,7 +61,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
         this.messages = messages;
     }
 
-    public void setImageSource(AwtImageSource images) {
+    public void setImageSource(ImageSource images) {
         Assert.notNull(images);
         this.images = images;
     }
@@ -93,9 +93,9 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
         }
     }
 
-    private AwtImageSource getImageSource() {
+    private ImageSource getImageSource() {
         try {
-            return (AwtImageSource)getApplicationContext().getBean(
+            return (ImageSource)getApplicationContext().getBean(
                     Application.IMAGE_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {

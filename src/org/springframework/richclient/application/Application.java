@@ -43,8 +43,8 @@ import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
 import org.springframework.richclient.image.AwtImageResource;
-import org.springframework.richclient.image.AwtImageSource;
-import org.springframework.richclient.image.DefaultAwtImageSource;
+import org.springframework.richclient.image.ImageSource;
+import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.DefaultIconSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.rules.DefaultRulesSource;
@@ -65,7 +65,7 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class Application extends ApplicationObjectSupport implements
-        MessageSource, AwtImageSource, IconSource, RulesSource,
+        MessageSource, ImageSource, IconSource, RulesSource,
         ObjectConfigurer, CommandConfigurer {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -94,7 +94,7 @@ public class Application extends ApplicationObjectSupport implements
 
     private ViewRegistry viewRegistry;
 
-    private AwtImageSource imageSource;
+    private ImageSource imageSource;
 
     private IconSource iconSource;
 
@@ -216,13 +216,13 @@ public class Application extends ApplicationObjectSupport implements
 
     private void initImageSource() {
         try {
-            this.imageSource = (AwtImageSource)getApplicationContext().getBean(
+            this.imageSource = (ImageSource)getApplicationContext().getBean(
                     IMAGE_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No image source bean found in context under name '"
                     + IMAGE_SOURCE_BEAN_KEY + "'; configuring defaults.");
-            this.imageSource = new DefaultAwtImageSource(new HashMap());
+            this.imageSource = new DefaultImageSource(new HashMap());
         }
     }
 
@@ -368,7 +368,7 @@ public class Application extends ApplicationObjectSupport implements
     }
 
     public MessageSourceAccessor getMessages() {
-        return getMessageSourceAccessor();
+        return super.getMessageSourceAccessor();
     }
 
     public String getMessage(MessageSourceResolvable resolvable, Locale locale)

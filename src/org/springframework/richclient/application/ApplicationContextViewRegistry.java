@@ -20,22 +20,23 @@ import java.util.Map;
 import org.springframework.context.support.ApplicationObjectSupport;
 
 /**
- * Simple <code>ViewRegistry</code> that pulls singleton view definitions out of a
- * spring application context.
+ * Simple <code>ViewRegistry</code> that pulls singleton view definitions out
+ * of a spring application context.
  * 
  * @author Keith Donald
  */
 public class ApplicationContextViewRegistry extends ApplicationObjectSupport
         implements ViewRegistry {
 
-    public View[] findViews() {
-        Map beans = getApplicationContext().getBeansOfType(View.class, false,
-                false);
-        return (View[])beans.values().toArray(new View[beans.size()]);
+    public ViewDescriptor[] getViewDescriptors() {
+        Map beans = getApplicationContext().getBeansOfType(
+                ViewDescriptor.class, false, false);
+        return (ViewDescriptor[])beans.values().toArray(
+                new ViewDescriptor[beans.size()]);
     }
 
-    public View findView(String viewName) {
-        return (View)getApplicationContext().getBean(viewName);
+    public ViewDescriptor getViewDescriptor(String viewName) {
+        return (ViewDescriptor)getApplicationContext().getBean(viewName);
     }
 
 }

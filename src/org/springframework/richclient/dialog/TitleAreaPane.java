@@ -19,17 +19,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.image.IconSource;
+import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.util.GridBagCellConstraints;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.reporting.Severity;
@@ -40,7 +42,7 @@ import org.springframework.rules.reporting.Severity;
  * error message.
  */
 public class TitleAreaPane extends AbstractControlFactory implements
-        MessageAreaPane {
+        MessageAreaPane, TitleConfigurable, ImageConfigurable {
 
     /**
      * Image source key for banner image (value <code>dialog_title_banner</code>).
@@ -53,11 +55,23 @@ public class TitleAreaPane extends AbstractControlFactory implements
 
     private JLabel iconLabel;
 
-    private Icon icon;
+    private Image image;
 
     private MessageAreaPane messageAreaPane = new SimpleMessageAreaPane();
 
-    private IconSource icons = Application.locator();
+    public void setTitle(String newTitle) {
+        if (newTitle == null) {
+            newTitle = "";
+        }
+        titleLabel.setText(newTitle);
+    }
+
+    public void setImage(Image titleImage) {
+        this.image = titleImage;
+        if (isControlCreated()) {
+            iconLabel.setIcon(new ImageIcon(titleImage));
+        }
+    }
 
     protected JComponent createControl() {
         titleLabel = new JLabel();
@@ -88,11 +102,15 @@ public class TitleAreaPane extends AbstractControlFactory implements
     }
 
     private Icon getIcon() {
-        if (icon != null) {
-            return icon;
+        return new ImageIcon(getImage());
+    }
+    
+    private Image getImage() {
+        if (image != null) {
+            return image;
         }
         else {
-            return icons.getIcon(DEFAULT_TITLE_IMAGE);
+            return getImageSource().getImage(DEFAULT_TITLE_IMAGE);
         }
     }
 
@@ -105,42 +123,18 @@ public class TitleAreaPane extends AbstractControlFactory implements
         return c;
     }
 
-    public void setIcon(Icon titleIcon) {
-        this.icon = titleIcon;
-        if (isControlCreated()) {
-            iconLabel.setIcon(titleIcon);
-        }
-    }
-
-    public void setTitle(String newTitle) {
-        if (newTitle == null) {
-            newTitle = "";
-        }
-        titleLabel.setText(newTitle);
-    }
-
     public boolean messageShowing() {
         return messageAreaPane.messageShowing();
     }
     
-    /**
-     * @see org.springframework.richclient.dialog.MessageAreaPane#setMessage(java.lang.String,
-     *      org.springframework.rules.reporting.Severity)
-     */
     public void setMessage(String errorMessage, Severity severity) {
         messageAreaPane.setMessage(errorMessage, severity);
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.MessageAreaPane#setErrorMessage(java.lang.String)
-     */
     public void setErrorMessage(String errorMessage) {
         messageAreaPane.setErrorMessage(errorMessage);
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.MessageAreaPane#setMessage(java.lang.String)
-     */
     public void setMessage(String newMessage) {
         messageAreaPane.setMessage(newMessage);
     }

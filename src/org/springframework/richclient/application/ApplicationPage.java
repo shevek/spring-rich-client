@@ -52,17 +52,19 @@ public class ApplicationPage {
     }
 
     public void showView(String viewName) {
-        View view = viewRegistry.findView(viewName);
-        if (view != null) {
-            showView(view);
+        ViewDescriptor descriptor = viewRegistry.getViewDescriptor(viewName);
+        if (descriptor != null) {
+            showView(descriptor);
         }
     }
 
-    public void showView(View view) {
-        view.initialize(new SimpleViewContext(view.getTitle(), this));
-        SimpleInternalFrame viewPane = new SimpleInternalFrame(view
-                .getTitleIcon(), view.getTitle());
-        viewPane.setToolTipText(view.getToolTip());
+    public void showView(ViewDescriptor viewDescriptor) {
+        View view = viewDescriptor.createView();
+        view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
+                .getDisplayName(), this));
+        SimpleInternalFrame viewPane = new SimpleInternalFrame(viewDescriptor
+                .getImageIcon(), viewDescriptor.getDisplayName());
+        viewPane.setToolTipText(viewDescriptor.getCaption());
         viewPane.add(view.getControl());
         pageControl.removeAll();
         pageControl.add(viewPane, BorderLayout.CENTER);

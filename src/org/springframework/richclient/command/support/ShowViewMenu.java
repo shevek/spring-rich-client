@@ -17,9 +17,8 @@ package org.springframework.richclient.command.support;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.config.ApplicationWindowAware;
-import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 
 /**
@@ -46,37 +45,11 @@ public class ShowViewMenu extends CommandGroup implements
     }
 
     private void populate() {
-        View[] views = Application.locator().getViewRegistry().findViews();
+        ViewDescriptor[] views = Application.locator().getViewRegistry()
+                .getViewDescriptors();
         for (int i = 0; i < views.length; i++) {
-            View view = views[i];
-            addInternal(new ShowViewCommand(view, window));
-        }
-    }
-
-    public static class ShowViewCommand extends ActionCommand {
-        private ApplicationWindow window;
-
-        private View view;
-
-        public ShowViewCommand(View view) {
-            this(view, null);
-        }
-
-        public ShowViewCommand(View view, ApplicationWindow window) {
-            super(view.getTitle());
-            setLabel("&" + view.getTitle());
-            setIcon(view.getTitleIcon());
-            setCaption(view.getToolTip());
-            this.view = view;
-            this.window = window;
-            setEnabled(true);
-        }
-
-        protected void doExecuteCommand() {
-            if (this.window == null) {
-                this.window = Application.locator().getActiveWindow();
-            }
-            this.window.showViewOnPage(view);
+            ViewDescriptor view = views[i];
+            addInternal(view.createActionCommand(window));
         }
     }
 }

@@ -15,55 +15,28 @@
  */
 package org.springframework.richclient.application;
 
-import java.awt.Image;
 import java.awt.Window;
 
 import javax.swing.Icon;
 
-import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.image.config.IconConfigurable;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.util.Assert;
 
 public abstract class AbstractView extends AbstractControlFactory implements
-        View, DescriptionConfigurable, IconConfigurable {
-    private String title;
-
-    private String toolTip;
-
-    private Icon titleIcon;
+        View {
+    private ViewDescriptor descriptor;
 
     private ViewContext context;
 
-    public void setCaption(String caption) {
-        this.title = caption;
-    }
-
-    public void setDescription(String description) {
-        this.toolTip = description;
-    }
-
-    public void setIcon(Icon icon) {
-        this.titleIcon = icon;
-    }
-
-    public void initialize(ViewContext context) {
+    public final void initialize(ViewDescriptor descriptor, ViewContext context) {
+        Assert.isTrue(context != null, "View context must be non-null");
+        Assert.isTrue(descriptor != null, "View descriptor must be non-null");
+        this.descriptor = descriptor;
         this.context = context;
         registerGlobalCommandDelegates(context);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Icon getTitleIcon() {
-        return titleIcon;
-    }
-
-    public String getToolTip() {
-        return toolTip;
     }
 
     public ViewContext getContext() {
@@ -82,20 +55,24 @@ public abstract class AbstractView extends AbstractControlFactory implements
         return getContext().getParentWindow().getControl();
     }
 
-    protected String getMessage(String messageKey) {
-        return getMessages().getMessage(messageKey);
+    public String getDisplayName() {
+        return descriptor.getDisplayName();
     }
 
-    protected MessageSourceAccessor getMessages() {
-        return Application.locator().getMessages();
+    public String getCaption() {
+        return descriptor.getCaption();
     }
 
-    protected Icon getIcon(String iconKey) {
-        return Application.locator().getIcon(iconKey);
+    public String getDescription() {
+        return descriptor.getDescription();
     }
 
-    protected Image getImage(String imageKey) {
-        return Application.locator().getImage(imageKey);
+    public ActionCommand createActionCommand() {
+        return null;
+    }
+
+    public Icon getIcon() {
+        return descriptor.getImageIcon();
     }
 
     /**

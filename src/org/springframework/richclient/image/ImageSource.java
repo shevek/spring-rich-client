@@ -30,7 +30,7 @@ import java.awt.Image;
  * 
  * @author Keith Donald
  */
-public interface AwtImageSource {
+public interface ImageSource {
 
     /**
      * Loads the image with the specified key. Caching may or may not be

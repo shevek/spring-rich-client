@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.wizard;
 
-import javax.swing.Icon;
+import java.awt.Image;
 
 /**
  * Interface for a wizard. A wizard maintains a list of wizard pages, stacked on
@@ -47,7 +47,7 @@ public interface Wizard {
      * 
      * @return the default page image
      */
-    public Icon getDefaultPageIcon();
+    public Image getDefaultPageImage();
 
     /**
      * Returns the first page to be shown in this wizard.

@@ -14,7 +14,7 @@
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb/hsqldb-1.7.2-rc6d.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance/aopalliance.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-SNAPSHOT-710.jar"/>
+	<classpathentry sourcepath="/spring/src" kind="lib" path="lib/spring/spring-SNAPSHOT-710.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-sandbox-SNAPSHOT-710.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic-SNAPSHOT-710.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit.jar"/>

@@ -207,7 +207,7 @@ public class WizardDialog extends TitledApplicationDialog implements
 
     public void updateTitleBar() {
         setTitleAreaText(currentPage.getTitle());
-        setTitleAreaIcon(currentPage.getIcon());
+        setTitleAreaImage(currentPage.getImage());
         setDescription(currentPage.getDescription());
     }
 

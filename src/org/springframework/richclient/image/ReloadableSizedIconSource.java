@@ -60,7 +60,7 @@ public class ReloadableSizedIconSource extends DefaultIconSource implements
      *            The image icon source
      */
     public ReloadableSizedIconSource(IconSize iconSize,
-            AwtImageSource iconResources) {
+            ImageSource iconResources) {
         super(iconResources);
         Assert.notNull(iconSize);
         this.iconSize = iconSize;

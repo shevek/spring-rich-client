@@ -15,7 +15,8 @@
  */
 package org.springframework.richclient.wizard;
 
-import javax.swing.Icon;
+import java.awt.Image;
+
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
@@ -40,11 +41,11 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     private WizardPage previousPage;
 
     protected AbstractWizardPage(String pageId) {
-        this(pageId, null, (Icon)null);
+        this(pageId, null, (Image)null);
     }
 
-    protected AbstractWizardPage(String pageId, String title, Icon titleIcon) {
-        super(title, titleIcon);
+    protected AbstractWizardPage(String pageId, String title, Image titleImage) {
+        super(title, titleImage);
         setId(pageId);
     }
 
@@ -57,10 +58,10 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         this.pageId = pageId;
     }
 
-    public Icon getIcon() {
-        Icon icon = super.getIcon();
-        if (icon != null) { return icon; }
-        return wizard.getDefaultPageIcon();
+    public Image getImage() {
+        Image image = super.getImage();
+        if (image != null) { return image; }
+        return wizard.getDefaultPageImage();
     }
 
     public WizardPage getNextPage() {
@@ -156,7 +157,7 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     }
 
     public void onAboutToShow() {
-        
+
     }
 
     public String toString() {

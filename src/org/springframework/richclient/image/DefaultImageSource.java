@@ -40,9 +40,9 @@ import org.springframework.util.ToStringBuilder;
  * 
  * @author Keith Donald
  */
-public class DefaultAwtImageSource implements AwtImageSource {
+public class DefaultImageSource implements ImageSource {
     protected static final Log logger = LogFactory
-            .getLog(DefaultAwtImageSource.class);
+            .getLog(DefaultImageSource.class);
 
     private Map imageResources;
 
@@ -76,7 +76,7 @@ public class DefaultAwtImageSource implements AwtImageSource {
      * @param imageBaseName
      *            The basepath to prepend to each resource.
      */
-    public DefaultAwtImageSource(Map imageResources) {
+    public DefaultImageSource(Map imageResources) {
         Assert.notNull(imageResources);
         this.imageResources = new HashMap(imageResources);
         debugPrintResources();
@@ -90,7 +90,7 @@ public class DefaultAwtImageSource implements AwtImageSource {
         }
     }
 
-    protected DefaultAwtImageSource() {
+    protected DefaultImageSource() {
 
     }
 
@@ -124,7 +124,7 @@ public class DefaultAwtImageSource implements AwtImageSource {
     }
 
     /**
-     * @see com.csi.commons.ui.image.AwtImageSource#getImageAtLocation(org.springframework.core.io.Resource)
+     * @see com.csi.commons.ui.image.ImageSource#getImageAtLocation(org.springframework.core.io.Resource)
      */
     public Image getImageAtLocation(Resource location) {
         try {

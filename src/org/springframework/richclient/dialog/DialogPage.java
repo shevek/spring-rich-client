@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.dialog;
 
-import javax.swing.Icon;
+import java.awt.Image;
 
 import org.springframework.richclient.factory.ControlFactory;
 
@@ -52,7 +52,7 @@ public interface DialogPage extends ControlFactory, MessageAreaPane, ErrorPane {
      * 
      * @return the image for this dialog page, or <code>null</code> if none
      */
-    public Icon getIcon();
+    public Image getImage();
 
     /**
      * Notifies that help has been requested for this dialog page.

@@ -18,84 +18,58 @@ package org.springframework.richclient.core;
 import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.factory.LabelInfo;
-import org.springframework.richclient.image.config.IconConfigurable;
+import org.springframework.richclient.command.config.CommandButtonLabelConfigurable;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.util.ToStringBuilder;
 
 /**
- * A conveinet super class for objects that can be labeled for display in a GUI.
+ * A convenient super class for objects that can be labeled for display in a
+ * GUI.
  * 
  * @author Keith Donald
  */
-public class LabeledObjectSupport implements ManagedElement, LabelConfigurable,
-        ImageConfigurable, IconConfigurable, DescriptionConfigurable,
-        TitleConfigurable {
+public class LabeledObjectSupport implements ManagedElement,
+        CommandButtonLabelConfigurable, ImageConfigurable,
+        DescriptionConfigurable, TitleConfigurable {
+    protected final Log logger = LogFactory.getLog(getClass());
 
-    private static final Log logger = LogFactory
-            .getLog(LabeledObjectSupport.class);
+    private CommandButtonLabelInfo label;
 
     private String title;
-
-    private LabelInfo label;
 
     private String caption;
 
     private String description;
 
-    private Icon icon;
-
     private Image image;
 
-    /**
-     * @see org.springframework.richclient.core.TitleConfigurable#setTitle(java.lang.String)
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @see org.springframework.richclient.core.LabelConfigurable#setLabel(org.springframework.rcp.factory.LabelInfo)
-     */
-    public void setLabel(LabelInfo label) {
+    public void setCommandButtonLabelInfo(CommandButtonLabelInfo label) {
         this.label = label;
     }
 
-    /**
-     * @see org.springframework.richclient.core.DescriptionConfigurable#setCaption(java.lang.String)
-     */
     public void setCaption(String shortDescription) {
         this.caption = shortDescription;
     }
 
-    /**
-     * @see org.springframework.richclient.core.DescriptionConfigurable#setDescription(java.lang.String)
-     */
     public void setDescription(String longDescription) {
         this.description = longDescription;
     }
 
-    /**
-     * @see org.springframework.richclient.image.config.IconConfigurable#setIcon(Icon)
-     */
-    public void setIcon(Icon icon) {
-        this.icon = icon;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    /**
-     * @see org.springframework.richclient.image.config.ImageConfigurable#setImage(java.awt.Image)
-     */
     public void setImage(Image image) {
         this.image = image;
     }
 
-    /**
-     * @see org.springframework.richclient.core.ManagedElement#getDisplayName()
-     */
-    public final String getDisplayName() {
+    public String getDisplayName() {
         if (title != null) {
             return title;
         }
@@ -108,29 +82,55 @@ public class LabeledObjectSupport implements ManagedElement, LabelConfigurable,
         }
     }
 
-    /**
-     * @see org.springframework.richclient.core.ManagedElement#getCaption()
-     */
-    public final String getCaption() {
+    public String getCaption() {
         return caption;
     }
 
-    /**
-     * @see org.springframework.richclient.core.ManagedElement#getDescription()
-     */
-    public final String getDescription() {
+    public String getDescription() {
         return description;
-    }
-
-    public Icon getIcon() {
-        return icon;
     }
 
     public Image getImage() {
         return image;
     }
 
-    protected LabelInfo getLabel() {
+    public Icon getImageIcon() {
+        if (image != null) {
+            return new ImageIcon(image);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public int getMnemonic() {
+        if (label != null) {
+            return label.getMnemonic();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public int getMnemonicIndex() {
+        if (label != null) {
+            return label.getMnemonicIndex();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public KeyStroke getAccelerator() {
+        if (label != null) {
+            return label.getAccelerator();
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected CommandButtonLabelInfo getLabel() {
         return label;
     }
 

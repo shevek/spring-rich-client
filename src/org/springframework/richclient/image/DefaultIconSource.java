@@ -43,9 +43,9 @@ public class DefaultIconSource implements IconSource {
      * @author Keith Donald
      */
     protected static class IconCache extends Cache {
-        private AwtImageSource images;
+        private ImageSource images;
 
-        public IconCache(AwtImageSource images) {
+        public IconCache(ImageSource images) {
             super(true);
             this.images = images;
         }
@@ -55,7 +55,7 @@ public class DefaultIconSource implements IconSource {
             return new ImageIcon(image);
         }
 
-        public AwtImageSource images() {
+        public ImageSource images() {
             return images;
         }
     }
@@ -66,7 +66,7 @@ public class DefaultIconSource implements IconSource {
      * @param images
      *            the image source.
      */
-    public DefaultIconSource(AwtImageSource images) {
+    public DefaultIconSource(ImageSource images) {
         this.cache = new IconCache(images);
     }
 

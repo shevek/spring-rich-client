@@ -31,6 +31,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.support.CommandButtonManager;
 import org.springframework.richclient.command.support.DefaultCommandServices;
@@ -134,6 +135,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
 
     public void setLabel(String encodedLabel) {
         getOrCreateFaceDescriptor().setCommandButtonLabelInfo(encodedLabel);
+    }
+
+    public void setLabel(CommandButtonLabelInfo label) {
+        getOrCreateFaceDescriptor().setCommandButtonLabelInfo(label);
     }
 
     public void setCaption(String shortDescription) {

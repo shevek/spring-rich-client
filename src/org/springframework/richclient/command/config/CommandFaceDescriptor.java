@@ -128,6 +128,9 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
 
     public void setCommandButtonLabelInfo(CommandButtonLabelInfo labelInfo) {
         if (!ObjectUtils.nullSafeEquals(this.labelInfo, labelInfo)) {
+            if (labelInfo == null) {
+                labelInfo = EMPTY_LABEL;
+            }
             CommandButtonLabelInfo old = this.labelInfo;
             this.labelInfo = labelInfo;
             pcs.firePropertyChange(COMMAND_BUTTON_LABEL_PROPERTY, old,

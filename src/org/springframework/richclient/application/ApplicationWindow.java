@@ -64,7 +64,7 @@ public class ApplicationWindow implements PersistableElement {
     private WindowManager windowManager;
 
     private String pageId;
-    
+
     public ApplicationWindow(int number) {
         this.number = number;
         getLifecycle().onPreWindowOpen(getWindowConfigurer());
@@ -116,7 +116,7 @@ public class ApplicationWindow implements PersistableElement {
     public String getActivePageId() {
         return pageId;
     }
-    
+
     public void openPage(String pageId) {
         Assert.notNull(pageId);
         Perspective perspective = (Perspective)getPageTemplate(pageId);
@@ -140,12 +140,12 @@ public class ApplicationWindow implements PersistableElement {
                 .getBean(pageId);
     }
 
-    public void showViewOnActivePage(String viewName) {
+    public void showViewOnPage(String viewName) {
         activePage.showView(viewName);
     }
 
-    public void showViewOnPage(View view) {
-        activePage.showView(view);
+    public void showViewOnPage(ViewDescriptor viewDescriptor) {
+        activePage.showView(viewDescriptor);
     }
 
     public JFrame getControl() {

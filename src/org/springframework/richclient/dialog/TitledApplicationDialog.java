@@ -16,9 +16,9 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.Window;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -58,8 +58,8 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
         titleAreaPane.setTitle(titleAreaText);
     }
 
-    public void setTitleAreaIcon(Icon icon) {
-        titleAreaPane.setIcon(icon);
+    public void setTitleAreaImage(Image image) {
+        titleAreaPane.setImage(image);
     }
 
     public void setDescription(String description) {

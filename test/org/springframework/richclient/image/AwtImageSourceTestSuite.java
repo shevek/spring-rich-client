@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.richclient.image.AwtImageSource;
+import org.springframework.richclient.image.ImageSource;
 
 /**
  * Tests the image loading and caching library.
@@ -21,13 +21,13 @@ public class AwtImageSourceTestSuite extends TestCase {
     private ApplicationContext context;
 
     public void testValidImageAccess() {
-        AwtImageSource source = (AwtImageSource)context.getBean("imageSource");
+        ImageSource source = (ImageSource)context.getBean("imageSource");
         Image image = source.getImage("test.image.key");
         assertNotNull(image);
     }
 
     public void testBrokenImageAccess() {
-        AwtImageSource source = (AwtImageSource)context.getBean("imageSourceBroken");
+        ImageSource source = (ImageSource)context.getBean("imageSourceBroken");
         Image image = source.getImage("bogus.image.key");
         assertNotNull(image);
     }
