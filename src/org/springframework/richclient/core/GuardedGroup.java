@@ -134,7 +134,7 @@ public class GuardedGroup implements Guarded {
                 }
             };
         }
-    };
+    }
 
     private static final Guarded createGuardedAdapter(final Object component) {
         if (component.getClass().isArray()) {
@@ -151,7 +151,7 @@ public class GuardedGroup implements Guarded {
 
     public static final GuardedGroup createGuardedGroup(final JComponent[] components) {
         return doCreateGuardedGroup(components);
-    };
+    }
 
     public static final GuardedGroup createGuardedGroup(JComponent[][] componentArrays) {
         return doCreateGuardedGroup(componentArrays);

@@ -154,8 +154,8 @@ public class SwingFormModelTests extends TestCase {
             this.date = date;
         }
 
-        public void setEnumProperty(TestEnum enum) {
-            enumProperty = enum;
+        public void setEnumProperty(TestEnum enumProperty) {
+            this.enumProperty = enumProperty;
         }
 
         public void setFlag(boolean b) {

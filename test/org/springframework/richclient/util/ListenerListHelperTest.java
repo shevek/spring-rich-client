@@ -219,4 +219,4 @@ public class ListenerListHelperTest extends TestCase {
             e2ArgCount++;
         }
     }
-};
+}

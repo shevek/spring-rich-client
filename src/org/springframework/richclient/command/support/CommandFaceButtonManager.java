@@ -207,7 +207,7 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
             }
             nextButton = null;
         }
-    };
+    }
 
     public void propertyChange(PropertyChangeEvent e) {
         Iterator it = buttons.iterator();
