@@ -15,91 +15,39 @@
  */
 package org.springframework.richclient.forms;
 
-import java.awt.AWTEvent;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-
 import javax.swing.DefaultButtonModel;
 
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
-final class SelectableButtonValueModel extends DefaultButtonModel implements ValueChangeListener {
+public class SelectableButtonValueModel extends DefaultButtonModel implements ValueChangeListener {
     private ValueModel valueModel;
 
     public SelectableButtonValueModel(ValueModel valueModel) {
         this.valueModel = valueModel;
         this.valueModel.addValueChangeListener(this);
+        valueChanged();
     }
 
     public void valueChanged() {
-        fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this,
-                this.isSelected() ? ItemEvent.SELECTED : ItemEvent.DESELECTED));
+        Boolean selected = (Boolean)valueModel.getValue();      
+        setSelected(selected == null ? false : selected.booleanValue());
     }
 
-    public void setPressed(boolean b) {
-        if ((isPressed() == b) || !isEnabled()) {
+    public void setPressed(boolean pressed) {
+        if ((isPressed() == pressed) || !isEnabled()) {
             return;
-        }
-
-        if (b == false && isArmed()) {
+        } else if (! pressed && isArmed()) {
             setSelected(!this.isSelected());
         }
-
-        if (b) {
-            stateMask |= PRESSED;
-        }
-        else {
-            stateMask &= ~PRESSED;
-        }
-
-        fireStateChanged();
-
-        if (!isPressed() && isArmed()) {
-            int modifiers = 0;
-            AWTEvent currentEvent = EventQueue.getCurrentEvent();
-            if (currentEvent instanceof InputEvent) {
-                modifiers = ((InputEvent)currentEvent).getModifiers();
-            }
-            else if (currentEvent instanceof ActionEvent) {
-                modifiers = ((ActionEvent)currentEvent).getModifiers();
-            }
-            fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(), EventQueue
-                    .getMostRecentEventTime(), modifiers));
-        }
+        super.setPressed(pressed);
     }
 
-    public boolean isSelected() {
-        Boolean selected = (Boolean)valueModel.getValue();
-        if (selected == null) {
-            return false;
-        }
-        return selected.booleanValue();
-    }
-
-    public void setSelected(boolean b) {
-        if (isSelected() == b) {
+    public void setSelected(boolean selected) {
+        if (isSelected() == selected) {
             return;
         }
-
-        if (b) {
-            stateMask |= SELECTED;
-        }
-        else {
-            stateMask &= ~SELECTED;
-        }
-
-        fireStateChanged();
-
-        if (b) {
-            valueModel.setValue(Boolean.TRUE);
-        }
-        else {
-            valueModel.setValue(Boolean.FALSE);
-        }
-
+        super.setSelected(selected);
+        valueModel.setValue(Boolean.valueOf(isSelected()));
     }
 }
-
