@@ -66,7 +66,11 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
         return getPropertyAccessStrategy().getDomainObject();
     }
 
-    public ValueModel getFormObjectHolder() {
+    public void setFormObject(Object formObject) {
+        getFormObjectHolder().setValue(formObject);
+    }
+
+    protected ValueModel getFormObjectHolder() {
         return getPropertyAccessStrategy().getDomainObjectHolder();
     }
 
@@ -123,6 +127,14 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
 
     public Object getValue(String formPropertyPath) {
         return getRequiredValueModel(formPropertyPath).getValue();
+    }
+
+    public void addFormObjectChangeListener(ValueChangeListener listener) {
+        getFormObjectHolder().addValueChangeListener(listener);
+    }
+
+    public void removeFormObjectChangeListener(ValueChangeListener listener) {
+        getFormObjectHolder().removeValueChangeListener(listener);
     }
 
     public void addFormValueChangeListener(String formPropertyPath,

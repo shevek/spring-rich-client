@@ -25,7 +25,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.MutableFormModel;
+import org.springframework.binding.form.SingleConfigurableFormModel;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
@@ -72,7 +72,7 @@ public class CompoundFormModel extends AbstractFormModel implements
         setBufferChangesDefault(bufferChanges);
     }
 
-    public MutableFormModel createChild(String childFormModelName) {
+    public SingleConfigurableFormModel createChild(String childFormModelName) {
         ValidatingFormModel childModel = new ValidatingFormModel(
                 getPropertyAccessStrategy(), getBufferChangesDefault());
         childModel.setRulesSource(getRulesSource());
@@ -80,9 +80,9 @@ public class CompoundFormModel extends AbstractFormModel implements
         return childModel;
     }
 
-    public MutableFormModel createChild(String childFormModelName,
+    public SingleConfigurableFormModel createChild(String childFormModelName,
             String childFormObjectPath) {
-        return (MutableFormModel)createChildInternal(new ValidatingFormModel(),
+        return (SingleConfigurableFormModel)createChildInternal(new ValidatingFormModel(),
                 childFormModelName, childFormObjectPath);
     }
 
@@ -133,7 +133,7 @@ public class CompoundFormModel extends AbstractFormModel implements
         }
     }
 
-    public MutableFormModel createChild(String childFormModelName,
+    public SingleConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder) {
         return createChild(childFormModelName, childFormObjectHolder, true);
     }
@@ -144,9 +144,9 @@ public class CompoundFormModel extends AbstractFormModel implements
                 true);
     }
 
-    public MutableFormModel createChild(String childFormModelName,
+    public SingleConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder, boolean enabled) {
-        return (MutableFormModel)createChildInternal(new ValidatingFormModel(),
+        return (SingleConfigurableFormModel)createChildInternal(new ValidatingFormModel(),
                 childFormModelName, childFormObjectHolder, enabled);
     }
 

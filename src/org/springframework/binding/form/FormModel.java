@@ -30,9 +30,9 @@ public interface FormModel extends PropertyChangePublisher {
 
     public static final String DIRTY_PROPERTY = "dirty";
 
-    public ValueModel getFormObjectHolder();
-
     public Object getFormObject();
+    
+    public void setFormObject(Object formObject);
 
     public ValueModel getDisplayValueModel(String formPropertyPath);
 
@@ -57,6 +57,10 @@ public interface FormModel extends PropertyChangePublisher {
     public void commit();
 
     public void revert();
+
+    public void addFormObjectChangeListener(ValueChangeListener listener);
+
+    public void removeFormObjectChangeListener(ValueChangeListener listener);
 
     public void addFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener);

@@ -42,8 +42,8 @@ import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.MutableFormModel;
 import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.SingleConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
@@ -81,11 +81,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     private static final String CHECK_BOX_LABEL_SUFFIX = "checkBox";
 
-    private MutableFormModel formModel;
+    private SingleConfigurableFormModel formModel;
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
 
-    public SwingFormModel(MutableFormModel formModel) {
+    public SwingFormModel(SingleConfigurableFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
     }
@@ -203,6 +203,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.removePropertyChangeListener(propertyName, listener);
     }
 
+    public void addFormObjectChangeListener(ValueChangeListener listener) {
+        formModel.addFormObjectChangeListener(listener);
+    }
+
+    public void removeFormObjectChangeListener(ValueChangeListener listener) {
+        formModel.removeFormObjectChangeListener(listener);
+    }
+
     public void addFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener) {
         formModel.addFormValueChangeListener(formPropertyPath, listener);
@@ -227,8 +235,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return formModel.getFormObject();
     }
 
-    public ValueModel getFormObjectHolder() {
-        return formModel.getFormObjectHolder();
+    public void setFormObject(Object formObject) {
+        formModel.setFormObject(formObject);
     }
 
     public String getDisplayValue(String formProperty) {

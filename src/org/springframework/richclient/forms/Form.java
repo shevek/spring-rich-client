@@ -32,8 +32,8 @@ public interface Form extends ControlFactory {
 
     public Object getFormObject();
 
-    public ValueModel getFormObjectHolder();
-
+    public void setFormObject(Object formObject);
+    
     public Object getValue(String formProperty);
 
     public ValueModel getValueModel(String formProperty);

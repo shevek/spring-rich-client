@@ -65,8 +65,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(SwingFormModel.createChildPageFormModel(parentFormModel,
-                formId));
+        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId));
         this.formId = formId;
     }
 
@@ -124,11 +123,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     public void setFormObject(Object formObject) {
-        getFormObjectHolder().setValue(formObject);
-    }
-
-    public ValueModel getFormObjectHolder() {
-        return formModel.getFormObjectHolder();
+        formModel.setFormObject(formObject);
     }
 
     public Object getValue(String formProperty) {
@@ -166,20 +161,20 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 messageAreaPane);
     }
 
-    protected void addFormObjectListener(ValueChangeListener listener) {
-        getFormObjectHolder().addValueChangeListener(listener);
+    public void addFormObjectChangeListener(ValueChangeListener listener) {
+        formModel.addFormObjectChangeListener(listener);
     }
 
-    protected void removeFormObjectListener(ValueChangeListener listener) {
-        getFormObjectHolder().removeValueChangeListener(listener);
+    public void removeFormObjectChangeListener(ValueChangeListener listener) {
+        formModel.addFormObjectChangeListener(listener);
     }
 
-    protected void addFormValueChangeListener(String formPropertyPath,
+    public void addFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener) {
         getFormModel().addFormValueChangeListener(formPropertyPath, listener);
     }
 
-    protected void removeFormValueChangeListener(String formPropertyPath,
+    public void removeFormValueChangeListener(String formPropertyPath,
             ValueChangeListener listener) {
         getFormModel()
                 .removeFormValueChangeListener(formPropertyPath, listener);
@@ -214,7 +209,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
         getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
                 formEnabledChangeHandler);
-        this.addFormObjectListener(new FormEnabledStateController());
+        addFormObjectChangeListener(new FormEnabledStateController());
         ActionCommand commitCommand = getCommitCommand();
         if (getCommitCommand() != null) {
             attachFormErrorGuard(getCommitCommand());

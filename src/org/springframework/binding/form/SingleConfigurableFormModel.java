@@ -19,16 +19,15 @@ import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 
-
 /**
  * @author Keith Donald
  */
-public interface MutableFormModel extends NestableFormModel {
+public interface SingleConfigurableFormModel extends NestableFormModel {
+    public void setFormProperties(String[] formPropertyPaths);
+
     public MutablePropertyAccessStrategy getPropertyAccessStrategy();
 
     public PropertyMetadataAccessStrategy getMetadataAccessStrategy();
-
-    public void setFormProperties(String[] formPropertyPaths);
 
     public ValueModel add(String formPropertyPath);
 
