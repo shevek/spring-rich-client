@@ -32,5 +32,6 @@
 	<classpathentry sourcepath="lib/src/glazedlists-source.zip" kind="lib" path="lib/glazedlists/glazedlists.jar"/>
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-context.jar"/>
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-core.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-dao.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
