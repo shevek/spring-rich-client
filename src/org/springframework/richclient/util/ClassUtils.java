@@ -33,6 +33,7 @@ import org.springframework.util.ArrayUtils;
  * Misc static utility functions for java classes.
  *
  * @author Kerth Donald
+ * @author Jim Moore
  */
 public class ClassUtils {
     private static final Log logger = LogFactory.getLog(ClassUtils.class);
@@ -327,40 +328,115 @@ public class ClassUtils {
      * @param propertyName the name of the property
      *
      * @return true if there is either a setter or a getter for the property
+     *
+     * @throws IllegalArgumentException if either argument is null
      */
     public static boolean isAProperty(Class theClass, String propertyName) {
         if (theClass == null) throw new IllegalArgumentException("theClass == null");
         if (propertyName == null) throw new IllegalArgumentException("propertyName == null");
 
-        // assumes propertyName.length > 1
+        if (getGetterMethod(theClass, propertyName) != null) return true;
+        if (getSetterMethod(theClass, propertyName) != null) return true;
+        return false;
+    }
+
+
+    private static Method getGetterMethod(Class theClass, String propertyName) {
         final String getterName = "get" +
             propertyName.substring(0, 1).toUpperCase() +
-            propertyName.substring(1);
+            (propertyName.length() == 1 ? "" : propertyName.substring(1));
+
         try {
-            theClass.getMethod(getterName, null);
-            // the fact that it didn't throw an exception means that it's here
-            // currently ignores such things as being public or non-void
-            return true;
+            final Method method = theClass.getMethod(getterName, null);
+
+            if (!Modifier.isPublic(method.getModifiers())) {
+                logger.warn("The getter for " + propertyName + " in " +
+                    theClass + " is not public: " + method);
+                return null;
+            }
+
+            if (Void.TYPE.equals(method.getReturnType())) {
+                logger.warn("The getter for " + propertyName + " in " +
+                    theClass + " is void: " + method);
+                return null;
+            }
+
+            return method;
         }
         catch (NoSuchMethodException e) {
-            // ignore
+            logger.info("There is not getter for " + propertyName + " in " +
+                theClass);
+            return null;
         }
+    }
 
-        // assumes propertyName.length > 1
+
+    private static Method getSetterMethod(Class theClass, String propertyName) {
         final String setterName = "set" +
             propertyName.substring(0, 1).toUpperCase() +
-            propertyName.substring(1);
+            (propertyName.length() == 1 ? "" : propertyName.substring(1));
+
         final Method[] methods = theClass.getMethods();
         for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
-            if (setterName.equals(method.getName())) {
-                // currently ignores such things as being public void, or
-                //   taking a single parameter
-                return true;
+            if (setterName.equals(method.getName()) &&
+                method.getParameterTypes().length == 1) {
+
+                if (!Modifier.isPublic(method.getModifiers())) {
+                    logger.warn("The setter for " + propertyName + " in " +
+                        theClass + " is not public: " + method);
+                    return null;
+                }
+
+                if (!Void.TYPE.equals(method.getReturnType())) {
+                    logger.warn("The setter for " + propertyName + " in " +
+                        theClass + " is not void: " + method);
+                    return null;
+                }
+
+                return method;
             }
         }
 
-        return false;
+        logger.info("There is not setter for " + propertyName + " in " +
+            theClass);
+        return null;
+    }
+
+
+    /**
+     * Returns the class of the property.<p />
+     *
+     * For example, getPropertyClass(JFrame.class, "size") would return the
+     * java.awt.Dimension class.
+     *
+     * @param parentClass  the class to look for the property in
+     * @param propertyName the name of the property
+     *
+     * @return the class of the property; never null
+     *
+     * @throws IllegalArgumentException if either argument is null
+     * @throws IllegalArgumentException <tt>propertyName</tt> is not a
+     *                                  property of <tt>parentClass</tt>
+     */
+    public static Class getPropertyClass(Class parentClass,
+                                         String propertyName)
+        throws IllegalArgumentException {
+        if (parentClass == null) throw new IllegalArgumentException("theClass == null");
+        if (propertyName == null) throw new IllegalArgumentException("propertyName == null");
+
+        final Method getterMethod = getGetterMethod(parentClass, propertyName);
+        if (getterMethod != null) {
+            return getterMethod.getReturnType();
+        }
+
+        final Method setterMethod = getSetterMethod(parentClass, propertyName);
+        if (setterMethod != null) {
+            return setterMethod.getParameterTypes()[0];
+        }
+
+        throw new IllegalArgumentException(propertyName +
+            " is not a property of " + parentClass);
     }
 
 }

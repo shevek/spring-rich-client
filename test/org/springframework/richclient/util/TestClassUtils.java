@@ -41,6 +41,12 @@ public class TestClassUtils extends TestCase {
     }
 
 
+    public void testGetPropertyClass() throws Exception {
+        assertEquals(String.class,
+            ClassUtils.getPropertyClass(B.class, "something"));
+    }
+
+
     interface A {
         public void setSomething(String newSomething);
     }
