@@ -15,7 +15,8 @@
  */
 package org.springframework.richclient.factory;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -298,7 +299,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public void configureForEnum(JComboBox comboBox, String enumType) {
-        List enumValues = enumResolver.getEnumsAsList(enumType, null);
+        Set enumValues = enumResolver.getEnumsAsSet(enumType, null);
         if (logger.isDebugEnabled()) {
             logger.debug("Populating combo box model with enums of type '" + enumType + "'; enums are [" + enumValues
                     + "]");
@@ -306,7 +307,7 @@ public class DefaultComponentFactory implements ComponentFactory {
         CompoundComparator comparator = new CompoundComparator();
         comparator.addComparator(AbstractCodedEnum.LABEL_ORDER);
         comparator.addComparator(ComparableComparator.instance());
-        comboBox.setModel(new ComboBoxListModel(enumValues, comparator));
+        comboBox.setModel(new ComboBoxListModel(new ArrayList(enumValues), comparator));
         comboBox.setRenderer(new CodedEnumListRenderer(messageSource));
     }
 
