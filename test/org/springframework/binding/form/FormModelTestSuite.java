@@ -42,7 +42,7 @@ public class FormModelTestSuite extends TestCase {
 
         private Employee supervisor;
 
-        private Address address;
+        private Address address = new Address();
 
         private int age;
 
@@ -238,7 +238,31 @@ public class FormModelTestSuite extends TestCase {
         address.commit();
         Employee emp = (Employee)formModel.getFormObject();
         assertTrue(emp.getAddress().getCountry().getName().equals("USA"));
+    }
 
+    public void testPageFormModel() {
+        SwingFormModel employeePage = SwingFormModel
+                .createFormModel(new Employee());
+        JTextField field = (JTextField)employeePage
+                .createBoundControl("address.streetAddress1");
+        field.setText("12345 Some Lane");
+        employeePage.commit();
+        Employee emp = (Employee)employeePage.getFormObject();
+        assertTrue(emp.getAddress().getStreetAddress1().equals(
+                "12345 Some Lane"));
+    }
+
+    // this fails right now - we can't exactly instantiate supervisor employee
+    // abitrarily by default on all employees - stack overflow!
+    public void testOptionalPageFormModel() {
+        SwingFormModel employeePage = SwingFormModel
+                .createFormModel(new Employee());
+        JTextField field = (JTextField)employeePage
+                .createBoundControl("supervisor.name");
+        field.setText("Don");
+        employeePage.commit();
+        Employee emp = (Employee)employeePage.getFormObject();
+        assertTrue(emp.getSupervisor().getName().equals("Don"));
     }
 
 }

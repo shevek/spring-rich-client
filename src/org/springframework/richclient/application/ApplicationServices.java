@@ -277,12 +277,15 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initRulesSource() {
         try {
+            Assert.notNull(getApplicationContext());
             this.rulesSource = (RulesSource)getApplicationContext().getBean(
                     RULES_SOURCE_BEAN_KEY, RulesSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No rule source found in context under name '"
                     + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
+            this.rulesSource = new DefaultRulesSource();
+        } catch (IllegalArgumentException e) {
             this.rulesSource = new DefaultRulesSource();
         }
     }
