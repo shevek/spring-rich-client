@@ -31,7 +31,12 @@ public class ViewPane extends AbstractControlFactory implements
 
     protected JComponent createControl() {
         return new SimpleInternalFrame(view.getIcon(), view.getDisplayName(),
-                new JToolBar(), view.getControl());
+                createViewToolBar(), view.getControl());
+    }
+    
+    protected JToolBar createViewToolBar() {
+        // todo
+        return null;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
