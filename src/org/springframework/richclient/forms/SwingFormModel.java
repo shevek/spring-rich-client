@@ -855,4 +855,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
 			MessageAreaModel messageAreaPane) {
 		return new SimpleValidationResultsReporter(formModel, guardedComponent, messageAreaPane);
 	}
+
+	public void validate() {
+		((ValidatingFormModel)formModel).validate();
+	}
 }

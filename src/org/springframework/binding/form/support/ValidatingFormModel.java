@@ -222,8 +222,6 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
 		private PropertyConstraint validationRule;
 
-		private boolean valueIsSetting;
-
 		private String domainObjectProperty;
 
 		public ValidatingFormValueModel(String domainObjectProperty, ValueModel model, PropertyConstraint validationRule) {
@@ -258,7 +256,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		}
 
 		public boolean tests(String propertyName) {
-			return validationRule.tests(propertyName);
+			return validationRule.isDependentOn(propertyName);
 		}
 
 		public void setValue(Object value) {
@@ -303,7 +301,6 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 				constraintViolated(validationRule, results);
 			}
 		}
-
 	}
 
 	private class ValueSetterConstraint implements PropertyConstraint, TypeResolvable {
@@ -333,7 +330,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 			return false;
 		}
 
-		public boolean tests(String propertyName) {
+		public boolean isDependentOn(String propertyName) {
 			return getPropertyName().equals(propertyName);
 		}
 
