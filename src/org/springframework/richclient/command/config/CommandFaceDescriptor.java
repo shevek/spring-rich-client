@@ -15,25 +15,23 @@
  */
 package org.springframework.richclient.command.config;
 
-import java.beans.PropertyChangeListener;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.event.SwingPropertyChangeSupport;
 
+import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
  */
-public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
-        DescriptionConfigurable, CommandButtonIconInfoConfigurable {
+public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
+        implements CommandButtonLabelConfigurable, DescriptionConfigurable,
+        CommandButtonIconInfoConfigurable {
 
     public static final String COMMAND_BUTTON_LABEL_PROPERTY = "labelInfo";
 
@@ -54,9 +52,6 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
     private CommandButtonLabelInfo labelInfo;
 
     private CommandButtonIconInfo iconInfo = EMPTY_ICON;
-
-    private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
-            this);
 
     public CommandFaceDescriptor() {
         this(EMPTY_LABEL);
@@ -110,10 +105,10 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
     }
 
     public void setCaption(String shortDescription) {
-        if (!ObjectUtils.nullSafeEquals(this.caption, shortDescription)) {
+        if (hasChanged(this.caption, shortDescription)) {
             String old = this.caption;
             this.caption = shortDescription;
-            pcs.firePropertyChange(CAPTION_PROPERTY, old, this.caption);
+            firePropertyChange(CAPTION_PROPERTY, old, this.caption);
         }
     }
 
@@ -127,23 +122,22 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
     }
 
     public void setCommandButtonLabelInfo(CommandButtonLabelInfo labelInfo) {
-        if (!ObjectUtils.nullSafeEquals(this.labelInfo, labelInfo)) {
+        if (hasChanged(this.labelInfo, labelInfo)) {
             if (labelInfo == null) {
                 labelInfo = EMPTY_LABEL;
             }
             CommandButtonLabelInfo old = this.labelInfo;
             this.labelInfo = labelInfo;
-            pcs.firePropertyChange(COMMAND_BUTTON_LABEL_PROPERTY, old,
+            firePropertyChange(COMMAND_BUTTON_LABEL_PROPERTY, old,
                     this.labelInfo);
         }
     }
 
     public void setCommandButtonIconInfo(CommandButtonIconInfo iconInfo) {
-        if (!ObjectUtils.nullSafeEquals(this.iconInfo, iconInfo)) {
+        if (hasChanged(this.iconInfo, iconInfo)) {
             CommandButtonIconInfo old = this.iconInfo;
             this.iconInfo = iconInfo;
-            pcs.firePropertyChange(COMMAND_BUTTON_ICON_PROPERTY, old,
-                    this.iconInfo);
+            firePropertyChange(COMMAND_BUTTON_ICON_PROPERTY, old, this.iconInfo);
         }
     }
 
@@ -155,9 +149,9 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
         }
         else {
             Icon old = iconInfo.getIcon();
-            if (!ObjectUtils.nullSafeEquals(old, icon)) {
+            if (hasChanged(old, icon)) {
                 this.iconInfo.setIcon(icon);
-                pcs.firePropertyChange(COMMAND_BUTTON_ICON_PROPERTY, old,
+                firePropertyChange(COMMAND_BUTTON_ICON_PROPERTY, old,
                         this.iconInfo);
             }
         }
@@ -180,14 +174,6 @@ public class CommandFaceDescriptor implements CommandButtonLabelConfigurable,
                 .getAccelerator());
         action.putValue(AbstractAction.SHORT_DESCRIPTION, caption);
         action.putValue(AbstractAction.LONG_DESCRIPTION, description);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
     }
 
 }
