@@ -21,6 +21,7 @@ import org.springframework.richclient.application.ApplicationLauncher;
  * Main driver that starts the pet clinic rich client sample application.
  */
 public class PetClinicClientServer {
+
     public static void main(String[] args) {
         try {
             String rootContextDirectoryClassPath = "/org/springframework/richclient/samples/petclinic/ctx";
@@ -30,14 +31,16 @@ public class PetClinicClientServer {
             String richclientApplicationContextPath = rootContextDirectoryClassPath
                     + "/common/richclient-application-context.xml";
 
+            String richclientPreferenceContextPath = rootContextDirectoryClassPath
+                    + "/common/richclient-preference-context.xml";
+
             String businessLayerClientContextPath = rootContextDirectoryClassPath + "/clientserver/client-context.xml";
 
             String securityContextPath = rootContextDirectoryClassPath + "/clientserver/security-context-client.xml";
 
             new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath,
-                    businessLayerClientContextPath, securityContextPath });
-        }
-        catch (Exception e) {
+                    richclientPreferenceContextPath, businessLayerClientContextPath, securityContextPath });
+        } catch (Exception e) {
             System.exit(1);
         }
     }
