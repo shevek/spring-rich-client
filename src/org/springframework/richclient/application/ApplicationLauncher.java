@@ -27,9 +27,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * The main driver for a GUI application. This class displays a configurable
- * splash screen and instantiates the rich client <code>Application</code>
- * instance.
+ * The main driver for a Spring Rich Client application. This class displays a
+ * configurable splash screen and instantiates the rich client
+ * <code>Application</code> instance.
  * 
  * @author Keith Donald
  * @see Application
