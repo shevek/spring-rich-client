@@ -16,17 +16,12 @@
 package org.springframework.richclient.samples.petclinic.ui.preference;
 
 import org.springframework.enums.StringCodedEnum;
-import org.springframework.enums.support.StaticCodedEnumResolver;
 
 public class CompositeDialogPageType extends StringCodedEnum {
 
     public static final CompositeDialogPageType TABBED = new CompositeDialogPageType("tabbed");
 
     public static final CompositeDialogPageType TREE = new CompositeDialogPageType("tree");
-
-    static {
-        StaticCodedEnumResolver.instance().registerStaticEnums(CompositeDialogPageType.class);
-    }
 
     private CompositeDialogPageType(String name) {
         super(name);

@@ -712,11 +712,11 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         Class enumClass = getMetadataAccessStrategy().getPropertyType(formProperty);
         try {
             Class.forName(enumClass.getName());
+            return enumClass.getName();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ClassUtils.getShortNameAsProperty(enumClass);
     }
 
     /**
