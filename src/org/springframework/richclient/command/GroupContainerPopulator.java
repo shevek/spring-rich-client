@@ -16,18 +16,17 @@
 package org.springframework.richclient.command;
 
 import java.awt.Component;
-
-import javax.swing.JComponent;
+import java.awt.Container;
 
 /**
  * @author Keith Donald
  */
 public interface GroupContainerPopulator {
-    public JComponent getControl();
+	public Container getContainer();
 
-    public void add(Component component);
+	public void add(Component component);
 
-    public void addSeparator();
+	public void addSeparator();
 
-    public void onPopulated();
+	public void onPopulated();
 }

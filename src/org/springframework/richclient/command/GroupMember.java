@@ -48,19 +48,6 @@ public abstract class GroupMember {
         return false;
     }
 
-    /**
-     * Returns <code>true</code> if this member manages a command and its
-     * managed command equals the specified <code>commandId</code>. This
-     * method will not traverse a managed command group's nested commands.
-     * 
-     * @param commandId
-     *            the command Id
-     * @return true or false
-     */
-    public boolean managesCommandDirectly(String commandId) {
-        return false;
-    }
-
     public AbstractCommand getCommand() {
         return null;
     }

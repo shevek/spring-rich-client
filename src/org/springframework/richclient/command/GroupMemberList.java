@@ -104,12 +104,4 @@ public class GroupMemberList {
         return false;
     }
 
-    public boolean containsDirectly(String commandId) {
-        for (Iterator iterator = members.iterator(); iterator.hasNext();) {
-            GroupMember member = (GroupMember)iterator.next();
-            if (member.managesCommandDirectly(commandId)) { return true; }
-        }
-        return false;
-    }
-
 }

@@ -16,8 +16,8 @@
 package org.springframework.richclient.command.support;
 
 import java.awt.Component;
+import java.awt.Container;
 
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -26,36 +26,36 @@ import javax.swing.JToolBar;
 import org.springframework.richclient.command.GroupContainerPopulator;
 
 public class SimpleGroupContainerPopulator implements GroupContainerPopulator {
-    private JComponent container;
+	private Container container;
 
-    public SimpleGroupContainerPopulator(JComponent container) {
-        this.container = container;
-    }
+	public SimpleGroupContainerPopulator(Container container) {
+		this.container = container;
+	}
 
-    public JComponent getControl() {
-        return container;
-    }
+	public Container getContainer() {
+		return container;
+	}
 
-    public void add(Component c) {
-        container.add(c);
-    }
+	public void add(Component c) {
+		container.add(c);
+	}
 
-    public void addSeparator() {
-        if (container instanceof JMenu) {
-            ((JMenu)container).addSeparator();
-        }
-        else if (container instanceof JPopupMenu) {
-            ((JPopupMenu)container).addSeparator();
-        }
-        else if (container instanceof JToolBar) {
-            ((JToolBar)container).addSeparator();
-        }
-        else {
-            container.add(new JSeparator(JSeparator.VERTICAL));
-        }
-    }
+	public void addSeparator() {
+		if (container instanceof JMenu) {
+			((JMenu)container).addSeparator();
+		}
+		else if (container instanceof JPopupMenu) {
+			((JPopupMenu)container).addSeparator();
+		}
+		else if (container instanceof JToolBar) {
+			((JToolBar)container).addSeparator();
+		}
+		else {
+			container.add(new JSeparator(JSeparator.VERTICAL));
+		}
+	}
 
-    public void onPopulated() {
+	public void onPopulated() {
 
-    }
+	}
 }

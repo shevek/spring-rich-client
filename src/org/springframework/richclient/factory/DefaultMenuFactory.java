@@ -9,6 +9,7 @@ package org.springframework.richclient.factory;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -42,6 +43,10 @@ public class DefaultMenuFactory implements MenuFactory {
 
     public JPopupMenu createPopupMenu() {
         return new JPopupMenu();
+    }
+    
+    public JMenuBar createMenuBar() {
+    	return new JMenuBar();
     }
 
 }
