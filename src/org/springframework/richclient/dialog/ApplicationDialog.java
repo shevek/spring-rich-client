@@ -294,11 +294,11 @@ public abstract class ApplicationDialog extends
                                 + ". Using current active window as parent by default.");
             }
             if (getActiveWindow() != null) {
-                dialog = new JDialog(getActiveWindow().getControl(), title,
+                dialog = new JDialog(getActiveWindow().getControl(), getTitle(),
                         modal);
             }
             else {
-                dialog = new JDialog((JFrame)null, title, modal);
+                dialog = new JDialog((JFrame)null, getTitle(), modal);
             }
         }
         dialog.getContentPane().setLayout(new BorderLayout());
