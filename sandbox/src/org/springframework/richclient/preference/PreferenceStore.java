@@ -19,15 +19,16 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.springframework.enums.CodedEnum;
+
 /**
  * A <code>PreferenceStore</code> holds preferences.
+ * 
  * @author Peter De Bruycker
  */
 public interface PreferenceStore {
 
     public void addPropertyChangeListener(PropertyChangeListener listener);
-
-    public void export(OutputStream out) throws IOException;
 
     public boolean getBoolean(String name);
 
@@ -43,6 +44,8 @@ public interface PreferenceStore {
 
     public String getDefaultString(String name);
 
+    public CodedEnum getDefaultCodedEnum(String name);
+
     public double getDouble(String name);
 
     public float getFloat(String name);
@@ -53,17 +56,11 @@ public interface PreferenceStore {
 
     public String getString(String name);
 
+    public CodedEnum getCodedEnum(String name);
+
     public boolean isDefault(String name);
 
-    public boolean isDirty();
-
-    public void load() throws IOException;
-
     public void removePropertyChangeListener(PropertyChangeListener listener);
-
-    public void save() throws IOException;
-
-    public void setDefault(String name, boolean value);
 
     public void setDefault(String name, double value);
 
@@ -75,9 +72,11 @@ public interface PreferenceStore {
 
     public void setDefault(String name, String defaultObject);
 
-    public void setToDefault(String name);
+    public void setDefault(String name, boolean value);
 
-    public void setValue(String name, boolean value);
+    public void setDefault(String name, CodedEnum value);
+
+    public void setToDefault(String name);
 
     public void setValue(String name, double value);
 
@@ -88,5 +87,17 @@ public interface PreferenceStore {
     public void setValue(String name, long value);
 
     public void setValue(String name, String value);
+
+    public void setValue(String name, boolean value);
+
+    public void setValue(String name, CodedEnum value);
+
+    public boolean isDirty();
+
+    public void export(OutputStream out) throws IOException;
+
+    public void save() throws IOException;
+
+    public void load() throws IOException;
 
 }

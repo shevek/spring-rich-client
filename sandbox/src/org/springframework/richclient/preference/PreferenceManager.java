@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Manages the PreferenceStore and the PreferenceDialog.
+ * 
  * @author Peter De Bruycker
  */
 public class PreferenceManager {
@@ -36,15 +38,15 @@ public class PreferenceManager {
             dialog = new PreferenceDialog();
 
             for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
-                PreferencePage page = (PreferencePage)iter.next();
+                PreferencePage page = (PreferencePage) iter.next();
                 if (page.getParent() == null) {
                     dialog.addPreferencePage(page);
-                }
-                else {
+                } else {
                     dialog.addPreferencePage(page.getParent(), page);
                 }
             }
 
+            dialog.setTitle("Preferences");
             dialog.setPreferenceStore(preferenceStore);
         }
         return dialog;
@@ -62,8 +64,7 @@ public class PreferenceManager {
         preferenceStore = store;
         try {
             preferenceStore.load();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

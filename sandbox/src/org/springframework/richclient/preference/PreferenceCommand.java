@@ -17,9 +17,6 @@ package org.springframework.richclient.preference;
 
 import org.springframework.richclient.command.ActionCommand;
 
-/**
- * @author Peter De Bruycker
- */
 public class PreferenceCommand extends ActionCommand {
 
     private PreferenceManager preferenceManager;

@@ -27,9 +27,6 @@ import org.springframework.richclient.dialog.AbstractDialogPage;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
 import org.springframework.util.Assert;
 
-/**
- * @author Peter De Bruycker
- */
 public abstract class PreferencePage extends AbstractDialogPage {
 
     private JButton applyButton;
@@ -106,6 +103,7 @@ public abstract class PreferencePage extends AbstractDialogPage {
      * the PreferenceStore. Subclasses should override this method.
      */
     protected void onApply() {
+        onFinish();
     }
 
     protected void onDefaults() {
@@ -115,7 +113,6 @@ public abstract class PreferencePage extends AbstractDialogPage {
      * Notification that the user clicked the OK button on the PreferenceDialog.
      */
     protected boolean onFinish() {
-        onApply();
         return true;
     }
 

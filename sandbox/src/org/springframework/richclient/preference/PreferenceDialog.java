@@ -24,9 +24,6 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
 import org.springframework.richclient.dialog.TreeCompositeDialogPage;
 import org.springframework.util.Assert;
 
-/**
- * @author Peter De Bruycker
- */
 public class PreferenceDialog extends TitledPageApplicationDialog {
 
     private List preferencePages = new ArrayList();
@@ -54,7 +51,7 @@ public class PreferenceDialog extends TitledPageApplicationDialog {
     }
 
     private TreeCompositeDialogPage getPageContainer() {
-        return (TreeCompositeDialogPage)getDialogPage();
+        return (TreeCompositeDialogPage) getDialogPage();
     }
 
     public PreferenceStore getPreferenceStore() {
@@ -63,7 +60,7 @@ public class PreferenceDialog extends TitledPageApplicationDialog {
 
     public boolean onFinish() {
         for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
-            PreferencePage page = (PreferencePage)iter.next();
+            PreferencePage page = (PreferencePage) iter.next();
             // give page the chance to veto
             if (!page.onFinish()) {
                 return false;
@@ -72,8 +69,7 @@ public class PreferenceDialog extends TitledPageApplicationDialog {
         if (preferenceStore != null && preferenceStore.isDirty()) {
             try {
                 preferenceStore.save();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 // TODO handle exception
                 e.printStackTrace();
                 return false;

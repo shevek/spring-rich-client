@@ -18,20 +18,40 @@ package org.springframework.richclient.preference;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.forms.Form;
+import org.springframework.util.Assert;
 
-/**
- * @author Peter De Bruycker
- */
-public class FormBackedPreferencePage extends PreferencePage {
+public abstract class FormBackedPreferencePage extends PreferencePage {
 
     private Form form;
 
-    public FormBackedPreferencePage(Form form) {
-        super(form.getId());
-        this.form = form;
+    public FormBackedPreferencePage(String id) {
+        super(id);
     }
 
-    protected JComponent createContents() {
+    protected final JComponent createContents() {
+        form = createForm();
+        Assert.notNull(form, "You must set the form before contents are created.");
+
+        initPageValidationReporter();
+
         return form.getControl();
+    }
+
+    protected abstract Form createForm();
+
+    public Form getForm() {
+        return form;
+    }
+
+    protected void initPageValidationReporter() {
+        form.newSingleLineResultsReporter(this, this);
+    }
+
+    public void onAboutToShow() {
+        setEnabled(!form.hasErrors());
+    }
+
+    public void setEnabled(boolean enabled) {
+        setPageComplete(enabled);
     }
 }
