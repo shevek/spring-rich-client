@@ -84,7 +84,7 @@ public abstract class ApplicationDialog extends
 
     protected static final String DEFAULT_CANCEL_KEY = "cancelCommand";
 
-    private String title = DEFAULT_DIALOG_TITLE;
+    private String title;
 
     private JDialog dialog;
 
