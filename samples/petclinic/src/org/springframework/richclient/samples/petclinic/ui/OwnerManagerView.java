@@ -83,8 +83,9 @@ public class OwnerManagerView extends AbstractView implements
     }
 
     protected void setGlobalCommandExecutors(ViewContext context) {
-        context.setGlobalCommandExecutor(GlobalCommandIds.DELETE,
-                deleteCommand);
+        context
+                .setGlobalCommandExecutor(GlobalCommandIds.DELETE,
+                        deleteCommand);
         context.setGlobalCommandExecutor(GlobalCommandIds.PROPERTIES,
                 propertiesCommand);
     }
@@ -270,27 +271,27 @@ public class OwnerManagerView extends AbstractView implements
         }
     }
 
-    private class PropertiesCommandExecutor extends AbstractActionCommandExecutor {
-        private OwnerGeneralForm ownerGeneralPanel;
-
+    private class PropertiesCommandExecutor extends
+            AbstractActionCommandExecutor {
         private NestingFormModel ownerFormModel;
+
+        private OwnerGeneralForm ownerGeneralForm;
 
         private TabbedDialogPage tabbedPage;
 
         public void execute() {
             final Owner owner = getSelectedOwner();
-
             ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
-
-            ownerGeneralPanel = new OwnerGeneralForm(ownerFormModel);
+            ownerGeneralForm = new OwnerGeneralForm(ownerFormModel);
+            
             tabbedPage = new TabbedDialogPage("ownerProperties");
-            tabbedPage.addForm(ownerGeneralPanel);
+            tabbedPage.addForm(ownerGeneralForm);
             tabbedPage.addForm(new OwnerAddressForm(ownerFormModel));
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(
                     tabbedPage, getParentWindowControl()) {
                 protected void onAboutToShow() {
-                    ownerGeneralPanel.requestFocusInWindow();
+                    ownerGeneralForm.requestFocusInWindow();
                     setEnabled(tabbedPage.isPageComplete());
                 }
 
