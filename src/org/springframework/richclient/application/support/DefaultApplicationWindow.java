@@ -48,7 +48,7 @@ import org.springframework.richclient.util.Memento;
 public class DefaultApplicationWindow implements ApplicationWindow {
     protected Log logger = LogFactory.getLog(getClass());
 
-    private static final String APPLICATION_PAGE_BEAN_ID = "applicationPagePrototype";
+    private static final String DEFAULT_APPLICATION_PAGE_BEAN_ID = "defaultApplicationPagePrototype";
 
     private int number;
 
@@ -143,16 +143,34 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         }
     }
 
-    protected ApplicationPage createPage(ApplicationWindow window,
+    protected final ApplicationPage createPage(ApplicationWindow window,
             String pageDescriptorId) {
         ApplicationPageDescriptor descriptor = getPageDescriptor(pageDescriptorId);
+        return createPage(descriptor);
+    }
+
+    /**
+     * Factory method for creating the page area managed by this window.
+     * Subclasses may override to return a custom page implementation.
+     * 
+     * @param descriptor
+     *            The page descriptor
+     * @return The window's page
+     */
+    protected ApplicationPage createPage(ApplicationPageDescriptor descriptor) {
         try {
-            return (ApplicationPage)getApplication().getApplicationContext()
-                    .getBean(APPLICATION_PAGE_BEAN_ID, ApplicationPage.class);
+            DefaultApplicationPage page = (DefaultApplicationPage)getApplication()
+                    .getApplicationContext().getBean(
+                            DEFAULT_APPLICATION_PAGE_BEAN_ID,
+                            DefaultApplicationPage.class);
+            page.setApplicationWindow(this);
+            page.setDescriptor(descriptor);
+            return page;
         }
         catch (NoSuchBeanDefinitionException e) {
-            return new DefaultApplicationPage(window, descriptor);
+            return new DefaultApplicationPage(this, descriptor);
         }
+
     }
 
     protected ApplicationPageDescriptor getPageDescriptor(

@@ -41,11 +41,11 @@ import org.springframework.util.closure.support.AbstractConstraint;
 public class DefaultApplicationPage implements ApplicationPage,
         ApplicationPageLayoutBuilder {
 
-    private ApplicationPageDescriptor pageDescriptor;
+    private ApplicationPageDescriptor descriptor;
 
-    private JComponent pageControl;
+    private JComponent control;
 
-    private ApplicationWindow parentWindow;
+    private ApplicationWindow window;
 
     private ViewDescriptorRegistry viewDescriptorRegistry;
 
@@ -55,32 +55,51 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     private ViewPane activeView;
 
+    protected DefaultApplicationPage() {
+
+    }
+
     public DefaultApplicationPage(ApplicationWindow window,
             ApplicationPageDescriptor pageDescriptor) {
-        Assert.notNull(window, "The containing window is required");
-        Assert.notNull(pageDescriptor, "The page's descriptor is required");
         this.viewDescriptorRegistry = Application.services()
                 .getViewDescriptorRegistry();
-        this.parentWindow = window;
-        this.pageDescriptor = pageDescriptor;
-        addViewListener(new SharedCommandTargeter(window));
+        setApplicationWindow(window);
+        setDescriptor(pageDescriptor);
+    }
+
+    public void setApplicationWindow(ApplicationWindow window) {
+        Assert.notNull(window, "The containing window is required");
+        Assert
+                .state(this.window == null,
+                        "Page window already set: it should only be set once, during initialization");
+        this.window = window;
+        addViewListener(new SharedCommandTargeter(this.window));
+    }
+
+    public void setDescriptor(ApplicationPageDescriptor descriptor) {
+        Assert.notNull(descriptor, "The page's descriptor is required");
+        Assert
+                .state(
+                        this.descriptor == null,
+                        "Page descriptor already set: it should only be set once, during initialization");
+        this.descriptor = descriptor;
     }
 
     public String getId() {
-        return pageDescriptor.getId();
+        return descriptor.getId();
     }
 
     public ApplicationWindow getApplicationWindow() {
-        return parentWindow;
+        return window;
     }
 
     public JComponent getControl() {
-        if (pageControl == null) {
-            this.pageControl = new JPanel(new BorderLayout());
-            this.pageDescriptor.buildInitialLayout(this);
+        if (control == null) {
+            this.control = new JPanel(new BorderLayout());
+            this.descriptor.buildInitialLayout(this);
             setActiveView();
         }
-        return pageControl;
+        return control;
     }
 
     private void setActiveView() {
@@ -123,10 +142,10 @@ public class DefaultApplicationPage implements ApplicationPage,
     }
 
     protected boolean giveFocusTo(ViewPane viewPane) {
-        this.pageControl.removeAll();
-        this.pageControl.add(viewPane.getControl());
-        this.pageControl.validate();
-        this.pageControl.repaint();
+        this.control.removeAll();
+        this.control.add(viewPane.getControl());
+        this.control.validate();
+        this.control.repaint();
         viewPane.requestFocusInWindow();
         return true;
     }
@@ -193,7 +212,7 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     public void addView(String viewDescriptorId) {
         ViewPane viewPane = createViewPane(getViewDescriptor(viewDescriptorId));
-        this.pageControl.add(viewPane.getControl());
+        this.control.add(viewPane.getControl());
     }
 
     public void close() {
