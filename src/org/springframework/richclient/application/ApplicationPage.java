@@ -11,6 +11,8 @@ public interface ApplicationPage extends ControlFactory {
 
     public void removeViewListener(ViewListener listener);
 
+    public View getActiveView();
+    
     public void showView(String viewDescriptorId);
 
     public void showView(ViewDescriptor viewDescriptor);
