@@ -23,10 +23,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.form.support.CommitListenerAdapter;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
@@ -41,7 +41,7 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public abstract class AbstractForm extends AbstractControlFactory implements
-        Form {
+        Form, CommitListener {
     private String formId;
 
     private SwingFormModel formModel;
@@ -61,6 +61,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     private ActionCommand revertCommand;
 
     private boolean editingNewFormObject;
+
+    private boolean clearFormOnCommit = false;
 
     private List editableFormObjects;
 
@@ -126,6 +128,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     protected void setFormModel(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
+        this.formModel.addCommitListener(this);
     }
 
     protected NestingFormModel getParent() {
@@ -242,14 +245,28 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         return editableFormObjects.get(selectionIndex);
     }
 
-    protected void formObjectEditCommitted(Object formObject,
-            boolean newFormObject) {
-        if (newFormObject) {
-            editableFormObjects.add(formObject);
+    public void setClearFormOnCommit(boolean clearFormOnCommit) {
+        this.clearFormOnCommit = clearFormOnCommit;
+    }
+
+    public boolean preEditCommitted(Object formObject) {
+        return true;
+    }
+
+    public void postEditCommitted(Object formObject) {
+        if (editableFormObjects != null) {
+            if (editingNewFormObject) {
+                editableFormObjects.add(formObject);
+            }
+            else {
+                editableFormObjects
+                        .set(getEditingFormObjectIndex(), formObject);
+            }
         }
-        else {
-            editableFormObjects.set(getEditingFormObjectIndex(), formObject);
+        if (clearFormOnCommit) {
+            setFormObject(null);
         }
+        editingNewFormObject = false;
     }
 
     protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
@@ -280,7 +297,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         ActionCommand commitCommand = getCommitCommand();
         if (getCommitCommand() != null) {
             attachFormErrorGuard(getCommitCommand());
-            getFormModel().addCommitListener(new PostCommitHandler());
+            getFormModel().addCommitListener(this);
         }
         return formControl;
     }
@@ -425,15 +442,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements
             }
         };
         return (ActionCommand)getCommandConfigurer().configure(commitCommand);
-    }
-
-    private final class PostCommitHandler extends CommitListenerAdapter {
-        public void postEditCommitted(Object formObject) {
-            System.out.println("post edit committed");
-            formObjectEditCommitted(formObject, editingNewFormObject);
-            setFormObject(null);
-            editingNewFormObject = false;
-        }
     }
 
     private final ActionCommand initRevertCommand() {

@@ -73,10 +73,9 @@ public class JFormattedTextFieldValueSetter extends AbstractValueSetter
     public void valueChanged() {
         if (getValueModel() instanceof ValueModelWrapper) {
             if (!isUpdating()) {
-                System.out.println("Underlying value changed "
-                        + ((ValueModelWrapper)getValueModel()).getWrappedValue());
-                setComponentValue(((ValueModelWrapper)getValueModel())
-                        .getWrappedValue());
+                Object valueToFormat = ((ValueModelWrapper)getValueModel())
+                        .getInnerMostValue();
+                setComponentValue(valueToFormat);
             }
         }
         else {

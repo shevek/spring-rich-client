@@ -32,6 +32,7 @@ import org.springframework.binding.value.BoundValueModel;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.binding.value.support.ValueModelWrapper;
 import org.springframework.rules.RulesSource;
 import org.springframework.util.Assert;
 
@@ -178,6 +179,15 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
         ValueModel valueModel = getValueModel(formPropertyPath);
         assertValueModelNotNull(valueModel, formPropertyPath);
         return valueModel;
+    }
+
+    protected ValueModel unwrap(ValueModel valueModel) {
+        if (valueModel instanceof ValueModelWrapper) {
+            return ((ValueModelWrapper)valueModel).getInnerMostValueModel();
+        }
+        else {
+            return valueModel;
+        }
     }
 
     private void assertValueModelNotNull(ValueModel valueModel,

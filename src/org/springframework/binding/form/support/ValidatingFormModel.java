@@ -87,7 +87,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         return Collections.unmodifiableMap(validationErrors);
     }
 
-    protected void clearErrors() {
+    protected void doClearErrors() {
         Iterator it = this.validationErrors.keySet().iterator();
         boolean hadErrorsBefore = getHasErrors();
         while (it.hasNext()) {
@@ -101,7 +101,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    protected void validate() {
+    protected void doValidate() {
         for (Iterator i = valueModelIterator(); i.hasNext();) {
             ValidatingFormValueModel vm = (ValidatingFormValueModel)i.next();
             vm.validate();

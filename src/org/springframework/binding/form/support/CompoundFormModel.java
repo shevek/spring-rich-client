@@ -25,9 +25,9 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.SingleConfigurableFormModel;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.SingleConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueChangeListener;
@@ -83,8 +83,9 @@ public class CompoundFormModel extends AbstractFormModel implements
 
     public SingleConfigurableFormModel createChild(String childFormModelName,
             String childFormObjectPath) {
-        return (SingleConfigurableFormModel)createChildInternal(new ValidatingFormModel(),
-                childFormModelName, childFormObjectPath);
+        return (SingleConfigurableFormModel)createChildInternal(
+                new ValidatingFormModel(), childFormModelName,
+                childFormObjectPath);
     }
 
     public NestingFormModel createCompoundChild(String childFormModelName,
@@ -147,8 +148,9 @@ public class CompoundFormModel extends AbstractFormModel implements
 
     public SingleConfigurableFormModel createChild(String childFormModelName,
             ValueModel childFormObjectHolder, boolean enabled) {
-        return (SingleConfigurableFormModel)createChildInternal(new ValidatingFormModel(),
-                childFormModelName, childFormObjectHolder, enabled);
+        return (SingleConfigurableFormModel)createChildInternal(
+                new ValidatingFormModel(), childFormModelName,
+                childFormObjectHolder, enabled);
     }
 
     public NestingFormModel createCompoundChild(String childFormModelName,
@@ -229,10 +231,10 @@ public class CompoundFormModel extends AbstractFormModel implements
     }
 
     public ValueModel getValueModel(String formPropertyPath) {
-        return getValueModel(formPropertyPath, true);
+        return unwrap(getDisplayValueModel(formPropertyPath, true));
     }
 
-    public ValueModel findValueModelFor(FormModel delegatingChild,
+    public ValueModel findDisplayValueModelFor(FormModel delegatingChild,
             String formPropertyPath) {
         Iterator it = childFormModels.values().iterator();
         while (it.hasNext()) {
@@ -240,8 +242,8 @@ public class CompoundFormModel extends AbstractFormModel implements
             if (delegatingChild != null && formModel == delegatingChild) {
                 continue;
             }
-            ValueModel valueModel = formModel.getValueModel(formPropertyPath,
-                    false);
+            ValueModel valueModel = formModel.getDisplayValueModel(
+                    formPropertyPath, false);
             if (valueModel != null) { return valueModel; }
         }
         if (logger.isInfoEnabled()) {
@@ -251,11 +253,12 @@ public class CompoundFormModel extends AbstractFormModel implements
         return null;
     }
 
-    public ValueModel getValueModel(String formPropertyPath, boolean queryParent) {
-        ValueModel valueModel = findValueModelFor(null, formPropertyPath);
+    public ValueModel getDisplayValueModel(String formPropertyPath,
+            boolean queryParent) {
+        ValueModel valueModel = findDisplayValueModelFor(null, formPropertyPath);
         if (valueModel == null) {
             if (getParent() != null && queryParent) {
-                valueModel = getParent().findValueModelFor(this,
+                valueModel = getParent().findDisplayValueModelFor(this,
                         formPropertyPath);
             }
         }

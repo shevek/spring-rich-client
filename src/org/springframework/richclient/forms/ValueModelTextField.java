@@ -43,7 +43,7 @@ class ValueModelTextField extends PatchedJFormattedTextField {
 
     public Object getValue() {
         if (valueModel instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)valueModel).getWrappedValue();
+            return ((ValueModelWrapper)valueModel).getInnerMostValue();
         }
         else {
             return valueModel.getValue();

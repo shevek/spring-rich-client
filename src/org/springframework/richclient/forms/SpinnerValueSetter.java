@@ -29,9 +29,7 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
     public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
         super(valueModel);
         this.spinner = spinner;
-        if (valueModel.getValue() != null) {
-            this.spinner.setValue(valueModel.getValue());
-        }
+        valueChanged();
         this.spinner.addChangeListener(this);
     }
 
@@ -39,18 +37,18 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
         componentValueChanged(spinner.getValue());
     }
 
-    protected Object getWrappedValue() {
-        if (getValueModel() instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)getValueModel()).getWrappedValue();
-        }
-        else {
-            return getValueModel().getValue();
+    public void valueChanged() {
+        if (!isUpdating()) {
+            setComponentValue(getInnerMostValue());
         }
     }
 
-    public void valueChanged() {
-        if (!isUpdating()) {
-            setComponentValue(getWrappedValue());
+    protected Object getInnerMostValue() {
+        if (getValueModel() instanceof ValueModelWrapper) {
+            return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
+        }
+        else {
+            return getValueModel().getValue();
         }
     }
 

@@ -37,7 +37,7 @@ public interface NestingFormModel extends FormModel {
      *            The form property path to search for.
      * @return The value model if one exists at the provided formPropertyPath
      */
-    public ValueModel findValueModelFor(FormModel delegatingChild,
+    public ValueModel findDisplayValueModelFor(FormModel delegatingChild,
             String formPropertyPath);
 
     /**

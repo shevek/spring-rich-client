@@ -27,7 +27,6 @@ import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.CommitTrigger;
-import org.springframework.binding.value.support.ValueModelWrapper;
 
 /**
  * @author Keith Donald
@@ -38,7 +37,7 @@ public class DefaultFormModel extends AbstractFormModel implements
 
     private CommitTrigger commitTrigger = new CommitTrigger();
 
-    private Map formValueModels = new HashMap();
+    private Map displayValueModels = new HashMap();
 
     public DefaultFormModel() {
     }
@@ -64,7 +63,7 @@ public class DefaultFormModel extends AbstractFormModel implements
     }
 
     public void setFormProperties(String[] formPropertyPaths) {
-        formValueModels.clear();
+        displayValueModels.clear();
         for (int i = 0; i < formPropertyPaths.length; i++) {
             add(formPropertyPaths[i]);
         }
@@ -72,21 +71,21 @@ public class DefaultFormModel extends AbstractFormModel implements
 
     protected void handleEnabledChange() {
         if (isEnabled()) {
-            validate();
+            doValidate();
         }
         else {
-            clearErrors();
+            doClearErrors();
         }
     }
 
-    protected void validate() {
+    protected void doValidate() {
     }
 
-    protected void clearErrors() {
+    protected void doClearErrors() {
     }
 
     protected Iterator valueModelIterator() {
-        return this.formValueModels.values().iterator();
+        return this.displayValueModels.values().iterator();
     }
 
     public void addValidationListener(ValidationListener listener) {
@@ -127,13 +126,13 @@ public class DefaultFormModel extends AbstractFormModel implements
     }
 
     public ValueModel add(String formPropertyPath, ValueModel formValueModel) {
-        ValueModel wrapped = getWrappedModel(formValueModel);
-        if (wrapped instanceof BufferedValueModel) {
-            ((BufferedValueModel)wrapped).setCommitTrigger(commitTrigger);
+        ValueModel unwrapped = unwrap(formValueModel);
+        if (unwrapped instanceof BufferedValueModel) {
+            ((BufferedValueModel)unwrapped).setCommitTrigger(commitTrigger);
         }
         formValueModel = preProcessNewFormValueModel(formPropertyPath,
                 formValueModel);
-        formValueModels.put(formPropertyPath, formValueModel);
+        displayValueModels.put(formPropertyPath, formValueModel);
         if (logger.isDebugEnabled()) {
             logger
                     .debug("Registering '" + formPropertyPath
@@ -142,15 +141,6 @@ public class DefaultFormModel extends AbstractFormModel implements
         }
         postProcessNewFormValueModel(formPropertyPath, formValueModel);
         return formValueModel;
-    }
-
-    private ValueModel getWrappedModel(ValueModel valueModel) {
-        if (valueModel instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)valueModel).getWrappedModel();
-        }
-        else {
-            return valueModel;
-        }
     }
 
     protected ValueModel preProcessNewFormValueModel(String formPropertyPath,
@@ -163,27 +153,21 @@ public class DefaultFormModel extends AbstractFormModel implements
 
     }
 
-    public ValueModel getDisplayValueModel(String formPropertyPath) {
-        return getValueModel(formPropertyPath, true);
-    }
-
     public ValueModel getValueModel(String formPropertyPath) {
-        ValueModel valueModel = getDisplayValueModel(formPropertyPath);
-        return recursiveGetWrappedModel(valueModel);
+        return unwrap(getDisplayValueModel(formPropertyPath));
     }
 
-    private ValueModel recursiveGetWrappedModel(ValueModel valueModel) {
-        if (valueModel instanceof ValueModelWrapper) { return recursiveGetWrappedModel(((ValueModelWrapper)valueModel)
-                .getWrappedModel()); }
-        return valueModel;
+    public ValueModel getDisplayValueModel(String formPropertyPath) {
+        return getDisplayValueModel(formPropertyPath, true);
     }
 
-    public ValueModel getValueModel(String formPropertyPath, boolean queryParent) {
-        ValueModel valueModel = (ValueModel)formValueModels
+    public ValueModel getDisplayValueModel(String formPropertyPath,
+            boolean queryParent) {
+        ValueModel valueModel = (ValueModel)displayValueModels
                 .get(formPropertyPath);
         if (valueModel == null) {
             if (getParent() != null && queryParent) {
-                valueModel = getParent().findValueModelFor(this,
+                valueModel = getParent().findDisplayValueModelFor(this,
                         formPropertyPath);
             }
         }
@@ -203,12 +187,9 @@ public class DefaultFormModel extends AbstractFormModel implements
             return ((FormObject)getFormObject()).isDirty();
         }
         else if (getBufferChangesDefault()) {
-            Iterator it = formValueModels.values().iterator();
+            Iterator it = displayValueModels.values().iterator();
             while (it.hasNext()) {
-                ValueModel model = (ValueModel)it.next();
-                if (model instanceof ValueModelWrapper) {
-                    model = ((ValueModelWrapper)model).getWrappedModel();
-                }
+                ValueModel model = unwrap((ValueModel)it.next());
                 if (model instanceof BufferedValueModel) {
                     BufferedValueModel bufferable = (BufferedValueModel)model;
                     if (bufferable.isDirty()) { return true; }
