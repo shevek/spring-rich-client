@@ -22,6 +22,7 @@ import java.beans.PropertyEditor;
 import org.springframework.binding.value.ValueModel;
 
 public class PropertyEditorValueSetter extends AbstractValueSetter implements PropertyChangeListener {
+
     private PropertyEditor propertyEditor;
 
     public PropertyEditorValueSetter(PropertyEditor propertyEditor, ValueModel valueModel) {
@@ -31,7 +32,9 @@ public class PropertyEditorValueSetter extends AbstractValueSetter implements Pr
     }
 
     protected void setControlValue(Object value) {
+        propertyEditor.removePropertyChangeListener(this);
         propertyEditor.setValue(value);
+        propertyEditor.addPropertyChangeListener(this);
     }
 
     public void dispose() {
