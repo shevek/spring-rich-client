@@ -261,18 +261,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     private ValueModel getOrCreateDisplayValueModel(String domainObjectProperty) {
         ValueModel model = formModel.getDisplayValueModel(domainObjectProperty);
         if (model == null) {
-            if (domainObjectProperty.equals("integerCode")) {
-                System.out.println("Creating form value model for " + domainObjectProperty + model);
-            }
-
             model = createFormValueModel(domainObjectProperty);
-        } else {
-            Thread.dumpStack();
-            if (domainObjectProperty.equals("integerCode")) {
-                System.out.println("Returning form value model for " + domainObjectProperty + model);
-            }
-
-
         }
         return model;
     }
