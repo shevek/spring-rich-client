@@ -23,18 +23,21 @@ import org.springframework.util.Assert;
 
 /**
  * Settings factory that uses J2SE Preferences.
+ * 
  * @author Peter De Bruycker
  */
 public class DefaultSettingsFactory implements SettingsFactory {
 
     private static final String INTERNAL = "internal";
+
     private static final String USER = "user";
-    
+
     private Settings userSettings;
+
     private Settings internalSettings;
-    
+
     private PreferencesFactory preferencesFactory;
-    
+
     private String id;
 
     public String getId() {
@@ -52,49 +55,46 @@ public class DefaultSettingsFactory implements SettingsFactory {
     public void setPreferencesFactory(PreferencesFactory preferencesFactory) {
         this.preferencesFactory = preferencesFactory;
     }
-    
+
     public Settings createInternalSettings() {
-        if(internalSettings == null) {
+        if (internalSettings == null) {
             internalSettings = createSettings(INTERNAL);
         }
         return internalSettings;
     }
-    
+
     public Settings createUserSettings() {
-        if(userSettings == null) {
+        if (userSettings == null) {
             userSettings = createSettings(USER);
         }
         return userSettings;
     }
-    
+
     private Preferences getForId(Preferences root, String id) {
         Assert.notNull(root);
         Preferences result = root;
         String[] idParts = id.split("\\.");
         for (int i = 0; i < idParts.length; i++) {
-            result = result.node(id);
+            result = result.node(idParts[i]);
         }
         return result;
     }
 
     private Settings createSettings(String name) {
-        Assert.notNull(id, "An id must be assigned.");
+        Assert.hasText(id, "An id must be assigned.");
         Settings settings = null;
         if (preferencesFactory == null) {
             settings = new PreferencesSettings(getForId(Preferences.userRoot(), id).node(name));
-        }
-        else
-        {
+        } else {
             settings = new PreferencesSettings(getForId(preferencesFactory.userRoot(), id).node(name));
         }
-        
+
         try {
             settings.load();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
         return settings;
     }
 
