@@ -23,7 +23,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
-import org.springframework.richclient.list.CodedEnumListRenderer;
 
 /**
  * @author Peter De Bruycker
@@ -32,7 +31,7 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
 
     private MessageSource messages;
 
-    /** 
+    /**
      * @see org.springframework.richclient.form.builder.FormComponentInterceptorFactory#getInterceptor(org.springframework.binding.form.FormModel)
      */
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
@@ -40,23 +39,28 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
     }
 
     public class ComboBoxAutoCompletionInterceptor extends AbstractFormComponentInterceptor {
-        /** 
-         * @see org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor#processComponent(java.lang.String, javax.swing.JComponent)
+
+        /**
+         * @see org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor#processComponent(java.lang.String,
+         *      javax.swing.JComponent)
          */
         public void processComponent(String propertyName, JComponent component) {
             JComponent inner = getInnerComponent(component);
-            if (inner instanceof JComboBox && !((JComboBox)inner).isEditable()) {
+            if (inner instanceof JComboBox && !((JComboBox) inner).isEditable()) {
                 // if combobox is showing CodedEnum's, install customer editor
-                if (((JComboBox)inner).getRenderer() instanceof CodedEnumListRenderer) {
-                    ((JComboBox)inner).setEditor(new CodedEnumComboBoxEditor(messages, ((JComboBox)inner).getEditor()));
+                if (((JComboBox) inner).getRenderer() instanceof CodedEnumListRenderer) {
+                    ((JComboBox) inner)
+                            .setEditor(new CodedEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
                 }
-                new ComboBoxAutoCompletion((JComboBox)inner);
+                new ComboBoxAutoCompletion((JComboBox) inner);
             }
         }
 
         /**
          * Constructs a new <code>AutoCompletionInterceptor</code> instance.
-         * @param formModel the formModel
+         * 
+         * @param formModel
+         *            the formModel
          */
         public ComboBoxAutoCompletionInterceptor(FormModel formModel) {
             super(formModel);
