@@ -1,4 +1,4 @@
-package org.springframework.richclient.text;
+package org.springframework.richclient.list;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;

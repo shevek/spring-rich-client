@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.text;
+package org.springframework.richclient.list;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -34,7 +34,11 @@ import org.springframework.util.Assert;
 /**
  * Provides AutoCompletion to a combobox. Works with the editor of the JComboBox to
  * make the conversion between strings and the objects of the JComboBox model.
+ * <br>
+ * Based on code contributed to the public domain by Thomas Bierhance
+ * (http://www.orbital-computer.de/JComboBox/)
  * @author Peter De Bruycker
+ * @author Thomas Bierhance
  */
 public class ComboBoxAutoCompletion extends PlainDocument {
     private final class FocusHandler implements FocusListener {
