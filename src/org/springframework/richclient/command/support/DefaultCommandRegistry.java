@@ -37,8 +37,7 @@ import org.springframework.util.ObjectUtils;
 /**
  * @author Keith Donald
  */
-public class DefaultCommandRegistry implements CommandRegistry,
-        CommandRegistryListener {
+public class DefaultCommandRegistry implements CommandRegistry, CommandRegistryListener {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private List commandRegistryListeners;
@@ -58,10 +57,12 @@ public class DefaultCommandRegistry implements CommandRegistry,
     public void setParent(CommandRegistry parent) {
         if (!ObjectUtils.nullSafeEquals(this.parent, parent)) {
             if (this.parent != null) {
-                parent.removeCommandRegistryListener(this);
+                this.parent.removeCommandRegistryListener(this);
             }
             this.parent = parent;
-            this.parent.addCommandRegistryListener(this);
+            if (this.parent != null) {
+                this.parent.addCommandRegistryListener(this);
+            }
         }
     }
 
@@ -70,57 +71,69 @@ public class DefaultCommandRegistry implements CommandRegistry,
     }
 
     public ActionCommand getActionCommand(String commandId) {
-        ActionCommand command = (ActionCommand)commandRegistry.get(commandId);
+        ActionCommand command = (ActionCommand) commandRegistry.get(commandId);
         if (command == null) {
             if (parent != null) {
                 command = parent.getActionCommand(commandId);
             }
         }
         if (command == null) {
-            logger.warn("No action command with id '" + commandId
-                    + "' exists in registry; returning null");
+            logger.warn(
+                "No action command with id '" + commandId + "' exists in registry; returning null");
         }
         return command;
     }
 
     public CommandGroup getCommandGroup(String groupId) {
-        CommandGroup group = (CommandGroup)commandRegistry.get(groupId);
+        CommandGroup group = (CommandGroup) commandRegistry.get(groupId);
         if (group == null) {
             if (parent != null) {
                 group = parent.getCommandGroup(groupId);
             }
         }
         if (group == null) {
-            logger.warn("No command group with id '" + groupId
-                    + "' exists in registry; returning null");
+            logger.warn(
+                "No command group with id '" + groupId + "' exists in registry; returning null");
         }
         return group;
     }
 
     public boolean containsActionCommand(String commandId) {
-        if (commandRegistry.containsKey(commandId)) { return true; }
-        if (parent != null) { return parent.containsActionCommand(commandId); }
+        if (commandRegistry.containsKey(commandId)) {
+            return true;
+        }
+        if (parent != null) {
+            return parent.containsActionCommand(commandId);
+        }
         return false;
     }
 
     public boolean containsCommandGroup(String groupId) {
-        if (commandRegistry.get(groupId) instanceof CommandGroup) { return true; }
-        if (parent != null) { return parent.containsCommandGroup(groupId); }
+        if (commandRegistry.get(groupId) instanceof CommandGroup) {
+            return true;
+        }
+        if (parent != null) {
+            return parent.containsCommandGroup(groupId);
+        }
         return false;
     }
 
     public void registerCommand(AbstractCommand command) {
-        Assert
-                .isTrue(command.getId() != null,
-                        "A command must have an identifier to be placed in a registry.");
+        Assert.notNull(command, "Command cannot be null.");
+        Assert.isTrue(
+            command.getId() != null,
+            "A command must have an identifier to be placed in a registry.");
         if (containsActionCommand(command.getId())) {
-            logger
-                    .warn("This command registry already contains a command with id '"
-                            + command.getId() + "'; will overwrite...");
+            if (logger.isWarnEnabled()) {
+                logger.warn(
+                    "This command registry already contains a command with id '"
+                        + command.getId()
+                        + "'; will overwrite...");
+            }
         }
         commandRegistry.put(command.getId(), command);
         if (command instanceof CommandGroup) {
-            ((CommandGroup)command).setCommandRegistry(this);
+            ((CommandGroup) command).setCommandRegistry(this);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Command registered '" + command.getId() + "'");
@@ -137,23 +150,23 @@ public class DefaultCommandRegistry implements CommandRegistry,
             if (e == null) {
                 e = new CommandRegistryEvent(this, command);
             }
-            ((CommandRegistryListener)i.next()).commandRegistered(e);
+            ((CommandRegistryListener) i.next()).commandRegistered(e);
         }
     }
 
-    public void setTargetableActionCommandExecutor(String commandId,
-            ActionCommandExecutor delegate) {
+    public void setTargetableActionCommandExecutor(
+        String commandId,
+        ActionCommandExecutor delegate) {
         try {
-            TargetableActionCommand command = (TargetableActionCommand)getActionCommand(commandId);
-            Assert.isTrue(command != null,
-                    "No targetable command found with id " + commandId);
+            TargetableActionCommand command = (TargetableActionCommand) getActionCommand(commandId);
+            Assert.isTrue(command != null, "No targetable command found with id " + commandId);
             command.setCommandDelegate(delegate);
         }
         catch (ClassCastException e) {
             throw new IllegalArgumentException(
-                    "Command delegates can only be attached to targetable action commands; commandId '"
-                            + commandId
-                            + "' is not an instanceof TargetableActionCommand.");
+                "Command delegates can only be attached to targetable action commands; commandId '"
+                    + commandId
+                    + "' is not an instanceof TargetableActionCommand.");
         }
     }
 
@@ -168,12 +181,17 @@ public class DefaultCommandRegistry implements CommandRegistry,
     }
 
     public void removeCommandRegistryListener(CommandRegistryListener l) {
-        Assert.notNull(commandRegistryListeners,
-                "Listenerlist not yet created; add a listener first!");
+        Assert.notNull(
+            commandRegistryListeners,
+            "Listenerlist not yet created; add a listener first!");
         if (logger.isDebugEnabled()) {
             logger.debug("Removing command registry listener " + l);
         }
         commandRegistryListeners.remove(l);
+    }
+
+    public CommandRegistry getParent() {
+        return parent;
     }
 
 }
