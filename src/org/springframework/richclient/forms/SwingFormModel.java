@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -38,8 +38,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.enums.AbstractCodedEnum;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
+import org.springframework.richclient.application.*;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
@@ -269,18 +268,44 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return getMetaAspectAccessor().isWriteable(formProperty);
     }
 
+    /**
+     * Create a bound control for the given form property.<p />
+     *
+     * The strategy used for determining the control to bind to is:<ol>
+     * <li>See if one is registered specificly against this FormModel
+     * <li>See if one is registered in the global registry
+     * <li>Try some hard-coded defaults if all else fails
+     * </ol>
+     *
+     * @param formProperty the property to get the control for
+     *
+     * @return a bound control; never null
+     *
+     * @see PropertyEditorRegistry#setPropertyEditor(Class, Class)
+     * @see PropertyEditorRegistry#setPropertyEditor(Class, String, Class)
+     * @see SwingFormModel#registerCustomEditor(Class, PropertyEditor)
+     * @see SwingFormModel#registerCustomEditor(String, PropertyEditor)
+     */
     public JComponent createBoundControl(String formProperty) {
-        if (isEnumeration(formProperty)) {
-            return createBoundComboBoxFromEnum(formProperty);
+        PropertyEditor propertyEditor = formModel.getAspectAccessStrategy()
+            .findCustomEditor(null, formProperty);
+        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
+            return bindCustomEditor(propertyEditor, formProperty);
         }
-        else if (isBoolean(formProperty)) {
-            return createBoundCheckBox(formProperty);
+
+        final ApplicationServices applicationServices = Application.services();
+        final PropertyEditorRegistry propertyEditorRegistry = applicationServices.getPropertyEditorRegistry();
+        propertyEditor =
+            propertyEditorRegistry.getPropertyEditor(getFormObject().getClass(), formProperty);
+        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
+            return bindCustomEditor(propertyEditor, formProperty);
         }
         else {
-            PropertyEditor propertyEditor = formModel.getAspectAccessStrategy()
-                    .findCustomEditor(null, formProperty);
-            if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
-                return bindCustomEditor(propertyEditor, formProperty);
+            if (isEnumeration(formProperty)) {
+                return createBoundComboBoxFromEnum(formProperty);
+            }
+            else if (isBoolean(formProperty)) {
+                return createBoundCheckBox(formProperty);
             }
             else {
                 return createBoundTextField(formProperty);
@@ -556,11 +581,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * when items are added or removed to/from the list model, the property's
      * list is also updated. Validation also occurs against the property when it
      * changes, etc.
-     * 
+     *
      * Changes to the list managed by the list model are buffered before being
      * committed to the underlying bean property. This prevents the domain
      * object from having to worry about returning a non-null List instance.
-     * 
+     *
      * @param formProperty
      * @return The bound list model.
      */
