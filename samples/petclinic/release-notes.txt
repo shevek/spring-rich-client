@@ -15,6 +15,13 @@ This sample aims to demonstrate:
 - Client-server usage
 - Security integration
 
+BUILDING:
+=========
+
+You will need to have a valid keystore in order to build.  See
+project.properties for more information.
+
+
 USAGE:
 ======
 
@@ -31,3 +38,9 @@ Once built (ant warfile), there are three ways of running Pet Clinic RCP.
 - FROM ECLIPSE: Simply run 
   org.springframework.richclient.samples.petclinic.PetClinicStandalone
 
+
+LOGIN:
+======
+
+Accounts (for both staff and customers) can be found in the
+"Data: Acegi Security" section of the InMemoryClinic class.
