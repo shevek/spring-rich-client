@@ -23,9 +23,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationInfo;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.command.support.DefaultCommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 
 /**
@@ -143,8 +142,8 @@ public abstract class ApplicationAdvisor implements InitializingBean {
         return managedWindow;
     }
 
-    public CommandManager createWindowCommandManager() {
-        return new DefaultCommandManager();
+    public ApplicationWindowCommandManager createWindowCommandManager() {
+        return new ApplicationWindowCommandManager();
     }
 
     public CommandGroup getMenuBarCommandGroup() {

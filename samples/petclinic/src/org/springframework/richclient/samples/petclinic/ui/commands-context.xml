@@ -3,9 +3,9 @@
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	
-	<bean id="commandManager" 
-		class="org.springframework.richclient.command.support.DefaultCommandManager">
-		<property name="globalCommandIds">
+	<bean id="windowCommandManager" 
+		class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+		<property name="sharedCommandIds">
 			<list>
 				<value>saveAsCommand</value>
 				<value>propertiesCommand</value>

@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.application;
 
+import java.util.Iterator;
+
 import javax.swing.JFrame;
 
 import org.springframework.richclient.command.CommandGroup;
@@ -33,6 +35,8 @@ public interface ApplicationWindow extends PersistableElement {
 
     public CommandManager getCommandManager();
 
+    public Iterator getSharedCommands();
+    
     public CommandGroup getMenuBar();
 
     public CommandGroup getToolBar();

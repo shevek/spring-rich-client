@@ -29,8 +29,8 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.CommandManager;
 import org.springframework.util.Assert;
 
 /**
@@ -38,14 +38,14 @@ import org.springframework.util.Assert;
  */
 public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
         BeanFactoryAware {
-    private String commandManagerBeanName = "commandManager";
+    private String commandManagerBeanName = "windowCommandManager";
 
     private String toolBarBeanName = "toolBar";
 
     private String menuBarBeanName = "menuBar";
 
     private String startingPageId;
-    
+
     private Resource commandFactoryResource;
 
     private XmlBeanFactory currentWindowCommands;
@@ -81,8 +81,13 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
 
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
-        Assert.state(startingPageId != null, "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
-        Assert.state(beanFactory.containsBean(startingPageId), "Do not know about bean definition with name '" + startingPageId + "' - check your config");     
+        Assert
+                .state(
+                        startingPageId != null,
+                        "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
+        Assert.state(beanFactory.containsBean(startingPageId),
+                "Do not know about bean definition with name '"
+                        + startingPageId + "' - check your config");
     }
 
     public void setCommandManagerBeanName(String commandManagerBeanName) {
@@ -101,7 +106,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
         this.toolBarBeanName = toolbarBeanName;
     }
 
-    public CommandManager createWindowCommandManager() {
+    public ApplicationWindowCommandManager createWindowCommandManager() {
         this.currentWindowCommands = new XmlBeanFactory(commandFactoryResource,
                 Application.instance().getApplicationContext());
         this.currentWindowCommands
@@ -109,8 +114,8 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
                         getManagedWindow()));
         this.currentWindowCommands.addBeanPostProcessor(newObjectConfigurer());
         registerBeanPostProcessors();
-        return (CommandManager)currentWindowCommands
-                .getBean(commandManagerBeanName);
+        return (ApplicationWindowCommandManager)currentWindowCommands.getBean(
+                commandManagerBeanName, ApplicationWindowCommandManager.class);
     }
 
     protected BeanPostProcessor newObjectConfigurer() {

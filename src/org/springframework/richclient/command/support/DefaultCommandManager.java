@@ -15,11 +15,6 @@
  */
 package org.springframework.richclient.command.support;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -49,8 +44,6 @@ import org.springframework.util.Assert;
 public class DefaultCommandManager implements CommandManager, BeanPostProcessor {
     private final Log logger = LogFactory.getLog(getClass());
 
-    private List globalCommands;
-
     private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
 
     private ButtonFactory buttonFactory;
@@ -78,20 +71,6 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 
     public void setParent(CommandRegistry parent) {
         this.commandRegistry.setParent(parent);
-    }
-
-    public void setGlobalCommandIds(String[] globalCommandIds) {
-        if (globalCommandIds.length == 0) {
-            globalCommands = Collections.EMPTY_LIST;
-        }
-        else {
-            this.globalCommands = new ArrayList(globalCommandIds.length);
-            for (int i = 0; i < globalCommandIds.length; i++) {
-                ActionCommand globalCommand = createTargetableActionCommand(
-                        globalCommandIds[i], null);
-                globalCommands.add(globalCommand);
-            }
-        }
     }
 
     public void setButtonFactory(ButtonFactory buttonFactory) {
@@ -151,11 +130,6 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 
     public ActionCommand getActionCommand(String commandId) {
         return commandRegistry.getActionCommand(commandId);
-    }
-
-    public Iterator getGlobalCommands() {
-        if (globalCommands == null) { return Collections.EMPTY_LIST.iterator(); }
-        return globalCommands.iterator();
     }
 
     public CommandGroup getCommandGroup(String groupId) {

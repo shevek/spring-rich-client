@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -50,7 +51,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private int number;
 
-    private CommandManager commandManager;
+    private ApplicationWindowCommandManager commandManager;
 
     private CommandGroup menuBarCommandGroup;
 
@@ -106,6 +107,10 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+    
+    public Iterator getSharedCommands() {
+        return commandManager.getSharedCommands();
     }
 
     public CommandGroup getMenuBar() {

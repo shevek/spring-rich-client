@@ -15,8 +15,6 @@
  */
 package org.springframework.richclient.command;
 
-import java.util.Iterator;
-
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 
@@ -25,8 +23,6 @@ import org.springframework.richclient.command.config.CommandFaceDescriptorRegist
  */
 public interface CommandManager extends CommandServices, CommandRegistry,
         CommandFaceDescriptorRegistry, CommandConfigurer, CommandFactory {
-    public Iterator getGlobalCommands();
-
     public void addNewCommand(AbstractCommand command);
 
     public void addNewCommand(AbstractCommand command, String faceDescriptorKey);

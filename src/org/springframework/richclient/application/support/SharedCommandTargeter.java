@@ -17,9 +17,9 @@ package org.springframework.richclient.application.support;
 
 import java.util.Iterator;
 
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewContext;
-import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.util.Assert;
 
@@ -29,19 +29,19 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class GlobalCommandTargeter extends AbstractViewListener {
-    private CommandManager globalCommandRegistry;
+public class SharedCommandTargeter extends AbstractViewListener {
+    private ApplicationWindow window;
 
-    public GlobalCommandTargeter(CommandManager commandRegistry) {
-        Assert.notNull(commandRegistry, "Command manager is required");
-        this.globalCommandRegistry = commandRegistry;
+    public SharedCommandTargeter(ApplicationWindow window) {
+        Assert.notNull(window,
+                "The application window with shared commands is required");
+        this.window = window;
     }
 
     public void viewFocusGained(View view) {
         super.viewFocusGained(view);
         ViewContext viewContext = view.getContext();
-        for (Iterator i = globalCommandRegistry.getGlobalCommands(); i
-                .hasNext();) {
+        for (Iterator i = window.getSharedCommands(); i.hasNext();) {
             TargetableActionCommand globalCommand = (TargetableActionCommand)i
                     .next();
             globalCommand.setCommandExecutor(viewContext
