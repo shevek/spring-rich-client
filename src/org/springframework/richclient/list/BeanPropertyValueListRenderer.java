@@ -18,15 +18,22 @@ package org.springframework.richclient.list;
 import org.springframework.beans.BeanWrapperImpl;
 
 /**
- * Renders a enumeration in a list.
+ * Renders objects in a list, using a propertyName for rendering.
  * 
  * @author Keith Donald
  */
 public class BeanPropertyValueListRenderer extends TextValueListRenderer {
+
     private BeanWrapperImpl beanWrapper;
 
     private String propertyName;
 
+    /**
+     * Creates a new <code>BeanPropertyValueListRenderer</code>
+     * 
+     * @param propertyName
+     *            the property name to use for rendering
+     */
     public BeanPropertyValueListRenderer(String propertyName) {
         this.propertyName = propertyName;
     }
@@ -37,10 +44,16 @@ public class BeanPropertyValueListRenderer extends TextValueListRenderer {
         }
         if (beanWrapper == null) {
             beanWrapper = new BeanWrapperImpl(value);
-        }
-        else {
+        } else {
             beanWrapper.setWrappedInstance(value);
         }
         return String.valueOf(beanWrapper.getPropertyValue(propertyName));
+    }
+
+    /**
+     * @return the property name
+     */
+    public String getPropertyName() {
+        return propertyName;
     }
 }
