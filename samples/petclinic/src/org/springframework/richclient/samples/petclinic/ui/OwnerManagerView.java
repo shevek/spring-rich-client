@@ -84,7 +84,9 @@ public class OwnerManagerView extends AbstractView implements
 
     protected void registerLocalCommandExecutors(ViewContext context) {
         context.register(GlobalCommandIds.DELETE, deleteCommandExecutor);
-        context.register(GlobalCommandIds.PROPERTIES, propertiesCommandExecutor);
+        context
+                .register(GlobalCommandIds.PROPERTIES,
+                        propertiesCommandExecutor);
     }
 
     protected JComponent createControl() {
