@@ -121,7 +121,7 @@ public class ListTableModelTest extends TestCase {
                 return new String[] { "col0", "col1" };
             }
         };
-
+        model.createColumnInfo();
         List row = Arrays.asList(new String[] { "col0", "col1" });
         assertEquals("col0", model.getValueAtInternal(row, 0));
         assertEquals("col1", model.getValueAtInternal(row, 1));
