@@ -617,6 +617,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         model.setComparator(itemsComparator);
         list.setModel(model);
+        list.setSelectedValue(selectedItemHolder.get(), true);
         list.addListSelectionListener(new ListSelectedValueMediator(list,
                 selectedItemHolder));
         return list;
