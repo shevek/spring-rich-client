@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
-import org.springframework.core.NestedRuntimeException;
+import org.springframework.beans.BeansException;
 import org.springframework.rules.Closure;
 import org.springframework.util.ArrayUtils;
 import org.springframework.util.Assert;
@@ -107,33 +107,49 @@ public class ListenerListHelper implements Serializable {
     private Object[] listeners;
 
     /**
-     * Create new <code>ListenerListHelper</code> instance for the given
-     * listener class.
+     * Create new <code>ListenerListHelper</code> instance that will maintain
+     * a list of event listeners of the given class.
      */
     public ListenerListHelper(Class listenerClass) {
         Assert.notNull(listenerClass);
         this.listenerClass = listenerClass;
+        this.listeners = ArrayUtils.EMPTY_OBJECT_ARRAY;
     }
 
     /**
      * Returns whether or not any listeners are registered with this list.
      */
     public boolean hasListeners() {
-        return listeners != null && listeners.length > 0;
+        return listeners.length > 0;
     }
 
     /**
      * Returns the total number of listeners registered with this list.
      */
     public int getListenerCount() {
-        return listeners != null ? 0 : listeners.length;
+        return listeners.length;
+    }
+
+    /**
+     * Returns an array of all the listeners registered with this list. This
+     * method is intended for use in subclases that require the fastest possible
+     * access to the listener list. It is recomended that unless performance is
+     * absolutly critical access to the listener list should be through the
+     * <code>iterator</code>,<code>forEach</code> and <code>fire</code>
+     * methods only.
+     * <p>
+     * NOTE: The array returned by this method is used internally by this class
+     * and must NOT be modified.
+     */
+    protected Object[] getListeners() {
+        return listeners;
     }
 
     /**
      * Returns an iterator over the list of listeners registered with this list.
      */
     public Iterator iterator() {
-        if (listeners == null) {
+        if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
             return EMPTY_ITERATOR;
         }
         else {
@@ -146,7 +162,7 @@ public class ListenerListHelper implements Serializable {
      * this list.
      */
     public void forEach(Closure closure) {
-        if (listeners != null) {
+        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
             Object[] listenersCopy = listeners;
             for (int i = 0; i < listenersCopy.length; i++) {
                 closure.call(listenersCopy[i]);
@@ -162,7 +178,7 @@ public class ListenerListHelper implements Serializable {
      *            the name of the method to invoke.
      */
     public void fire(String methodName) {
-        if (listeners != null) {
+        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, ArrayUtils.EMPTY_OBJECT_ARRAY);
         }
     }
@@ -177,7 +193,7 @@ public class ListenerListHelper implements Serializable {
      *            the single argument to pass to each invocation.
      */
     public void fire(String methodName, Object arg) {
-        if (listeners != null) {
+        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, new Object[] { arg });
         }
     }
@@ -192,27 +208,25 @@ public class ListenerListHelper implements Serializable {
      *            an array of arguments to pass to each invocation.
      */
     public void fire(String methodName, Object[] args) {
-        if (listeners != null) {
+        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, args);
         }
     }
 
     /**
      * Adds <code>listener</code> to the list of registerd listeners. If
-     * listener is already registerd it will not be added a second time.
+     * listener is already registered this method will do nothing.
      */
     public void add(Object listener) {
         checkListenerType(listener);
         synchronized (this) {
-            if (listeners == null) {
+            if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
                 listeners = new Object[] { listener };
             }
             else {
                 int listenersLength = listeners.length;
-                for (int i=0; i < listenersLength; i++) {
-                    if (listeners[i] == listener) {
-                        return;
-                    }
+                for (int i = 0; i < listenersLength; i++) {
+                    if (listeners[i] == listener) { return; }
                 }
                 Object[] tmp = new Object[listenersLength + 1];
                 System.arraycopy(listeners, 0, tmp, 0, listenersLength);
@@ -228,12 +242,12 @@ public class ListenerListHelper implements Serializable {
     public void remove(Object listener) {
         checkListenerType(listener);
         synchronized (this) {
-            if (listeners == null) {
+            if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
                 return;
             }
             else {
                 int listenersLength = listeners.length;
-                int index = 0;                
+                int index = 0;
                 for (; index < listenersLength; index++) {
                     if (listeners[index] == listener) {
                         break;
@@ -241,8 +255,9 @@ public class ListenerListHelper implements Serializable {
                 }
                 if (index < listenersLength) {
                     if (listenersLength == 1) {
-                        listeners = null;
-                    } else {
+                        listeners = ArrayUtils.EMPTY_OBJECT_ARRAY;
+                    }
+                    else {
                         Object[] tmp = new Object[listenersLength - 1];
                         System.arraycopy(listeners, 0, tmp, 0, index);
                         if (index < tmp.length) {
@@ -270,12 +285,12 @@ public class ListenerListHelper implements Serializable {
                 fireMethod.invoke(listenersCopy[i], events);
             }
             catch (InvocationTargetException e) {
-                throw new NestedRuntimeException(
-                        "Exception thrown by listener", e.getCause()) {
+                throw new BeansException("Exception thrown by listener", e
+                        .getCause()) {
                 };
             }
             catch (IllegalAccessException e) {
-                throw new NestedRuntimeException("Unable to invoke listener", e) {
+                throw new BeansException("Unable to invoke listener", e) {
                 };
             }
         }
@@ -283,11 +298,11 @@ public class ListenerListHelper implements Serializable {
 
     private void checkListenerType(Object listener) {
         if (!listenerClass.isInstance(listener)) { throw new IllegalArgumentException(
-                "Listener [" + listener + "] is not an instanceof ["
+                "Listener [" + listener + "] is not an instance of ["
                         + listenerClass + "]."); }
     }
 
-    private static final class ObjectArrayIterator implements Iterator {
+    private static class ObjectArrayIterator implements Iterator {
         private final Object[] array;
 
         private int index;
