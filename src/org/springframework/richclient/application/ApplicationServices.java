@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -50,12 +50,12 @@ import org.springframework.rules.predicates.beans.BeanPropertyExpression;
 
 /**
  * A singleton service locator of a rich client application.
- * 
+ *
  * The application provides a point of reference and context for an entire
  * application. It provides data about the application: name, version, and build
  * ID. It also acts as service locator / facade for a number of commonly needed
  * rich client interfaces.
- * 
+ *
  * @author Keith Donald
  */
 public class ApplicationServices extends ApplicationObjectSupport implements
@@ -69,6 +69,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public static final String COMPONENT_FACTORY_BEAN_KEY = "componentFactory";
 
     public static final String RULES_SOURCE_BEAN_KEY = "rulesSource";
+
+    public static final String PROPERTY_EDITOR_REGISTRY_BEAN_KEY = "propertyEditorRegistry";
 
     public static final String OBJECT_CONFIGURER_BEAN_KEY = "applicationObjectConfigurer";
 
@@ -93,6 +95,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private IconSource iconSource;
 
     private Map attributes;
+
+    private PropertyEditorRegistry propertyEditorRegistry;
 
     private boolean lazyInit = true;
 
@@ -143,6 +147,20 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public void setIconSource(IconSource iconSource) {
         this.iconSource = iconSource;
     }
+
+
+    public PropertyEditorRegistry getPropertyEditorRegistry() {
+        if (propertyEditorRegistry == null) {
+            initPropertyEditorRegistry();
+        }
+        return propertyEditorRegistry;
+    }
+
+
+    public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
+        this.propertyEditorRegistry = preReg;
+    }
+
 
     public ObjectConfigurer getObjectConfigurer() {
         if (objectConfigurer == null) {
@@ -264,6 +282,19 @@ public class ApplicationServices extends ApplicationObjectSupport implements
             logger.info("No rule source found in context under name '"
                     + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
             this.rulesSource = new DefaultRulesSource();
+        }
+    }
+
+
+    private void initPropertyEditorRegistry() {
+        try {
+            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext().getBean(
+                PROPERTY_EDITOR_REGISTRY_BEAN_KEY, PropertyEditorRegistry.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No rule source found in context under name '"
+                    + PROPERTY_EDITOR_REGISTRY_BEAN_KEY + "'; configuring defaults.");
+            this.propertyEditorRegistry = new DefaultPropertyEditorRegistry();
         }
     }
 
