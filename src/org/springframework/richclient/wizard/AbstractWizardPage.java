@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.dialog.AbstractDialogPage;
 import org.springframework.richclient.dialog.MessageListener;
+import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.util.ToStringBuilder;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements
@@ -43,7 +44,7 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     protected AbstractWizardPage(String pageId, boolean autoConfigure, String title, Image titleImage) {
         super(pageId, autoConfigure, title, titleImage);
         this.addMessageListener(new MessageListener() {
-            public void messageUpdated() {
+            public void messageUpdated(MessageReceiver source) {
                 if (isCurrentPage()) {
                     getContainer().updateMessage();
                 }
@@ -99,7 +100,9 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
 
     public void setPageComplete(boolean complete) {
         if (isPageComplete != complete) {
+            boolean oldValue = isPageComplete;
             isPageComplete = complete;
+            firePropertyChange("pageComplete", oldValue, complete);
             if (isCurrentPage()) {
                 getContainer().updateButtons();
             }
@@ -123,7 +126,9 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     }
 
     public void setWizard(Wizard newWizard) {
+        Wizard oldValue = this.wizard;
         this.wizard = newWizard;
+        firePropertyChange("wizard", oldValue, newWizard);
     }
 
     public void onAboutToShow() {

@@ -16,11 +16,12 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Image;
+import java.beans.PropertyChangeListener;
 
 import org.springframework.richclient.factory.ControlFactory;
 
 public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
-    
+
     /**
      * Returns this page's name.
      * 
@@ -74,5 +75,25 @@ public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
      *            <code>false</code> to hide it
      */
     public void setVisible(boolean visible);
+
+    /**
+     * Adds a PropertyChangeListener to the listener list. The listener is
+     * registered for all properties.
+     * 
+     * @param listener
+     *            the PropertyChangeListener to be added
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * Adds a PropertyChangeListener for a specific property.
+     *
+     * @param propertyName
+     *             the name of the property to listen on
+     * @param listener
+     *            the PropertyChangeListener to be added
+     */
+    public void addPropertyChangeListener(String propertyName,
+            PropertyChangeListener listener);
 
 }

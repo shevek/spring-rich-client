@@ -28,12 +28,22 @@ import org.springframework.rules.reporting.Severity;
  * @see SimpleMessageAreaPane
  */
 public class MessageBuffer implements MessageReceiver {
+    
+    private MessageReceiver delegateFor;
 
     private String message;
 
     private Severity severity;
 
     private EventListenerList listenerList = new EventListenerList();
+    
+    public MessageBuffer() {
+        this.delegateFor = this;
+    }
+    
+    public MessageBuffer(MessageReceiver delegateFor) {
+        this.delegateFor = delegateFor;
+    }
 
     public String getMessage() {
         return message;
@@ -68,7 +78,7 @@ public class MessageBuffer implements MessageReceiver {
     protected void fireMessageUpdated() {
         MessageListener[] listeners = (MessageListener[]) listenerList.getListeners(MessageListener.class);
         for (int i = 0; i < listeners.length; i++) {
-            listeners[i].messageUpdated();
+            listeners[i].messageUpdated(delegateFor);
         }
     }
 }

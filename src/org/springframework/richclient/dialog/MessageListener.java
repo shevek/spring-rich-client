@@ -28,6 +28,9 @@ extends EventListener {
 
     /**
      * Invoked when the messages have been updated.
+     * 
+     * @param source
+     *          the MessageReceiver that has been updated
      */
-    void messageUpdated();
+    void messageUpdated(MessageReceiver source);
 }

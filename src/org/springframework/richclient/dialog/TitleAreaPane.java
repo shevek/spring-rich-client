@@ -57,7 +57,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
 
     private Image image;
 
-    private MessageAreaPane messageAreaPane = new SimpleMessageAreaPane();
+    private MessageAreaPane messageAreaPane = new SimpleMessageAreaPane(this);
 
     public void setTitle(String newTitle) {
         if (newTitle == null) {

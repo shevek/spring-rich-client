@@ -44,8 +44,13 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     
     private MessageBuffer messageBuffer;
     
+    public SimpleMessageAreaPane(MessageReceiver delegateFor) {
+        this.messageBuffer = new MessageBuffer(delegateFor);
+        this.messageBuffer.addMessageListener(this);
+    }
+    
     public SimpleMessageAreaPane() {
-        this.messageBuffer = new MessageBuffer();
+        this.messageBuffer = new MessageBuffer(this);
         this.messageBuffer.addMessageListener(this);
     }
 
@@ -114,7 +119,7 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
         messageBuffer.removeMessageListener(messageListener);        
     }
 
-    public void messageUpdated() {
+    public void messageUpdated(MessageReceiver source) {
         String message = messageBuffer.getMessage();
         Severity severity = messageBuffer.getSeverity();
         if (StringUtils.hasText(message)) {

@@ -40,7 +40,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     private String pageId;
 
-    private MessageBuffer messageBuffer = new MessageBuffer();
+    private MessageBuffer messageBuffer;
 
     private AbstractControlFactory factory = new AbstractControlFactory() {
         public JComponent createControl() {
@@ -69,6 +69,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      *            titles of this dialog page using the given pageId
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure) {
+        this.messageBuffer = new MessageBuffer(this);
         setId(pageId, autoConfigure);
     }
 
@@ -118,7 +119,9 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     protected void setId(String pageId, boolean autoConfigure) {
         Assert.hasText(pageId);
+        String oldValue = this.pageId;
         this.pageId = pageId;
+        firePropertyChange("id", oldValue, pageId);
         if (autoConfigure) {
             getObjectConfigurer().configure(this, pageId);
         }
@@ -178,7 +181,9 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     }
 
     public void setVisible(boolean visible) {
+        boolean oldValue = getControl().isVisible();
         getControl().setVisible(visible);
+        firePropertyChange("visible", oldValue, visible);
     }
 
     public JComponent getControl() {

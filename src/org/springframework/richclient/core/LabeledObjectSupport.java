@@ -16,10 +16,13 @@
 package org.springframework.richclient.core;
 
 import java.awt.Image;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +30,8 @@ import org.springframework.richclient.application.ApplicationServicesAccessorSup
 import org.springframework.richclient.command.config.CommandButtonLabelConfigurable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.image.config.ImageConfigurable;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringBuilder;
 
 /**
@@ -50,24 +55,45 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
 
     private Image image;
 
+    private PropertyChangeSupport propertyChangeSupport;
+
     public void setCommandButtonLabelInfo(CommandButtonLabelInfo label) {
+        CommandButtonLabelInfo oldLabel = label;
+        String oldDisplayName = getDisplayName();
+        int oldMnemonic = getMnemonic();
+        int oldMnemonicIndex = getMnemonicIndex();
+        KeyStroke oldAccelerator = getAccelerator();
         this.label = label;
+        firePropertyChange("label", oldLabel, label);
+        firePropertyChange("displayName", oldDisplayName, getDisplayName());
+        firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
+        firePropertyChange("mnemonicIndex", oldMnemonicIndex,
+                getMnemonicIndex());
+        firePropertyChange("accelerator", oldAccelerator, getAccelerator());
     }
 
-    public void setCaption(String shortDescription) {
-        this.caption = shortDescription;
+    public void setCaption(String caption) {
+        String oldValue = caption;
+        this.caption = caption;
+        firePropertyChange("caption", oldValue, caption);
     }
 
-    public void setDescription(String longDescription) {
-        this.description = longDescription;
+    public void setDescription(String description) {
+        String oldValue = description;
+        this.description = description;
+        firePropertyChange("description", oldValue, description);
     }
 
     public void setTitle(String title) {
+        String oldValue = getDisplayName();
         this.title = title;
+        firePropertyChange("displayName", oldValue, getDisplayName());
     }
 
     public void setImage(Image image) {
+        Image oldValue = image;
         this.image = image;
+        firePropertyChange("image", oldValue, image);
     }
 
     public String getDisplayName() {
@@ -133,6 +159,76 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
 
     protected CommandButtonLabelInfo getLabel() {
         return label;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        getOrCreatePropertyChangeSupport().addPropertyChangeListener(l);
+    }
+
+    public void addPropertyChangeListener(String propertyName,
+            PropertyChangeListener l) {
+        getOrCreatePropertyChangeSupport().addPropertyChangeListener(
+                propertyName, l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        getPropertyChangeSupport().removePropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(String propertyName,
+            PropertyChangeListener l) {
+        getPropertyChangeSupport()
+                .removePropertyChangeListener(propertyName, l);
+    }
+
+    private PropertyChangeSupport getPropertyChangeSupport() {
+        Assert
+                .notNull(propertyChangeSupport,
+                        "Property change support has not yet been initialized; add a listener first!");
+        return propertyChangeSupport;
+    }
+
+    private PropertyChangeSupport getOrCreatePropertyChangeSupport() {
+        if (propertyChangeSupport == null) {
+            propertyChangeSupport = new SwingPropertyChangeSupport(this);
+        }
+        return propertyChangeSupport;
+    }
+
+    protected void firePropertyChange(String propertyName, boolean oldValue,
+            boolean newValue) {
+        if (propertyChangeSupport != null) {
+            propertyChangeSupport.firePropertyChange(propertyName, oldValue,
+                    newValue);
+        }
+    }
+
+    protected void firePropertyChange(String propertyName, int oldValue,
+            int newValue) {
+        if (propertyChangeSupport != null) {
+            propertyChangeSupport.firePropertyChange(propertyName, oldValue,
+                    newValue);
+        }
+    }
+
+    protected void firePropertyChange(String propertyName, Object oldValue,
+            Object newValue) {
+        if (propertyChangeSupport != null) {
+            propertyChangeSupport.firePropertyChange(propertyName, oldValue,
+                    newValue);
+        }
+    }
+
+    protected boolean hasChanged(Object currentValue, Object proposedValue) {
+        return !ObjectUtils.nullSafeEquals(currentValue, proposedValue);
+    }
+
+    protected boolean hasChanged(boolean currentValue, boolean proposedValue) {
+        return currentValue != proposedValue;
+    }
+
+    protected boolean hasChanged(int currentValue, int proposedValue) {
+        return currentValue != proposedValue;
     }
 
     public String toString() {
