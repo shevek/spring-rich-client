@@ -55,11 +55,11 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         this.confirmationMessage = message;
     }
 
-    protected String getFinishCommandFaceDescriptorId() {
+    protected String getFinishCommandId() {
         return YES_FACE_DESCRIPTOR_ID;
     }
 
-    protected String getCancelCommandFaceDescriptorId() {
+    protected String getCancelCommandId() {
         return NO_FACE_DESCRIPTOR_ID;
     }
 

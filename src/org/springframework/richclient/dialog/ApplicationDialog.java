@@ -315,7 +315,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     private void initStandardCommands() {
-        this.finishCommand = new ActionCommand(getFinishCommandFaceDescriptorId()) {
+        this.finishCommand = new ActionCommand(getFinishCommandId()) {
             public void doExecuteCommand() {
                 try {
                     boolean result = onFinish();
@@ -334,7 +334,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         };
         this.finishCommand.setEnabled(defaultEnabled);
 
-        this.cancelCommand = new ActionCommand(getCancelCommandFaceDescriptorId()) {
+        this.cancelCommand = new ActionCommand(getCancelCommandId()) {
             public void doExecuteCommand() {
                 onCancel();
             }
@@ -347,7 +347,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * 
      * @return The message key to use for the finish ("ok") button
      */
-    protected String getFinishCommandFaceDescriptorId() {
+    protected String getFinishCommandId() {
         return DEFAULT_FINISH_COMMAND_ID;
     }
 
@@ -420,7 +420,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         JOptionPane.showMessageDialog(getDialog(), exceptionMessage, getApplicationName(), JOptionPane.ERROR_MESSAGE);
     }
 
-    protected String getCancelCommandFaceDescriptorId() {
+    protected String getCancelCommandId() {
         return DEFAULT_CANCEL_COMMAND_ID;
     }
 

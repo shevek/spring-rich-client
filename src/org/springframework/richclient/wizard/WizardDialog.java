@@ -75,7 +75,7 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
         }
     }
 
-    protected String getFinishCommandFaceDescriptorId() {
+    protected String getFinishCommandId() {
         return "finishCommand";
     }
 
