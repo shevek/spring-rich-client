@@ -121,9 +121,8 @@ public class Application extends ApplicationObjectSupport {
     }
 
     protected void openFirstTimeApplicationWindow() {
-        ApplicationWindow mainWindow = createNewWindow();
-        mainWindow.openPage(getAdvisor().getStartingPageId());
-        this.activeWindow = mainWindow;
+        this.activeWindow = createNewWindow();
+        this.activeWindow.openPage(getAdvisor().getStartingPageId());        
     }
 
     private ApplicationWindow createNewWindow() {
