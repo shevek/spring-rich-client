@@ -15,45 +15,34 @@
  */
 package org.springframework.richclient.forms;
 
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.text.JTextComponent;
 
-import org.springframework.rules.values.ValueListener;
 import org.springframework.rules.values.ValueModel;
 
 
-public class FocusLostTextValueSetter extends FocusAdapter {
+public class FocusLostTextValueSetter 
+extends AbstractValueSetter 
+implements FocusListener {
     private JTextComponent component;
-
-    private ValueModel valueModel;
-
-    private boolean updating;
 
     public FocusLostTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
+        super(valueModel);
         this.component = component;
-        this.valueModel = valueModel;
         this.component.addFocusListener(this);
-        valueModel.addValueListener(new ValueListener() {
-            public void valueChanged() {
-                if (!updating) {
-                    FocusLostTextValueSetter.this.component
-                            .setText((String)FocusLostTextValueSetter.this.valueModel
-                                    .get());
-                }
-            }
-        });
+    }
+    
+    protected void setComponentValue(Object value) {
+        component.setText((String) value);
     }
 
     public void focusLost(FocusEvent e) {
-        update();
+        componentValueChanged(component.getText());
     }
-    
-    protected void update() {
-        updating = true;
-        valueModel.set(component.getText());
-        updating = false;
-    }
+
+    public void focusGained(FocusEvent e) {        
+    }        
 }

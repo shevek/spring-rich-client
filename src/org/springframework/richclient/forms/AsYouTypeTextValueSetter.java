@@ -19,58 +19,44 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.rules.values.ValueListener;
 import org.springframework.rules.values.ValueModel;
 
 
-public class AsYouTypeTextValueSetter implements DocumentListener {
+public class AsYouTypeTextValueSetter
+extends AbstractValueSetter
+implements DocumentListener {
     private JTextComponent component;
 
-    private ValueModel valueModel;
-
-    private boolean updating;
-
     protected AsYouTypeTextValueSetter(JTextComponent component) {
+        super(null);
         this.component = component;
         this.component.getDocument().addDocumentListener(this);
     }
     
     public AsYouTypeTextValueSetter(JTextComponent component,
             ValueModel valueModel) {
+        super(valueModel);
         this.component = component;
         this.component.getDocument().addDocumentListener(this);
-        this.valueModel = valueModel;
-        valueModel.addValueListener(new ValueListener() {
-            public void valueChanged() {
-                if (!updating) {
-                    AsYouTypeTextValueSetter.this.component
-                            .setText((String)AsYouTypeTextValueSetter.this.valueModel
-                                    .get());
-                }
-            }
-        });
-    }
-
-    protected String getText() {
-        return component.getText();
     }
     
+    protected void setComponentValue(Object value) {
+        component.setText((String) value);
+    }
+	
+	private void componentValueChanged() {
+	    componentValueChanged(component.getText());
+	}
+    
     public void removeUpdate(DocumentEvent e) {
-        update();
+        componentValueChanged();
     }
 
     public void insertUpdate(DocumentEvent e) {
-        update();
+        componentValueChanged();
     }
 
     public void changedUpdate(DocumentEvent e) {
-        update();
+        componentValueChanged();
     }
-
-    protected void update() {
-        updating = true;
-        valueModel.set(getText());
-        updating = false;
-    }
-
 }

@@ -19,44 +19,30 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 
-import org.springframework.rules.values.ValueListener;
 import org.springframework.rules.values.ValueModel;
 
 
-public class PropertyEditorValueSetter implements PropertyChangeListener {
+public class PropertyEditorValueSetter
+extends AbstractValueSetter
+implements PropertyChangeListener {
     private PropertyEditor propertyEditor;
-
-    private ValueModel valueModel;
-
-    private boolean updating;
 
     public PropertyEditorValueSetter(PropertyEditor propertyEditor,
             ValueModel valueModel) {
+        super(valueModel);
         this.propertyEditor = propertyEditor;
         this.propertyEditor.addPropertyChangeListener(this);
-        this.valueModel = valueModel;
-        valueModel.addValueListener(new ValueListener() {
-            public void valueChanged() {
-                if (!updating) {
-                    PropertyEditorValueSetter.this.propertyEditor
-                            .setValue(PropertyEditorValueSetter.this.valueModel
-                                    .get());
-                }
-            }
-        });
     }
 
-    public void propertyChange(PropertyChangeEvent event) {
-        update();
+    protected void setComponentValue(Object value) {
+        propertyEditor.setValue(value);
     }
     
     public void dispose() {
         this.propertyEditor.removePropertyChangeListener(this);
     }
     
-    protected void update() {
-        updating = true;
-        valueModel.set(propertyEditor.getValue());
-        updating = false;
+    public void propertyChange(PropertyChangeEvent event) {
+        componentValueChanged(propertyEditor.getValue());
     }
 }

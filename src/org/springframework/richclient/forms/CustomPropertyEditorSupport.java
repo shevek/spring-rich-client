@@ -56,8 +56,8 @@ public abstract class CustomPropertyEditorSupport extends PropertyEditorSupport 
             final PropertyEditor customPropertyEditor, ValueCommitPolicy policy) {
         if (policy == ValueCommitPolicy.AS_YOU_TYPE) {
             new AsYouTypeTextValueSetter(component) {
-                protected void update() {
-                    customPropertyEditor.setAsText(getText());
+                protected void componentValueChanged(Object newValue) {
+                    customPropertyEditor.setAsText((String) newValue);
                 }
             };
         }
