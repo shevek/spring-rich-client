@@ -252,6 +252,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements
                 }
             }
             else {
+                if (getCommitCommand() != null) {
+                    getCommitCommand().setEnabled(false);
+                }
                 // set previous default button
                 if (lastDefaultButton != null) {
                     setDefaultButton(lastDefaultButton);
