@@ -60,29 +60,21 @@ public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements
 
     public JComponent[] add(String formPropertyPath) {
         JComponent component = getDefaultComponent(formPropertyPath);
-        JComponent[] components = processComponent(formPropertyPath,
-                getLabelFor(formPropertyPath, component), component);
-        return formBuilder.add(components[0], components[1]);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
     }
 
     public JComponent[] addSelector(String formPropertyPath, Constraint filter) {
         JComponent component = getSelector(formPropertyPath, filter);
-        JComponent[] components = processComponent(formPropertyPath,
-                getLabelFor(formPropertyPath, component), component);
-        return formBuilder.add(components[0], components[1]);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
     }
 
     public JComponent[] addPasswordField(String formPropertyPath) {
         JComponent component = getPasswordField(formPropertyPath);
-        JComponent[] components = processComponent(formPropertyPath,
-                getLabelFor(formPropertyPath, component), component);
-        return formBuilder.add(components[0], components[1]);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), component);
     }
 
     public JComponent[] addTextArea(String formPropertyPath) {
         JComponent component = getTextArea(formPropertyPath);
-        JComponent[] components = processComponent(formPropertyPath,
-                getLabelFor(formPropertyPath, component), component);
-        return formBuilder.add(components[0], "left,top", components[1]);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), "left,top", component);
     }
 }

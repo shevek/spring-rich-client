@@ -140,11 +140,6 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
                     HTML.getAttributeKey("id"));
             if (propertyName != null) {
                 JComponent comp = (JComponent) view.getComponent();
-                if (getInterceptor() != null) {
-                    if (getInterceptor().processComponent(propertyName, comp) != comp) {
-                        throw new UnsupportedOperationException("Can't do this...");
-                    }
-                }
                 if (comp instanceof JTextComponent) {
                     getFormModel().bind((JTextComponent)comp, propertyName);
                 }

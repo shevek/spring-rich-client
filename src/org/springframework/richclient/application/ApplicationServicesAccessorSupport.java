@@ -34,21 +34,29 @@ import org.springframework.util.Assert;
  */
 public class ApplicationServicesAccessorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    protected Application getApplication() {
+        return Application.instance();
+    }
+
+    protected ApplicationServices getApplicationServices() {
+        return Application.services();
+    }
 
     protected String getApplicationName() {
-        return Application.instance().getName();
+        return getApplication().getName();
     }
 
     protected ApplicationWindow getActiveWindow() {
-        return Application.instance().getActiveWindow();
+        return getApplication().getActiveWindow();
     }
 
     protected ApplicationContext getApplicationContext() {
-        return Application.services().getApplicationContext();
+        return getApplicationServices().getApplicationContext();
     }
 
     protected MessageSourceAccessor getMessageSourceAccessor() {
-        return Application.services().getMessages();
+        return getApplicationServices().getMessages();
     }
 
     protected String getMessage(String messageCode) {
@@ -100,23 +108,22 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected ComponentFactory getComponentFactory() {
-        return Application.services().getComponentFactory();
+        return getApplicationServices().getComponentFactory();
     }
 
     protected ImageSource getImageSource() {
-        return Application.services().getImageSource();
+        return getApplicationServices().getImageSource();
     }
 
     protected IconSource getIconSource() {
-        return Application.services().getIconSource();
+        return getApplicationServices().getIconSource();
     }
 
     protected ObjectConfigurer getObjectConfigurer() {
-        return Application.services().getObjectConfigurer();
+        return getApplicationServices().getObjectConfigurer();
     }
 
     protected CommandConfigurer getCommandConfigurer() {
-        return Application.services().getCommandConfigurer();
+        return getApplicationServices().getCommandConfigurer();
     }
-
 }

@@ -65,6 +65,7 @@ import org.springframework.richclient.application.ApplicationServicesAccessorSup
 import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.list.DynamicComboBoxListModel;
@@ -96,15 +97,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     private ConfigurableFormModel formModel;
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
+    
+    private FormComponentInterceptor interceptor;
 
     public SwingFormModel(ConfigurableFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
-    }
-
-    public void setValueCommitPolicy(ValueCommitPolicy policy) {
-        Assert.notNull(policy);
-        this.valueCommitPolicy = policy;
+        this.interceptor = getApplicationServices().getInterceptor(formModel);
     }
 
     public static SwingFormModel createFormModel(Object formObject) {
@@ -175,6 +174,19 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public void setValueCommitPolicy(ValueCommitPolicy policy) {
+        Assert.notNull(policy);
+        this.valueCommitPolicy = policy;
+    }
+        
+    public FormComponentInterceptor getInterceptor() {
+        return interceptor;
+    }
+    
+    public void setInterceptor(FormComponentInterceptor interceptor) {
+        this.interceptor = interceptor;
     }
 
     public void registerCustomEditor(Class clazz,
@@ -434,12 +446,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      */
     protected JComponent bindControl(JComponent component, String formProperty) {
         component.setName(formProperty);
+        interceptComponent(formProperty, component);
         return component;
     }
 
     public JLabel createLabel(String formProperty) {
-        return getComponentFactory().createLabel(
-                getMessageKeys(formProperty, LABEL_MESSAGE_KEY_PREFIX));
+        return (JLabel) interceptLabel(formProperty, getComponentFactory().createLabel(
+                getMessageKeys(formProperty, LABEL_MESSAGE_KEY_PREFIX)));
     }
 
     protected String[] getMessageKeys(String formProperty, String preffix) {
@@ -898,6 +911,18 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         return (JTextArea)bind(getComponentFactory().createTextArea(rows,
                 columns), formProperty, valueCommitPolicy);
+    }
+    
+    public JComponent interceptComponent(final String propertyName,
+                                          final JComponent component) {
+        return (getInterceptor() == null) ? component :
+            getInterceptor().processComponent(propertyName, component);
+    }
+
+    public JComponent interceptLabel(final String propertyName,
+                                      final JComponent label) {
+        return (getInterceptor() == null) ? label :
+            getInterceptor().processLabel(propertyName, label);
     }
 
     public ValidationListener createSingleLineResultsReporter(

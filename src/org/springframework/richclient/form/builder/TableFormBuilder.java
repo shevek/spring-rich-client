@@ -107,15 +107,14 @@ public class TableFormBuilder extends AbstractFormBuilder {
     private JComponent[] addComponents(JComponent component, String attributes,
             String propertyName, String labelAttributes) {
         JLabel label = getLabelFor(propertyName, component);
-        JComponent[] components = processComponent(propertyName, label,
-                component);
+
         if (!hasSpaceToLeft) {
             builder.gapCol();
         }
         hasSpaceToLeft = false;
-        builder.cell(components[0], labelAttributes);
+        builder.cell(label, labelAttributes);
         builder.labelGapCol();
-        builder.cell(components[1], attributes);
-        return components;
+        builder.cell(component, attributes);
+        return new JComponent[] {label, component};
     }
 }

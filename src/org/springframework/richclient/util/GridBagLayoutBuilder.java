@@ -372,11 +372,9 @@ public class GridBagLayoutBuilder extends AbstractFormBuilder {
      * @see FormComponentInterceptor#processLabel(String, JComponent)
      */
     public GridBagLayoutBuilder appendLabeledField(String propertyName) {
-        final JComponent field = processComponent(propertyName,
-            getDefaultComponent(propertyName));
+        final JComponent field = getDefaultComponent(propertyName);
 
-        final JLabel label = (JLabel)processLabel(propertyName,
-            getLabelFor(propertyName, field));
+        final JLabel label = getLabelFor(propertyName, field);
         label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
 
         return this.appendLabel(label).appendField(field);
@@ -400,11 +398,9 @@ public class GridBagLayoutBuilder extends AbstractFormBuilder {
      */
     public GridBagLayoutBuilder appendLabeledField(String propertyName,
                                                    int colSpan) {
-        final JComponent field = processComponent(propertyName,
-            getDefaultComponent(propertyName));
+        final JComponent field = getDefaultComponent(propertyName);
 
-        final JLabel label = (JLabel)processLabel(propertyName,
-            getLabelFor(propertyName, field));
+        final JLabel label = getLabelFor(propertyName, field);
         label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
 
         return this.appendLabel(label).appendField(field, colSpan);

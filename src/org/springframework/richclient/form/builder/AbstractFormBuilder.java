@@ -34,15 +34,13 @@ import org.springframework.util.Assert;
 public abstract class AbstractFormBuilder {
 
     private final SwingFormModel formModel;
-
-    private FormComponentInterceptor interceptor;
-
+    
     private ComponentFactory componentFactory;
 
     protected AbstractFormBuilder(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
-        this.interceptor = Application.services().getInterceptor(formModel);
+        
     }
 
     protected ComponentFactory getComponentFactory() {
@@ -56,35 +54,8 @@ public abstract class AbstractFormBuilder {
         this.componentFactory = componentFactory;
     }
 
-    protected FormComponentInterceptor getInterceptor() {
-        return interceptor;
-    }
-
-    public void setInterceptor(FormComponentInterceptor interceptor) {
-        this.interceptor = interceptor;
-    }
-
     protected SwingFormModel getFormModel() {
         return formModel;
-    }
-
-    protected JComponent[] processComponent(final String propertyName,
-            final JComponent label, final JComponent component) {
-        JComponent newLabel = processLabel(propertyName, label);
-        JComponent newComponent = processComponent(propertyName, component);
-        return new JComponent[]{newLabel, newComponent};
-    }
-
-    protected JComponent processComponent(final String propertyName,
-                                          final JComponent component) {
-        return (getInterceptor() == null) ? component :
-            getInterceptor().processComponent(propertyName, component);
-    }
-
-    protected JComponent processLabel(final String propertyName,
-                                      final JComponent label) {
-        return (getInterceptor() == null) ? label :
-            getInterceptor().processLabel(propertyName, label);
     }
 
     protected JComponent getDefaultComponent(String propertyName) {
