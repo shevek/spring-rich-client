@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.binding.form.FormModel;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
@@ -38,6 +39,8 @@ import org.springframework.richclient.command.config.ApplicationCommandConfigure
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
+import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.image.AwtImageResource;
 import org.springframework.richclient.image.DefaultIconSource;
 import org.springframework.richclient.image.DefaultImageSource;
@@ -50,18 +53,17 @@ import org.springframework.rules.support.DefaultRulesSource;
 import org.springframework.util.Assert;
 
 /**
- * A singleton service locator of a rich client application.
- * 
- * The application provides a point of reference and context for an entire
- * application. It provides data about the application: name, version, and build
- * ID. It also acts as service locator / facade for a number of commonly needed
- * rich client interfaces.
+ * A singleton service locator of a rich client application. The application
+ * provides a point of reference and context for an entire application. It
+ * provides data about the application: name, version, and build ID. It also
+ * acts as service locator / facade for a number of commonly needed rich client
+ * interfaces.
  * 
  * @author Keith Donald
  */
 public class ApplicationServices extends ApplicationObjectSupport implements
         MessageSource, ImageSource, IconSource, RulesSource, ObjectConfigurer,
-        CommandConfigurer {
+        CommandConfigurer, FormComponentInterceptorFactory {
 
     public static final String IMAGE_SOURCE_BEAN_KEY = "imageSource";
 
@@ -78,6 +80,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public static final String COMMAND_CONFIGURER_BEAN_KEY = "commandConfigurer";
 
     public static final String LOOK_AND_FEEL_CONFIGURER_BEAN_KEY = "lookAndFeelConfigurer";
+
+    public static final String INTERCEPTOR_FACTORY_BEAN_KEY = "formComponentInterceptorFactory";
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -100,6 +104,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private PropertyEditorRegistry propertyEditorRegistry;
 
     private boolean lazyInit = true;
+
+    private FormComponentInterceptorFactory formComponentInterceptorFactory;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -285,7 +291,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
             logger.info("No rule source found in context under name '"
                     + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
             this.rulesSource = new DefaultRulesSource();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             this.rulesSource = new DefaultRulesSource();
         }
     }
@@ -395,5 +402,27 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     public Rules getRules(Class bean) {
         return getRulesSource().getRules(bean);
+    }
+
+    public FormComponentInterceptorFactory getFormComponentInterceptorFactory() {
+        if (formComponentInterceptorFactory == null) {
+            initFormComponentInterceptorFactory();
+        }
+        return formComponentInterceptorFactory;
+    }
+
+    private void initFormComponentInterceptorFactory() {
+        try {
+            this.formComponentInterceptorFactory = (FormComponentInterceptorFactory)getApplicationContext()
+                    .getBean(INTERCEPTOR_FACTORY_BEAN_KEY,
+                            FormComponentInterceptorFactory.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+        }
+    }
+
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        if (getFormComponentInterceptorFactory() == null) { return null; }
+        return getFormComponentInterceptorFactory().getInterceptor(formModel);
     }
 }

@@ -23,7 +23,6 @@ import javax.swing.JTextArea;
 
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
-import org.springframework.richclient.form.builder.support.OverlayValidationInterceptor;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.Constraint;
@@ -34,26 +33,18 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractFormBuilder {
 
-    private SwingFormModel formModel;
+    private final SwingFormModel formModel;
 
     private FormComponentInterceptor interceptor;
 
     private ComponentFactory componentFactory;
-    
+
     protected AbstractFormBuilder(SwingFormModel formModel) {
-        this(formModel, new OverlayValidationInterceptor());
-    }
-    
-    protected AbstractFormBuilder(SwingFormModel formModel, FormComponentInterceptor interceptor) {
         Assert.notNull(formModel);
         this.formModel = formModel;
-        if (interceptor != null) {
-            interceptor.setFormModel(formModel);
-            this.interceptor = interceptor;
-        }
     }
 
-    public ComponentFactory getComponentFactory() {
+    protected ComponentFactory getComponentFactory() {
         if (componentFactory == null) {
             componentFactory = Application.services().getComponentFactory();
         }
@@ -63,21 +54,27 @@ public abstract class AbstractFormBuilder {
     public void setComponentFactory(ComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
-    
-    public FormComponentInterceptor getInterceptor() {
+
+    protected FormComponentInterceptor getInterceptor() {
+        if (interceptor == null) {
+            interceptor = Application.services().getInterceptor(formModel);
+        }
         return interceptor;
     }
-    
+
+    public void setInterceptor(FormComponentInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
+
     protected SwingFormModel getFormModel() {
         return formModel;
     }
 
     protected JComponent[] processComponent(final String propertyName,
             JComponent label, JComponent component) {
-        if (interceptor != null) {
-            label = interceptor.processLabel(propertyName, label);
-            component = interceptor.processComponent(propertyName,
-                    component);
+        if (getInterceptor() != null) {
+            label = getInterceptor().processLabel(propertyName, label);
+            component = getInterceptor().processComponent(propertyName, component);
         }
         return new JComponent[] { label, component };
     }
@@ -88,7 +85,8 @@ public abstract class AbstractFormBuilder {
 
     protected JComponent getSelector(String propertyName, Constraint filter) {
         JComponent propertyEditor = null;
-        if (getFormModel().getMetadataAccessStrategy().isEnumeration(propertyName)) {
+        if (getFormModel().getMetadataAccessStrategy().isEnumeration(
+                propertyName)) {
             propertyEditor = getFormModel().createBoundEnumComboBox(
                     propertyName, filter);
         }
@@ -102,7 +100,6 @@ public abstract class AbstractFormBuilder {
                 new JPasswordField(8), propertyName);
         return field;
     }
-    
 
     protected JComponent getTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
@@ -110,11 +107,11 @@ public abstract class AbstractFormBuilder {
                 propertyName));
         return component;
     }
-    
+
     protected JLabel getLabel(String propertyName) {
         return getComponentFactory().createLabel(propertyName);
     }
-    
+
     protected JLabel getLabel(JComponent component, String propertyName) {
         JLabel label = getLabel(propertyName);
         label.setLabelFor(component);

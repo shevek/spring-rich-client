@@ -73,6 +73,20 @@
   	    class="org.springframework.richclient.image.DefaultIconSource">
   	  <constructor-arg index="0"><ref bean="imageSource"/></constructor-arg>
   	</bean>
+	
+  <bean id="formComponentInterceptorFactory" 
+    class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+    <property name="interceptorFactories">
+      <list>
+        <bean 
+          class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+        </bean>
+        <bean 
+          class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory">
+        </bean>
+      </list>
+    </property>
+  </bean>
 
     <bean      id="ownerPerspective"
             class="org.springframework.richclient.application.Perspective">

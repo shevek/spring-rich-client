@@ -15,13 +15,11 @@
  */
 package org.springframework.richclient.form.builder;
 
-import javax.swing.JComponent;
+import org.springframework.binding.form.FormModel;
 
 /**
- * @author oliverh
+ * @author  oliverh
  */
-public interface FormComponentInterceptor {
-    public JComponent processLabel(String propertyName, JComponent label);
-
-    public JComponent processComponent(String propertyName, JComponent component);
+public interface FormComponentInterceptorFactory {
+    public FormComponentInterceptor getInterceptor(FormModel formModel);
 }

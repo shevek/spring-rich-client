@@ -18,43 +18,55 @@ package org.springframework.richclient.form.builder.support;
 import java.awt.Color;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
+import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.util.Assert;
 
 /**
  * @author oliverh
  */
-public class ColorValidationInterceptor extends
-        ValidationInterceptor {
+public class ColorValidationInterceptorFactory implements
+        FormComponentInterceptorFactory {
     
-    private Color errorColor;
-    
-    public ColorValidationInterceptor() {
-        this(new Color(255, 240, 240));
+    private static final Color DEFAULT_ERROR_COLOR = new Color(255, 240, 240);
+
+    private Color errorColor = DEFAULT_ERROR_COLOR;
+
+    public ColorValidationInterceptorFactory() {
     }
-    
-    public ColorValidationInterceptor(Color errorColor) {
+
+    public void setErrorColor(Color errorColor) {
         Assert.notNull(errorColor);
         this.errorColor = errorColor;
     }
+    
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        return new ColorValidationInterceptor(formModel);
+    }
 
-    public JComponent processComponent(String propertyName, JComponent component) {
-        if (component instanceof JTextComponent) {
-            ColorChanger colorChanger = new ColorChanger(component);
-            registerErrorGuarded(propertyName, colorChanger);
+    private class ColorValidationInterceptor extends
+            ValidationInterceptor {
+        
+        public ColorValidationInterceptor(FormModel formModel) {            
+            super(formModel);
         }
-        else if (component instanceof JScrollPane) {
-            processComponent(propertyName, (JComponent)((JScrollPane)component)
-                    .getViewport().getView());
+
+        public JComponent processComponent(String propertyName,
+                JComponent component) {
+            JComponent innerComp = getInnerComponent(component);
+            if (innerComp instanceof JTextComponent) {
+                ColorChanger colorChanger = new ColorChanger(component);
+                registerErrorGuarded(propertyName, colorChanger);
+            }
+            return component;
         }
-        return component;
     }
 
     private class ColorChanger implements Guarded {
-
         private Color normalColor;
 
         private JComponent component;
@@ -73,3 +85,4 @@ public class ColorValidationInterceptor extends
         }
     }
 }
+

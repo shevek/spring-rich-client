@@ -19,37 +19,53 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageBuffer;
 import org.springframework.richclient.dialog.MessageListener;
 import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
+import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.util.OverlayHelper;
 import org.springframework.rules.reporting.Severity;
 
 /**
  * @author oliverh
  */
-public class OverlayValidationInterceptor extends
-        ValidationInterceptor {
+public class OverlayValidationInterceptorFactory implements
+FormComponentInterceptorFactory {
 
     private int textCompHeight;
 
-    public OverlayValidationInterceptor() {
+    public OverlayValidationInterceptorFactory() {
         textCompHeight = new JTextField().getPreferredSize().height;
     }
+    
+    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+        return new OverlayValidationInterceptor(formModel);
+    }
 
-    public JComponent processComponent(String propertyName, JComponent component) {
-        ErrorReportingOverlay overlay = new ErrorReportingOverlay();
+    public class OverlayValidationInterceptor extends ValidationInterceptor {
+        
+        public OverlayValidationInterceptor(FormModel formModel) {
+            super(formModel);
+        }
 
-        int yOffset = component.getPreferredSize().height;
+        public JComponent processComponent(String propertyName,
+                JComponent component) {
+            ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
-        OverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST,
-                0, Math.min(yOffset, textCompHeight));
+            int yOffset = component.getPreferredSize().height;
 
-        registerErrorGuarded(propertyName, overlay);
-        registerErrorMessageReceiver(propertyName, overlay);
-        return component;
+            OverlayHelper.attachOverlay(overlay, component,
+                    OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
+                            textCompHeight));
+
+            registerErrorGuarded(propertyName, overlay);
+            registerErrorMessageReceiver(propertyName, overlay);
+            return component;
+        }
     }
 
     private class ErrorReportingOverlay extends JLabel implements

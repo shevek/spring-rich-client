@@ -19,7 +19,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.springframework.richclient.form.builder.support.OverlayValidationInterceptor;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.util.TablePanelBuilder;
 import org.springframework.rules.Constraint;
@@ -35,13 +34,9 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     private boolean skipRow;
 
-    public TableFormBuilder(SwingFormModel formModel) {
-        this(formModel, new OverlayValidationInterceptor());
-    }
-
     public TableFormBuilder(SwingFormModel formModel,
             FormComponentInterceptor extensionStrategy) {
-        super(formModel, extensionStrategy);
+        super(formModel);
         this.builder = new TablePanelBuilder(new JPanel());
     }
 

@@ -21,34 +21,30 @@ import java.util.Stack;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
-import org.springframework.richclient.form.builder.FormComponentInterceptor;
-import org.springframework.richclient.forms.SimpleValidationResultsReporter;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.rules.reporting.ValidationResults;
-import org.springframework.util.Assert;
 
 /**
  * @author oliverh
  */
-public abstract class ValidationInterceptor implements FormComponentInterceptor {
+public abstract class ValidationInterceptor extends
+        AbstractFormComponentInterceptor {
 
-    private SimplePropertyValidationResultsReporter propertyValidatonReporter;
-
-    public void setFormModel(FormModel formModel) {
-        propertyValidatonReporter = new SimplePropertyValidationResultsReporter(
-                formModel);
+    private final SimplePropertyValidationResultsReporter propertyValidatonReporter;
+    
+    public ValidationInterceptor(FormModel formModel) {
+        super(formModel);
+        propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
     }
 
     public JComponent processLabel(String propertyName, JComponent label) {
@@ -65,12 +61,8 @@ public abstract class ValidationInterceptor implements FormComponentInterceptor 
         propertyValidatonReporter.registerGuarded(propertyName, guarded);
     }
 
-    private static class SimplePropertyValidationResultsReporter implements
+    private class SimplePropertyValidationResultsReporter implements
             ValidationListener {
-        private static final Log logger = LogFactory
-                .getLog(SimpleValidationResultsReporter.class);
-
-        private FormModel formModel;
 
         private Map propertyMessages = new HashMap();
 
@@ -78,9 +70,8 @@ public abstract class ValidationInterceptor implements FormComponentInterceptor 
 
         private Map propertyMessage = new HashMap();
 
-        public SimplePropertyValidationResultsReporter(FormModel formModel) {
-            Assert.notNull(formModel);
-            formModel.addValidationListener(this);
+        public SimplePropertyValidationResultsReporter() {
+            getFormModel().addValidationListener(this);
         }
 
         public void registerGuarded(String propertyName, Guarded guarded) {
