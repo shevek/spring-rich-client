@@ -44,7 +44,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
 
     private NestingFormModel parentFormModel;
 
-    private Guarded formGuarded;
+    private Guarded formEnabledGuarded;
 
     private JButton lastDefaultButton;
 
@@ -197,8 +197,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         formModel.revert();
     }
 
-    protected void setFormGuarded(Guarded formGuarded) {
-        this.formGuarded = formGuarded;
+    protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
+        this.formEnabledGuarded = formEnabledGuarded;
     }
 
     protected void attachGuard(Guarded guarded) {
@@ -240,8 +240,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         }
 
         private void handleEnabledChange(boolean enabled) {
-            if (formGuarded != null) {
-                formGuarded.setEnabled(enabled);
+            if (formEnabledGuarded != null) {
+                formEnabledGuarded.setEnabled(enabled);
             }
             if (enabled) {
                 if (getCommitCommand() != null) {
