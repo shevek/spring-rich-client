@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -31,20 +30,12 @@ import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.EmptyIcon;
 import org.springframework.util.StringUtils;
 
-import com.jgoodies.forms.layout.Sizes;
-
 /**
  * @author Keith Donald
  * @author Oliver Hutchison
  */
 public class DefaultMessageAreaPane extends AbstractControlFactory implements MessagePane, PropertyChangeListener {
     private static final Log logger = LogFactory.getLog(DefaultMessageAreaPane.class);
-
-    private static final int ONE_LINE_IN_DLU = 10;
-
-    public static final int DEFAULT_LINES_TO_DISPLAY = 2;
-
-    private int linesToDisplay;
 
     private JLabel messageLabel;
 
@@ -53,24 +44,15 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
     private DefaultMessageAreaModel messageAreaModel;
 
     public DefaultMessageAreaPane() {
-        this(DEFAULT_LINES_TO_DISPLAY);
+        init(this);
     }
 
-    public DefaultMessageAreaPane(int linesToDisplay) {
-        init(linesToDisplay, this);
+    public DefaultMessageAreaPane(Messagable delegate) {
+        init(delegate);
     }
 
-    public DefaultMessageAreaPane(Messagable delegateFor) {
-        this(DEFAULT_LINES_TO_DISPLAY, delegateFor);
-    }
-
-    public DefaultMessageAreaPane(int linesToDisplay, Messagable delegateFor) {
-        init(linesToDisplay, delegateFor);
-    }
-
-    private void init(int linesToDisplay, Messagable delegateFor) {
-        this.linesToDisplay = linesToDisplay;
-        this.messageAreaModel = new DefaultMessageAreaModel(delegateFor);
+    private void init(Messagable delegate) {
+        this.messageAreaModel = new DefaultMessageAreaModel(delegate);
         this.messageAreaModel.addPropertyChangeListener(this);
     }
 
@@ -83,9 +65,6 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
             this.messageLabel = new JLabel();
             this.messageAreaModel.renderMessage(messageLabel);
         }
-        int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay * ONE_LINE_IN_DLU, messageLabel);
-        int prefWidth = messageLabel.getPreferredSize().width;
-        messageLabel.setPreferredSize(new Dimension(prefWidth, prefHeight));
         messageLabel.setOpaque(false);
         messageLabel.setVerticalAlignment(SwingConstants.TOP);
         messageLabel.setVerticalTextPosition(SwingConstants.TOP);
