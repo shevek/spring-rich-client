@@ -16,6 +16,7 @@
 package org.springframework.richclient.table;
 
 import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
@@ -112,6 +113,14 @@ public class TableSortIndicator {
                 if (columnView == -1) {
                     return;
                 }
+                // make sure mouseclick was not in resize area
+                Rectangle r = table.getTableHeader().getHeaderRect(columnView);
+                // working with a magic value of 3 here, as it is in TableHeaderUI
+                r.grow(-3, 0);
+                if(!r.contains(e.getPoint())) {
+                    return;
+                }
+
                 int column = table.convertColumnIndexToModel(columnView);
                 int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
                 ColumnToSort columnToSort = sortList.getSortLevel(column);
