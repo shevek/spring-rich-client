@@ -52,7 +52,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     };
 
     protected AbstractDialogPage() {
-
+        
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure,
             String title) {
-        this(pageId);
+        this(pageId, autoConfigure);
         if (title != null) {
             setTitle(title);
         }
@@ -110,7 +110,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      *            titles of this dialog page using the given pageId
      * @param title
      *            the title of this dialog page, or <code>null</code> if none
-     * @param image
+     * @param icon
      *            the image for this dialog page, or <code>null</code> if none
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure,
@@ -152,7 +152,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     /**
      * Sets or clears the message for this page.
-     * 
+     *
      * @param newMessage
      *            the message, or <code>null</code> to clear the message
      */
@@ -229,7 +229,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      * response to a help request.
      */
     public void performHelp() {
-
+        // nothing by default
     }
 
     protected abstract JComponent createControl();
