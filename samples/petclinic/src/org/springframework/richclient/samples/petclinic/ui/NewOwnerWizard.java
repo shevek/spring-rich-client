@@ -38,7 +38,8 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
     }
 
     public void addPages() {
-        addPage(new OwnerGeneralWizardPage());
+        addPage(new OwnerGeneralWizardPage());        
+        addPage(new OwnerAddressWizardPage());
     }
 
     public class OwnerGeneralWizardPage extends FormPageBackedWizardPage {
@@ -52,6 +53,21 @@ public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
             super.setVisible(bool);
             if (bool) {
                 ((OwnerGeneralPanel) getBackingFormPage()).requestFocusInWindow();
+            }
+        }
+    }
+    
+    public class OwnerAddressWizardPage extends FormPageBackedWizardPage {
+        public static final String ID = "newOwnerWizard.address";
+
+        public OwnerAddressWizardPage() {
+            super(ID, new AddressPanel(wizardForm.getFormModel()));
+        }
+
+        public void setVisible(boolean bool) {
+            super.setVisible(bool);
+            if (bool) {
+                ((AddressPanel) getBackingFormPage()).requestFocusInWindow();
             }
         }
     }

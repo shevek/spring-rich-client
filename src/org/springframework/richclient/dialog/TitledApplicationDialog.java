@@ -65,6 +65,10 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public String getDescription() {
+        return description;
+    }
 
     public JComponent getControl() {
         return titleAreaPane.getControl();
@@ -99,8 +103,8 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
         titleAreaPane.removeMessageListener(messageListener);        
     }  
 
-    private void updateDescription() {
-        titleAreaPane.setMessage(description);
+    public void updateDescription() {
+        titleAreaPane.setMessage(getDescription());
     }
 
     protected void setContentPane(JComponent c) {

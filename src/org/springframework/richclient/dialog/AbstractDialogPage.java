@@ -21,6 +21,7 @@ import java.awt.Window;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.factory.ControlFactory;
@@ -39,6 +40,8 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         DialogPage, ControlFactory {
 
     private String pageId;
+    
+    private boolean pageComplete = true;
 
     private MessageBuffer messageBuffer;
 
@@ -184,6 +187,24 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         boolean oldValue = getControl().isVisible();
         getControl().setVisible(visible);
         firePropertyChange("visible", oldValue, visible);
+    }
+    
+    public boolean isPageComplete() {
+        return pageComplete;
+    }
+
+    public void setPageComplete(boolean pageComplete) {
+        boolean oldValue = this.pageComplete;
+        this.pageComplete = pageComplete;
+        firePropertyChange("pageComplete", oldValue, pageComplete);        
+    }
+    
+    protected Guarded getPageCompleteGuarded() {
+        return new Guarded() {
+            public void setEnabled(boolean enabled) {
+                setPageComplete(enabled);
+            }            
+        };
     }
 
     public JComponent getControl() {

@@ -136,6 +136,9 @@ public abstract class ApplicationDialog extends
             title = DEFAULT_DIALOG_TITLE;
         }
         this.title = title;
+        if (dialog != null) {
+            dialog.setTitle(title);
+        }
     }
 
     public void setParent(Window parent) {

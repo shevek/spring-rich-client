@@ -19,6 +19,7 @@ import java.awt.Image;
 import java.beans.PropertyChangeListener;
 
 import org.springframework.richclient.factory.ControlFactory;
+import org.springframework.rules.reporting.Severity;
 
 public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
 
@@ -46,14 +47,17 @@ public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
 
     /**
      * Returns the current message for this dialog page.
-     * <p>
-     * A message provides instruction or information to the user, as opposed to
-     * an error message which should describe some error state.
-     * </p>
      * 
      * @return the message, or <code>null</code> if none
      */
     public String getMessage();
+    
+    /**
+     * Returns the current message severity for this dialog page.
+     * 
+     * @return the severity, or <code>null</code> if none
+     */
+    public Severity getSeverity();
 
     /**
      * Returns this dialog page's image.
@@ -75,6 +79,19 @@ public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
      *            <code>false</code> to hide it
      */
     public void setVisible(boolean visible);
+    
+
+    /**
+     * Returns whether this page is complete or not.
+     * <p>
+     * This information is typically to decide when it is
+     * okay to submit a form.
+     * </p>
+     * 
+     * @return <code>true</code> if this page is complete, and
+     *         <code>false</code> otherwise
+     */
+    public boolean isPageComplete();    
 
     /**
      * Adds a PropertyChangeListener to the listener list. The listener is

@@ -24,7 +24,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -44,14 +43,16 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.support.AbstractCommandDelegate;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
+import org.springframework.richclient.dialog.DialogPageDialog;
+import org.springframework.richclient.dialog.FormPageBackedDialogPage;
 import org.springframework.richclient.dialog.InputApplicationDialog;
-import org.springframework.richclient.dialog.TitledApplicationDialog;
+import org.springframework.richclient.dialog.TabbedDialogPage;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
-import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.rules.UnaryProcedure;
+import org.springframework.rules.values.NestingFormModel;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
@@ -273,36 +274,37 @@ public class OwnerManagerView extends AbstractView implements
     private class PropertiesCommandDelegate extends AbstractCommandDelegate {
         private OwnerGeneralPanel ownerGeneralPanel;
 
+        private NestingFormModel ownerFormModel;
+
+        private TabbedDialogPage tabbedPage;
+
         public void execute() {
             final Owner owner = getSelectedOwner();
-            TitledApplicationDialog dialog = new TitledApplicationDialog(
-                    "Properties", getParentWindowControl()) {
-                public JComponent createTitledDialogContentPane() {
-                    setTitleAreaText("Properties");
-                    setDescription("Owner Properties");
-                    ownerGeneralPanel = new OwnerGeneralPanel(SwingFormModel
-                            .createFormModel(owner));
-                    JComponent panel = ownerGeneralPanel.getControl();
-                    ownerGeneralPanel.newSingleLineResultsReporter(this, this);
-                    JTabbedPane mainTabbedPane = new JTabbedPane();
-                    panel.setBorder(GuiStandardUtils.createStandardBorder());
-                    mainTabbedPane.add(panel);
-                    mainTabbedPane.setTitleAt(0, "General");
-                    return mainTabbedPane;
-                }
 
+            ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
+
+            tabbedPage = new TabbedDialogPage("ownerEditTabs");
+            tabbedPage.addPage(new FormPageBackedDialogPage(
+                    "ownerEditTabs.general", new OwnerGeneralPanel(
+                            ownerFormModel)));
+            tabbedPage.addPage(new FormPageBackedDialogPage(
+                    "ownerEditTabs.address", new AddressPanel(ownerFormModel)));
+
+            DialogPageDialog dialog = new DialogPageDialog(tabbedPage, 
+                    getParentWindowControl()) {
                 protected void onWindowGainedFocus() {
                     ownerGeneralPanel.requestFocusInWindow();
-                    setEnabled(!ownerGeneralPanel.hasErrors());
+                    setEnabled(tabbedPage.isPageComplete());
                 }
 
                 protected boolean onFinish() {
-                    ownerGeneralPanel.commit();
+                    ownerFormModel.commit();
                     clinic.storeOwner(owner);
                     ownersTreeModel.nodeChanged(getSelectedOwnerNode());
                     return true;
                 }
             };
+
             dialog.showDialog();
         }
     };

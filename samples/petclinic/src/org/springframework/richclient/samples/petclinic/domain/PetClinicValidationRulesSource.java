@@ -25,6 +25,7 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
         Rules rules = Rules.createRules(Owner.class);
         rules.add("firstName", getNamePropertyConstraint());
         rules.add("lastName", getNamePropertyConstraint());
+        rules.add("address", required());
         return rules;
     }
 

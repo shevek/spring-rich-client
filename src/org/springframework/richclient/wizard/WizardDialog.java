@@ -152,7 +152,7 @@ public class WizardDialog extends TitledApplicationDialog implements
     }
 
     /**
-     * @see com.csi.commons.ui.WizardContainer#getCurrentPage()
+     * @see com.csi.commons.ui.WizardContainer#getActivePage()
      */
     public WizardPage getCurrentPage() {
         return currentPage;

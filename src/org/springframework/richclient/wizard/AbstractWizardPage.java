@@ -33,8 +33,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
 
     private Wizard wizard;
 
-    private boolean isPageComplete = true;
-
     private WizardPage previousPage;
 
     protected AbstractWizardPage(String pageId) {
@@ -82,30 +80,24 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         if (wizard == null) { return null; }
         return wizard.getContainer();
     }
+    
+    public void setPageComplete(boolean complete) {        
+        if (isPageComplete() != complete) {
+            super.setPageComplete(complete);
+            if (isCurrentPage()) {
+                getContainer().updateButtons();
+            }
+        }
+    }
 
     public Wizard getWizard() {
         return wizard;
     }
 
-    public boolean isPageComplete() {
-        return isPageComplete;
-    }
-
-   public void setDescription(String description) {
+    public void setDescription(String description) {
         super.setDescription(description);
         if (isCurrentPage()) {
             getContainer().updateTitleBar();
-        }
-    }
-
-    public void setPageComplete(boolean complete) {
-        if (isPageComplete != complete) {
-            boolean oldValue = isPageComplete;
-            isPageComplete = complete;
-            firePropertyChange("pageComplete", oldValue, complete);
-            if (isCurrentPage()) {
-                getContainer().updateButtons();
-            }
         }
     }
 
@@ -116,7 +108,7 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     public void setVisible(boolean visible) {
         JComponent control = getControl();
         if (control != null) {
-            control.setVisible(visible);
+            super.setVisible(visible);
             control.requestFocusInWindow();
         }
     }
