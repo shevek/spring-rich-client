@@ -470,7 +470,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         JComponent dialogContentPane = createDialogContentPane();
         GuiStandardUtils.attachDialogBorder(dialogContentPane);
         if (getPreferredSize() != null) {
-            dialogContentPane.setSize(getPreferredSize());
+            dialogContentPane.setPreferredSize(getPreferredSize());
         }
         getDialogContentPane().add(dialogContentPane);
         getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
