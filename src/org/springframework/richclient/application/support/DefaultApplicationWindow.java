@@ -96,7 +96,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     }
 
     protected ApplicationLifecycleAdvisor getAdvisor() {
-        return Application.instance().getAdvisor();
+        return Application.instance().getLifecycleAdvisor();
     }
 
     protected ApplicationServices getServices() {

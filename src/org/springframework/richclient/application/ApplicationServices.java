@@ -124,9 +124,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements App
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No component factory bean found under name " + COMPONENT_FACTORY_BEAN_ID
                     + "; creating using existing image source.");
-            DefaultComponentFactory f = new DefaultComponentFactory();
-            f.setApplicationContext(getApplicationContext());
-            this.componentFactory = f;
+            this.componentFactory = new DefaultComponentFactory();
         }
         catch (IllegalArgumentException e) {
             this.componentFactory = new DefaultComponentFactory();

@@ -13,15 +13,22 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
+import org.springframework.util.Assert;
+
 /**
  * @author Keith Donald
  */
 public class DefaultButtonFactory implements ButtonFactory {
 
-    private static final ButtonFactory INSTANCE = new DefaultButtonFactory();
+    private static ButtonFactory INSTANCE = new DefaultButtonFactory();
 
     public static final ButtonFactory instance() {
         return INSTANCE;
+    }
+
+    public static void load(DefaultButtonFactory instance) {
+        Assert.notNull(instance, "The sole default button factory instance is required");
+        INSTANCE = instance;
     }
 
     public JButton createButton() {

@@ -32,15 +32,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.ApplicationObjectSupport;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.enums.CodedEnumResolver;
 import org.springframework.enums.support.StaticCodedEnumResolver;
-import org.springframework.richclient.command.CommandServices;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.control.PatchedJFormattedTextField;
 import org.springframework.richclient.core.UIConstants;
@@ -59,37 +62,37 @@ import org.springframework.util.comparator.CompoundComparator;
  * 
  * @author Keith Donald
  */
-public class DefaultComponentFactory extends ApplicationObjectSupport implements ComponentFactory {
-    private CommandServices commandServices;
+public class DefaultComponentFactory implements ComponentFactory {
+    private final Log logger = LogFactory.getLog(getClass());
+
+    private MessageSourceAccessor messages;
 
     private IconSource iconSource;
 
+    private ButtonFactory buttonFactory;
+
+    private MenuFactory menuFactory;
+
     private CodedEnumResolver enumResolver = StaticCodedEnumResolver.instance();
 
-    public void setCommandServices(CommandServices commandServices) {
-        this.commandServices = commandServices;
+    public void setMessageSource(MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
     }
 
     public void setIconSource(IconSource iconSource) {
         this.iconSource = iconSource;
     }
 
+    public void setButtonFactory(ButtonFactory buttonFactory) {
+        this.buttonFactory = buttonFactory;
+    }
+
+    public void setMenuFactory(MenuFactory menuFactory) {
+        this.menuFactory = menuFactory;
+    }
+
     public void setEnumResolver(CodedEnumResolver enumResolver) {
         this.enumResolver = enumResolver;
-    }
-
-    protected ButtonFactory getButtonFactory() {
-        if (commandServices == null) {
-            return DefaultButtonFactory.instance();
-        }
-        return commandServices.getButtonFactory();
-    }
-
-    protected MenuFactory getMenuFactory() {
-        if (commandServices == null) {
-            return DefaultMenuFactory.instance();
-        }
-        return commandServices.getMenuFactory();
     }
 
     public JLabel createLabel(String labelKey) {
@@ -102,6 +105,43 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
 
     public JLabel createLabel(String labelKey, Object[] arguments) {
         return getLabelInfo(getRequiredMessage(labelKey, arguments)).configureLabel(createNewLabel());
+    }
+
+    protected LabelInfo getLabelInfo(String label) {
+        return new LabelInfoFactory(label).createLabelInfo();
+    }
+
+    protected String getRequiredMessage(String messageKey) {
+        return getRequiredMessage(messageKey, null);
+    }
+
+    protected String getRequiredMessage(final String[] messageKeys) {
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageKeys;
+            }
+
+            public Object[] getArguments() {
+                return null;
+            }
+
+            public String getDefaultMessage() {
+                if (messageKeys.length > 0) {
+                    return messageKeys[0];
+                }
+                else {
+                    return "";
+                }
+            }
+        };
+        return getMessages().getMessage(resolvable);
+    }
+    
+    private MessageSourceAccessor getMessages() {
+        if (messages == null) {
+            return Application.services().getMessages();
+        }
+        return messages;
     }
 
     public JLabel createLabel(String labelKey, ValueModel[] argumentValueHolders) {
@@ -148,6 +188,16 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         }
     }
 
+    private String getRequiredMessage(String messageKey, Object[] args) {
+        try {
+            String message = getMessages().getMessage(messageKey, args);
+            return message;
+        }
+        catch (NoSuchMessageException e) {
+            return messageKey;
+        }
+    }
+
     public JLabel createTitleLabel(String labelKey) {
         return com.jgoodies.forms.factories.DefaultComponentFactory.getInstance().createTitle(
                 getRequiredMessage(labelKey));
@@ -176,6 +226,17 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         return (JButton)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(getButtonFactory().createButton());
     }
 
+    protected CommandButtonLabelInfo getButtonLabelInfo(String label) {
+        return new LabelInfoFactory(label).createButtonLabelInfo();
+    }
+
+    protected ButtonFactory getButtonFactory() {
+        if (buttonFactory == null) {
+            return DefaultButtonFactory.instance();
+        }
+        return buttonFactory;
+    }
+
     public JComponent createLabeledSeparator(String labelKey) {
         return createLabeledSeparator(labelKey, Alignment.LEFT);
     }
@@ -194,6 +255,13 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
 
     public JMenuItem createMenuItem(String labelKey) {
         return (JMenuItem)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(getMenuFactory().createMenuItem());
+    }
+
+    protected MenuFactory getMenuFactory() {
+        if (menuFactory == null) {
+            return DefaultMenuFactory.instance();
+        }
+        return menuFactory;
     }
 
     public JComponent createLabeledSeparator(String labelKey, Alignment alignment) {
@@ -234,7 +302,7 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         comparator.addComparator(AbstractCodedEnum.LABEL_ORDER);
         comparator.addComparator(ComparableComparator.instance());
         comboBox.setModel(new ComboBoxListModel(enumValues, comparator));
-        comboBox.setRenderer(new CodedEnumListRenderer(getApplicationContext()));
+        comboBox.setRenderer(new CodedEnumListRenderer());
     }
 
     public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
@@ -276,82 +344,23 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         tabbedPane.setToolTipTextAt(tabIndex, getCaption(labelKey));
     }
 
-    protected LabelInfo getLabelInfo(String label) {
-        return new LabelInfoFactory(label).createLabelInfo();
-    }
-
-    protected CommandButtonLabelInfo getButtonLabelInfo(String label) {
-        return new LabelInfoFactory(label).createButtonLabelInfo();
-    }
-
-    protected String getCaption(String labelKey) {
+    private String getCaption(String labelKey) {
         return getOptionalMessage(labelKey + ".caption");
     }
 
-    protected Icon getIcon(String labelKey) {
-        if (iconSource != null) {
-            return iconSource.getIcon(labelKey + ".icon");
-        }
-        else {
-            return null;
-        }
-    }
-
     protected String getOptionalMessage(String messageKey) {
-        if (getMessageSourceAccessor() != null) {
-            return getMessageSourceAccessor().getMessage(messageKey, (String)null);
-        }
-        else {
-            return null;
-        }
+        return getMessages().getMessage(messageKey, (String)null);
     }
 
-    protected String getRequiredMessage(final String[] messageKeys) {
-        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
-            public String[] getCodes() {
-                return messageKeys;
-            }
-
-            public Object[] getArguments() {
-                return null;
-            }
-
-            public String getDefaultMessage() {
-                if (messageKeys.length > 0) {
-                    return messageKeys[0];
-                }
-                else {
-                    return "";
-                }
-            }
-        };
-        if (getMessageSourceAccessor() != null) {
-            return getMessageSourceAccessor().getMessage(resolvable);
-        }
-        else {
-            logger.warn("No message source is set; returning key " + messageKeys[0]);
-            return messageKeys[0];
-        }
+    private Icon getIcon(String labelKey) {
+        return getIconSource().getIcon(labelKey);
     }
 
-    protected String getRequiredMessage(String messageKey) {
-        return getRequiredMessage(messageKey, null);
-    }
-
-    protected String getRequiredMessage(String messageKey, Object[] args) {
-        if (getMessageSourceAccessor() != null) {
-            try {
-                String message = getMessageSourceAccessor().getMessage(messageKey, args);
-                return message;
-            }
-            catch (NoSuchMessageException e) {
-                return messageKey;
-            }
+    private IconSource getIconSource() {
+        if (iconSource == null) {
+            return Application.services().getIconSource();
         }
-        else {
-            logger.warn("No message source is set; returning key " + messageKey);
-            return messageKey;
-        }
+        return iconSource;
     }
 
 }

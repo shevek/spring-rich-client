@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * A singleton workbench or shell of a rich client application.
@@ -36,15 +37,19 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class Application implements InitializingBean, ApplicationContextAware {
+    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
+
     private static final String APPLICATION_WINDOW_BEAN_ID = "applicationWindowPrototype";
 
     private static Application SOLE_INSTANCE;
 
-    private ApplicationContext applicationContext;
+    private ApplicationDescriptor descriptor;
 
-    private ApplicationServices applicationServices;
+    private ApplicationServices services;
 
-    private ApplicationLifecycleAdvisor applicationAdvisor;
+    private ApplicationLifecycleAdvisor lifecycleAdvisor;
+
+    private ApplicationContext context;
 
     private ApplicationWindow activeWindow;
 
@@ -53,8 +58,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
     /**
      * Load the single application instance.
      * 
-     * @param instance
-     *            The application
+     * @param instance The application
      */
     public static void load(Application instance) {
         SOLE_INSTANCE = instance;
@@ -86,55 +90,75 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public Application(ApplicationLifecycleAdvisor advisor) {
-        this(advisor, null);
+        this(null, advisor, null);
     }
 
-    public Application(ApplicationLifecycleAdvisor advisor, ApplicationServices services) {
-        setAdvisor(advisor);
+    public Application(ApplicationDescriptor descriptor, ApplicationLifecycleAdvisor advisor) {
+        this(descriptor, advisor, null);
+    }
+
+    public Application(ApplicationDescriptor descriptor, ApplicationLifecycleAdvisor advisor,
+            ApplicationServices services) {
+        setDescriptor(descriptor);
+        setLifecycleAdvisor(advisor);
         setServices(services);
-        windowManager = new WindowManager();
-        windowManager.addObserver(new CloseApplicationObserver());
+        this.windowManager = new WindowManager();
+        this.windowManager.addObserver(new CloseApplicationObserver());
         Assert.state(!isLoaded(), "Only one instance of a Spring Rich Application allowed per VM.");
         load(this);
     }
 
+    public void setDescriptor(ApplicationDescriptor descriptor) {
+        this.descriptor = descriptor;
+    }
+
     public void setServices(ApplicationServices services) {
-        this.applicationServices = services;
+        this.services = services;
     }
 
-    private void setAdvisor(ApplicationLifecycleAdvisor advisor) {
-        this.applicationAdvisor = advisor;
+    private void setLifecycleAdvisor(ApplicationLifecycleAdvisor advisor) {
+        this.lifecycleAdvisor = advisor;
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public void setApplicationContext(ApplicationContext context) {
+        this.context = context;
     }
 
     public void afterPropertiesSet() throws Exception {
-        Assert.notNull(this.applicationAdvisor,
+        Assert.notNull(this.lifecycleAdvisor,
                 "The application advisor is required, for processing of application lifecycle events");
-        getAdvisor().onPreInitialize(this);
+        getLifecycleAdvisor().onPreInitialize(this);
         getServices();
     }
 
-    public ApplicationLifecycleAdvisor getAdvisor() {
-        return applicationAdvisor;
+    public ApplicationLifecycleAdvisor getLifecycleAdvisor() {
+        return lifecycleAdvisor;
     }
 
     public ApplicationServices getServices() {
-        if (applicationServices == null) {
-            applicationServices = new ApplicationServices();
-            applicationServices.setApplicationContext(applicationContext);
+        if (services == null) {
+            services = new ApplicationServices();
+            services.setApplicationContext(context);
         }
-        return applicationServices;
+        return services;
     }
 
     public String getName() {
-        return getAdvisor().getApplicationName();
+        if (descriptor != null && StringUtils.hasText(descriptor.getDisplayName())) {
+            return descriptor.getDisplayName();
+        }
+        else {
+            return "Spring Rich Client Application";
+        }
     }
 
     public Image getImage() {
-        return getAdvisor().getApplicationImage();
+        if (descriptor != null && descriptor.getImage() != null) {
+            return descriptor.getImage();
+        }
+        else {
+            return Application.services().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+        }
     }
 
     public void openWindow(String pageDescriptorId) {

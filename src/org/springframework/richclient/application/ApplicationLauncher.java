@@ -175,8 +175,8 @@ public class ApplicationLauncher {
         try {
             Application application = (Application)rootApplicationContext.getBean(APPLICATION_BEAN_ID,
                     Application.class);
-            application.openWindow(application.getAdvisor().getStartingPageId());
-            application.getAdvisor().onPostStartup();
+            application.openWindow(application.getLifecycleAdvisor().getStartingPageId());
+            application.getLifecycleAdvisor().onPostStartup();
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.error("A single org.springframework.richclient.Application bean definition must be defined "

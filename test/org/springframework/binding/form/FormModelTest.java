@@ -40,7 +40,7 @@ import org.springframework.util.closure.Closure;
 public class FormModelTest extends TestCase {
 
     static {
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor(), new ApplicationServices());
+        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
         Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
         Application.services().setApplicationContext(new StaticApplicationContext());
     }

@@ -57,7 +57,7 @@ public class ApplicationServicesAccessor {
     protected ComponentFactory getComponentFactory() {
         return getApplicationServices().getComponentFactory();
     }
-
+    
     protected MessageSource getMessageSource() {
         return getApplicationContext();
     }

@@ -15,33 +15,26 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.awt.Image;
 import java.util.Properties;
 
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
  * @author Jim Moore
  */
 public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
-    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
-
     private static final String EXCEPTION_HANDLER_KEY = "sun.awt.exception.handler";
 
     private Application application;
-
-    private ApplicationDescriptor applicationDescriptor;
 
     private ApplicationWindow openingWindow;
 
@@ -51,18 +44,13 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
     private Class eventExceptionHandler;
 
-    public void setApplicationDescriptor(ApplicationDescriptor info) {
-        this.applicationDescriptor = info;
-    }
-
     /**
      * This is used to allow the ViewDescriptor to be lazily created when the
      * ApplicationWindow is opened. Useful when the ApplicationAdvisor needs to
      * do things before ViewDescriptor should be created, such as setting up a
      * security context.
      * 
-     * @param startingViewDescriptorBeanName
-     *            the name of the bean to create
+     * @param startingViewDescriptorBeanName the name of the bean to create
      * 
      * @see #getStartingViewDescriptor()
      */
@@ -75,8 +63,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
      * {@link java.awt.EventDispatchThread}. The class must have a no-arg
      * public constructor and a method "public void handle(Throwable)".
      * 
-     * @param eventExceptionHandler
-     *            the class to use
+     * @param eventExceptionHandler the class to use
      * 
      * @see java.awt.EventDispatchThread#handleException(Throwable)
      */
@@ -106,24 +93,6 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
         return getApplication().getServices();
     }
 
-    public String getApplicationName() {
-        if (applicationDescriptor != null && StringUtils.hasText(applicationDescriptor.getDisplayName())) {
-            return applicationDescriptor.getDisplayName();
-        }
-        else {
-            return "Spring Rich Client Application";
-        }
-    }
-
-    public Image getApplicationImage() {
-        if (applicationDescriptor != null && applicationDescriptor.getImage() != null) {
-            return applicationDescriptor.getImage();
-        }
-        else {
-            return Application.services().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
-        }
-    }
-
     public void onPreInitialize(Application application) {
         this.application = application;
     }
@@ -138,8 +107,8 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         this.openingWindow = configurer.getWindow();
-        configurer.setTitle(getApplicationName());
-        configurer.setImage(getApplicationImage());
+        configurer.setTitle(getApplication().getName());
+        configurer.setImage(getApplication().getImage());
     }
 
     protected final ApplicationWindow getOpeningWindow() {
