@@ -170,6 +170,14 @@ public class DefaultApplicationPage implements ApplicationPage,
         return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
     }
 
+    public void openEditor(Object editorInput) {
+        // todo
+    }
+
+    public void closeAllEditors() {
+        // todo
+    }
+
     public void addPageComponentListener(PageComponentListener listener) {
         pageComponentListeners.add(listener);
     }

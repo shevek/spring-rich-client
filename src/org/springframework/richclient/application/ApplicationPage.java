@@ -17,5 +17,9 @@ public interface ApplicationPage extends ControlFactory {
 
     public void showView(ViewDescriptor viewDescriptor);
 
+    public void openEditor(Object editorInput);
+
+    public void closeAllEditors();
+    
     public void close();
 }
