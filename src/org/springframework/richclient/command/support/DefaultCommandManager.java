@@ -233,7 +233,6 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         TargetableActionCommand newCommand = new TargetableActionCommand(
                 commandId, delegate);
         configure(newCommand);
-        System.out.println(newCommand.isFaceConfigured());
         registerCommand(newCommand);
         return newCommand;
     }
