@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/src"/>
 	<classpathentry output="target/test-classes" kind="src" path="test"/>
 	<classpathentry output="target/sandbox/classes" kind="src" path="sandbox/src"/>
 	<classpathentry output="target/sandbox/test-classes" kind="src" path="sandbox/test"/>
 	<classpathentry kind="src" path="resources"/>
+	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/src"/>
 	<classpathentry output="samples/petclinic/target/tests" kind="src" path="samples/petclinic/test"/>
 	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
