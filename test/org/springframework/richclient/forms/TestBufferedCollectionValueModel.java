@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.form;
+package org.springframework.richclient.forms;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -133,13 +134,14 @@ public class TestBufferedCollectionValueModel extends TestCase {
         Object newValue = new Double(1);
         llm.set(1, newValue);
         vm.commit();
-        assertEquals(
-                "change should have been commited back to original array as size did not change",
-                backingArray[1], newValue);
+        Object[] newBackingArray = (Object[])vm.getWrappedModel().get();
+        assertNotSame(
+                "change should not have been commited back to original array",
+                newBackingArray, backingArray);
 
         llm.add(newValue);
         vm.commit();
-        Object[] newBackingArray = (Object[])vm.getWrappedModel().get();
+        newBackingArray = (Object[])vm.getWrappedModel().get();
         assertNotSame(
                 "change should not have been commited back to original array",
                 newBackingArray, backingArray);
@@ -183,21 +185,24 @@ public class TestBufferedCollectionValueModel extends TestCase {
             int orgSize = backingCollection.size();
             llm.set(1, newValue);
             vm.commit();
+            Collection newBackingCollection = (Collection)vm.getWrappedModel()
+            .get();
             assertTrue(
-                    "change should have been commited back to original array",
-                    backingCollection.contains(newValue));
-            assertTrue(orgSize == backingCollection.size());
+                    "change should not have been commited back to original array",
+                    ! backingCollection.contains(newValue));
+            assertTrue(newBackingCollection.contains(newValue));
+            assertTrue(orgSize == newBackingCollection.size());
 
             newValue = new Integer(-2);
             backingCollection.remove(newValue);
             orgSize = backingCollection.size();
             llm.add(newValue);
             vm.commit();
-            Collection newBackingCollection = (Collection)vm.getWrappedModel()
+            newBackingCollection = (Collection)vm.getWrappedModel()
                     .get();
 
+            assertTrue(newBackingCollection.contains(newValue));
             assertTrue(newBackingCollection.size() == orgSize + 1);
-            assertEquals(newBackingCollection, backingCollection);
 
             llm.clear();
             vm.commit();
@@ -222,7 +227,7 @@ public class TestBufferedCollectionValueModel extends TestCase {
     }
 
     public void testListListModelKeepsStuctureOfBackingObjectAfterCommit() {
-        Collection backingCollection = getCollection(HashSet.class, 1);
+        Collection backingCollection = getCollection(HashSet.class, 500);
         int origLength = backingCollection.size();
         BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingCollection);
         ListListModel llm = (ListListModel)vm.get();
@@ -234,7 +239,7 @@ public class TestBufferedCollectionValueModel extends TestCase {
                 llm.size() == origLength);
         assertHasSameStructure(llm, backingCollection);
 
-        backingCollection = getCollection(TreeSet.class, 1);
+        backingCollection = getCollection(TreeSet.class, 501);
         vm = getBufferedCollectionValueModel(backingCollection);
         llm = (ListListModel)vm.get();
         Collections.reverse(llm);
@@ -242,6 +247,23 @@ public class TestBufferedCollectionValueModel extends TestCase {
         vm.commit();
         assertTrue("LLM should be sorted the same way as backingCollection",
                 ((Comparable)llm.get(0)).compareTo(llm.get(1)) < 0);
+        assertHasSameStructure(llm, backingCollection);
+        
+        backingCollection = new TreeSet(new Comparator() {
+
+            public int compare(Object o1, Object o2) {                
+                return ((Comparable)o2).compareTo(o1);
+            }
+            
+        });
+        populateCollection(backingCollection, 502);
+        vm = getBufferedCollectionValueModel(backingCollection);
+        llm = (ListListModel)vm.get();
+        Collections.reverse(llm);
+        assertTrue(((Comparable)llm.get(0)).compareTo(llm.get(1)) < 0);
+        vm.commit();
+        assertTrue("LLM should be sorted the same way as backingCollection",
+                ((Comparable)llm.get(0)).compareTo(llm.get(1)) > 0);
         assertHasSameStructure(llm, backingCollection);
     }
 
@@ -290,7 +312,10 @@ public class TestBufferedCollectionValueModel extends TestCase {
     }
 
     private Collection getCollection(Class collectionClass, long randomSeed) {
-        Collection c = (Collection)BeanUtils.instantiateClass(collectionClass);
+        return populateCollection((Collection)BeanUtils.instantiateClass(collectionClass), randomSeed);
+    }
+    
+    private Collection populateCollection(Collection c, long randomSeed) {
         Random random = new Random(randomSeed);
         c.add(new Integer(random.nextInt()));
         c.add(new Integer(random.nextInt()));
