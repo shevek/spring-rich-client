@@ -600,7 +600,7 @@ public class TablePanelBuilder {
             setColumnSpec(maxColumns, getDefaultColSpec());
         }
 
-        if (rowSpecs.size() < getCurrentRow()) {
+        if (rowSpecs.size() <= getCurrentRow()) {
             setRowSpec(getCurrentRow(), getDefaultRowSpec());
         }
     }
