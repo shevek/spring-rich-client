@@ -119,8 +119,14 @@ public class FileChooserComboBox extends AbstractControlFactory {
                 int returnVal = fileChooser.showOpenDialog(SwingUtilities
                         .getWindowAncestor(browseButton));
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fileNameField.setText(fileChooser.getSelectedFile()
-                            .getAbsolutePath());
+                    File selectedFile = fileChooser.getSelectedFile();
+                    fileNameField.setText(selectedFile.getAbsolutePath());
+                    if (selectedFile.isDirectory()) {
+                        setStartDirectory(selectedFile);
+                    }
+                    else {
+                        setStartDirectory(selectedFile.getParentFile());
+                    }
                 }
             }
         });
