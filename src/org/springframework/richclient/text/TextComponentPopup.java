@@ -49,16 +49,22 @@ import org.springframework.richclient.command.support.GlobalCommandIds;
  * 
  * @author oliverh
  */
-public class TextComponentPopup extends MouseAdapter implements FocusListener,
-        CaretListener, UndoableEditListener {
+public class TextComponentPopup
+    extends MouseAdapter
+    implements FocusListener, CaretListener, UndoableEditListener {
 
-    private static final String[] COMMANDS = new String[] {
-                        GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
-                        GlobalCommandIds.COPY, GlobalCommandIds.CUT,
-                        GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL };
-                        
-	public static void attachPopup(JTextComponent textComponent,
-            ValueModel resetUndoHistoryTrigger) {
+    private static final String[] COMMANDS =
+        new String[] {
+            GlobalCommandIds.UNDO,
+            GlobalCommandIds.REDO,
+            GlobalCommandIds.COPY,
+            GlobalCommandIds.CUT,
+            GlobalCommandIds.PASTE,
+            GlobalCommandIds.SELECT_ALL };
+
+    public static void attachPopup(
+        JTextComponent textComponent,
+        ValueModel resetUndoHistoryTrigger) {
         new TextComponentPopup(textComponent, resetUndoHistoryTrigger);
     }
 
@@ -86,8 +92,9 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
 
     private final SelectAllCommandExecutor selectAll = new SelectAllCommandExecutor();
 
-    protected TextComponentPopup(JTextComponent textComponent,
-            ValueModel resetUndoHistoryTrigger) {
+    protected TextComponentPopup(
+        JTextComponent textComponent,
+        ValueModel resetUndoHistoryTrigger) {
         this.textComponent = textComponent;
         this.resetUndoHistoryTrigger = resetUndoHistoryTrigger;
         registerListeners();
@@ -100,53 +107,65 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
         textComponent.addCaretListener(this);
         textComponent.getDocument().addUndoableEditListener(this);
         if (resetUndoHistoryTrigger != null) {
-            resetUndoHistoryTrigger
-                    .addValueChangeListener(new ValueChangeListener() {
-                        public void valueChanged() {
-                            if (Boolean.TRUE.equals(resetUndoHistoryTrigger
-                                    .getValue())) {
-                                undoManager.discardAllEdits();
-                                updateUndoRedoState();
-                            }
-                        }
-                    });
+            resetUndoHistoryTrigger.addValueChangeListener(new ValueChangeListener() {
+                public void valueChanged() {
+                    if (Boolean.TRUE.equals(resetUndoHistoryTrigger.getValue())) {
+                        undoManager.discardAllEdits();
+                        updateUndoRedoState();
+                    }
+                }
+            });
         }
     }
 
     protected CommandManager getCommandManager() {
-    	CommandManager commandManager;    	
+        CommandManager commandManager;
         ApplicationWindow appWindow = Application.instance().getActiveWindow();
-        if (appWindow == null
-        		|| appWindow.getCommandManager() == null) {
+        if (appWindow == null || appWindow.getCommandManager() == null) {
             if (localCommandManager == null) {
                 localCommandManager = new DefaultCommandManager();
             }
             commandManager = localCommandManager;
         }
         else {
-        	commandManager = appWindow.getCommandManager();
-        }        
-        for (int i=0; i<COMMANDS.length; i++) {
-        	if (!commandManager.containsActionCommand(COMMANDS[i])) {
-        		commandManager.addNewCommand(new TargetableActionCommand(
-        				COMMANDS[i], null), COMMANDS[i]);
-        	}
-        }        
+            commandManager = appWindow.getCommandManager();
+        }
+        for (int i = 0; i < COMMANDS.length; i++) {
+            if (!commandManager.containsActionCommand(COMMANDS[i])) {
+                commandManager.addNewCommand(
+                    new TargetableActionCommand(COMMANDS[i], null),
+                    COMMANDS[i]);
+            }
+        }
         return commandManager;
     }
 
     public void registerAccelerators() {
-        CommandManager commandManager = getCommandManager();        
+        CommandManager commandManager = getCommandManager();
         Keymap keymap = textComponent.getKeymap();
-        String[] commandIds = new String[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO,};
-        for (int i=0; i<COMMANDS.length; i++) {
-        	ActionCommand command = commandManager.getActionCommand(COMMANDS[i]);
-        	keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
+        String[] commandIds = new String[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO, };
+        for (int i = 0; i < COMMANDS.length; i++) {
+            ActionCommand command = commandManager.getActionCommand(COMMANDS[i]);
+            keymap.addActionForKeyStroke(command.getAccelerator(), command.getSwingActionAdapter());
         }
     }
 
+    /**
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
     public void mousePressed(MouseEvent evt) {
-        if (evt.getModifiers() == MouseEvent.BUTTON3_MASK) {
+        maybeShowPopup(evt);
+    }
+
+    /** 
+     * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+     */
+    public void mouseReleased(MouseEvent evt) {
+        maybeShowPopup(evt);
+    }
+
+    private void maybeShowPopup(MouseEvent evt) {
+        if (evt.isPopupTrigger()) {
             createPopup().show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
@@ -186,18 +205,20 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
     }
 
     private void updateState() {
-        boolean hasSelection = textComponent.getSelectionStart() != textComponent
-                .getSelectionEnd();
+        boolean hasSelection = textComponent.getSelectionStart() != textComponent.getSelectionEnd();
         copy.setEnabled(hasSelection);
         selectAll.setEnabled(textComponent.getDocument().getLength() > 0);
         boolean isEditable = isEditable();
         cut.setEnabled(hasSelection && isEditable);
-        boolean canPaste = isEditable
+        boolean canPaste =
+            isEditable
                 && textComponent.getTransferHandler().canImport(
-                        textComponent,
-                        Toolkit.getDefaultToolkit().getSystemClipboard()
-                                .getContents(textComponent)
-                                .getTransferDataFlavors());
+                    textComponent,
+                    Toolkit
+                        .getDefaultToolkit()
+                        .getSystemClipboard()
+                        .getContents(textComponent)
+                        .getTransferDataFlavors());
         paste.setEnabled(canPaste);
         updateUndoRedoState();
     }
@@ -209,79 +230,72 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
 
     private boolean isEditable() {
         return !(textComponent instanceof JPasswordField)
-                && textComponent.isEnabled() && textComponent.isEditable();
+            && textComponent.isEnabled()
+            && textComponent.isEditable();
     }
 
     protected CommandGroup getEditableCommandGroup() {
-        CommandGroup editGroup = getCommandManager().getCommandGroup(
-                "textEditMenu");
+        CommandGroup editGroup = getCommandManager().getCommandGroup("textEditMenu");
         if (editGroup == null) {
-            editGroup = getCommandManager().createCommandGroup(
+            editGroup =
+                getCommandManager().createCommandGroup(
                     "textEditMenu",
-                    new Object[] { GlobalCommandIds.UNDO,
-                            GlobalCommandIds.REDO, "separator",
-                            GlobalCommandIds.CUT, GlobalCommandIds.COPY,
-                            GlobalCommandIds.PASTE, "separator",
-                            GlobalCommandIds.SELECT_ALL });
+                    new Object[] {
+                        GlobalCommandIds.UNDO,
+                        GlobalCommandIds.REDO,
+                        "separator",
+                        GlobalCommandIds.CUT,
+                        GlobalCommandIds.COPY,
+                        GlobalCommandIds.PASTE,
+                        "separator",
+                        GlobalCommandIds.SELECT_ALL });
         }
         return editGroup;
     }
 
     protected CommandGroup getPasswordCommandGroup() {
-        CommandGroup passwordGroup = getCommandManager().getCommandGroup(
-                "passwordTextEditMenu");
+        CommandGroup passwordGroup = getCommandManager().getCommandGroup("passwordTextEditMenu");
         if (passwordGroup == null) {
-            passwordGroup = getCommandManager()
-                    .createCommandGroup(
-                            "passwordTextEditMenu",
-                            new Object[] { GlobalCommandIds.UNDO,
-                                    GlobalCommandIds.REDO });
+            passwordGroup =
+                getCommandManager().createCommandGroup(
+                    "passwordTextEditMenu",
+                    new Object[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO });
         }
         return passwordGroup;
     }
 
     protected CommandGroup getReadOnlyCommandGroup() {
-        CommandGroup readOnlyGroup = getCommandManager().getCommandGroup(
-                "readOnlyTextEditMenu");
+        CommandGroup readOnlyGroup = getCommandManager().getCommandGroup("readOnlyTextEditMenu");
         if (readOnlyGroup == null) {
-            readOnlyGroup = getCommandManager().createCommandGroup(
+            readOnlyGroup =
+                getCommandManager().createCommandGroup(
                     "readOnlyTextEditMenu",
-                    new Object[] { GlobalCommandIds.COPY, "separator",
-                            GlobalCommandIds.SELECT_ALL });
+                    new Object[] {
+                        GlobalCommandIds.COPY,
+                        "separator",
+                        GlobalCommandIds.SELECT_ALL });
         }
         return readOnlyGroup;
     }
 
     private void registerCommandExecutors() {
         CommandManager commandManager = getCommandManager();
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.UNDO, undo);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.REDO, redo);
-        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.CUT,
-                cut);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.COPY, copy);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.PASTE, paste);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.SELECT_ALL, selectAll);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.UNDO, undo);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.REDO, redo);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.CUT, cut);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.COPY, copy);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.PASTE, paste);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.SELECT_ALL, selectAll);
     }
 
     private void unregisterCommandExecutors() {
         CommandManager commandManager = getCommandManager();
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.UNDO, null);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.REDO, null);
-        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.CUT,
-                null);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.COPY, null);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.PASTE, null);
-        commandManager.setTargetableActionCommandExecutor(
-                GlobalCommandIds.SELECT_ALL, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.UNDO, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.REDO, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.CUT, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.COPY, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.PASTE, null);
+        commandManager.setTargetableActionCommandExecutor(GlobalCommandIds.SELECT_ALL, null);
     }
 
     private class UndoCommandExecutor extends AbstractActionCommandExecutor {
