@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JComponent;
+import javax.swing.text.JTextComponent;
 
 import org.springframework.rules.Algorithms;
 import org.springframework.rules.UnaryProcedure;
@@ -51,13 +52,17 @@ public class GuardedGroup implements Guarded {
     }
 
     public boolean isEnabled() {
-        if (groupEnabledState == null) { return false; }
+        if (groupEnabledState == null) {
+            return false;
+        }
         return groupEnabledState.booleanValue();
     }
 
     public void setEnabled(final boolean enabled) {
         if (this.groupEnabledState != null
-                && this.groupEnabledState.booleanValue() == enabled) { return; }
+                && this.groupEnabledState.booleanValue() == enabled) {
+            return;
+        }
         Algorithms.instance().forEachIn(guardedGroup, new UnaryProcedure() {
             public void run(Object guarded) {
                 ((Guarded)guarded).setEnabled(enabled);
@@ -104,15 +109,33 @@ public class GuardedGroup implements Guarded {
     }
 
     public static final Guarded createGuardedAdapter(final JComponent component) {
-        return new Guarded() {
-            public boolean isEnabled() {
-                return component.isEnabled();
-            }
+        if (component instanceof JTextComponent) {
+            // JTextComponents are different from most JComponents in that
+            //   they are best disabled by invoking the setEditable method.
+            // setEnabled(false) completely disables the control -- including
+            //   the ability to copy to the clipboard.
+            final JTextComponent textComp = (JTextComponent)component;
+            return new Guarded() {
+                public boolean isEnabled() {
+                    return textComp.isEditable();
+                }
 
-            public void setEnabled(boolean enabled) {
-                component.setEnabled(enabled);
-            }
-        };
+                public void setEnabled(boolean enabled) {
+                    textComp.setEditable(enabled);
+                }
+            };
+        }
+        else {
+            return new Guarded() {
+                public boolean isEnabled() {
+                    return component.isEnabled();
+                }
+
+                public void setEnabled(boolean enabled) {
+                    component.setEnabled(enabled);
+                }
+            };
+        }
     };
 
     public static final GuardedGroup createGuardedGroup(
@@ -125,4 +148,5 @@ public class GuardedGroup implements Guarded {
         g.guardedGroup = guardedSet;
         return g;
     };
+
 }
