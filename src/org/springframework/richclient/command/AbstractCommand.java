@@ -37,7 +37,7 @@ import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
-import org.springframework.richclient.command.support.CommandButtonManager;
+import org.springframework.richclient.command.support.CommandFaceButtonManager;
 import org.springframework.richclient.command.support.DefaultCommandServices;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ButtonFactory;
@@ -395,20 +395,20 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
 
     }
 
-    private CommandButtonManager getDefaultButtonManager() {
+    private CommandFaceButtonManager getDefaultButtonManager() {
         return getButtonManager(getDefaultFaceDescriptorId());
     }
 
-    private CommandButtonManager getButtonManager(String faceDescriptorId) {
+    private CommandFaceButtonManager getButtonManager(String faceDescriptorId) {
         if (this.faceButtonManagers == null) {
             this.faceButtonManagers = new CachingMapTemplate() {
                 protected Object create(Object key) {
-                    return new CommandButtonManager(AbstractCommand.this,
+                    return new CommandFaceButtonManager(AbstractCommand.this,
                             (String)key);
                 }
             };
         }
-        CommandButtonManager m = (CommandButtonManager)this.faceButtonManagers
+        CommandFaceButtonManager m = (CommandFaceButtonManager)this.faceButtonManagers
                 .get(faceDescriptorId);
         return m;
     }

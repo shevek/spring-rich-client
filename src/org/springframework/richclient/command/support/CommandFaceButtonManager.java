@@ -34,21 +34,20 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
 
-public class CommandButtonManager implements PropertyChangeListener {
+public class CommandFaceButtonManager implements PropertyChangeListener {
     private ReferenceQueue queue = new ReferenceQueue();
 
     private Set buttons = new HashSet(6);
 
     private AbstractCommand command;
 
-    private String faceDescriptorKey;
+    private String faceDescriptorId;
 
     private CommandFaceDescriptor faceDescriptor;
 
     private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
     private static class ManagedButton {
-
         private WeakReference buttonHolder;
 
         private CommandButtonConfigurer buttonConfigurer;
@@ -73,7 +72,7 @@ public class CommandButtonManager implements PropertyChangeListener {
         }
     }
 
-    public CommandButtonManager(AbstractCommand command,
+    public CommandFaceButtonManager(AbstractCommand command,
             String faceDescriptorKey) {
         Assert.notNull(command,
                 "The command to manage buttons for cannot be null");
@@ -81,10 +80,10 @@ public class CommandButtonManager implements PropertyChangeListener {
                 .hasText(faceDescriptorKey,
                         "The face descriptor key is required");
         this.command = command;
-        this.faceDescriptorKey = faceDescriptorKey;
+        this.faceDescriptorId = faceDescriptorKey;
     }
 
-    public CommandButtonManager(AbstractCommand command,
+    public CommandFaceButtonManager(AbstractCommand command,
             CommandFaceDescriptor faceDescriptor) {
         this.command = command;
         setFaceDescriptor(faceDescriptor);
@@ -135,7 +134,7 @@ public class CommandButtonManager implements PropertyChangeListener {
     protected void configure(AbstractButton button,
             CommandButtonConfigurer strategy) {
         if (this.faceDescriptor == null) {
-            this.faceDescriptor = getFaceDescriptor(faceDescriptorKey);
+            this.faceDescriptor = getFaceDescriptor(faceDescriptorId);
         }
         this.faceDescriptor.configure(button, command, strategy);
     }
