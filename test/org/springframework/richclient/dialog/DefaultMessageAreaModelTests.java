@@ -78,7 +78,7 @@ public class DefaultMessageAreaModelTests extends TestCase {
     }
 
     private void assertMessageAndSeveritySet(DefaultMessageAreaModel buffer, String msg, Severity severity) {
-        assertEquals("message was not set", msg, buffer.getMessage());
+        assertEquals("message was not set", msg, buffer.getMessage().getText());
         assertEquals("severity must be info", severity, buffer.getMessage().getSeverity());
         assertEquals("listener not notified", buffer.getDelegateFor(), ml1.lastUpdated);
         assertEquals("listener not notified", buffer.getDelegateFor(), ml2.lastUpdated);
