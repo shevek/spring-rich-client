@@ -163,7 +163,7 @@ public class ResizeTableColumnSupport implements TableCellRenderer, TableModelLi
                 TableColumn column = getResizingColumn(e.getPoint());
                 if (column != null) {
                     e.consume();
-                    column.setPreferredWidth(preferredWidths[column.getModelIndex()]);
+                    column.setPreferredWidth(preferredWidths[table.convertColumnIndexToView(column.getModelIndex())]);
                 }
             }
         }
