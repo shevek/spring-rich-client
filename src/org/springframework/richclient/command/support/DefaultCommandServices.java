@@ -104,4 +104,32 @@ public class DefaultCommandServices implements CommandServices {
         return pullDownMenuButtonConfigurer;
     }
 
+    public void setButtonFactory(ButtonFactory buttonFactory) {
+        this.buttonFactory = buttonFactory;
+    }
+
+    public void setDefaultButtonConfigurer(
+            CommandButtonConfigurer defaultButtonConfigurer) {
+        this.defaultButtonConfigurer = defaultButtonConfigurer;
+    }
+
+    public void setMenuFactory(MenuFactory menuFactory) {
+        this.menuFactory = menuFactory;
+    }
+
+    public void setMenuItemButtonConfigurer(
+            CommandButtonConfigurer menuItemButtonConfigurer) {
+        this.menuItemButtonConfigurer = menuItemButtonConfigurer;
+    }
+
+    public void setPullDownMenuButtonConfigurer(
+            CommandButtonConfigurer pullDownMenuButtonConfigurer) {
+        this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
+    }
+
+    public void setToolBarButtonConfigurer(
+            CommandButtonConfigurer toolBarButtonConfigurer) {
+        this.toolBarButtonConfigurer = toolBarButtonConfigurer;
+    }
+
 }
