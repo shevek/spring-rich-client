@@ -55,7 +55,7 @@ public abstract class BaseTableModel extends AbstractTableModel implements
         if (this.rowNumbers != rowNumbers) {
             this.rowNumbers = rowNumbers;
             // modify tableModel to add/remove rowNo-Column
-            init();
+            createColumnInfo();
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class BaseTableModel extends AbstractTableModel implements
         return rowNumbers;
     }
 
-    protected void init() {
+    protected void createColumnInfo() {
         Class[] columnClasses = createColumnClasses();
         String[] columnNames = createColumnNames();
         if (rowNumbers) {

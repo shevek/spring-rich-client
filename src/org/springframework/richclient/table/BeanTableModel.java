@@ -40,22 +40,22 @@ public abstract class BeanTableModel extends BaseTableModel {
         this(beanClass, (MessageSource)null);
     }
 
+    public BeanTableModel(Class beanClass, List rows) {
+        this(beanClass, rows, null);
+    }
+
     public BeanTableModel(Class beanClass, MessageSource messages) {
         super();
         setBeanClass(beanClass);
         setMessageSource(messages);
-        init();
-    }
-
-    public BeanTableModel(Class beanClass, List rows) {
-        this(beanClass, rows, null);
+        createColumnInfo();
     }
 
     public BeanTableModel(Class beanClass, List rows, MessageSource messages) {
         super(rows);
         setBeanClass(beanClass);
         setMessageSource(messages);
-        init();
+        createColumnInfo();
     }
 
     public void setBeanClass(Class clazz) {
@@ -71,9 +71,9 @@ public abstract class BeanTableModel extends BaseTableModel {
         }
     }
 
-    protected void init() {
+    protected void createColumnInfo() {
         this.columnPropertyNames = createColumnPropertyNames();
-        super.init();
+        super.createColumnInfo();
     }
 
     protected abstract String[] createColumnPropertyNames();
