@@ -142,7 +142,7 @@ public class TableUtils {
             }
         }
         int width = Math.min(table.getColumnModel().getTotalColumnWidth(),
-                WindowUtils.getScreenWidth() * 75);
+                (int)(WindowUtils.getScreenWidth() * .75));
         table.setPreferredScrollableViewportSize(new Dimension(width, 300));
     }
 
