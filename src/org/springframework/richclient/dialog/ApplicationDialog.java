@@ -280,12 +280,11 @@ public abstract class ApplicationDialog extends
     }
 
     private void constructDialog() {
-        String dialogTitle = this.title;
         if (parent instanceof JFrame) {
-            dialog = new JDialog((JFrame)parent, dialogTitle, modal);
+            dialog = new JDialog((JFrame)parent, getTitle(), modal);
         }
         else if (parent instanceof JDialog) {
-            dialog = new JDialog((JDialog)parent, dialogTitle, modal);
+            dialog = new JDialog((JDialog)parent, getTitle(), modal);
         }
         else {
             if (logger.isInfoEnabled()) {
