@@ -28,6 +28,8 @@ import org.springframework.util.closure.Constraint;
  */
 public class TableFormBuilder extends AbstractFormBuilder {
 
+    private static final String DEFAULT_LABEL_ATTRIBUTES = "colGrId=label colSpec=left:pref";
+    
     private TableLayoutBuilder builder;
 
     private boolean hasSpaceToLeft = true;
@@ -91,6 +93,10 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public void addSeparator(String text, String attributes) {
         builder.separator(text, attributes);
     }
+    
+    public TableLayoutBuilder getLayoutBuilder() {
+        return builder;
+    }
 
     public JComponent getForm() {
         getFormModel().revert();
@@ -98,7 +104,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     protected String getLabelAttributes() {
-        return "colGrId=label colSpec=left:pref";
+        return DEFAULT_LABEL_ATTRIBUTES;
     }
 
     private JComponent[] addComponents(JComponent component, String attributes, String propertyName,
