@@ -37,8 +37,8 @@ public class PopupMenuMouseListener extends MouseAdapter {
     /**
      * Creates a new PopupMenuMouseListener.
      * <p>
-     * NOTE: When using this constructor subclasses must overide the method
-     * getPopupMenu.
+     * NOTE: When using this constructor subclasses must overide one of the 
+     * getPopupMenu methods.
      */
     protected PopupMenuMouseListener() {
     }
@@ -63,21 +63,31 @@ public class PopupMenuMouseListener extends MouseAdapter {
      * Called to display the popup menu.
      */
     protected void showPopupMenu(MouseEvent e) {
-        JPopupMenu popupToShow = getPopupMenu();
-        if (popupToShow == null) {
-            return;
+        if (onAboutToShow(e)) {
+            JPopupMenu popupToShow = getPopupMenu(e);
+            if (popupToShow == null) {
+                return;
+            }
+            popupToShow.show(e.getComponent(), e.getX(), e.getY());
+            popupToShow.setVisible(true);
         }
-        popupToShow.show(e.getComponent(), e.getX(), e.getY());
-        popupToShow.setVisible(true);
     }
 
     /**
-     * Returns the popup menu to be displayed.
+     * Returns the popup menu to be displayed. Default implementation 
+     * delegates to {@link  #getPopupMenu()}. 
+     */
+    protected JPopupMenu getPopupMenu(MouseEvent e) {
+        return getPopupMenu();
+    }
+
+    /**
+     * Returns the popup menu to be displayed. 
      */
     protected JPopupMenu getPopupMenu() {
         if (popupMenu == null) {
             throw new UnsupportedOperationException(
-                    "Method getPopupMenu must be overridden when default constructor is used.");
+                    "One of the getPopupMenu methods must be overridden when default constructor is used.");
         }
         return popupMenu;
     }
@@ -92,9 +102,7 @@ public class PopupMenuMouseListener extends MouseAdapter {
 
     private void checkEvent(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            if (onAboutToShow(e)) {
-                showPopupMenu(e);
-            }
+            showPopupMenu(e);
         }
     }
 }
