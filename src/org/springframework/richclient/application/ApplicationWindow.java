@@ -130,6 +130,7 @@ public class ApplicationWindow implements PersistableElement {
 
     public void open() {
         this.control = createWindowControl();
+        getApplicationAdvisor().onWindowCreated(this);
         getApplicationAdvisor().showIntroComponentIfNecessary(this);
         this.control.setVisible(true);
         getApplicationAdvisor().onWindowOpened(this);
@@ -177,7 +178,6 @@ public class ApplicationWindow implements PersistableElement {
         control.pack();
         control.setSize(configurer.getInitialSize());
         control.setLocationRelativeTo(null);
-        getApplicationAdvisor().onWindowCreated(this);
         return control;
     }
 
