@@ -64,7 +64,6 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
         int oldMnemonicIndex = getMnemonicIndex();
         KeyStroke oldAccelerator = getAccelerator();
         this.label = label;
-        firePropertyChange("label", oldLabel, label);
         firePropertyChange("displayName", oldDisplayName, getDisplayName());
         firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
         firePropertyChange("mnemonicIndex", oldMnemonicIndex,
@@ -102,7 +101,10 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
         }
         else {
             if (label == null) {
-                logger.warn("This labeled object's label is not configured.");
+                if (logger.isInfoEnabled()) {
+                    logger
+                            .info("This labeled object's display name is not configured; returning 'displayName'");
+                }
                 return "displayName";
             }
             return label.getText();
