@@ -19,7 +19,7 @@ import java.awt.Image;
 
 import org.springframework.richclient.factory.ControlFactory;
 
-public interface DialogPage extends ControlFactory, MessageAreaPane, ErrorPane {
+public interface DialogPage extends ControlFactory, MessageReceiver, ErrorPane {
 
     /**
      * Returns this dialog page's title.
@@ -37,7 +37,7 @@ public interface DialogPage extends ControlFactory, MessageAreaPane, ErrorPane {
     public String getDescription();
 
     /**
-     * Returns the current message for this wizard page.
+     * Returns the current message for this dialog page.
      * <p>
      * A message provides instruction or information to the user, as opposed to
      * an error message which should describe some error state.

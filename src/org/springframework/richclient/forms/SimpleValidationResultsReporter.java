@@ -17,15 +17,11 @@ package org.springframework.richclient.forms;
 
 import java.util.Stack;
 
-import javax.swing.JComponent;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaPane;
-import org.springframework.richclient.dialog.SimpleMessageAreaPane;
-import org.springframework.richclient.factory.ControlFactory;
+import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.ValidationResults;
@@ -36,9 +32,8 @@ import org.springframework.rules.values.ValidationListener;
 /**
  * @author Keith Donald
  */
-public class SimpleValidationResultsReporter implements ValidationListener,
-        ControlFactory {
-
+public class SimpleValidationResultsReporter implements ValidationListener
+{
     private static final Log logger = LogFactory
             .getLog(SimpleValidationResultsReporter.class);
 
@@ -46,16 +41,12 @@ public class SimpleValidationResultsReporter implements ValidationListener,
 
     private Guarded guarded;
 
-    private MessageAreaPane messageAreaPane;
+    private MessageReceiver messageAreaPane;
 
     private Stack messages = new Stack();
 
-    public SimpleValidationResultsReporter(FormModel formModel, Guarded guarded) {
-        this(formModel, guarded, new SimpleMessageAreaPane());
-    }
-
     public SimpleValidationResultsReporter(FormModel formModel,
-            Guarded guarded, MessageAreaPane messagePane) {
+            Guarded guarded, MessageReceiver messagePane) {
         this.formModel = formModel;
         this.guarded = guarded;
         this.messageAreaPane = messagePane;
@@ -70,10 +61,6 @@ public class SimpleValidationResultsReporter implements ValidationListener,
             guarded.setEnabled(true);
         }
         formModel.addValidationListener(this);
-    }
-
-    public JComponent getControl() {
-        return messageAreaPane.getControl();
     }
 
     public void constraintSatisfied(ValidationEvent event) {

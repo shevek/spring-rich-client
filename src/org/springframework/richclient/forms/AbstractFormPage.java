@@ -16,7 +16,7 @@
 package org.springframework.richclient.forms;
 
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaPane;
+import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.rules.values.FormModel;
 import org.springframework.rules.values.NestingFormModel;
@@ -97,7 +97,7 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
     }
 
     public ValidationListener newSingleLineResultsReporter(Guarded guarded,
-            MessageAreaPane messageAreaPane) {
+            MessageReceiver messageAreaPane) {
         return getFormModel().createSingleLineResultsReporter(guarded,
                 messageAreaPane);
     }

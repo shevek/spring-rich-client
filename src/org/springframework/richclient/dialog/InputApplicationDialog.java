@@ -49,7 +49,7 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     private UnaryProcedure finishAction;
 
-    private SimpleValidationResultsReporter reporter;
+    private SimpleMessageAreaPane reporter;
 
     private SwingFormModel formModel;
 
@@ -96,9 +96,10 @@ public class InputApplicationDialog extends ApplicationDialog {
         this.finishAction = procedure;
     }
 
-    private SimpleValidationResultsReporter getValidationReporter() {
+    private SimpleMessageAreaPane getValidationReporter() {
         if (reporter == null) {
-            this.reporter = new SimpleValidationResultsReporter(formModel, this);
+            this.reporter = new SimpleMessageAreaPane();
+            new SimpleValidationResultsReporter(formModel, this, this.reporter);
         }
         return reporter;
     }

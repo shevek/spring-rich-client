@@ -41,7 +41,7 @@ import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageAreaPane;
+import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.util.BeanPropertyValueListRenderer;
 import org.springframework.richclient.util.ComboBoxListModel;
 import org.springframework.richclient.util.DynamicComboBoxListModel;
@@ -675,14 +675,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public ValidationListener createSingleLineResultsReporter(
-            Guarded guardedComponent, MessageAreaPane messageAreaPane) {
+            Guarded guardedComponent, MessageReceiver messageAreaPane) {
         return createSingleLineResultsReporter(this, guardedComponent,
                 messageAreaPane);
     }
 
     public static ValidationListener createSingleLineResultsReporter(
             FormModel formModel, Guarded guardedComponent,
-            MessageAreaPane messageAreaPane) {
+            MessageReceiver messageAreaPane) {
         return new SimpleValidationResultsReporter(formModel, guardedComponent,
                 messageAreaPane);
     }

@@ -16,7 +16,6 @@
 package org.springframework.richclient.dialog;
 
 import org.springframework.richclient.factory.ControlFactory;
-import org.springframework.rules.reporting.Severity;
 
 /**
  * Interface to be implemented by GUI panes capable of rendering messages to the
@@ -24,7 +23,7 @@ import org.springframework.rules.reporting.Severity;
  * 
  * @author Keith Donald
  */
-public interface MessageAreaPane extends ControlFactory {
+public interface MessageAreaPane extends ControlFactory, MessageReceiver {
 
     /**
      * Is this pane currently showing a message?
@@ -32,30 +31,5 @@ public interface MessageAreaPane extends ControlFactory {
      * @return true or false
      */
     public boolean messageShowing();
-
-    /**
-     * Set the message text. If the message line currently displays an error,
-     * the message is stored and will be shown after a call to
-     * setErrorMessage(null)
-     */
-    public void setMessage(String newMessage);
-
-    /**
-     * Display the given error message of the provided severity.
-     * 
-     * @param errorMessage
-     * @param severity
-     */
-    public void setMessage(String message, Severity severity);
-
-    /**
-     * Display the given error message. The currently displayed message is saved
-     * and will be redisplayed when the error message is set to
-     * <code>null</code>.
-     * 
-     * @param errorMessage
-     *            the errorMessage to display or <code>null</code> to clear
-     */
-    public void setErrorMessage(String errorMessage);
 
 }
