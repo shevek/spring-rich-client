@@ -84,6 +84,8 @@ public abstract class ApplicationDialog extends
 
     protected static final String DEFAULT_CANCEL_KEY = "cancelCommand";
 
+    protected static final String DEFAULT_SUCCESS_MESSAGE_KEY = "defaultFinishSuccessMessage";
+
     private String title;
 
     private JDialog dialog;
@@ -294,8 +296,8 @@ public abstract class ApplicationDialog extends
                                 + ". Using current active window as parent by default.");
             }
             if (getActiveWindow() != null) {
-                dialog = new JDialog(getActiveWindow().getControl(), getTitle(),
-                        modal);
+                dialog = new JDialog(getActiveWindow().getControl(),
+                        getTitle(), modal);
             }
             else {
                 dialog = new JDialog((JFrame)null, getTitle(), modal);
@@ -354,8 +356,17 @@ public abstract class ApplicationDialog extends
     }
 
     protected String getFinishSuccessMessage() {
-        return getMessage(getFinishCommand().getId() + ".successMessage",
-                getFinishSuccessMessageArguments());
+        ActionCommand callingCommand = getCallingCommand();
+        if (callingCommand != null) {
+            String[] successMessageKeys = new String[] {
+                    callingCommand.getId() + ".successMessage",
+                    DEFAULT_SUCCESS_MESSAGE_KEY };
+            return getMessage(successMessageKeys,
+                    getFinishSuccessMessageArguments());
+        }
+        else {
+            return getMessage(DEFAULT_SUCCESS_MESSAGE_KEY);
+        }
     }
 
     protected Object[] getFinishSuccessMessageArguments() {
@@ -376,8 +387,17 @@ public abstract class ApplicationDialog extends
         }
     }
 
-    protected String getCallingCommandText() {
+    protected ActionCommand getCallingCommand() {
         return null;
+    }
+
+    private String getCallingCommandText() {
+        if (getCallingCommand() != null) {
+            return getCallingCommand().getText();
+        }
+        else {
+            return null;
+        }
     }
 
     protected void onFinishException(Exception e) {

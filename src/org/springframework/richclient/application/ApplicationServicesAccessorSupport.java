@@ -20,11 +20,13 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.config.ObjectConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
+import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
@@ -45,15 +47,53 @@ public class ApplicationServicesAccessorSupport {
                 messageCode, Locale.getDefault());
     }
 
+    protected String getMessage(final String[] messageCodes) {
+        Assert.hasElements(messageCodes);
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageCodes;
+            }
+
+            public Object[] getArguments() {
+                return new Object[0];
+            }
+
+            public String getDefaultMessage() {
+                return messageCodes[0];
+            }
+        };
+        return getApplicationContext().getMessage(resolvable,
+                Locale.getDefault());
+    }
+
     protected String getMessage(String messageCode, Object[] args) {
         return getApplicationContext().getMessage(messageCode, args,
                 messageCode, Locale.getDefault());
     }
 
+    protected String getMessage(final String[] messageCodes, final Object[] args) {
+        Assert.hasElements(messageCodes);
+        MessageSourceResolvable resolvable = new MessageSourceResolvable() {
+            public String[] getCodes() {
+                return messageCodes;
+            }
+
+            public Object[] getArguments() {
+                return args;
+            }
+
+            public String getDefaultMessage() {
+                return messageCodes[0];
+            }
+        };
+        return getApplicationContext().getMessage(resolvable,
+                Locale.getDefault());
+    }
+
     protected ObjectConfigurer getObjectConfigurer() {
         return Application.services().getObjectConfigurer();
     }
-    
+
     protected ComponentFactory getComponentFactory() {
         return Application.services().getComponentFactory();
     }

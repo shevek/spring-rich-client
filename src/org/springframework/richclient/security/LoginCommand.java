@@ -4,6 +4,7 @@ import net.sf.acegisecurity.Authentication;
 import net.sf.acegisecurity.AuthenticationManager;
 import net.sf.acegisecurity.context.ContextHolder;
 
+import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CompositeDialogPage;
@@ -79,8 +80,8 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 return true;
             }
             
-            protected String getCallingCommandText() {
-                return LoginCommand.this.getText();
+            protected ActionCommand getCallingCommand() {
+                return LoginCommand.this;
             }
         };
         dialog.setDisplayFinishSuccessMessage(displayFinishSuccessMessage);
