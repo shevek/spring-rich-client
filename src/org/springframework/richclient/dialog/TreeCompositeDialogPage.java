@@ -15,26 +15,18 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.awt.CardLayout;
-import java.awt.Component;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.*;
 
+import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.LabelUtils;
-import org.springframework.richclient.util.TablePanelBuilder;
 
 /**
  * A concrete implementation of <code>CompositeDialogPage</code> that presents
@@ -44,7 +36,7 @@ import org.springframework.richclient.util.TablePanelBuilder;
  * <p>
  * This class also decorates the entries in the tree to indicate the page completed
  * status.
- * 
+ *
  * @author Peter De Bruycker
  */
 public class TreeCompositeDialogPage extends CompositeDialogPage {
@@ -123,7 +115,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
     }
 
     private JPanel createContentControl() {
-        TablePanelBuilder panelBuilder = new TablePanelBuilder();
+        TableLayoutBuilder panelBuilder = new TableLayoutBuilder();
         panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150 rowSpec=pref");
         panelBuilder.gapCol();
         panelBuilder.cell(pagePanel, "colSpec=pref valign=top");
