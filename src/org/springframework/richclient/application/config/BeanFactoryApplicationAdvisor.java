@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -30,9 +29,9 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
+import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
@@ -45,10 +44,8 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
 
     private String menuBarBeanName = "menuBar";
 
-    private String startingViewDescriptorBeanName;
-
-    private ViewDescriptor startingViewDescriptor;
-
+    private String startingPageId;
+    
     private Resource commandFactoryResource;
 
     private XmlBeanFactory currentWindowCommands;
@@ -60,16 +57,7 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
     }
 
     public String getStartingPageId() {
-        if (this.startingViewDescriptor == null) {
-            this.startingViewDescriptor = (ViewDescriptor)this.beanFactory
-                    .getBean(startingViewDescriptorBeanName,
-                            ViewDescriptor.class);
-        }
-        return this.startingViewDescriptor.getId();
-    }
-
-    public void setStartingViewDescriptor(ViewDescriptor startingViewDescriptor) {
-        this.startingViewDescriptor = startingViewDescriptor;
+        return startingPageId;
     }
 
     /**
@@ -83,9 +71,8 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
      * 
      * @see #getStartingViewDescriptor()
      */
-    public void setStartingViewDescriptorBeanName(
-            String startingViewDescriptorBeanName) {
-        this.startingViewDescriptorBeanName = startingViewDescriptorBeanName;
+    public void setStartingPageId(String pageDescriptorId) {
+        this.startingPageId = pageDescriptorId;
     }
 
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -94,19 +81,8 @@ public class BeanFactoryApplicationAdvisor extends ApplicationAdvisor implements
 
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
-        if (this.startingViewDescriptor == null) {
-            if (this.startingViewDescriptorBeanName == null) {
-                throw new FatalBeanException("Either startingViewDescriptor "
-                        + "or startingViewDescriptorBeanName must be set.");
-            }
-            else {
-                final BeanFactory beanFactory = this.beanFactory;
-                if (!beanFactory
-                        .containsBean(this.startingViewDescriptorBeanName)) { throw new FatalBeanException(
-                        "Do not know about the " + "bean definition for '"
-                                + this.startingViewDescriptorBeanName + "'"); }
-            }
-        }
+        Assert.state(startingPageId != null, "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
+        Assert.state(beanFactory.containsBean(startingPageId), "Do not know about bean definition with name '" + startingPageId + "' - check your config");     
     }
 
     public void setCommandManagerBeanName(String commandManagerBeanName) {
