@@ -24,7 +24,7 @@ package org.springframework.richclient.application;
 public class Perspective {
     private String viewId;
 
-    public String getView() {
+    public String getViewName() {
         return viewId;
     }
 

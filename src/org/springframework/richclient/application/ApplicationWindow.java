@@ -129,7 +129,7 @@ public class ApplicationWindow implements PersistableElement {
             ApplicationPage page = new ApplicationPage(this);
             page.addViewListener(new GlobalCommandTargeterViewListener(
                     getCommandManager()));
-            page.showView(perspective.getView());
+            page.showView(perspective.getViewName());
             this.activePage = page;
             this.activePageId = pageId;
         }
