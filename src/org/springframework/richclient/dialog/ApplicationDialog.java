@@ -35,6 +35,7 @@ import javax.swing.KeyStroke;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
@@ -211,7 +212,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
     }
 
     protected ComponentFactory getComponentFactory() {
-        return Application.locator().getComponentFactory();
+        return ApplicationServices.locator().getComponentFactory();
     }
 
     /**

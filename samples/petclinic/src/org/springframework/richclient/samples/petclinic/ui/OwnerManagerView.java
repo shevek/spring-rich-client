@@ -37,7 +37,7 @@ import javax.swing.tree.TreePath;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.AbstractView;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.events.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommand;
@@ -179,12 +179,12 @@ public class OwnerManagerView extends AbstractView implements
                     leaf, row, hasFocus);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
-                this.setIcon(Application.locator().getIcon("folder.icon"));
+                this.setIcon(ApplicationServices.locator().getIcon("folder.icon"));
             }
             else {
                 Owner o = (Owner)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
-                this.setIcon(Application.locator().getIcon("owner.bullet"));
+                this.setIcon(ApplicationServices.locator().getIcon("owner.bullet"));
             }
             return this;
         }

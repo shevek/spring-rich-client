@@ -36,7 +36,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.enum.AbstractCodedEnum;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.controls.PatchedJFormattedTextField;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageAreaPane;
 import org.springframework.richclient.factory.ComponentFactory;
@@ -73,7 +74,7 @@ public class SwingFormModel implements FormModel {
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
 
-    private ComponentFactory componentFactory = Application.locator()
+    private ComponentFactory componentFactory = ApplicationServices.locator()
             .getComponentFactory();
 
     public SwingFormModel(MutableFormModel formModel) {
@@ -106,14 +107,14 @@ public class SwingFormModel implements FormModel {
     public static SwingFormModel createFormModel(Object formObject,
             boolean bufferChanges) {
         ValidatingFormModel formModel = new ValidatingFormModel(formObject);
-        formModel.setRulesSource(Application.locator());
+        formModel.setRulesSource(ApplicationServices.locator());
         formModel.setBufferChanges(bufferChanges);
         return new SwingFormModel(formModel);
     }
 
     public static NestingFormModel createCompoundFormModel(Object formObject) {
         CompoundFormModel model = new CompoundFormModel(formObject);
-        model.setRulesSource(Application.locator());
+        model.setRulesSource(ApplicationServices.locator());
         return model;
     }
 
@@ -255,8 +256,9 @@ public class SwingFormModel implements FormModel {
     public JFormattedTextField createBoundTextField(String formProperty,
             AbstractFormatterFactory formatterFactory) {
         ValueModel valueModel = getOrCreateValueModel(formProperty);
-        JFormattedTextField textField = new ValueModelTextField(valueModel,
-                formatterFactory);
+        JFormattedTextField textField = new PatchedJFormattedTextField(formatterFactory); 
+        new JFormatedTextFieldValueSetter(textField, valueModel);
+        textField.setValue(valueModel.get());
         textField.setEditable(isWriteable(formProperty));
         return textField;
     }
@@ -274,6 +276,7 @@ public class SwingFormModel implements FormModel {
                         + customEditor.getClass());
         ValueModel valueModel = getOrCreateValueModel(formProperty);
         new PropertyEditorValueSetter(propertyEditor, valueModel);
+        propertyEditor.setValue(valueModel.get());
         return (JComponent)customEditor;
     }
 

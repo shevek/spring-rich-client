@@ -18,7 +18,7 @@ package org.springframework.richclient.forms;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.util.Assert;
@@ -37,7 +37,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
     private ComponentFactory componentFactory;
 
     public JGoodiesFormBuilder(FormLayout layout) {
-        this(layout, Application.locator().getComponentFactory());
+        this(layout, ApplicationServices.locator().getComponentFactory());
     }
 
     public JGoodiesFormBuilder(FormLayout layout,

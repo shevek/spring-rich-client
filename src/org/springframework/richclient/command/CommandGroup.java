@@ -31,7 +31,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.event.EventListenerList;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
@@ -160,7 +160,7 @@ public class CommandGroup extends AbstractCommand {
     public static CommandGroup createCommandGroup(String groupId,
             Object[] members, CommandConfigurer configurer) {
         if (configurer == null) {
-            configurer = Application.locator();
+            configurer = ApplicationServices.locator();
         }
         CommandGroupFactoryBean groupFactory = new CommandGroupFactoryBean(
                 groupId, null, configurer, members);

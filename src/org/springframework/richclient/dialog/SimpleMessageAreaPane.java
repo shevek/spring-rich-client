@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.EmptyIcon;
 import org.springframework.richclient.image.IconSource;
@@ -44,7 +44,7 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
 
     private Icon defaultIcon = EmptyIcon.SMALL;
 
-    private IconSource icons = Application.locator();
+    private IconSource icons = ApplicationServices.locator();
 
     public void setDefaultIcon(Icon defaultIcon) {
         this.defaultIcon = defaultIcon;

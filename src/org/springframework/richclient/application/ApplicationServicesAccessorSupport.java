@@ -33,11 +33,11 @@ public class ApplicationServicesAccessorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
 
     protected ApplicationContext getApplicationContext() {
-        return Application.locator().getApplicationContext();
+        return ApplicationServices.locator().getApplicationContext();
     }
 
     protected MessageSourceAccessor getMessageSourceAccessor() {
-        return Application.locator().getMessages();
+        return ApplicationServices.locator().getMessages();
     }
 
     protected String getMessage(String messageCode) {
@@ -51,19 +51,19 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected ObjectConfigurer getObjectConfigurer() {
-        return Application.locator();
+        return ApplicationServices.locator();
     }
     
     protected ComponentFactory getComponentFactory() {
-        return Application.locator().getComponentFactory();
+        return ApplicationServices.locator().getComponentFactory();
     }
 
     protected ImageSource getImageSource() {
-        return Application.locator();
+        return ApplicationServices.locator();
     }
 
     protected IconSource getIconSource() {
-        return Application.locator();
+        return ApplicationServices.locator();
     }
 
 }

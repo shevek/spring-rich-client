@@ -136,7 +136,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     protected Perspective getPageTemplate(String pageId) {
-        return (Perspective)Application.locator().getApplicationContext()
+        return (Perspective)ApplicationServices.locator().getApplicationContext()
                 .getBean(pageId);
     }
 

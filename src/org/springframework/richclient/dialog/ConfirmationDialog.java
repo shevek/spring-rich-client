@@ -23,7 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.util.Assert;
 
@@ -92,7 +92,7 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         SimpleMessageAreaPane pane = new SimpleMessageAreaPane();
         this.messageAreaPane = pane;
 
-        IconSource icons = Application.locator();
+        IconSource icons = ApplicationServices.locator();
         Icon icon = icons.getIcon(CONFIRMATION_DIALOG_ICON);
         if (icon == null) {
             icon = UIManager.getIcon("OptionPane.questionIcon");

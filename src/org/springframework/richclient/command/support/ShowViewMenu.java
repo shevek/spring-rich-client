@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.command.support;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.config.ApplicationWindowAware;
@@ -45,7 +45,7 @@ public class ShowViewMenu extends CommandGroup implements
     }
 
     private void populate() {
-        ViewDescriptor[] views = Application.locator().getViewRegistry()
+        ViewDescriptor[] views = ApplicationServices.locator().getViewRegistry()
                 .getViewDescriptors();
         for (int i = 0; i < views.length; i++) {
             ViewDescriptor view = views[i];

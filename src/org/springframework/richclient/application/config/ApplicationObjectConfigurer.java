@@ -27,7 +27,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ApplicationObjectSupport;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelConfigurable;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
@@ -86,7 +86,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
     private IconSource getIconSource() {
         try {
             return (IconSource)getApplicationContext().getBean(
-                    Application.ICON_SOURCE_BEAN_KEY);
+                    ApplicationServices.ICON_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             return null;
@@ -96,7 +96,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
     private ImageSource getImageSource() {
         try {
             return (ImageSource)getApplicationContext().getBean(
-                    Application.IMAGE_SOURCE_BEAN_KEY);
+                ApplicationServices.IMAGE_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             return null;

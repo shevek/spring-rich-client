@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
 
@@ -40,7 +40,7 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,
             FormLayout formLayout) {
-        this(formModel, formLayout, Application.locator().getComponentFactory());
+        this(formModel, formLayout, ApplicationServices.locator().getComponentFactory());
     }
 
     public JGoodiesBeanFormBuilder(SwingFormModel formModel,

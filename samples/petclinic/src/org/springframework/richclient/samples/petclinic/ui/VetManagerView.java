@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.springframework.richclient.application.AbstractView;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.samples.petclinic.Clinic;
@@ -120,17 +120,17 @@ public class VetManagerView extends AbstractView {
                     leaf, row, hasFocus);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
-                this.setIcon(Application.locator().getIcon("folder.icon"));
+                this.setIcon(ApplicationServices.locator().getIcon("folder.icon"));
             }
             else if (node.getUserObject() instanceof Vet) {
                 Vet o = (Vet)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
-                this.setIcon(Application.locator().getIcon("owner.bullet"));
+                this.setIcon(ApplicationServices.locator().getIcon("owner.bullet"));
             }
             else {
                 Specialty o = (Specialty)node.getUserObject();
                 this.setText(o.getName());
-                this.setIcon(Application.locator().getIcon("specialty.bullet"));
+                this.setIcon(ApplicationServices.locator().getIcon("specialty.bullet"));
             }
             return this;
         }

@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageAreaPane;
 import org.springframework.richclient.dialog.SimpleMessageAreaPane;
@@ -128,7 +128,7 @@ public class SimpleValidationResultsReporter implements ValidationListener,
 
     private String translate(ValidationResults results) {
         DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(
-                Application.locator());
+                ApplicationServices.locator());
         return messageTranslator.getMessage((PropertyResults)results);
     }
 

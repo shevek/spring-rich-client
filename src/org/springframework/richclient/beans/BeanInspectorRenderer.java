@@ -24,7 +24,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.ClassUtils;
 
@@ -43,7 +43,7 @@ public class BeanInspectorRenderer
     private static String COMPONENT_ICON_KEY = "component.icon";
     private static String BEAN_ICON_KEY = "bean.icon";
     private IconSource iconRegistry =
-        Application.locator();
+        ApplicationServices.locator();
 
     /**
      * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)

@@ -36,7 +36,7 @@ public class ApplicationPage {
 
     public ApplicationPage(ApplicationWindow window) {
         this.window = window;
-        this.viewRegistry = Application.locator().getViewRegistry();
+        this.viewRegistry = ApplicationServices.locator().getViewRegistry();
     }
 
     public ApplicationWindow getParentWindow() {
