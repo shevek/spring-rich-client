@@ -540,7 +540,7 @@ public abstract class ApplicationDialog extends
 
     protected void onFinishException(Exception e) {
         JOptionPane.showMessageDialog(getDialog(),
-                "Unable to execute finish action", Application.instance()
-                        .getName(), JOptionPane.ERROR_MESSAGE);
+                "Unable to finish; an application exception occured.",
+                Application.instance().getName(), JOptionPane.ERROR_MESSAGE);
     }
 }
