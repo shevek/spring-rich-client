@@ -37,7 +37,6 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.enum.AbstractCodedEnum;
 import org.springframework.richclient.application.ApplicationServices;
-import org.springframework.richclient.controls.PatchedJFormattedTextField;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageAreaPane;
 import org.springframework.richclient.factory.ComponentFactory;
@@ -256,11 +255,15 @@ public class SwingFormModel implements FormModel {
     public JFormattedTextField createBoundTextField(String formProperty,
             AbstractFormatterFactory formatterFactory) {
         ValueModel valueModel = getOrCreateValueModel(formProperty);
-        JFormattedTextField textField = new PatchedJFormattedTextField(formatterFactory); 
+        JFormattedTextField textField = createNewTextField(formatterFactory); 
         new JFormatedTextFieldValueSetter(textField, valueModel);
         textField.setValue(valueModel.get());
         textField.setEditable(isWriteable(formProperty));
         return textField;
+    }
+    
+    protected JFormattedTextField createNewTextField(AbstractFormatterFactory formatterFactory) {
+        return getComponentFactory().createFormattedTextField(formatterFactory);
     }
 
     private JComponent bindCustomEditor(PropertyEditor propertyEditor,

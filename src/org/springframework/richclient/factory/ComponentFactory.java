@@ -19,11 +19,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.richclient.util.Alignment;
 
@@ -173,6 +175,14 @@ public interface ComponentFactory {
      * @return The checkbox.
      */
     public JCheckBox createCheckBox(String labelKey);
+        
+    /**
+     * @param formatterFactory
+     * 				AbstractFormatterFactory used for formatting.
+     * @return The new formatted text field
+     */
+    public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory);
+    
 
     /**
      * Create a text area using this component factory.
@@ -214,6 +224,5 @@ public interface ComponentFactory {
      * @param tabComponent
      */
     public void addConfiguredTab(JTabbedPane tabbedPane, String labelKey,
-            JComponent tabComponent);
-
+            JComponent tabComponent);   
 }

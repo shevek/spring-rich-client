@@ -23,11 +23,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.enum.AbstractCodedEnum;
@@ -35,6 +37,7 @@ import org.springframework.enum.CodedEnumResolver;
 import org.springframework.enum.support.StaticCodedEnumResolver;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
+import org.springframework.richclient.controls.PatchedJFormattedTextField;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.Alignment;
@@ -169,6 +172,10 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
         comboBox.setModel(new ComboBoxListModel(enumValues, comparator));
         comboBox
                 .setRenderer(new CodedEnumListRenderer(getApplicationContext()));
+    }
+    
+    public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
+        return new PatchedJFormattedTextField(formatterFactory);
     }
 
     public JTextArea createTextArea() {
