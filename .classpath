@@ -18,5 +18,8 @@
 	<classpathentry kind="lib" path="lib/spring/spring-sandbox-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic-SNAPSHOT-710.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit.jar"/>
+	<classpathentry kind="lib" path="lib/acegisecurity/acegi-security.jar"/>
+	<classpathentry kind="lib" path="lib/caucho/burlap-2.1.12.jar"/>
+	<classpathentry kind="lib" path="lib/caucho/hessian-2.1.12.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

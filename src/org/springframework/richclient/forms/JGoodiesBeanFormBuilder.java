@@ -16,6 +16,7 @@
 package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -67,6 +68,10 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
         JComponent propertyEditor = formModel.createBoundControl(propertyName);
         formBuilder.add(getPropertyLabelCode(propertyName), propertyEditor);
         return propertyEditor;
+    }
+    
+    public JPasswordField addPasswordField(String propertyName) {
+        return (JPasswordField)formModel.bind(new JPasswordField(), propertyName);
     }
 
     public JTextArea addTextArea(String propertyName) {

@@ -16,10 +16,12 @@
 package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
+import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 
 public interface BeanFormBuilder {
     public JComponent add(String propertyName);
+    public JPasswordField addPasswordField(String propertyName);
     public JTextArea addTextArea(String propertyName);
     public JComponent getForm();
 }

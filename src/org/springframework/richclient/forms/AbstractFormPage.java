@@ -32,13 +32,17 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
 
     private SwingFormModel pageFormModel;
 
+    protected AbstractFormPage() {
+
+    }
+
     public AbstractFormPage(FormModel formModel, String pageName) {
         if (formModel instanceof NestingFormModel) {
-            this.pageFormModel = SwingFormModel.createChildPageFormModel(
-                    (NestingFormModel)formModel, pageName);
+            setFormModel(SwingFormModel.createChildPageFormModel(
+                    (NestingFormModel)formModel, pageName));
         }
         else if (formModel instanceof SwingFormModel) {
-            this.pageFormModel = (SwingFormModel)formModel;
+            setFormModel((SwingFormModel)formModel);
         }
         else {
             throw new IllegalArgumentException(
@@ -51,12 +55,16 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
     }
 
     public AbstractFormPage(SwingFormModel pageFormModel) {
-        Assert.notNull(pageFormModel);
-        this.pageFormModel = pageFormModel;
+        setFormModel(pageFormModel);
     }
 
     public SwingFormModel getFormModel() {
         return pageFormModel;
+    }
+
+    protected void setFormModel(SwingFormModel formModel) {
+        Assert.notNull(formModel);
+        this.pageFormModel = formModel;
     }
 
     public Object getFormObject() {
