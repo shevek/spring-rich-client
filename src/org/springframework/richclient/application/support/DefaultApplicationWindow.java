@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
@@ -38,6 +39,10 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
+import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
+import org.springframework.richclient.application.support.DefaultApplicationPage;
+import org.springframework.richclient.application.support.DefaultApplicationWindowConfigurer;
+import org.springframework.richclient.application.support.SingleViewPageDescriptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
@@ -80,11 +85,15 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     public DefaultApplicationWindow(int number) {
         this.number = number;
         getAdvisor().onPreWindowOpen(getWindowConfigurer());
+        init();
+        getAdvisor().onCommandsCreated(this);
+    }
+
+    protected void init() {
         this.commandManager = getAdvisor().createWindowCommandManager();
         this.menuBarCommandGroup = getAdvisor().getMenuBarCommandGroup();
         this.toolBarCommandGroup = getAdvisor().getToolBarCommandGroup();
         this.statusBarCommandGroup = getAdvisor().getStatusBarCommandGroup();
-        getAdvisor().onCommandsCreated(this);
     }
 
     public int getNumber() {
@@ -197,38 +206,49 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     }
 
     private void initWindow() {
-        initWindowControl();
+        this.control = createNewWindowControl();
+        initWindowControl(this.control);
         getAdvisor().onWindowCreated(this);
         getAdvisor().showIntroComponentIfNecessary(this);
         this.control.setVisible(true);
         getAdvisor().onWindowOpened(this);
     }
 
-    protected void initWindowControl() {
-        this.control = createNewWindowControl();
+    protected void initWindowControl(JFrame windowControl) {
         ApplicationWindowConfigurer configurer = getWindowConfigurer();
-        control.setTitle(configurer.getTitle());
-        control.setIconImage(configurer.getImage());
-        control.setJMenuBar(menuBarCommandGroup.createMenuBar());
-        menuBarCommandGroup.setVisible(configurer.getShowMenuBar());
+        applyStandardLayout(windowControl, configurer);
+        applyCustomLayout(windowControl, configurer);
+        prepareWindowForView(windowControl, configurer);
+    }
 
-        control.getContentPane().setLayout(new BorderLayout());
-        control.getContentPane().add(createToolBar(), BorderLayout.NORTH);
-        control.getContentPane().add(this.currentPage.getControl());
-        control.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
-        control.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        control.addWindowListener(new WindowAdapter() {
+    protected void applyStandardLayout(JFrame windowControl, ApplicationWindowConfigurer configurer) {
+        windowControl.setTitle(configurer.getTitle());
+        windowControl.setIconImage(configurer.getImage());
+        windowControl.setJMenuBar(createMenuBarControl());
+        windowControl.getContentPane().setLayout(new BorderLayout());
+        windowControl.getContentPane().add(createToolBarControl(), BorderLayout.NORTH);
+        windowControl.getContentPane().add(createStatusBarControl(), BorderLayout.SOUTH);
+    }
+
+    protected void applyCustomLayout(JFrame windowControl, ApplicationWindowConfigurer configurer) {
+        windowControl.getContentPane().add(this.currentPage.getControl());
+    }
+
+    protected void prepareWindowForView(JFrame windowControl, ApplicationWindowConfigurer configurer) {
+        windowControl.pack();
+        windowControl.setSize(configurer.getInitialSize());
+        windowControl.setLocationRelativeTo(null);
+    }
+
+    protected JFrame createNewWindowControl() {
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 close();
             }
         });
-        control.pack();
-        control.setSize(configurer.getInitialSize());
-        control.setLocationRelativeTo(null);
-    }
-
-    protected JFrame createNewWindowControl() {
-        return new JFrame();
+        return frame;
     }
 
     protected void updatePageControl(ApplicationPage oldPage) {
@@ -245,13 +265,19 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return control != null;
     }
 
-    protected JComponent createToolBar() {
+    protected JMenuBar createMenuBarControl() {
+        JMenuBar menuBar = menuBarCommandGroup.createMenuBar();
+        menuBarCommandGroup.setVisible(getWindowConfigurer().getShowMenuBar());
+        return menuBar;
+    }
+
+    protected JComponent createToolBarControl() {
         JComponent toolBar = toolBarCommandGroup.createToolBar();
         toolBarCommandGroup.setVisible(getWindowConfigurer().getShowToolBar());
         return toolBar;
     }
 
-    protected JComponent createStatusBar() {
+    protected JComponent createStatusBarControl() {
         JComponent statusBar = statusBarCommandGroup.getControl();
         statusBarCommandGroup.setVisible(getWindowConfigurer().getShowStatusBar());
         return statusBar;
@@ -286,5 +312,4 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         memento.putInteger("width", bounds.width);
         memento.putInteger("height", bounds.height);
     }
-
 }

@@ -105,17 +105,20 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
     }
 
     public CommandGroup getMenuBarCommandGroup() {
-        if (menuBarBeanName == null || !getCommandBarFactory().containsBean(menuBarBeanName)) {
-            return super.getMenuBarCommandGroup();
-        }
-        return (CommandGroup)getCommandBarFactory().getBean(menuBarBeanName);
+        CommandGroup menuBarCommandGroup = getCommandGroup(menuBarBeanName);
+        return menuBarCommandGroup != null ? menuBarCommandGroup : super.getMenuBarCommandGroup();
     }
 
     public CommandGroup getToolBarCommandGroup() {
-        if (toolBarBeanName == null || !getCommandBarFactory().containsBean(toolBarBeanName)) {
-            return super.getToolBarCommandGroup();
+        CommandGroup toolBarCommandGroup = getCommandGroup(toolBarBeanName);
+        return toolBarCommandGroup != null ? toolBarCommandGroup : super.getToolBarCommandGroup();
+    }
+
+    protected CommandGroup getCommandGroup(String name) {
+        if (name == null || !getCommandBarFactory().containsBean(name)) {
+            return null;
         }
-        return (CommandGroup)getCommandBarFactory().getBean(toolBarBeanName);
+        return (CommandGroup)getCommandBarFactory().getBean(name);
     }
 
 }
