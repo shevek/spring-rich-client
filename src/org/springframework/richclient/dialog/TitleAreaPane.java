@@ -69,7 +69,11 @@ public class TitleAreaPane extends AbstractControlFactory implements
     public void setImage(Image titleImage) {
         this.image = titleImage;
         if (isControlCreated()) {
-            iconLabel.setIcon(new ImageIcon(titleImage));
+            if (titleImage == null) {
+                iconLabel.setIcon(null);
+            } else {
+                iconLabel.setIcon(new ImageIcon(titleImage));
+            }
         }
     }
 
@@ -139,4 +143,12 @@ public class TitleAreaPane extends AbstractControlFactory implements
         messageAreaPane.setMessage(newMessage);
     }
 
+    public void addMessageListener(MessageListener messageListener) {
+        messageAreaPane.addMessageListener(messageListener);        
+    }
+
+    public void removeMessageListener(MessageListener messageListener) {
+        messageAreaPane.removeMessageListener(messageListener);        
+    }
+    
 }

@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.factory.ControlFactory;
-import org.springframework.util.StringUtils;
+import org.springframework.rules.reporting.Severity;
 
 /**
  * A convenience implementation of the DialogPage interface.
@@ -37,15 +37,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         DialogPage, ControlFactory {
 
-    /**
-     * The page's current message; <code>null</code> if none.
-     */
-    private String message;
-
-    /**
-     * The page's current error message; <code>null</code> if none.
-     */
-    private String errorMessage;
+    private MessageBuffer messageBuffer = new MessageBuffer();
 
     private AbstractControlFactory factory = new AbstractControlFactory() {
         public JComponent createControl() {
@@ -88,7 +80,11 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     }
 
     public String getMessage() {
-        return message;
+        return messageBuffer.getMessage();
+    }
+
+    public Severity getSeverity() {
+        return messageBuffer.getSeverity();
     }
 
     /**
@@ -98,16 +94,20 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      *            the message, or <code>null</code> to clear the message
      */
     public void setMessage(String newMessage) {
-        message = newMessage;
+        messageBuffer.setMessage(newMessage);
     }
 
-    public boolean messageShowing() {
-        return StringUtils.hasText(message)
-                || StringUtils.hasText(errorMessage);
+    public void setMessage(String newMessage, Severity severity) {
+        messageBuffer.setMessage(newMessage, severity);
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return hasErrorMessage() ? getMessage() : null;
+    }
+
+    public boolean hasErrorMessage() {
+        return messageBuffer.getSeverity() != null
+                && messageBuffer.getSeverity().equals(Severity.ERROR);
     }
 
     /**
@@ -117,11 +117,15 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      *            the message, or <code>null</code> to clear the error message
      */
     public void setErrorMessage(String newMessage) {
-        errorMessage = newMessage;
+        messageBuffer.setErrorMessage(newMessage);
     }
 
-    public boolean hasErrorMessage() {
-        return errorMessage != null;
+    public void addMessageListener(MessageListener messageListener) {
+        messageBuffer.addMessageListener(messageListener);
+    }
+    
+    public void removeMessageListener(MessageListener messageListener) {
+        messageBuffer.removeMessageListener(messageListener);
     }
 
     public void setVisible(boolean visible) {

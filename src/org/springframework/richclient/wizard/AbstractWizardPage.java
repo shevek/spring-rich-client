@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.dialog.AbstractDialogPage;
-import org.springframework.rules.reporting.Severity;
+import org.springframework.richclient.dialog.MessageListener;
 import org.springframework.util.Assert;
 import org.springframework.util.ToStringBuilder;
 
@@ -47,6 +47,13 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     protected AbstractWizardPage(String pageId, String title, Image titleImage) {
         super(title, titleImage);
         setId(pageId);
+        this.addMessageListener(new MessageListener() {
+            public void messageUpdated() {
+                if (isCurrentPage()) {
+                    getContainer().updateMessage();
+                }
+            }            
+        });
     }
 
     public String getId() {
@@ -97,30 +104,7 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
         return isPageComplete;
     }
 
-    public void setMessage(String newMessage) {
-        super.setMessage(newMessage);
-        if (isCurrentPage()) {
-            getContainer().updateMessage();
-        }
-    }
-
-    public void setErrorMessage(String newMessage) {
-        super.setErrorMessage(newMessage);
-        if (isCurrentPage()) {
-            getContainer().updateMessage();
-        }
-    }
-
-    public void setMessage(String newMessage, Severity severity) {
-        if (severity != Severity.INFO) {
-            setErrorMessage(newMessage);
-        }
-        else {
-            setMessage(newMessage);
-        }
-    }
-
-    public void setDescription(String description) {
+   public void setDescription(String description) {
         super.setDescription(description);
         if (isCurrentPage()) {
             getContainer().updateTitleBar();

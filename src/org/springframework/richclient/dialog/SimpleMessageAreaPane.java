@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class SimpleMessageAreaPane extends AbstractControlFactory implements
-        MessageAreaPane {
+        MessageAreaPane, MessageListener {
 
     private static final Log logger = LogFactory
             .getLog(SimpleMessageAreaPane.class);
@@ -41,6 +41,13 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     private JLabel messageLabel;
 
     private Icon defaultIcon = EmptyIcon.SMALL;
+    
+    private MessageBuffer messageBuffer;
+    
+    public SimpleMessageAreaPane() {
+        this.messageBuffer = new MessageBuffer();
+        this.messageBuffer.addMessageListener(this);
+    }
 
     public void setDefaultIcon(Icon defaultIcon) {
         this.defaultIcon = defaultIcon;
@@ -64,37 +71,23 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     }
 
     public void setMessage(String newMessage) {
-        setMessage(newMessage, Severity.INFO);
+        messageBuffer.setMessage(newMessage);
     }
 
     public void setInfoMessage(String infoMessage) {
-        setMessage(infoMessage, Severity.INFO);
+        messageBuffer.setMessage(infoMessage, Severity.INFO);
     }
 
     public void setWarningMessage(String warningMessage) {
-        setMessage(warningMessage, Severity.WARNING);
+        messageBuffer.setMessage(warningMessage, Severity.WARNING);
     }
 
     public void setErrorMessage(String errorMessage) {
-        setMessage(errorMessage, Severity.ERROR);
+        messageBuffer.setErrorMessage(errorMessage);
     }
 
     public void setMessage(String message, Severity severity) {
-        if (StringUtils.hasText(message)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("[Setting message '" + message + ", severity="
-                        + severity + "]");
-            }
-            messageLabel.setText(LabelUtils.htmlBlock(message));
-            messageLabel.setIcon(getIcon(severity));
-        }
-        else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("[Clearing message area]");
-            }
-            messageLabel.setText(" ");
-            messageLabel.setIcon(null);
-        }
+        messageBuffer.setMessage(message, severity);
     }
 
     private Icon getIcon(Severity severity) {
@@ -113,4 +106,31 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
         setMessage("");
     }
 
+    public void addMessageListener(MessageListener messageListener) {
+        messageBuffer.addMessageListener(messageListener);        
+    }
+    
+    public void removeMessageListener(MessageListener messageListener) {
+        messageBuffer.removeMessageListener(messageListener);        
+    }
+
+    public void messageUpdated() {
+        String message = messageBuffer.getMessage();
+        Severity severity = messageBuffer.getSeverity();
+        if (StringUtils.hasText(message)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("[Setting message '" + message + ", severity="
+                        + severity + "]");
+            }
+            messageLabel.setText(LabelUtils.htmlBlock(message));
+            messageLabel.setIcon(getIcon(severity));
+        }
+        else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("[Clearing message area]");
+            }
+            messageLabel.setText(" ");
+            messageLabel.setIcon(null);
+        }        
+    }
 }

@@ -52,5 +52,22 @@ public interface MessageReceiver
      *            the errorMessage to display or <code>null</code> to clear
      */
     public void setErrorMessage(String errorMessage);
+    
+    /**
+     * Adds the specified message listener to receive events from
+     * this MessageReceiver whenever messages are updated.
+     * 
+     * @param listener
+     *            the MessageListener to be added
+     */    
+    public void addMessageListener(MessageListener messageListener);
+    
+    /**
+     * Removes the specified message listener
+     * 
+     * @param listener
+     *            the MessageListener to be removed
+     */    
+    public void removeMessageListener(MessageListener messageListener);
 
 }

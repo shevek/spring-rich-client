@@ -90,6 +90,14 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
     public void setErrorMessage(String message) {
         setMessage(message, Severity.ERROR);
     }
+    
+    public void addMessageListener(MessageListener messageListener) {
+        titleAreaPane.addMessageListener(messageListener);        
+    }
+    
+    public void removeMessageListener(MessageListener messageListener) {
+        titleAreaPane.removeMessageListener(messageListener);        
+    }  
 
     private void updateDescription() {
         titleAreaPane.setMessage(description);
