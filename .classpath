@@ -11,19 +11,19 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/concurrent/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/javahelp/jh.jar"/>
-	<classpathentry sourcepath="/java-tools/ui/jgoodies-forms/forms-1_0_4-expanded-archive/forms-1.0.4/forms-1.0.4-src.zip" kind="lib" path="lib/jgoodies-forms/forms-1.0.4.jar"/>
-	<classpathentry sourcepath="/java-tools/ui/jgoodies-looks/looks-1.2.2-expanded-archive/looks-1.2.2-src.zip" kind="lib" path="lib/jgoodies-looks/looks-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance/aopalliance.jar"/>
-	<classpathentry sourcepath="/spring/src" kind="lib" path="lib/spring/spring-SNAPSHOT-710.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-sandbox-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-petclinic-SNAPSHOT-710.jar"/>
-	<classpathentry kind="lib" path="lib/acegisecurity/acegi-security.jar"/>
-	<classpathentry kind="lib" path="lib/caucho/burlap-2.1.12.jar"/>
-	<classpathentry kind="lib" path="lib/caucho/hessian-2.1.12.jar"/>
-	<classpathentry kind="lib" path="lib/hsqldb/hsqldb-1.7.2-rc6d.jar"/>
+	<classpathentry sourcepath="/acegisecurity" kind="lib" path="lib/acegisecurity/acegi-security.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit.jar"/>
 	<classpathentry kind="lib" path="lib/j2ee/servlet.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-mock-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/caucho/burlap.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies-forms/forms.jar"/>
+	<classpathentry kind="lib" path="lib/caucho/hessian.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies-looks/looks.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-sandbox.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

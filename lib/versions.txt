@@ -1,0 +1,27 @@
+$Id$
+
+We name JARs without their release number in the JAR filename, because this
+makes it much easier to manage the Java Web Start JNLP files, Ant build
+scripts, Eclipse classpath and sample application batch files.
+
+Each of the versions currently in use are provided below:
+
+acegisecurity/acegi-security.jar: From CVS snapshot 2004-08-01
+ant/ant-junit.jar:
+ant/ant-launcher.jar:
+ant/ant.jar:
+aopappliance/aopalliance.jar:
+caucho/burlap.jar: 2.1.12
+caucho/hessian.jar: 2.1.12
+concurrent/concurrent.jar:
+hsqldb/hsqldb.jar: 1.7.2 Release Candidate 6d
+j2ee/servlet.jar:
+jakarta-commons/commons-logging.jar:
+javahelp/jh.jar:
+jgoodies-forms/forms.jar: 1.0.4
+jgoodies-looks/looks.jar: 1.2.2
+junit/junit.jar:
+spring/spring.jar: CVS Snapshot 710
+spring/spring-mock.jar: CVS Snapshot
+spring/spring-petclinic.jar: CVS snapshot 710
+spring/spring-sandbox.jar: CVS Snapshot
