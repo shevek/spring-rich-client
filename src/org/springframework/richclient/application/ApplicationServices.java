@@ -122,15 +122,15 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         this.viewRegistry = registry;
     }
 
-    public CommandConfigurer getCommandConfigurer() {
-        if (commandConfigurer == null) {
-            initCommandConfigurer();
+    public ImageSource getImageSource() {
+        if (imageSource == null) {
+            initImageSource();
         }
-        return commandConfigurer;
+        return imageSource;
     }
 
-    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
-        this.commandConfigurer = commandConfigurer;
+    public void setImageSource(ImageSource imageSource) {
+        this.imageSource = imageSource;
     }
 
     public IconSource getIconSource() {
@@ -144,17 +144,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         this.iconSource = iconSource;
     }
 
-    public ImageSource getImageSource() {
-        if (imageSource == null) {
-            initImageSource();
-        }
-        return imageSource;
-    }
-
-    public void setImageSource(ImageSource imageSource) {
-        this.imageSource = imageSource;
-    }
-
     public ObjectConfigurer getObjectConfigurer() {
         if (objectConfigurer == null) {
             initObjectConfigurer();
@@ -164,6 +153,17 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     public void setObjectConfigurer(ObjectConfigurer objectConfigurer) {
         this.objectConfigurer = objectConfigurer;
+    }
+
+    public CommandConfigurer getCommandConfigurer() {
+        if (commandConfigurer == null) {
+            initCommandConfigurer();
+        }
+        return commandConfigurer;
+    }
+
+    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
+        this.commandConfigurer = commandConfigurer;
     }
 
     public RulesSource getRulesSource() {
@@ -230,7 +230,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
             logger.info("No icon source bean found under name "
                     + ICON_SOURCE_BEAN_KEY
                     + "; creating using existing image source.");
-            this.iconSource = new DefaultIconSource(imageSource);
+            this.iconSource = new DefaultIconSource(getImageSource());
         }
     }
 
@@ -257,7 +257,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initRulesSource() {
         try {
-            rulesSource = (RulesSource)getApplicationContext().getBean(
+            this.rulesSource = (RulesSource)getApplicationContext().getBean(
                 RULES_SOURCE_BEAN_KEY, RulesSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
@@ -269,7 +269,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initObjectConfigurer() {
         try {
-            objectConfigurer = (ObjectConfigurer)getApplicationContext()
+            this.objectConfigurer = (ObjectConfigurer)getApplicationContext()
                     .getBean(OBJECT_CONFIGURER_BEAN_KEY, ObjectConfigurer.class);
         }
         catch (NoSuchBeanDefinitionException e) {
@@ -284,7 +284,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initCommandConfigurer() {
         try {
-            commandConfigurer = (CommandConfigurer)getApplicationContext()
+            this.commandConfigurer = (CommandConfigurer)getApplicationContext()
                     .getBean(COMMAND_CONFIGURER_BEAN_KEY,
                         CommandConfigurer.class);
         }

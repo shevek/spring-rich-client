@@ -51,7 +51,7 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected ObjectConfigurer getObjectConfigurer() {
-        return Application.services();
+        return Application.services().getObjectConfigurer();
     }
     
     protected ComponentFactory getComponentFactory() {
@@ -59,11 +59,11 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected ImageSource getImageSource() {
-        return Application.services();
+        return Application.services().getImageSource();
     }
 
     protected IconSource getIconSource() {
-        return Application.services();
+        return Application.services().getIconSource();
     }
 
 }
