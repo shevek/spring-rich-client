@@ -110,7 +110,7 @@ public class Application extends ApplicationObjectSupport {
         initApplicationServices();
         getAdvisor().onPreStartup();
         openFirstTimeApplicationWindow();
-        getAdvisor().onStarted();
+        getAdvisor().onPostStartup();
     }
 
     protected void initApplicationServices() {

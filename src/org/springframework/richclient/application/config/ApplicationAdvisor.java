@@ -74,7 +74,7 @@ public abstract class ApplicationAdvisor {
 
     }
 
-    public void onStarted() {
+    public void onPostStartup() {
 
     }
 
