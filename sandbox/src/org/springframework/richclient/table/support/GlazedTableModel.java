@@ -72,7 +72,7 @@ public abstract class GlazedTableModel extends EventTableModel {
         }
     }
 
-    protected abstract String[] createPropertyColumnNames();
+    protected abstract String[] createColumnPropertyNames();
 
     protected Object getColumnValue(Object row, int column) {
         beanWrapper.setWrappedInstance(row);
@@ -134,7 +134,7 @@ public abstract class GlazedTableModel extends EventTableModel {
     }
 
     private TableFormat createTableFormat() {
-        propertyColumnNames = createPropertyColumnNames();
+        propertyColumnNames = createColumnPropertyNames();
         columnLabels = createColumnNames(propertyColumnNames);
         return new WritableTableFormat() {
 
