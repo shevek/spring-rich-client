@@ -18,7 +18,7 @@ package org.springframework.richclient.form.builder;
 import javax.swing.*;
 
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.richclient.layout.TablePanelBuilder;
+import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.rules.Constraint;
 
 /**
@@ -26,7 +26,7 @@ import org.springframework.rules.Constraint;
  */
 public class TableFormBuilder extends AbstractFormBuilder {
 
-    private TablePanelBuilder builder;
+    private TableLayoutBuilder builder;
 
     private boolean hasSpaceToLeft = true;
 
@@ -34,7 +34,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     public TableFormBuilder(SwingFormModel formModel) {
         super(formModel);
-        this.builder = new TablePanelBuilder(new JPanel());
+        this.builder = new TableLayoutBuilder(new JPanel());
     }
 
     public void row() {

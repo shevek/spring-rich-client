@@ -23,7 +23,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.config.ImageConfigurable;
-import org.springframework.richclient.layout.TablePanelBuilder;
+import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.rules.reporting.Severity;
 
 /**
@@ -84,7 +84,7 @@ public class TitleAreaPane extends AbstractControlFactory implements
         
         JPanel panel = new JPanel();
         panel.setBackground(getBackgroundColor());        
-        TablePanelBuilder table = new TablePanelBuilder(panel);
+        TableLayoutBuilder table = new TableLayoutBuilder(panel);
         table.row(FormFactory.LINE_GAP_ROWSPEC);
         table.gapCol();
         table.cell(titleLabel);        

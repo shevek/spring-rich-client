@@ -50,7 +50,7 @@ import org.springframework.util.StringUtils;
  * <strong>Example: </strong> <br>
  * 
  * <pre>
- * TablePanelBuilder table = new TablePanelBuilder();
+ * TableLayoutBuilder table = new TableLayoutBuilder();
  * table.row().separator(&quot;General 1&quot;).row().cell(new JLabel(&quot;Company&quot;),
  *         &quot;colSpec=right:pref colGrId=labels&quot;).labelGapCol().cell(
  *         new JFormattedTextField()).row().cell(new JLabel(&quot;Contact&quot;)).cell(
@@ -68,7 +68,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author oliverh
  */
-public class TablePanelBuilder implements LayoutBuilder {
+public class TableLayoutBuilder implements LayoutBuilder {
 
     public static final String ALIGN = "align";
 
@@ -121,16 +121,16 @@ public class TablePanelBuilder implements LayoutBuilder {
     private ComponentFactory componentFactory;
 
     /**
-     * Creates a new TablePanelBuilder.
+     * Creates a new TableLayoutBuilder.
      */
-    public TablePanelBuilder() {
+    public TableLayoutBuilder() {
         this(new JPanel());
     }
 
     /**
-     * Creates a new TablePanelBuilder which will build in the supplied JPanel
+     * Creates a new TableLayoutBuilder which will build in the supplied JPanel
      */
-    public TablePanelBuilder(JPanel panel) {
+    public TableLayoutBuilder(JPanel panel) {
         this.panel = panel;
     }
 
@@ -180,7 +180,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * the table. To have a gap for the first row use of the other "row"
      * methods.
      */
-    public TablePanelBuilder row() {
+    public TableLayoutBuilder row() {
         if (currentRow == -1) {
             currentRow = 0;
             return this;
@@ -192,7 +192,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts a new row. A gap row with specified RowSpec will be inserted
      * before this row.
      */
-    public TablePanelBuilder row(String gapRowSpec) {
+    public TableLayoutBuilder row(String gapRowSpec) {
         return row(new RowSpec(gapRowSpec));
     }
 
@@ -200,7 +200,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts a new row. A gap row with specified RowSpec will be inserted
      * before this row.
      */
-    public TablePanelBuilder row(RowSpec gapRowSpec) {
+    public TableLayoutBuilder row(RowSpec gapRowSpec) {
         ++currentRow;
         gapRows.put(new Integer(currentRow), gapRowSpec);
         lastCC = null;
@@ -213,14 +213,14 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts a new row. An unrelated component gap row will be inserted before
      * this row.
      */
-    public TablePanelBuilder unrelatedGapRow() {
+    public TableLayoutBuilder unrelatedGapRow() {
         return row(FormFactory.UNRELATED_GAP_ROWSPEC);
     }
 
     /**
      * Inserts an empty cell at the current row/column.
      */
-    public TablePanelBuilder cell() {
+    public TableLayoutBuilder cell() {
         return cell("");
     }
 
@@ -228,7 +228,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts an empty cell at the current row/column. Attibutes may be zero or
      * more of rowSpec, columnSpec, colGrId and rowGrId.
      */
-    public TablePanelBuilder cell(String attributes) {
+    public TableLayoutBuilder cell(String attributes) {
         cellInternal(null, attributes);
         return this;
     }
@@ -236,7 +236,7 @@ public class TablePanelBuilder implements LayoutBuilder {
     /**
      * Inserts a component at the current row/column.
      */
-    public TablePanelBuilder cell(JComponent component) {
+    public TableLayoutBuilder cell(JComponent component) {
         return cell(component, "");
     }
 
@@ -244,7 +244,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts a component at the current row/column. Attibutes may be zero or
      * more of rowSpec, columnSpec, colGrId, rowGrId, align and valign.
      */
-    public TablePanelBuilder cell(JComponent component, String attributes) {
+    public TableLayoutBuilder cell(JComponent component, String attributes) {
         Cell cc = cellInternal(component, attributes);
         lastCC = cc;
         items.add(cc);
@@ -254,21 +254,21 @@ public class TablePanelBuilder implements LayoutBuilder {
     /**
      * Inserts a related componet gap column.
      */
-    public TablePanelBuilder gapCol() {
+    public TableLayoutBuilder gapCol() {
         return gapCol(FormFactory.RELATED_GAP_COLSPEC);
     }
 
     /**
      * Inserts a gap column with the specified colSpec.
      */
-    public TablePanelBuilder gapCol(String colSpec) {
+    public TableLayoutBuilder gapCol(String colSpec) {
         return gapCol(new ColumnSpec(colSpec));
     }
 
     /**
      * Inserts a gap column with the specified colSpec.
      */
-    public TablePanelBuilder gapCol(ColumnSpec colSpec) {
+    public TableLayoutBuilder gapCol(ColumnSpec colSpec) {
         gapCols.put(new Integer(currentCol), colSpec);
         return this;
     }
@@ -276,21 +276,21 @@ public class TablePanelBuilder implements LayoutBuilder {
     /**
      * Inserts a label componet gap column.
      */
-    public TablePanelBuilder labelGapCol() {
+    public TableLayoutBuilder labelGapCol() {
         return gapCol(FormFactory.LABEL_COMPONENT_GAP_COLSPEC);
     }
 
     /**
      * Inserts a unrelated componet gap column.
      */
-    public TablePanelBuilder unrelatedGapCol() {
+    public TableLayoutBuilder unrelatedGapCol() {
         return gapCol(FormFactory.UNRELATED_GAP_COLSPEC);
     }
 
     /**
      * Inserts a separator with the given label.
      */
-    public TablePanelBuilder separator(String labelKey) {
+    public TableLayoutBuilder separator(String labelKey) {
         return separator(labelKey, "");
     }
 
@@ -298,7 +298,7 @@ public class TablePanelBuilder implements LayoutBuilder {
      * Inserts a separator with the given label. Attibutes my be zero or more of
      * rowSpec, columnSpec, colGrId, rowGrId, align and valign.
      */
-    public TablePanelBuilder separator(String labelKey, String attributes) {
+    public TableLayoutBuilder separator(String labelKey, String attributes) {
         Cell cc = cellInternal(getComponentFactory().createLabeledSeparator(
                 labelKey), attributes);
         lastCC = cc;
