@@ -15,70 +15,21 @@
  */
 package org.springframework.richclient.form.builder;
 
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.*;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import org.springframework.enums.ShortCodedEnum;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
+import org.springframework.richclient.layout.LabelOrientation;
 import org.springframework.richclient.layout.LayoutBuilder;
 
 /**
- * This provides an easy way to create panels using a {@link GridBagLayout}.
- * <p />
- * 
- * Usage is:
- * 
- * <pre>
- * GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
- * 
- * builder.appendRightLabel(&quot;label.field1&quot;).appendField(field1);
- * builder.appendRightLabel(&quot;label.field2&quot;).appendField(field2);
- * builder.nextLine();
- * 
- * builder.appendRightLabel(&quot;label.field3&quot;).appendField(field3);
- * // because &quot;field3&quot; is the last component on this line, but the panel has
- * // 4 columns, &quot;field3&quot; will span 3 columns
- * builder.nextLine();
- * 
- * // once everything's been put into the builder, ask it to build a panel
- * // to use in the UI.
- * JPanel panel = builder.getPanel();
- * </pre>
- * 
- * @author Jim Moore
- * @see #setAutoSpanLastComponent(boolean)
- * @see #setShowGuidelines(boolean)
- * @see #setComponentFactory(ComponentFactory)
+ * @see GridBagLayoutBuilder
  */
-public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
-        LayoutBuilder {
+public class GridBagLayoutFormBuilder extends AbstractFormBuilder
+    implements LayoutBuilder {
 
     private final GridBagLayoutBuilder builder;
-
-    public static final class LabelOrientation extends ShortCodedEnum {
-        public static final LabelOrientation TOP = new LabelOrientation(
-                SwingConstants.TOP, "Top");
-
-        public static final LabelOrientation BOTTOM = new LabelOrientation(
-                SwingConstants.BOTTOM, "Bottom");
-
-        public static final LabelOrientation LEFT = new LabelOrientation(
-                SwingConstants.LEFT, "Left");
-
-        public static final LabelOrientation RIGHT = new LabelOrientation(
-                SwingConstants.RIGHT, "Right");
-
-        private LabelOrientation(int code, String label) {
-            super(code, label);
-        }
-    }
 
     public GridBagLayoutFormBuilder(SwingFormModel swingFormModel) {
         super(swingFormModel);
@@ -88,7 +39,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
     /**
      * Returns the underlying {@link GridBagLayoutBuilder}. Should be used with
      * caution.
-     * 
+     *
      * @return never null
      */
     public final GridBagLayoutBuilder getBuilder() {
@@ -103,17 +54,16 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see SwingFormModel#createBoundControl(String)
      */
@@ -124,185 +74,151 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * @param colSpan
-     *            the number of columns the field should span
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     * @param colSpan      the number of columns the field should span
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see SwingFormModel#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            int colSpan) {
+                                                       int colSpan) {
         return appendLabeledField(propertyName, LabelOrientation.LEFT, colSpan);
     }
 
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see SwingFormModel#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            LabelOrientation labelOrientation) {
+                                                       LabelOrientation labelOrientation) {
         return appendLabeledField(propertyName, labelOrientation, 1);
     }
 
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * @param colSpan
-     *            the number of columns the field should span
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     * @param colSpan      the number of columns the field should span
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see SwingFormModel#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            LabelOrientation labelOrientation, int colSpan) {
+                                                       LabelOrientation labelOrientation,
+                                                       int colSpan) {
         final JComponent field = getDefaultComponent(propertyName);
 
         return appendLabeledField(propertyName, field, labelOrientation,
-                colSpan);
+            colSpan);
     }
 
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see SwingFormModel#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            final JComponent field, LabelOrientation labelOrientation) {
+                                                       final JComponent field,
+                                                       LabelOrientation labelOrientation) {
         return appendLabeledField(propertyName, field, labelOrientation, 1);
     }
 
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * @param colSpan
-     *            the number of columns the field should span
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     * @param colSpan      the number of columns the field should span
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see FormComponentInterceptor#processLabel(String, JComponent)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            final JComponent field, LabelOrientation labelOrientation,
-            int colSpan) {
+                                                       final JComponent field, LabelOrientation labelOrientation,
+                                                       int colSpan) {
         return appendLabeledField(propertyName, field, labelOrientation,
-                colSpan, 1, true, false);
+            colSpan, 1, true, false);
     }
 
     /**
      * Appends a label and field to the end of the current line.
      * <p />
-     * 
+     *
      * The label will be to the left of the field, and be right-justified.
      * <br />
      * The field will "grow" horizontally as space allows.
      * <p />
-     * 
-     * @param propertyName
-     *            the name of the property to create the controls for
-     * @param colSpan
-     *            the number of columns the field should span
-     * 
+     *
+     * @param propertyName the name of the property to create the controls for
+     * @param colSpan      the number of columns the field should span
+     *
      * @return "this" to make it easier to string together append calls
-     * 
+     *
      * @see SwingFormModel#createLabel(String)
      * @see FormComponentInterceptor#processLabel(String, JComponent)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName,
-            final JComponent field, LabelOrientation labelOrientation,
-            int colSpan, int rowSpan, boolean expandX, boolean expandY) {
-        final JLabel label = getLabelFor(propertyName, field);
-
-        if (labelOrientation == LabelOrientation.LEFT
-                || labelOrientation == null) {
-            label.setHorizontalAlignment(JLabel.RIGHT);
-            builder.appendLabel(label).append(field, colSpan, rowSpan, expandX,
-                    expandY);
-        }
-        else if (labelOrientation == LabelOrientation.RIGHT) {
-            label.setHorizontalAlignment(JLabel.LEFT);
-            builder.append(field, colSpan, rowSpan, expandX, expandY)
-                    .appendLabel(label);
-        }
-        else if (labelOrientation == LabelOrientation.TOP) {
-            label.setHorizontalAlignment(JLabel.LEFT);
-            final int col = builder.getCurrentCol();
-            final int row = builder.getCurrentRow();
-            final Insets insets = builder.getDefaultInsets();
-            builder.append(label, col, row, colSpan, 1, false, expandY, insets)
-                    .append(field, col, row + 1, colSpan, rowSpan, expandX,
-                            expandY, insets);
-        }
-        else if (labelOrientation == LabelOrientation.BOTTOM) {
-            label.setHorizontalAlignment(JLabel.LEFT);
-            final int col = builder.getCurrentCol();
-            final int row = builder.getCurrentRow();
-            final Insets insets = builder.getDefaultInsets();
-            builder.append(field, col, row, colSpan, rowSpan, expandX, expandY,
-                    insets).append(label, col, row + rowSpan, colSpan, 1,
-                    false, expandY, insets);
-        }
-
+                                                       final JComponent field,
+                                                       LabelOrientation labelOrientation,
+                                                       int colSpan,
+                                                       int rowSpan,
+                                                       boolean expandX,
+                                                       boolean expandY) {
+        builder.appendLabeledField(propertyName, field, labelOrientation,
+            colSpan, rowSpan, expandX, expandY);
         return this;
     }
 
     /**
      * Appends a seperator (usually a horizonal line). Has an implicit
      * {@link #nextLine()}before and after it.
-     * 
+     *
      * @return "this" to make it easier to string together append calls
      */
     public GridBagLayoutFormBuilder appendSeparator() {
@@ -315,7 +231,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
      * {@link #setComponentFactory(ComponentFactory) ComponentFactory's}message
      * bundle for the text to put along with the seperator. Has an implicit
      * {@link #nextLine()}before and after it.
-     * 
+     *
      * @return "this" to make it easier to string together append calls
      */
     public GridBagLayoutFormBuilder appendSeparator(String labelKey) {
@@ -325,7 +241,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
 
     /**
      * Ends the current line and starts a new one
-     * 
+     *
      * @return "this" to make it easier to string together append calls
      */
     public GridBagLayoutFormBuilder nextLine() {
@@ -343,7 +259,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements
     /**
      * Creates and returns a JPanel with all the given components in it, using
      * the "hints" that were provided to the builder.
-     * 
+     *
      * @return a new JPanel with the components laid-out in it
      */
     public JPanel getPanel() {
