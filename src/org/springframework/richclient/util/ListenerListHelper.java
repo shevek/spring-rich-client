@@ -104,7 +104,7 @@ public class ListenerListHelper implements Serializable {
 
     private final Class listenerClass;
 
-    private Object[] listeners;
+    private volatile Object[] listeners;
 
     /**
      * Create new <code>ListenerListHelper</code> instance that will maintain
@@ -229,8 +229,8 @@ public class ListenerListHelper implements Serializable {
                     if (listeners[i] == listener) { return; }
                 }
                 Object[] tmp = new Object[listenersLength + 1];
-                System.arraycopy(listeners, 0, tmp, 0, listenersLength);
                 tmp[listenersLength] = listener;
+                System.arraycopy(listeners, 0, tmp, 0, listenersLength);                
                 listeners = tmp;
             }
         }
