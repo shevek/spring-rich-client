@@ -252,8 +252,10 @@ public class ClassUtils {
 
             if (val == null) {
                 // not found anywhere
-                logger.warn("Could not find a definition for " + typeClass +
-                    " in " + classMap.keySet());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Could not find a definition for " +
+                        typeClass + " in " + classMap.keySet());
+                }
                 return null;
             }
             else {
