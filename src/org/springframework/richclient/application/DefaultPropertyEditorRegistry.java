@@ -20,10 +20,12 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.ClassEditor;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 
@@ -39,6 +41,42 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     private Map propertyEditorByClass = new HashMap();
     
     private Map propertyEditorByClassAndProperty = new HashMap();
+    
+    /**
+     * Adds a property editor to the registry extracting the object class,
+     * property name and property editor class from the properties
+     * "objectClass", "propertyName" and "propertyEditorClass".
+     * 
+     * @param properties
+     *            the properties
+     */
+    public void setPropertyEditor(Properties properties) {
+        ClassEditor classEditor = new ClassEditor();
+        
+        Class objectClass = null;
+        String propertyName = null;
+        Class propertyEditorClass = null;
+                
+        if (properties.get("objectClass") != null) {
+            classEditor.setAsText((String) properties.get("objectClass"));
+            objectClass = (Class) classEditor.getValue();
+        }
+        propertyName = (String) properties.get("propertyName");
+        if (properties.get("propertyEditorClass") != null) {
+            classEditor.setAsText((String) properties.get("propertyEditorClass"));
+            propertyEditorClass = (Class) classEditor.getValue();
+        } else {
+            throw new IllegalArgumentException("propertyEditorClass is required");
+        }
+        
+        if (propertyName != null) {
+            setPropertyEditor(objectClass, propertyName, propertyEditorClass);
+        } else if (objectClass != null) {
+            setPropertyEditor(objectClass, propertyEditorClass);
+        } else {
+            throw new IllegalArgumentException("objectClass and/or propertyName are required");
+        }        
+    }
 
 
     public void setPropertyEditor(final Class typeClass,
