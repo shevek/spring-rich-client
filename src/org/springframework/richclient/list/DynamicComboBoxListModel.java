@@ -79,7 +79,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
         }
         this.selectableItemsHolder = holder;
         if (this.selectableItemsHolder != null) {
-            doAdd((Collection)holder.get());
+            doAdd(holder.get());
             this.selectableItemsHolder.addValueListener(this);
         }
     }
@@ -120,13 +120,23 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
             logger.debug("Backing collection of selectable items changed; "
                     + "refreshing combo box with contents of new collection.");
         }
-        doAdd((Collection)selectableItemsHolder.get());
+        doAdd(selectableItemsHolder.get());
     }
 
-    private void doAdd(Collection c) {
+    private void doAdd(Object items) {
         clear();
-        if (c != null) {
-            addAll(c);
+        if (items != null) {
+            if (items instanceof Collection) {
+                addAll((Collection) items); 
+            } else if (items instanceof Object[]) {
+                Object[] itemsArray = (Object[]) items;
+                for (int i = 0; i < itemsArray.length; i++) {
+                    add(itemsArray[i]);
+                }
+            } else {
+                throw new IllegalArgumentException(
+                        "selectableItemsHolder must hold a Collection or array");
+            }        
         }
         sort();
     }
