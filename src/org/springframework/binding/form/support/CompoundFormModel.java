@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
@@ -208,6 +209,11 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
                     + "' found on any nested form models... returning [null]");
         }
         return null;
+    }
+
+    public String[] getChildFormNames() {
+        final Set formNameSet = childFormModels.keySet();
+        return (String[])formNameSet.toArray(new String[formNameSet.size()]);
     }
 
     protected void handleEnabledChange() {

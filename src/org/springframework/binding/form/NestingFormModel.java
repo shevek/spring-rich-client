@@ -39,6 +39,15 @@ public interface NestingFormModel extends FormModel {
     public ValueModel findDisplayValueModelFor(FormModel delegatingChild, String formPropertyPath);
 
     /**
+     * Returns the names of all current children that this FormModel is nesting.
+     *
+     * @return the names of the child forms; never null
+     *
+     * @see #getChildFormModel(String)
+     */
+    public String[] getChildFormNames();
+
+    /**
      * Create a child form model nested by this form model identified by the
      * provided name. The form object associated with the created child model is
      * the same form object managed by the parent.
