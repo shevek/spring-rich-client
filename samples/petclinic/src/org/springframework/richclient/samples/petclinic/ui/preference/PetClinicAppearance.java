@@ -26,7 +26,6 @@ public class PetClinicAppearance {
 
     public void load(PreferenceStore preferenceStore) {
         dialogPageType = (CompositeDialogPageType) preferenceStore.getCodedEnum(DIALOG_PAGE_TYPE);
-        dialogPageType = (CompositeDialogPageType) preferenceStore.getDefaultCodedEnum(DIALOG_PAGE_TYPE);
     }
 
     private CompositeDialogPageType dialogPageType;

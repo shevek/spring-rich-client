@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.preference;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,7 +65,11 @@ public class PreferenceManager {
         preferenceStore = store;
         try {
             preferenceStore.load();
-        } catch (IOException e) {
+        }
+        catch (FileNotFoundException e) {
+            // ignore, program starts for the first time, without preference file
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
