@@ -16,7 +16,6 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     private ViewDescriptorRegistry viewDescriptorRegistry;
 
-    private Set viewPanes = new HashSet();
+    private Set viewPanes = new LinkedHashSet();
 
     private Set viewListeners = new LinkedHashSet();
 
@@ -82,8 +81,19 @@ public class DefaultApplicationPage implements ApplicationPage,
         if (pageControl == null) {
             this.pageControl = new JPanel(new BorderLayout());
             this.pageDescriptor.buildInitialLayout(this);
+            setActiveView();
         }
         return pageControl;
+    }
+
+    private void setActiveView() {
+        if (viewPanes.size() > 0) {
+            activeView = (ViewPane)viewPanes.iterator().next();
+            fireViewFocusGained(activeView.getView());
+        }
+        else {
+            activeView = null;
+        }
     }
 
     public void showView(String viewDescriptorId) {
