@@ -68,20 +68,18 @@ public class ChainedInterceptorFactory implements
             this.interceptors = interceptors;
         }
 
-        public JComponent processLabel(String propertyName, JComponent label) {
+        public void processLabel(String propertyName, JComponent label) {
             for (Iterator i=interceptors.iterator(); i.hasNext(); ) {
                 FormComponentInterceptor interceptor = ((FormComponentInterceptor) i.next());
-                label = interceptor.processLabel(propertyName, label);
+                interceptor.processLabel(propertyName, label);
             }
-            return label;
         }
 
-        public JComponent processComponent(String propertyName, JComponent component) {
+        public void processComponent(String propertyName, JComponent component) {
             for (Iterator i=interceptors.iterator(); i.hasNext(); ) {
                 FormComponentInterceptor interceptor = ((FormComponentInterceptor) i.next());
-                component = interceptor.processComponent(propertyName, component);
+                interceptor.processComponent(propertyName, component);
             }
-            return component;
         }
     }
 }

@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import javax.swing.JComponent;
-
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
@@ -45,10 +43,6 @@ public abstract class ValidationInterceptor extends
     public ValidationInterceptor(FormModel formModel) {
         super(formModel);
         propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
-    }
-
-    public JComponent processLabel(String propertyName, JComponent label) {
-        return label;
     }
 
     protected void registerErrorMessageReceiver(String propertyName,

@@ -32,21 +32,16 @@ public interface FormComponentInterceptor {
      *
      * @param propertyName the name of the property that the label is for
      * @param label        the label to process
-     *
-     * @return the component to use as the label as the result of the processing
      */
-    public JComponent processLabel(String propertyName, JComponent label);
+    public void processLabel(String propertyName, JComponent label);
 
     /**
      * Perform some kind of processing on the component.
      *
      * @param propertyName the name of the property that the component is for
      * @param component    the component to process
-     *
-     * @return the component to use as the component as the result of
-     *         the processing
      */
-    public JComponent processComponent(String propertyName,
+    public void processComponent(String propertyName,
                                        JComponent component);
 
 }

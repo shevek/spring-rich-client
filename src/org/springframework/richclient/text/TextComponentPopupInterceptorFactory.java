@@ -47,14 +47,13 @@ public class TextComponentPopupInterceptorFactory implements
             super(formModel);
         }
 
-        public JComponent processComponent(String propertyName,
+        public void processComponent(String propertyName,
                 JComponent component) {
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 TextComponentPopup.attachPopup((JTextComponent)innerComp,
                         getResetTrigger());
             }
-            return component;
         }
 
         private CommitTrigger getResetTrigger() {

@@ -58,7 +58,7 @@ public class OverlayValidationInterceptorFactory implements
             super(formModel);
         }
 
-        public JComponent processComponent(String propertyName,
+        public void processComponent(String propertyName,
                                            JComponent component) {
             ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
@@ -70,7 +70,6 @@ public class OverlayValidationInterceptorFactory implements
 
             registerErrorGuarded(propertyName, overlay);
             registerErrorMessageReceiver(propertyName, overlay);
-            return component;
         }
     }
 

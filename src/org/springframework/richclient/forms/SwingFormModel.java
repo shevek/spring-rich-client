@@ -451,8 +451,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JLabel createLabel(String formProperty) {
-        return (JLabel) interceptLabel(formProperty, getComponentFactory().createLabel(
-                getMessageKeys(formProperty, LABEL_MESSAGE_KEY_PREFIX)));
+        JLabel label = getComponentFactory().createLabel(
+                getMessageKeys(formProperty, LABEL_MESSAGE_KEY_PREFIX));
+        interceptLabel(formProperty, label);
+        return label;
     }
 
     protected String[] getMessageKeys(String formProperty, String preffix) {
@@ -913,16 +915,18 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 columns), formProperty, valueCommitPolicy);
     }
     
-    public JComponent interceptComponent(final String propertyName,
+    public void interceptComponent(final String propertyName,
                                           final JComponent component) {
-        return (getInterceptor() == null) ? component :
+        if (getInterceptor() != null) {
             getInterceptor().processComponent(propertyName, component);
+        }   
     }
 
-    public JComponent interceptLabel(final String propertyName,
+    public void interceptLabel(final String propertyName,
                                       final JComponent label) {
-        return (getInterceptor() == null) ? label :
+        if (getInterceptor() != null) {
             getInterceptor().processLabel(propertyName, label);
+        }
     }
 
     public ValidationListener createSingleLineResultsReporter(

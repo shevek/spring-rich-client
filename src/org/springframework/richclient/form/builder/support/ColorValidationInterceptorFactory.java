@@ -60,14 +60,13 @@ public class ColorValidationInterceptorFactory implements
             super(formModel);
         }
 
-        public JComponent processComponent(String propertyName,
+        public void processComponent(String propertyName,
                                            JComponent component) {
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 ColorChanger colorChanger = new ColorChanger(component);
                 registerErrorGuarded(propertyName, colorChanger);
             }
-            return component;
         }
     }
 

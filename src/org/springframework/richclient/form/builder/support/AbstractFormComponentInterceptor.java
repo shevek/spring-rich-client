@@ -34,12 +34,10 @@ public abstract class AbstractFormComponentInterceptor implements
         return formModel;
     }
     
-    public JComponent processLabel(String propertyName, JComponent label) {
-        return label;
+    public void processLabel(String propertyName, JComponent label) {
     }
 
-    public JComponent processComponent(String propertyName, JComponent component) {
-        return component;
+    public void processComponent(String propertyName, JComponent component) {
     }
     
     protected JComponent getInnerComponent(JComponent component) {
