@@ -8,6 +8,7 @@
  */
 package org.springframework.richclient.forms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -18,7 +19,7 @@ import org.springframework.rules.values.BufferedValueModel;
 import org.springframework.rules.values.ValueModel;
 
 class BufferedListValueModel extends BufferedValueModel {
-    private ListListModel items;
+    private ListListModel itemsBuffer;
 
     private boolean updating;
 
@@ -33,10 +34,17 @@ class BufferedListValueModel extends BufferedValueModel {
         return super.get();
     }
 
+    /**
+     * Gets the list value associated with this value model, creating a list
+     * model buffer containing its contents, suitable for manipulation.
+     * 
+     * @return The list model buffer
+     */
     protected Object internalGet() {
-        if (this.items == null) {
-            this.items = new ListListModel();
-            this.items.addListDataListener(new ListDataListener() {
+        List itemsList = (List)getWrappedModel().get();
+        if (this.itemsBuffer == null) {
+            this.itemsBuffer = new ListListModel(itemsList);
+            this.itemsBuffer.addListDataListener(new ListDataListener() {
                 public void contentsChanged(ListDataEvent e) {
                     fireValueChanged();
                 }
@@ -53,23 +61,32 @@ class BufferedListValueModel extends BufferedValueModel {
         else {
             try {
                 updating = true;
-                this.items.clear();
+                this.itemsBuffer.clear();
+                if (itemsList != null) {
+                    this.itemsBuffer.addAll(itemsList);
+                }
             }
             finally {
                 updating = false;
             }
         }
-        List list = (List)getWrappedModel().get();
-        if (list != null) {
-            try {
-                updating = true;
-                this.items.addAll(list);
-            }
-            finally {
-                updating = false;
-            }
+        return this.itemsBuffer;
+    }
+
+    /**
+     * Overriden to make a defensive copy of the list model contents before
+     * setting. This is not needed if the target object makes the copy; but this
+     * method assumes users are lazy and often forget to do that.
+     */
+    protected void doBufferedValueCommit(Object bufferedValue) {
+        List list = (List)bufferedValue;
+        getWrappedModel().set(new ArrayList(list));
+    }
+
+    protected void fireValueChanged() {
+        if (!updating) {
+            super.fireValueChanged();
         }
-        return this.items;
     }
 
     protected void onWrappedValueChanged() {
@@ -78,9 +95,4 @@ class BufferedListValueModel extends BufferedValueModel {
         }
     }
 
-    protected void fireValueChanged() {
-        if (!updating) {
-            super.fireValueChanged();
-        }
-    }
 }

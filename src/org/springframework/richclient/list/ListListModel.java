@@ -34,15 +34,20 @@ public class ListListModel extends AbstractListModel implements List {
     private Comparator sorter;
 
     public ListListModel() {
-        this(new ArrayList());
+        this(null);
     }
 
     public ListListModel(List items) {
-        this.items = new ArrayList(items);
+        this(items, null);
     }
 
     public ListListModel(List items, Comparator sorter) {
-        this.items = new ArrayList(items);
+        if (items != null) {
+            this.items = new ArrayList(items);
+        }
+        else {
+            this.items = new ArrayList();
+        }
         setComparator(sorter);
         sort();
     }
@@ -65,7 +70,7 @@ public class ListListModel extends AbstractListModel implements List {
     public int getSize() {
         return items.size();
     }
-    
+
     public Object getElementAt(int index) {
         return items.get(index);
     }
