@@ -105,18 +105,13 @@
 		class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
 		<property name="interceptorFactories">
 			<list>
-				<bean 
-					class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+				<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
 					<property name="errorColor">
 						<value>255,245,245</value>
 					</property>
 				</bean>
-				<bean 
-					class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory" 
-					/>
-				<bean 
-					class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory" 
-					/>
+				<bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
+				<bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
 			</list>
 		</property>
 	</bean>
