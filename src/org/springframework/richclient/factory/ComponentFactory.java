@@ -50,6 +50,18 @@ public interface ComponentFactory {
      */
     public JLabel createLabel(String labelKey);
 
+
+    /**
+     * Create and configure a label with the specified label key. For example:
+     * "&My Control Label:", where the '&' marks a positional mnemonic.
+     * 
+     * @param labelKey
+     *            The label message code; may also be the label text if no
+     *            message source is configured.
+     * @return The configured label.
+     */
+    public JLabel createLabel(String[] labelKeys);
+    
     /**
      * Creates and configure a label with the specified label key and
      * parameterized arguments. Argument values are resolved to {digit
@@ -110,6 +122,20 @@ public interface ComponentFactory {
      * @return The configured label.
      */
     public JLabel createLabelFor(String labelKey, JComponent comp);
+
+    /**
+     * Create and configure a label for the provided component. Associating a
+     * label with a component ensures when the mnemonic is selected the
+     * component is given focus.
+     * 
+     * @param labelKey
+     *            The label message code; may also be the label text if no
+     *            message source is configured.
+     * @param comp
+     *            the labeled component
+     * @return The configured label.
+     */
+    public JLabel createLabelFor(String[] labelKeys, JComponent comp);
 
     /**
      * Create and configure a button with the specified label key. The button

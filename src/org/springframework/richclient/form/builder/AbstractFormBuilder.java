@@ -74,7 +74,8 @@ public abstract class AbstractFormBuilder {
             JComponent label, JComponent component) {
         if (getInterceptor() != null) {
             label = getInterceptor().processLabel(propertyName, label);
-            component = getInterceptor().processComponent(propertyName, component);
+            component = getInterceptor().processComponent(propertyName,
+                    component);
         }
         return new JComponent[] { label, component };
     }
@@ -108,13 +109,9 @@ public abstract class AbstractFormBuilder {
         return component;
     }
 
-    protected JLabel getLabel(String propertyName) {
-        return getComponentFactory().createLabel(propertyName);
-    }
-
-    protected JLabel getLabel(JComponent component, String propertyName) {
-        JLabel label = getLabel(propertyName);
-        label.setLabelFor(component);
-        return label;
+    protected JLabel getLabelFor(String propertyName, JComponent component) {
+        return getComponentFactory().createLabelFor(
+                new String[] { "label." + propertyName, propertyName },
+                component);
     }
 }

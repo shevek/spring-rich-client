@@ -94,6 +94,11 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
                 createNewLabel());
     }
 
+    public JLabel createLabel(String[] labelKeys) {
+        return getLabelInfo(getRequiredMessage(labelKeys)).configureLabel(
+                createNewLabel());
+    }
+
     public JLabel createLabel(String labelKey, Object[] arguments) {
         return getLabelInfo(getRequiredMessage(labelKey, arguments))
                 .configureLabel(createNewLabel());
@@ -153,6 +158,11 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
 
     public JLabel createLabelFor(String labelKey, JComponent component) {
         return getLabelInfo(getRequiredMessage(labelKey)).configureLabelFor(
+                createNewLabel(), component);
+    }
+
+    public JLabel createLabelFor(String[] labelKeys, JComponent component) {
+        return getLabelInfo(getRequiredMessage(labelKeys)).configureLabelFor(
                 createNewLabel(), component);
     }
 
