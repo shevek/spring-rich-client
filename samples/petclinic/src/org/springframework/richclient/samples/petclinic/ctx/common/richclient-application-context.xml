@@ -62,12 +62,8 @@
 	
 	<bean id="lookAndFeelConfigurer" 
 		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
-		<property name="plasticLookAndFeel">
-			<map>
-				<entry key="theme">
-					<bean class="com.jgoodies.plaf.plastic.theme.ExperienceBlue"/>
-				</entry>
-			</map>
+		<property name="theme">
+			<bean class="com.jgoodies.plaf.plastic.theme.ExperienceBlue"/>
 		</property>
 	</bean>
 	

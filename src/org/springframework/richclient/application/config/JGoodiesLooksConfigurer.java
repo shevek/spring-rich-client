@@ -15,15 +15,17 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.util.Map;
+import java.awt.Dimension;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import com.jgoodies.plaf.FontSizeHints;
+import com.jgoodies.plaf.Options;
 import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
 import com.jgoodies.plaf.plastic.PlasticTheme;
 
-public class JGoodiesLooksConfigurer {
+public class JGoodiesLooksConfigurer implements InitializingBean {
     private UIManagerConfigurer configurer;
 
     public JGoodiesLooksConfigurer() {
@@ -34,31 +36,32 @@ public class JGoodiesLooksConfigurer {
         Assert.notNull(configurer);
         this.configurer = configurer;
     }
-
-    public void setPlasticLookAndFeel(Map properties) {
-        if (properties != null) {
-            PlasticTheme theme = (PlasticTheme)properties.get("theme");
-            if (theme != null) {
-                PlasticLookAndFeel.setMyCurrentTheme(theme);
-            }
-            FontSizeHints fontSize = (FontSizeHints)properties.get("fontSizeHints");
-            if (fontSize != null) {
-                PlasticLookAndFeel.setFontSizeHints(fontSize);
-            }
-            Boolean threeDEnabled = (Boolean)properties.get("3dEnabled");
-            if (threeDEnabled != null) {
-                PlasticLookAndFeel.set3DEnabled(threeDEnabled.booleanValue());
-            }
-            Boolean highContrastEnabled = (Boolean)properties.get("highConstrastFocusColorsEnabled");
-            if (highContrastEnabled != null) {
-                PlasticLookAndFeel.setHighContrastFocusColorsEnabled(highContrastEnabled.booleanValue());
-            }
-            String tabStyle = (String)properties.get("tabStyle");
-            if (tabStyle != null) {
-                PlasticLookAndFeel.setTabStyle(tabStyle);
-            }
-        }
-        configurer.setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+    
+    public void setDefaultIconSize(Dimension size) { 
+        Options.setDefaultIconSize(size);
     }
 
+    public void setTheme(PlasticTheme theme) {        
+        PlasticLookAndFeel.setMyCurrentTheme(theme);
+    }
+
+    public void setFontSizeHints(FontSizeHints fontSize) {
+        PlasticLookAndFeel.setFontSizeHints(fontSize);
+    }
+
+    public void set3DEnabled(boolean threeDEnabled) {
+        PlasticLookAndFeel.set3DEnabled(threeDEnabled);
+    }
+
+    public void setHighContrastFocusColorsEnabled(boolean highContrastEnabled) {
+        PlasticLookAndFeel.setHighContrastFocusColorsEnabled(highContrastEnabled);
+    }
+
+    public void setTabStyle(String tabStyle) {
+        PlasticLookAndFeel.setTabStyle(tabStyle);
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        configurer.setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+    }
 }
