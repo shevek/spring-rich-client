@@ -25,6 +25,8 @@ import java.util.ListIterator;
 
 import javax.swing.AbstractListModel;
 
+import org.springframework.util.ObjectUtils;
+
 /**
  * @author Keith Donald
  */
@@ -182,7 +184,9 @@ public class ListListModel extends AbstractListModel implements ObservableList {
 
     public Object set(int index, Object element) {
         Object oldObject = items.set(index, element);
-        fireContentsChanged(index);
+        if (! ObjectUtils.nullSafeEquals(oldObject, element)) {
+            fireContentsChanged(index);
+        }
         return oldObject;
     }
 
