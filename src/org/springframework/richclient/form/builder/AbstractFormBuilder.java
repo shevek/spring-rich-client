@@ -69,10 +69,10 @@ public abstract class AbstractFormBuilder {
     }
 
     protected JComponent[] processComponent(final String propertyName,
-            JComponent label, JComponent component) {
-        label = processLabel(propertyName, label);
-        component = processComponent(propertyName, component);
-        return new JComponent[]{label, component};
+            final JComponent label, final JComponent component) {
+        JComponent newLabel = processLabel(propertyName, label);
+        JComponent newComponent = processComponent(propertyName, component);
+        return new JComponent[]{newLabel, newComponent};
     }
 
     protected JComponent processComponent(final String propertyName,
