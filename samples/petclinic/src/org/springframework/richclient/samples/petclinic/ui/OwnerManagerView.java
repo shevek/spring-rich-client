@@ -62,7 +62,7 @@ public class OwnerManagerView extends AbstractView implements
 
     private Clinic clinic;
 
-    private String ownerLastName;
+    private String ownerLastName = "";
 
     private JTree ownersTree;
 
