@@ -159,7 +159,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
         }
     }
 
-    protected CommandButtonLabelInfo getLabel() {
+    public CommandButtonLabelInfo getLabel() {
         return label;
     }
 
