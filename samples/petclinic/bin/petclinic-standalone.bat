@@ -17,6 +17,7 @@ if NOT exist lib\spring.jar goto missing_jars
 if NOT exist lib\spring-sandbox.jar goto missing_jars
 if NOT exist lib\spring-petclinic.jar goto missing_jars
 if NOT exist lib\spring-richclient.jar goto missing_jars
+if NOT exist lib\spring-rcp-sandbox.jar goto missing_jars
 if NOT exist lib\spring-richclient-resources.jar goto missing_jars
 
 REM The JAR has in its MANIFEST.MF all the above classpath JARs

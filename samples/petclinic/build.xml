@@ -53,6 +53,7 @@
 		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-standalone.bat"/>
 		<copy todir="${dist.dir}" file="${bin.dir}/petclinic-clientserver.bat"/>
 		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient.jar"/>
+		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-rcp-sandbox.jar"/>
 		<copy todir="${dist.dir}/lib" file="${dist.lib.dir}/spring-richclient-resources.jar"/>
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/acegisecurity/acegi-security.jar"/>
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/aopalliance/aopalliance.jar"/>
@@ -82,7 +83,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicStandalone"/>
-				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar"/>
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/jh.jar lib/looks.jar lib/spring.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-rcp-sandbox.jar lib/spring-richclient-resources.jar"/>
 			</manifest>
 		</jar>
 		

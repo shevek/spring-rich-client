@@ -33,6 +33,7 @@
     <jar href="lib/spring-sandbox.jar"/>
     <jar href="lib/spring-petclinic.jar"/>
     <jar href="lib/spring-richclient.jar"/>
+    <jar href="lib/spring-rcp-sandbox.jar"/>
     <jar href="lib/spring-richclient-resources.jar"/>
   </resources>
   <application-desc main-class="org.springframework.richclient.samples.petclinic.PetClinicStandalone"/>
