@@ -163,6 +163,10 @@ public class Application extends ApplicationObjectSupport {
         }
     }
 
+    public WindowManager getWindowManager() {
+        return windowManager;
+    }
+
     public ApplicationWindow getActiveWindow() {
         return activeWindow;
     }
