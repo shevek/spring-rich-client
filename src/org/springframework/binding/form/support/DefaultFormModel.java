@@ -197,6 +197,9 @@ public class DefaultFormModel extends AbstractFormModel implements
             Iterator it = formValueModels.values().iterator();
             while (it.hasNext()) {
                 ValueModel model = (ValueModel)it.next();
+                if (model instanceof ValueModelWrapper) {
+                    model = ((ValueModelWrapper)model).getWrappedModel();
+                }
                 if (model instanceof BufferedValueModel) {
                     BufferedValueModel bufferable = (BufferedValueModel)model;
                     if (bufferable.isDirty()) { return true; }
