@@ -13,42 +13,39 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.util;
+package org.springframework.richclient.list;
 
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import org.springframework.beans.BeanWrapperImpl;
-
 /**
- * Renders a enumeration in a list.
+ * Abstract base class for ListCellRenderer that convert the cell value into a
+ * String. 
+ * <p>
+ * Subclasses need to override <code>getTextValue</code> which is responsible
+ * for the conversion.
  * 
- * @author Keith Donald
+ * @author oliverh
  */
-public class BeanPropertyValueListRenderer extends DefaultListCellRenderer {
-    private BeanWrapperImpl beanWrapper;
-    private String propertyName;
+public abstract class TextValueListRenderer extends DefaultListCellRenderer {
 
-    public BeanPropertyValueListRenderer(String propertyName) {
-        this.propertyName = propertyName;
-    }
+    /**
+     * Template method to convert cell value into a String.
+     * 
+     * @param value
+     *            the cell value
+     * @return the representation of value that should be rendered by this
+     *         ListCellRenderer
+     */
+    protected abstract String getTextValue(Object value);
 
     public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, "", index, isSelected,
                 cellHasFocus);
-        if (value == null) {
-            return this;
-        }
-        if (beanWrapper == null) {
-            beanWrapper = new BeanWrapperImpl(value);
-        } else {
-            beanWrapper.setWrappedInstance(value);
-        }
-        setText(String.valueOf(beanWrapper.getPropertyValue(propertyName)));
+        setText(getTextValue(value));
         return this;
     }
-
 }
