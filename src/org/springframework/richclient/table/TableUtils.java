@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.table;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -24,6 +25,7 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JViewport;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -36,6 +38,7 @@ import org.springframework.richclient.table.renderers.BooleanTableCellRenderer;
 import org.springframework.richclient.table.renderers.CodedEnumTableCellRenderer;
 import org.springframework.richclient.table.renderers.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderers.OptimizedTableCellRenderer;
+import org.springframework.richclient.util.WindowUtils;
 
 /**
  * @author Keith Donald
@@ -64,11 +67,10 @@ public class TableUtils {
         table.setAutoCreateColumnsFromModel(true);
         table.setModel(sortedModel);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setPreferredScrollableViewportSize(new Dimension(table
-                .getColumnModel().getTotalColumnWidth(), 300));
         installDefaultRenderers(table);
         TableSortIndicator sortIndicator = new TableSortIndicator(table);
         new SortTableCommand(table, sortIndicator.getColumnSortList());
+        sizeColumnsToFitRowData(table);
         return table;
     }
 
@@ -109,25 +111,40 @@ public class TableUtils {
     }
 
     /**
-     * Calculates the preferred width of a table based on its total column
-     * width.
-     * 
-     * @param table
-     * @return the preferred table width
-     */
-    public static int calculatePreferredWidth(JTable table) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = Math.min(table.getColumnModel().getTotalColumnWidth(),
-                (int)(screenSize.width * .75));
-        return width;
-    }
-
-    /**
      * Returns the innermost table model associated with this table; if layers
      * of table model filters are wrapping it.
      */
     public static TableModel getUnfilteredTableModel(JTable table) {
         return getUnfilteredTableModel(table.getModel());
+    }
+
+    public static void sizeColumnsToFitRowData(JTable table) {
+        if (table.getRowCount() > 0) {
+            for (int col = 0; col < table.getColumnCount(); col++) {
+                TableColumn column = table.getColumnModel().getColumn(col);
+                TableCellRenderer r = table.getColumnModel().getColumn(col)
+                        .getCellRenderer();
+                if (r == null) {
+                    Object val = table.getValueAt(0, col);
+                    if (val != null) {
+                        r = table.getDefaultRenderer(val.getClass());
+                    }
+                }
+                if (r != null) {
+                    Component c = r.getTableCellRendererComponent(table, table
+                            .getValueAt(0, col), false, false, 0, col);
+                    int cWidth = column.getPreferredWidth();
+                    if (c.getPreferredSize().width > cWidth) {
+                        column.setPreferredWidth(c.getPreferredSize().width
+                                + UIConstants.ONE_SPACE);
+                        column.setWidth(column.getPreferredWidth());
+                    }
+                }
+            }
+        }
+        int width = Math.min(table.getColumnModel().getTotalColumnWidth(),
+                WindowUtils.getScreenWidth() * 75);
+        table.setPreferredScrollableViewportSize(new Dimension(width, 300));
     }
 
     public static TableModel getUnfilteredTableModel(TableModel tableModel) {

@@ -114,4 +114,14 @@ public class WindowUtils {
         return new Dimension(width, height);
     }
 
+    public static int getScreenWidth() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return screenSize.width;
+    }
+
+    public static int getScreenHeight() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return screenSize.height;
+    }
+
 }
