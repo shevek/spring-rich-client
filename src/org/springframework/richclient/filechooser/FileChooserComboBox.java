@@ -43,101 +43,97 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Keith Donald
  */
 public class FileChooserComboBox extends AbstractControlFactory {
-    private static final Log logger = LogFactory
-            .getLog(FileChooserComboBox.class);
+	private static final Log logger = LogFactory.getLog(FileChooserComboBox.class);
 
-    private JFileChooser fileChooser;
+	private JFileChooser fileChooser;
 
-    private String fileChooserLabel = "fileChooserLabel";
+	private String fileChooserLabel = "fileChooserLabel";
 
-    private JTextField fileNameField;
+	private JTextField fileNameField;
 
-    private JButton browseButton;
+	private JButton browseButton;
 
-    private File startDirectory;
+	private File startDirectory;
 
-    private SwingFormModel formModel;
+	private SwingFormModel formModel;
 
-    private String formProperty;
+	private String formProperty;
 
-    public FileChooserComboBox() {
+	public FileChooserComboBox() {
 
-    }
+	}
 
-    public FileChooserComboBox(SwingFormModel formModel, String formProperty) {
-        this.formModel = formModel;
-        this.formProperty = formProperty;
-    }
+	public FileChooserComboBox(SwingFormModel formModel, String formProperty) {
+		this.formModel = formModel;
+		this.formProperty = formProperty;
+	}
 
-    public void addValidationListener(ValidationListener listener) {
-        formModel.addValidationListener(listener);
-    }
+	public void addValidationListener(ValidationListener listener) {
+		formModel.addValidationListener(listener);
+	}
 
-    public void removeValidationListener(ValidationListener listener) {
-        formModel.removeValidationListener(listener);
-    }
+	public void removeValidationListener(ValidationListener listener) {
+		formModel.removeValidationListener(listener);
+	}
 
-    public void setLabelMessageCode(String labelKey) {
-        this.fileChooserLabel = labelKey;
-    }
+	public void setLabelMessageCode(String labelKey) {
+		this.fileChooserLabel = labelKey;
+	}
 
-    public void setStartDirectory(File file) {
-        this.startDirectory = file;
-    }
+	public void setStartDirectory(File file) {
+		this.startDirectory = file;
+	}
 
-    public File getStartDirectory() {
-        if (startDirectory != null) {
-            return startDirectory;
-        }
-        else {
-            return getSelectedFile();
-        }
-    }
+	public File getStartDirectory() {
+		if (startDirectory != null) {
+			return startDirectory;
+		}
+		else {
+			return getSelectedFile();
+		}
+	}
 
-    public File getSelectedFile() {
-        return (File)formModel.getValue(formProperty);
-    }
+	public File getSelectedFile() {
+		return (File)formModel.getValue(formProperty);
+	}
 
-    public void setEnabled(boolean enabled) {
-        fileNameField.setEnabled(enabled);
-        browseButton.setEnabled(false);
-    }
+	public void setEnabled(boolean enabled) {
+		fileNameField.setEnabled(enabled);
+		browseButton.setEnabled(false);
+	}
 
-    protected JComponent createControl() {
-        this.fileNameField = formModel.createBoundTextField(formProperty);
-        JLabel fileToProcess = getComponentFactory().createLabelFor(
-                fileChooserLabel, fileNameField);
-        this.browseButton = getComponentFactory().createButton("button.browse");
-        browseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                if (fileChooser == null) {
-                    fileChooser = new JFileChooser(getStartDirectory());
-                }
-                else {
-                    fileChooser.setCurrentDirectory(getStartDirectory());
-                }
-                int returnVal = fileChooser.showOpenDialog(SwingUtilities
-                        .getWindowAncestor(browseButton));
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    fileNameField.setText(selectedFile.getAbsolutePath());
-                    if (selectedFile.isDirectory()) {
-                        setStartDirectory(selectedFile);
-                    }
-                    else {
-                        setStartDirectory(selectedFile.getParentFile());
-                    }
-                }
-            }
-        });
-        FormLayout layout = new FormLayout("pref:grow, 6dlu:none, min",
-                "pref, 3dlu, pref");
-        JPanel panel = new JPanel(layout);
-        CellConstraints cc = new CellConstraints();
-        panel.add(fileToProcess, cc.xyw(1, 1, 3));
-        panel.add(fileNameField, cc.xy(1, 3));
-        panel.add(browseButton, cc.xy(3, 3));
-        return panel;
-    }
+	protected JComponent createControl() {
+		this.fileNameField = formModel.createBoundTextField(formProperty);
+		JLabel fileToProcess = getComponentFactory().createLabelFor(fileChooserLabel, fileNameField);
+		this.browseButton = getComponentFactory().createButton("button.browse");
+		browseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if (fileChooser == null) {
+					fileChooser = new JFileChooser(getStartDirectory());
+				}
+				else {
+					fileChooser.setCurrentDirectory(getStartDirectory());
+				}
+				int returnVal = fileChooser.showOpenDialog(SwingUtilities.getWindowAncestor(browseButton));
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					fileNameField.setText(selectedFile.getAbsolutePath());
+					if (selectedFile.isDirectory()) {
+						setStartDirectory(selectedFile);
+					}
+					else {
+						setStartDirectory(selectedFile.getParentFile());
+					}
+				}
+			}
+		});
+		FormLayout layout = new FormLayout("pref:grow, 6dlu:none, min", "pref, 3dlu, pref");
+		JPanel panel = new JPanel(layout);
+		CellConstraints cc = new CellConstraints();
+		panel.add(fileToProcess, cc.xyw(1, 1, 3));
+		panel.add(fileNameField, cc.xy(1, 3));
+		panel.add(browseButton, cc.xy(3, 3));
+		return panel;
+	}
 
 }

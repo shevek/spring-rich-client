@@ -50,61 +50,58 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class ReloadableSizedIconSource extends DefaultIconSource implements
-        SizedIconSource {
-    private IconSize iconSize;
+public class ReloadableSizedIconSource extends DefaultIconSource implements SizedIconSource {
+	private IconSize iconSize;
 
-    /**
-     * Create a sized icon registry with icons of a specified size and icon
-     * resources to be loaded from the specified image source.
-     * 
-     * @param iconSize
-     *            the size of icons in this registry
-     * @param iconResources
-     *            The image icon source
-     */
-    public ReloadableSizedIconSource(IconSize iconSize,
-            ImageSource iconResources) {
-        super(iconResources);
-        Assert.notNull(iconSize);
-        this.iconSize = iconSize;
-    }
+	/**
+	 * Create a sized icon registry with icons of a specified size and icon
+	 * resources to be loaded from the specified image source.
+	 * 
+	 * @param iconSize
+	 *            the size of icons in this registry
+	 * @param iconResources
+	 *            The image icon source
+	 */
+	public ReloadableSizedIconSource(IconSize iconSize, ImageSource iconResources) {
+		super(iconResources);
+		Assert.notNull(iconSize);
+		this.iconSize = iconSize;
+	}
 
-    public void reload(IconSize size) {
-        Assert.notNull(size);
-        this.iconSize = size;
-        Iterator keys = cache().keySet().iterator();
-        if (!keys.hasNext()) {
-            logger
-                    .warn("No icons currently in the registry--nothing to reload.");
-            return;
-        }
-        while (keys.hasNext()) {
-            reloadIconImage((String)keys.next());
-        }
-    }
+	public void reload(IconSize size) {
+		Assert.notNull(size);
+		this.iconSize = size;
+		Iterator keys = cache().keySet().iterator();
+		if (!keys.hasNext()) {
+			logger.warn("No icons currently in the registry--nothing to reload.");
+			return;
+		}
+		while (keys.hasNext()) {
+			reloadIconImage((String)keys.next());
+		}
+	}
 
-    // reloads the specified image resource key and update the cached icon
-    private void reloadIconImage(String key) {
-        ImageIcon icon = (ImageIcon)cache().get(key);
-        if (icon != null) {
-            Image image = cache().images().getImage(appendIconSizeSuffix(key));
-            icon.setImage(image);
-        }
-    }
+	// reloads the specified image resource key and update the cached icon
+	private void reloadIconImage(String key) {
+		ImageIcon icon = (ImageIcon)cache().get(key);
+		if (icon != null) {
+			Image image = cache().images().getImage(appendIconSizeSuffix(key));
+			icon.setImage(image);
+		}
+	}
 
-    private String appendIconSizeSuffix(String key) {
-        if (iconSize == null) {
-            return key;
-        }
-        else {
-            logger.debug("Appending icon suffix '." + iconSize.getName() + "'");
-            return key + "." + iconSize.getName();
-        }
-    }
+	private String appendIconSizeSuffix(String key) {
+		if (iconSize == null) {
+			return key;
+		}
+		else {
+			logger.debug("Appending icon suffix '." + iconSize.getName() + "'");
+			return key + "." + iconSize.getName();
+		}
+	}
 
-    protected String doProcessImageKeyBeforeLookup(String key) {
-        return appendIconSizeSuffix(key);
-    }
+	protected String doProcessImageKeyBeforeLookup(String key) {
+		return appendIconSizeSuffix(key);
+	}
 
 }

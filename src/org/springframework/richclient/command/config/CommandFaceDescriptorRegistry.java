@@ -18,7 +18,6 @@ package org.springframework.richclient.command.config;
 import org.springframework.richclient.command.AbstractCommand;
 
 public interface CommandFaceDescriptorRegistry {
-    public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command,
-            String faceDescriptorId);
+	public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorId);
 
 }

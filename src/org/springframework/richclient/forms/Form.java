@@ -26,28 +26,27 @@ import org.springframework.richclient.factory.ControlFactory;
  * @author Keith Donald
  */
 public interface Form extends ControlFactory {
-    public String getId();
+	public String getId();
 
-    public SwingFormModel getFormModel();
+	public SwingFormModel getFormModel();
 
-    public Object getFormObject();
+	public Object getFormObject();
 
-    public void setFormObject(Object formObject);
+	public void setFormObject(Object formObject);
 
-    public Object getValue(String formProperty);
+	public Object getValue(String formProperty);
 
-    public ValueModel getValueModel(String formProperty);
+	public ValueModel getValueModel(String formProperty);
 
-    public void addValidationListener(ValidationListener listener);
+	public void addValidationListener(ValidationListener listener);
 
-    public void removeValidationListener(ValidationListener listener);
+	public void removeValidationListener(ValidationListener listener);
 
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded,
-            MessageAreaModel messageAreaPane);
+	public ValidationListener newSingleLineResultsReporter(Guarded guarded, MessageAreaModel messageAreaPane);
 
-    public boolean hasErrors();
+	public boolean hasErrors();
 
-    public void commit();
+	public void commit();
 
-    public void revert();
+	public void revert();
 }

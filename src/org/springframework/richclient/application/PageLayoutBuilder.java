@@ -16,5 +16,5 @@
 package org.springframework.richclient.application;
 
 public interface PageLayoutBuilder {
-    public void addView(String viewDescriptorId);
+	public void addView(String viewDescriptorId);
 }

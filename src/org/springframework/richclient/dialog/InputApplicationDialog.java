@@ -41,142 +41,139 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class InputApplicationDialog extends ApplicationDialog {
 
-    private String inputLabelMessage = "dialog.input";
+	private String inputLabelMessage = "dialog.input";
 
-    private JComponent inputField;
+	private JComponent inputField;
 
-    private Constraint inputConstraint;
+	private Constraint inputConstraint;
 
-    private Closure finishAction;
+	private Closure finishAction;
 
-    private DefaultMessageAreaPane reporter;
+	private DefaultMessageAreaPane reporter;
 
-    private SwingFormModel formModel;
+	private SwingFormModel formModel;
 
-    public InputApplicationDialog(Object bean, String propertyName) {
-        this(bean, propertyName, true);
-    }
+	public InputApplicationDialog(Object bean, String propertyName) {
+		this(bean, propertyName, true);
+	}
 
-    public InputApplicationDialog(Object bean, String propertyName,
-            boolean bufferChanges) {
-        this(SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
-    }
+	public InputApplicationDialog(Object bean, String propertyName, boolean bufferChanges) {
+		this(SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
+	}
 
-    public InputApplicationDialog(SwingFormModel formModel, String propertyName) {
-        this();
-        this.formModel = formModel;
-        setInputField(formModel.createBoundControl(propertyName));
-    }
+	public InputApplicationDialog(SwingFormModel formModel, String propertyName) {
+		this();
+		this.formModel = formModel;
+		setInputField(formModel.createBoundControl(propertyName));
+	}
 
-    public InputApplicationDialog() {
-        this(null, null, CloseAction.DISPOSE);
-    }
+	public InputApplicationDialog() {
+		this(null, null, CloseAction.DISPOSE);
+	}
 
-    public InputApplicationDialog(String title, Window parent) {
-        this(title, parent, CloseAction.DISPOSE);
-    }
+	public InputApplicationDialog(String title, Window parent) {
+		this(title, parent, CloseAction.DISPOSE);
+	}
 
-    public InputApplicationDialog(String title, Window parent,
-            CloseAction closeAction) {
-        super(title, parent, closeAction);
-        setResizable(true);
-    }
+	public InputApplicationDialog(String title, Window parent, CloseAction closeAction) {
+		super(title, parent, closeAction);
+		setResizable(true);
+	}
 
-    public void setInputField(JComponent field) {
-        Assert.notNull(field);
-        this.inputField = field;
-    }
+	public void setInputField(JComponent field) {
+		Assert.notNull(field);
+		this.inputField = field;
+	}
 
-    public void setInputLabelMessage(String inputLabel) {
-        Assert.hasText(inputLabel, "The input label is required");
-        this.inputLabelMessage = inputLabel;
-    }
+	public void setInputLabelMessage(String inputLabel) {
+		Assert.hasText(inputLabel, "The input label is required");
+		this.inputLabelMessage = inputLabel;
+	}
 
-    public void setInputConstraint(Constraint constraint) {
-        this.inputConstraint = constraint;
-    }
+	public void setInputConstraint(Constraint constraint) {
+		this.inputConstraint = constraint;
+	}
 
-    public void setFinishAction(Closure procedure) {
-        this.finishAction = procedure;
-    }
+	public void setFinishAction(Closure procedure) {
+		this.finishAction = procedure;
+	}
 
-    private DefaultMessageAreaPane getValidationReporter() {
-        if (reporter == null) {
-            this.reporter = new DefaultMessageAreaPane();
-            if (this.formModel != null) {
-                new SimpleValidationResultsReporter(formModel, this,
-                        this.reporter);
-            }
-        }
-        return reporter;
-    }
+	private DefaultMessageAreaPane getValidationReporter() {
+		if (reporter == null) {
+			this.reporter = new DefaultMessageAreaPane();
+			if (this.formModel != null) {
+				new SimpleValidationResultsReporter(formModel, this, this.reporter);
+			}
+		}
+		return reporter;
+	}
 
-    protected JComponent createDialogContentPane() {
-        FormLayout layout = new FormLayout("left:pref, 6dlu, pref:grow");
-        FormBuilder formBuilder = new JGoodiesFormBuilder(layout);
+	protected JComponent createDialogContentPane() {
+		FormLayout layout = new FormLayout("left:pref, 6dlu, pref:grow");
+		FormBuilder formBuilder = new JGoodiesFormBuilder(layout);
 
-        if (this.inputField == null) {
-            this.inputField = new JTextField(25);
-        }
-        // workaround for bug in jformatted text field for selectAll
-        if (inputField instanceof JFormattedTextField) {
-            inputField.addFocusListener(new java.awt.event.FocusAdapter() {
-                public void focusGained(java.awt.event.FocusEvent evt) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            ((JFormattedTextField)inputField).selectAll();
-                        }
-                    });
-                }
-            });
-        }
-        formBuilder.add(getInputLabelMessage(), inputField);
-        formBuilder.addGapRow();
-        formBuilder.addRow(getValidationReporter());
-        formBuilder.addSeparator();
-        return formBuilder.getForm();
-    }
+		if (this.inputField == null) {
+			this.inputField = new JTextField(25);
+		}
+		// workaround for bug in jformatted text field for selectAll
+		if (inputField instanceof JFormattedTextField) {
+			inputField.addFocusListener(new java.awt.event.FocusAdapter() {
+				public void focusGained(java.awt.event.FocusEvent evt) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							((JFormattedTextField)inputField).selectAll();
+						}
+					});
+				}
+			});
+		}
+		formBuilder.add(getInputLabelMessage(), inputField);
+		formBuilder.addGapRow();
+		formBuilder.addRow(getValidationReporter());
+		formBuilder.addSeparator();
+		return formBuilder.getForm();
+	}
 
-    private String getInputLabelMessage() {
-        return inputLabelMessage;
-    }
+	private String getInputLabelMessage() {
+		return inputLabelMessage;
+	}
 
-    protected boolean onFinish() {
-        if (checkInputConstraint()) {
-            onFinish(getInputValue());
-            return true;
-        }
-        return false;
-    }
+	protected boolean onFinish() {
+		if (checkInputConstraint()) {
+			onFinish(getInputValue());
+			return true;
+		}
+		return false;
+	}
 
-    private boolean checkInputConstraint() {
-        if (inputConstraint != null) {
-            return inputConstraint.test(getInputValue());
-        }
-        else {
-            return true;
-        }
-    }
+	private boolean checkInputConstraint() {
+		if (inputConstraint != null) {
+			return inputConstraint.test(getInputValue());
+		}
+		else {
+			return true;
+		}
+	}
 
-    private Object getInputValue() {
-        if (inputField instanceof JFormattedTextField) {
-            return ((JFormattedTextField)inputField).getValue();
-        }
-        else if (inputField instanceof JTextComponent) {
-            return ((JTextComponent)inputField).getText();
-        }
-        else {
-            throw new IllegalStateException("Input field type not supported");
-        }
-    }
+	private Object getInputValue() {
+		if (inputField instanceof JFormattedTextField) {
+			return ((JFormattedTextField)inputField).getValue();
+		}
+		else if (inputField instanceof JTextComponent) {
+			return ((JTextComponent)inputField).getText();
+		}
+		else {
+			throw new IllegalStateException("Input field type not supported");
+		}
+	}
 
-    protected void onFinish(Object inputValue) {
-        if (formModel != null) {
-            formModel.commit();
-        }
-        if (finishAction != null) {
-            finishAction.call(inputValue);
-        }
-    }
+	protected void onFinish(Object inputValue) {
+		if (formModel != null) {
+			formModel.commit();
+		}
+		if (finishAction != null) {
+			finishAction.call(inputValue);
+		}
+	}
 
 }

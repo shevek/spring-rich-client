@@ -27,20 +27,20 @@ import org.springframework.binding.value.support.RefreshableValueHolder;
  * @author Jim Moore
  */
 public class RefreshingPopupMenuListener implements PopupMenuListener {
-    private final RefreshableValueHolder itemsValueModel;
+	private final RefreshableValueHolder itemsValueModel;
 
-    public RefreshingPopupMenuListener(RefreshableValueHolder itemsValueModel) {
-        this.itemsValueModel = itemsValueModel;
-    }
+	public RefreshingPopupMenuListener(RefreshableValueHolder itemsValueModel) {
+		this.itemsValueModel = itemsValueModel;
+	}
 
-    public void popupMenuCanceled(PopupMenuEvent e) {
-    }
+	public void popupMenuCanceled(PopupMenuEvent e) {
+	}
 
-    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-    }
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	}
 
-    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-        this.itemsValueModel.refresh();
-    }
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		this.itemsValueModel.refresh();
+	}
 }
 

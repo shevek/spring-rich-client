@@ -26,32 +26,32 @@ import org.springframework.richclient.command.ParameterizableActionCommandExecut
 /**
  * @author Keith Donald
  */
-public class AbstractActionCommandExecutor implements
-        ParameterizableActionCommandExecutor, GuardedActionCommandExecutor {
+public class AbstractActionCommandExecutor implements ParameterizableActionCommandExecutor,
+		GuardedActionCommandExecutor {
 
-    private ValueModel enabled = new ValueHolder(Boolean.FALSE);
+	private ValueModel enabled = new ValueHolder(Boolean.FALSE);
 
-    public boolean isEnabled() {
-        return ((Boolean)enabled.getValue()).booleanValue();
-    }
+	public boolean isEnabled() {
+		return ((Boolean)enabled.getValue()).booleanValue();
+	}
 
-    public void setEnabled(boolean enabled) {
-        this.enabled.setValue(Boolean.valueOf(enabled));
-    }
+	public void setEnabled(boolean enabled) {
+		this.enabled.setValue(Boolean.valueOf(enabled));
+	}
 
-    public void addEnabledListener(ValueChangeListener listener) {
-        enabled.addValueChangeListener(listener);
-    }
+	public void addEnabledListener(ValueChangeListener listener) {
+		enabled.addValueChangeListener(listener);
+	}
 
-    public void removeEnabledListener(ValueChangeListener listener) {
-        enabled.removeValueChangeListener(listener);
-    }
+	public void removeEnabledListener(ValueChangeListener listener) {
+		enabled.removeValueChangeListener(listener);
+	}
 
-    public void execute(Map parameters) {
-        execute();
-    }
+	public void execute(Map parameters) {
+		execute();
+	}
 
-    public void execute() {
-    }
+	public void execute() {
+	}
 
 }

@@ -25,52 +25,51 @@ import javax.swing.JToggleButton;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-public class ToggleButtonPopupListener implements PopupMenuListener,
-        ItemListener {
-    private JToggleButton button;
+public class ToggleButtonPopupListener implements PopupMenuListener, ItemListener {
+	private JToggleButton button;
 
-    private JPopupMenu menu;
+	private JPopupMenu menu;
 
-    private boolean buttonWasPressed;
+	private boolean buttonWasPressed;
 
-    private boolean shouldReopen = true;
+	private boolean shouldReopen = true;
 
-    public static void bind(JToggleButton button, JPopupMenu menu) {
-        new ToggleButtonPopupListener(button, menu);
-    }
+	public static void bind(JToggleButton button, JPopupMenu menu) {
+		new ToggleButtonPopupListener(button, menu);
+	}
 
-    private ToggleButtonPopupListener(JToggleButton button, JPopupMenu menu) {
-        this.button = button;
-        this.menu = menu;
-        button.addItemListener(this);
-        menu.addPopupMenuListener(this);
-        button.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                buttonWasPressed = true;
-            }
+	private ToggleButtonPopupListener(JToggleButton button, JPopupMenu menu) {
+		this.button = button;
+		this.menu = menu;
+		button.addItemListener(this);
+		menu.addPopupMenuListener(this);
+		button.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				buttonWasPressed = true;
+			}
 
-            public void mouseReleased(MouseEvent e) {
-                buttonWasPressed = false;
-            }
-        });
-    }
+			public void mouseReleased(MouseEvent e) {
+				buttonWasPressed = false;
+			}
+		});
+	}
 
-    public void itemStateChanged(ItemEvent e) {
-        if (button.isSelected()) {
-            menu.show(button, 0, button.getHeight());
-        }
-    }
+	public void itemStateChanged(ItemEvent e) {
+		if (button.isSelected()) {
+			menu.show(button, 0, button.getHeight());
+		}
+	}
 
-    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-        if (!buttonWasPressed) {
-            button.setSelected(false);
-        }
-    }
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		if (!buttonWasPressed) {
+			button.setSelected(false);
+		}
+	}
 
-    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 
-    }
+	}
 
-    public void popupMenuCanceled(PopupMenuEvent e) {
-    }
+	public void popupMenuCanceled(PopupMenuEvent e) {
+	}
 }

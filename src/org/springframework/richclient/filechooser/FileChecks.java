@@ -27,66 +27,70 @@ import org.springframework.util.closure.Constraint;
  * @author Keith Donald
  */
 public class FileChecks {
-    private static FileExists exists = new FileExists();
+	private static FileExists exists = new FileExists();
 
-    private static FileIsFile file = new FileIsFile();
+	private static FileIsFile file = new FileIsFile();
 
-    private static FileIsReadable readable = new FileIsReadable();
+	private static FileIsReadable readable = new FileIsReadable();
 
-    private static FileConverter fileConverter = new FileConverter();
+	private static FileConverter fileConverter = new FileConverter();
 
-    private FileChecks() {
+	private FileChecks() {
 
-    }
+	}
 
-    public static Constraint readableFileCheck() {
-        Constraints c = Constraints.instance();
-        Constraint checks = c.all(new Constraint[] { exists, file, readable });
-        return c.testResultOf(fileConverter, checks);
-    }
+	public static Constraint readableFileCheck() {
+		Constraints c = Constraints.instance();
+		Constraint checks = c.all(new Constraint[] { exists, file, readable });
+		return c.testResultOf(fileConverter, checks);
+	}
 
-    public static class FileExists implements Constraint {
-        public boolean test(Object argument) {
-            File f = (File)argument;
-            return f != null && f.exists();
-        }
-    }
+	public static class FileExists implements Constraint {
+		public boolean test(Object argument) {
+			File f = (File)argument;
+			return f != null && f.exists();
+		}
+	}
 
-    public static class FileIsFile implements Constraint {
-        public boolean test(Object argument) {
-            File f = (File)argument;
-            return f != null && !f.isDirectory();
-        }
-    }
+	public static class FileIsFile implements Constraint {
+		public boolean test(Object argument) {
+			File f = (File)argument;
+			return f != null && !f.isDirectory();
+		}
+	}
 
-    public static class FileIsReadable implements Constraint {
-        public boolean test(Object argument) {
-            File f = (File)argument;
-            return f != null && f.canRead();
-        }
-    }
+	public static class FileIsReadable implements Constraint {
+		public boolean test(Object argument) {
+			File f = (File)argument;
+			return f != null && f.canRead();
+		}
+	}
 
-    public static class FileConverter implements Closure {
-        public Object call(Object argument) {
-            File f;
-            if (argument == null) { return null; }
-            if (argument instanceof File) { return argument; }
-            if (argument instanceof String) {
-                f = new File((String)argument);
-            }
-            else if (argument instanceof Resource) {
-                try {
-                    f = ((Resource)argument).getFile();
-                }
-                catch (IOException e) {
-                    return null;
-                }
-            }
-            else {
-                f = (File)argument;
-            }
-            return f;
-        }
-    }
+	public static class FileConverter implements Closure {
+		public Object call(Object argument) {
+			File f;
+			if (argument == null) {
+				return null;
+			}
+			if (argument instanceof File) {
+				return argument;
+			}
+			if (argument instanceof String) {
+				f = new File((String)argument);
+			}
+			else if (argument instanceof Resource) {
+				try {
+					f = ((Resource)argument).getFile();
+				}
+				catch (IOException e) {
+					return null;
+				}
+			}
+			else {
+				f = (File)argument;
+			}
+			return f;
+		}
+	}
 
 }

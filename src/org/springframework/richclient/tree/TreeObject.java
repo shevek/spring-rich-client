@@ -28,9 +28,9 @@ import org.springframework.richclient.core.DescribedElement;
  * @author Keith Donald
  */
 public interface TreeObject extends DescribedElement {
-    public TreeObject getParent();
+	public TreeObject getParent();
 
-    public Collection getChildren();
+	public Collection getChildren();
 
-    public int getChildCount();
+	public int getChildCount();
 }

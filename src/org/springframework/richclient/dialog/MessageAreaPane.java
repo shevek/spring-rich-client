@@ -25,11 +25,11 @@ import org.springframework.richclient.factory.ControlFactory;
  */
 public interface MessageAreaPane extends ControlFactory, MessageAreaModel {
 
-    /**
-     * Is this pane currently showing a message?
-     * 
-     * @return true or false
-     */
-    public boolean messageShowing();
+	/**
+	 * Is this pane currently showing a message?
+	 * 
+	 * @return true or false
+	 */
+	public boolean messageShowing();
 
 }

@@ -21,30 +21,30 @@ import java.awt.Image;
 import org.springframework.richclient.application.ApplicationWindow;
 
 public interface ApplicationWindowConfigurer {
-    public ApplicationWindow getWindow();
+	public ApplicationWindow getWindow();
 
-    public String getTitle();
+	public String getTitle();
 
-    public Image getImage();
+	public Image getImage();
 
-    public Dimension getInitialSize();
+	public Dimension getInitialSize();
 
-    public boolean getShowMenuBar();
+	public boolean getShowMenuBar();
 
-    public boolean getShowToolBar();
+	public boolean getShowToolBar();
 
-    public boolean getShowStatusBar();
+	public boolean getShowStatusBar();
 
-    public void setTitle(String title);
+	public void setTitle(String title);
 
-    public void setImage(Image image);
+	public void setImage(Image image);
 
-    public void setInitialSize(Dimension initialSize);
+	public void setInitialSize(Dimension initialSize);
 
-    public void setShowMenuBar(boolean showMenuBar);
+	public void setShowMenuBar(boolean showMenuBar);
 
-    public void setShowToolBar(boolean showToolBar);
+	public void setShowToolBar(boolean showToolBar);
 
-    public void setShowStatusBar(boolean statusBar);
+	public void setShowStatusBar(boolean statusBar);
 
 }

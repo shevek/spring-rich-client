@@ -35,54 +35,53 @@ import org.springframework.richclient.application.ApplicationDescriptor;
  * @author Keith Donald
  */
 public class HelpContents {
-    private ApplicationDescriptor applicationInfo;
+	private ApplicationDescriptor applicationInfo;
 
-    private Resource helpSetPath = new ClassPathResource("help/helpset.hs");
+	private Resource helpSetPath = new ClassPathResource("help/helpset.hs");
 
-    private JFrame helpFrame;
+	private JFrame helpFrame;
 
-    public HelpContents() {
+	public HelpContents() {
 
-    }
+	}
 
-    public void setHelpSetPath(Resource helpSetPath) {
-        this.helpSetPath = helpSetPath;
-    }
+	public void setHelpSetPath(Resource helpSetPath) {
+		this.helpSetPath = helpSetPath;
+	}
 
-    protected String getApplicationName() {
-        return Application.instance().getName();
-    }
+	protected String getApplicationName() {
+		return Application.instance().getName();
+	}
 
-    protected Image getApplicationImage() {
-        return Application.instance().getImage();
-    }
+	protected Image getApplicationImage() {
+		return Application.instance().getImage();
+	}
 
-    public void display(Window parent) {
-        if (helpFrame == null) {
-            helpFrame = new JFrame();
-            helpFrame.getGlassPane().setCursor(
-                    Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            try {
-                HelpSet helpSet = new HelpSet(null, helpSetPath.getURL());
-                JHelp jhelp = new JHelp(helpSet);
-                helpFrame = new JFrame("Help - " + getApplicationName());
-                helpFrame.getContentPane().add(jhelp);
-                helpFrame.setIconImage(getApplicationImage());
-                helpFrame.pack();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            helpFrame.getGlassPane().setCursor(Cursor.getDefaultCursor());
-        }
-        if (!helpFrame.isVisible()) {
-            helpFrame.setLocationRelativeTo(parent);
-            helpFrame.setVisible(true);
-        }
-        if ((helpFrame.getExtendedState() & JFrame.NORMAL) == 0) {
-            helpFrame.setExtendedState(JFrame.NORMAL);
-        }
-        helpFrame.toFront();
-    }
+	public void display(Window parent) {
+		if (helpFrame == null) {
+			helpFrame = new JFrame();
+			helpFrame.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			try {
+				HelpSet helpSet = new HelpSet(null, helpSetPath.getURL());
+				JHelp jhelp = new JHelp(helpSet);
+				helpFrame = new JFrame("Help - " + getApplicationName());
+				helpFrame.getContentPane().add(jhelp);
+				helpFrame.setIconImage(getApplicationImage());
+				helpFrame.pack();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			helpFrame.getGlassPane().setCursor(Cursor.getDefaultCursor());
+		}
+		if (!helpFrame.isVisible()) {
+			helpFrame.setLocationRelativeTo(parent);
+			helpFrame.setVisible(true);
+		}
+		if ((helpFrame.getExtendedState() & JFrame.NORMAL) == 0) {
+			helpFrame.setExtendedState(JFrame.NORMAL);
+		}
+		helpFrame.toFront();
+	}
 
 }

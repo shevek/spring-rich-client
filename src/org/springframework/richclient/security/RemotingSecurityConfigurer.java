@@ -51,113 +51,103 @@ import org.springframework.richclient.application.Application;
  * @author Ben Alex
  */
 public class RemotingSecurityConfigurer implements ApplicationListener {
-    //~ Static fields/initializers
-    // =============================================
+	//~ Static fields/initializers
+	// =============================================
 
-    protected static final Log logger = LogFactory
-            .getLog(RemotingSecurityConfigurer.class);
+	protected static final Log logger = LogFactory.getLog(RemotingSecurityConfigurer.class);
 
-    //~ Methods
-    // ================================================================
+	//~ Methods
+	// ================================================================
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (logger.isDebugEnabled() && event instanceof ClientSecurityEvent) {
-            logger.debug("Processing event: " + event.toString());
-        }
+	public void onApplicationEvent(ApplicationEvent event) {
+		if (logger.isDebugEnabled() && event instanceof ClientSecurityEvent) {
+			logger.debug("Processing event: " + event.toString());
+		}
 
-        if (event instanceof LoginEvent) {
-            Authentication authentication = (Authentication)event.getSource();
-            updateExporters(authentication.getPrincipal().toString(),
-                    authentication.getCredentials().toString());
-        }
-        else if (event instanceof LogoutEvent) {
-            updateExporters(null, null);
-        }
-    }
+		if (event instanceof LoginEvent) {
+			Authentication authentication = (Authentication)event.getSource();
+			updateExporters(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
+		}
+		else if (event instanceof LogoutEvent) {
+			updateExporters(null, null);
+		}
+	}
 
-    private Object[] getExporters() {
-        ApplicationContext appCtx = Application.services()
-                .getApplicationContext();
-        List list = new Vector();
+	private Object[] getExporters() {
+		ApplicationContext appCtx = Application.services().getApplicationContext();
+		List list = new Vector();
 
-        {
-            Map map = appCtx.getBeansOfType(HessianProxyFactoryBean.class,
-                    false, true);
-            Iterator iter = map.keySet().iterator();
+		{
+			Map map = appCtx.getBeansOfType(HessianProxyFactoryBean.class, false, true);
+			Iterator iter = map.keySet().iterator();
 
-            while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
-                list.add(factoryBean);
-            }
-        }
+			while (iter.hasNext()) {
+				String beanName = (String)iter.next();
+				Object factoryBean = appCtx.getBean("&" + beanName);
+				list.add(factoryBean);
+			}
+		}
 
-        {
-            Map map = appCtx.getBeansOfType(BurlapProxyFactoryBean.class,
-                    false, true);
-            Iterator iter = map.keySet().iterator();
+		{
+			Map map = appCtx.getBeansOfType(BurlapProxyFactoryBean.class, false, true);
+			Iterator iter = map.keySet().iterator();
 
-            while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
-                list.add(factoryBean);
-            }
-        }
+			while (iter.hasNext()) {
+				String beanName = (String)iter.next();
+				Object factoryBean = appCtx.getBean("&" + beanName);
+				list.add(factoryBean);
+			}
+		}
 
-        {
-            Map map = appCtx.getBeansOfType(JaxRpcPortProxyFactoryBean.class,
-                    false, true);
-            Iterator iter = map.keySet().iterator();
+		{
+			Map map = appCtx.getBeansOfType(JaxRpcPortProxyFactoryBean.class, false, true);
+			Iterator iter = map.keySet().iterator();
 
-            while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
-                list.add(factoryBean);
-            }
-        }
+			while (iter.hasNext()) {
+				String beanName = (String)iter.next();
+				Object factoryBean = appCtx.getBean("&" + beanName);
+				list.add(factoryBean);
+			}
+		}
 
-        return list.toArray();
-    }
+		return list.toArray();
+	}
 
-    private void updateExporters(String username, String password) {
-        Object[] factories = getExporters();
+	private void updateExporters(String username, String password) {
+		Object[] factories = getExporters();
 
-        for (int i = 0; i < factories.length; i++) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Updating " + factories[i].toString()
-                        + " to username: " + username
-                        + "; password: [PROTECTED]");
-            }
+		for (int i = 0; i < factories.length; i++) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Updating " + factories[i].toString() + " to username: " + username + "; password: [PROTECTED]");
+			}
 
-            try {
-                Method method = factories[i].getClass().getMethod(
-                        "setUsername", new Class[] { String.class });
-                method.invoke(factories[i], new Object[] { username });
-            }
-            catch (NoSuchMethodException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
-            catch (IllegalAccessException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
-            catch (InvocationTargetException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
+			try {
+				Method method = factories[i].getClass().getMethod("setUsername", new Class[] { String.class });
+				method.invoke(factories[i], new Object[] { username });
+			}
+			catch (NoSuchMethodException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
+			catch (IllegalAccessException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
+			catch (InvocationTargetException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
 
-            try {
-                Method method = factories[i].getClass().getMethod(
-                        "setPassword", new Class[] { String.class });
-                method.invoke(factories[i], new Object[] { password });
-            }
-            catch (NoSuchMethodException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
-            catch (IllegalAccessException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
-            catch (InvocationTargetException ignored) {
-                logger.error("Could not call setter", ignored);
-            }
-        }
-    }
+			try {
+				Method method = factories[i].getClass().getMethod("setPassword", new Class[] { String.class });
+				method.invoke(factories[i], new Object[] { password });
+			}
+			catch (NoSuchMethodException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
+			catch (IllegalAccessException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
+			catch (InvocationTargetException ignored) {
+				logger.error("Could not call setter", ignored);
+			}
+		}
+	}
 }

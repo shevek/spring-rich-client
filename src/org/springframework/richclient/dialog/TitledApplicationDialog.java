@@ -27,126 +27,123 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.StringUtils;
 
-public abstract class TitledApplicationDialog extends ApplicationDialog
-        implements MessageAreaPane {
+public abstract class TitledApplicationDialog extends ApplicationDialog implements MessageAreaPane {
 
-    private TitleAreaPane titleAreaPane = new TitleAreaPane();
+	private TitleAreaPane titleAreaPane = new TitleAreaPane();
 
-    private String description = "Title area description";
+	private String description = "Title area description";
 
-    private JComponent pageControl;
+	private JComponent pageControl;
 
-    private JComponent contentPane;
+	private JComponent contentPane;
 
-    private boolean resetMessagePaneOnDisplay;
+	private boolean resetMessagePaneOnDisplay;
 
-    public TitledApplicationDialog() {
-        super();
-    }
+	public TitledApplicationDialog() {
+		super();
+	}
 
-    public TitledApplicationDialog(String title, Window parent) {
-        super(title, parent);
-    }
+	public TitledApplicationDialog(String title, Window parent) {
+		super(title, parent);
+	}
 
-    public TitledApplicationDialog(String title, Window parent,
-            CloseAction closeAction) {
-        super(title, parent, closeAction);
-    }
+	public TitledApplicationDialog(String title, Window parent, CloseAction closeAction) {
+		super(title, parent, closeAction);
+	}
 
-    public void setTitleAreaText(String titleAreaText) {
-        titleAreaPane.setTitle(titleAreaText);
-    }
+	public void setTitleAreaText(String titleAreaText) {
+		titleAreaPane.setTitle(titleAreaText);
+	}
 
-    public void setTitleAreaImage(Image image) {
-        titleAreaPane.setImage(image);
-    }
+	public void setTitleAreaImage(Image image) {
+		titleAreaPane.setImage(image);
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public JComponent getControl() {
-        return titleAreaPane.getControl();
-    }
+	public JComponent getControl() {
+		return titleAreaPane.getControl();
+	}
 
-    public boolean messageShowing() {
-        return true;
-    }
+	public boolean messageShowing() {
+		return true;
+	}
 
-    public void setMessage(String message) {
-        setMessage(message, null);
-    }
+	public void setMessage(String message) {
+		setMessage(message, null);
+	}
 
-    public void setMessage(String message, Severity severity) {
-        if (StringUtils.hasText(message)) {
-            titleAreaPane.setMessage(message, severity);
-        }
-        else {
-            updateDescription();
-        }
-    }
+	public void setMessage(String message, Severity severity) {
+		if (StringUtils.hasText(message)) {
+			titleAreaPane.setMessage(message, severity);
+		}
+		else {
+			updateDescription();
+		}
+	}
 
-    public void setErrorMessage(String message) {
-        setMessage(message, Severity.ERROR);
-    }
+	public void setErrorMessage(String message) {
+		setMessage(message, Severity.ERROR);
+	}
 
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        titleAreaPane.addMessageAreaChangeListener(messageListener);
-    }
+	public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+		titleAreaPane.addMessageAreaChangeListener(messageListener);
+	}
 
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        titleAreaPane.removeMessageAreaChangeListener(messageListener);
-    }
+	public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+		titleAreaPane.removeMessageAreaChangeListener(messageListener);
+	}
 
-    public void updateDescription() {
-        titleAreaPane.setMessage(getDescription());
-    }
+	public void updateDescription() {
+		titleAreaPane.setMessage(getDescription());
+	}
 
-    protected void setContentPane(JComponent c) {
-        if (isControlCreated()) {
-            pageControl.remove(contentPane);
-            this.contentPane = c;
-            pageControl.add(contentPane);
-            pageControl.revalidate();
-            pageControl.repaint();
-        }
-        else {
-            throw new IllegalStateException();
-        }
-    }
+	protected void setContentPane(JComponent c) {
+		if (isControlCreated()) {
+			pageControl.remove(contentPane);
+			this.contentPane = c;
+			pageControl.add(contentPane);
+			pageControl.revalidate();
+			pageControl.repaint();
+		}
+		else {
+			throw new IllegalStateException();
+		}
+	}
 
-    protected void addDialogComponents() {
-        getDialog().getContentPane().add(createDialogContentPane(),
-                BorderLayout.CENTER);
-        getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
-    }
+	protected void addDialogComponents() {
+		getDialog().getContentPane().add(createDialogContentPane(), BorderLayout.CENTER);
+		getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
+	}
 
-    protected JComponent createDialogContentPane() {
-        pageControl = new JPanel(new BorderLayout());
-        JPanel titlePanel = new JPanel(new BorderLayout());
-        titlePanel.add(titleAreaPane.getControl());
-        titlePanel.add(new JSeparator(), BorderLayout.SOUTH);
-        pageControl.add(titlePanel, BorderLayout.NORTH);
-        contentPane = createTitledDialogContentPane();
-        GuiStandardUtils.attachDialogBorder(contentPane);
-        updateDescription();
-        pageControl.add(contentPane);
-        return pageControl;
-    }
+	protected JComponent createDialogContentPane() {
+		pageControl = new JPanel(new BorderLayout());
+		JPanel titlePanel = new JPanel(new BorderLayout());
+		titlePanel.add(titleAreaPane.getControl());
+		titlePanel.add(new JSeparator(), BorderLayout.SOUTH);
+		pageControl.add(titlePanel, BorderLayout.NORTH);
+		contentPane = createTitledDialogContentPane();
+		GuiStandardUtils.attachDialogBorder(contentPane);
+		updateDescription();
+		pageControl.add(contentPane);
+		return pageControl;
+	}
 
-    protected abstract JComponent createTitledDialogContentPane();
+	protected abstract JComponent createTitledDialogContentPane();
 
-    protected void onAboutToShow() {
-        if (resetMessagePaneOnDisplay) {
-            titleAreaPane.setMessage(description);
-        }
-    }
+	protected void onAboutToShow() {
+		if (resetMessagePaneOnDisplay) {
+			titleAreaPane.setMessage(description);
+		}
+	}
 
-    public void setResetMessagePaneOnDisplay(boolean reset) {
-        this.resetMessagePaneOnDisplay = reset;
-    }
+	public void setResetMessagePaneOnDisplay(boolean reset) {
+		this.resetMessagePaneOnDisplay = reset;
+	}
 }

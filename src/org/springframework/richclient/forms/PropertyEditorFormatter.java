@@ -24,30 +24,30 @@ import javax.swing.text.DefaultFormatter;
  * @author Keith Donald
  */
 public class PropertyEditorFormatter extends DefaultFormatter {
-    private PropertyEditor editor;
+	private PropertyEditor editor;
 
-    public PropertyEditorFormatter(PropertyEditor editor) {
-        this.editor = editor;
-    }
+	public PropertyEditorFormatter(PropertyEditor editor) {
+		this.editor = editor;
+	}
 
-    /**
-     * @see javax.swing.JFormattedTextField.AbstractFormatter#stringToValue(java.lang.String)
-     */
-    public Object stringToValue(String string) throws ParseException {
-        try {
-            editor.setAsText(string);
-        }
-        catch (Exception e) {
-            return new ParseException(e.getMessage(), 0);
-        }
-        return editor.getValue();
-    }
+	/**
+	 * @see javax.swing.JFormattedTextField.AbstractFormatter#stringToValue(java.lang.String)
+	 */
+	public Object stringToValue(String string) throws ParseException {
+		try {
+			editor.setAsText(string);
+		}
+		catch (Exception e) {
+			return new ParseException(e.getMessage(), 0);
+		}
+		return editor.getValue();
+	}
 
-    /**
-     * @see javax.swing.JFormattedTextField.AbstractFormatter#valueToString(java.lang.Object)
-     */
-    public String valueToString(Object value) throws ParseException {
-        editor.setValue(value);
-        return editor.getAsText();
-    }
+	/**
+	 * @see javax.swing.JFormattedTextField.AbstractFormatter#valueToString(java.lang.Object)
+	 */
+	public String valueToString(Object value) throws ParseException {
+		editor.setValue(value);
+		return editor.getAsText();
+	}
 }

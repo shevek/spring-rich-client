@@ -22,45 +22,45 @@ import org.springframework.util.closure.Constraint;
 /**
  * @author kdonald
  */
-public class FilteredComboBoxListModel extends FilteredListModel implements
-        ComboBoxModel {
+public class FilteredComboBoxListModel extends FilteredListModel implements ComboBoxModel {
 
-    private boolean matchedSelected;
+	private boolean matchedSelected;
 
-    public FilteredComboBoxListModel(ComboBoxModel filteredModel,
-            Constraint filter) {
-        super(filteredModel, filter);
-    }
+	public FilteredComboBoxListModel(ComboBoxModel filteredModel, Constraint filter) {
+		super(filteredModel, filter);
+	}
 
-    protected ComboBoxModel getComboBoxModel() {
-        return (ComboBoxModel)getFilteredModel();
-    }
+	protected ComboBoxModel getComboBoxModel() {
+		return (ComboBoxModel)getFilteredModel();
+	}
 
-    protected void onMatchingElement(Object element) {
-        if (element == getSelectedItem()) {
-            matchedSelected = true;
-        }
-    }
+	protected void onMatchingElement(Object element) {
+		if (element == getSelectedItem()) {
+			matchedSelected = true;
+		}
+	}
 
-    protected void postConstraintApplied() {
-        if (!matchedSelected) {
-            if (getSize() > 0) {
-                setSelectedItem(getElementAt(0));
-            }
-            else {
-                setSelectedItem(null);
-            }
-        }
-        matchedSelected = false;
-    }
+	protected void postConstraintApplied() {
+		if (!matchedSelected) {
+			if (getSize() > 0) {
+				setSelectedItem(getElementAt(0));
+			}
+			else {
+				setSelectedItem(null);
+			}
+		}
+		matchedSelected = false;
+	}
 
-    public Object getSelectedItem() {
-        if (getSize() == 0) { return null; }
-        return getComboBoxModel().getSelectedItem();
-    }
+	public Object getSelectedItem() {
+		if (getSize() == 0) {
+			return null;
+		}
+		return getComboBoxModel().getSelectedItem();
+	}
 
-    public void setSelectedItem(Object anItem) {
-        getComboBoxModel().setSelectedItem(anItem);
-    }
+	public void setSelectedItem(Object anItem) {
+		getComboBoxModel().setSelectedItem(anItem);
+	}
 
 }

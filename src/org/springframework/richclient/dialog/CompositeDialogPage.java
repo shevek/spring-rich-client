@@ -51,168 +51,166 @@ import org.springframework.util.Assert;
  * @see org.springframework.richclient.dialog.TabbedDialogPage
  */
 public abstract class CompositeDialogPage extends AbstractDialogPage {
-    private List pages = new ArrayList();
+	private List pages = new ArrayList();
 
-    private DialogPage activePage;
+	private DialogPage activePage;
 
-    private int largestPageWidth;
+	private int largestPageWidth;
 
-    private int largestPageHeight;
+	private int largestPageHeight;
 
-    private boolean autoConfigureChildPages = true;
+	private boolean autoConfigureChildPages = true;
 
-    public CompositeDialogPage(String pageId) {
-        super(pageId);
-    }
+	public CompositeDialogPage(String pageId) {
+		super(pageId);
+	}
 
-    public void setAutoConfigureChildPages(boolean autoConfigure) {
-        this.autoConfigureChildPages = autoConfigure;
-    }
+	public void setAutoConfigureChildPages(boolean autoConfigure) {
+		this.autoConfigureChildPages = autoConfigure;
+	}
 
-    /**
-     * Adds a DialogPage to the list of pages managed by this
-     * CompositeDialogPage.
-     * 
-     * @param page
-     *            the page to add
-     */
-    public void addPage(DialogPage page) {
-        pages.add(page);
-        if (autoConfigureChildPages) {
-            String id = getId() + "." + page.getId();
-            getObjectConfigurer().configure(page, id);
-        }
-    }
+	/**
+	 * Adds a DialogPage to the list of pages managed by this
+	 * CompositeDialogPage.
+	 * 
+	 * @param page
+	 *            the page to add
+	 */
+	public void addPage(DialogPage page) {
+		pages.add(page);
+		if (autoConfigureChildPages) {
+			String id = getId() + "." + page.getId();
+			getObjectConfigurer().configure(page, id);
+		}
+	}
 
-    /**
-     * Adds a new page to the list of pages managed by this CompositeDialogPage.
-     * The page is created by wrapping the form page in a FormBackedDialogPage.
-     * 
-     * @param formPage
-     *            the form page to be insterted
-     * @return the DialogPage that wraps formPage
-     */
-    public DialogPage addForm(Form form) {
-        DialogPage page = createDialogPage(form);
-        addPage(page);
-        return page;
-    }
+	/**
+	 * Adds a new page to the list of pages managed by this CompositeDialogPage.
+	 * The page is created by wrapping the form page in a FormBackedDialogPage.
+	 * 
+	 * @param formPage
+	 *            the form page to be insterted
+	 * @return the DialogPage that wraps formPage
+	 */
+	public DialogPage addForm(Form form) {
+		DialogPage page = createDialogPage(form);
+		addPage(page);
+		return page;
+	}
 
-    /**
-     * Adds an array DialogPage to the list of pages managed by this
-     * CompositeDialogPage.
-     * 
-     * @param pages
-     *            the pages to add
-     */
-    public void addPages(DialogPage[] pages) {
-        for (int i = 0; i < pages.length; i++) {
-            addPage(pages[i]);
-        }
-    }
+	/**
+	 * Adds an array DialogPage to the list of pages managed by this
+	 * CompositeDialogPage.
+	 * 
+	 * @param pages
+	 *            the pages to add
+	 */
+	public void addPages(DialogPage[] pages) {
+		for (int i = 0; i < pages.length; i++) {
+			addPage(pages[i]);
+		}
+	}
 
-    /**
-     * Subclasses should extend if extra pages need to be added before the
-     * composite creates its control. New pages should be added by calling
-     * <code>addPage</code>.
-     */
-    protected void addPages() {
-    }
+	/**
+	 * Subclasses should extend if extra pages need to be added before the
+	 * composite creates its control. New pages should be added by calling
+	 * <code>addPage</code>.
+	 */
+	protected void addPages() {
+	}
 
-    protected List getPages() {
-        return pages;
-    }
+	protected List getPages() {
+		return pages;
+	}
 
-    /**
-     * Sets the active page of this CompositeDialogPage.
-     * 
-     * @param activePage
-     *            the page to be made active. Must be one of the child pages.
-     */
-    public void setActivePage(DialogPage activePage) {
-        Assert.isTrue(activePage == null || pages.contains(activePage));
-        if (this.activePage == activePage) { return; }
-        this.activePage = activePage;
-        updateMessage();
-    }
+	/**
+	 * Sets the active page of this CompositeDialogPage.
+	 * 
+	 * @param activePage
+	 *            the page to be made active. Must be one of the child pages.
+	 */
+	public void setActivePage(DialogPage activePage) {
+		Assert.isTrue(activePage == null || pages.contains(activePage));
+		if (this.activePage == activePage) {
+			return;
+		}
+		this.activePage = activePage;
+		updateMessage();
+	}
 
-    /**
-     * Gets the active page of this CompositeDialogPage.
-     * 
-     * @return the active page; or null if no page is active.
-     */
-    public DialogPage getActivePage() {
-        return activePage;
-    }
+	/**
+	 * Gets the active page of this CompositeDialogPage.
+	 * 
+	 * @return the active page; or null if no page is active.
+	 */
+	public DialogPage getActivePage() {
+		return activePage;
+	}
 
-    protected DialogPage createDialogPage(Form form) {
-        return new FormBackedDialogPage(form, !autoConfigureChildPages);
-    }
+	protected DialogPage createDialogPage(Form form) {
+		return new FormBackedDialogPage(form, !autoConfigureChildPages);
+	}
 
-    protected void createPageControls() {
-        addPages();
-        Assert.notEmpty(getPages(), "Pages must have been added first");
-        for (Iterator i = pages.iterator(); i.hasNext();) {
-            DialogPage page = (DialogPage)i.next();
-            page.addMessageAreaChangeListener(new MessageAreaChangeListener() {
-                public void messageUpdated(MessageAreaModel target) {
-                    if (getActivePage() == target) {
-                        updateMessage();
-                    }
-                }
-            });
-            page.addPropertyChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e) {
-                    if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e
-                            .getPropertyName())) {
-                        CompositeDialogPage.this
-                                .updatePageComplete((DialogPage)e.getSource());
-                    }
-                    else {
-                        CompositeDialogPage.this.updatePageLabels((DialogPage)e
-                                .getSource());
-                    }
-                }
-            });
-            JComponent c = page.getControl();
-            GuiStandardUtils.attachDialogBorder(c);
-            Dimension size = c.getPreferredSize();
-            if (size.width > largestPageWidth) {
-                largestPageWidth = size.width;
-            }
-            if (size.height > largestPageHeight) {
-                largestPageHeight = size.height;
-            }
-        }
-    }
+	protected void createPageControls() {
+		addPages();
+		Assert.notEmpty(getPages(), "Pages must have been added first");
+		for (Iterator i = pages.iterator(); i.hasNext();) {
+			DialogPage page = (DialogPage)i.next();
+			page.addMessageAreaChangeListener(new MessageAreaChangeListener() {
+				public void messageUpdated(MessageAreaModel target) {
+					if (getActivePage() == target) {
+						updateMessage();
+					}
+				}
+			});
+			page.addPropertyChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent e) {
+					if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+						CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
+					}
+					else {
+						CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
+					}
+				}
+			});
+			JComponent c = page.getControl();
+			GuiStandardUtils.attachDialogBorder(c);
+			Dimension size = c.getPreferredSize();
+			if (size.width > largestPageWidth) {
+				largestPageWidth = size.width;
+			}
+			if (size.height > largestPageHeight) {
+				largestPageHeight = size.height;
+			}
+		}
+	}
 
-    public Dimension getLargestPageSize() {
-        return new Dimension(largestPageWidth + UIConstants.ONE_SPACE,
-                largestPageHeight + UIConstants.ONE_SPACE);
-    }
+	public Dimension getLargestPageSize() {
+		return new Dimension(largestPageWidth + UIConstants.ONE_SPACE, largestPageHeight + UIConstants.ONE_SPACE);
+	}
 
-    protected void updatePageComplete(DialogPage page) {
-        boolean pageComplete = true;
-        for (Iterator i = pages.iterator(); i.hasNext();) {
-            if (!((DialogPage)i.next()).isPageComplete()) {
-                pageComplete = false;
-                break;
-            }
-        }
-        setPageComplete(pageComplete);
-    }
+	protected void updatePageComplete(DialogPage page) {
+		boolean pageComplete = true;
+		for (Iterator i = pages.iterator(); i.hasNext();) {
+			if (!((DialogPage)i.next()).isPageComplete()) {
+				pageComplete = false;
+				break;
+			}
+		}
+		setPageComplete(pageComplete);
+	}
 
-    protected void updatePageLabels(DialogPage page) {
-    }
+	protected void updatePageLabels(DialogPage page) {
+	}
 
-    protected void updateMessage() {
-        if (activePage != null) {
-            setDescription(activePage.getDescription());
-            setMessage(activePage.getMessage(), activePage.getSeverity());
-        }
-        else {
-            setDescription(null);
-            setMessage(null);
-        }
-    }
+	protected void updateMessage() {
+		if (activePage != null) {
+			setDescription(activePage.getDescription());
+			setMessage(activePage.getMessage(), activePage.getSeverity());
+		}
+		else {
+			setDescription(null);
+			setMessage(null);
+		}
+	}
 }

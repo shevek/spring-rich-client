@@ -18,9 +18,8 @@ package org.springframework.richclient.application;
 import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.VisualizedElement;
 
-public interface PageDescriptor extends DescribedElement,
-        VisualizedElement {
-    public String getId();
+public interface PageDescriptor extends DescribedElement, VisualizedElement {
+	public String getId();
 
-    public void buildInitialLayout(PageLayoutBuilder pageLayout);
+	public void buildInitialLayout(PageLayoutBuilder pageLayout);
 }

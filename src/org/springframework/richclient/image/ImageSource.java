@@ -32,33 +32,33 @@ import java.awt.Image;
  */
 public interface ImageSource {
 
-    /**
-     * Loads the image with the specified key. Caching may or may not be
-     * performed.
-     * <p>
-     * <p>
-     * If the load is successful, the image resource is returned. If the load
-     * fails, a broken image indicator is returned if it is set for this source.
-     * If not set, an exception is thrown.
-     * 
-     * @param key
-     *            The image key
-     * @return The image.
-     * @throws NoSuchImageResourceException,
-     *             if no image could be found and no broken image indicator is
-     *             set.
-     */
-    public Image getImage(String key);
+	/**
+	 * Loads the image with the specified key. Caching may or may not be
+	 * performed.
+	 * <p>
+	 * <p>
+	 * If the load is successful, the image resource is returned. If the load
+	 * fails, a broken image indicator is returned if it is set for this source.
+	 * If not set, an exception is thrown.
+	 * 
+	 * @param key
+	 *            The image key
+	 * @return The image.
+	 * @throws NoSuchImageResourceException,
+	 *             if no image could be found and no broken image indicator is
+	 *             set.
+	 */
+	public Image getImage(String key);
 
-    /**
-     * Returns the image resource indexed by the specified key. A resource is a
-     * lightweight pointer to the image in the classpath, filesystem, or
-     * network, and not the actual loaded image itself.
-     * 
-     * @param key
-     *            The image key.
-     * @return The image resource.
-     */
-    public AwtImageResource getImageResource(String key);
+	/**
+	 * Returns the image resource indexed by the specified key. A resource is a
+	 * lightweight pointer to the image in the classpath, filesystem, or
+	 * network, and not the actual loaded image itself.
+	 * 
+	 * @param key
+	 *            The image key.
+	 * @return The image resource.
+	 */
+	public AwtImageResource getImageResource(String key);
 
 }

@@ -35,146 +35,135 @@ import org.springframework.rules.reporting.ValidationResults;
 /**
  * @author oliverh
  */
-public abstract class ValidationInterceptor extends
-        AbstractFormComponentInterceptor {
+public abstract class ValidationInterceptor extends AbstractFormComponentInterceptor {
 
-    private final SimplePropertyValidationResultsReporter propertyValidatonReporter;
+	private final SimplePropertyValidationResultsReporter propertyValidatonReporter;
 
-    public ValidationInterceptor(FormModel formModel) {
-        super(formModel);
-        propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
-    }
+	public ValidationInterceptor(FormModel formModel) {
+		super(formModel);
+		propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
+	}
 
-    protected void registerErrorMessageReceiver(String propertyName,
-            MessageAreaModel messageReceiver) {
-        propertyValidatonReporter.registerMessageReceiver(propertyName,
-                messageReceiver);
-    }
+	protected void registerErrorMessageReceiver(String propertyName, MessageAreaModel messageReceiver) {
+		propertyValidatonReporter.registerMessageReceiver(propertyName, messageReceiver);
+	}
 
-    protected void registerErrorGuarded(String propertyName, Guarded guarded) {
-        propertyValidatonReporter.registerGuarded(propertyName, guarded);
-    }
+	protected void registerErrorGuarded(String propertyName, Guarded guarded) {
+		propertyValidatonReporter.registerGuarded(propertyName, guarded);
+	}
 
-    private class SimplePropertyValidationResultsReporter implements
-            ValidationListener {
+	private class SimplePropertyValidationResultsReporter implements ValidationListener {
 
-        private Map propertyMessages = new HashMap();
+		private Map propertyMessages = new HashMap();
 
-        private Map propertyGuarded = new HashMap();
+		private Map propertyGuarded = new HashMap();
 
-        private Map propertyMessage = new HashMap();
+		private Map propertyMessage = new HashMap();
 
-        public SimplePropertyValidationResultsReporter() {
-            getFormModel().addValidationListener(this);
-        }
+		public SimplePropertyValidationResultsReporter() {
+			getFormModel().addValidationListener(this);
+		}
 
-        public void registerGuarded(String propertyName, Guarded guarded) {
-            getGuards(propertyName).add(guarded);
-            update(propertyName);
-        }
+		public void registerGuarded(String propertyName, Guarded guarded) {
+			getGuards(propertyName).add(guarded);
+			update(propertyName);
+		}
 
-        private ListenerListHelper getGuards(String propertyName) {
-            ListenerListHelper guards = (ListenerListHelper)propertyGuarded
-                    .get(propertyName);
-            if (guards == null) {
-                guards = new ListenerListHelper(Guarded.class);
-                propertyGuarded.put(propertyName, guards);
-            }
-            return guards;
-        }
+		private ListenerListHelper getGuards(String propertyName) {
+			ListenerListHelper guards = (ListenerListHelper)propertyGuarded.get(propertyName);
+			if (guards == null) {
+				guards = new ListenerListHelper(Guarded.class);
+				propertyGuarded.put(propertyName, guards);
+			}
+			return guards;
+		}
 
-        public void registerMessageReceiver(String propertyName,
-                MessageAreaModel messageReceiver) {
-            getMessageReceivers(propertyName).add(messageReceiver);
-            update(propertyName);
-        }
+		public void registerMessageReceiver(String propertyName, MessageAreaModel messageReceiver) {
+			getMessageReceivers(propertyName).add(messageReceiver);
+			update(propertyName);
+		}
 
-        private ListenerListHelper getMessageReceivers(String propertyName) {
-            ListenerListHelper messageReceivers = (ListenerListHelper)propertyMessage
-                    .get(propertyName);
-            if (messageReceivers == null) {
-                messageReceivers = new ListenerListHelper(MessageAreaModel.class);
-                propertyMessage.put(propertyName, messageReceivers);
-            }
-            return messageReceivers;
-        }
+		private ListenerListHelper getMessageReceivers(String propertyName) {
+			ListenerListHelper messageReceivers = (ListenerListHelper)propertyMessage.get(propertyName);
+			if (messageReceivers == null) {
+				messageReceivers = new ListenerListHelper(MessageAreaModel.class);
+				propertyMessage.put(propertyName, messageReceivers);
+			}
+			return messageReceivers;
+		}
 
-        public void constraintSatisfied(ValidationEvent event) {
-            String propertyName = getPropertyNameFrom(event);
-            if (propertyName != null) {
-                remove(propertyName, event);
-                update(propertyName);
-            }
-        }
+		public void constraintSatisfied(ValidationEvent event) {
+			String propertyName = getPropertyNameFrom(event);
+			if (propertyName != null) {
+				remove(propertyName, event);
+				update(propertyName);
+			}
+		}
 
-        public void constraintViolated(ValidationEvent event) {
-            String propertyName = getPropertyNameFrom(event);
-            if (propertyName != null) {
-                put(propertyName, event);
-                update(propertyName);
-            }
-        }
+		public void constraintViolated(ValidationEvent event) {
+			String propertyName = getPropertyNameFrom(event);
+			if (propertyName != null) {
+				put(propertyName, event);
+				update(propertyName);
+			}
+		}
 
-        private String getPropertyNameFrom(ValidationEvent event) {
-            return event.getConstraint() instanceof PropertyConstraint ? ((PropertyConstraint)event
-                    .getConstraint()).getPropertyName()
-                    : null;
-        }
+		private String getPropertyNameFrom(ValidationEvent event) {
+			return event.getConstraint() instanceof PropertyConstraint ? ((PropertyConstraint)event.getConstraint())
+					.getPropertyName() : null;
+		}
 
-        private void remove(String propertyName, ValidationEvent event) {
-            getMessages(propertyName).remove(event);
-        }
+		private void remove(String propertyName, ValidationEvent event) {
+			getMessages(propertyName).remove(event);
+		}
 
-        private Stack getMessages(String propertyName) {
-            Stack messages = (Stack)propertyMessages.get(propertyName);
-            if (messages == null) {
-                messages = new Stack();
-                propertyMessages.put(propertyName, messages);
-            }
-            return messages;
-        }
+		private Stack getMessages(String propertyName) {
+			Stack messages = (Stack)propertyMessages.get(propertyName);
+			if (messages == null) {
+				messages = new Stack();
+				propertyMessages.put(propertyName, messages);
+			}
+			return messages;
+		}
 
-        private void put(String propertyName, ValidationEvent event) {
-            Stack messages = getMessages(propertyName);
-            int index = messages.indexOf(event);
-            if (index == -1) {
-                messages.push(event);
-            }
-            else {
-                messages.remove(index);
-                messages.push(event);
-            }
-        }
+		private void put(String propertyName, ValidationEvent event) {
+			Stack messages = getMessages(propertyName);
+			int index = messages.indexOf(event);
+			if (index == -1) {
+				messages.push(event);
+			}
+			else {
+				messages.remove(index);
+				messages.push(event);
+			}
+		}
 
-        private void update(String propertyName) {
-            Stack messages = getMessages(propertyName);
+		private void update(String propertyName) {
+			Stack messages = getMessages(propertyName);
 
-            Severity severity;
-            String message;
-            boolean enabled;
+			Severity severity;
+			String message;
+			boolean enabled;
 
-            if (messages.size() > 0) {
-                ValidationEvent error = (ValidationEvent)messages.peek();
-                severity = error.getResults().getSeverity();
-                message = translate(error.getResults());
-                enabled = false;
-            }
-            else {
-                severity = Severity.INFO;
-                message = "";
-                enabled = true;
-            }
+			if (messages.size() > 0) {
+				ValidationEvent error = (ValidationEvent)messages.peek();
+				severity = error.getResults().getSeverity();
+				message = translate(error.getResults());
+				enabled = false;
+			}
+			else {
+				severity = Severity.INFO;
+				message = "";
+				enabled = true;
+			}
 
-            getMessageReceivers(propertyName).fire("setMessage", message,
-                    severity);
-            getGuards(propertyName)
-                    .fire("setEnabled", Boolean.valueOf(enabled));
-        }
+			getMessageReceivers(propertyName).fire("setMessage", message, severity);
+			getGuards(propertyName).fire("setEnabled", Boolean.valueOf(enabled));
+		}
 
-        private String translate(ValidationResults results) {
-            DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(
-                    Application.services());
-            return messageTranslator.getMessage((PropertyResults)results);
-        }
-    }
+		private String translate(ValidationResults results) {
+			DefaultMessageTranslator messageTranslator = new DefaultMessageTranslator(Application.services());
+			return messageTranslator.getMessage((PropertyResults)results);
+		}
+	}
 }

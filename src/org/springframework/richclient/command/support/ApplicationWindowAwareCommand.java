@@ -17,37 +17,38 @@ package org.springframework.richclient.command.support;
 
 import javax.swing.JFrame;
 
-import org.springframework.richclient.application.*;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowAware;
 import org.springframework.richclient.command.ActionCommand;
 
 /**
  * @author Keith Donald
  */
-public abstract class ApplicationWindowAwareCommand extends ActionCommand
-        implements ApplicationWindowAware {
+public abstract class ApplicationWindowAwareCommand extends ActionCommand implements ApplicationWindowAware {
 
-    private ApplicationWindow window;
+	private ApplicationWindow window;
 
-    protected ApplicationWindowAwareCommand() {
+	protected ApplicationWindowAwareCommand() {
 
-    }
+	}
 
-    protected ApplicationWindowAwareCommand(String commandId) {
-        super(commandId);
-    }
+	protected ApplicationWindowAwareCommand(String commandId) {
+		super(commandId);
+	}
 
-    public void setApplicationWindow(ApplicationWindow window) {
-        this.window = window;
-    }
+	public void setApplicationWindow(ApplicationWindow window) {
+		this.window = window;
+	}
 
-    protected ApplicationWindow getApplicationWindow() {
-        return window;
-    }
+	protected ApplicationWindow getApplicationWindow() {
+		return window;
+	}
 
-    protected JFrame getParentWindowControl() {
-        if (window == null) { return Application.instance().getActiveWindow()
-                .getControl(); }
-        return window.getControl();
-    }
+	protected JFrame getParentWindowControl() {
+		if (window == null) {
+			return Application.instance().getActiveWindow().getControl();
+		}
+		return window.getControl();
+	}
 }

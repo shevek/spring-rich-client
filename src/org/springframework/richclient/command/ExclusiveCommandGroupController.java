@@ -21,68 +21,65 @@ import java.util.List;
 
 public class ExclusiveCommandGroupController {
 
-    private List commands = new ArrayList();
+	private List commands = new ArrayList();
 
-    private boolean allowsEmptySelection;
+	private boolean allowsEmptySelection;
 
-    public ExclusiveCommandGroupController() {
-    }
+	public ExclusiveCommandGroupController() {
+	}
 
-    public boolean getAllowsEmptySelection() {
-        return allowsEmptySelection;
-    }
+	public boolean getAllowsEmptySelection() {
+		return allowsEmptySelection;
+	}
 
-    public void setAllowsEmptySelection(boolean allowsEmptySelection) {
-        this.allowsEmptySelection = allowsEmptySelection;
-    }
+	public void setAllowsEmptySelection(boolean allowsEmptySelection) {
+		this.allowsEmptySelection = allowsEmptySelection;
+	}
 
-    public void add(ToggleCommand command) {
-        if (!commands.contains(command)) {
-            commands.add(command);
-            command.setExclusiveController(this);
-        }
-    }
+	public void add(ToggleCommand command) {
+		if (!commands.contains(command)) {
+			commands.add(command);
+			command.setExclusiveController(this);
+		}
+	}
 
-    public void remove(ToggleCommand command) {
-        if (commands.remove(command)) {
-            command.setExclusiveController(null);
-        }
-    }
+	public void remove(ToggleCommand command) {
+		if (commands.remove(command)) {
+			command.setExclusiveController(null);
+		}
+	}
 
-    public void handleSelectionRequest(ToggleCommand delegatingCommand,
-            boolean requestsSelection) {
-        if (requestsSelection) {
-            ToggleCommand previousSelectedCommand = null;
+	public void handleSelectionRequest(ToggleCommand delegatingCommand, boolean requestsSelection) {
+		if (requestsSelection) {
+			ToggleCommand previousSelectedCommand = null;
 
-            for (Iterator iterator = commands.iterator(); iterator.hasNext();) {
-                ToggleCommand command = (ToggleCommand)iterator.next();
-                if (command.isSelected()) {
-                    previousSelectedCommand = command;
-                    break;
-                }
-            }
+			for (Iterator iterator = commands.iterator(); iterator.hasNext();) {
+				ToggleCommand command = (ToggleCommand)iterator.next();
+				if (command.isSelected()) {
+					previousSelectedCommand = command;
+					break;
+				}
+			}
 
-            if (previousSelectedCommand == null) {
-                delegatingCommand.requestSetSelection(true);
-            }
-            else {
-                previousSelectedCommand.requestSetSelection(false);
+			if (previousSelectedCommand == null) {
+				delegatingCommand.requestSetSelection(true);
+			}
+			else {
+				previousSelectedCommand.requestSetSelection(false);
 
-                delegatingCommand.requestSetSelection(!previousSelectedCommand
-                        .isSelected());
+				delegatingCommand.requestSetSelection(!previousSelectedCommand.isSelected());
 
-                if (!delegatingCommand.isSelected()
-                        && previousSelectedCommand != null) {
-                    previousSelectedCommand.requestSetSelection(true);
-                }
-            }
-        }
-        else {
-            // its a deselection
-            if (allowsEmptySelection) {
-                delegatingCommand.requestSetSelection(false);
-            }
-        }
-    }
+				if (!delegatingCommand.isSelected() && previousSelectedCommand != null) {
+					previousSelectedCommand.requestSetSelection(true);
+				}
+			}
+		}
+		else {
+			// its a deselection
+			if (allowsEmptySelection) {
+				delegatingCommand.requestSetSelection(false);
+			}
+		}
+	}
 
 }

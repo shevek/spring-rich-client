@@ -9,42 +9,41 @@ import javax.swing.JToolBar;
 import org.springframework.richclient.control.SimpleInternalFrame;
 import org.springframework.richclient.factory.AbstractControlFactory;
 
-public class PageComponentPane extends AbstractControlFactory implements
-        PropertyChangeListener {
-    private PageComponent component;
+public class PageComponentPane extends AbstractControlFactory implements PropertyChangeListener {
+	private PageComponent component;
 
-    public PageComponentPane(PageComponent component) {
-        this.component = component;
-        this.component.addPropertyChangeListener(this);
-    }
+	public PageComponentPane(PageComponent component) {
+		this.component = component;
+		this.component.addPropertyChangeListener(this);
+	}
 
-    public PageComponent getPageComponent() {
-        return component;
-    }
+	public PageComponent getPageComponent() {
+		return component;
+	}
 
-    protected JComponent createControl() {
-        return new SimpleInternalFrame(component.getIcon(), component
-                .getDisplayName(), createViewToolBar(), component.getControl());
-    }
+	protected JComponent createControl() {
+		return new SimpleInternalFrame(component.getIcon(), component.getDisplayName(), createViewToolBar(), component
+				.getControl());
+	}
 
-    protected JToolBar createViewToolBar() {
-        // todo
-        return null;
-    }
+	protected JToolBar createViewToolBar() {
+		// todo
+		return null;
+	}
 
-    public void propertyChange(PropertyChangeEvent evt) {
-        handleViewPropertyChange();
-    }
+	public void propertyChange(PropertyChangeEvent evt) {
+		handleViewPropertyChange();
+	}
 
-    protected void handleViewPropertyChange() {
-        SimpleInternalFrame frame = (SimpleInternalFrame)getControl();
-        frame.setTitle(component.getDisplayName());
-        frame.setFrameIcon(component.getIcon());
-        frame.setToolTipText(component.getCaption());
-    }
+	protected void handleViewPropertyChange() {
+		SimpleInternalFrame frame = (SimpleInternalFrame)getControl();
+		frame.setTitle(component.getDisplayName());
+		frame.setFrameIcon(component.getIcon());
+		frame.setToolTipText(component.getCaption());
+	}
 
-    public void requestFocusInWindow() {
-        getControl().requestFocusInWindow();
-    }
+	public void requestFocusInWindow() {
+		getControl().requestFocusInWindow();
+	}
 
 }

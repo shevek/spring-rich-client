@@ -27,27 +27,26 @@ import javax.swing.JFileChooser;
  * @author Keith Donald
  */
 public class FileChooserUtils {
-    private static JFileChooser fileChooser;
+	private static JFileChooser fileChooser;
 
-    private FileChooserUtils() {
-    }
+	private FileChooserUtils() {
+	}
 
-    public static File showFileChooser(Component parent,
-            String defaultExtension, String approveButtonName,
-            String fileTypeDescription) {
-        if (fileChooser == null) {
-            fileChooser = new JFileChooser();
-        }
-        DefaultFileFilter filter = new DefaultFileFilter();
-        filter.addExtension(defaultExtension);
-        filter.setDescription(fileTypeDescription);
-        fileChooser.setFileFilter(filter);
-        int returnVal = fileChooser.showDialog(parent, approveButtonName);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            return fileChooser.getSelectedFile();
-        }
-        else {
-            return null;
-        }
-    }
+	public static File showFileChooser(Component parent, String defaultExtension, String approveButtonName,
+			String fileTypeDescription) {
+		if (fileChooser == null) {
+			fileChooser = new JFileChooser();
+		}
+		DefaultFileFilter filter = new DefaultFileFilter();
+		filter.addExtension(defaultExtension);
+		filter.setDescription(fileTypeDescription);
+		fileChooser.setFileFilter(filter);
+		int returnVal = fileChooser.showDialog(parent, approveButtonName);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			return fileChooser.getSelectedFile();
+		}
+		else {
+			return null;
+		}
+	}
 }

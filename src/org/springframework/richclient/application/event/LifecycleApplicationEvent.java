@@ -16,37 +16,37 @@ import org.springframework.util.ToStringCreator;
  * @author Keith Donald
  */
 public class LifecycleApplicationEvent extends ApplicationEvent {
-    private String eventType;
+	private String eventType;
 
-    public static final String CREATED = "lifecycleEvent.created";
+	public static final String CREATED = "lifecycleEvent.created";
 
-    public static final String MODIFIED = "lifecycleEvent.modified";
+	public static final String MODIFIED = "lifecycleEvent.modified";
 
-    public static final String DELETED = "lifecycleEvent.deleted";
+	public static final String DELETED = "lifecycleEvent.deleted";
 
-    public LifecycleApplicationEvent(String eventType, Object source) {
-        super(source);
-        this.eventType = eventType;
-    }
+	public LifecycleApplicationEvent(String eventType, Object source) {
+		super(source);
+		this.eventType = eventType;
+	}
 
-    public Object getObject() {
-        return getSource();
-    }
+	public Object getObject() {
+		return getSource();
+	}
 
-    public boolean objectIs(Class clazz) {
-        if (getSource().getClass().isAssignableFrom(clazz)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+	public boolean objectIs(Class clazz) {
+		if (getSource().getClass().isAssignableFrom(clazz)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
-    public String getEventType() {
-        return eventType;
-    }
+	public String getEventType() {
+		return eventType;
+	}
 
-    public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
-    }
+	public String toString() {
+		return new ToStringCreator(this).appendProperties().toString();
+	}
 }

@@ -21,46 +21,45 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 
 public class ExclusiveCommandGroup extends CommandGroup {
 
-    private ExclusiveCommandGroupController controller = new ExclusiveCommandGroupController();
+	private ExclusiveCommandGroupController controller = new ExclusiveCommandGroupController();
 
-    public ExclusiveCommandGroup() {
-        super();
-    }
+	public ExclusiveCommandGroup() {
+		super();
+	}
 
-    public ExclusiveCommandGroup(String groupId) {
-        super(groupId);
-    }
+	public ExclusiveCommandGroup(String groupId) {
+		super(groupId);
+	}
 
-    public ExclusiveCommandGroup(String groupId, CommandFaceDescriptor face) {
-        super(groupId, face);
-    }
+	public ExclusiveCommandGroup(String groupId, CommandFaceDescriptor face) {
+		super(groupId, face);
+	}
 
-    public ExclusiveCommandGroup(String groupId, CommandRegistry commandRegistry) {
-        super(groupId, commandRegistry);
-    }
+	public ExclusiveCommandGroup(String groupId, CommandRegistry commandRegistry) {
+		super(groupId, commandRegistry);
+	}
 
-    public ExclusiveCommandGroup(String id, String encodedLabel) {
-        super(id, encodedLabel);
-    }
+	public ExclusiveCommandGroup(String id, String encodedLabel) {
+		super(id, encodedLabel);
+	}
 
-    public ExclusiveCommandGroup(String id, String encodedLabel, Icon icon,
-            String caption) {
-        super(id, encodedLabel, icon, caption);
-    }
+	public ExclusiveCommandGroup(String id, String encodedLabel, Icon icon, String caption) {
+		super(id, encodedLabel, icon, caption);
+	}
 
-    protected ExclusiveCommandGroupController getController() {
-        return controller;
-    }
+	protected ExclusiveCommandGroupController getController() {
+		return controller;
+	}
 
-    public void setAllowsEmptySelection(boolean allowsEmptySelection) {
-        controller.setAllowsEmptySelection(allowsEmptySelection);
-    }
+	public void setAllowsEmptySelection(boolean allowsEmptySelection) {
+		controller.setAllowsEmptySelection(allowsEmptySelection);
+	}
 
-    public boolean getAllowsEmptySelection() {
-        return controller.getAllowsEmptySelection();
-    }
+	public boolean getAllowsEmptySelection() {
+		return controller.getAllowsEmptySelection();
+	}
 
-    public boolean isAllowedMember(AbstractCommand prospectiveMember) {
-        return prospectiveMember instanceof ToggleCommand;
-    }
+	public boolean isAllowedMember(AbstractCommand prospectiveMember) {
+		return prospectiveMember instanceof ToggleCommand;
+	}
 }

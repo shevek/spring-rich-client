@@ -29,44 +29,44 @@ import javax.swing.JTable;
  * @author Keith Donald
  */
 public class DateTimeTableCellRenderer extends OptimizedTableCellRenderer {
-    private DateFormat dateFormatter;
+	private DateFormat dateFormatter;
 
-    public DateTimeTableCellRenderer() {
-        this.dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
-    }
+	public DateTimeTableCellRenderer() {
+		this.dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
+	}
 
-    public DateTimeTableCellRenderer(DateFormat formatter) {
-        this.dateFormatter = formatter;
-    }
+	public DateTimeTableCellRenderer(DateFormat formatter) {
+		this.dateFormatter = formatter;
+	}
 
-    public DateTimeTableCellRenderer(TimeZone timeZone) {
-        this();
-        this.dateFormatter.setTimeZone(timeZone);
-    }
+	public DateTimeTableCellRenderer(TimeZone timeZone) {
+		this();
+		this.dateFormatter.setTimeZone(timeZone);
+	}
 
-    public DateFormat getDateFormat() {
-        return dateFormatter;
-    }
+	public DateFormat getDateFormat() {
+		return dateFormatter;
+	}
 
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        doPrepareRenderer(table, isSelected, hasFocus, row, column);
-        if (value != null) {
-            Date date = (Date)value;
-            setValue(dateFormatter.format(date));
-        }
-        else {
-            setValue(null);
-        }
-        return this;
-    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		doPrepareRenderer(table, isSelected, hasFocus, row, column);
+		if (value != null) {
+			Date date = (Date)value;
+			setValue(dateFormatter.format(date));
+		}
+		else {
+			setValue(null);
+		}
+		return this;
+	}
 
-    public void useGMTTime() {
-        dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z");
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
+	public void useGMTTime() {
+		dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z");
+		dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+	}
 
-    public void useLocalTime() {
-        dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
-    }
+	public void useLocalTime() {
+		dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
+	}
 }

@@ -23,29 +23,29 @@ import org.springframework.richclient.core.LabeledObjectSupport;
  * @author Keith Donald
  */
 public class ApplicationDescriptor extends LabeledObjectSupport {
-    /** The version of the application */
-    private String version;
+	/** The version of the application */
+	private String version;
 
-    /** The build identifier associated with this build of the application */
-    private String buildId;
+	/** The build identifier associated with this build of the application */
+	private String buildId;
 
-    public ApplicationDescriptor() {
-    }
+	public ApplicationDescriptor() {
+	}
 
-    public String getBuildId() {
-        return buildId;
-    }
+	public String getBuildId() {
+		return buildId;
+	}
 
-    public void setBuildId(String buildId) {
-        this.buildId = buildId;
-    }
+	public void setBuildId(String buildId) {
+		this.buildId = buildId;
+	}
 
-    public String getVersion() {
-        return version;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 }

@@ -24,9 +24,9 @@ import javax.swing.JComponent;
  * @author Keith Donald
  */
 public interface BeanPropertyInspector {
-    public String getBeanClassName();
+	public String getBeanClassName();
 
-    public void setBean(Object bean);
+	public void setBean(Object bean);
 
-    public JComponent getControl();
+	public JComponent getControl();
 }

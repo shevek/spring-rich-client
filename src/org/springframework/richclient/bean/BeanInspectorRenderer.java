@@ -36,39 +36,36 @@ import org.springframework.rules.reporting.DefaultBeanPropertyNameRenderer;
  * 
  * @author Keith Donald
  */
-public class BeanInspectorRenderer extends DefaultTreeCellRenderer implements
-        TreeCellRenderer {
-    private BeanPropertyNameRenderer propertyRenderer = new DefaultBeanPropertyNameRenderer();
+public class BeanInspectorRenderer extends DefaultTreeCellRenderer implements TreeCellRenderer {
+	private BeanPropertyNameRenderer propertyRenderer = new DefaultBeanPropertyNameRenderer();
 
-    private static String PROPERTY_ICON_KEY = "property.icon";
+	private static String PROPERTY_ICON_KEY = "property.icon";
 
-    private static String COMPONENT_ICON_KEY = "component.icon";
+	private static String COMPONENT_ICON_KEY = "component.icon";
 
-    private static String BEAN_ICON_KEY = "bean.icon";
+	private static String BEAN_ICON_KEY = "bean.icon";
 
-    private IconSource iconSource = Application.services();
+	private IconSource iconSource = Application.services();
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-            boolean sel, boolean expanded, boolean leaf, int row,
-            boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-                row, hasFocus);
-        BeanInspectorTreeModel.BeanFeatureNode n = (BeanInspectorTreeModel.BeanFeatureNode)value;
-        FeatureDescriptor f = n.getFeature();
-        setText(propertyRenderer.renderShortName(f.getDisplayName()));
-        if (f instanceof PropertyDescriptor) {
-            PropertyDescriptor p = (PropertyDescriptor)f;
-            if (ClassUtils.isSimpleScalar(p.getPropertyType())) {
-                setIcon(iconSource.getIcon(PROPERTY_ICON_KEY));
-            }
-            else {
-                setIcon(iconSource.getIcon(COMPONENT_ICON_KEY));
-            }
-        }
-        else if (f instanceof BeanDescriptor) {
-            setIcon(iconSource.getIcon(BEAN_ICON_KEY));
-        }
-        return this;
-    }
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+			int row, boolean hasFocus) {
+		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+		BeanInspectorTreeModel.BeanFeatureNode n = (BeanInspectorTreeModel.BeanFeatureNode)value;
+		FeatureDescriptor f = n.getFeature();
+		setText(propertyRenderer.renderShortName(f.getDisplayName()));
+		if (f instanceof PropertyDescriptor) {
+			PropertyDescriptor p = (PropertyDescriptor)f;
+			if (ClassUtils.isSimpleScalar(p.getPropertyType())) {
+				setIcon(iconSource.getIcon(PROPERTY_ICON_KEY));
+			}
+			else {
+				setIcon(iconSource.getIcon(COMPONENT_ICON_KEY));
+			}
+		}
+		else if (f instanceof BeanDescriptor) {
+			setIcon(iconSource.getIcon(BEAN_ICON_KEY));
+		}
+		return this;
+	}
 
 }

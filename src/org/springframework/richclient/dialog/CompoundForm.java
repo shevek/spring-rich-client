@@ -23,50 +23,49 @@ import org.springframework.richclient.forms.SwingFormModel;
  * @author Keith Donald
  */
 public class CompoundForm {
-    private NestingFormModel compoundFormModel;
+	private NestingFormModel compoundFormModel;
 
-    public CompoundForm() {
+	public CompoundForm() {
 
-    }
+	}
 
-    public CompoundForm(Class clazz) {
-        this(BeanUtils.instantiateClass(clazz));
-    }
+	public CompoundForm(Class clazz) {
+		this(BeanUtils.instantiateClass(clazz));
+	}
 
-    public CompoundForm(Object formObject) {
-        setFormObject(formObject);
-    }
+	public CompoundForm(Object formObject) {
+		setFormObject(formObject);
+	}
 
-    public SwingFormModel newPageFormModel(String formName) {
-        return SwingFormModel
-                .createChildPageFormModel(getFormModel(), formName);
-    }
+	public SwingFormModel newPageFormModel(String formName) {
+		return SwingFormModel.createChildPageFormModel(getFormModel(), formName);
+	}
 
-    public NestingFormModel getFormModel() {
-        return compoundFormModel;
-    }
+	public NestingFormModel getFormModel() {
+		return compoundFormModel;
+	}
 
-    public Object getFormObject() {
-        return compoundFormModel.getFormObject();
-    }
+	public Object getFormObject() {
+		return compoundFormModel.getFormObject();
+	}
 
-    public void setFormObject(Object formObject) {
-        if (compoundFormModel == null) {
-            this.compoundFormModel = createCompoundFormModel(formObject);
-        }
-        this.compoundFormModel.setFormObject(formObject);
-    }
+	public void setFormObject(Object formObject) {
+		if (compoundFormModel == null) {
+			this.compoundFormModel = createCompoundFormModel(formObject);
+		}
+		this.compoundFormModel.setFormObject(formObject);
+	}
 
-    protected NestingFormModel createCompoundFormModel(Object formObject) {
-        return SwingFormModel.createCompoundFormModel(formObject);
-    }
+	protected NestingFormModel createCompoundFormModel(Object formObject) {
+		return SwingFormModel.createCompoundFormModel(formObject);
+	}
 
-    public void commit() {
-        compoundFormModel.commit();
-    }
+	public void commit() {
+		compoundFormModel.commit();
+	}
 
-    public void revert() {
-        compoundFormModel.revert();
-    }
+	public void revert() {
+		compoundFormModel.revert();
+	}
 
 }

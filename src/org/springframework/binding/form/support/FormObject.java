@@ -25,13 +25,13 @@ import org.springframework.binding.value.PropertyChangePublisher;
  */
 public interface FormObject extends PropertyChangePublisher {
 
-    /**
-     * Does this form object have changes that have not yet been committed? This
-     * can be used to determine if a warning needs to be displayed when a user
-     * closes the GUI displaying the form without first committing their
-     * changes, for example.
-     * 
-     * @return the dirty status
-     */
-    public boolean isDirty();
+	/**
+	 * Does this form object have changes that have not yet been committed? This
+	 * can be used to determine if a warning needs to be displayed when a user
+	 * closes the GUI displaying the form without first committing their
+	 * changes, for example.
+	 * 
+	 * @return the dirty status
+	 */
+	public boolean isDirty();
 }

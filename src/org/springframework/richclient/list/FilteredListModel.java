@@ -28,85 +28,83 @@ import org.springframework.util.closure.Constraint;
 /**
  * @author Keith Donald
  */
-public class FilteredListModel extends AbstractFilteredListModel implements
-        Observer, ValueChangeListener {
+public class FilteredListModel extends AbstractFilteredListModel implements Observer, ValueChangeListener {
 
-    private Constraint constraint;
+	private Constraint constraint;
 
-    private int[] indexes;
+	private int[] indexes;
 
-    private int filteredSize;
+	private int filteredSize;
 
-    public FilteredListModel(ListModel listModel, Constraint constraint) {
-        super(listModel);
-        this.constraint = constraint;
-        if (this.constraint instanceof Observable) {
-            ((Observable)this.constraint).addObserver(this);
-        }
-        else if (this.constraint instanceof ValueChangePublisher) {
-            ((ValueChangePublisher)this.constraint)
-                    .addValueChangeListener(this);
-        }
-        reallocateIndexes();
-    }
+	public FilteredListModel(ListModel listModel, Constraint constraint) {
+		super(listModel);
+		this.constraint = constraint;
+		if (this.constraint instanceof Observable) {
+			((Observable)this.constraint).addObserver(this);
+		}
+		else if (this.constraint instanceof ValueChangePublisher) {
+			((ValueChangePublisher)this.constraint).addValueChangeListener(this);
+		}
+		reallocateIndexes();
+	}
 
-    protected void reallocateIndexes() {
-        this.indexes = new int[getFilteredModel().getSize()];
-        applyConstraint();
-    }
+	protected void reallocateIndexes() {
+		this.indexes = new int[getFilteredModel().getSize()];
+		applyConstraint();
+	}
 
-    public void valueChanged() {
-        update(null, null);
-    }
+	public void valueChanged() {
+		update(null, null);
+	}
 
-    public void update(Observable changed, Object arg) {
-        applyConstraint();
-        fireContentsChanged(this, -1, -1);
-    }
+	public void update(Observable changed, Object arg) {
+		applyConstraint();
+		fireContentsChanged(this, -1, -1);
+	}
 
-    private void applyConstraint() {
-        filteredSize = 0;
-        ListModel filteredListModel = getFilteredModel();
-        for (int i = 0, j = 0; i < filteredListModel.getSize(); i++) {
-            Object element = filteredListModel.getElementAt(i);
-            if (constraint.test(element)) {
-                indexes[j] = i;
-                j++;
-                filteredSize++;
-                onMatchingElement(element);
-            }
-        }
-        postConstraintApplied();
-    }
+	private void applyConstraint() {
+		filteredSize = 0;
+		ListModel filteredListModel = getFilteredModel();
+		for (int i = 0, j = 0; i < filteredListModel.getSize(); i++) {
+			Object element = filteredListModel.getElementAt(i);
+			if (constraint.test(element)) {
+				indexes[j] = i;
+				j++;
+				filteredSize++;
+				onMatchingElement(element);
+			}
+		}
+		postConstraintApplied();
+	}
 
-    protected void onMatchingElement(Object element) {
+	protected void onMatchingElement(Object element) {
 
-    }
+	}
 
-    protected void postConstraintApplied() {
+	protected void postConstraintApplied() {
 
-    }
+	}
 
-    public int getSize() {
-        return filteredSize;
-    }
+	public int getSize() {
+		return filteredSize;
+	}
 
-    public Object getElementAt(int index) {
-        return getFilteredModel().getElementAt(indexes[index]);
-    }
+	public Object getElementAt(int index) {
+		return getFilteredModel().getElementAt(indexes[index]);
+	}
 
-    public void contentsChanged(ListDataEvent e) {
-        super.contentsChanged(e);
-    }
+	public void contentsChanged(ListDataEvent e) {
+		super.contentsChanged(e);
+	}
 
-    public void intervalAdded(ListDataEvent e) {
-        reallocateIndexes();
-        super.intervalAdded(e);
-    }
+	public void intervalAdded(ListDataEvent e) {
+		reallocateIndexes();
+		super.intervalAdded(e);
+	}
 
-    public void intervalRemoved(ListDataEvent e) {
-        reallocateIndexes();
-        super.intervalRemoved(e);
-    }
+	public void intervalRemoved(ListDataEvent e) {
+		reallocateIndexes();
+		super.intervalRemoved(e);
+	}
 
 }

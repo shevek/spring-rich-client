@@ -30,76 +30,76 @@ import javax.swing.SwingUtilities;
  */
 public class BusyIndicator {
 
-    public static class BusyGlassPanel extends JPanel {
+	public static class BusyGlassPanel extends JPanel {
 
-        public static final Component INSTANCE = new BusyGlassPanel();
+		public static final Component INSTANCE = new BusyGlassPanel();
 
-        public static Component instance() {
-            return INSTANCE;
-        }
+		public static Component instance() {
+			return INSTANCE;
+		}
 
-        public BusyGlassPanel() {
-            super.setOpaque(false);
-            super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            super.addKeyListener((new KeyAdapter() {
-            }));
-            super.addMouseListener((new MouseAdapter() {
-            }));
-            super.addMouseMotionListener((new MouseMotionAdapter() {
-            }));
-        }
-    }
+		public BusyGlassPanel() {
+			super.setOpaque(false);
+			super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			super.addKeyListener((new KeyAdapter() {
+			}));
+			super.addMouseListener((new MouseAdapter() {
+			}));
+			super.addMouseMotionListener((new MouseMotionAdapter() {
+			}));
+		}
+	}
 
-    /**
-     * Runs the given <code>Runnable</code> while providing busy feedback
-     * using this busy indicator.
-     * 
-     * @param the
-     *            display on which the busy feedback should be displayed. If the
-     *            display is null, the Display for the current thread will be
-     *            used. If there is no Display for the current thread, the
-     *            runnable code will be executed and no busy feedback will be
-     *            displayed.
-     * @param the
-     *            runnable for which busy feedback is to be shown
-     * @see #showWhile
-     */
-    public static void showWhile(Component component, Runnable runnable) {
-        if (component != null) {
-            showAt(component);
-        }
-        try {
-            runnable.run();
-        }
-        catch (RuntimeException x) {
-            x.printStackTrace();
-            throw x;
-        }
-        catch (Error x) {
-            x.printStackTrace();
-            throw x;
-        }
-        finally {
-            if (component != null) {
-                clearAt(component);
-            }
-        }
-    }
+	/**
+	 * Runs the given <code>Runnable</code> while providing busy feedback
+	 * using this busy indicator.
+	 * 
+	 * @param the
+	 *            display on which the busy feedback should be displayed. If the
+	 *            display is null, the Display for the current thread will be
+	 *            used. If there is no Display for the current thread, the
+	 *            runnable code will be executed and no busy feedback will be
+	 *            displayed.
+	 * @param the
+	 *            runnable for which busy feedback is to be shown
+	 * @see #showWhile
+	 */
+	public static void showWhile(Component component, Runnable runnable) {
+		if (component != null) {
+			showAt(component);
+		}
+		try {
+			runnable.run();
+		}
+		catch (RuntimeException x) {
+			x.printStackTrace();
+			throw x;
+		}
+		catch (Error x) {
+			x.printStackTrace();
+			throw x;
+		}
+		finally {
+			if (component != null) {
+				clearAt(component);
+			}
+		}
+	}
 
-    public static void showAt(Component component) {
-        JRootPane root = SwingUtilities.getRootPane(component);
-        if (root != null && root.isShowing()) {
-            root.setGlassPane(BusyGlassPanel.INSTANCE);
-            root.getGlassPane().setVisible(true);
-        }
-    }
+	public static void showAt(Component component) {
+		JRootPane root = SwingUtilities.getRootPane(component);
+		if (root != null && root.isShowing()) {
+			root.setGlassPane(BusyGlassPanel.INSTANCE);
+			root.getGlassPane().setVisible(true);
+		}
+	}
 
-    public static void clearAt(Component component) {
-        JRootPane root = SwingUtilities.getRootPane(component);
-        if (root != null && root.isShowing()) {
-            root.getGlassPane().setVisible(false);
-        }
-    }
+	public static void clearAt(Component component) {
+		JRootPane root = SwingUtilities.getRootPane(component);
+		if (root != null && root.isShowing()) {
+			root.getGlassPane().setVisible(false);
+		}
+	}
 
 }
 

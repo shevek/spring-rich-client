@@ -22,12 +22,11 @@ import javax.swing.Box;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 
 public class GlueGroupMember extends GroupMember {
-    public GlueGroupMember() {
-    }
+	public GlueGroupMember() {
+	}
 
-    protected void fill(GroupContainerPopulator parentContainer,
-            Object factory, CommandButtonConfigurer configurer,
-            List previousButtons) {
-        parentContainer.add(Box.createGlue());
-    }
+	protected void fill(GroupContainerPopulator parentContainer, Object factory, CommandButtonConfigurer configurer,
+			List previousButtons) {
+		parentContainer.add(Box.createGlue());
+	}
 }

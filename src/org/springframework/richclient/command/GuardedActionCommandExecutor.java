@@ -21,9 +21,8 @@ import org.springframework.richclient.core.Guarded;
 /**
  * @author Keith Donald
  */
-public interface GuardedActionCommandExecutor extends Guarded,
-        ActionCommandExecutor {
-    public void addEnabledListener(ValueChangeListener listener);
+public interface GuardedActionCommandExecutor extends Guarded, ActionCommandExecutor {
+	public void addEnabledListener(ValueChangeListener listener);
 
-    public void removeEnabledListener(ValueChangeListener listener);
+	public void removeEnabledListener(ValueChangeListener listener);
 }

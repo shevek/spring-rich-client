@@ -29,43 +29,43 @@ import javax.swing.Icon;
  */
 public final class EmptyIcon implements Icon {
 
-    /**
-     * Convenience object for small icons, whose size matches the size of small
-     * icons in Sun's graphics repository.
-     */
-    public static final EmptyIcon SMALL = new EmptyIcon(IconSize.SMALL);
+	/**
+	 * Convenience object for small icons, whose size matches the size of small
+	 * icons in Sun's graphics repository.
+	 */
+	public static final EmptyIcon SMALL = new EmptyIcon(IconSize.SMALL);
 
-    /**
-     * Convenience object for large icons, whose size matches the size of large
-     * icons in Sun's graphics repository.
-     */
-    public static final EmptyIcon LARGE = new EmptyIcon(IconSize.LARGE);
+	/**
+	 * Convenience object for large icons, whose size matches the size of large
+	 * icons in Sun's graphics repository.
+	 */
+	public static final EmptyIcon LARGE = new EmptyIcon(IconSize.LARGE);
 
-    private IconSize size;
+	private IconSize size;
 
-    /**
-     * EmptyIcon objects are always square, having identical height and width.
-     * 
-     * @param size
-     *            The size of the empty icon. Icons are always equal on all
-     *            sides.
-     */
-    public EmptyIcon(IconSize size) {
-        this.size = size;
-    }
+	/**
+	 * EmptyIcon objects are always square, having identical height and width.
+	 * 
+	 * @param size
+	 *            The size of the empty icon. Icons are always equal on all
+	 *            sides.
+	 */
+	public EmptyIcon(IconSize size) {
+		this.size = size;
+	}
 
-    public int getIconWidth() {
-        return this.size.getValue();
-    }
+	public int getIconWidth() {
+		return this.size.getValue();
+	}
 
-    public int getIconHeight() {
-        return this.size.getValue();
-    }
+	public int getIconHeight() {
+		return this.size.getValue();
+	}
 
-    /**
-     * This implementation is empty, and paints nothing.
-     */
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-        //empty
-    }
+	/**
+	 * This implementation is empty, and paints nothing.
+	 */
+	public void paintIcon(Component c, Graphics g, int x, int y) {
+		//empty
+	}
 }

@@ -23,42 +23,40 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 
 public abstract class GroupMember {
 
-    protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    protected abstract void fill(
-            GroupContainerPopulator parentContainerPopulator,
-            Object controlFactory, CommandButtonConfigurer buttonConfigurer,
-            List previousButtons);
+	protected abstract void fill(GroupContainerPopulator parentContainerPopulator, Object controlFactory,
+			CommandButtonConfigurer buttonConfigurer, List previousButtons);
 
-    public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {
 
-    }
+	}
 
-    /**
-     * Returns <code>true</code> if this member manages a command and its
-     * managed command id equals the specified <code>commandId</code>. This
-     * method should also traverse nested commands, if the command managed by
-     * this member is a <code>CommandGroup</code>.
-     * 
-     * @param commandId
-     *            the command Id
-     * @return true or false
-     */
-    public boolean managesCommand(String commandId) {
-        return false;
-    }
+	/**
+	 * Returns <code>true</code> if this member manages a command and its
+	 * managed command id equals the specified <code>commandId</code>. This
+	 * method should also traverse nested commands, if the command managed by
+	 * this member is a <code>CommandGroup</code>.
+	 * 
+	 * @param commandId
+	 *            the command Id
+	 * @return true or false
+	 */
+	public boolean managesCommand(String commandId) {
+		return false;
+	}
 
-    public AbstractCommand getCommand() {
-        return null;
-    }
+	public AbstractCommand getCommand() {
+		return null;
+	}
 
-    protected void addSeparator(GroupContainerPopulator parentContainerPopulator) {
-        parentContainerPopulator.addSeparator();
-    }
+	protected void addSeparator(GroupContainerPopulator parentContainerPopulator) {
+		parentContainerPopulator.addSeparator();
+	}
 
-    protected void onAdded() {
-    }
+	protected void onAdded() {
+	}
 
-    protected void onRemoved() {
-    }
+	protected void onRemoved() {
+	}
 }

@@ -40,88 +40,83 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class DefaultViewDescriptor extends LabeledObjectSupport implements
-        InitializingBean, ViewDescriptor, BeanNameAware {
-    private String id;
+public class DefaultViewDescriptor extends LabeledObjectSupport implements InitializingBean, ViewDescriptor,
+		BeanNameAware {
+	private String id;
 
-    private Class viewClass;
+	private Class viewClass;
 
-    private Map viewProperties;
+	private Map viewProperties;
 
-    public void setBeanName(String beanName) {
-        setId(beanName);
-    }
+	public void setBeanName(String beanName) {
+		setId(beanName);
+	}
 
-    public void setId(String id) {
-        Assert.notNull("id is required");
-        this.id = id;
-    }
+	public void setId(String id) {
+		Assert.notNull("id is required");
+		this.id = id;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setViewClass(Class viewClass) {
-        this.viewClass = viewClass;
-    }
+	public void setViewClass(Class viewClass) {
+		this.viewClass = viewClass;
+	}
 
-    public void setViewProperties(Map viewProperties) {
-        this.viewProperties = viewProperties;
-    }
+	public void setViewProperties(Map viewProperties) {
+		this.viewProperties = viewProperties;
+	}
 
-    public ApplicationEventMulticaster getApplicationEventMulticaster() {
-        if (getApplicationContext() != null) {
-            final String beanName = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME;
-            if (getApplicationContext().containsBean(beanName)) { return (ApplicationEventMulticaster)getApplicationContext()
-                    .getBean(beanName); }
-        }
-        return null;
-    }
+	public ApplicationEventMulticaster getApplicationEventMulticaster() {
+		if (getApplicationContext() != null) {
+			final String beanName = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME;
+			if (getApplicationContext().containsBean(beanName)) {
+				return (ApplicationEventMulticaster)getApplicationContext().getBean(beanName);
+			}
+		}
+		return null;
+	}
 
-    public void afterPropertiesSet() {
-        Assert.notNull(viewClass, "The viewClass property must be specified");
-    }
+	public void afterPropertiesSet() {
+		Assert.notNull(viewClass, "The viewClass property must be specified");
+	}
 
-    public View createView() {
-        Object o = BeanUtils.instantiateClass(viewClass);
-        Assert.isTrue((o instanceof View), "View class '" + viewClass
-                + "' was instantiated, but instance is not a View!");
-        View view = (View)o;
-        view.setDescriptor(this);
-        if (view instanceof ApplicationListener
-                && getApplicationEventMulticaster() != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Registering new view instance '"
-                        + getDisplayName()
-                        + "' as an application event listener...");
-            }
-            getApplicationEventMulticaster().addApplicationListener(
-                    (ApplicationListener)view);
-        }
-        if (viewProperties != null) {
-            BeanWrapper wrapper = new BeanWrapperImpl(view);
-            wrapper.setPropertyValues(viewProperties);
-        }
+	public View createView() {
+		Object o = BeanUtils.instantiateClass(viewClass);
+		Assert.isTrue((o instanceof View), "View class '" + viewClass + "' was instantiated, but instance is not a View!");
+		View view = (View)o;
+		view.setDescriptor(this);
+		if (view instanceof ApplicationListener && getApplicationEventMulticaster() != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Registering new view instance '" + getDisplayName() + "' as an application event listener...");
+			}
+			getApplicationEventMulticaster().addApplicationListener((ApplicationListener)view);
+		}
+		if (viewProperties != null) {
+			BeanWrapper wrapper = new BeanWrapperImpl(view);
+			wrapper.setPropertyValues(viewProperties);
+		}
 
-        if (view instanceof InitializingBean) {
-            try {
-                ((InitializingBean)view).afterPropertiesSet();
-            }
-            catch (Exception e) {
-                throw new BeanInitializationException("Problem running on "
-                        + view, e);
-            }
-        }
+		if (view instanceof InitializingBean) {
+			try {
+				((InitializingBean)view).afterPropertiesSet();
+			}
+			catch (Exception e) {
+				throw new BeanInitializationException("Problem running on " + view, e);
+			}
+		}
 
-        return view;
-    }
+		return view;
+	}
 
-    public CommandButtonLabelInfo getShowViewCommandLabel() {
-        return getLabel();
-    }
+	public CommandButtonLabelInfo getShowViewCommandLabel() {
+		return getLabel();
+	}
 
-    public ActionCommand createShowViewCommand(ApplicationWindow window) {
-        return new ShowViewCommand(this, window);
-    }
+	public ActionCommand createShowViewCommand(ApplicationWindow window) {
+		return new ShowViewCommand(this, window);
+	}
 
 }

@@ -21,31 +21,30 @@ import javax.swing.event.ChangeListener;
 
 import org.springframework.binding.value.ValueModel;
 
-public class SpinnerValueSetter extends AbstractValueSetter implements
-        ChangeListener {
-    private JSpinner spinner;
+public class SpinnerValueSetter extends AbstractValueSetter implements ChangeListener {
+	private JSpinner spinner;
 
-    public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
-        super(valueModel);
-        this.spinner = spinner;
-        valueChanged();
-        this.spinner.addChangeListener(this);
-    }
+	public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
+		super(valueModel);
+		this.spinner = spinner;
+		valueChanged();
+		this.spinner.addChangeListener(this);
+	}
 
-    public void stateChanged(ChangeEvent e) {
-        componentValueChanged(spinner.getValue());
-    }
+	public void stateChanged(ChangeEvent e) {
+		componentValueChanged(spinner.getValue());
+	}
 
-    public void valueChanged() {
-        setControlValue(getInnerMostValue());
-    }
+	public void valueChanged() {
+		setControlValue(getInnerMostValue());
+	}
 
-    protected void setControlValue(Object value) {
-        if (value == null) {
-            spinner.setValue(new Integer(0));
-        }
-        else {
-            spinner.setValue(value);
-        }
-    }
+	protected void setControlValue(Object value) {
+		if (value == null) {
+			spinner.setValue(new Integer(0));
+		}
+		else {
+			spinner.setValue(value);
+		}
+	}
 }

@@ -30,41 +30,40 @@ import org.springframework.richclient.core.Guarded;
  */
 public class FormGuard implements ValidationListener, PropertyChangeListener {
 
-    private static final Log logger = LogFactory.getLog(FormGuard.class);
+	private static final Log logger = LogFactory.getLog(FormGuard.class);
 
-    private FormModel formModel;
+	private FormModel formModel;
 
-    private Guarded guarded;
+	private Guarded guarded;
 
-    public FormGuard(FormModel formModel, Guarded guarded) {
-        this.formModel = formModel;
-        this.formModel.addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
-                this);
-        this.guarded = guarded;
-        update(formModel);
-    }
+	public FormGuard(FormModel formModel, Guarded guarded) {
+		this.formModel = formModel;
+		this.formModel.addPropertyChangeListener(FormModel.ENABLED_PROPERTY, this);
+		this.guarded = guarded;
+		update(formModel);
+	}
 
-    public void constraintSatisfied(ValidationEvent event) {
-        update(event.getFormModel());
-    }
+	public void constraintSatisfied(ValidationEvent event) {
+		update(event.getFormModel());
+	}
 
-    public void constraintViolated(ValidationEvent event) {
-        update(event.getFormModel());
-    }
+	public void constraintViolated(ValidationEvent event) {
+		update(event.getFormModel());
+	}
 
-    protected void update(FormModel formModel) {
-        if (formModel.getHasErrors()) {
-            guarded.setEnabled(false);
-        }
-        else {
-            if (formModel.isEnabled()) {
-                guarded.setEnabled(true);
-            }
-        }
-    }
+	protected void update(FormModel formModel) {
+		if (formModel.getHasErrors()) {
+			guarded.setEnabled(false);
+		}
+		else {
+			if (formModel.isEnabled()) {
+				guarded.setEnabled(true);
+			}
+		}
+	}
 
-    public void propertyChange(PropertyChangeEvent e) {
-        update(formModel);
-    }
+	public void propertyChange(PropertyChangeEvent e) {
+		update(formModel);
+	}
 
 }

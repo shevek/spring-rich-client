@@ -30,33 +30,32 @@ import org.springframework.richclient.core.VisualizedElement;
  * 
  * @author Keith Donald
  */
-public interface ViewDescriptor extends PropertyChangePublisher,
-        DescribedElement, VisualizedElement {
+public interface ViewDescriptor extends PropertyChangePublisher, DescribedElement, VisualizedElement {
 
-    public String getId();
+	public String getId();
 
-    /**
-     * Factory method that produces a new instance of the View described by this
-     * view descriptor each time it is called. The new view instance is
-     * instantiated (it must have a default constructor), and any configured
-     * view properties are injected. If the view is an instance of
-     * ApplicationListener, and an ApplicationEventMulticaster is configured in
-     * this application's ApplicationContext, the view is registered as an
-     * ApplicationListener.
-     * 
-     * @return The new view prototype
-     */
-    public View createView();
+	/**
+	 * Factory method that produces a new instance of the View described by this
+	 * view descriptor each time it is called. The new view instance is
+	 * instantiated (it must have a default constructor), and any configured
+	 * view properties are injected. If the view is an instance of
+	 * ApplicationListener, and an ApplicationEventMulticaster is configured in
+	 * this application's ApplicationContext, the view is registered as an
+	 * ApplicationListener.
+	 * 
+	 * @return The new view prototype
+	 */
+	public View createView();
 
-    /**
-     * Create a command that when executed, will attempt to show the view
-     * described by this descriptor in the provided application window.
-     * 
-     * @param window
-     *            The window
-     * @return The show view command.
-     */
-    public ActionCommand createShowViewCommand(ApplicationWindow window);
+	/**
+	 * Create a command that when executed, will attempt to show the view
+	 * described by this descriptor in the provided application window.
+	 * 
+	 * @param window
+	 *            The window
+	 * @return The show view command.
+	 */
+	public ActionCommand createShowViewCommand(ApplicationWindow window);
 
-    public CommandButtonLabelInfo getShowViewCommandLabel();
+	public CommandButtonLabelInfo getShowViewCommandLabel();
 }

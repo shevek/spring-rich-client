@@ -33,159 +33,154 @@ import org.springframework.util.StringUtils;
  * @author Jim Moore
  */
 public abstract class ApplicationAdvisor implements InitializingBean {
-    private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
+	private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
 
-    private static final String EXCEPTION_HANDLER_KEY = "sun.awt.exception.handler";
+	private static final String EXCEPTION_HANDLER_KEY = "sun.awt.exception.handler";
 
-    private Application application;
+	private Application application;
 
-    private ApplicationDescriptor applicationDescriptor;
+	private ApplicationDescriptor applicationDescriptor;
 
-    private ApplicationWindow managedWindow;
+	private ApplicationWindow managedWindow;
 
-    private boolean introShown;
+	private boolean introShown;
 
-    private Class eventExceptionHandler;
+	private Class eventExceptionHandler;
 
-    /**
-     * Logs any event loop exception not caught.
-     * 
-     * @see ApplicationAdvisor#setEventExceptionHandler(Class)
-     */
-    public static class DefaultEventExceptionHandler {
-        public void handle(Throwable t) {
-            LogFactory.getLog(ApplicationAdvisor.class)
-                    .error(t.getMessage(), t);
-        }
-    }
+	/**
+	 * Logs any event loop exception not caught.
+	 * 
+	 * @see ApplicationAdvisor#setEventExceptionHandler(Class)
+	 */
+	public static class DefaultEventExceptionHandler {
+		public void handle(Throwable t) {
+			LogFactory.getLog(ApplicationAdvisor.class).error(t.getMessage(), t);
+		}
+	}
 
-    public Class getEventExceptionHandler() {
-        if (this.eventExceptionHandler == null) {
-            this.eventExceptionHandler = DefaultEventExceptionHandler.class;
-        }
-        return this.eventExceptionHandler;
-    }
+	public Class getEventExceptionHandler() {
+		if (this.eventExceptionHandler == null) {
+			this.eventExceptionHandler = DefaultEventExceptionHandler.class;
+		}
+		return this.eventExceptionHandler;
+	}
 
-    /**
-     * Sets the class to use to handle exceptions that happen in the
-     * {@link java.awt.EventDispatchThread}. The class must have a no-arg
-     * public constructor and a method "public void handle(Throwable)".
-     * 
-     * @param eventExceptionHandler
-     *            the class to use
-     * 
-     * @see java.awt.EventDispatchThread#handleException(Throwable)
-     */
-    public void setEventExceptionHandler(Class eventExceptionHandler) {
-        this.eventExceptionHandler = eventExceptionHandler;
-    }
+	/**
+	 * Sets the class to use to handle exceptions that happen in the
+	 * {@link java.awt.EventDispatchThread}. The class must have a no-arg
+	 * public constructor and a method "public void handle(Throwable)".
+	 * 
+	 * @param eventExceptionHandler
+	 *            the class to use
+	 * 
+	 * @see java.awt.EventDispatchThread#handleException(Throwable)
+	 */
+	public void setEventExceptionHandler(Class eventExceptionHandler) {
+		this.eventExceptionHandler = eventExceptionHandler;
+	}
 
-    public void afterPropertiesSet() throws Exception {
-        final Properties systemProperties = System.getProperties();
-        if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
-            systemProperties.put(EXCEPTION_HANDLER_KEY,
-                    getEventExceptionHandler().getName());
-        }
-    }
+	public void afterPropertiesSet() throws Exception {
+		final Properties systemProperties = System.getProperties();
+		if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
+			systemProperties.put(EXCEPTION_HANDLER_KEY, getEventExceptionHandler().getName());
+		}
+	}
 
-    public void setApplicationDescriptor(ApplicationDescriptor info) {
-        this.applicationDescriptor = info;
-    }
+	public void setApplicationDescriptor(ApplicationDescriptor info) {
+		this.applicationDescriptor = info;
+	}
 
-    protected final Application getApplication() {
-        return application;
-    }
+	protected final Application getApplication() {
+		return application;
+	}
 
-    public String getApplicationName() {
-        if (applicationDescriptor != null
-                && StringUtils.hasText(applicationDescriptor.getDisplayName())) {
-            return applicationDescriptor.getDisplayName();
-        }
-        else {
-            return "Spring Rich Client Application";
-        }
-    }
+	public String getApplicationName() {
+		if (applicationDescriptor != null && StringUtils.hasText(applicationDescriptor.getDisplayName())) {
+			return applicationDescriptor.getDisplayName();
+		}
+		else {
+			return "Spring Rich Client Application";
+		}
+	}
 
-    public Image getApplicationImage() {
-        if (applicationDescriptor != null
-                && applicationDescriptor.getImage() != null) {
-            return applicationDescriptor.getImage();
-        }
-        else {
-            return Application.services().getImage(
-                    DEFAULT_APPLICATION_IMAGE_KEY);
-        }
-    }
+	public Image getApplicationImage() {
+		if (applicationDescriptor != null && applicationDescriptor.getImage() != null) {
+			return applicationDescriptor.getImage();
+		}
+		else {
+			return Application.services().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+		}
+	}
 
-    public void onPreInitialize(Application application) {
-        this.application = application;
-    }
+	public void onPreInitialize(Application application) {
+		this.application = application;
+	}
 
-    public void onPreStartup() {
+	public void onPreStartup() {
 
-    }
+	}
 
-    public void onPostStartup() {
+	public void onPostStartup() {
 
-    }
+	}
 
-    /**
-     * Returns the id for the default page to load when the application is
-     * started.
-     */
-    public abstract String getStartingPageId();
+	/**
+	 * Returns the id for the default page to load when the application is
+	 * started.
+	 */
+	public abstract String getStartingPageId();
 
-    public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
-        this.managedWindow = configurer.getWindow();
-        configurer.setTitle(getApplicationName());
-        configurer.setImage(getApplicationImage());
-    }
+	public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
+		this.managedWindow = configurer.getWindow();
+		configurer.setTitle(getApplicationName());
+		configurer.setImage(getApplicationImage());
+	}
 
-    protected final ApplicationWindow getManagedWindow() {
-        return managedWindow;
-    }
+	protected final ApplicationWindow getManagedWindow() {
+		return managedWindow;
+	}
 
-    public ApplicationWindowCommandManager createWindowCommandManager() {
-        return new ApplicationWindowCommandManager();
-    }
+	public ApplicationWindowCommandManager createWindowCommandManager() {
+		return new ApplicationWindowCommandManager();
+	}
 
-    public CommandGroup getMenuBarCommandGroup() {
-        return new CommandGroup();
-    }
+	public CommandGroup getMenuBarCommandGroup() {
+		return new CommandGroup();
+	}
 
-    public CommandGroup getToolBarCommandGroup() {
-        return new CommandGroup();
-    }
+	public CommandGroup getToolBarCommandGroup() {
+		return new CommandGroup();
+	}
 
-    public StatusBarCommandGroup getStatusBarCommandGroup() {
-        return new StatusBarCommandGroup();
-    }
+	public StatusBarCommandGroup getStatusBarCommandGroup() {
+		return new StatusBarCommandGroup();
+	}
 
-    public void onCommandsCreated(ApplicationWindow window) {
+	public void onCommandsCreated(ApplicationWindow window) {
 
-    }
+	}
 
-    public void onWindowCreated(ApplicationWindow window) {
+	public void onWindowCreated(ApplicationWindow window) {
 
-    }
+	}
 
-    public void showIntroComponentIfNecessary(ApplicationWindow window) {
-        if (introShown) {
-            showIntro(window);
-            introShown = true;
-        }
-    }
+	public void showIntroComponentIfNecessary(ApplicationWindow window) {
+		if (introShown) {
+			showIntro(window);
+			introShown = true;
+		}
+	}
 
-    protected void showIntro(ApplicationWindow window) {
+	protected void showIntro(ApplicationWindow window) {
 
-    }
+	}
 
-    public void onWindowOpened(ApplicationWindow window) {
+	public void onWindowOpened(ApplicationWindow window) {
 
-    }
+	}
 
-    public boolean onPreWindowClose(ApplicationWindow window) {
-        return true;
-    }
+	public boolean onPreWindowClose(ApplicationWindow window) {
+		return true;
+	}
 
 }

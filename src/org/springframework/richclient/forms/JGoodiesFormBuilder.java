@@ -31,83 +31,76 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class JGoodiesFormBuilder implements FormBuilder {
 
-    private DefaultFormBuilder formBuilder;
+	private DefaultFormBuilder formBuilder;
 
-    private ComponentFactory componentFactory;
+	private ComponentFactory componentFactory;
 
-    public JGoodiesFormBuilder(FormLayout layout) {
-        this(layout, Application.services().getComponentFactory());
-    }
+	public JGoodiesFormBuilder(FormLayout layout) {
+		this(layout, Application.services().getComponentFactory());
+	}
 
-    public JGoodiesFormBuilder(FormLayout layout,
-            ComponentFactory componentFactory) {
-        Assert.notNull(componentFactory);
-        this.formBuilder = new DefaultFormBuilder(layout);
-        this.componentFactory = componentFactory;
-    }
+	public JGoodiesFormBuilder(FormLayout layout, ComponentFactory componentFactory) {
+		Assert.notNull(componentFactory);
+		this.formBuilder = new DefaultFormBuilder(layout);
+		this.componentFactory = componentFactory;
+	}
 
-    /**
-     * @see org.springframework.richclient.forms.FormBuilder#getForm()
-     */
-    public JComponent getForm() {
-        return formBuilder.getPanel();
-    }
+	/**
+	 * @see org.springframework.richclient.forms.FormBuilder#getForm()
+	 */
+	public JComponent getForm() {
+		return formBuilder.getPanel();
+	}
 
-    public DefaultFormBuilder getDefaultFormBuilder() {
-        return formBuilder;
-    }
+	public DefaultFormBuilder getDefaultFormBuilder() {
+		return formBuilder;
+	}
 
-    public JComponent[] add(String labelKey, JComponent labeledComponent) {
-        JLabel label = componentFactory.createLabelFor(labelKey,
-                labeledComponent);
-        return add(label, labeledComponent);
-    }
+	public JComponent[] add(String labelKey, JComponent labeledComponent) {
+		JLabel label = componentFactory.createLabelFor(labelKey, labeledComponent);
+		return add(label, labeledComponent);
+	}
 
-    public JComponent[] add(JComponent label, JComponent labeledComponent) {
-        Assert.notNull(labeledComponent);
-        formBuilder.append(label, labeledComponent);
-        return new JComponent[] { label, labeledComponent };
-    }
+	public JComponent[] add(JComponent label, JComponent labeledComponent) {
+		Assert.notNull(labeledComponent);
+		formBuilder.append(label, labeledComponent);
+		return new JComponent[] { label, labeledComponent };
+	}
 
-    public JComponent[] add(String labelKey, String labelConstraints,
-            JComponent labeledComponent) {
-        JLabel label = componentFactory.createLabelFor(labelKey,
-                labeledComponent);
-        return add(label, labelConstraints, labeledComponent);
-    }
+	public JComponent[] add(String labelKey, String labelConstraints, JComponent labeledComponent) {
+		JLabel label = componentFactory.createLabelFor(labelKey, labeledComponent);
+		return add(label, labelConstraints, labeledComponent);
+	}
 
-    public JComponent[] add(JComponent label, String labelConstraints,
-            JComponent labeledComponent) {
-        Assert.notNull(labeledComponent);
-        formBuilder.nextLine();
-        formBuilder.appendRelatedComponentsGapRow();
-        formBuilder.nextRow();
-        labelConstraints = formBuilder.getColumn() + "," + formBuilder.getRow()
-                + "," + labelConstraints;
-        formBuilder.appendRow("pref");
-        formBuilder.add(label, labelConstraints);
-        formBuilder.nextColumn(2);
-        formBuilder.add(labeledComponent);
-        formBuilder.nextLine();
-        return new JComponent[] { label, labeledComponent };
-    }
+	public JComponent[] add(JComponent label, String labelConstraints, JComponent labeledComponent) {
+		Assert.notNull(labeledComponent);
+		formBuilder.nextLine();
+		formBuilder.appendRelatedComponentsGapRow();
+		formBuilder.nextRow();
+		labelConstraints = formBuilder.getColumn() + "," + formBuilder.getRow() + "," + labelConstraints;
+		formBuilder.appendRow("pref");
+		formBuilder.add(label, labelConstraints);
+		formBuilder.nextColumn(2);
+		formBuilder.add(labeledComponent);
+		formBuilder.nextLine();
+		return new JComponent[] { label, labeledComponent };
+	}
 
-    public void addSeparator() {
-        formBuilder.appendSeparator();
-        formBuilder.nextLine();
-    }
+	public void addSeparator() {
+		formBuilder.appendSeparator();
+		formBuilder.nextLine();
+	}
 
-    public void addGapRow() {
-        formBuilder.appendRelatedComponentsGapRow();
-        formBuilder.nextLine();
-    }
+	public void addGapRow() {
+		formBuilder.appendRelatedComponentsGapRow();
+		formBuilder.nextLine();
+	}
 
-    public void addRow(ControlFactory controlFactory) {
-        if (formBuilder.getRow() <= formBuilder.getRowCount()) {
-            formBuilder.nextLine();
-        }
-        formBuilder.append(controlFactory.getControl(), formBuilder
-                .getColumnCount());
-    }
+	public void addRow(ControlFactory controlFactory) {
+		if (formBuilder.getRow() <= formBuilder.getRowCount()) {
+			formBuilder.nextLine();
+		}
+		formBuilder.append(controlFactory.getControl(), formBuilder.getColumnCount());
+	}
 
 }

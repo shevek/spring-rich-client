@@ -27,97 +27,94 @@ import java.awt.Window;
  */
 public class WindowUtils {
 
-    private WindowUtils() {
-    }
+	private WindowUtils() {
+	}
 
-    /**
-     * Return the system screen size.
-     * 
-     * @return The dimension of the system screen size.
-     */
-    public static Dimension getScreenSize() {
-        return Toolkit.getDefaultToolkit().getScreenSize();
-    }
+	/**
+	 * Return the system screen size.
+	 * 
+	 * @return The dimension of the system screen size.
+	 */
+	public static Dimension getScreenSize() {
+		return Toolkit.getDefaultToolkit().getScreenSize();
+	}
 
-    /**
-     * Return the centering point on the screen for the object with the
-     * specified dimension.
-     * 
-     * @param dimension
-     *            the dimension of an object
-     * @return The centering point on the screen for that object.
-     */
-    public static Point getCenteringPointOnScreen(Dimension dimension) {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        if (dimension.width > screen.width) {
-            dimension.width = screen.width;
-        }
-        if (dimension.height > screen.height) {
-            dimension.height = screen.height;
-        }
-        return new Point((screen.width - dimension.width) / 2,
-                (screen.height - dimension.height) / 2);
-    }
+	/**
+	 * Return the centering point on the screen for the object with the
+	 * specified dimension.
+	 * 
+	 * @param dimension
+	 *            the dimension of an object
+	 * @return The centering point on the screen for that object.
+	 */
+	public static Point getCenteringPointOnScreen(Dimension dimension) {
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		if (dimension.width > screen.width) {
+			dimension.width = screen.width;
+		}
+		if (dimension.height > screen.height) {
+			dimension.height = screen.height;
+		}
+		return new Point((screen.width - dimension.width) / 2, (screen.height - dimension.height) / 2);
+	}
 
-    /**
-     * Pack the window, center it on the screen, and set the window visible.
-     * 
-     * @param window
-     *            the window to center and show.
-     */
-    public static void centerOnScreenAndSetVisible(Window window) {
-        window.pack();
-        window.setLocationRelativeTo(window);
-        window.setVisible(true);
-    }
+	/**
+	 * Pack the window, center it on the screen, and set the window visible.
+	 * 
+	 * @param window
+	 *            the window to center and show.
+	 */
+	public static void centerOnScreenAndSetVisible(Window window) {
+		window.pack();
+		window.setLocationRelativeTo(window);
+		window.setVisible(true);
+	}
 
-    /**
-     * Pack the window, center it relative to it's parent, and set the window
-     * visible.
-     * 
-     * @param window
-     *            the window to center and show.
-     */
-    public static void centerOnParentAndSetVisible(Window window) {
-        window.pack();
-        window.setLocationRelativeTo(window.getParent());
-        window.setVisible(true);
-    }
+	/**
+	 * Pack the window, center it relative to it's parent, and set the window
+	 * visible.
+	 * 
+	 * @param window
+	 *            the window to center and show.
+	 */
+	public static void centerOnParentAndSetVisible(Window window) {
+		window.pack();
+		window.setLocationRelativeTo(window.getParent());
+		window.setVisible(true);
+	}
 
-    /**
-     * Return a <code>Dimension</code> whose size is defined not in terms of
-     * pixels, but in terms of a given percent of the screen's width and height.
-     * 
-     * <P>
-     * Use to set the preferred size of a component to a certain percentage of
-     * the screen.
-     * 
-     * @param percentWidth
-     *            percentage width of the screen, in range <code>1..100</code>.
-     * @param percentHeight
-     *            percentage height of the screen, in range <code>1..100</code>.
-     */
-    public static final Dimension getDimensionFromPercent(int percentWidth,
-            int percentHeight) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return calcDimensionFromPercent(screenSize, percentWidth, percentHeight);
-    }
+	/**
+	 * Return a <code>Dimension</code> whose size is defined not in terms of
+	 * pixels, but in terms of a given percent of the screen's width and height.
+	 * 
+	 * <P>
+	 * Use to set the preferred size of a component to a certain percentage of
+	 * the screen.
+	 * 
+	 * @param percentWidth
+	 *            percentage width of the screen, in range <code>1..100</code>.
+	 * @param percentHeight
+	 *            percentage height of the screen, in range <code>1..100</code>.
+	 */
+	public static final Dimension getDimensionFromPercent(int percentWidth, int percentHeight) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		return calcDimensionFromPercent(screenSize, percentWidth, percentHeight);
+	}
 
-    private static Dimension calcDimensionFromPercent(Dimension dimension,
-            int percentWidth, int percentHeight) {
-        int width = dimension.width * percentWidth / 100;
-        int height = dimension.height * percentHeight / 100;
-        return new Dimension(width, height);
-    }
+	private static Dimension calcDimensionFromPercent(Dimension dimension, int percentWidth, int percentHeight) {
+		int width = dimension.width * percentWidth / 100;
+		int height = dimension.height * percentHeight / 100;
+		return new Dimension(width, height);
+	}
 
-    public static int getScreenWidth() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return screenSize.width;
-    }
+	public static int getScreenWidth() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		return screenSize.width;
+	}
 
-    public static int getScreenHeight() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return screenSize.height;
-    }
+	public static int getScreenHeight() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		return screenSize.height;
+	}
 
 }

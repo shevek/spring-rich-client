@@ -15,7 +15,9 @@
  */
 package org.springframework.richclient.command.support;
 
-import org.springframework.richclient.application.*;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
 
 /**
@@ -23,31 +25,30 @@ import org.springframework.richclient.command.ActionCommand;
  * {@link ViewDescriptor}.
  */
 public class ShowViewCommand extends ApplicationWindowAwareCommand {
-    private ViewDescriptor viewDescriptor;
+	private ViewDescriptor viewDescriptor;
 
-    public ShowViewCommand() {
-        super("showViewCommand");
-        setEnabled(true);
-    }
+	public ShowViewCommand() {
+		super("showViewCommand");
+		setEnabled(true);
+	}
 
-    public ShowViewCommand(ViewDescriptor viewDescriptor,
-            ApplicationWindow window) {
-        this();
-        setViewDescriptor(viewDescriptor);
-        setApplicationWindow(window);
-        setEnabled(true);
-    }
+	public ShowViewCommand(ViewDescriptor viewDescriptor, ApplicationWindow window) {
+		this();
+		setViewDescriptor(viewDescriptor);
+		setApplicationWindow(window);
+		setEnabled(true);
+	}
 
-    public final void setViewDescriptor(ViewDescriptor viewDescriptor) {
-        setId(viewDescriptor.getDisplayName());
-        setLabel(viewDescriptor.getShowViewCommandLabel());
-        setIcon(viewDescriptor.getIcon());
-        setCaption(viewDescriptor.getCaption());
-        this.viewDescriptor = viewDescriptor;
-    }
+	public final void setViewDescriptor(ViewDescriptor viewDescriptor) {
+		setId(viewDescriptor.getDisplayName());
+		setLabel(viewDescriptor.getShowViewCommandLabel());
+		setIcon(viewDescriptor.getIcon());
+		setCaption(viewDescriptor.getCaption());
+		this.viewDescriptor = viewDescriptor;
+	}
 
-    protected void doExecuteCommand() {
-        getApplicationWindow().getPage().showView(viewDescriptor);
-    }
+	protected void doExecuteCommand() {
+		getApplicationWindow().getPage().showView(viewDescriptor);
+	}
 
 }

@@ -23,22 +23,24 @@ import org.springframework.beans.BeanWrapperImpl;
  * @author Keith Donald
  */
 public class BeanPropertyValueListRenderer extends TextValueListRenderer {
-    private BeanWrapperImpl beanWrapper;
+	private BeanWrapperImpl beanWrapper;
 
-    private String propertyName;
+	private String propertyName;
 
-    public BeanPropertyValueListRenderer(String propertyName) {
-        this.propertyName = propertyName;
-    }
+	public BeanPropertyValueListRenderer(String propertyName) {
+		this.propertyName = propertyName;
+	}
 
-    protected String getTextValue(Object value) {
-        if (value == null) { return ""; }
-        if (beanWrapper == null) {
-            beanWrapper = new BeanWrapperImpl(value);
-        }
-        else {
-            beanWrapper.setWrappedInstance(value);
-        }
-        return String.valueOf(beanWrapper.getPropertyValue(propertyName));
-    }
+	protected String getTextValue(Object value) {
+		if (value == null) {
+			return "";
+		}
+		if (beanWrapper == null) {
+			beanWrapper = new BeanWrapperImpl(value);
+		}
+		else {
+			beanWrapper.setWrappedInstance(value);
+		}
+		return String.valueOf(beanWrapper.getPropertyValue(propertyName));
+	}
 }

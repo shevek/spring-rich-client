@@ -37,42 +37,41 @@ import org.springframework.richclient.command.support.ApplicationWindowAwareComm
  * @author Ben Alex
  */
 public class LogoutCommand extends ApplicationWindowAwareCommand {
-    private static final String ID = "logoutCommand";
+	private static final String ID = "logoutCommand";
 
-    public LogoutCommand() {
-        super(ID);
-    }
+	public LogoutCommand() {
+		super(ID);
+	}
 
-    private boolean displaySuccess = true;
+	private boolean displaySuccess = true;
 
-    /**
-     * Indicates whether an information message is displayed to the user upon
-     * successful logout. Defaults to true.
-     * 
-     * @param displaySuccess
-     *            displays an information message upon successful logout if
-     *            true, otherwise false
-     */
-    public void setDisplaySuccess(boolean displaySuccess) {
-        this.displaySuccess = displaySuccess;
-    }
+	/**
+	 * Indicates whether an information message is displayed to the user upon
+	 * successful logout. Defaults to true.
+	 * 
+	 * @param displaySuccess
+	 *            displays an information message upon successful logout if
+	 *            true, otherwise false
+	 */
+	public void setDisplaySuccess(boolean displaySuccess) {
+		this.displaySuccess = displaySuccess;
+	}
 
-    protected void doExecuteCommand() {
-        onLogout(SessionDetails.logout());
+	protected void doExecuteCommand() {
+		onLogout(SessionDetails.logout());
 
-        if (displaySuccess) {
-            JOptionPane.showMessageDialog(getParentWindowControl(),
-                    "You have been logged out.", "Logout Successful",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
+		if (displaySuccess) {
+			JOptionPane.showMessageDialog(getParentWindowControl(), "You have been logged out.", "Logout Successful",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
 
-    /**
-     * Can be extended by subclasses to perform additional logout processing,
-     * such as notifying a server etc.
-     */
-    public void onLogout(Authentication loggedOut) {
+	/**
+	 * Can be extended by subclasses to perform additional logout processing,
+	 * such as notifying a server etc.
+	 */
+	public void onLogout(Authentication loggedOut) {
 
-    }
+	}
 
 }

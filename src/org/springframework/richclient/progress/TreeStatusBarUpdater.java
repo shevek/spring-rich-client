@@ -21,41 +21,41 @@ import org.springframework.richclient.tree.TreeSelectionListenerSupport;
 import org.springframework.util.Assert;
 
 public abstract class TreeStatusBarUpdater extends TreeSelectionListenerSupport {
-    private StatusBarCommandGroup statusBar;
+	private StatusBarCommandGroup statusBar;
 
-    public TreeStatusBarUpdater(StatusBarCommandGroup statusBar) {
-        Assert.notNull(statusBar);
-        this.statusBar = statusBar;
-    }
+	public TreeStatusBarUpdater(StatusBarCommandGroup statusBar) {
+		Assert.notNull(statusBar);
+		this.statusBar = statusBar;
+	}
 
-    private StatusBarCommandGroup getStatusBar() {
-        return statusBar;
-    }
+	private StatusBarCommandGroup getStatusBar() {
+		return statusBar;
+	}
 
-    protected void onSingleSelection(TreePath newPath) {
-        updateStatusBar(getSelectedObjectName());
-    }
+	protected void onSingleSelection(TreePath newPath) {
+		updateStatusBar(getSelectedObjectName());
+	}
 
-    protected abstract String getSelectedObjectName();
+	protected abstract String getSelectedObjectName();
 
-    protected void onMultiSelection(TreePath[] newPaths) {
-        updateStatusBar(getItemsSelected());
-    }
+	protected void onMultiSelection(TreePath[] newPaths) {
+		updateStatusBar(getItemsSelected());
+	}
 
-    protected void onNoSelection() {
-        updateStatusBar(null);
-    }
+	protected void onNoSelection() {
+		updateStatusBar(null);
+	}
 
-    private void updateStatusBar(int itemsSelected) {
-        getStatusBar().setMessage(itemsSelected + " items selected");
-    }
+	private void updateStatusBar(int itemsSelected) {
+		getStatusBar().setMessage(itemsSelected + " items selected");
+	}
 
-    private void updateStatusBar(String selectedObjectName) {
-        if (selectedObjectName != null) {
-            getStatusBar().setMessage(selectedObjectName);
-        }
-        else {
-            getStatusBar().setMessage(null);
-        }
-    }
+	private void updateStatusBar(String selectedObjectName) {
+		if (selectedObjectName != null) {
+			getStatusBar().setMessage(selectedObjectName);
+		}
+		else {
+			getStatusBar().setMessage(null);
+		}
+	}
 }

@@ -23,100 +23,102 @@ import java.util.List;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 
 public class ExpansionPointGroupMember extends GroupMember {
-    private static final String DEFAULT_EXPANSION_POINT_NAME = "default";
+	private static final String DEFAULT_EXPANSION_POINT_NAME = "default";
 
-    private HashSet members = new LinkedHashSet(5);
+	private HashSet members = new LinkedHashSet(5);
 
-    private String expansionGroupName;
+	private String expansionGroupName;
 
-    private boolean leadingSeparator;
+	private boolean leadingSeparator;
 
-    private boolean endingSeparator;
+	private boolean endingSeparator;
 
-    protected ExpansionPointGroupMember() {
-        expansionGroupName = DEFAULT_EXPANSION_POINT_NAME;
-    }
+	protected ExpansionPointGroupMember() {
+		expansionGroupName = DEFAULT_EXPANSION_POINT_NAME;
+	}
 
-    protected ExpansionPointGroupMember(String name) {
-        this.expansionGroupName = name;
-    }
+	protected ExpansionPointGroupMember(String name) {
+		this.expansionGroupName = name;
+	}
 
-    public boolean isLeadingSeparator() {
-        return leadingSeparator;
-    }
+	public boolean isLeadingSeparator() {
+		return leadingSeparator;
+	}
 
-    public void setLeadingSeparator(boolean leadingSeparator) {
-        this.leadingSeparator = leadingSeparator;
-    }
+	public void setLeadingSeparator(boolean leadingSeparator) {
+		this.leadingSeparator = leadingSeparator;
+	}
 
-    public boolean isEndingSeparator() {
-        return endingSeparator;
-    }
+	public boolean isEndingSeparator() {
+		return endingSeparator;
+	}
 
-    public void setEndingSeparator(boolean endingSeparator) {
-        this.endingSeparator = endingSeparator;
-    }
+	public void setEndingSeparator(boolean endingSeparator) {
+		this.endingSeparator = endingSeparator;
+	}
 
-    public String getExpansionGroupName() {
-        return expansionGroupName;
-    }
+	public String getExpansionGroupName() {
+		return expansionGroupName;
+	}
 
-    protected void add(GroupMember member) {
-        if (members.add(member)) {
-            member.onAdded();
-        }
-    }
+	protected void add(GroupMember member) {
+		if (members.add(member)) {
+			member.onAdded();
+		}
+	}
 
-    public void remove(GroupMember member) {
-        if (members.remove(member)) {
-            member.onRemoved();
-        }
-    }
+	public void remove(GroupMember member) {
+		if (members.remove(member)) {
+			member.onRemoved();
+		}
+	}
 
-    protected void clear() {
-        members.clear();
-    }
+	protected void clear() {
+		members.clear();
+	}
 
-    protected void fill(GroupContainerPopulator parent, Object factory,
-            CommandButtonConfigurer configurer, List previousButtons) {
-        if (members.size() > 0 && isLeadingSeparator()) {
-            addSeparator(parent);
-        }
+	protected void fill(GroupContainerPopulator parent, Object factory, CommandButtonConfigurer configurer,
+			List previousButtons) {
+		if (members.size() > 0 && isLeadingSeparator()) {
+			addSeparator(parent);
+		}
 
-        for (Iterator iterator = members.iterator(); iterator.hasNext();) {
-            GroupMember member = (GroupMember)iterator.next();
-            member.fill(parent, factory, configurer, previousButtons);
-        }
+		for (Iterator iterator = members.iterator(); iterator.hasNext();) {
+			GroupMember member = (GroupMember)iterator.next();
+			member.fill(parent, factory, configurer, previousButtons);
+		}
 
-        if (members.size() > 0 && isEndingSeparator()) {
-            addSeparator(parent);
-        }
-    }
+		if (members.size() > 0 && isEndingSeparator()) {
+			addSeparator(parent);
+		}
+	}
 
-    public boolean managesCommandDirectly(String commandId) {
-        return getMemberFor(commandId) != null;
-    }
+	public boolean managesCommandDirectly(String commandId) {
+		return getMemberFor(commandId) != null;
+	}
 
-    public GroupMember getMemberFor(String commandId) {
-        for (Iterator it = members.iterator(); it.hasNext();) {
-            GroupMember member = (GroupMember)it.next();
-            if (member.managesCommand(commandId)) { return member; }
-        }
-        return null;
-    }
+	public GroupMember getMemberFor(String commandId) {
+		for (Iterator it = members.iterator(); it.hasNext();) {
+			GroupMember member = (GroupMember)it.next();
+			if (member.managesCommand(commandId)) {
+				return member;
+			}
+		}
+		return null;
+	}
 
-    public boolean managesCommand(String commandId) {
-        for (Iterator iterator = members.iterator(); iterator.hasNext();) {
-            GroupMember member = (GroupMember)iterator.next();
-            if (member.managesCommand(commandId))
-                return true;
-        }
+	public boolean managesCommand(String commandId) {
+		for (Iterator iterator = members.iterator(); iterator.hasNext();) {
+			GroupMember member = (GroupMember)iterator.next();
+			if (member.managesCommand(commandId))
+				return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public boolean isEmpty() {
-        return members.isEmpty();
-    }
+	public boolean isEmpty() {
+		return members.isEmpty();
+	}
 
 }

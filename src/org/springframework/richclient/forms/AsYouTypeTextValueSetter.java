@@ -22,54 +22,52 @@ import javax.swing.text.JTextComponent;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
 
-public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
-        DocumentListener {
+public class AsYouTypeTextValueSetter extends AbstractValueSetter implements DocumentListener {
 
-    private JTextComponent control;
+	private JTextComponent control;
 
-    private boolean settingText;
+	private boolean settingText;
 
-    protected AsYouTypeTextValueSetter(JTextComponent control) {
-        this(control, null);
-    }
+	protected AsYouTypeTextValueSetter(JTextComponent control) {
+		this(control, null);
+	}
 
-    public AsYouTypeTextValueSetter(JTextComponent control,
-            ValueModel valueModel) {
-        super(valueModel);
-        Assert.notNull(control);
-        this.control = control;
-        this.control.getDocument().addDocumentListener(this);
-    }
+	public AsYouTypeTextValueSetter(JTextComponent control, ValueModel valueModel) {
+		super(valueModel);
+		Assert.notNull(control);
+		this.control = control;
+		this.control.getDocument().addDocumentListener(this);
+	}
 
-    public void removeUpdate(DocumentEvent e) {
-        controlTextValueChanged();
-    }
+	public void removeUpdate(DocumentEvent e) {
+		controlTextValueChanged();
+	}
 
-    public void insertUpdate(DocumentEvent e) {
-        controlTextValueChanged();
-    }
+	public void insertUpdate(DocumentEvent e) {
+		controlTextValueChanged();
+	}
 
-    public void changedUpdate(DocumentEvent e) {
-        controlTextValueChanged();
-    }
+	public void changedUpdate(DocumentEvent e) {
+		controlTextValueChanged();
+	}
 
-    private void controlTextValueChanged() {
-        if (!settingText) {
-            componentValueChanged(control.getText());
-        }
-    }
+	private void controlTextValueChanged() {
+		if (!settingText) {
+			componentValueChanged(control.getText());
+		}
+	}
 
-    protected void setControlValue(Object value) {
-        // this try block will coalesce the 2 DocumentEvents that
-        // JTextComponent.setText() fires into 1 call to
-        // componentValueChanged()
-        try {
-            settingText = true;
-            control.setText((String)value);
-        }
-        finally {
-            settingText = false;
-        }
-    }
+	protected void setControlValue(Object value) {
+		// this try block will coalesce the 2 DocumentEvents that
+		// JTextComponent.setText() fires into 1 call to
+		// componentValueChanged()
+		try {
+			settingText = true;
+			control.setText((String)value);
+		}
+		finally {
+			settingText = false;
+		}
+	}
 
 }

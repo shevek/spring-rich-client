@@ -22,20 +22,20 @@ import org.springframework.richclient.application.support.HelpContents;
  * @author Keith Donald
  */
 public class HelpContentsCommand extends ApplicationWindowAwareCommand {
-    private static final String ID = "helpContentsCommand";
+	private static final String ID = "helpContentsCommand";
 
-    private HelpContents helpContents = new HelpContents();
+	private HelpContents helpContents = new HelpContents();
 
-    public HelpContentsCommand() {
-        super(ID);
-    }
+	public HelpContentsCommand() {
+		super(ID);
+	}
 
-    public void setHelpSetPath(Resource path) {
-        this.helpContents.setHelpSetPath(path);
-    }
+	public void setHelpSetPath(Resource path) {
+		this.helpContents.setHelpSetPath(path);
+	}
 
-    protected void doExecuteCommand() {
-        helpContents.display(getApplicationWindow().getControl());
-    }
+	protected void doExecuteCommand() {
+		helpContents.display(getApplicationWindow().getControl());
+	}
 
 }

@@ -16,39 +16,39 @@ import org.springframework.richclient.application.ViewDescriptor;
 
 public class SingleViewPageDescriptor implements PageDescriptor {
 
-    private ViewDescriptor viewDescriptor;
+	private ViewDescriptor viewDescriptor;
 
-    public SingleViewPageDescriptor(ViewDescriptor viewDescriptor) {
-        super();
-        this.viewDescriptor = viewDescriptor;
-    }
+	public SingleViewPageDescriptor(ViewDescriptor viewDescriptor) {
+		super();
+		this.viewDescriptor = viewDescriptor;
+	}
 
-    public String getId() {
-        return viewDescriptor.getId();
-    }
+	public String getId() {
+		return viewDescriptor.getId();
+	}
 
-    public String getDisplayName() {
-        return viewDescriptor.getDisplayName();
-    }
+	public String getDisplayName() {
+		return viewDescriptor.getDisplayName();
+	}
 
-    public String getCaption() {
-        return viewDescriptor.getCaption();
-    }
+	public String getCaption() {
+		return viewDescriptor.getCaption();
+	}
 
-    public String getDescription() {
-        return viewDescriptor.getDescription();
-    }
-    
-    public Icon getIcon() {
-        return viewDescriptor.getIcon();
-    }
-    
-    public Image getImage() {
-        return viewDescriptor.getImage();
-    }
+	public String getDescription() {
+		return viewDescriptor.getDescription();
+	}
 
-    public void buildInitialLayout(PageLayoutBuilder layout) {
-        layout.addView(viewDescriptor.getId());
-    }
+	public Icon getIcon() {
+		return viewDescriptor.getIcon();
+	}
+
+	public Image getImage() {
+		return viewDescriptor.getImage();
+	}
+
+	public void buildInitialLayout(PageLayoutBuilder layout) {
+		layout.addView(viewDescriptor.getId());
+	}
 
 }

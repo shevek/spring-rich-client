@@ -27,26 +27,26 @@ import javax.swing.JTable;
  */
 public class RowIndexColumnCellRenderer extends OptimizedTableCellRenderer {
 
-    public RowIndexColumnCellRenderer() {
-    }
+	public RowIndexColumnCellRenderer() {
+	}
 
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if (isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
-        }
-        else {
-            setForeground(table.getForeground());
-            setBackground(SystemColor.controlHighlight);
-        }
-        if (hasFocus) {
-            setBorder(focusBorder);
-        }
-        else {
-            setBorder(noFocusBorder);
-        }
-        setValue(value);
-        return this;
-    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		if (isSelected) {
+			setForeground(table.getSelectionForeground());
+			setBackground(table.getSelectionBackground());
+		}
+		else {
+			setForeground(table.getForeground());
+			setBackground(SystemColor.controlHighlight);
+		}
+		if (hasFocus) {
+			setBorder(focusBorder);
+		}
+		else {
+			setBorder(noFocusBorder);
+		}
+		setValue(value);
+		return this;
+	}
 }

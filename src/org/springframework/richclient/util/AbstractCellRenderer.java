@@ -32,61 +32,51 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public abstract class AbstractCellRenderer implements TreeCellRenderer,
-        TableCellRenderer, ListCellRenderer {
+public abstract class AbstractCellRenderer implements TreeCellRenderer, TableCellRenderer, ListCellRenderer {
 
-    private TableCellRenderer tableCellRenderer;
+	private TableCellRenderer tableCellRenderer;
 
-    private ListCellRenderer listCellRenderer;
+	private ListCellRenderer listCellRenderer;
 
-    private TreeCellRenderer treeCellRenderer;
+	private TreeCellRenderer treeCellRenderer;
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-            boolean selected, boolean expanded, boolean leaf, int row,
-            boolean hasFocus) {
-        if (treeCellRenderer == null) {
-            this.treeCellRenderer = createTreeCellRenderer();
-            Assert
-                    .notNull(this.treeCellRenderer,
-                            "Cell renderer implementation has not been configured for trees?");
-        }
-        return treeCellRenderer.getTreeCellRendererComponent(tree, value,
-                selected, expanded, leaf, row, hasFocus);
-    }
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+			boolean leaf, int row, boolean hasFocus) {
+		if (treeCellRenderer == null) {
+			this.treeCellRenderer = createTreeCellRenderer();
+			Assert.notNull(this.treeCellRenderer, "Cell renderer implementation has not been configured for trees?");
+		}
+		return treeCellRenderer.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+	}
 
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if (tableCellRenderer == null) {
-            this.tableCellRenderer = createTableCellRenderer();
-            Assert
-                    .notNull(this.tableCellRenderer,
-                            "Cell renderer implementation has not been configured for tables?");
-        }
-        return tableCellRenderer.getTableCellRendererComponent(table, value,
-                isSelected, hasFocus, row, column);
-    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		if (tableCellRenderer == null) {
+			this.tableCellRenderer = createTableCellRenderer();
+			Assert.notNull(this.tableCellRenderer, "Cell renderer implementation has not been configured for tables?");
+		}
+		return tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	}
 
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
-        if (listCellRenderer == null) {
-            this.listCellRenderer = createListCellRenderer();
-            Assert.notNull(this.listCellRenderer,
-                    "Cell renderer has not been configured for lists?");
-        }
-        return listCellRenderer.getListCellRendererComponent(list, value,
-                index, isSelected, cellHasFocus);
-    }
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+			boolean cellHasFocus) {
+		if (listCellRenderer == null) {
+			this.listCellRenderer = createListCellRenderer();
+			Assert.notNull(this.listCellRenderer, "Cell renderer has not been configured for lists?");
+		}
+		return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+	}
 
-    protected ListCellRenderer createListCellRenderer() {
-        return null;
-    }
+	protected ListCellRenderer createListCellRenderer() {
+		return null;
+	}
 
-    protected TableCellRenderer createTableCellRenderer() {
-        return null;
-    }
+	protected TableCellRenderer createTableCellRenderer() {
+		return null;
+	}
 
-    protected TreeCellRenderer createTreeCellRenderer() {
-        return null;
-    }
+	protected TreeCellRenderer createTreeCellRenderer() {
+		return null;
+	}
 
 }

@@ -21,26 +21,24 @@ import java.beans.PropertyEditor;
 
 import org.springframework.binding.value.ValueModel;
 
-public class PropertyEditorValueSetter extends AbstractValueSetter implements
-        PropertyChangeListener {
-    private PropertyEditor propertyEditor;
+public class PropertyEditorValueSetter extends AbstractValueSetter implements PropertyChangeListener {
+	private PropertyEditor propertyEditor;
 
-    public PropertyEditorValueSetter(PropertyEditor propertyEditor,
-            ValueModel valueModel) {
-        super(valueModel);
-        this.propertyEditor = propertyEditor;
-        this.propertyEditor.addPropertyChangeListener(this);
-    }
+	public PropertyEditorValueSetter(PropertyEditor propertyEditor, ValueModel valueModel) {
+		super(valueModel);
+		this.propertyEditor = propertyEditor;
+		this.propertyEditor.addPropertyChangeListener(this);
+	}
 
-    protected void setControlValue(Object value) {
-        propertyEditor.setValue(value);
-    }
+	protected void setControlValue(Object value) {
+		propertyEditor.setValue(value);
+	}
 
-    public void dispose() {
-        this.propertyEditor.removePropertyChangeListener(this);
-    }
+	public void dispose() {
+		this.propertyEditor.removePropertyChangeListener(this);
+	}
 
-    public void propertyChange(PropertyChangeEvent event) {
-        componentValueChanged(propertyEditor.getValue());
-    }
+	public void propertyChange(PropertyChangeEvent event) {
+		componentValueChanged(propertyEditor.getValue());
+	}
 }

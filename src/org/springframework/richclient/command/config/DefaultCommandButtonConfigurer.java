@@ -24,12 +24,11 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
-    public void configure(AbstractButton button, AbstractCommand command,
-            CommandFaceDescriptor faceDescriptor) {
-        Assert.notNull(button, "The button to configure cannot be null.");
-        Assert.notNull(faceDescriptor, "The command face descriptor cannot be null.");
-        faceDescriptor.configureLabel(button);
-        faceDescriptor.configureIcon(button);
-        button.setToolTipText(faceDescriptor.getCaption());
-    }
+	public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
+		Assert.notNull(button, "The button to configure cannot be null.");
+		Assert.notNull(faceDescriptor, "The command face descriptor cannot be null.");
+		faceDescriptor.configureLabel(button);
+		faceDescriptor.configureIcon(button);
+		button.setToolTipText(faceDescriptor.getCaption());
+	}
 }

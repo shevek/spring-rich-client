@@ -21,113 +21,112 @@ package org.springframework.richclient.text;
  * @author Keith Donald
  */
 public abstract class TimeFormat {
-    private static final TimeFormat daysInstance = new TimeFormat() {
-        public String format(long time) {
-            int totalSeconds = (int)time / 1000;
-            int days = totalSeconds / 86400;
-            int dSecs = days * 86400;
+	private static final TimeFormat daysInstance = new TimeFormat() {
+		public String format(long time) {
+			int totalSeconds = (int)time / 1000;
+			int days = totalSeconds / 86400;
+			int dSecs = days * 86400;
 
-            int hours = (totalSeconds - dSecs) / 3600;
-            int hSecs = hours * 3600;
+			int hours = (totalSeconds - dSecs) / 3600;
+			int hSecs = hours * 3600;
 
-            int minutes = (totalSeconds - dSecs - hSecs) / 60;
-            int mSecs = minutes * 60;
+			int minutes = (totalSeconds - dSecs - hSecs) / 60;
+			int mSecs = minutes * 60;
 
-            int seconds = totalSeconds - dSecs - hSecs - mSecs;
+			int seconds = totalSeconds - dSecs - hSecs - mSecs;
 
-            StringBuffer buf = new StringBuffer();
-            if (days > 0) {
-                buf.append(days);
-                buf.append("d ");
-            }
-            buf.append(hours);
-            buf.append("h ");
-            buf.append(minutes);
-            buf.append("m ");
-            buf.append(seconds);
-            buf.append("s");
-            return buf.toString();
-        }
-    };
+			StringBuffer buf = new StringBuffer();
+			if (days > 0) {
+				buf.append(days);
+				buf.append("d ");
+			}
+			buf.append(hours);
+			buf.append("h ");
+			buf.append(minutes);
+			buf.append("m ");
+			buf.append(seconds);
+			buf.append("s");
+			return buf.toString();
+		}
+	};
 
-    private static final TimeFormat millisecondsInstance = new TimeFormat() {
-        public String format(long time) {
-            int totalSeconds = (int)time / 1000;
-            int days = totalSeconds / 86400;
-            int dSecs = days * 86400;
+	private static final TimeFormat millisecondsInstance = new TimeFormat() {
+		public String format(long time) {
+			int totalSeconds = (int)time / 1000;
+			int days = totalSeconds / 86400;
+			int dSecs = days * 86400;
 
-            int hours = (totalSeconds - dSecs) / 3600;
-            int hSecs = hours * 3600;
+			int hours = (totalSeconds - dSecs) / 3600;
+			int hSecs = hours * 3600;
 
-            int minutes = (totalSeconds - dSecs - hSecs) / 60;
-            int mSecs = minutes * 60;
+			int minutes = (totalSeconds - dSecs - hSecs) / 60;
+			int mSecs = minutes * 60;
 
-            int seconds = totalSeconds - dSecs - hSecs - mSecs;
+			int seconds = totalSeconds - dSecs - hSecs - mSecs;
 
-            long milliseconds = time - dSecs * 1000 - hSecs * 1000 - mSecs
-                    * 1000 - seconds * 1000;
+			long milliseconds = time - dSecs * 1000 - hSecs * 1000 - mSecs * 1000 - seconds * 1000;
 
-            StringBuffer buf = new StringBuffer();
-            if (days > 0) {
-                buf.append(days);
-                buf.append("d ");
-            }
-            if (hours > 0) {
-                buf.append(hours);
-                buf.append("h ");
-            }
-            if (minutes > 0) {
-                buf.append(minutes);
-                buf.append("m ");
-            }
-            if (seconds > 0) {
-                buf.append(seconds);
-                buf.append("s ");
-            }
-            if (milliseconds > 0) {
-                buf.append(milliseconds);
-                buf.append("ms");
-            }
-            if (buf.length() == 0) {
-                return "0";
-            }
-            else {
-                return buf.toString();
-            }
-        }
-    };
+			StringBuffer buf = new StringBuffer();
+			if (days > 0) {
+				buf.append(days);
+				buf.append("d ");
+			}
+			if (hours > 0) {
+				buf.append(hours);
+				buf.append("h ");
+			}
+			if (minutes > 0) {
+				buf.append(minutes);
+				buf.append("m ");
+			}
+			if (seconds > 0) {
+				buf.append(seconds);
+				buf.append("s ");
+			}
+			if (milliseconds > 0) {
+				buf.append(milliseconds);
+				buf.append("ms");
+			}
+			if (buf.length() == 0) {
+				return "0";
+			}
+			else {
+				return buf.toString();
+			}
+		}
+	};
 
-    /**
-     * Returns a standard TimeFormat that formats using days, hours, minutes,
-     * and seconds.
-     * <p>
-     * The format looks like: 5d 23h 12m 52s.
-     * 
-     * @return The daysInstance TimeFormatter.
-     */
-    public static synchronized TimeFormat getDaysInstance() {
-        return daysInstance;
-    }
+	/**
+	 * Returns a standard TimeFormat that formats using days, hours, minutes,
+	 * and seconds.
+	 * <p>
+	 * The format looks like: 5d 23h 12m 52s.
+	 * 
+	 * @return The daysInstance TimeFormatter.
+	 */
+	public static synchronized TimeFormat getDaysInstance() {
+		return daysInstance;
+	}
 
-    /**
-     * Returns a TimeFormat that formats using days, hours, minutes, seconds,
-     * and milliseconds.
-     * <p>
-     * The format looks like: 5d 23h 12m 52s 10ms.
-     * 
-     * @return The millisecondsInstance TimeFormatter.
-     */
-    public static synchronized TimeFormat getMillisecondsInstance() {
-        return millisecondsInstance;
-    }
+	/**
+	 * Returns a TimeFormat that formats using days, hours, minutes, seconds,
+	 * and milliseconds.
+	 * <p>
+	 * The format looks like: 5d 23h 12m 52s 10ms.
+	 * 
+	 * @return The millisecondsInstance TimeFormatter.
+	 */
+	public static synchronized TimeFormat getMillisecondsInstance() {
+		return millisecondsInstance;
+	}
 
-    /**
-     * Returns a formatted time string for the specified time period.
-     * 
-     * @param time
-     *            the time period.
-     * @return The formatted time string.
-     */
-    public abstract String format(long time);
+	/**
+	 * Returns a formatted time string for the specified time period.
+	 * 
+	 * @param time
+	 *            the time period.
+	 * @return The formatted time string.
+	 */
+	public abstract String format(long time);
 
 }

@@ -20,9 +20,8 @@ import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.ControlFactory;
 
-public interface PageComponent extends PropertyChangePublisher,
-        DescribedElement, VisualizedElement, ControlFactory {
-    public PageComponentContext getContext();
-    
-    public void dispose();
+public interface PageComponent extends PropertyChangePublisher, DescribedElement, VisualizedElement, ControlFactory {
+	public PageComponentContext getContext();
+
+	public void dispose();
 }

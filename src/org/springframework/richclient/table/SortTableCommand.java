@@ -31,54 +31,51 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class SortTableCommand extends ActionCommand implements Observer {
-    private JTable table;
+	private JTable table;
 
-    private SortableTableModel sortableTableModel;
+	private SortableTableModel sortableTableModel;
 
-    private ColumnSortList sortList;
+	private ColumnSortList sortList;
 
-    public SortTableCommand(JTable table, ColumnSortList sortList) {
-        super("sortCommand");
-        this.table = table;
-        Assert.isTrue((table.getModel() instanceof SortableTableModel),
-                "The specified table's model must be sortable!");
-        this.sortableTableModel = (SortableTableModel)table.getModel();
-        this.sortList = sortList;
-        this.sortList.addObserver(this);
-    }
+	public SortTableCommand(JTable table, ColumnSortList sortList) {
+		super("sortCommand");
+		this.table = table;
+		Assert.isTrue((table.getModel() instanceof SortableTableModel), "The specified table's model must be sortable!");
+		this.sortableTableModel = (SortableTableModel)table.getModel();
+		this.sortList = sortList;
+		this.sortList.addObserver(this);
+	}
 
-    public void update(Observable o, Object args) {
-        doSort();
-    }
+	public void update(Observable o, Object args) {
+		doSort();
+	}
 
-    protected void doExecuteCommand() {
-        doSort();
-    }
+	protected void doExecuteCommand() {
+		doSort();
+	}
 
-    private void doSort() {
-        try {
-            BusyIndicator.showAt(table);
+	private void doSort() {
+		try {
+			BusyIndicator.showAt(table);
 
-            final int[] preSortSelectedRows = table.getSelectedRows();
+			final int[] preSortSelectedRows = table.getSelectedRows();
 
-            int[] postSortSelectedRows = sortableTableModel.sortByColumns(
-                    sortList.getSortLevels(), preSortSelectedRows);
+			int[] postSortSelectedRows = sortableTableModel.sortByColumns(sortList.getSortLevels(), preSortSelectedRows);
 
-            for (int i = 0; i < postSortSelectedRows.length; i++) {
-                table.addRowSelectionInterval(postSortSelectedRows[i],
-                        postSortSelectedRows[i]);
-            }
+			for (int i = 0; i < postSortSelectedRows.length; i++) {
+				table.addRowSelectionInterval(postSortSelectedRows[i], postSortSelectedRows[i]);
+			}
 
-            if (postSortSelectedRows.length > 0) {
-                TableUtils.scrollToRow(table, postSortSelectedRows[0]);
-            }
-        }
-        finally {
-            BusyIndicator.clearAt(table);
-        }
-    }
+			if (postSortSelectedRows.length > 0) {
+				TableUtils.scrollToRow(table, postSortSelectedRows[0]);
+			}
+		}
+		finally {
+			BusyIndicator.clearAt(table);
+		}
+	}
 
-    public void dispose() {
-        this.sortList.deleteObserver(this);
-    }
+	public void dispose() {
+		this.sortList.deleteObserver(this);
+	}
 }

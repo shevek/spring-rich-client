@@ -23,5 +23,5 @@ import org.springframework.richclient.factory.LabelInfo;
  * @author Keith Donald
  */
 public interface LabelConfigurable {
-    public void setLabelInfo(LabelInfo label);
+	public void setLabelInfo(LabelInfo label);
 }

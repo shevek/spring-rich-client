@@ -28,5 +28,5 @@ import org.springframework.binding.value.IndexAdapter;
  * @author Keith Donald
  */
 public interface ObservableList extends List, ListModel {
-    public IndexAdapter getIndexAdapter(int index);
+	public IndexAdapter getIndexAdapter(int index);
 }

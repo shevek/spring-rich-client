@@ -25,46 +25,46 @@ import org.springframework.rules.reporting.Severity;
  */
 public interface MessageAreaModel {
 
-    /**
-     * Set the message text. If the message line currently displays an error,
-     * the message is stored and will be shown after a call to
-     * setErrorMessage(null)
-     */
-    public void setMessage(String newMessage);
+	/**
+	 * Set the message text. If the message line currently displays an error,
+	 * the message is stored and will be shown after a call to
+	 * setErrorMessage(null)
+	 */
+	public void setMessage(String newMessage);
 
-    /**
-     * Display the given error message. The currently displayed message is saved
-     * and will be redisplayed when the error message is set to
-     * <code>null</code>.
-     * 
-     * @param errorMessage
-     *            the errorMessage to display or <code>null</code> to clear
-     */
-    public void setErrorMessage(String errorMessage);
+	/**
+	 * Display the given error message. The currently displayed message is saved
+	 * and will be redisplayed when the error message is set to
+	 * <code>null</code>.
+	 * 
+	 * @param errorMessage
+	 *            the errorMessage to display or <code>null</code> to clear
+	 */
+	public void setErrorMessage(String errorMessage);
 
-    /**
-     * Display the given error message of the provided severity.
-     * 
-     * @param newMessage
-     * @param severity
-     */
-    public void setMessage(String newMessage, Severity severity);
+	/**
+	 * Display the given error message of the provided severity.
+	 * 
+	 * @param newMessage
+	 * @param severity
+	 */
+	public void setMessage(String newMessage, Severity severity);
 
-    /**
-     * Adds the specified message listener to receive events from this
-     * MessageReceiver whenever messages are updated.
-     * 
-     * @param listener
-     *            the MessageListener to be added
-     */
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener);
+	/**
+	 * Adds the specified message listener to receive events from this
+	 * MessageReceiver whenever messages are updated.
+	 * 
+	 * @param listener
+	 *            the MessageListener to be added
+	 */
+	public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener);
 
-    /**
-     * Removes the specified message listener
-     * 
-     * @param listener
-     *            the MessageListener to be removed
-     */
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener);
+	/**
+	 * Removes the specified message listener
+	 * 
+	 * @param listener
+	 *            the MessageListener to be removed
+	 */
+	public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener);
 
 }

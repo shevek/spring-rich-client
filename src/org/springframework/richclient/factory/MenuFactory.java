@@ -18,16 +18,16 @@ import javax.swing.JRadioButtonMenuItem;
  * @author Keith Donald
  */
 public interface MenuFactory {
-    public JMenu createMenu();
+	public JMenu createMenu();
 
-    public JMenuItem createMenuItem();
+	public JMenuItem createMenuItem();
 
-    public JCheckBoxMenuItem createCheckBoxMenuItem();
+	public JCheckBoxMenuItem createCheckBoxMenuItem();
 
-    public JRadioButtonMenuItem createRadioButtonMenuItem();
+	public JRadioButtonMenuItem createRadioButtonMenuItem();
 
-    public JPopupMenu createPopupMenu();
-    
-    public JMenuBar createMenuBar();
+	public JPopupMenu createPopupMenu();
+
+	public JMenuBar createMenuBar();
 
 }

@@ -36,185 +36,184 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
-public abstract class ActionCommand extends AbstractCommand implements
-        ActionCommandExecutor, ParameterizableActionCommandExecutor {
-    public static final String ACTION_COMMAND_PROPERTY = "actionCommand";
+public abstract class ActionCommand extends AbstractCommand implements ActionCommandExecutor,
+		ParameterizableActionCommandExecutor {
+	public static final String ACTION_COMMAND_PROPERTY = "actionCommand";
 
-    public static final String ACTION_EVENT_PARAMETER_KEY = "actionEvent";
+	public static final String ACTION_EVENT_PARAMETER_KEY = "actionEvent";
 
-    public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
+	public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
 
-    private static final String ELLIPSES = "...";
+	private static final String ELLIPSES = "...";
 
-    private List commandInterceptors;
+	private List commandInterceptors;
 
-    private String actionCommand;
+	private String actionCommand;
 
-    private SwingActionAdapter swingActionAdapter;
+	private SwingActionAdapter swingActionAdapter;
 
-    private Map parameters = new HashMap(6);
+	private Map parameters = new HashMap(6);
 
-    private boolean displaysInputDialog;
+	private boolean displaysInputDialog;
 
-    public ActionCommand() {
-        super();
-    }
+	public ActionCommand() {
+		super();
+	}
 
-    public ActionCommand(String commandId) {
-        super(commandId);
-    }
+	public ActionCommand(String commandId) {
+		super(commandId);
+	}
 
-    public ActionCommand(String id, CommandFaceDescriptor face) {
-        super(id, face);
-    }
+	public ActionCommand(String id, CommandFaceDescriptor face) {
+		super(id, face);
+	}
 
-    public ActionCommand(String id, String encodedLabel) {
-        super(id, encodedLabel);
-    }
+	public ActionCommand(String id, String encodedLabel) {
+		super(id, encodedLabel);
+	}
 
-    public ActionCommand(String id, String encodedLabel, Icon icon,
-            String caption) {
-        super(id, encodedLabel, icon, caption);
-    }
+	public ActionCommand(String id, String encodedLabel, Icon icon, String caption) {
+		super(id, encodedLabel, icon, caption);
+	}
 
-    public void addParameter(Object key, Object value) {
-        parameters.put(key, value);
-    }
+	public void addParameter(Object key, Object value) {
+		parameters.put(key, value);
+	}
 
-    protected Object getParameter(Object key) {
-        return parameters.get(key);
-    }
+	protected Object getParameter(Object key) {
+		return parameters.get(key);
+	}
 
-    protected Map getParameters() {
-        return Collections.unmodifiableMap(parameters);
-    }
+	protected Map getParameters() {
+		return Collections.unmodifiableMap(parameters);
+	}
 
-    protected Object getParameter(Object key, Object defaultValue) {
-        Object value = parameters.get(key);
-        return value != null ? value : defaultValue;
-    }
+	protected Object getParameter(Object key, Object defaultValue) {
+		Object value = parameters.get(key);
+		return value != null ? value : defaultValue;
+	}
 
-    public void addCommandInterceptor(ActionCommandInterceptor l) {
-        if (commandInterceptors == null) {
-            commandInterceptors = new ArrayList(6);
-        }
-        commandInterceptors.add(l);
-    }
+	public void addCommandInterceptor(ActionCommandInterceptor l) {
+		if (commandInterceptors == null) {
+			commandInterceptors = new ArrayList(6);
+		}
+		commandInterceptors.add(l);
+	}
 
-    public void removeCommandInterceptor(ActionCommandInterceptor l) {
-        Assert.notNull(commandInterceptors,
-                "The command interceptors list has not yet been initialized");
-        commandInterceptors.remove(l);
-    }
+	public void removeCommandInterceptor(ActionCommandInterceptor l) {
+		Assert.notNull(commandInterceptors, "The command interceptors list has not yet been initialized");
+		commandInterceptors.remove(l);
+	}
 
-    protected void onButtonAttached(AbstractButton button) {
-        super.onButtonAttached(button);
-        button.setActionCommand(actionCommand);
-        button.addActionListener(actionPerformedHandler);
-        if (displaysInputDialog) {
-            if (!button.getText().endsWith(ELLIPSES)) {
-                button.setText(getText() + ELLIPSES);
-            }
-        }
-    }
+	protected void onButtonAttached(AbstractButton button) {
+		super.onButtonAttached(button);
+		button.setActionCommand(actionCommand);
+		button.addActionListener(actionPerformedHandler);
+		if (displaysInputDialog) {
+			if (!button.getText().endsWith(ELLIPSES)) {
+				button.setText(getText() + ELLIPSES);
+			}
+		}
+	}
 
-    ActionListener actionPerformedHandler = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            addParameter(ACTION_EVENT_PARAMETER_KEY, e);
-            addParameter(MODIFIERS_PARAMETER_KEY, new Integer(e.getModifiers()));
-            execute();
-        }
-    };
+	ActionListener actionPerformedHandler = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			addParameter(ACTION_EVENT_PARAMETER_KEY, e);
+			addParameter(MODIFIERS_PARAMETER_KEY, new Integer(e.getModifiers()));
+			execute();
+		}
+	};
 
-    protected int getModifiers() {
-        return ((Integer)getParameter(MODIFIERS_PARAMETER_KEY, new Integer(0)))
-                .intValue();
-    }
+	protected int getModifiers() {
+		return ((Integer)getParameter(MODIFIERS_PARAMETER_KEY, new Integer(0))).intValue();
+	}
 
-    public Action getActionAdapter() {
-        if (swingActionAdapter == null) {
-            this.swingActionAdapter = new SwingActionAdapter(this);
-        }
-        return swingActionAdapter;
-    }
+	public Action getActionAdapter() {
+		if (swingActionAdapter == null) {
+			this.swingActionAdapter = new SwingActionAdapter(this);
+		}
+		return swingActionAdapter;
+	}
 
-    public String getActionCommand() {
-        return actionCommand;
-    }
+	public String getActionCommand() {
+		return actionCommand;
+	}
 
-    public void setActionCommand(String newCommandName) {
-        if (!ObjectUtils.nullSafeEquals(actionCommand, newCommandName)) {
-            String old = actionCommand;
-            actionCommand = newCommandName;
-            Iterator iter = buttonIterator();
-            while (iter.hasNext()) {
-                AbstractButton button = (AbstractButton)iter.next();
-                button.setActionCommand(actionCommand);
-            }
-            firePropertyChange(ACTION_COMMAND_PROPERTY, old, newCommandName);
-        }
-    }
+	public void setActionCommand(String newCommandName) {
+		if (!ObjectUtils.nullSafeEquals(actionCommand, newCommandName)) {
+			String old = actionCommand;
+			actionCommand = newCommandName;
+			Iterator iter = buttonIterator();
+			while (iter.hasNext()) {
+				AbstractButton button = (AbstractButton)iter.next();
+				button.setActionCommand(actionCommand);
+			}
+			firePropertyChange(ACTION_COMMAND_PROPERTY, old, newCommandName);
+		}
+	}
 
-    public void setDefaultButtonIn(RootPaneContainer container) {
-        JRootPane rootPane = container.getRootPane();
-        JButton button = (JButton)getButtonIn(rootPane);
-        if (button != null) {
-            rootPane.setDefaultButton(button);
-        }
-    }
+	public void setDefaultButtonIn(RootPaneContainer container) {
+		JRootPane rootPane = container.getRootPane();
+		JButton button = (JButton)getButtonIn(rootPane);
+		if (button != null) {
+			rootPane.setDefaultButton(button);
+		}
+	}
 
-    public void setDefaultButton() {
-        Iterator it = buttonIterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o instanceof JButton) {
-                JButton button = (JButton)o;
-                JRootPane pane = SwingUtilities.getRootPane(button);
-                if (pane != null) {
-                    pane.setDefaultButton(button);
-                }
-            }
-        }
-    }
+	public void setDefaultButton() {
+		Iterator it = buttonIterator();
+		while (it.hasNext()) {
+			Object o = it.next();
+			if (o instanceof JButton) {
+				JButton button = (JButton)o;
+				JRootPane pane = SwingUtilities.getRootPane(button);
+				if (pane != null) {
+					pane.setDefaultButton(button);
+				}
+			}
+		}
+	}
 
-    public void setDisplaysInputDialog(boolean displaysInputDialog) {
-        this.displaysInputDialog = displaysInputDialog;
-    }
+	public void setDisplaysInputDialog(boolean displaysInputDialog) {
+		this.displaysInputDialog = displaysInputDialog;
+	}
 
-    public final void execute(Map parameters) {
-        this.parameters.putAll(parameters);
-        execute();
-    }
+	public final void execute(Map parameters) {
+		this.parameters.putAll(parameters);
+		execute();
+	}
 
-    public final void execute() {
-        if (onPreExecute()) {
-            doExecuteCommand();
-            onPostExecute();
-        }
-        parameters.clear();
-    }
+	public final void execute() {
+		if (onPreExecute()) {
+			doExecuteCommand();
+			onPostExecute();
+		}
+		parameters.clear();
+	}
 
-    protected final boolean onPreExecute() {
-        if (commandInterceptors == null) { return true; }
-        for (Iterator iterator = commandInterceptors.iterator(); iterator
-                .hasNext();) {
-            ActionCommandInterceptor listener = (ActionCommandInterceptor)iterator
-                    .next();
-            if (!listener.preExecution(this)) { return false; }
-        }
-        return true;
-    }
+	protected final boolean onPreExecute() {
+		if (commandInterceptors == null) {
+			return true;
+		}
+		for (Iterator iterator = commandInterceptors.iterator(); iterator.hasNext();) {
+			ActionCommandInterceptor listener = (ActionCommandInterceptor)iterator.next();
+			if (!listener.preExecution(this)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    protected abstract void doExecuteCommand();
+	protected abstract void doExecuteCommand();
 
-    protected final void onPostExecute() {
-        if (commandInterceptors == null) { return; }
-        for (Iterator iterator = commandInterceptors.iterator(); iterator
-                .hasNext();) {
-            ActionCommandInterceptor interceptor = (ActionCommandInterceptor)iterator
-                    .next();
-            interceptor.postExecution(this);
-        }
-    }
+	protected final void onPostExecute() {
+		if (commandInterceptors == null) {
+			return;
+		}
+		for (Iterator iterator = commandInterceptors.iterator(); iterator.hasNext();) {
+			ActionCommandInterceptor interceptor = (ActionCommandInterceptor)iterator.next();
+			interceptor.postExecution(this);
+		}
+	}
 
 }

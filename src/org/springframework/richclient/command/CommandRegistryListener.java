@@ -18,5 +18,5 @@ package org.springframework.richclient.command;
 import java.util.EventListener;
 
 public interface CommandRegistryListener extends EventListener {
-    public void commandRegistered(CommandRegistryEvent event);
+	public void commandRegistered(CommandRegistryEvent event);
 }

@@ -26,64 +26,60 @@ import org.springframework.binding.value.ValueModel;
  * @author Keith Donald
  */
 public interface FormModel extends PropertyChangePublisher {
-    public static final String ENABLED_PROPERTY = "enabled";
+	public static final String ENABLED_PROPERTY = "enabled";
 
-    public static final String DIRTY_PROPERTY = "dirty";
+	public static final String DIRTY_PROPERTY = "dirty";
 
-    public Object getFormObject();
+	public Object getFormObject();
 
-    public void setFormObject(Object formObject);
+	public void setFormObject(Object formObject);
 
-    public ValueModel getFormObjectHolder();
+	public ValueModel getFormObjectHolder();
 
-    public ValueModel getDisplayValueModel(String formPropertyPath);
+	public ValueModel getDisplayValueModel(String formPropertyPath);
 
-    public ValueModel getValueModel(String formPropertyPath);
+	public ValueModel getValueModel(String formPropertyPath);
 
-    public String getDisplayValue(String formPropertyPath);
+	public String getDisplayValue(String formPropertyPath);
 
-    public Object getValue(String formPropertyPath);
+	public Object getValue(String formPropertyPath);
 
-    public Map getErrors();
+	public Map getErrors();
 
-    public boolean getHasErrors();
+	public boolean getHasErrors();
 
-    public boolean getBufferChangesDefault();
+	public boolean getBufferChangesDefault();
 
-    public boolean isDirty();
+	public boolean isDirty();
 
-    public boolean isEnabled();
+	public boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+	public void setEnabled(boolean enabled);
 
-    public void commit();
+	public void commit();
 
-    public void revert();
+	public void revert();
 
-    public void reset();
+	public void reset();
 
-    public void addFormObjectChangeListener(ValueChangeListener listener);
+	public void addFormObjectChangeListener(ValueChangeListener listener);
 
-    public void removeFormObjectChangeListener(ValueChangeListener listener);
+	public void removeFormObjectChangeListener(ValueChangeListener listener);
 
-    public void addFormValueChangeListener(String formPropertyPath,
-            ValueChangeListener listener);
+	public void addFormValueChangeListener(String formPropertyPath, ValueChangeListener listener);
 
-    public void removeFormValueChangeListener(String formPropertyPath,
-            ValueChangeListener listener);
+	public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener);
 
-    public void addFormPropertyChangeListener(String formPropertyPath,
-            PropertyChangeListener listener);
+	public void addFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener);
 
-    public void removeFormPropertyChangeListener(String formPropertyPath,
-            PropertyChangeListener listener);
+	public void removeFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener);
 
-    public void addValidationListener(ValidationListener listener);
+	public void addValidationListener(ValidationListener listener);
 
-    public void removeValidationListener(ValidationListener listener);
+	public void removeValidationListener(ValidationListener listener);
 
-    public void addCommitListener(CommitListener listener);
+	public void addCommitListener(CommitListener listener);
 
-    public void removeCommitListener(CommitListener listener);
+	public void removeCommitListener(CommitListener listener);
 
 }

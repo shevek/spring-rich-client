@@ -22,7 +22,7 @@ package org.springframework.richclient.core;
  * @author Keith Donald
  */
 public interface Guarded {
-    public boolean isEnabled();
+	public boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+	public void setEnabled(boolean enabled);
 }

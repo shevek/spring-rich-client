@@ -23,34 +23,33 @@ import javax.swing.AbstractAction;
 
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 
-public class SwingActionAdapter extends AbstractAction implements
-        PropertyChangeListener {
-    private ActionCommand command;
+public class SwingActionAdapter extends AbstractAction implements PropertyChangeListener {
+	private ActionCommand command;
 
-    private String faceId;
+	private String faceId;
 
-    protected SwingActionAdapter(ActionCommand command) {
-        super();
-        this.command = command;
-        command.addPropertyChangeListener(this);
-        update();
-    }
+	protected SwingActionAdapter(ActionCommand command) {
+		super();
+		this.command = command;
+		command.addPropertyChangeListener(this);
+		update();
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        command.actionPerformedHandler.actionPerformed(e);
-    }
+	public void actionPerformed(ActionEvent e) {
+		command.actionPerformedHandler.actionPerformed(e);
+	}
 
-    public void propertyChange(PropertyChangeEvent evt) {
-        update();
-    }
+	public void propertyChange(PropertyChangeEvent evt) {
+		update();
+	}
 
-    protected void update() {
-        putValue(AbstractAction.ACTION_COMMAND_KEY, command.getActionCommand());
-        CommandFaceDescriptor face = command.getFaceDescriptor();
-        if (face != null) {
-            face.configure(this);
-        }
-        setEnabled(command.isEnabled());
-    }
+	protected void update() {
+		putValue(AbstractAction.ACTION_COMMAND_KEY, command.getActionCommand());
+		CommandFaceDescriptor face = command.getFaceDescriptor();
+		if (face != null) {
+			face.configure(this);
+		}
+		setEnabled(command.isEnabled());
+	}
 
 }

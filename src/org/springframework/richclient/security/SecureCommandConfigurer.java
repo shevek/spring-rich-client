@@ -26,36 +26,34 @@ import org.springframework.context.ApplicationListener;
  * @author Ben Alex
  */
 public class SecureCommandConfigurer implements ApplicationListener {
-    protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        // TODO: Add RCP-specific events (such as new page loaded/refreshed)
-        if (event instanceof LoginEvent || event instanceof LogoutEvent) {
-            updateActions();
-        }
-    }
+	public void onApplicationEvent(ApplicationEvent event) {
+		// TODO: Add RCP-specific events (such as new page loaded/refreshed)
+		if (event instanceof LoginEvent || event instanceof LogoutEvent) {
+			updateActions();
+		}
+	}
 
-    private void updateActions() {
-        GrantedAuthority[] granted = null;
-        if (ContextHolder.getContext() != null
-                && ContextHolder.getContext() instanceof SecureContext) {
-            SecureContext secureContext = (SecureContext)ContextHolder
-                    .getContext();
-            if (secureContext.getAuthentication() != null)
-                granted = secureContext.getAuthentication().getAuthorities();
-        }
+	private void updateActions() {
+		GrantedAuthority[] granted = null;
+		if (ContextHolder.getContext() != null && ContextHolder.getContext() instanceof SecureContext) {
+			SecureContext secureContext = (SecureContext)ContextHolder.getContext();
+			if (secureContext.getAuthentication() != null)
+				granted = secureContext.getAuthentication().getAuthorities();
+		}
 
-        if (logger.isInfoEnabled()) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("Updating commands using granted authorities: ");
-            if (granted != null) {
-                for (int i = 0; i < granted.length; i++) {
-                    sb.append(granted[i].toString()).append("; ");
-                }
-            }
-            logger.info(sb.toString());
-        }
+		if (logger.isInfoEnabled()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Updating commands using granted authorities: ");
+			if (granted != null) {
+				for (int i = 0; i < granted.length; i++) {
+					sb.append(granted[i].toString()).append("; ");
+				}
+			}
+			logger.info(sb.toString());
+		}
 
-        // TODO: Update the commands....
-    }
+		// TODO: Update the commands....
+	}
 }

@@ -66,279 +66,267 @@ import org.springframework.util.FileCopyUtils;
  */
 public class AboutBox {
 
-    private ApplicationDescriptor applicationInfo;
+	private ApplicationDescriptor applicationInfo;
 
-    private Resource aboutTextPath;
+	private Resource aboutTextPath;
 
-    public AboutBox() {
-    }
+	public AboutBox() {
+	}
 
-    public void setAboutTextPath(Resource path) {
-        this.aboutTextPath = path;
-    }
+	public void setAboutTextPath(Resource path) {
+		this.aboutTextPath = path;
+	}
 
-    protected String getApplicationName() {
-        return Application.instance().getName();
-    }
+	protected String getApplicationName() {
+		return Application.instance().getName();
+	}
 
-    public void display(Window parent) {
-        AboutDialog aboutMainDialog = new AboutDialog();
-        aboutMainDialog.setParent(parent);
-        aboutMainDialog.showDialog();
-    }
+	public void display(Window parent) {
+		AboutDialog aboutMainDialog = new AboutDialog();
+		aboutMainDialog.setParent(parent);
+		aboutMainDialog.showDialog();
+	}
 
-    private class AboutDialog extends ApplicationDialog {
+	private class AboutDialog extends ApplicationDialog {
 
-        private HtmlScroller scroller;
+		private HtmlScroller scroller;
 
-        public AboutDialog() {
-            setTitle("About " + getApplicationName());
-            setResizable(false);
-            setCloseAction(CloseAction.DISPOSE);
-            scroller = new HtmlScroller(false, 2000, 15, 10);
-        }
+		public AboutDialog() {
+			setTitle("About " + getApplicationName());
+			setResizable(false);
+			setCloseAction(CloseAction.DISPOSE);
+			scroller = new HtmlScroller(false, 2000, 15, 10);
+		}
 
-        protected void addDialogComponents() {
-            JComponent dialogContentPane = createDialogContentPane();
-            getDialogContentPane().add(dialogContentPane);
-            getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
-        }
+		protected void addDialogComponents() {
+			JComponent dialogContentPane = createDialogContentPane();
+			getDialogContentPane().add(dialogContentPane);
+			getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
+		}
 
-        protected JComponent createDialogContentPane() {
-            JPanel dialogPanel = new JPanel(new BorderLayout());
+		protected JComponent createDialogContentPane() {
+			JPanel dialogPanel = new JPanel(new BorderLayout());
 
-            try {
-                String text = FileCopyUtils.copyToString(new BufferedReader(
-                        new InputStreamReader(aboutTextPath.getInputStream())));
-                scroller.setHtml(text);
-            }
-            catch (IOException e) {
-                throw new DataAccessResourceFailureException(
-                        "About text not accessible", e);
-            }
-            dialogPanel.add(scroller);
-            dialogPanel.setPreferredSize(new Dimension(scroller
-                    .getPreferredSize().width, 200));
-            dialogPanel.add(new JSeparator(), BorderLayout.SOUTH);
-            return dialogPanel;
-        }
+			try {
+				String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
+						.getInputStream())));
+				scroller.setHtml(text);
+			}
+			catch (IOException e) {
+				throw new DataAccessResourceFailureException("About text not accessible", e);
+			}
+			dialogPanel.add(scroller);
+			dialogPanel.setPreferredSize(new Dimension(scroller.getPreferredSize().width, 200));
+			dialogPanel.add(new JSeparator(), BorderLayout.SOUTH);
+			return dialogPanel;
+		}
 
-        protected void onAboutToShow() {
-            try {
-                String text = FileCopyUtils.copyToString(new BufferedReader(
-                        new InputStreamReader(aboutTextPath.getInputStream())));
-                scroller.setHtml(text);
-            }
-            catch (IOException e) {
-                throw new DataAccessResourceFailureException(
-                        "About text not accessible", e);
-            }
-            scroller.reset();
-            scroller.startScrolling();
-        }
+		protected void onAboutToShow() {
+			try {
+				String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
+						.getInputStream())));
+				scroller.setHtml(text);
+			}
+			catch (IOException e) {
+				throw new DataAccessResourceFailureException("About text not accessible", e);
+			}
+			scroller.reset();
+			scroller.startScrolling();
+		}
 
-        protected boolean onFinish() {
-            scroller.pauseScrolling();
-            return true;
-        }
+		protected boolean onFinish() {
+			scroller.pauseScrolling();
+			return true;
+		}
 
-        protected Object[] getCommandGroupMembers() {
-            return new AbstractCommand[] { getFinishCommand() };
-        }
-    }
+		protected Object[] getCommandGroupMembers() {
+			return new AbstractCommand[] { getFinishCommand() };
+		}
+	}
 
-    /**
-     * A panel that scrolls the content of a HTML document.
-     * 
-     * @author oliverh
-     */
-    private class HtmlScroller extends JViewport {
+	/**
+	 * A panel that scrolls the content of a HTML document.
+	 * 
+	 * @author oliverh
+	 */
+	private class HtmlScroller extends JViewport {
 
-        private JTextPane htmlPane;
+		private JTextPane htmlPane;
 
-        private Timer timer;
+		private Timer timer;
 
-        private int initalDelay;
+		private int initalDelay;
 
-        private double incY = 0;
+		private double incY = 0;
 
-        private double currentY = 0;
+		private double currentY = 0;
 
-        private double currentX = 0;
+		private double currentX = 0;
 
-        private boolean inLink;
+		private boolean inLink;
 
-        /**
-         * Created a new HtmlScroller.
-         * 
-         * @param antiAlias
-         *            antialias the rendered HTML
-         * @param initalDelay
-         *            inital delay after which scrolling begins
-         * @param speedPixSec
-         *            scoll speed in pixels per second
-         * @param fps
-         *            number of updates per second
-         */
-        public HtmlScroller(boolean antiAlias, int initalDelay,
-                int speedPixSec, int fps) {
-            this.initalDelay = initalDelay;
+		/**
+		 * Created a new HtmlScroller.
+		 * 
+		 * @param antiAlias
+		 *            antialias the rendered HTML
+		 * @param initalDelay
+		 *            inital delay after which scrolling begins
+		 * @param speedPixSec
+		 *            scoll speed in pixels per second
+		 * @param fps
+		 *            number of updates per second
+		 */
+		public HtmlScroller(boolean antiAlias, int initalDelay, int speedPixSec, int fps) {
+			this.initalDelay = initalDelay;
 
-            incY = (double)speedPixSec / (double)fps;
+			incY = (double)speedPixSec / (double)fps;
 
-            htmlPane = antiAlias ? new AntiAliasedTextPane() : new JTextPane();
-            htmlPane.setEnabled(false);
-            htmlPane.setEditable(false);
-            htmlPane.setEditorKit(new NotLazyHTMLEditorKit());
-            htmlPane.addMouseListener(new MouseAdapter() {
-                public void mouseExited(MouseEvent e) {
-                    if (inLink) {
-                        exitedLink();
-                    }
-                }
+			htmlPane = antiAlias ? new AntiAliasedTextPane() : new JTextPane();
+			htmlPane.setEnabled(false);
+			htmlPane.setEditable(false);
+			htmlPane.setEditorKit(new NotLazyHTMLEditorKit());
+			htmlPane.addMouseListener(new MouseAdapter() {
+				public void mouseExited(MouseEvent e) {
+					if (inLink) {
+						exitedLink();
+					}
+				}
 
-                public void mouseEntered(MouseEvent e) {
-                    if (inLink) {
-                        enteredLink();
-                    }
-                }
-            });
-            htmlPane.addHyperlinkListener(new HyperlinkListener() {
-                public void hyperlinkUpdate(HyperlinkEvent e) {
+				public void mouseEntered(MouseEvent e) {
+					if (inLink) {
+						enteredLink();
+					}
+				}
+			});
+			htmlPane.addHyperlinkListener(new HyperlinkListener() {
+				public void hyperlinkUpdate(HyperlinkEvent e) {
 
-                    if (e.getEventType().equals(
-                            HyperlinkEvent.EventType.ENTERED)) {
-                        inLink = true;
-                        enteredLink();
-                    }
-                    else if (e.getEventType().equals(
-                            HyperlinkEvent.EventType.EXITED)) {
-                        inLink = false;
-                        exitedLink();
-                    }
-                    else if (e.getEventType().equals(
-                            HyperlinkEvent.EventType.ACTIVATED)) {
-                        System.out.println(e.getURL()); // XXX need to open a
-                        // browser
-                    }
-                }
-            });
-            setView(htmlPane);
-            timer = new Timer(1000 / fps, new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    int maxY = htmlPane.getHeight() - getHeight();
-                    currentY = Math.max(0, Math.min(currentY + incY, maxY));
-                    if (currentY <= 0 || currentY == maxY) {
-                        pauseScrolling();
-                    }
-                    setViewPositionInternal(new Point((int)currentX,
-                            (int)currentY));
-                }
-            });
-            reset();
-        }
+					if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
+						inLink = true;
+						enteredLink();
+					}
+					else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
+						inLink = false;
+						exitedLink();
+					}
+					else if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
+						System.out.println(e.getURL()); // XXX need to open a
+						// browser
+					}
+				}
+			});
+			setView(htmlPane);
+			timer = new Timer(1000 / fps, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int maxY = htmlPane.getHeight() - getHeight();
+					currentY = Math.max(0, Math.min(currentY + incY, maxY));
+					if (currentY <= 0 || currentY == maxY) {
+						pauseScrolling();
+					}
+					setViewPositionInternal(new Point((int)currentX, (int)currentY));
+				}
+			});
+			reset();
+		}
 
-        /**
-         * Sets the HTML that will be rendered by this component.
-         */
-        public void setHtml(String html) {
+		/**
+		 * Sets the HTML that will be rendered by this component.
+		 */
+		public void setHtml(String html) {
 
-            htmlPane.setText(html);
-            setPreferredSize(htmlPane.getPreferredSize());
-            installLaFStyleSheet();
-        }
+			htmlPane.setText(html);
+			setPreferredSize(htmlPane.getPreferredSize());
+			installLaFStyleSheet();
+		}
 
-        /**
-         * Resets this component to its inital state.
-         */
-        public void reset() {
-            currentX = 0;
-            currentY = 0;
-            timer.setInitialDelay(initalDelay);
-            setViewPositionInternal(new Point((int)currentX, (int)currentY));
-        }
+		/**
+		 * Resets this component to its inital state.
+		 */
+		public void reset() {
+			currentX = 0;
+			currentY = 0;
+			timer.setInitialDelay(initalDelay);
+			setViewPositionInternal(new Point((int)currentX, (int)currentY));
+		}
 
-        /**
-         * Starts the scoller
-         */
-        public void startScrolling() {
-            timer.start();
-        }
+		/**
+		 * Starts the scoller
+		 */
+		public void startScrolling() {
+			timer.start();
+		}
 
-        /**
-         * Pauses the scoller.
-         */
-        public void pauseScrolling() {
-            timer.stop();
-            timer.setInitialDelay(0);
-        }
+		/**
+		 * Pauses the scoller.
+		 */
+		public void pauseScrolling() {
+			timer.stop();
+			timer.setInitialDelay(0);
+		}
 
-        public void setViewPosition(Point p) {
-            // ignore calls that are not internal
-        }
+		public void setViewPosition(Point p) {
+			// ignore calls that are not internal
+		}
 
-        private void setViewPositionInternal(Point p) {
-            super.setViewPosition(p);
-        }
+		private void setViewPositionInternal(Point p) {
+			super.setViewPosition(p);
+		}
 
-        public void installLaFStyleSheet() {
-            Font defaultFont = UIManager.getFont("Button.font");
+		public void installLaFStyleSheet() {
+			Font defaultFont = UIManager.getFont("Button.font");
 
-            String stylesheet = "body {  font-family: " + defaultFont.getName()
-                    + "; font-size: " + defaultFont.getSize() + "pt;  }"
-                    + "a, p, li { font-family: " + defaultFont.getName()
-                    + "; font-size: " + defaultFont.getSize() + "pt;  }";
+			String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
+					+ "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
+					+ "pt;  }";
 
-            HTMLDocument doc = (HTMLDocument)htmlPane.getDocument();
-            try {
-                doc.getStyleSheet().loadRules(new StringReader(stylesheet),
-                        null);
-            }
-            catch (IOException e) {
-            }
-        }
+			HTMLDocument doc = (HTMLDocument)htmlPane.getDocument();
+			try {
+				doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
+			}
+			catch (IOException e) {
+			}
+		}
 
-        private void enteredLink() {
-            pauseScrolling();
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        }
+		private void enteredLink() {
+			pauseScrolling();
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		}
 
-        private void exitedLink() {
-            startScrolling();
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
-    }
+		private void exitedLink() {
+			startScrolling();
+			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		}
+	}
 
-    private static class NotLazyHTMLEditorKit extends HTMLEditorKit {
+	private static class NotLazyHTMLEditorKit extends HTMLEditorKit {
 
-        public Document createDefaultDocument() {
-            HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
-            doc.setAsynchronousLoadPriority(-1);
-            return doc;
-        }
+		public Document createDefaultDocument() {
+			HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
+			doc.setAsynchronousLoadPriority(-1);
+			return doc;
+		}
 
-        public ViewFactory getViewFactory() {
-            return new HTMLFactory() {
-                public View create(Element elem) {
-                    View view = super.create(elem);
-                    if (view instanceof ImageView) {
-                        ((ImageView)view).setLoadsSynchronously(true);
-                    }
-                    return view;
+		public ViewFactory getViewFactory() {
+			return new HTMLFactory() {
+				public View create(Element elem) {
+					View view = super.create(elem);
+					if (view instanceof ImageView) {
+						((ImageView)view).setLoadsSynchronously(true);
+					}
+					return view;
 
-                }
-            };
-        }
-    }
+				}
+			};
+		}
+	}
 
-    private static class AntiAliasedTextPane extends JTextPane {
-        public void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D)g;
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                    RenderingHints.VALUE_RENDER_QUALITY);
-            super.paintComponent(g2);
-        }
-    }
+	private static class AntiAliasedTextPane extends JTextPane {
+		public void paintComponent(Graphics g) {
+			Graphics2D g2 = (Graphics2D)g;
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			super.paintComponent(g2);
+		}
+	}
 }

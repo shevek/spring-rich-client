@@ -18,13 +18,13 @@ package org.springframework.richclient.core;
 import javax.swing.ProgressMonitor;
 
 public interface Saveable extends Dirtyable {
-    public void save();
+	public void save();
 
-    public void save(ProgressMonitor saveProgressTracker);
+	public void save(ProgressMonitor saveProgressTracker);
 
-    public void saveAs();
+	public void saveAs();
 
-    public boolean isSaveAsSupported();
+	public boolean isSaveAsSupported();
 
-    public boolean isSaveOnCloseRecommended();
+	public boolean isSaveOnCloseRecommended();
 }

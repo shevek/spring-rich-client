@@ -16,11 +16,11 @@ import javax.swing.JToggleButton;
  * @author Keith Donald
  */
 public interface ButtonFactory {
-    public JButton createButton();
+	public JButton createButton();
 
-    public JCheckBox createCheckBox();
+	public JCheckBox createCheckBox();
 
-    public JToggleButton createToggleButton();
+	public JToggleButton createToggleButton();
 
-    public JRadioButton createRadioButton();
+	public JRadioButton createRadioButton();
 }

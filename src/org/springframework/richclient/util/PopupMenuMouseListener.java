@@ -32,65 +32,69 @@ import org.springframework.util.Assert;
  */
 public class PopupMenuMouseListener extends MouseAdapter {
 
-    private JPopupMenu popupMenu;
+	private JPopupMenu popupMenu;
 
-    /**
-     * Creates a new PopupMenuMouseListener.
-     * <p>
-     * NOTE: When using this constructor subclasses must overide the method
-     * getPopupMenu.
-     */
-    protected PopupMenuMouseListener() {
-    }
+	/**
+	 * Creates a new PopupMenuMouseListener.
+	 * <p>
+	 * NOTE: When using this constructor subclasses must overide the method
+	 * getPopupMenu.
+	 */
+	protected PopupMenuMouseListener() {
+	}
 
-    /**
-     * Creates a new PopupMenuMouseListener that will show the provided popup.
-     */
-    public PopupMenuMouseListener(JPopupMenu popupMenu) {
-        Assert.notNull(popupMenu);
-        this.popupMenu = popupMenu;
-    }
+	/**
+	 * Creates a new PopupMenuMouseListener that will show the provided popup.
+	 */
+	public PopupMenuMouseListener(JPopupMenu popupMenu) {
+		Assert.notNull(popupMenu);
+		this.popupMenu = popupMenu;
+	}
 
-    /**
-     * Called before the popup menu becomes visible. May veto the display of the
-     * popup by returning false.
-     */
-    protected boolean onAboutToShow(MouseEvent e) {
-        return true;
-    }
+	/**
+	 * Called before the popup menu becomes visible. May veto the display of the
+	 * popup by returning false.
+	 */
+	protected boolean onAboutToShow(MouseEvent e) {
+		return true;
+	}
 
-    /**
-     * Called to display the popup menu.
-     */
-    protected void showPopupMenu(MouseEvent e) {
-        JPopupMenu popupToShow = getPopupMenu();
-        if (popupToShow == null) { return; }
-        popupToShow.show(e.getComponent(), e.getX(), e.getY());
-        popupToShow.setVisible(true);
-    }
+	/**
+	 * Called to display the popup menu.
+	 */
+	protected void showPopupMenu(MouseEvent e) {
+		JPopupMenu popupToShow = getPopupMenu();
+		if (popupToShow == null) {
+			return;
+		}
+		popupToShow.show(e.getComponent(), e.getX(), e.getY());
+		popupToShow.setVisible(true);
+	}
 
-    /**
-     * Returns the popup menu to be displayed.
-     */
-    protected JPopupMenu getPopupMenu() {
-        if (popupMenu == null) { throw new UnsupportedOperationException(
-                "Method getPopupMenu must be overridden when default constructor is used."); }
-        return popupMenu;
-    }
+	/**
+	 * Returns the popup menu to be displayed.
+	 */
+	protected JPopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			throw new UnsupportedOperationException(
+					"Method getPopupMenu must be overridden when default constructor is used.");
+		}
+		return popupMenu;
+	}
 
-    public void mousePressed(MouseEvent e) {
-        checkEvent(e);
-    }
+	public void mousePressed(MouseEvent e) {
+		checkEvent(e);
+	}
 
-    public void mouseReleased(MouseEvent e) {
-        checkEvent(e);
-    }
+	public void mouseReleased(MouseEvent e) {
+		checkEvent(e);
+	}
 
-    private void checkEvent(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            if (onAboutToShow(e)) {
-                showPopupMenu(e);
-            }
-        }
-    }
+	private void checkEvent(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			if (onAboutToShow(e)) {
+				showPopupMenu(e);
+			}
+		}
+	}
 }

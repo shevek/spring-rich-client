@@ -35,71 +35,72 @@ import org.springframework.util.Assert;
  * @author oliverh
  */
 public class TabbedDialogPage extends CompositeDialogPage {
-    private JTabbedPane tabbedPane;
+	private JTabbedPane tabbedPane;
 
-    public TabbedDialogPage(String pageId) {
-        super(pageId);
-    }
+	public TabbedDialogPage(String pageId) {
+		super(pageId);
+	}
 
-    protected JComponent createControl() {
-        createPageControls();
-        tabbedPane = new JTabbedPane();
-        List pages = getPages();
-        for (int i = 0; i < pages.size(); i++) {
-            final DialogPage page = (DialogPage)pages.get(i);
-            JComponent control = page.getControl();
-            control.setPreferredSize(getLargestPageSize());
-            tabbedPane.add(control);
-            decorateTabTitle(page);
-        }
-        tabbedPane.setModel(new DefaultSingleSelectionModel() {
-            public void setSelectedIndex(int index) {
-                if (index == getSelectedIndex()) { return; }
-                if (canChangeTabs()) {
-                    super.setSelectedIndex(index);
-                    if (index >= 0) {
-                        TabbedDialogPage.super
-                                .setActivePage((DialogPage)getPages()
-                                        .get(index));
-                    }
-                    else {
-                        TabbedDialogPage.super.setActivePage(null);
-                    }
-                }
-            }
-        });
-        setActivePage((DialogPage)pages.get(0));
-        return tabbedPane;
-    }
+	protected JComponent createControl() {
+		createPageControls();
+		tabbedPane = new JTabbedPane();
+		List pages = getPages();
+		for (int i = 0; i < pages.size(); i++) {
+			final DialogPage page = (DialogPage)pages.get(i);
+			JComponent control = page.getControl();
+			control.setPreferredSize(getLargestPageSize());
+			tabbedPane.add(control);
+			decorateTabTitle(page);
+		}
+		tabbedPane.setModel(new DefaultSingleSelectionModel() {
+			public void setSelectedIndex(int index) {
+				if (index == getSelectedIndex()) {
+					return;
+				}
+				if (canChangeTabs()) {
+					super.setSelectedIndex(index);
+					if (index >= 0) {
+						TabbedDialogPage.super.setActivePage((DialogPage)getPages().get(index));
+					}
+					else {
+						TabbedDialogPage.super.setActivePage(null);
+					}
+				}
+			}
+		});
+		setActivePage((DialogPage)pages.get(0));
+		return tabbedPane;
+	}
 
-    /**
-     * Sets the active page of this TabbedDialogPage. This method will also
-     * select the tab wich displays the new active page.
-     * 
-     * @param activePage
-     *            the page to be made active. Must be one of the child pages.
-     */
-    public void setActivePage(DialogPage page) {
-        int pageIndex = page == null ? -1 : getPages().indexOf(page);
-        tabbedPane.setSelectedIndex(pageIndex);
-    }
+	/**
+	 * Sets the active page of this TabbedDialogPage. This method will also
+	 * select the tab wich displays the new active page.
+	 * 
+	 * @param activePage
+	 *            the page to be made active. Must be one of the child pages.
+	 */
+	public void setActivePage(DialogPage page) {
+		int pageIndex = page == null ? -1 : getPages().indexOf(page);
+		tabbedPane.setSelectedIndex(pageIndex);
+	}
 
-    protected boolean canChangeTabs() {
-        return true;
-    }
+	protected boolean canChangeTabs() {
+		return true;
+	}
 
-    protected void updatePageComplete(DialogPage page) {
-        super.updatePageComplete(page);
-        decorateTabTitle(page);
-    }
+	protected void updatePageComplete(DialogPage page) {
+		super.updatePageComplete(page);
+		decorateTabTitle(page);
+	}
 
-    protected void decorateTabTitle(DialogPage page) {
-        if (tabbedPane == null) { return; }
-        int pageIndex = getPages().indexOf(page);
-        Assert.isTrue(pageIndex != -1);
-        String title = LabelUtils.htmlBlock("<center>" + page.getTitle()
-                + "<sup><font size=-3 color=red>"
-                + (page.isPageComplete() ? "" : "*"));
-        tabbedPane.setTitleAt(pageIndex, title);
-    }
+	protected void decorateTabTitle(DialogPage page) {
+		if (tabbedPane == null) {
+			return;
+		}
+		int pageIndex = getPages().indexOf(page);
+		Assert.isTrue(pageIndex != -1);
+		String title = LabelUtils.htmlBlock("<center>" + page.getTitle() + "<sup><font size=-3 color=red>"
+				+ (page.isPageComplete() ? "" : "*"));
+		tabbedPane.setTitleAt(pageIndex, title);
+	}
 }

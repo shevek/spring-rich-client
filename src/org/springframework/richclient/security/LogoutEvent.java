@@ -13,10 +13,10 @@ import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
  * @author Ben Alex
  */
 public class LogoutEvent extends ClientSecurityEvent {
-    public static final Authentication NO_AUTHENTICATION = new UsernamePasswordAuthenticationToken(
-            "NO_AUTHENTICATION", "NO_AUTHENTICATION");
+	public static final Authentication NO_AUTHENTICATION = new UsernamePasswordAuthenticationToken("NO_AUTHENTICATION",
+			"NO_AUTHENTICATION");
 
-    public LogoutEvent(Authentication authentication) {
-        super(authentication);
-    }
+	public LogoutEvent(Authentication authentication) {
+		super(authentication);
+	}
 }

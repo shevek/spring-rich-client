@@ -30,25 +30,25 @@ import org.springframework.richclient.factory.AbstractControlFactory;
  * @author Keith Donald
  */
 public class ExceptionDetailsPane extends AbstractControlFactory {
-    private JTextArea exceptionDetails;
+	private JTextArea exceptionDetails;
 
-    public void setException(Exception e) {
-        createControlIfNecessary();
-        StringWriter writer = new StringWriter();
-        e.printStackTrace(new PrintWriter(writer));
-        exceptionDetails.setText(writer.toString());
-    }
+	public void setException(Exception e) {
+		createControlIfNecessary();
+		StringWriter writer = new StringWriter();
+		e.printStackTrace(new PrintWriter(writer));
+		exceptionDetails.setText(writer.toString());
+	}
 
-    /**
-     * @see org.springframework.richclient.factory.AbstractControlFactory#createControl()
-     */
-    protected JComponent createControl() {
-        exceptionDetails = new JTextArea();
-        exceptionDetails.setEditable(false);
-        exceptionDetails.setRows(10);
-        exceptionDetails.setColumns(80);
-        JScrollPane sp = new JScrollPane(exceptionDetails);
-        return sp;
-    }
+	/**
+	 * @see org.springframework.richclient.factory.AbstractControlFactory#createControl()
+	 */
+	protected JComponent createControl() {
+		exceptionDetails = new JTextArea();
+		exceptionDetails.setEditable(false);
+		exceptionDetails.setRows(10);
+		exceptionDetails.setColumns(80);
+		JScrollPane sp = new JScrollPane(exceptionDetails);
+		return sp;
+	}
 
 }

@@ -36,54 +36,49 @@ import org.springframework.binding.value.ValueModel;
  * @author Oliver Hutchison
  * @author Keith Donald
  */
-public class JFormattedTextFieldValueSetter extends AbstractValueSetter
-        implements PropertyChangeListener {
-    private JFormattedTextField component;
+public class JFormattedTextFieldValueSetter extends AbstractValueSetter implements PropertyChangeListener {
+	private JFormattedTextField component;
 
-    private AbstractValueSetter setter;
+	private AbstractValueSetter setter;
 
-    public JFormattedTextFieldValueSetter(JFormattedTextField component,
-            ValueModel valueModel, ValueCommitPolicy commitPolicy) {
-        super(valueModel);
-        this.component = component;
-        this.component.setFocusLostBehavior(JFormattedTextField.PERSIST);
-        if (this.component.isEditable()) {
-            if (commitPolicy == ValueCommitPolicy.AS_YOU_TYPE) {
-                this.setter = new AsYouTypeTextValueSetter(this.component) {
-                    public void componentValueChanged(Object newValue) {
-                        JFormattedTextFieldValueSetter.this
-                                .componentValueChanged(newValue);
-                    }
-                };
-            }
-            else if (commitPolicy == ValueCommitPolicy.FOCUS_LOST) {
-                this.setter = new FocusLostTextValueSetter(this.component) {
-                    public void componentValueChanged(Object newValue) {
-                        JFormattedTextFieldValueSetter.this
-                                .componentValueChanged(newValue);
-                    }
-                };
-            }
-        }
-    }
+	public JFormattedTextFieldValueSetter(JFormattedTextField component, ValueModel valueModel,
+			ValueCommitPolicy commitPolicy) {
+		super(valueModel);
+		this.component = component;
+		this.component.setFocusLostBehavior(JFormattedTextField.PERSIST);
+		if (this.component.isEditable()) {
+			if (commitPolicy == ValueCommitPolicy.AS_YOU_TYPE) {
+				this.setter = new AsYouTypeTextValueSetter(this.component) {
+					public void componentValueChanged(Object newValue) {
+						JFormattedTextFieldValueSetter.this.componentValueChanged(newValue);
+					}
+				};
+			}
+			else if (commitPolicy == ValueCommitPolicy.FOCUS_LOST) {
+				this.setter = new FocusLostTextValueSetter(this.component) {
+					public void componentValueChanged(Object newValue) {
+						JFormattedTextFieldValueSetter.this.componentValueChanged(newValue);
+					}
+				};
+			}
+		}
+	}
 
-    public void valueChanged() {
-        setControlValue(getInnerMostValue());
-    }
+	public void valueChanged() {
+		setControlValue(getInnerMostValue());
+	}
 
-    protected void setControlValue(Object value) {
-        component.setValue(value);
-    }
+	protected void setControlValue(Object value) {
+		component.setValue(value);
+	}
 
-    public void propertyChange(PropertyChangeEvent e) {
-        if (logger.isDebugEnabled()) {
-            Class valueClass = (e.getNewValue() != null ? e.getNewValue()
-                    .getClass() : null);
-            logger.debug("Formatted text field property '"
-                    + e.getPropertyName() + "' changed; new value is '"
-                    + e.getNewValue() + "', valueClass=" + valueClass);
-        }
-        componentValueChanged(component.getValue());
-    }
+	public void propertyChange(PropertyChangeEvent e) {
+		if (logger.isDebugEnabled()) {
+			Class valueClass = (e.getNewValue() != null ? e.getNewValue().getClass() : null);
+			logger.debug("Formatted text field property '" + e.getPropertyName() + "' changed; new value is '"
+					+ e.getNewValue() + "', valueClass=" + valueClass);
+		}
+		componentValueChanged(component.getValue());
+	}
 
 }

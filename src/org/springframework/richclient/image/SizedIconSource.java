@@ -26,11 +26,11 @@ package org.springframework.richclient.image;
  */
 public interface SizedIconSource extends IconSource {
 
-    /**
-     * Reload all icons in this registry with the provided <code>IconSize</code>.
-     * 
-     * @param size
-     *            The icon size.
-     */
-    public void reload(IconSize size);
+	/**
+	 * Reload all icons in this registry with the provided <code>IconSize</code>.
+	 * 
+	 * @param size
+	 *            The icon size.
+	 */
+	public void reload(IconSize size);
 }

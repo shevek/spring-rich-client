@@ -21,15 +21,15 @@ package org.springframework.richclient.core;
  * @author Keith Donald
  */
 public interface DescribedElement {
-    public static final String DISPLAY_NAME_PROPERTY = "displayName";
+	public static final String DISPLAY_NAME_PROPERTY = "displayName";
 
-    public static final String CAPTION_PROPERTY = "caption";
+	public static final String CAPTION_PROPERTY = "caption";
 
-    public static final String DESCRIPTION_PROPERTY = "description";
+	public static final String DESCRIPTION_PROPERTY = "description";
 
-    public String getDisplayName();
+	public String getDisplayName();
 
-    public String getCaption();
+	public String getCaption();
 
-    public String getDescription();
+	public String getDescription();
 }
