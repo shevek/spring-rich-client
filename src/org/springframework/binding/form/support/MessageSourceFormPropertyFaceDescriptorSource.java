@@ -69,7 +69,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
      * Name for the FormPropertyFaceDescriptor's <code>labelInfo</code> property.
      */
     private static final String ENCODED_LABEL_PROPERTY = "label";
-    
+
     /**
      * Name for the FormPropertyFaceDescriptor's <code>icon</code> property.
      */
@@ -101,7 +101,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
     public void setMessageSourceAccessor(MessageSourceAccessor messageSourceAccessor) {
         this.messageSourceAccessor = messageSourceAccessor;
     }
-    
+
     /**
      * If a message source was provided to the setMessageSourceAccessor method 
      * returns that otherwise returns the default message source located using 
@@ -113,7 +113,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
         }
         return messageSourceAccessor;
     }
-    
+
     /**
      * Set the icon source that will be used to resolve the 
      * FormPropertyFaceDescriptor's icon property.
@@ -121,7 +121,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
     public void setIconSource(IconSource iconSource) {
         this.iconSource = iconSource;
     }
-    
+
     protected IconSource getIconSource() {
         if (iconSource == null) {
             iconSource = Application.services().getIconSource();
@@ -147,12 +147,24 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
      */
     protected String[] getMessageKeys(FormModel formModel, String formPropertyPath, String faceDescriptorProperty) {
         boolean hasFormId = StringUtils.hasText(formModel.getId());
-        String[] keys = new String[hasFormId ? 2 : 1];
-        int i = 0;
+        String[] formPropertyPathElements = StringUtils.delimitedListToStringArray(formPropertyPath, ".");
+        String[] keys = new String[hasFormId ? 2*formPropertyPathElements.length : formPropertyPathElements.length];
+        int keyCount = 0;
         if (hasFormId) {
-            keys[i++] = formModel.getId() + "." + formPropertyPath + "." + faceDescriptorProperty;
+            String prefix = formModel.getId() + '.';
+            insertKeys(keys, 0, prefix, formPropertyPathElements, faceDescriptorProperty);            
         }
-        keys[i++] = formPropertyPath + "." + faceDescriptorProperty;
+        insertKeys(keys, formPropertyPathElements.length, "", formPropertyPathElements, faceDescriptorProperty);   
         return keys;
+    }
+
+    private void insertKeys(String[] keys, int startIndex, String prefix, String[] formPropertyPathElements, String suffix) {
+        for (int i=0; i<formPropertyPathElements.length; i++) {         
+            StringBuffer path = new StringBuffer();
+            for (int j=i; j<formPropertyPathElements.length; j++) {
+                path.append(formPropertyPathElements[j]).append('.');
+            }                
+            keys[startIndex++] = prefix + path + suffix;
+        }
     }
 }
