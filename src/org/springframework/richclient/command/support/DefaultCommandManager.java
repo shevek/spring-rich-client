@@ -28,6 +28,7 @@ import org.springframework.richclient.command.CommandGroupFactoryBean;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.CommandRegistryListener;
+import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.ExclusiveCommandGroup;
 import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
@@ -42,226 +43,184 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class DefaultCommandManager implements CommandManager, BeanPostProcessor {
-    private final Log logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(getClass());
 
-    private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
+	private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
 
-    private ButtonFactory buttonFactory;
+	private CommandServices commandServices = DefaultCommandServices.instance();
 
-    private MenuFactory menuFactory;
+	private CommandConfigurer commandConfigurer = new ApplicationCommandConfigurer(this);
 
-    private CommandConfigurer commandConfigurer = new ApplicationCommandConfigurer(
-            this);
+	public DefaultCommandManager() {
 
-    private CommandButtonConfigurer defaultButtonConfigurer;
+	}
 
-    private CommandButtonConfigurer toolBarButtonConfigurer;
+	public DefaultCommandManager(CommandRegistry parent) {
+		setParent(parent);
+	}
 
-    private CommandButtonConfigurer menuItemButtonConfigurer;
+	public DefaultCommandManager(CommandServices commandServices) {
+		setCommandServices(commandServices);
+	}
 
-    private CommandButtonConfigurer pullDownMenuButtonConfigurer;
+	public void setCommandServices(CommandServices commandServices) {
+		Assert.notNull(commandServices, "A command services implementation is required");
+		this.commandServices = commandServices;
+	}
 
-    public DefaultCommandManager() {
-        this(null);
-    }
+	public void setParent(CommandRegistry parent) {
+		commandRegistry.setParent(parent);
+	}
 
-    public DefaultCommandManager(CommandRegistry parent) {
-        setParent(parent);
-    }
+	public ButtonFactory getButtonFactory() {
+		return commandServices.getButtonFactory();
+	}
 
-    public void setParent(CommandRegistry parent) {
-        this.commandRegistry.setParent(parent);
-    }
+	public MenuFactory getMenuFactory() {
+		return commandServices.getMenuFactory();
+	}
 
-    public void setButtonFactory(ButtonFactory buttonFactory) {
-        this.buttonFactory = buttonFactory;
-    }
+	public CommandButtonConfigurer getDefaultButtonConfigurer() {
+		return commandServices.getDefaultButtonConfigurer();
+	}
 
-    public void setMenuFactory(MenuFactory menuFactory) {
-        this.menuFactory = menuFactory;
-    }
+	public CommandButtonConfigurer getToolBarButtonConfigurer() {
+		return commandServices.getToolBarButtonConfigurer();
+	}
 
-    public ButtonFactory getButtonFactory() {
-        if (buttonFactory == null) { return DefaultCommandServices.instance()
-                .getButtonFactory(); }
-        return buttonFactory;
-    }
+	public CommandButtonConfigurer getMenuItemButtonConfigurer() {
+		return commandServices.getMenuItemButtonConfigurer();
+	}
 
-    public MenuFactory getMenuFactory() {
-        if (menuFactory == null) { return DefaultCommandServices.instance()
-                .getMenuFactory(); }
-        return menuFactory;
-    }
+	public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
+		return commandServices.getPullDownMenuButtonConfigurer();
+	}
 
-    public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command,
-            String faceDescriptorKey) {
-        return null;
-    }
+	public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorKey) {
+		// TODO
+		return null;
+	}
 
-    public void setToolBarButtonConfigurer(CommandButtonConfigurer configurer) {
-        this.toolBarButtonConfigurer = configurer;
-    }
+	public ActionCommand getActionCommand(String commandId) {
+		return commandRegistry.getActionCommand(commandId);
+	}
 
-    public void setMenuItemButtonConfigurer(CommandButtonConfigurer configurer) {
-        this.menuItemButtonConfigurer = configurer;
-    }
+	public CommandGroup getCommandGroup(String groupId) {
+		return commandRegistry.getCommandGroup(groupId);
+	}
 
-    public CommandButtonConfigurer getDefaultButtonConfigurer() {
-        return DefaultCommandServices.instance().getDefaultButtonConfigurer();
-    }
+	public boolean containsCommandGroup(String groupId) {
+		return commandRegistry.containsCommandGroup(groupId);
+	}
 
-    public CommandButtonConfigurer getToolBarButtonConfigurer() {
-        if (toolBarButtonConfigurer == null) { return DefaultCommandServices
-                .instance().getToolBarButtonConfigurer(); }
-        return toolBarButtonConfigurer;
-    }
+	public boolean containsActionCommand(String commandId) {
+		return commandRegistry.containsActionCommand(commandId);
+	}
 
-    public CommandButtonConfigurer getMenuItemButtonConfigurer() {
-        if (menuItemButtonConfigurer == null) { return DefaultCommandServices
-                .instance().getMenuItemButtonConfigurer(); }
-        return menuItemButtonConfigurer;
-    }
+	/**
+	 * Adds a new command to this manager's registry; also configures the
+	 * command on behalf of the caller.
+	 * 
+	 * @param command
+	 *            the new command to be configured and registered
+	 */
+	public void addNewCommand(AbstractCommand command) {
+		addNewCommand(command, command.getId());
+	}
 
-    public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
-        if (pullDownMenuButtonConfigurer == null) { return DefaultCommandServices
-                .instance().getPullDownMenuButtonConfigurer(); }
-        return pullDownMenuButtonConfigurer;
-    }
+	/**
+	 * Adds a new command to this manager's registry; also configures the
+	 * command on behalf of the caller. Configures the command's face (visual
+	 * appearance) using the provided face configuration key, which delegates to
+	 * a configured ObjectConfigurer.
+	 * 
+	 * @param command
+	 * @param faceDescriptorKey
+	 */
+	public void addNewCommand(AbstractCommand command, String faceDescriptorKey) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Configuring and adding new command '" + command.getId() + "'");
+		}
+		configure(command, faceDescriptorKey);
+		registerCommand(command);
+	}
 
-    public ActionCommand getActionCommand(String commandId) {
-        return commandRegistry.getActionCommand(commandId);
-    }
+	public void addCommandInterceptor(String commandId, ActionCommandInterceptor interceptor) {
+		getActionCommand(commandId).addCommandInterceptor(interceptor);
+	}
 
-    public CommandGroup getCommandGroup(String groupId) {
-        return commandRegistry.getCommandGroup(groupId);
-    }
+	public void removeCommandInterceptor(String commandId, ActionCommandInterceptor interceptor) {
+		getActionCommand(commandId).removeCommandInterceptor(interceptor);
+	}
 
-    public boolean containsCommandGroup(String groupId) {
-        return commandRegistry.containsCommandGroup(groupId);
-    }
+	public void registerCommand(AbstractCommand command) {
+		commandRegistry.registerCommand(command);
+	}
 
-    public boolean containsActionCommand(String commandId) {
-        return commandRegistry.containsActionCommand(commandId);
-    }
+	public void setTargetableActionCommandExecutor(String commandId, ActionCommandExecutor executor) {
+		commandRegistry.setTargetableActionCommandExecutor(commandId, executor);
+	}
 
-    /**
-     * Adds a new command to this manager's registry; also configures the
-     * command on behalf of the caller.
-     * 
-     * @param command
-     *            the new command to be configured and registered
-     */
-    public void addNewCommand(AbstractCommand command) {
-        addNewCommand(command, command.getId());
-    }
+	public void addCommandRegistryListener(CommandRegistryListener l) {
+		this.commandRegistry.addCommandRegistryListener(l);
+	}
 
-    /**
-     * Adds a new command to this manager's registry; also configures the
-     * command on behalf of the caller. Configures the command's face (visual
-     * appearance) using the provided face configuration key, which delegates to
-     * a configured ObjectConfigurer.
-     * 
-     * @param command
-     * @param faceDescriptorKey
-     */
-    public void addNewCommand(AbstractCommand command, String faceDescriptorKey) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring and adding new command '"
-                    + command.getId() + "'");
-        }
-        configure(command, faceDescriptorKey);
-        registerCommand(command);
-    }
+	public void removeCommandRegistryListener(CommandRegistryListener l) {
+		this.commandRegistry.removeCommandRegistryListener(l);
+	}
 
-    public void addCommandInterceptor(String commandId,
-            ActionCommandInterceptor interceptor) {
-        getActionCommand(commandId).addCommandInterceptor(interceptor);
-    }
+	public TargetableActionCommand createTargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
+		Assert.notNull(commandId, "Registered targetable action commands must have an id.");
+		TargetableActionCommand newCommand = new TargetableActionCommand(commandId, delegate);
+		configure(newCommand);
+		registerCommand(newCommand);
+		return newCommand;
+	}
 
-    public void removeCommandInterceptor(String commandId,
-            ActionCommandInterceptor interceptor) {
-        getActionCommand(commandId).removeCommandInterceptor(interceptor);
-    }
+	public CommandGroup createCommandGroup(String groupId, Object[] members) {
+		Assert.notNull(groupId, "Registered command groups must have an id.");
+		CommandGroup newGroup = new CommandGroupFactoryBean(groupId, this.commandRegistry, this, members).getCommandGroup();
+		addNewCommand(newGroup);
+		return newGroup;
+	}
 
-    public void registerCommand(AbstractCommand command) {
-        commandRegistry.registerCommand(command);
-    }
+	public ExclusiveCommandGroup createExclusiveCommandGroup(String groupId, Object[] members) {
+		Assert.notNull(groupId, "Registered exclusive command groups must have an id.");
+		CommandGroupFactoryBean newGroupFactory = new CommandGroupFactoryBean(groupId, this.commandRegistry, this, members);
+		newGroupFactory.setExclusive(true);
+		addNewCommand(newGroupFactory.getCommandGroup());
+		return (ExclusiveCommandGroup)newGroupFactory.getCommandGroup();
+	}
 
-    public void setTargetableActionCommandExecutor(String commandId,
-            ActionCommandExecutor executor) {
-        commandRegistry.setTargetableActionCommandExecutor(commandId, executor);
-    }
+	public AbstractCommand configure(AbstractCommand command) {
+		return commandConfigurer.configure(command);
+	}
 
-    public void addCommandRegistryListener(CommandRegistryListener l) {
-        this.commandRegistry.addCommandRegistryListener(l);
-    }
+	public AbstractCommand configure(AbstractCommand command, String faceDescriptorKey) {
+		return commandConfigurer.configure(command, faceDescriptorKey);
+	}
 
-    public void removeCommandRegistryListener(CommandRegistryListener l) {
-        this.commandRegistry.removeCommandRegistryListener(l);
-    }
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof CommandGroupFactoryBean) {
+			CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
+			CommandGroup group = factory.getCommandGroup();
+			addNewCommand(group);
+		}
+		else if (bean instanceof AbstractCommand) {
+			registerCommand((AbstractCommand)bean);
+		}
+		return bean;
+	}
 
-    public TargetableActionCommand createTargetableActionCommand(
-            String commandId, ActionCommandExecutor delegate) {
-        Assert.notNull(commandId,
-                "Registered targetable action commands must have an id.");
-        TargetableActionCommand newCommand = new TargetableActionCommand(
-                commandId, delegate);
-        configure(newCommand);
-        registerCommand(newCommand);
-        return newCommand;
-    }
-
-    public CommandGroup createCommandGroup(String groupId, Object[] members) {
-        Assert.notNull(groupId, "Registered command groups must have an id.");
-        CommandGroup newGroup = new CommandGroupFactoryBean(groupId,
-                this.commandRegistry, this, members).getCommandGroup();
-        addNewCommand(newGroup);
-        return newGroup;
-    }
-
-    public ExclusiveCommandGroup createExclusiveCommandGroup(String groupId,
-            Object[] members) {
-        Assert.notNull(groupId,
-                "Registered exclusive command groups must have an id.");
-        CommandGroupFactoryBean newGroupFactory = new CommandGroupFactoryBean(
-                groupId, this.commandRegistry, this, members);
-        newGroupFactory.setExclusive(true);
-        addNewCommand(newGroupFactory.getCommandGroup());
-        return (ExclusiveCommandGroup)newGroupFactory.getCommandGroup();
-    }
-
-    public AbstractCommand configure(AbstractCommand command) {
-        return commandConfigurer.configure(command);
-    }
-
-    public AbstractCommand configure(AbstractCommand command,
-            String faceDescriptorKey) {
-        return commandConfigurer.configure(command, faceDescriptorKey);
-    }
-
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
-        if (bean instanceof CommandGroupFactoryBean) {
-            CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
-            CommandGroup group = factory.getCommandGroup();
-            addNewCommand(group);
-        }
-        else if (bean instanceof AbstractCommand) {
-            registerCommand((AbstractCommand)bean);
-        }
-        return bean;
-    }
-
-    public Object postProcessBeforeInitialization(Object bean, String beanName)
-            throws BeansException {
-        if (bean instanceof CommandGroupFactoryBean) {
-            CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
-            factory.setCommandRegistry(commandRegistry);
-        }
-        else if (bean instanceof AbstractCommand) {
-            configure((AbstractCommand)bean);
-        }
-        return bean;
-    }
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof CommandGroupFactoryBean) {
+			CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
+			factory.setCommandRegistry(commandRegistry);
+		}
+		else if (bean instanceof AbstractCommand) {
+			configure((AbstractCommand)bean);
+		}
+		return bean;
+	}
 
 }

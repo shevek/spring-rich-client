@@ -13,36 +13,42 @@ import java.util.List;
 
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandRegistry;
+import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.support.DefaultCommandManager;
 
 public class ApplicationWindowCommandManager extends DefaultCommandManager {
-    private List sharedCommands;
+	private List sharedCommands;
 
-    public ApplicationWindowCommandManager() {
-        super();
-    }
+	public ApplicationWindowCommandManager() {
+		super();
+	}
 
-    public ApplicationWindowCommandManager(CommandRegistry parent) {
-        super(parent);
-    }
+	public ApplicationWindowCommandManager(CommandRegistry parent) {
+		super(parent);
+	}
 
-    public void setSharedCommandIds(String[] sharedCommandIds) {
-        if (sharedCommandIds.length == 0) {
-            sharedCommands = Collections.EMPTY_LIST;
-        }
-        else {
-            this.sharedCommands = new ArrayList(sharedCommandIds.length);
-            for (int i = 0; i < sharedCommandIds.length; i++) {
-                ActionCommand globalCommand = createTargetableActionCommand(
-                        sharedCommandIds[i], null);
-                sharedCommands.add(globalCommand);
-            }
-        }
-    }
+	public ApplicationWindowCommandManager(CommandServices commandServices) {
+		super(commandServices);
+	}
 
-    public Iterator getSharedCommands() {
-        if (sharedCommands == null) { return Collections.EMPTY_LIST.iterator(); }
-        return sharedCommands.iterator();
-    }
+	public void setSharedCommandIds(String[] sharedCommandIds) {
+		if (sharedCommandIds.length == 0) {
+			sharedCommands = Collections.EMPTY_LIST;
+		}
+		else {
+			this.sharedCommands = new ArrayList(sharedCommandIds.length);
+			for (int i = 0; i < sharedCommandIds.length; i++) {
+				ActionCommand globalCommand = createTargetableActionCommand(sharedCommandIds[i], null);
+				sharedCommands.add(globalCommand);
+			}
+		}
+	}
+
+	public Iterator getSharedCommands() {
+		if (sharedCommands == null) {
+			return Collections.EMPTY_LIST.iterator();
+		}
+		return sharedCommands.iterator();
+	}
 
 }

@@ -445,12 +445,12 @@ public class CommandGroup extends AbstractCommand {
         return popup;
     }
 
-    public JToolBar createToolBar() {
+    public JComponent createToolBar() {
         return createToolBar(getButtonFactory());
     }
 
-    public JToolBar createToolBar(ButtonFactory factory) {
-        JToolBar toolbar = createNewToolBar(getText());
+    public JComponent createToolBar(ButtonFactory factory) {
+        JComponent toolbar = createNewToolBar(getText());
         bindMembers(toolbar, toolbar, factory, getToolBarButtonConfigurer());
         toolbar.setEnabled(false);
         toolbar.setVisible(true);
@@ -462,12 +462,12 @@ public class CommandGroup extends AbstractCommand {
     }
 
     public JMenuBar createMenuBar(MenuFactory factory) {
-        JMenuBar menubar = newMenuBar();
+        JMenuBar menubar = createNewMenuBar();
         bindMembers(menubar, menubar, factory, getMenuItemButtonConfigurer());
         return menubar;
     }
 
-    protected JToolBar createNewToolBar(String text) {
+    protected JComponent createNewToolBar(String text) {
         JToolBar toolBar = new JToolBar(text);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -476,7 +476,7 @@ public class CommandGroup extends AbstractCommand {
 
     }
 
-    protected JMenuBar newMenuBar() {
+    protected JMenuBar createNewMenuBar() {
         return new JMenuBar();
     }
 
