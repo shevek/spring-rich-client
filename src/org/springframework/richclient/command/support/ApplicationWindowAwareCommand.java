@@ -17,8 +17,7 @@ package org.springframework.richclient.command.support;
 
 import javax.swing.JFrame;
 
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.*;
 import org.springframework.richclient.application.config.ApplicationWindowAware;
 import org.springframework.richclient.command.ActionCommand;
 

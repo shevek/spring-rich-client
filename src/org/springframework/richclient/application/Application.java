@@ -150,7 +150,7 @@ public class Application extends ApplicationObjectSupport {
     }
 
     protected ApplicationWindow createNewWindow() {
-        return new ApplicationWindow(windowManager.size());
+        return new DefaultApplicationWindow(windowManager.size());
     }
 
     public ApplicationWindow getActiveWindow() {
