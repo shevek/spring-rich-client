@@ -28,6 +28,7 @@ import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.rules.values.FormModel;
 import org.springframework.rules.values.ValidationEvent;
 import org.springframework.rules.values.ValidationListener;
+import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
@@ -46,6 +47,9 @@ public class SimpleValidationResultsReporter implements ValidationListener {
 
     public SimpleValidationResultsReporter(FormModel formModel,
             Guarded guarded, MessageReceiver messagePane) {
+        Assert.notNull(formModel);
+        Assert.notNull(guarded);
+        Assert.notNull(messagePane);
         this.formModel = formModel;
         this.guarded = guarded;
         this.messageAreaPane = messagePane;

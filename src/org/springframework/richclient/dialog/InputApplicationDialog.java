@@ -99,7 +99,10 @@ public class InputApplicationDialog extends ApplicationDialog {
     private SimpleMessageAreaPane getValidationReporter() {
         if (reporter == null) {
             this.reporter = new SimpleMessageAreaPane();
-            new SimpleValidationResultsReporter(formModel, this, this.reporter);
+            if (this.formModel != null) {
+                new SimpleValidationResultsReporter(formModel, this,
+                        this.reporter);
+            }
         }
         return reporter;
     }
