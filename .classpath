@@ -21,6 +21,7 @@
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-context.jar"/>
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-dao.jar"/>
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-orm.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-aop.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4.jar"/>
