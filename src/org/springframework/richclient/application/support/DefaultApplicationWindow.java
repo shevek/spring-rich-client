@@ -144,8 +144,9 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         }
         else {
             if (!currentPage.getId().equals(pageId)) {
+                final ApplicationPage oldPage = this.currentPage;
                 this.currentPage = createPage(this, pageId);
-                updatePageControl();
+                updatePageControl(oldPage);
             }
         }
     }
@@ -158,9 +159,9 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     /**
      * Factory method for creating the page area managed by this window.
      * Subclasses may override to return a custom page implementation.
-     * 
-     * @param descriptor
-     *            The page descriptor
+     *
+     * @param descriptor The page descriptor
+     *
      * @return The window's page
      */
     protected ApplicationPage createPage(PageDescriptor descriptor) {
@@ -226,8 +227,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return new JFrame();
     }
 
-    protected void updatePageControl() {
-        control.getContentPane().remove(this.currentPage.getControl());
+    protected void updatePageControl(ApplicationPage oldPage) {
+        control.getContentPane().remove(oldPage.getControl());
         control.getContentPane().add(this.currentPage.getControl());
         control.validate();
     }
