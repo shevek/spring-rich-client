@@ -201,11 +201,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         this.formEnabledGuarded = formEnabledGuarded;
     }
 
-    protected void attachGuard(Guarded guarded) {
-        FormGuard guard = new FormGuard(getFormModel(), guarded);
-        addValidationListener(guard);
-    }
-
     protected JButton getDefaultButton() {
         return SwingUtilities.getRootPane(getControl()).getDefaultButton();
     }
@@ -222,9 +217,14 @@ public abstract class AbstractForm extends AbstractControlFactory implements
         this.addFormObjectListener(new FormEnabledStateController());
         ActionCommand commitCommand = getCommitCommand();
         if (getCommitCommand() != null) {
-            attachGuard(getCommitCommand());
+            attachFormErrorGuard(getCommitCommand());
         }
         return formControl;
+    }
+
+    protected void attachFormErrorGuard(Guarded guarded) {
+        FormGuard guard = new FormGuard(getFormModel(), guarded);
+        addValidationListener(guard);
     }
 
     protected abstract JComponent createFormControl();
