@@ -25,7 +25,6 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.dialog.DialogPage;
-import org.springframework.richclient.dialog.MessageAreaChangeListener;
 import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.util.GuiStandardUtils;
@@ -37,8 +36,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Keith Donald
  */
-public class WizardDialog extends TitledApplicationDialog implements WizardContainer, MessageAreaChangeListener,
-        PropertyChangeListener {
+public class WizardDialog extends TitledApplicationDialog implements WizardContainer, PropertyChangeListener {
     private static final String NEXT_MESSAGE_CODE = "wizard.next";
 
     private static final String BACK_MESSAGE_CODE = "wizard.back";
@@ -99,9 +97,7 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
     }
 
     protected Object[] getCommandGroupMembers() {
-        if (!wizard.needsPreviousAndNextButtons()) {
-            return super.getCommandGroupMembers();
-        }
+        if (!wizard.needsPreviousAndNextButtons()) { return super.getCommandGroupMembers(); }
         nextCommand = new ActionCommand("nextCommand") {
             public void doExecuteCommand() {
                 onNext();
@@ -143,11 +139,9 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
     public void showPage(WizardPage page) {
         if (this.currentPage != page) {
             if (this.currentPage != null) {
-                this.currentPage.removeMessageAreaChangeListener(this);
                 this.currentPage.removePropertyChangeListener(this);
             }
             this.currentPage = page;
-            this.currentPage.addMessageAreaChangeListener(this);
             this.currentPage.addPropertyChangeListener(this);
             updateDialog();
             setContentPane(page.getControl());
@@ -162,17 +156,13 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
 
     protected void onBack() {
         WizardPage newPage = currentPage.getPreviousPage();
-        if (newPage == null || newPage == currentPage) {
-            throw new IllegalStateException("No such page.");
-        }
+        if (newPage == null || newPage == currentPage) { throw new IllegalStateException("No such page."); }
         showPage(newPage);
     }
 
     protected void onNext() {
         WizardPage newPage = currentPage.getNextPage();
-        if (newPage == null || newPage == currentPage) {
-            throw new IllegalStateException("No such page.");
-        }
+        if (newPage == null || newPage == currentPage) { throw new IllegalStateException("No such page."); }
         showPage(newPage);
     }
 
@@ -190,9 +180,8 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
      * Updates this dialog's controls to reflect the current page.
      */
     protected void updateDialog() {
-        if (!isControlCreated()) {
-            throw new IllegalStateException("Container controls not initialized - update not allowed.");
-        }
+        if (!isControlCreated()) { throw new IllegalStateException(
+                "Container controls not initialized - update not allowed."); }
 
         // Update the title bar
         updateTitleBar();
@@ -246,12 +235,11 @@ public class WizardDialog extends TitledApplicationDialog implements WizardConta
         return currentPage.canFlipToNextPage();
     }
 
-    public void messageUpdated(MessageAreaModel source) {
-        updateMessage();
-    }
-
     public void propertyChange(PropertyChangeEvent e) {
-        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+        if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+            updateMessage();
+        }
+        else if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
             updateButtons();
         }
         else if (DialogPage.DESCRIPTION_PROPERTY.equals(e.getPropertyName())) {

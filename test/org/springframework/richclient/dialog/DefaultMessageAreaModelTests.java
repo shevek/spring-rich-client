@@ -15,6 +15,9 @@
  */
 package org.springframework.richclient.dialog;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.springframework.rules.reporting.Severity;
 
 import junit.framework.TestCase;
@@ -31,28 +34,34 @@ public class DefaultMessageAreaModelTests extends TestCase {
     public void testAddAndRemoveMessageListener() {
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
 
-        buffer.addMessageAreaChangeListener(ml1);
-        assertTrue(buffer.getMessageListeners().contains(ml1));
-        assertEquals(1, buffer.getMessageListeners().size());
+        buffer.addPropertyChangeListener(ml1);
+        buffer.setMessage("Msg");
+        assertEquals(buffer, ml1.lastUpdated);
+        
+        ml1.lastUpdated = null;
+        buffer.removePropertyChangeListener(ml1);
+        buffer.setMessage("Msg1");
+        assertEquals(null, ml1.lastUpdated);
+        
+        
+        buffer.addPropertyChangeListener(MessageAreaModel.MESSAGE_PROPERTY, ml1);
+        buffer.setMessage("Msg");
+        assertEquals(buffer, ml1.lastUpdated);
+        
+        ml1.lastUpdated = null;
+        buffer.removePropertyChangeListener(MessageAreaModel.MESSAGE_PROPERTY, ml1);
+        buffer.setMessage("Msg1");
+        assertEquals(null, ml1.lastUpdated);
 
-        buffer.addMessageAreaChangeListener(ml2);
-        assertTrue(buffer.getMessageListeners().contains(ml1));
-        assertEquals(2, buffer.getMessageListeners().size());
-
-        buffer.removeMessageAreaChangeListener(ml1);
-        assertFalse(buffer.getMessageListeners().contains(ml1));
-        assertEquals(1, buffer.getMessageListeners().size());
-
-        buffer.removeMessageAreaChangeListener(ml2);
-        assertFalse(buffer.getMessageListeners().contains(ml2));
-        assertTrue(buffer.getMessageListeners().isEmpty());
+        buffer.addPropertyChangeListener("Some Other Property", ml1);
+        buffer.setMessage("Msg");
+        assertEquals(null, ml1.lastUpdated);        
     }
 
     public void testConstructor() {
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
         assertNull(buffer.getMessage());
         assertNull(buffer.getSeverity());
-        assertTrue(buffer.getMessageListeners().isEmpty());
         assertEquals(buffer, buffer.getDelegateFor());
     }
 
@@ -61,7 +70,6 @@ public class DefaultMessageAreaModelTests extends TestCase {
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel(delegateFor);
         assertNull(buffer.getMessage());
         assertNull(buffer.getSeverity());
-        assertTrue(buffer.getMessageListeners().isEmpty());
         assertEquals(delegateFor, buffer.getDelegateFor());
     }
 
@@ -69,8 +77,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         String msg = "Info message";
 
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setMessage(msg);
 
@@ -79,8 +87,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         // with delegate
         DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
         buffer = new DefaultMessageAreaModel(delegate);
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setMessage(msg);
 
@@ -98,8 +106,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         String msg = "Error message";
 
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setErrorMessage(msg);
 
@@ -108,8 +116,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         // with delegate
         DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
         buffer = new DefaultMessageAreaModel(delegate);
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setErrorMessage(msg);
 
@@ -121,8 +129,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         Severity severity = Severity.WARNING;
 
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
@@ -131,8 +139,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         // with delegate
         DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
         buffer = new DefaultMessageAreaModel(delegate);
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
@@ -144,8 +152,8 @@ public class DefaultMessageAreaModelTests extends TestCase {
         Severity severity = Severity.WARNING;
 
         DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
-        buffer.addMessageAreaChangeListener(ml1);
-        buffer.addMessageAreaChangeListener(ml2);
+        buffer.addPropertyChangeListener(ml1);
+        buffer.addPropertyChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
@@ -171,17 +179,13 @@ public class DefaultMessageAreaModelTests extends TestCase {
         ml2 = new TestMessageAreaChangeListener();
     }
 
-    private static class TestMessageAreaChangeListener implements MessageAreaChangeListener {
+    private static class TestMessageAreaChangeListener implements PropertyChangeListener {
 
         private MessageAreaModel lastUpdated;
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.springframework.richclient.dialog.MessageListener#messageUpdated(org.springframework.richclient.dialog.MessageReceiver)
-         */
-        public void messageUpdated(MessageAreaModel source) {
-            this.lastUpdated = source;
+        public void propertyChange(PropertyChangeEvent evt) {
+            this.lastUpdated = (MessageAreaModel) evt.getSource();
+            
         }
 
     }

@@ -23,7 +23,6 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.DefaultMessageAreaModel;
-import org.springframework.richclient.dialog.MessageAreaChangeListener;
 import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
@@ -100,14 +99,5 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
         public void setErrorMessage(String errorMessage) {
             setMessage(errorMessage, Severity.ERROR);
         }
-
-        public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-            messageBuffer.addMessageAreaChangeListener(messageListener);
-        }
-
-        public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-            messageBuffer.removeMessageAreaChangeListener(messageListener);
-        }
     }
-
 }

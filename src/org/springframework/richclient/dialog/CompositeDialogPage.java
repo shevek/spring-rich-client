@@ -156,17 +156,15 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
         Assert.notEmpty(getPages(), "Pages must have been added first");
         for (Iterator i = pages.iterator(); i.hasNext();) {
             DialogPage page = (DialogPage)i.next();
-            page.addMessageAreaChangeListener(new MessageAreaChangeListener() {
-                public void messageUpdated(MessageAreaModel target) {
-                    if (getActivePage() == target) {
-                        updateMessage();
-                    }
-                }
-            });
             page.addPropertyChangeListener(new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e) {
                     if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
                         CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
+                    }
+                    else if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+                        if (getActivePage() == e.getSource()) {
+                            updateMessage();
+                        }
                     }
                     else {
                         CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());

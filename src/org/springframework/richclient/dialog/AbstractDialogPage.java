@@ -17,6 +17,8 @@ package org.springframework.richclient.dialog;
 
 import java.awt.Image;
 import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -29,9 +31,8 @@ import org.springframework.rules.reporting.Severity;
 import org.springframework.util.Assert;
 
 /**
- * A convenience implementation of the DialogPage interface.
- * 
- * Recommended to be used as a base class for all GUI dialog pages (or panes.)
+ * A convenience implementation of the DialogPage interface. Recommended to be
+ * used as a base class for all GUI dialog pages (or panes.)
  * 
  * @author Keith Donald
  * @see DialogPage
@@ -77,6 +78,13 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure) {
         this.messageBuffer = new DefaultMessageAreaModel(this);
+        this.messageBuffer.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                AbstractDialogPage.this.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+            }
+
+        });
         setId(pageId, autoConfigure);
     }
 
@@ -177,14 +185,6 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      */
     public void setErrorMessage(String newMessage) {
         messageBuffer.setErrorMessage(newMessage);
-    }
-
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageBuffer.addMessageAreaChangeListener(messageListener);
-    }
-
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageBuffer.removeMessageAreaChangeListener(messageListener);
     }
 
     public void setVisible(boolean visible) {

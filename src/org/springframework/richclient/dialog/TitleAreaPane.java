@@ -18,6 +18,7 @@ package org.springframework.richclient.dialog;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -133,20 +134,23 @@ public class TitleAreaPane extends AbstractControlFactory implements MessageArea
         messageAreaPane.setMessage(errorMessage, severity);
     }
 
-    public void setErrorMessage(String errorMessage) {
-        messageAreaPane.setErrorMessage(errorMessage);
-    }
-
     public void setMessage(String newMessage) {
         messageAreaPane.setMessage(newMessage);
     }
 
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageAreaPane.addMessageAreaChangeListener(messageListener);
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        messageAreaPane.addPropertyChangeListener(listener);        
     }
 
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageAreaPane.removeMessageAreaChangeListener(messageListener);
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        messageAreaPane.addPropertyChangeListener(propertyName, listener);        
     }
 
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        messageAreaPane.removePropertyChangeListener(listener);        
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        messageAreaPane.removePropertyChangeListener(propertyName, listener);
+    }
 }

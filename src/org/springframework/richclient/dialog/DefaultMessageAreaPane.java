@@ -16,6 +16,8 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -35,9 +37,9 @@ import com.jgoodies.forms.layout.Sizes;
 
 /**
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
-public class DefaultMessageAreaPane extends AbstractControlFactory implements MessageAreaPane,
-        MessageAreaChangeListener {
+public class DefaultMessageAreaPane extends AbstractControlFactory implements MessageAreaPane, PropertyChangeListener {
 
     private static final Log logger = LogFactory.getLog(DefaultMessageAreaPane.class);
 
@@ -51,16 +53,14 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
 
     private Icon defaultIcon = EmptyIcon.SMALL;
 
-    private DefaultMessageAreaModel messageReceiver;
+    private DefaultMessageAreaModel messageAreaModel;
 
     public DefaultMessageAreaPane() {
         this(DEFAULT_LINES_TO_DISPLAY);
     }
 
     public DefaultMessageAreaPane(int linesToDisplay) {
-        this.linesToDisplay = linesToDisplay;
-        this.messageReceiver = new DefaultMessageAreaModel(this);
-        this.messageReceiver.addMessageAreaChangeListener(this);
+        init(linesToDisplay, this);
     }
 
     public DefaultMessageAreaPane(MessageAreaModel delegateFor) {
@@ -68,9 +68,13 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
     }
 
     public DefaultMessageAreaPane(int linesToDisplay, MessageAreaModel delegateFor) {
+        init(linesToDisplay, delegateFor);
+    }
+
+    private void init(int linesToDisplay, MessageAreaModel delegateFor) {
         this.linesToDisplay = linesToDisplay;
-        this.messageReceiver = new DefaultMessageAreaModel(delegateFor);
-        this.messageReceiver.addMessageAreaChangeListener(this);
+        this.messageAreaModel = new DefaultMessageAreaModel(delegateFor);
+        this.messageAreaModel.addPropertyChangeListener(this);
     }
 
     public void setDefaultIcon(Icon defaultIcon) {
@@ -96,36 +100,32 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
     }
 
     public boolean messageShowing() {
-        if (messageLabel == null) {
-            return false;
-        }
+        if (messageLabel == null) { return false; }
         return StringUtils.hasText(messageLabel.getText());
     }
 
     public void setMessage(String newMessage) {
-        messageReceiver.setMessage(newMessage);
+        messageAreaModel.setMessage(newMessage);
     }
 
     public void setInfoMessage(String infoMessage) {
-        messageReceiver.setMessage(infoMessage, Severity.INFO);
+        messageAreaModel.setMessage(infoMessage, Severity.INFO);
     }
 
     public void setWarningMessage(String warningMessage) {
-        messageReceiver.setMessage(warningMessage, Severity.WARNING);
+        messageAreaModel.setMessage(warningMessage, Severity.WARNING);
     }
 
     public void setErrorMessage(String errorMessage) {
-        messageReceiver.setErrorMessage(errorMessage);
+        messageAreaModel.setErrorMessage(errorMessage);
     }
 
     public void setMessage(String message, Severity severity) {
-        messageReceiver.setMessage(message, severity);
+        messageAreaModel.setMessage(message, severity);
     }
 
     private Icon getIcon(Severity severity) {
-        if (severity == null) {
-            return getDefaultIcon();
-        }
+        if (severity == null) { return getDefaultIcon(); }
         try {
             return getIconSource().getIcon("severity." + severity.getCode());
         }
@@ -139,20 +139,28 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         setMessage("");
     }
 
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageReceiver.addMessageAreaChangeListener(messageListener);
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        messageAreaModel.addPropertyChangeListener(listener);
     }
 
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        messageReceiver.removeMessageAreaChangeListener(messageListener);
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        messageAreaModel.addPropertyChangeListener(propertyName, listener);
     }
 
-    public void messageUpdated(MessageAreaModel source) {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        messageAreaModel.removePropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        messageAreaModel.removePropertyChangeListener(propertyName, listener);
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
         if (messageLabel == null) {
             messageLabel = new JLabel();
         }
-        String message = messageReceiver.getMessage();
-        Severity severity = messageReceiver.getSeverity();
+        String message = messageAreaModel.getMessage();
+        Severity severity = messageAreaModel.getSeverity();
         if (StringUtils.hasText(message)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("[Setting message '" + message + ", severity=" + severity + "]");
@@ -165,7 +173,7 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
                 logger.debug("[Clearing message area]");
             }
             messageLabel.setText(" ");
-            messageLabel.setIcon(null);
+            messageLabel.setIcon(getDefaultIcon());
         }
     }
 }

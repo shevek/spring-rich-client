@@ -15,11 +15,10 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.util.Arrays;
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import javax.swing.event.EventListenerList;
-
+import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.ObjectUtils;
 
@@ -39,7 +38,7 @@ public class DefaultMessageAreaModel implements MessageAreaModel {
 
     private Severity severity;
 
-    private EventListenerList listenerList = new EventListenerList();
+    private ListenerListHelper listenerList = new ListenerListHelper(PropertyChangeListener.class);
 
     public DefaultMessageAreaModel() {
         this.delegate = this;
@@ -73,31 +72,33 @@ public class DefaultMessageAreaModel implements MessageAreaModel {
     }
 
     public void setMessage(String message, Severity severity) {
-        if (ObjectUtils.nullSafeEquals(this.message, message) && ObjectUtils.nullSafeEquals(this.severity, severity)) {
-            return;
-        }
+        if (ObjectUtils.nullSafeEquals(this.message, message) && ObjectUtils.nullSafeEquals(this.severity, severity)) { return; }
         this.message = message;
         this.severity = severity;
         fireMessageUpdated();
     }
 
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        listenerList.add(MessageAreaChangeListener.class, messageListener);
-    }
-
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        listenerList.remove(MessageAreaChangeListener.class, messageListener);
-    }
-
     protected void fireMessageUpdated() {
-        MessageAreaChangeListener[] listeners = (MessageAreaChangeListener[])listenerList
-                .getListeners(MessageAreaChangeListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].messageUpdated(delegate);
+        listenerList.fire("propertyChange", new PropertyChangeEvent(delegate, MESSAGE_PROPERTY, null, null));
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        listenerList.add(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        if (MESSAGE_PROPERTY.equals(propertyName)) {
+            listenerList.add(listener);
         }
     }
 
-    protected List getMessageListeners() {
-        return Arrays.asList(listenerList.getListeners(MessageAreaChangeListener.class));
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        listenerList.remove(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        if (MESSAGE_PROPERTY.equals(propertyName)) {
+            listenerList.remove(listener);
+        }
     }
 }

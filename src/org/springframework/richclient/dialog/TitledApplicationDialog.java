@@ -18,6 +18,7 @@ package org.springframework.richclient.dialog;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Window;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -27,7 +28,8 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.StringUtils;
 
-public abstract class TitledApplicationDialog extends ApplicationDialog implements MessageAreaPane {
+public abstract class TitledApplicationDialog extends ApplicationDialog implements MessageAreaPane
+{
 
     private TitleAreaPane titleAreaPane = new TitleAreaPane();
 
@@ -41,14 +43,21 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public TitledApplicationDialog() {
         super();
+        init();
     }
 
     public TitledApplicationDialog(String title, Window parent) {
         super(title, parent);
+        init();
     }
 
     public TitledApplicationDialog(String title, Window parent, CloseAction closeAction) {
         super(title, parent, closeAction);
+        init();
+    }
+    
+    private void init() {
+        
     }
 
     public void setTitleAreaText(String titleAreaText) {
@@ -90,14 +99,6 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public void setErrorMessage(String message) {
         setMessage(message, Severity.ERROR);
-    }
-
-    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        titleAreaPane.addMessageAreaChangeListener(messageListener);
-    }
-
-    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
-        titleAreaPane.removeMessageAreaChangeListener(messageListener);
     }
 
     public void updateDescription() {
@@ -149,5 +150,21 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public void setResetMessagePaneOnDisplay(boolean reset) {
         this.resetMessagePaneOnDisplay = reset;
+    }
+    
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        titleAreaPane.addPropertyChangeListener(listener);        
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        titleAreaPane.addPropertyChangeListener(propertyName, listener);        
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        titleAreaPane.removePropertyChangeListener(listener);        
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        titleAreaPane.removePropertyChangeListener(propertyName, listener);
     }
 }

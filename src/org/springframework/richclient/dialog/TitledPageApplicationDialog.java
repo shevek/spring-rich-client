@@ -59,18 +59,16 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
 
     protected JComponent createTitledDialogContentPane() {
         Assert.notNull(dialogPage);
-        dialogPage.addMessageAreaChangeListener(new MessageAreaChangeListener() {
-            public void messageUpdated(MessageAreaModel source) {
-                update();
-            }
-        });
         dialogPage.addPropertyChangeListener(this);
         update();
         return dialogPage.getControl();
     }
 
     public void propertyChange(PropertyChangeEvent e) {
-        if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+        if (MessageAreaModel.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+            update();
+        }
+        else if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
             setEnabled(dialogPage.isPageComplete());
         }
         else {
