@@ -26,6 +26,7 @@ import javax.swing.JMenuItem;
 import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
 
 /**
@@ -33,6 +34,7 @@ import org.springframework.util.ToStringCreator;
  */
 public class CommandButtonIconInfo implements ButtonConfigurer,
         VisualizedElement {
+
     public static final CommandButtonIconInfo BLANK_ICON_INFO = new CommandButtonIconInfo(
             null);
 
@@ -78,12 +80,10 @@ public class CommandButtonIconInfo implements ButtonConfigurer,
             button.setDisabledIcon(null);
             button.setPressedIcon(null);
             button.setRolloverIcon(null);
-        }
-        else if (button instanceof JMenuItem) {
+        } else if (button instanceof JMenuItem) {
             button.setIcon(icon);
             button.setDisabledIcon(disabledIcon);
-        }
-        else {
+        } else {
             // jbutton or togglebuttons
             button.setIcon(icon);
             button.setSelectedIcon(selectedIcon);
@@ -96,9 +96,8 @@ public class CommandButtonIconInfo implements ButtonConfigurer,
 
     public Image getImage() {
         if (getIcon() instanceof ImageIcon) {
-            return ((ImageIcon)getIcon()).getImage();
-        }
-        else {
+            return ((ImageIcon) getIcon()).getImage();
+        } else {
             return null;
         }
     }
@@ -146,4 +145,32 @@ public class CommandButtonIconInfo implements ButtonConfigurer,
     public String toString() {
         return new ToStringCreator(this).appendProperties().toString();
     }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof CommandButtonIconInfo)) {
+            return false;
+        }
+        CommandButtonIconInfo other = (CommandButtonIconInfo) o;
+        return ObjectUtils.nullSafeEquals(icon, other.icon)
+                && ObjectUtils.nullSafeEquals(disabledIcon, other.disabledIcon)
+                && ObjectUtils.nullSafeEquals(pressedIcon, other.pressedIcon)
+                && ObjectUtils.nullSafeEquals(rolloverIcon, other.rolloverIcon)
+                && ObjectUtils.nullSafeEquals(selectedIcon, other.selectedIcon);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + (icon == null ? 0 : icon.hashCode());
+        hash = hash * 31 + (disabledIcon == null ? 0 : disabledIcon.hashCode());
+        hash = hash * 31 + (pressedIcon == null ? 0 : pressedIcon.hashCode());
+        hash = hash * 31 + (rolloverIcon == null ? 0 : rolloverIcon.hashCode());
+        hash = hash * 31 + (selectedIcon == null ? 0 : selectedIcon.hashCode());
+        return hash;
+    }
+
 }
