@@ -36,6 +36,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -47,59 +49,62 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 /**
- * A panel builder that provides the capability to quickly build grid 
- * based forms.  The builder allows for layout to be defined in a way 
- * that will be familiar to anyone used to HTML tables and JGoodies 
- * Forms. 
- * 
- * Key features:
+ * A panel builder that provides the capability to quickly build grid based
+ * forms. The builder allows for layout to be defined in a way that will be
+ * familiar to anyone used to HTML tables and JGoodies Forms. Key features:
  * <ul>
- * <li>unlike HTML cells automatically span all empty columns to the right. 
+ * <li>unlike HTML, cells automatically span all empty columns to the right.
  * This can be disabled by setting "colSpan=1"</li>
- * <li>support for gap rows and columns. You don't need to keep track 
- * of gap rows or columns when specifying row or column spans</li>
- * <li>need only define colSpec and rowSpec when it varies from the 
- * default. Save you having to work out column specs before you 
- * start laying out the form</li>
+ * <li>support for gap rows and columns. You don't need to keep track of gap
+ * rows or columns when specifying row or column spans</li>
+ * <li>need only define colSpec and rowSpec when it varies from the default.
+ * Save you having to work out column specs before you start laying out the 
+ * form</li>
+ * <li>rows and columns can be aliased with a group ID which save you having 
+ * to keep track of row or column indexes for grouping. This also makes 
+ * grouping less fragile when the table layout changes</li>
  * </ul>
+ * <strong>Example: </strong> <br>
  * 
- * <strong>Example:</strong><br>
- * <pre> 
- * TablePanelBuilder table = new TablePanelBuilder();        
- *       table
- *           .row()
- *               .separator("General 1")
- *           .row()
- *               .cell(new JLabel("Company"), "colSpec=right:max(2cm;pref)")
- *               .labelGapCol()
- *               .cell(new JFormattedTextField())
- *           .row()
- *               .cell(new JLabel("Contact"))
- *               .cell(new JFormattedTextField())      
- *            .unrelatedGapRow()
- *               .separator("Propeller")
- *            .row()
- *               .cell(new JLabel("PTI [kW]"))
- *               .cell(new JFormattedTextField())
- *               .unrelatedGapCol()
- *               .cell(new JLabel("Description"), "colSpec=right:pref")
- *               .labelGapCol()
- *               .cell(new JScrollPane(new JTextArea()), "rowspan=3")
- *           .row()
- *              .cell(new JLabel("R [mm]"))
- *              .cell(new JFormattedTextField())
- *              .cell()
- *           .row()   
- *              .cell(new JLabel("D [mm]"))
- *              .cell(new JFormattedTextField())
- *              .cell();
- *
- *       table.getPanel();
+ * <pre>
+ *    TablePanelBuilder table = new TablePanelBuilder();
+ *    table
+ *       .row()
+ *           .separator("General 1")
+ *       .row()
+ *           .cell(new JLabel("Company"),"colSpec=right:pref colGrId=labels")
+ *           .labelGapCol()
+ *           .cell(new JFormattedTextField())
+ *       .row()
+ *           .cell(new JLabel("Contact"))
+ *           .cell(new JFormattedTextField())
+ *       .unrelatedGapRow()
+ *           .separator("Propeller")
+ *       .row()
+ *           .cell(new JLabel("PTI [kW]"))
+ *           .cell(new JFormattedTextField())
+ *           .unrelatedGapCol()
+ *           .cell(new JLabel("Description"), "colSpec=right:pref colGrId=labels")
+ *           .labelGapCol()
+ *           .cell(new JScrollPane(new JTextArea()), "rowspan=3")
+ *       .row()
+ *           .cell(new JLabel("R [mm]"))
+ *           .cell(new JFormattedTextField())
+ *           .cell()
+ *       .row()
+ *           .cell(new JLabel("D [mm]"))
+ *           .cell(new JFormattedTextField())
+ *           .cell();
+ * 
+ *    table.getPanel();
  * </pre>
  * 
  * @author oliverh
  */
 public class TablePanelBuilder {
+
+    private static final Log logger = LogFactory
+            .getLog(TablePanelBuilder.class);
 
     private static final String VALIGN = "valign";
 
@@ -113,6 +118,10 @@ public class TablePanelBuilder {
 
     private static final String COLSPAN = "colspan";
 
+    private static final String ROWGROUPID = "rowgrid";
+
+    private static final String COLGROUPID = "colgrid";
+
     private List rowSpecs = new ArrayList();
 
     private List rowBitsSets = new ArrayList();
@@ -122,6 +131,14 @@ public class TablePanelBuilder {
     private Map gapCols = new HashMap();
 
     private Map gapRows = new HashMap();
+
+    private Map rowGroups = new HashMap();
+
+    private Map colGroups = new HashMap();
+
+    private int[][] adjustedColGroupIndices;
+
+    private int[][] adjustedRowGroupIndices;
 
     private InternalCellConstraints lastCC = null;
 
@@ -133,13 +150,18 @@ public class TablePanelBuilder {
 
     private Map items = new HashMap();
 
+    private FormLayout layout;
+
     private JPanel panel;
     
+//    private List focusOrder; 
+
     public TablePanelBuilder() {
         this(new JPanel());
     }
-    
+
     public TablePanelBuilder(JPanel panel) {
+        this.layout = new FormLayout(new ColumnSpec[0], new RowSpec[0]);
         this.panel = panel;
     }
 
@@ -232,10 +254,35 @@ public class TablePanelBuilder {
         if (columnSpec != null) {
             setColumnSpec(currentCol, columnSpec);
         }
+        addRowGroup(getAttribute(ROWGROUPID, attributeMap, null));
+        addColGroup(getAttribute(COLGROUPID, attributeMap, null));
+
         InternalCellConstraints cc = getCellConstraints(attributeMap);
         currentCol = cc.endCol < cc.startCol ? cc.startCol : cc.endCol;
         markContained(cc);
         return cc;
+    }
+
+    private void addRowGroup(String groupId) {
+        if (StringUtils.hasText(groupId)) {
+            Set group = (Set)rowGroups.get(groupId);
+            if (group == null) {
+                group = new HashSet();
+                rowGroups.put(groupId, group);
+            }
+            group.add(new Integer(currentRow));
+        }
+    }
+
+    private void addColGroup(String groupId) {
+        if (StringUtils.hasText(groupId)) {
+            Set group = (Set)colGroups.get(groupId);
+            if (group == null) {
+                group = new HashSet();
+                colGroups.put(groupId, group);
+            }
+            group.add(new Integer(currentCol));
+        }
     }
 
     private void setRowSpec(int row, RowSpec rowSpec) {
@@ -297,7 +344,7 @@ public class TablePanelBuilder {
                 rowBitsSets.add(new BitSet());
             }
         }
-        return (BitSet) rowBitsSets.get(row);
+        return (BitSet)rowBitsSets.get(row);
     }
 
     private void markContained(InternalCellConstraints cc) {
@@ -315,7 +362,7 @@ public class TablePanelBuilder {
             colSpan = Integer.parseInt(getAttribute(COLSPAN, attributes, "-1"));
         }
         catch (NumberFormatException e) {
-            throw new UnsupportedOperationException(
+            throw new IllegalArgumentException(
                     "Attribute 'colspan' must be an integer.");
         }
         int rowSpan;
@@ -323,7 +370,7 @@ public class TablePanelBuilder {
             rowSpan = Integer.parseInt(getAttribute(ROWSPAN, attributes, "1"));
         }
         catch (NumberFormatException e) {
-            throw new UnsupportedOperationException(
+            throw new IllegalArgumentException(
                     "Attribute 'rowspan' must be an integer.");
         }
 
@@ -333,7 +380,7 @@ public class TablePanelBuilder {
 
     private void fixColSpans() {
         for (Iterator i = items.values().iterator(); i.hasNext();) {
-            InternalCellConstraints cc = (InternalCellConstraints) i.next();
+            InternalCellConstraints cc = (InternalCellConstraints)i.next();
             if (cc.endCol < cc.startCol) {
                 int endCol = cc.startCol;
                 BitSet currentColCells = getRowBitSet(cc.startRow);
@@ -350,7 +397,7 @@ public class TablePanelBuilder {
         List adjustedCols = new ArrayList();
         int adjustedCol = 0;
         for (int col = 0; col < maxColumns; col++, adjustedCol++) {
-            ColumnSpec colSpec = (ColumnSpec) gapCols.get(new Integer(col));
+            ColumnSpec colSpec = (ColumnSpec)gapCols.get(new Integer(col));
             if (colSpec != null) {
                 columnSpecs.add(adjustedCol, colSpec);
                 adjustedCol++;
@@ -361,7 +408,7 @@ public class TablePanelBuilder {
         int adjustedRow = 0;
         int numRows = rowSpecs.size();
         for (int row = 0; row < numRows; row++, adjustedRow++) {
-            RowSpec rowSpec = (RowSpec) gapRows.get(new Integer(row));
+            RowSpec rowSpec = (RowSpec)gapRows.get(new Integer(row));
             if (rowSpec != null) {
                 rowSpecs.add(adjustedRow, rowSpec);
                 adjustedRow++;
@@ -369,15 +416,52 @@ public class TablePanelBuilder {
             adjustedRows.add(new Integer(adjustedRow + 1));
         }
         for (Iterator i = items.values().iterator(); i.hasNext();) {
-            InternalCellConstraints cc = (InternalCellConstraints) i.next();
-            cc.startCol = ((Integer) adjustedCols.get(cc.startCol - 1))
+            InternalCellConstraints cc = (InternalCellConstraints)i.next();
+            cc.startCol = ((Integer)adjustedCols.get(cc.startCol - 1))
                     .intValue();
-            cc.endCol = ((Integer) adjustedCols.get(cc.endCol - 1)).intValue();
-            cc.startRow = ((Integer) adjustedRows.get(cc.startRow - 1))
+            cc.endCol = ((Integer)adjustedCols.get(cc.endCol - 1)).intValue();
+            cc.startRow = ((Integer)adjustedRows.get(cc.startRow - 1))
                     .intValue();
-            cc.endRow = ((Integer) adjustedRows.get(cc.endRow - 1)).intValue();
+            cc.endRow = ((Integer)adjustedRows.get(cc.endRow - 1)).intValue();
+        }
+        adjustedColGroupIndices = new int[colGroups.size()][];
+        int groupsCount = 0;
+        for (Iterator i = colGroups.values().iterator(); i.hasNext();) {
+            Set group = (Set)i.next();
+            adjustedColGroupIndices[groupsCount] = new int[group.size()];
+            int groupCount = 0;
+            for (Iterator j = group.iterator(); j.hasNext();) {
+                adjustedColGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedCols
+                        .get(((Integer)j.next()).intValue() - 1)).intValue();
+            }
+            groupsCount++;
+        }
+
+        adjustedRowGroupIndices = new int[rowGroups.size()][];
+        groupsCount = 0;
+        for (Iterator i = rowGroups.values().iterator(); i.hasNext();) {
+            Set group = (Set)i.next();
+            adjustedRowGroupIndices[groupsCount] = new int[group.size()];
+            int groupCount = 0;
+            for (Iterator j = group.iterator(); j.hasNext();) {
+                adjustedRowGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedRows
+                        .get(((Integer)j.next()).intValue() - 1)).intValue();
+            }
+            groupsCount++;
         }
     }
+    
+//    private void buildFocusOrder() {
+//        focusOrder = new ArrayList(items.size());
+//        for (Iterator i = items.values().iterator(); i.hasNext();) {
+//             Object o = i.next();
+//             if (o instanceof JComponent) {
+//                 focusOrder.add(o);
+//             }            
+//        }
+//        Collections.reverse(focusOrder);
+//    }
+    
 
     public JPanel getPanel() {
         maxColumns = Math.max(maxColumns, currentCol);
@@ -388,24 +472,46 @@ public class TablePanelBuilder {
             setRowSpec(currentRow, getDefaultRowSpec());
         }
         fixColSpans();
-        fillInGaps();
-        FormLayout layout = new FormLayout((ColumnSpec[]) columnSpecs
-                .toArray(new ColumnSpec[0]), (RowSpec[]) rowSpecs
-                .toArray(new RowSpec[0]));
-        PanelBuilder builder = new PanelBuilder(
-                panel,
-                layout);
+        fillInGaps();        
+        for (Iterator i = columnSpecs.iterator(); i.hasNext();) {
+            layout.appendColumn((ColumnSpec)i.next());
+        }
+        for (Iterator i = rowSpecs.iterator(); i.hasNext();) {
+            layout.appendRow((RowSpec)i.next());
+        }
+        layout.setColumnGroups(adjustedColGroupIndices);
+        layout.setRowGroups(adjustedRowGroupIndices);
+        
+//        buildFocusOrder();
+//        panel.setFocusTraversalPolicy(new SortingFocusTraversalPolicy(new Comparator() {
+//
+//            public int compare(Object c1, Object c2) {
+//                int offset1 = focusOrder.indexOf(c1);
+//                if (offset1 < 0) {
+//                    System.out.println("Unknow comp1 " + c1);
+//                }
+//                int offset2 = focusOrder.indexOf(c2);
+//                if (offset2 < 0) {
+//                    System.out.println("Unknow comp2 " + c2);
+//                }
+//                
+//                return offset2-offset1;
+//            }
+//            
+//        }));
+        
+        PanelBuilder builder = new PanelBuilder(panel, layout);
         builder.setDefaultDialogBorder();
         for (Iterator i = items.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry entry = (Map.Entry)i.next();
             if (entry.getKey() instanceof JComponent) {
-                builder.add((JComponent) entry.getKey(),
-                        ((InternalCellConstraints) entry.getValue())
+                builder.add((JComponent)entry.getKey(),
+                        ((InternalCellConstraints)entry.getValue())
                                 .getCellConstraints());
             }
             else {
-                builder.addSeparator((String) entry.getKey(),
-                        ((InternalCellConstraints) entry.getValue())
+                builder.addSeparator((String)entry.getKey(),
+                        ((InternalCellConstraints)entry.getValue())
                                 .getCellConstraints());
             }
         }
@@ -429,11 +535,13 @@ public class TablePanelBuilder {
         allowedAttributes.add(ROWSPEC);
         allowedAttributes.add(ALIGN);
         allowedAttributes.add(VALIGN);
+        allowedAttributes.add(ROWGROUPID);
+        allowedAttributes.add(COLGROUPID);
     }
 
     private String getAttribute(String name, Map attributeMap,
             String defaultValue) {
-        String value = (String) attributeMap.get(name);
+        String value = (String)attributeMap.get(name);
         if (value == null) {
             value = defaultValue;
         }
@@ -452,15 +560,15 @@ public class TablePanelBuilder {
             st.quoteChar('"');
             st.quoteChar('\'');
             st.ordinaryChar('=');
-            
+
             String name = null;
             boolean needEquals = false;
-            
+
             while (st.nextToken() != StreamTokenizer.TT_EOF) {
                 if (name == null && st.ttype == StreamTokenizer.TT_WORD) {
                     name = st.sval;
-                    if (!allowedAttributes.contains(name.toLowerCase())) { throw new UnsupportedOperationException(
-                            "Attribute name '" + name + "' not recognised."); }                    
+                    if (!allowedAttributes.contains(name.toLowerCase())) { throw new IllegalArgumentException(
+                            "Attribute name '" + name + "' not recognised."); }
                     needEquals = true;
                 }
                 else if (needEquals && st.ttype == '=') {
@@ -468,21 +576,23 @@ public class TablePanelBuilder {
                 }
                 else if (name != null
                         && (st.ttype == StreamTokenizer.TT_WORD || st.ttype == '\''
-                                | st.ttype == '"')) {                    
+                                | st.ttype == '"')) {
                     attributeMap.put(name.toLowerCase(), st.sval);
                     name = null;
-                }                
+                }
                 else {
-                    throw new UnsupportedOperationException(
+                    throw new IllegalArgumentException(
                             "Expecting '=' but found '" + st.sval + "'");
                 }
             }
-            if (needEquals || name != null) { throw new UnsupportedOperationException(
+            if (needEquals || name != null) { throw new IllegalArgumentException(
                     "Premature end of string. Expecting "
-                            + (needEquals ? " '='." : " value for attribute '" + name + "'.")); }
+                            + (needEquals ? " '='." : " value for attribute '"
+                                    + name + "'.")); }
         }
         catch (IOException e) {
-            throw new UnsupportedOperationException(e.getMessage());
+            throw new UnsupportedOperationException(
+                    "Encounterd unexpected IOException. " + e.getMessage());
         }
 
         return attributeMap;
@@ -512,7 +622,7 @@ public class TablePanelBuilder {
                     - startCol + 1, endRow - startRow + 1, align);
         }
     }
-    
+
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setTitle("Layout Fun");
@@ -525,32 +635,35 @@ public class TablePanelBuilder {
 
     private static JComponent buildPanel() {
 
-        TablePanelBuilder table = new TablePanelBuilder(new FormDebugPanel(true, false));        
+        TablePanelBuilder table = new TablePanelBuilder(new FormDebugPanel(
+                true, false));
         table
             .row()
                 .separator("General 1")
             .row()
-                .cell(new JLabel("Company"), "colSpec=right:pref")
+                .cell(new JLabel("Company"),"colSpec=right:pref colGrId=labels")
                 .labelGapCol()
                 .cell(new JFormattedTextField())
             .row()
                 .cell(new JLabel("Contact"))
-                .cell(new JFormattedTextField())      
-             .unrelatedGapRow()
+                .cell(new JFormattedTextField())
+                .unrelatedGapRow()
                 .separator("Propeller")
-             .row()
+            .row()
                 .cell(new JLabel("PTI [kW]"))
                 .cell(new JFormattedTextField())
                 .unrelatedGapCol()
-                .cell(new JLabel("Description"), "colSpec=right:pref")
+                .cell(new JLabel("Description"), "colSpec=right:pref colGrId=labels")
                 .labelGapCol()
                 .cell(new JScrollPane(new JTextArea()), "rowspan=3")
             .row()
-               .cell(new JLabel("R [mm]"))
-               .cell(new JFormattedTextField()).cell()
-            .row()   
-               .cell(new JLabel("D [mm]"))
-               .cell(new JFormattedTextField()).cell();
+                .cell(new JLabel("R [mm]"))
+                .cell(new JFormattedTextField())
+                .cell()
+            .row()
+                .cell(new JLabel("D [mm]"))
+                .cell(new JFormattedTextField())
+                .cell();
 
         return table.getPanel();
     }
