@@ -23,10 +23,6 @@ import org.springframework.richclient.command.config.CommandFaceDescriptorRegist
  */
 public interface CommandManager extends CommandServices, CommandRegistry,
         CommandFaceDescriptorRegistry, CommandConfigurer, CommandFactory {
-    public void addNewCommand(AbstractCommand command);
-
-    public void addNewCommand(AbstractCommand command, String faceDescriptorKey);
-
     public void addCommandInterceptor(String commandId,
             ActionCommandInterceptor interceptor);
 

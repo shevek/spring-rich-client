@@ -35,169 +35,160 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
 
 public class CommandFaceButtonManager implements PropertyChangeListener {
-    private ReferenceQueue queue = new ReferenceQueue();
+	private ReferenceQueue queue = new ReferenceQueue();
 
-    private Set buttons = new HashSet(6);
+	private Set buttons = new HashSet(6);
 
-    private AbstractCommand command;
+	private AbstractCommand command;
 
-    private String faceDescriptorId;
+	private String faceDescriptorId;
 
-    private CommandFaceDescriptor faceDescriptor;
+	private CommandFaceDescriptor faceDescriptor;
 
-    private CommandFaceDescriptorRegistry faceDescriptorRegistry;
+	private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
-    private static class ManagedButton {
-        private WeakReference buttonHolder;
+	private static class ManagedButton {
+		private WeakReference buttonHolder;
 
-        private CommandButtonConfigurer buttonConfigurer;
+		private CommandButtonConfigurer buttonConfigurer;
 
-        public ManagedButton(AbstractButton button,
-                CommandButtonConfigurer buttonConfigurer, ReferenceQueue queue) {
-            this.buttonHolder = new WeakReference(button, queue);
-            this.buttonConfigurer = buttonConfigurer;
-        }
+		public ManagedButton(AbstractButton button, CommandButtonConfigurer buttonConfigurer, ReferenceQueue queue) {
+			this.buttonHolder = new WeakReference(button, queue);
+			this.buttonConfigurer = buttonConfigurer;
+		}
 
-        public AbstractButton getButton() {
-            return (AbstractButton)buttonHolder.get();
-        }
+		public AbstractButton getButton() {
+			return (AbstractButton)buttonHolder.get();
+		}
 
-        public boolean equals(Object o) {
-            return ObjectUtils.nullSafeEquals(getButton(), ((ManagedButton)o)
-                    .getButton());
-        }
+		public boolean equals(Object o) {
+			return ObjectUtils.nullSafeEquals(getButton(), ((ManagedButton)o).getButton());
+		}
 
-        public int hashCode() {
-            return getButton().hashCode();
-        }
-    }
+		public int hashCode() {
+			return getButton().hashCode();
+		}
+	}
 
-    public CommandFaceButtonManager(AbstractCommand command,
-            String faceDescriptorKey) {
-        Assert.notNull(command,
-                "The command to manage buttons for cannot be null");
-        Assert
-                .hasText(faceDescriptorKey,
-                        "The face descriptor key is required");
-        this.command = command;
-        this.faceDescriptorId = faceDescriptorKey;
-    }
+	public CommandFaceButtonManager(AbstractCommand command, String faceDescriptorKey) {
+		Assert.notNull(command, "The command to manage buttons for cannot be null");
+		Assert.hasText(faceDescriptorKey, "The face descriptor key is required");
+		this.command = command;
+		this.faceDescriptorId = faceDescriptorKey;
+	}
 
-    public CommandFaceButtonManager(AbstractCommand command,
-            CommandFaceDescriptor faceDescriptor) {
-        this.command = command;
-        setFaceDescriptor(faceDescriptor);
-    }
+	public CommandFaceButtonManager(AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
+		this.command = command;
+		setFaceDescriptor(faceDescriptor);
+	}
 
-    public CommandFaceDescriptor getFaceDescriptor() {
-        return faceDescriptor;
-    }
+	public void setFaceDescriptor(CommandFaceDescriptor faceDescriptor) {
+		Assert.notNull(faceDescriptor, "The face descriptor for managing command button appearance is required");
+		if (!ObjectUtils.nullSafeEquals(this.faceDescriptor, faceDescriptor)) {
+			if (this.faceDescriptor != null) {
+				this.faceDescriptor.removePropertyChangeListener(this);
+			}
+			this.faceDescriptor = faceDescriptor;
+			this.faceDescriptor.addPropertyChangeListener(this);
+			propertyChange(null);
+		}
+	}
 
-    public void setFaceDescriptor(CommandFaceDescriptor faceDescriptor) {
-        Assert
-                .notNull(faceDescriptor,
-                        "The face descriptor for managing command button appearance is required");
-        if (!ObjectUtils.nullSafeEquals(this.faceDescriptor, faceDescriptor)) {
-            if (this.faceDescriptor != null) {
-                this.faceDescriptor.removePropertyChangeListener(this);
-            }
-            this.faceDescriptor = faceDescriptor;
-            this.faceDescriptor.addPropertyChangeListener(this);
-        }
-    }
+	public CommandFaceDescriptor getFaceDescriptor() {
+		if (this.faceDescriptor == null) {
+			setFaceDescriptor(getFaceDescriptor(this.faceDescriptorId));
+		}
+		return faceDescriptor;
+	}
 
-    public boolean isFaceSet() {
-        return this.faceDescriptor != null;
-    }
+	private CommandFaceDescriptor getFaceDescriptor(String faceDescriptorId) {
+		if (command.getFaceDescriptorRegistry() != null) {
+			return command.getFaceDescriptorRegistry().getFaceDescriptor(command, faceDescriptorId);
+		}
+		else {
+			return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+		}
+	}
 
-    public void attachAndConfigure(AbstractButton button,
-            CommandButtonConfigurer strategy) {
-        Assert
-                .notNull(button,
-                        "The button to attach and configure is required");
-        Assert.notNull(strategy,
-                "The button configuration strategy is required");
-        cleanUp();
-        ManagedButton managedButton = new ManagedButton(button, strategy, queue);
-        if (buttons.add(managedButton)) {
-            configure(button, strategy);
-        }
-    }
+	public boolean isFaceConfigured() {
+		return this.faceDescriptor != null && this.faceDescriptor != CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+	}
 
-    private void cleanUp() {
-        Reference reference;
-        while ((reference = this.queue.poll()) != null) {
-            buttons.remove(reference.get());
-        }
-    }
+	public void attachAndConfigure(AbstractButton button, CommandButtonConfigurer strategy) {
+		Assert.notNull(button, "The button to attach and configure is required");
+		Assert.notNull(strategy, "The button configuration strategy is required");
+		cleanUp();
+		ManagedButton managedButton = new ManagedButton(button, strategy, queue);
+		if (buttons.add(managedButton)) {
+			configure(button, strategy);
+		}
+	}
 
-    protected void configure(AbstractButton button,
-            CommandButtonConfigurer strategy) {
-        if (this.faceDescriptor == null) {
-            this.faceDescriptor = getFaceDescriptor(faceDescriptorId);
-        }
-        this.faceDescriptor.configure(button, command, strategy);
-    }
+	private void cleanUp() {
+		Reference reference;
+		while ((reference = this.queue.poll()) != null) {
+			buttons.remove(reference.get());
+		}
+	}
 
-    protected CommandFaceDescriptor getFaceDescriptor(String faceDescriptorKey) {
-        return command.getFaceDescriptorRegistry().getFaceDescriptor(command,
-                faceDescriptorKey);
-    }
+	protected void configure(AbstractButton button, CommandButtonConfigurer strategy) {
+		getFaceDescriptor().configure(button, command, strategy);
+	}
 
-    public void detach(AbstractButton button) {
-        buttons.remove(button);
-    }
+	public void detach(AbstractButton button) {
+		buttons.remove(button);
+	}
 
-    public void detachAll() {
-        buttons.clear();
-    }
+	public void detachAll() {
+		buttons.clear();
+	}
 
-    public boolean isAttachedTo(AbstractButton button) {
-        return buttons.contains(button);
-    }
+	public boolean isAttachedTo(AbstractButton button) {
+		return buttons.contains(button);
+	}
 
-    public Iterator iterator() {
-        return new ButtonIterator(buttons.iterator());
-    }
+	public Iterator iterator() {
+		return new ButtonIterator(buttons.iterator());
+	}
 
-    private static class ButtonIterator implements Iterator {
-        private Iterator it;
+	private static class ButtonIterator implements Iterator {
+		private Iterator it;
 
-        public ButtonIterator(Iterator it) {
-            this.it = it;
-        }
+		public ButtonIterator(Iterator it) {
+			this.it = it;
+		}
 
-        public boolean hasNext() {
-            return it.hasNext();
-        }
+		public boolean hasNext() {
+			return it.hasNext();
+		}
 
-        public Object next() {
-            ManagedButton mb = ((ManagedButton)it.next());
-            return mb.getButton();
-        }
+		public Object next() {
+			ManagedButton mb = ((ManagedButton)it.next());
+			return mb.getButton();
+		}
 
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-    };
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	};
 
-    public void propertyChange(PropertyChangeEvent e) {
-        Iterator it = buttons.iterator();
-        while (it.hasNext()) {
-            ManagedButton mb = (ManagedButton)it.next();
-            Assert.notNull(mb, "Managed button reference cannot be null");
-            if (mb.getButton() == null) {
-                it.remove();
-            }
-            else {
-                configure(mb.getButton(), mb.buttonConfigurer);
-            }
-        }
-    }
+	public void propertyChange(PropertyChangeEvent e) {
+		Iterator it = buttons.iterator();
+		while (it.hasNext()) {
+			ManagedButton mb = (ManagedButton)it.next();
+			Assert.notNull(mb, "Managed button reference cannot be null");
+			if (mb.getButton() == null) {
+				it.remove();
+			}
+			else {
+				configure(mb.getButton(), mb.buttonConfigurer);
+			}
+		}
+	}
 
-    public String toString() {
-        return new ToStringCreator(this).append("commandId", command.getId())
-                .append("faceDescriptor", faceDescriptor).toString();
-    }
+	public String toString() {
+		return new ToStringCreator(this).append("commandId", command.getId()).append("faceDescriptor", faceDescriptor)
+				.append("attachedButtonCount", buttons.size()).toString();
+	}
 
 }

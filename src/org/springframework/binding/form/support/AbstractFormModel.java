@@ -20,8 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
@@ -39,220 +37,207 @@ import org.springframework.util.Assert;
 /**
  * @author Oliver Hutchison
  */
-public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
-        implements NestableFormModel {
+public abstract class AbstractFormModel extends AbstractPropertyChangePublisher implements NestableFormModel {
+	private NestingFormModel parent;
 
-    protected final Log logger = LogFactory.getLog(getClass());
+	private RulesSource rulesSource;
 
-    private NestingFormModel parent;
+	private boolean bufferChanges = true;
 
-    private RulesSource rulesSource;
+	private boolean enabled = true;
 
-    private boolean bufferChanges = true;
+	private MutablePropertyAccessStrategy domainObjectAccessStrategy;
 
-    private boolean enabled = true;
+	private Set commitListeners;
 
-    private MutablePropertyAccessStrategy domainObjectAccessStrategy;
+	protected AbstractFormModel() {
+	}
 
-    private Set commitListeners;
+	protected AbstractFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
+		this.domainObjectAccessStrategy = domainObjectAccessStrategy;
+	}
 
-    protected AbstractFormModel() {
-    }
+	public Object getFormObject() {
+		return getPropertyAccessStrategy().getDomainObject();
+	}
 
-    protected AbstractFormModel(
-            MutablePropertyAccessStrategy domainObjectAccessStrategy) {
-        this.domainObjectAccessStrategy = domainObjectAccessStrategy;
-    }
+	public void setFormObject(Object formObject) {
+		if (formObject == null) {
+			handleSetNullFormObject();
+		}
+		else {
+			getFormObjectHolder().setValue(formObject);
+		}
+	}
 
-    public Object getFormObject() {
-        return getPropertyAccessStrategy().getDomainObject();
-    }
+	protected void handleSetNullFormObject() {
+		if (logger.isInfoEnabled()) {
+			logger.info("New form object value is null; resetting to a new fresh object instance and disabling form");
+		}
+		reset();
+		setEnabled(false);
+	}
 
-    public void setFormObject(Object formObject) {
-        if (formObject == null) {
-            handleSetNullFormObject();
-        }
-        else {
-            getFormObjectHolder().setValue(formObject);
-        }
-    }
+	public ValueModel getFormObjectHolder() {
+		return getPropertyAccessStrategy().getDomainObjectHolder();
+	}
 
-    protected void handleSetNullFormObject() {
-        if (logger.isInfoEnabled()) {
-            logger
-                    .info("New form object value is null; resetting to a new fresh object instance and disabling form");
-        }
-        reset();
-        setEnabled(false);
-    }
+	protected Class getFormObjectClass() {
+		return getPropertyAccessStrategy().getDomainObject().getClass();
+	}
 
-    public ValueModel getFormObjectHolder() {
-        return getPropertyAccessStrategy().getDomainObjectHolder();
-    }
+	public NestingFormModel getParent() {
+		return parent;
+	}
 
-    protected Class getFormObjectClass() {
-        return getPropertyAccessStrategy().getDomainObject().getClass();
-    }
+	public void setParent(NestingFormModel parent) {
+		this.parent = parent;
+	}
 
-    public NestingFormModel getParent() {
-        return parent;
-    }
+	public RulesSource getRulesSource() {
+		return rulesSource;
+	}
 
-    public void setParent(NestingFormModel parent) {
-        this.parent = parent;
-    }
+	public void setRulesSource(RulesSource rulesSource) {
+		this.rulesSource = rulesSource;
+	}
 
-    public RulesSource getRulesSource() {
-        return rulesSource;
-    }
+	public boolean getBufferChangesDefault() {
+		return bufferChanges;
+	}
 
-    public void setRulesSource(RulesSource rulesSource) {
-        this.rulesSource = rulesSource;
-    }
+	public void setBufferChangesDefault(boolean bufferChanges) {
+		this.bufferChanges = bufferChanges;
+	}
 
-    public boolean getBufferChangesDefault() {
-        return bufferChanges;
-    }
+	public boolean isEnabled() {
+		return enabled;
+	}
 
-    public void setBufferChangesDefault(boolean bufferChanges) {
-        this.bufferChanges = bufferChanges;
-    }
+	public void setEnabled(boolean enabled) {
+		if (hasChanged(this.enabled, enabled)) {
+			this.enabled = enabled;
+			handleEnabledChange();
+			firePropertyChange("enabled", !this.enabled, enabled);
+		}
+	}
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+	protected void handleEnabledChange() {
+	}
 
-    public void setEnabled(boolean enabled) {
-        if (hasChanged(this.enabled, enabled)) {
-            this.enabled = enabled;
-            handleEnabledChange();
-            firePropertyChange("enabled", !this.enabled, enabled);
-        }
-    }
+	public String getDisplayValue(String formPropertyPath) {
+		ValueModel valueModel = getDisplayValueModel(formPropertyPath);
+		assertValueModelNotNull(valueModel, formPropertyPath);
+		Object o = valueModel.getValue();
+		if (o == null) {
+			return "";
+		}
+		return String.valueOf(o);
+	}
 
-    protected void handleEnabledChange() {
-    }
+	public Object getValue(String formPropertyPath) {
+		return getRequiredValueModel(formPropertyPath).getValue();
+	}
 
-    public String getDisplayValue(String formPropertyPath) {
-        ValueModel valueModel = getDisplayValueModel(formPropertyPath);
-        assertValueModelNotNull(valueModel, formPropertyPath);
-        Object o = valueModel.getValue();
-        if (o == null) { return ""; }
-        return String.valueOf(o);
-    }
+	public void addFormObjectChangeListener(ValueChangeListener listener) {
+		getFormObjectHolder().addValueChangeListener(listener);
+	}
 
-    public Object getValue(String formPropertyPath) {
-        return getRequiredValueModel(formPropertyPath).getValue();
-    }
+	public void removeFormObjectChangeListener(ValueChangeListener listener) {
+		getFormObjectHolder().removeValueChangeListener(listener);
+	}
 
-    public void addFormObjectChangeListener(ValueChangeListener listener) {
-        getFormObjectHolder().addValueChangeListener(listener);
-    }
+	public void addFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+		getRequiredValueModel(formPropertyPath).addValueChangeListener(listener);
+	}
 
-    public void removeFormObjectChangeListener(ValueChangeListener listener) {
-        getFormObjectHolder().removeValueChangeListener(listener);
-    }
+	public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+		getRequiredValueModel(formPropertyPath).removeValueChangeListener(listener);
+	}
 
-    public void addFormValueChangeListener(String formPropertyPath,
-            ValueChangeListener listener) {
-        getRequiredValueModel(formPropertyPath)
-                .addValueChangeListener(listener);
-    }
+	public void addFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener) {
+		BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
+		valueModel.addPropertyChangeListener(BoundValueModel.VALUE_PROPERTY, listener);
+	}
 
-    public void removeFormValueChangeListener(String formPropertyPath,
-            ValueChangeListener listener) {
-        getRequiredValueModel(formPropertyPath).removeValueChangeListener(
-                listener);
-    }
+	public void removeFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener) {
+		BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
+		valueModel.removePropertyChangeListener(BoundValueModel.VALUE_PROPERTY, listener);
+	}
 
-    public void addFormPropertyChangeListener(String formPropertyPath,
-            PropertyChangeListener listener) {
-        BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
-        valueModel.addPropertyChangeListener(BoundValueModel.VALUE_PROPERTY,
-                listener);
-    }
+	protected ValueModel getRequiredValueModel(String formPropertyPath) {
+		ValueModel valueModel = getValueModel(formPropertyPath);
+		assertValueModelNotNull(valueModel, formPropertyPath);
+		return valueModel;
+	}
 
-    public void removeFormPropertyChangeListener(String formPropertyPath,
-            PropertyChangeListener listener) {
-        BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
-        valueModel.removePropertyChangeListener(BoundValueModel.VALUE_PROPERTY,
-                listener);
-    }
+	protected ValueModel unwrap(ValueModel valueModel) {
+		if (valueModel instanceof ValueModelWrapper) {
+			return ((ValueModelWrapper)valueModel).getInnerMostValueModel();
+		}
+		else {
+			return valueModel;
+		}
+	}
 
-    protected ValueModel getRequiredValueModel(String formPropertyPath) {
-        ValueModel valueModel = getValueModel(formPropertyPath);
-        assertValueModelNotNull(valueModel, formPropertyPath);
-        return valueModel;
-    }
+	private void assertValueModelNotNull(ValueModel valueModel, String formProperty) {
+		Assert.isTrue(valueModel != null, "The property '" + formProperty
+				+ "' has not been added to this form model (or to any parents.)");
+	}
 
-    protected ValueModel unwrap(ValueModel valueModel) {
-        if (valueModel instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)valueModel).getInnerMostValueModel();
-        }
-        else {
-            return valueModel;
-        }
-    }
+	public MutablePropertyAccessStrategy getPropertyAccessStrategy() {
+		return domainObjectAccessStrategy;
+	}
 
-    private void assertValueModelNotNull(ValueModel valueModel,
-            String formProperty) {
-        Assert
-                .isTrue(
-                        valueModel != null,
-                        "The property '"
-                                + formProperty
-                                + "' has not been added to this form model (or to any parents.)");
-    }
+	public void setPropertyAccessStrategy(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
+		this.domainObjectAccessStrategy = domainObjectAccessStrategy;
+	}
 
-    public MutablePropertyAccessStrategy getPropertyAccessStrategy() {
-        return domainObjectAccessStrategy;
-    }
+	public PropertyMetadataAccessStrategy getMetadataAccessStrategy() {
+		return domainObjectAccessStrategy.getMetadataAccessStrategy();
+	}
 
-    public void setPropertyAccessStrategy(
-            MutablePropertyAccessStrategy domainObjectAccessStrategy) {
-        this.domainObjectAccessStrategy = domainObjectAccessStrategy;
-    }
+	public void addCommitListener(CommitListener listener) {
+		getOrCreateCommitListeners().add(listener);
+	}
 
-    public PropertyMetadataAccessStrategy getMetadataAccessStrategy() {
-        return domainObjectAccessStrategy.getMetadataAccessStrategy();
-    }
+	public void removeCommitListener(CommitListener listener) {
+		getOrCreateCommitListeners().remove(listener);
+	}
 
-    public void addCommitListener(CommitListener listener) {
-        getOrCreateCommitListeners().add(listener);
-    }
+	private Set getOrCreateCommitListeners() {
+		if (this.commitListeners == null) {
+			this.commitListeners = new LinkedHashSet(6);
+		}
+		return commitListeners;
+	}
 
-    public void removeCommitListener(CommitListener listener) {
-        getOrCreateCommitListeners().remove(listener);
-    }
+	protected boolean preEditCommit() {
+		if (commitListeners == null) {
+			return true;
+		}
+		Object formObject = getFormObject();
+		for (Iterator i = commitListeners.iterator(); i.hasNext();) {
+			CommitListener l = (CommitListener)i.next();
+			if (!l.preEditCommitted(formObject)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    private Set getOrCreateCommitListeners() {
-        if (this.commitListeners == null) {
-            this.commitListeners = new LinkedHashSet(6);
-        }
-        return commitListeners;
-    }
+	protected void postEditCommit() {
+		if (commitListeners == null) {
+			return;
+		}
+		Object formObject = getFormObject();
+		for (Iterator i = commitListeners.iterator(); i.hasNext();) {
+			CommitListener l = (CommitListener)i.next();
+			l.postEditCommitted(formObject);
+		}
+	}
 
-    protected boolean preEditCommit() {
-        if (commitListeners == null) { return true; }
-        Object formObject = getFormObject();
-        for (Iterator i = commitListeners.iterator(); i.hasNext();) {
-            CommitListener l = (CommitListener)i.next();
-            if (!l.preEditCommitted(formObject)) { return false; }
-        }
-        return true;
-    }
-
-    protected void postEditCommit() {
-        if (commitListeners == null) { return; }
-        Object formObject = getFormObject();
-        for (Iterator i = commitListeners.iterator(); i.hasNext();) {
-            CommitListener l = (CommitListener)i.next();
-            l.postEditCommitted(formObject);
-        }
-    }
-
-    public void reset() {
-        getFormObjectHolder().setValue(
-                BeanUtils.instantiateClass(getFormObjectClass()));
-    }
+	public void reset() {
+		getFormObjectHolder().setValue(BeanUtils.instantiateClass(getFormObjectClass()));
+	}
 }

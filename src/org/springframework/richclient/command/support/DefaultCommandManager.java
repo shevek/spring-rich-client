@@ -18,6 +18,9 @@ package org.springframework.richclient.command.support;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
@@ -31,10 +34,10 @@ import org.springframework.richclient.command.CommandRegistryListener;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.ExclusiveCommandGroup;
 import org.springframework.richclient.command.TargetableActionCommand;
-import org.springframework.richclient.command.config.ApplicationCommandConfigurer;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
+import org.springframework.richclient.command.config.DefaultCommandConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
@@ -42,14 +45,16 @@ import org.springframework.util.Assert;
 /**
  * @author Keith Donald
  */
-public class DefaultCommandManager implements CommandManager, BeanPostProcessor {
+public class DefaultCommandManager implements CommandManager, BeanPostProcessor, BeanFactoryAware {
 	private final Log logger = LogFactory.getLog(getClass());
+
+	private BeanFactory beanFactory;
 
 	private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
 
 	private CommandServices commandServices = DefaultCommandServices.instance();
 
-	private CommandConfigurer commandConfigurer = new ApplicationCommandConfigurer(this);
+	private CommandConfigurer commandConfigurer = new DefaultCommandConfigurer(this);
 
 	public DefaultCommandManager() {
 
@@ -70,6 +75,10 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 
 	public void setParent(CommandRegistry parent) {
 		commandRegistry.setParent(parent);
+	}
+
+	public void setBeanFactory(BeanFactory beanFactory) {
+		this.beanFactory = beanFactory;
 	}
 
 	public ButtonFactory getButtonFactory() {
@@ -96,9 +105,24 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 		return commandServices.getPullDownMenuButtonConfigurer();
 	}
 
-	public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorKey) {
-		// TODO
-		return null;
+	public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorId) {
+		if (beanFactory == null) {
+			return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+		}
+		else {
+			try {
+				return (CommandFaceDescriptor)beanFactory.getBean(command.getId() + "." + faceDescriptorId,
+						CommandFaceDescriptor.class);
+			}
+			catch (NoSuchBeanDefinitionException e) {
+				try {
+					return (CommandFaceDescriptor)beanFactory.getBean(faceDescriptorId, CommandFaceDescriptor.class);
+				}
+				catch (NoSuchBeanDefinitionException ex) {
+					return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+				}
+			}
+		}
 	}
 
 	public ActionCommand getActionCommand(String commandId) {
@@ -117,34 +141,6 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 		return commandRegistry.containsActionCommand(commandId);
 	}
 
-	/**
-	 * Adds a new command to this manager's registry; also configures the
-	 * command on behalf of the caller.
-	 * 
-	 * @param command
-	 *            the new command to be configured and registered
-	 */
-	public void addNewCommand(AbstractCommand command) {
-		addNewCommand(command, command.getId());
-	}
-
-	/**
-	 * Adds a new command to this manager's registry; also configures the
-	 * command on behalf of the caller. Configures the command's face (visual
-	 * appearance) using the provided face configuration key, which delegates to
-	 * a configured ObjectConfigurer.
-	 * 
-	 * @param command
-	 * @param faceDescriptorKey
-	 */
-	public void addNewCommand(AbstractCommand command, String faceDescriptorKey) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Configuring and adding new command '" + command.getId() + "'");
-		}
-		configure(command, faceDescriptorKey);
-		registerCommand(command);
-	}
-
 	public void addCommandInterceptor(String commandId, ActionCommandInterceptor interceptor) {
 		getActionCommand(commandId).addCommandInterceptor(interceptor);
 	}
@@ -154,6 +150,10 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 	}
 
 	public void registerCommand(AbstractCommand command) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Configuring and registering new command '" + command.getId() + "'");
+		}
+		configure(command);
 		commandRegistry.registerCommand(command);
 	}
 
@@ -172,7 +172,6 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 	public TargetableActionCommand createTargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
 		Assert.notNull(commandId, "Registered targetable action commands must have an id.");
 		TargetableActionCommand newCommand = new TargetableActionCommand(commandId, delegate);
-		configure(newCommand);
 		registerCommand(newCommand);
 		return newCommand;
 	}
@@ -180,7 +179,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 	public CommandGroup createCommandGroup(String groupId, Object[] members) {
 		Assert.notNull(groupId, "Registered command groups must have an id.");
 		CommandGroup newGroup = new CommandGroupFactoryBean(groupId, this.commandRegistry, this, members).getCommandGroup();
-		addNewCommand(newGroup);
+		registerCommand(newGroup);
 		return newGroup;
 	}
 
@@ -188,7 +187,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 		Assert.notNull(groupId, "Registered exclusive command groups must have an id.");
 		CommandGroupFactoryBean newGroupFactory = new CommandGroupFactoryBean(groupId, this.commandRegistry, this, members);
 		newGroupFactory.setExclusive(true);
-		addNewCommand(newGroupFactory.getCommandGroup());
+		registerCommand(newGroupFactory.getCommandGroup());
 		return (ExclusiveCommandGroup)newGroupFactory.getCommandGroup();
 	}
 
@@ -196,15 +195,10 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 		return commandConfigurer.configure(command);
 	}
 
-	public AbstractCommand configure(AbstractCommand command, String faceDescriptorKey) {
-		return commandConfigurer.configure(command, faceDescriptorKey);
-	}
-
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof CommandGroupFactoryBean) {
 			CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
-			CommandGroup group = factory.getCommandGroup();
-			addNewCommand(group);
+			registerCommand(factory.getCommandGroup());
 		}
 		else if (bean instanceof AbstractCommand) {
 			registerCommand((AbstractCommand)bean);

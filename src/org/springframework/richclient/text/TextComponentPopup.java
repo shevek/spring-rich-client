@@ -127,8 +127,8 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
         }
         for (int i = 0; i < COMMANDS.length; i++) {
             if (!commandManager.containsActionCommand(COMMANDS[i])) {
-                commandManager.addNewCommand(new TargetableActionCommand(
-                        COMMANDS[i], null), COMMANDS[i]);
+                commandManager.registerCommand(new TargetableActionCommand(
+                        COMMANDS[i], null));
             }
         }
         return commandManager;
