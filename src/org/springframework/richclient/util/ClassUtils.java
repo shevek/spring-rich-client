@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.enums.CodedEnum;
-import org.springframework.util.ArrayUtils;
+import org.springframework.util.DefaultObjectStyler;
 
 /**
  * Misc static utility functions for java classes.
@@ -220,7 +220,7 @@ public class ClassUtils {
         try {
             logger.debug("Attempting to get method '" + name + "' on class "
                     + locatorClass + " with arguments '"
-                    + ArrayUtils.toString(args) + "'");
+                    + DefaultObjectStyler.call(args) + "'");
             Method method = locatorClass.getDeclaredMethod(name, args);
             if ((method.getModifiers() & Modifier.STATIC) != 0) {
                 return method;

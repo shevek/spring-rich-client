@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.springframework.beans.BeansException;
-import org.springframework.util.ArrayUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapTemplate;
 import org.springframework.util.ToStringCreator;
@@ -59,6 +58,8 @@ import org.springframework.util.closure.Closure;
  * @author oliverh
  */
 public class ListenerListHelper implements Serializable {
+
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     private static final Iterator EMPTY_ITERATOR = new Iterator() {
         public boolean hasNext() {
@@ -113,7 +114,7 @@ public class ListenerListHelper implements Serializable {
     public ListenerListHelper(Class listenerClass) {
         Assert.notNull(listenerClass);
         this.listenerClass = listenerClass;
-        this.listeners = ArrayUtils.EMPTY_OBJECT_ARRAY;
+        this.listeners = EMPTY_OBJECT_ARRAY;
     }
 
     /**
@@ -149,7 +150,7 @@ public class ListenerListHelper implements Serializable {
      * Returns an iterator over the list of listeners registered with this list.
      */
     public Iterator iterator() {
-        if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
+        if (listeners == EMPTY_OBJECT_ARRAY) {
             return EMPTY_ITERATOR;
         }
         else {
@@ -162,7 +163,7 @@ public class ListenerListHelper implements Serializable {
      * this list.
      */
     public void forEach(Closure closure) {
-        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
+        if (listeners != EMPTY_OBJECT_ARRAY) {
             Object[] listenersCopy = listeners;
             for (int i = 0; i < listenersCopy.length; i++) {
                 closure.call(listenersCopy[i]);
@@ -178,8 +179,8 @@ public class ListenerListHelper implements Serializable {
      *            the name of the method to invoke.
      */
     public void fire(String methodName) {
-        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
-            fireEventWithReflection(methodName, ArrayUtils.EMPTY_OBJECT_ARRAY);
+        if (listeners != EMPTY_OBJECT_ARRAY) {
+            fireEventWithReflection(methodName, EMPTY_OBJECT_ARRAY);
         }
     }
 
@@ -193,11 +194,11 @@ public class ListenerListHelper implements Serializable {
      *            the single argument to pass to each invocation.
      */
     public void fire(String methodName, Object arg) {
-        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
+        if (listeners != EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, new Object[] { arg });
         }
     }
-    
+
     /**
      * Invokes the specified method on each of the listeners registered with
      * this list.
@@ -207,10 +208,10 @@ public class ListenerListHelper implements Serializable {
      * @param arg1
      *            the first argument to pass to each invocation.
      * @param arg2
-     *            the second argument to pass to each invocation. 
+     *            the second argument to pass to each invocation.
      */
     public void fire(String methodName, Object arg1, Object arg2) {
-        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
+        if (listeners != EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, new Object[] { arg1, arg2 });
         }
     }
@@ -225,7 +226,7 @@ public class ListenerListHelper implements Serializable {
      *            an array of arguments to pass to each invocation.
      */
     public void fire(String methodName, Object[] args) {
-        if (listeners != ArrayUtils.EMPTY_OBJECT_ARRAY) {
+        if (listeners != EMPTY_OBJECT_ARRAY) {
             fireEventWithReflection(methodName, args);
         }
     }
@@ -237,7 +238,7 @@ public class ListenerListHelper implements Serializable {
     public void add(Object listener) {
         checkListenerType(listener);
         synchronized (this) {
-            if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
+            if (listeners == EMPTY_OBJECT_ARRAY) {
                 listeners = new Object[] { listener };
             }
             else {
@@ -247,7 +248,7 @@ public class ListenerListHelper implements Serializable {
                 }
                 Object[] tmp = new Object[listenersLength + 1];
                 tmp[listenersLength] = listener;
-                System.arraycopy(listeners, 0, tmp, 0, listenersLength);                
+                System.arraycopy(listeners, 0, tmp, 0, listenersLength);
                 listeners = tmp;
             }
         }
@@ -259,7 +260,7 @@ public class ListenerListHelper implements Serializable {
     public void remove(Object listener) {
         checkListenerType(listener);
         synchronized (this) {
-            if (listeners == ArrayUtils.EMPTY_OBJECT_ARRAY) {
+            if (listeners == EMPTY_OBJECT_ARRAY) {
                 return;
             }
             else {
@@ -272,7 +273,7 @@ public class ListenerListHelper implements Serializable {
                 }
                 if (index < listenersLength) {
                     if (listenersLength == 1) {
-                        listeners = ArrayUtils.EMPTY_OBJECT_ARRAY;
+                        listeners = EMPTY_OBJECT_ARRAY;
                     }
                     else {
                         Object[] tmp = new Object[listenersLength - 1];
