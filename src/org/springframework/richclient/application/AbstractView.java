@@ -36,7 +36,7 @@ public abstract class AbstractView extends AbstractControlFactory implements
         Assert.isTrue(descriptor != null, "View descriptor must be non-null");
         this.descriptor = descriptor;
         this.context = context;
-        registerGlobalCommandDelegates(context);
+        setGlobalCommandExecutors(context);
     }
 
     public ViewContext getContext() {
@@ -81,7 +81,7 @@ public abstract class AbstractView extends AbstractControlFactory implements
      * 
      * @param context
      */
-    protected void registerGlobalCommandDelegates(ViewContext context) {
+    protected void setGlobalCommandExecutors(ViewContext context) {
 
     }
 

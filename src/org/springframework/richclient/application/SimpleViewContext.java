@@ -57,7 +57,7 @@ public class SimpleViewContext implements ViewContext {
         return (ActionCommandExecutor)commandDelegates.get(commandId);
     }
 
-    public void registerGlobalCommandDelegate(String commandId,
+    public void setGlobalCommandExecutor(String commandId,
             ActionCommandExecutor delegate) {
         Assert.notNull(commandId);
         commandDelegates.put(commandId, delegate);

@@ -223,8 +223,7 @@ public class DefaultFormModel extends AbstractFormModel implements
             if (getHasErrors()) { throw new IllegalStateException(
                     "Form has errors; submit not allowed."); }
             if (preEditCommit()) {
-                commitTrigger.setValue(Boolean.TRUE);
-                commitTrigger.setValue(null);
+                commitTrigger.commit();
                 if (getFormObjectHolder() instanceof BufferedValueModel) {
                     ((BufferedValueModel)getFormObjectHolder()).commit();
                 }

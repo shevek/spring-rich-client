@@ -24,7 +24,7 @@ public interface ViewContext {
 
     public ActionCommandExecutor findGlobalCommandDelegate(String globalCommandId);
 
-    public void registerGlobalCommandDelegate(String globalCommandId,
+    public void setGlobalCommandExecutor(String globalCommandId,
             ActionCommandExecutor localCommandDelegate);
 
 }

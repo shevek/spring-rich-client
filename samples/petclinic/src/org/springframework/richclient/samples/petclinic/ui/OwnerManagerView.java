@@ -69,9 +69,9 @@ public class OwnerManagerView extends AbstractView implements
 
     private RenameCommand renameCommand = new RenameCommand();
 
-    private DeleteCommandDelegate deleteCommand = new DeleteCommandDelegate();
+    private DeleteCommandExecutor deleteCommand = new DeleteCommandExecutor();
 
-    private PropertiesCommandDelegate propertiesCommand = new PropertiesCommandDelegate();
+    private PropertiesCommandExecutor propertiesCommand = new PropertiesCommandExecutor();
 
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic);
@@ -82,10 +82,10 @@ public class OwnerManagerView extends AbstractView implements
         this.ownerLastName = ownerLastName;
     }
 
-    protected void registerGlobalCommandDelegates(ViewContext context) {
-        context.registerGlobalCommandDelegate(GlobalCommandIds.DELETE,
+    protected void setGlobalCommandExecutors(ViewContext context) {
+        context.setGlobalCommandExecutor(GlobalCommandIds.DELETE,
                 deleteCommand);
-        context.registerGlobalCommandDelegate(GlobalCommandIds.PROPERTIES,
+        context.setGlobalCommandExecutor(GlobalCommandIds.PROPERTIES,
                 propertiesCommand);
     }
 
@@ -246,7 +246,7 @@ public class OwnerManagerView extends AbstractView implements
         return clinic.loadOwner(ownerId);
     }
 
-    private class DeleteCommandDelegate extends AbstractActionCommandExecutor {
+    private class DeleteCommandExecutor extends AbstractActionCommandExecutor {
         public void execute() {
             ConfirmationDialog dialog = new ConfirmationDialog() {
                 protected void onConfirm() {
@@ -270,7 +270,7 @@ public class OwnerManagerView extends AbstractView implements
         }
     }
 
-    private class PropertiesCommandDelegate extends AbstractActionCommandExecutor {
+    private class PropertiesCommandExecutor extends AbstractActionCommandExecutor {
         private OwnerGeneralForm ownerGeneralPanel;
 
         private NestingFormModel ownerFormModel;

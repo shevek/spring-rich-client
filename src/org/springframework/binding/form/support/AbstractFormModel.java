@@ -16,8 +16,8 @@
 package org.springframework.binding.form.support;
 
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -227,25 +227,26 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
 
     private Set getOrCreateCommitListeners() {
         if (this.commitListeners == null) {
-            this.commitListeners = new HashSet(6);
+            this.commitListeners = new LinkedHashSet(6);
         }
         return commitListeners;
     }
 
     protected boolean preEditCommit() {
         if (commitListeners == null) { return true; }
+        Object formObject = getFormObject();
         for (Iterator i = commitListeners.iterator(); i.hasNext();) {
             CommitListener l = (CommitListener)i.next();
-            if (!l.preEditCommitted(getFormObject())) { return false; }
+            if (!l.preEditCommitted(formObject)) { return false; }
         }
         return true;
     }
 
     protected void postEditCommit() {
         if (commitListeners == null) { return; }
+        Object formObject = getFormObject();
         for (Iterator i = commitListeners.iterator(); i.hasNext();) {
             CommitListener l = (CommitListener)i.next();
-            Object formObject = getFormObject();
             l.postEditCommitted(formObject);
         }
     }
