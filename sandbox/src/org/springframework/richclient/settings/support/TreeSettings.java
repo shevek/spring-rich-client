@@ -25,7 +25,9 @@ import org.springframework.util.StringUtils;
  * @author Peter De Bruycker
  */
 public class TreeSettings {
+
     private static final String EXPANSION_STATE = "expansionState";
+
     private static final String SELECTED_ROWS = "selectedRows";
 
     private TreeSettings() {
@@ -93,8 +95,7 @@ public class TreeSettings {
                         tree.expandRow(i);
                     }
                 }
-            }
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 // TODO log this
             }
         }
@@ -133,8 +134,7 @@ public class TreeSettings {
                     if (parts[i].indexOf('-') >= 0) {
                         String[] tmp = parts[i].split("-");
                         tree.addSelectionInterval(Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]));
-                    }
-                    else {
+                    } else {
                         int index = Integer.parseInt(parts[i]);
                         tree.addSelectionRow(index);
                     }
