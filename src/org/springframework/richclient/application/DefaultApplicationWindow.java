@@ -110,7 +110,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public void openPage(ViewDescriptor viewDescriptor) {
         if (this.activePage == null) {
-            ApplicationPage page = new ApplicationPage(this);
+            ApplicationPage page = new DefaultApplicationPage(this);
             final GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
                     getCommandManager());
             page.addViewListener(commandTargeter);
