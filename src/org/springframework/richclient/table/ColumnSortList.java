@@ -25,61 +25,62 @@ import java.util.Observable;
  */
 public class ColumnSortList extends Observable {
     public static final int MAX_SORT_LEVELS = 4;
+
     private List sortLevels = new ArrayList();
-    
-    public ColumnSortList() {}
-    
+
+    public ColumnSortList() {
+    }
+
     public ColumnToSort getSortLevel(int columnIndex) {
         return findColumnToSort(columnIndex);
     }
-    
+
     public ColumnToSort[] getSortLevels() {
         return (ColumnToSort[])sortLevels.toArray(new ColumnToSort[0]);
     }
-    
+
     public int size() {
         return sortLevels.size();
     }
-    
+
     public boolean isSorted(int columnIndex) {
         if (findColumnToSort(columnIndex) != null) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
-    
+
     public void addSortLevel(int columnIndex, SortOrder order) {
-        if (sortLevels.size() == MAX_SORT_LEVELS) {
-            throw new IllegalArgumentException("Max sort level reached.");
-        }
+        if (sortLevels.size() == MAX_SORT_LEVELS) { throw new IllegalArgumentException(
+                "Max sort level reached."); }
         sortLevels.add(new ColumnToSort(sortLevels.size(), columnIndex, order));
         setChanged();
         notifyObservers();
     }
-    
+
     public void toggleSortOrder(int columnIndex) {
         ColumnToSort column = findColumnToSort(columnIndex);
         if (column == null) {
             throw new IllegalArgumentException("No such sorted column.");
-        } else {
-            column.setSortOrder(column.getSortOrder().flip());
         }
-        setChanged();
-        notifyObservers();
+        else {
+            column.toggleSortOrder();
+            setChanged();
+            notifyObservers();
+        }
     }
-    
+
     public void setSingleSortLevel(int columnIndex, SortOrder order) {
         sortLevels.clear();
         addSortLevel(columnIndex, order);
     }
-    
+
     private ColumnToSort findColumnToSort(int columnIndex) {
         for (Iterator i = sortLevels.iterator(); i.hasNext();) {
             ColumnToSort column = (ColumnToSort)i.next();
-            if (column.getColumnIndex() == columnIndex) {
-                return column;
-            }
+            if (column.getColumnIndex() == columnIndex) { return column; }
         }
         return null;
     }

@@ -18,30 +18,32 @@ package org.springframework.richclient.table;
 import java.util.List;
 
 /**
- * Desinged for display object arrays in a list for multi-column
- * tables, or just plain objects for single column table.  Nicely
- * aligned with Hibernate List behaivior for query result sets.
+ * Desinged for display object arrays in a list for multi-column tables, or just
+ * plain objects for single column table. Nicely aligned with Hibernate List
+ * behaivior for query result sets.
  * 
- * @author  keith
+ * @author keith
  */
 public abstract class ListTableModel extends BaseTableModel {
 
     public ListTableModel() {
         super();
     }
-    
+
     public ListTableModel(List rows) {
         super(rows);
     }
 
     /**
-     * @see org.springframework.richclient.table.BaseTableModel#getValueAtInternal(int, int)
+     * @see org.springframework.richclient.table.BaseTableModel#getValueAtInternal(int,
+     *      int)
      */
     protected Object getValueAtInternal(Object row, int columnIndex) {
         if (getDataColumnCount() > 1) {
             Object[] arrayRow = (Object[])row;
             return arrayRow[columnIndex];
-        } else {
+        }
+        else {
             return row;
         }
     }

@@ -42,9 +42,7 @@ import org.springframework.richclient.table.renderers.OptimizedTableCellRenderer
  */
 public class TableUtils {
     public static void scrollToRow(JTable table, int row) {
-        if (!(table.getParent() instanceof JViewport)) {
-            return;
-        }
+        if (!(table.getParent() instanceof JViewport)) { return; }
         JViewport viewport = (JViewport)table.getParent();
         // This rectangle is relative to the table where the
         // northwest corner of cell (0,0) is always (0,0).

@@ -24,9 +24,14 @@ import javax.swing.table.TableModel;
  */
 public interface MutableTableModel extends TableModel {
     public void addRow(Object row);
+
     public void addRows(List rows);
+
     public void remove(int index);
+
     public void remove(int firstIndex, int lastIndex);
+
     public void remove(int[] indexes);
+
     public void clear();
 }

@@ -235,10 +235,6 @@ public abstract class BaseTableModel extends AbstractTableModel implements
         fireTableDataChanged();
     }
 
-    protected abstract Class[] createColumnClasses();
-
-    protected abstract String[] createColumnNames();
-
     protected Class[] getColumnClasses() {
         return columnClasses;
     }
@@ -246,5 +242,9 @@ public abstract class BaseTableModel extends AbstractTableModel implements
     protected String[] getColumnNames() {
         return columnNames;
     }
+
+    protected abstract Class[] createColumnClasses();
+
+    protected abstract String[] createColumnNames();
 
 }

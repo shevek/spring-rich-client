@@ -22,11 +22,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * @author  Keith Donald
+ * @author Keith Donald
  */
 public class TableScrollPane {
     JScrollPane scrollPane;
-    
+
     public TableScrollPane(JTable table, final TableUpdater tableUpdater) {
         this.scrollPane = new JScrollPane(table);
         ChangeListener changeListener = new ChangeListener() {
@@ -35,12 +35,14 @@ public class TableScrollPane {
                 tableUpdater.setUpdatesEnabled(!(m.getValueIsAdjusting()));
             }
         };
-        this.scrollPane.getVerticalScrollBar().getModel().addChangeListener(changeListener);
-        this.scrollPane.getHorizontalScrollBar().getModel().addChangeListener(changeListener);
+        this.scrollPane.getVerticalScrollBar().getModel().addChangeListener(
+                changeListener);
+        this.scrollPane.getHorizontalScrollBar().getModel().addChangeListener(
+                changeListener);
     }
-    
+
     public JScrollPane getScrollPane() {
         return scrollPane;
     }
-    
+
 }

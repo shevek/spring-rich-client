@@ -27,28 +27,23 @@ import org.springframework.enums.CodedEnum;
 /**
  * @author Keith Donald
  */
-public class CodedEnumTableCellRenderer extends OptimizedTableCellRenderer implements
-        TableCellRenderer {
+public class CodedEnumTableCellRenderer extends OptimizedTableCellRenderer
+        implements TableCellRenderer {
     private MessageSource messages;
 
     public void setMessages(MessageSource messages) {
         this.messages = messages;
     }
 
-    /**
-     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
-     *      java.lang.Object, boolean, boolean, int, int)
-     */
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
                 row, column);
-        if (value == null) {
-            return this;
-        }
+        if (value == null) { return this; }
         if (messages != null) {
             setText(messages.getMessage((CodedEnum)value, Locale.getDefault()));
-        } else {
+        }
+        else {
             setText(((CodedEnum)value).getLabel());
         }
         return this;

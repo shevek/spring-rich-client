@@ -23,7 +23,9 @@ import java.util.TimeZone;
  */
 public class TableRenderers {
     public static final DateTimeTableCellRenderer LOCAL_DATE = new DateTimeTableCellRenderer();
-    public static final DateTimeTableCellRenderer GMT_DATE = new DateTimeTableCellRenderer(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z"));
+
+    public static final DateTimeTableCellRenderer GMT_DATE = new DateTimeTableCellRenderer(
+            new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z"));
     static {
         GMT_DATE.getDateFormat().setTimeZone(TimeZone.getTimeZone("GMT"));
     }

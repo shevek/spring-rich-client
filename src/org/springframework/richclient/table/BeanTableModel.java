@@ -29,19 +29,20 @@ import org.springframework.util.ClassUtils;
  */
 public abstract class BeanTableModel extends BaseTableModel {
     private BeanWrapper beanWrapper = new BeanWrapperImpl();
+
     private Class beanClass;
+
     private String[] columnPropertyNames;
+
     private MessageSourceAccessor messages;
 
     public BeanTableModel(Class beanClass) {
-        super();
-        this.beanClass = beanClass;
-        init();
+        this(beanClass, (MessageSource)null);
     }
 
     public BeanTableModel(Class beanClass, MessageSource messages) {
         super();
-        this.beanClass = beanClass;
+        setBeanClass(beanClass);
         setMessageSource(messages);
         init();
     }
@@ -52,7 +53,7 @@ public abstract class BeanTableModel extends BaseTableModel {
 
     public BeanTableModel(Class beanClass, List rows, MessageSource messages) {
         super(rows);
-        this.beanClass = beanClass;
+        setBeanClass(beanClass);
         setMessageSource(messages);
         init();
     }
@@ -64,14 +65,12 @@ public abstract class BeanTableModel extends BaseTableModel {
     public void setMessageSource(MessageSource messages) {
         if (messages != null) {
             this.messages = new MessageSourceAccessor(messages);
-        } else {
+        }
+        else {
             this.messages = null;
         }
     }
 
-    /**
-     * @see com.csi.commons.ui.table.BaseTableModel#init()
-     */
     protected void init() {
         this.columnPropertyNames = createColumnPropertyNames();
         super.init();

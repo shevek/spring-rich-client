@@ -41,12 +41,16 @@ import org.springframework.util.Assert;
 public class TableSortIndicator {
     public static final ArrowIcon STANDARD_UP_ARROW = new ArrowIcon(
             ArrowIcon.Direction.UP, 4, SystemColor.controlDkShadow);
+
     public static final ArrowIcon STANDARD_DOWN_ARROW = new ArrowIcon(
             ArrowIcon.Direction.DOWN, 4, SystemColor.controlDkShadow);
 
     private JTable table;
+
     private Icon ascendingIcon;
+
     private Icon descendingIcon;
+
     private ColumnSortList sortList;
 
     public TableSortIndicator(JTable table) {
@@ -104,14 +108,10 @@ public class TableSortIndicator {
     private void addHeaderMouseListener() {
         this.table.getTableHeader().addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (e.isMetaDown()) {
-                    return;
-                }
+                if (e.isMetaDown()) { return; }
                 int columnView = table.getColumnModel().getColumnIndexAtX(
                         e.getX());
-                if (columnView == -1) {
-                    return;
-                }
+                if (columnView == -1) { return; }
                 int column = table.convertColumnIndexToModel(columnView);
                 int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
                 ColumnToSort columnToSort = sortList.getSortLevel(column);
@@ -119,23 +119,27 @@ public class TableSortIndicator {
                     if (shiftPressed == 1) {
                         sortList.toggleSortOrder(column);
                         displayRendererIcon(column, columnToSort.getSortOrder());
-                    } else {
+                    }
+                    else {
                         SortOrder order;
                         if (sortList.size() > 1) {
                             order = SortOrder.ASCENDING;
-                        } else {
+                        }
+                        else {
                             order = columnToSort.getSortOrder().flip();
                         }
                         sortList.setSingleSortLevel(column, order);
                         removeRendererIcons();
                         displayRendererIcon(columnView, order);
                     }
-                } else {
+                }
+                else {
                     if (shiftPressed == 1) {
                         try {
                             sortList.addSortLevel(column, SortOrder.ASCENDING);
                             displayRendererIcon(columnView, SortOrder.ASCENDING);
-                        } catch (IllegalArgumentException ex) {
+                        }
+                        catch (IllegalArgumentException ex) {
                             JOptionPane
                                     .showMessageDialog(
                                             table.getTopLevelAncestor(),
@@ -144,7 +148,8 @@ public class TableSortIndicator {
                                             JOptionPane.WARNING_MESSAGE);
                             return;
                         }
-                    } else {
+                    }
+                    else {
                         sortList
                                 .setSingleSortLevel(column, SortOrder.ASCENDING);
                         removeRendererIcons();
@@ -160,7 +165,8 @@ public class TableSortIndicator {
         HeaderRenderer rend = getRenderer(column);
         if (order == SortOrder.ASCENDING) {
             rend.setIcon(this.ascendingIcon);
-        } else {
+        }
+        else {
             rend.setIcon(this.descendingIcon);
         }
     }

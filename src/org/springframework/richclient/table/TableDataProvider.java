@@ -18,27 +18,23 @@ package org.springframework.richclient.table;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Listens to a sort list for changes and when they happen, sorts a
- * sortable table model in a separate worker thread.
- *
- * @author  Keith Donald
- */
 public class TableDataProvider {
     private List currentTableData = new ArrayList();
+
     private List lastTableData = new ArrayList();
-    
-    public TableDataProvider() {}
-    
+
+    public TableDataProvider() {
+    }
+
     public synchronized void put(Object datum) {
         currentTableData.add(datum);
     }
-    
+
     /**
-     * Returns the current set of changes to be published. This changes the
-     * List that changes are added to. It is assumed consumers will have
-     * cleared out the List when done with it.
-     */    
+     * Returns the current set of changes to be published. This changes the List
+     * that changes are added to. It is assumed consumers will have cleared out
+     * the List when done with it.
+     */
     public synchronized List takeData() {
         List list = currentTableData;
         currentTableData = lastTableData;

@@ -23,22 +23,22 @@ import org.springframework.richclient.text.TimeFormat;
 
 /**
  * Formats a cell in d h m s
- *
- * @author  Keith Donald
+ * 
+ * @author Keith Donald
  */
 public class TimeTableCellRenderer extends OptimizedTableCellRenderer {
     public TimeFormat formatter;
-    
+
     public TimeTableCellRenderer() {
         formatter = TimeFormat.getDaysInstance();
     }
-    
+
     public TimeTableCellRenderer(TimeFormat formatter) {
         this.formatter = formatter;
     }
-    
+
     public Component getTableCellRendererComponent(JTable table, Object value,
-    boolean isSelected, boolean hasFocus, int row, int column) {
+            boolean isSelected, boolean hasFocus, int row, int column) {
         doPrepareRenderer(table, isSelected, hasFocus, row, column);
         setValue(formatter.format(((Number)value).longValue()));
         return this;
