@@ -6,6 +6,8 @@ import org.springframework.richclient.factory.ControlFactory;
 
 public interface ApplicationPage extends ControlFactory, PropertyChangeListener {
 
+    public String getId();
+
     public ApplicationWindow getParentWindow();
 
     public void addViewListener(ViewListener listener);
@@ -15,7 +17,5 @@ public interface ApplicationPage extends ControlFactory, PropertyChangeListener 
     public void showView(String viewDescriptorId);
 
     public void showView(ViewDescriptor viewDescriptor);
-
-    public View getActiveView();
 
 }

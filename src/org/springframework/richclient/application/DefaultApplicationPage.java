@@ -54,6 +54,10 @@ public class DefaultApplicationPage implements ApplicationPage {
         this.parentWindow = window;
     }
 
+    public String getId() {
+        return getActiveView().getViewDescriptor().getId();
+    }
+    
     public void setParentWindow(ApplicationWindow parentWindow) {
         this.parentWindow = parentWindow;
     }
