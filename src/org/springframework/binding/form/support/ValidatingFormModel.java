@@ -225,11 +225,14 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
 		private boolean valueIsSetting;
 
+		private String domainObjectProperty;
+		
 		public ValidatingFormValueModel(String domainObjectProperty, ValueModel model, PropertyConstraint validationRule) {
 			super(model);
 			this.setterConstraint = new ValueSetterConstraint(getWrappedModel(), domainObjectProperty,
 					new ValueChangeValidator());
 			this.validationRule = validationRule;
+			this.domainObjectProperty = domainObjectProperty;
 		}
 
 		public class ValueChangeValidator implements ValueChangeListener {
@@ -238,6 +241,17 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 					validate();
 				}
 			}
+		}
+
+		public boolean isCompoundRule() {
+			if (validationRule == null) {
+				return false;
+			}
+			return validationRule.isCompoundRule();
+		}
+
+		public boolean tests(String propertyName) {
+			return validationRule.tests(propertyName);
 		}
 
 		public void setValue(Object value) {
@@ -257,6 +271,17 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		}
 
 		public void validate() {
+			validatePropertyConstraint();
+			Iterator it = valueModelIterator();
+			while (it.hasNext()) {
+				ValidatingFormValueModel vm = (ValidatingFormValueModel)it.next();
+				if (vm.isCompoundRule() && vm.tests(domainObjectProperty)) {
+					vm.validatePropertyConstraint();
+				}
+			}
+		}
+
+		public void validatePropertyConstraint() {
 			if (validationRule == null) {
 				return;
 			}
@@ -296,6 +321,10 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
 		public String getPropertyName() {
 			return property;
+		}
+
+		public boolean isCompoundRule() {
+			return false;
 		}
 
 		public boolean tests(String propertyName) {
