@@ -76,14 +76,14 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
             messages = getApplicationContext();
         }
         if (icons == null) {
-            icons = getIconSource();
+            icons = findIconSource();
         }
         if (images == null) {
-            images = getImageSource();
+            images = findImageSource();
         }
     }
 
-    private IconSource getIconSource() {
+    private IconSource findIconSource() {
         try {
             return (IconSource)getApplicationContext().getBean(
                     ApplicationServices.ICON_SOURCE_BEAN_KEY);
@@ -93,7 +93,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
         }
     }
 
-    private ImageSource getImageSource() {
+    private ImageSource findImageSource() {
         try {
             return (ImageSource)getApplicationContext().getBean(
                 ApplicationServices.IMAGE_SOURCE_BEAN_KEY);
