@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.command.config;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -65,8 +64,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
         if (StringUtils.hasText(encodedLabel)) {
             this.labelInfo = LabelInfoFactory
                     .createButtonLabelInfo(encodedLabel);
-        }
-        else {
+        } else {
             this.labelInfo = EMPTY_LABEL;
         }
         if (icon != null) {
@@ -122,10 +120,11 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
     }
 
     public void setCommandButtonLabelInfo(CommandButtonLabelInfo labelInfo) {
+        // maybe this check should be replaced with an Assert.notNull()
+        if (labelInfo == null) {
+            labelInfo = EMPTY_LABEL;
+        }
         if (hasChanged(this.labelInfo, labelInfo)) {
-            if (labelInfo == null) {
-                labelInfo = EMPTY_LABEL;
-            }
             CommandButtonLabelInfo old = this.labelInfo;
             this.labelInfo = labelInfo;
             firePropertyChange(COMMAND_BUTTON_LABEL_PROPERTY, old,
@@ -134,6 +133,10 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
     }
 
     public void setCommandButtonIconInfo(CommandButtonIconInfo iconInfo) {
+        // maybe this check should be replaced with an Assert.notNull()
+        if (iconInfo == null) {
+            iconInfo = EMPTY_ICON;
+        }
         if (hasChanged(this.iconInfo, iconInfo)) {
             CommandButtonIconInfo old = this.iconInfo;
             this.iconInfo = iconInfo;
@@ -142,38 +145,37 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher
     }
 
     public void setIcon(Icon icon) {
-        if (getButtonIconInfo() == null || getButtonIconInfo() == EMPTY_ICON) {
-            if (icon != null) {
+        if (hasChanged(this.iconInfo.getIcon(), icon)) {
+            if (icon == null) {
+                setCommandButtonIconInfo(CommandFaceDescriptor.EMPTY_ICON);
+            } else {
                 setCommandButtonIconInfo(new CommandButtonIconInfo(icon));
-            }
-        }
-        else {
-            Icon old = iconInfo.getIcon();
-            if (hasChanged(old, icon)) {
-                this.iconInfo.setIcon(icon);
-                firePropertyChange(COMMAND_BUTTON_ICON_PROPERTY, old,
-                        this.iconInfo);
             }
         }
     }
 
     public void configure(AbstractButton button,
             CommandButtonConfigurer strategy) {
+        Assert.notNull(strategy, "Strategy cannot be null");
+        Assert.notNull(button, "button cannot be null");
+        
         strategy.configure(this, button);
     }
 
     public void configure(Action action) {
-        action.putValue(AbstractAction.NAME, getButtonLabelInfo().getText());
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer(
+        Assert.notNull(action, "Action cannot be null.");
+        
+        action.putValue(Action.NAME, getButtonLabelInfo().getText());
+        action.putValue(Action.MNEMONIC_KEY, new Integer(
                 getButtonLabelInfo().getMnemonic()));
         if (getButtonIconInfo() != null) {
-            action.putValue(AbstractAction.SMALL_ICON, getButtonIconInfo()
+            action.putValue(Action.SMALL_ICON, getButtonIconInfo()
                     .getIcon());
         }
-        action.putValue(AbstractAction.ACCELERATOR_KEY, getButtonLabelInfo()
+        action.putValue(Action.ACCELERATOR_KEY, getButtonLabelInfo()
                 .getAccelerator());
-        action.putValue(AbstractAction.SHORT_DESCRIPTION, caption);
-        action.putValue(AbstractAction.LONG_DESCRIPTION, description);
+        action.putValue(Action.SHORT_DESCRIPTION, caption);
+        action.putValue(Action.LONG_DESCRIPTION, description);
     }
 
 }
