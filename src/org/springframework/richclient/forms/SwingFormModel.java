@@ -20,6 +20,7 @@ import java.beans.PropertyEditor;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.awt.Component;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -355,8 +356,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
      * returning a JComponent array where the first component is the field label
      * and the second component is the editor control (e.g text field).
      * 
-     * @param string
-     *            the form property path
+     * @param formPropertyPath the form property path
+     *
      * @return The labeled field array
      */
     public JComponent[] createBoundLabeledControl(String formPropertyPath) {
@@ -438,7 +439,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
             keys[i++] = id + "." + preffix + "." + formProperty;
         }
         keys[i++] = preffix + "." + formProperty;
-        keys[i++] = formProperty;
+        keys[i] = formProperty;
         return keys;
     }
 
@@ -494,13 +495,14 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         return new JSpinner();
     }
 
-    private JComponent bindCustomEditor(PropertyEditor propertyEditor, String formProperty) {
+    public JComponent bindCustomEditor(PropertyEditor propertyEditor, String formProperty) {
         Assert.isTrue(propertyEditor.supportsCustomEditor(),
                 "The propertyEditor to bind must provide a customEditor component.");
-        final JComponent customEditor = (JComponent)propertyEditor.getCustomEditor();
-        Assert.notNull(customEditor, "The customEditor property cannot be null.");
-        Assert.isTrue(customEditor instanceof JComponent,
-                "customEditors must be JComponents; however, you have provided a " + customEditor.getClass());
+        final Component component = propertyEditor.getCustomEditor();
+        Assert.notNull(component, "The customEditor property cannot be null.");
+        Assert.isTrue(component instanceof JComponent,
+                "customEditors must be JComponents; however, you have provided a " + component.getClass());
+        final JComponent customEditor = (JComponent)component;
         ValueModel valueModel = getValueModel(formProperty);
         if (valueModel == null) {
             createFormValueModel(formProperty);
@@ -829,13 +831,9 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     public JTextArea createBoundTextArea(String formProperty, int rows, int columns) {
-        if (rows <= 0) {
-            rows = 5;
-        }
-        if (columns <= 0) {
-            columns = 25;
-        }
-        return (JTextArea)bind(getComponentFactory().createTextArea(rows, columns), formProperty, valueCommitPolicy);
+        int numRows = (rows <= 0) ? 5 : rows;
+        int numCols = (columns <= 0) ? 25 : columns;
+        return (JTextArea)bind(getComponentFactory().createTextArea(numRows, numCols), formProperty, valueCommitPolicy);
     }
 
     public void interceptComponent(final String propertyName, final JComponent component) {
