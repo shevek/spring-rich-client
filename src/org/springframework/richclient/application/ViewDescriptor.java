@@ -15,11 +15,8 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-import org.springframework.richclient.core.DescribedElement;
-import org.springframework.richclient.core.VisualizedElement;
 
 /**
  * Metadata about a view; a view descriptor is effectively a singleton view
@@ -27,10 +24,10 @@ import org.springframework.richclient.core.VisualizedElement;
  * of a given view when requested, typically by a requesting application page. A
  * view descriptor can also produce a command which launches a view for display
  * on the page within the current active window.
- * 
+ *
  * @author Keith Donald
  */
-public interface ViewDescriptor extends PropertyChangePublisher, DescribedElement, VisualizedElement {
+public interface ViewDescriptor extends PageComponentDescriptor {
 
     public String getId();
 
@@ -42,7 +39,7 @@ public interface ViewDescriptor extends PropertyChangePublisher, DescribedElemen
      * ApplicationListener, and an ApplicationEventMulticaster is configured in
      * this application's ApplicationContext, the view is registered as an
      * ApplicationListener.
-     * 
+     *
      * @return The new view prototype
      */
     public View createView();
@@ -50,12 +47,13 @@ public interface ViewDescriptor extends PropertyChangePublisher, DescribedElemen
     /**
      * Create a command that when executed, will attempt to show the view
      * described by this descriptor in the provided application window.
-     * 
-     * @param window
-     *            The window
+     *
+     * @param window The window
+     *
      * @return The show view command.
      */
     public ActionCommand createShowViewCommand(ApplicationWindow window);
 
     public CommandButtonLabelInfo getShowViewCommandLabel();
+
 }
