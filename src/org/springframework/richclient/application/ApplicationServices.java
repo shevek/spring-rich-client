@@ -418,11 +418,17 @@ public class ApplicationServices extends ApplicationObjectSupport implements
                             FormComponentInterceptorFactory.class);
         }
         catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + INTERCEPTOR_FACTORY_BEAN_KEY +
+                    " found. Using empty interceptor.");
+            this.formComponentInterceptorFactory = new FormComponentInterceptorFactory() {
+                public FormComponentInterceptor getInterceptor(FormModel formModel) {
+                    return null;
+                }
+            };
         }
     }
 
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        if (getFormComponentInterceptorFactory() == null) { return null; }
         return getFormComponentInterceptorFactory().getInterceptor(formModel);
     }
 }
