@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application;
 
+import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.core.DescribedElement;
@@ -29,7 +30,8 @@ import org.springframework.richclient.core.VisualizedElement;
  * 
  * @author Keith Donald
  */
-public interface ViewDescriptor extends DescribedElement, VisualizedElement {
+public interface ViewDescriptor extends PropertyChangePublisher,
+        DescribedElement, VisualizedElement {
 
     public String getId();
 

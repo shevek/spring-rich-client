@@ -73,7 +73,7 @@ public class DefaultApplicationPage implements ApplicationPage,
         return pageDescriptor.getId();
     }
 
-    public ApplicationWindow getParentWindow() {
+    public ApplicationWindow getApplicationWindow() {
         return parentWindow;
     }
 
@@ -142,8 +142,7 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     protected View createView(ViewDescriptor viewDescriptor) {
         View view = viewDescriptor.createView();
-        view.initialize(viewDescriptor, new DefaultViewContext(viewDescriptor
-                .getId(), this));
+        view.initialize(new DefaultViewContext(viewDescriptor, this));
         fireViewCreated(view);
         return view;
     }

@@ -15,52 +15,68 @@
  */
 package org.springframework.richclient.application.support;
 
+import java.awt.Image;
 import java.awt.Window;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 
-public abstract class AbstractView extends LabeledObjectSupport implements View {
-
-    private ViewDescriptor descriptor;
-
+public abstract class AbstractView extends AbstractControlFactory implements
+        View {
     private ViewContext context;
 
-    private AbstractControlFactory controlFactory = new AbstractControlFactory() {
-        protected JComponent createControl() {
-            return AbstractView.this.createControl();
-        }
-    };
-
-    public final void initialize(ViewDescriptor descriptor, ViewContext context) {
-        Assert.isTrue(context != null, "View context must be non-null");
-        Assert.isTrue(descriptor != null, "View descriptor must be non-null");
-        this.descriptor = descriptor;
-        setTitle(descriptor.getDisplayName());
-        setCaption(descriptor.getCaption());
-        setDescription(descriptor.getDescription());
-        setImage(descriptor.getImage());
+    public final void initialize(ViewContext context) {
+        Assert.notNull(context, "The View context must be non-null");
         this.context = context;
-        setGlobalCommandExecutors(context);
+        setSharedCommandExecutors(context);
     }
 
     public String getId() {
-        return descriptor.getId();
+        return getDescriptor().getId();
+    }
+
+    public ViewDescriptor getDescriptor() {
+        return context.getViewDescriptor();
     }
 
     public ViewContext getContext() {
         return context;
     }
 
-    protected final CommandManager getCommandManager() {
+    public String getCaption() {
+        return getDescriptor().getCaption();
+    }
+
+    public String getDescription() {
+        return getDescriptor().getDescription();
+    }
+
+    public String getDisplayName() {
+        return getDescriptor().getDisplayName();
+    }
+
+    public Icon getIcon() {
+        return getDescriptor().getIcon();
+    }
+
+    public Image getImage() {
+        return getDescriptor().getImage();
+    }
+
+    protected final Window getWindowControl() {
+        return getContext().getApplicationWindow().getControl();
+    }
+
+    protected final CommandManager getWindowCommandManager() {
         return context.getApplicationWindow().getCommandManager();
     }
 
@@ -68,19 +84,7 @@ public abstract class AbstractView extends LabeledObjectSupport implements View 
         return context.getApplicationWindow().getStatusBar();
     }
 
-    protected final Window getParentWindowControl() {
-        return getContext().getApplicationWindow().getControl();
-    }
-
-    public final JComponent getControl() {
-        return controlFactory.getControl();
-    }
-
     protected abstract JComponent createControl();
-
-    public final boolean isControlCreated() {
-        return controlFactory.isControlCreated();
-    }
 
     /**
      * Template method called when this view is initialized in a context; allows
@@ -88,8 +92,26 @@ public abstract class AbstractView extends LabeledObjectSupport implements View 
      * 
      * @param context
      */
-    protected void setGlobalCommandExecutors(ViewContext context) {
+    protected void setSharedCommandExecutors(ViewContext context) {
 
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        getDescriptor().addPropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
+        getDescriptor().addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        getDescriptor().removePropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
+        getDescriptor().removePropertyChangeListener(propertyName, listener);
     }
 
     public void dispose() {

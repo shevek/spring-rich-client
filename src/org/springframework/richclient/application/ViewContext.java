@@ -18,14 +18,15 @@ package org.springframework.richclient.application;
 import org.springframework.richclient.command.ActionCommandExecutor;
 
 public interface ViewContext {
+    public ApplicationPage getApplicationPage();
+
     public ApplicationWindow getApplicationWindow();
 
-    public String getViewName();
+    public ViewDescriptor getViewDescriptor();
 
-    public ActionCommandExecutor findGlobalCommandDelegate(
-            String globalCommandId);
+    public ActionCommandExecutor getSharedCommandExecutor(String commandId);
 
-    public void setGlobalCommandExecutor(String globalCommandId,
-            ActionCommandExecutor localCommandDelegate);
+    public void setSharedCommandExecutor(String commandId,
+            ActionCommandExecutor localExecutor);
 
 }

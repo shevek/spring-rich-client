@@ -82,11 +82,11 @@ public class OwnerManagerView extends AbstractView implements
         this.ownerLastName = ownerLastName;
     }
 
-    protected void setGlobalCommandExecutors(ViewContext context) {
+    protected void setSharedCommandExecutors(ViewContext context) {
         context
-                .setGlobalCommandExecutor(GlobalCommandIds.DELETE,
+                .setSharedCommandExecutor(GlobalCommandIds.DELETE,
                         deleteCommand);
-        context.setGlobalCommandExecutor(GlobalCommandIds.PROPERTIES,
+        context.setSharedCommandExecutor(GlobalCommandIds.PROPERTIES,
                 propertiesCommand);
     }
 
@@ -197,7 +197,7 @@ public class OwnerManagerView extends AbstractView implements
 
     private JPopupMenu createPopupContextMenu() {
         // rename, separator, delete, properties
-        CommandGroup group = getCommandManager().createCommandGroup(
+        CommandGroup group = getWindowCommandManager().createCommandGroup(
                 "ownerCommandGroup",
                 new Object[] { renameCommand, "separator", "deleteCommand",
                         "separator", "propertiesCommand" });
@@ -230,7 +230,7 @@ public class OwnerManagerView extends AbstractView implements
                     owner, "firstName");
             renameDialog.setTitle(getMessage("renameOwnerDialog.title"));
             renameDialog.setInputLabelMessage("renameDialog.label");
-            renameDialog.setParent(getParentWindowControl());
+            renameDialog.setParent(getWindowControl());
             renameDialog.setFinishAction(new Block() {
                 public void handle(Object o) {
                     clinic.storeOwner(owner);
@@ -289,7 +289,7 @@ public class OwnerManagerView extends AbstractView implements
             tabbedPage.addForm(new OwnerAddressForm(ownerFormModel));
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(
-                    tabbedPage, getParentWindowControl()) {
+                    tabbedPage, getWindowControl()) {
                 protected void onAboutToShow() {
                     ownerGeneralForm.requestFocusInWindow();
                     setEnabled(tabbedPage.isPageComplete());

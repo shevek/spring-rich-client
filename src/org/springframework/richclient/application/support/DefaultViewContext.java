@@ -21,6 +21,7 @@ import java.util.Map;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.ViewContext;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.util.Assert;
 
@@ -34,36 +35,50 @@ import org.springframework.util.Assert;
  */
 public class DefaultViewContext implements ViewContext {
 
-    private String viewId;
+    private ViewDescriptor viewDescriptor;
 
     private ApplicationPage page;
 
-    private Map commandDelegates = new HashMap();
+    private Map sharedCommandExecutors;
 
-    public DefaultViewContext(String viewName, ApplicationPage page) {
-        Assert.hasText(viewName, "The view name is required");
-        Assert.notNull(page);
-        this.viewId = viewName;
+    public DefaultViewContext(ViewDescriptor viewDescriptor,
+            ApplicationPage page) {
+        Assert.notNull(viewDescriptor, "The view descriptor is required");
+        Assert.notNull(page, "Views must be scoped relative to a page");
+        this.viewDescriptor = viewDescriptor;
         this.page = page;
     }
 
+    public ApplicationPage getApplicationPage() {
+        return page;
+    }
+
     public ApplicationWindow getApplicationWindow() {
-        return page.getParentWindow();
+        return page.getApplicationWindow();
     }
 
-    public String getViewName() {
-        return viewId;
+    public ViewDescriptor getViewDescriptor() {
+        return viewDescriptor;
     }
 
-    public ActionCommandExecutor findGlobalCommandDelegate(String commandId) {
-        Assert.notNull(commandId);
-        return (ActionCommandExecutor)commandDelegates.get(commandId);
+    public ActionCommandExecutor getSharedCommandExecutor(String commandId) {
+        Assert.notNull(commandId, "The commandId is required");
+        if (this.sharedCommandExecutors == null) { return null; }
+        return (ActionCommandExecutor)this.sharedCommandExecutors
+                .get(commandId);
     }
 
-    public void setGlobalCommandExecutor(String commandId,
-            ActionCommandExecutor delegate) {
-        Assert.notNull(commandId);
-        commandDelegates.put(commandId, delegate);
+    public void setSharedCommandExecutor(String commandId,
+            ActionCommandExecutor executor) {
+        Assert.notNull(commandId, "The command id is required");
+        Assert
+                .notNull(
+                        executor,
+                        "The command's executor is required: if you're setting to null, delete the statement");
+        if (this.sharedCommandExecutors == null) {
+            this.sharedCommandExecutors = new HashMap();
+        }
+        this.sharedCommandExecutors.put(commandId, executor);
     }
 
 }

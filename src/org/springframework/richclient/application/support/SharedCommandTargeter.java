@@ -45,7 +45,7 @@ public class SharedCommandTargeter extends AbstractViewListener {
             TargetableActionCommand globalCommand = (TargetableActionCommand)i
                     .next();
             globalCommand.setCommandExecutor(viewContext
-                    .findGlobalCommandDelegate(globalCommand.getId()));
+                    .getSharedCommandExecutor(globalCommand.getId()));
         }
     }
 
