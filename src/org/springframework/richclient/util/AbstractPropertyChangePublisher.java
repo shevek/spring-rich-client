@@ -94,5 +94,14 @@ public abstract class AbstractPropertyChangePublisher implements
     protected boolean hasChanged(Object o1, Object o2) {
         return !ObjectUtils.nullSafeEquals(o1, o2);
     }
+    
+    protected boolean hasChanged(boolean b1, boolean b2) {
+        return b1 != b2;
+    }
+    
+    protected boolean hasChanged(int i1, int i2) {
+        return i1 != i2;
+    }
+
 
 }
