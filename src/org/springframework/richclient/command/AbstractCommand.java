@@ -285,28 +285,28 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         }
     }
 
-    public AbstractButton createButton() {
+    public final AbstractButton createButton() {
         return createButton(getDefaultFaceDescriptorKey(), getButtonFactory(),
                 getDefaultButtonConfigurer());
     }
 
-    public AbstractButton createButton(String faceDescriptorKey) {
+    public final AbstractButton createButton(String faceDescriptorKey) {
         return createButton(faceDescriptorKey, getButtonFactory(),
                 getDefaultButtonConfigurer());
     }
 
-    public AbstractButton createButton(ButtonFactory buttonFactory) {
+    public final AbstractButton createButton(ButtonFactory buttonFactory) {
         return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
                 getDefaultButtonConfigurer());
     }
 
-    public AbstractButton createButton(String faceDescriptorKey,
+    public final AbstractButton createButton(String faceDescriptorKey,
             ButtonFactory buttonFactory) {
         return createButton(faceDescriptorKey, buttonFactory,
                 getDefaultButtonConfigurer());
     }
 
-    public AbstractButton createButton(ButtonFactory buttonFactory,
+    public final AbstractButton createButton(ButtonFactory buttonFactory,
             CommandButtonConfigurer buttonConfigurer) {
         return createButton(getDefaultFaceDescriptorKey(), buttonFactory,
                 buttonConfigurer);
@@ -320,28 +320,28 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         return button;
     }
 
-    public JMenuItem createMenuItem() {
+    public final JMenuItem createMenuItem() {
         return createMenuItem(getDefaultFaceDescriptorKey(), getMenuFactory(),
                 getMenuItemButtonConfigurer());
     }
 
-    public JMenuItem createMenuItem(String faceDescriptorKey) {
+    public final JMenuItem createMenuItem(String faceDescriptorKey) {
         return createMenuItem(faceDescriptorKey, getMenuFactory(),
                 getMenuItemButtonConfigurer());
     }
 
-    public JMenuItem createMenuItem(MenuFactory menuFactory) {
+    public final JMenuItem createMenuItem(MenuFactory menuFactory) {
         return createMenuItem(getDefaultFaceDescriptorKey(), menuFactory,
                 getMenuItemButtonConfigurer());
     }
 
-    public JMenuItem createMenuItem(String faceDescriptorKey,
+    public final JMenuItem createMenuItem(String faceDescriptorKey,
             MenuFactory menuFactory) {
         return createMenuItem(faceDescriptorKey, menuFactory,
                 getMenuItemButtonConfigurer());
     }
 
-    public JMenuItem createMenuItem(MenuFactory menuFactory,
+    public final JMenuItem createMenuItem(MenuFactory menuFactory,
             CommandButtonConfigurer buttonConfigurer) {
         return createMenuItem(getDefaultFaceDescriptorKey(), menuFactory,
                 buttonConfigurer);
