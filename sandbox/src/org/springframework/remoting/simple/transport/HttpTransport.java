@@ -34,9 +34,14 @@ public class HttpTransport extends AbstractTransport {
 
     private URL serviceUrl;
 
+    private boolean useAuthenticator;
+
     public HttpTransport(URL serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
 
+    public void setUseAuthenticator(boolean useAuthenticator) {
+        this.useAuthenticator = useAuthenticator;
     }
 
     protected HttpURLConnection openConnection(Request request,
@@ -47,19 +52,27 @@ public class HttpTransport extends AbstractTransport {
                     + "] is not a vaild HTTP URL.");
         }
         conn.setDoOutput(true);
+        authenticate(conn, authentication);
+        return (HttpURLConnection) conn;
+    }
 
+    /*
+     * Generate a BASIC authentication header. Borrowed from code in Hessian,
+     * thanks to Scott Ferguson.
+     */
+    protected void authenticate(URLConnection conn,
+            Authentication authentication) {
         if (authentication != null) {
             String userName = String.valueOf(authentication.getPrincipal());
             String password = String.valueOf(authentication.getCredentials());
             String basicAuth = "Basic " + base64(userName + ":" + password);
             conn.setRequestProperty("Authorization", basicAuth);
         }
-        return (HttpURLConnection) conn;
     }
 
     protected Reply invokeInternal(Request request,
             Authentication authentication, ProgressTracker tracker) {
-        try {        
+        try {
             tracker.start();
             HttpURLConnection conn = doRequest(request, authentication, tracker);
             return doResponse(conn, tracker);
@@ -68,7 +81,8 @@ public class HttpTransport extends AbstractTransport {
         }
     }
 
-    private HttpURLConnection doRequest(Request request, Authentication authentication, ProgressTracker tracker) {
+    private HttpURLConnection doRequest(Request request,
+            Authentication authentication, ProgressTracker tracker) {
         OutputStream os = null;
         try {
             tracker.startSending(-1);
@@ -89,16 +103,14 @@ public class HttpTransport extends AbstractTransport {
             return conn;
         } catch (IOException e) {
             throw new SimpleRemotingException(Recoverable.MAYBE,
-                    "Error attempting to connect to server.", e);
+                    "Error attempting to connect to server", e);
         } finally {
             if (os != null) {
                 try {
                     os.close();
                 } catch (IOException e) {
-                    logger
-                            .warn(
-                                    "Ignoring exception when closing output stream.",
-                                    e);
+                    logger.warn(
+                            "Ignoring exception when closing output stream", e);
                 }
             }
             tracker.finishSending();
@@ -113,20 +125,24 @@ public class HttpTransport extends AbstractTransport {
             return getProtocol().readReply(is, Recoverable.MAYBE);
         } catch (IOException e) {
             throw new SimpleRemotingException(Recoverable.MAYBE,
-                    "Error reading response from server.", e);
+                    "Error reading response from server", e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    logger.warn(
-                            "Ignoring exception when closing input stream.", e);
+                    logger.warn("Ignoring exception when closing input stream",
+                            e);
                 }
             }
             tracker.finishReceiving();
         }
     }
 
+    /*
+     * Encode a value as base64. Borrowed from code in Hessian, thanks to Scott
+     * Ferguson.
+     */
     private String base64(String value) {
         StringBuffer cb = new StringBuffer();
 
