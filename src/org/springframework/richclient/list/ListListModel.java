@@ -95,18 +95,23 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     }
 
     private class ThisIndexAdapter extends AbstractIndexAdapter {
+        private static final int NULL_INDEX = -1;
+
         public Object getValue() {
+            if (getIndex() == NULL_INDEX) { return null; }
             return get(getIndex());
         }
 
         public void setValue(Object value) {
+            if (getIndex() == NULL_INDEX) { throw new IllegalStateException(
+                    "Attempt to set value at null index; operation not allowed"); }
             Object oldValue = items.set(getIndex(), value);
             if (hasChanged(oldValue, value)) {
                 fireContentsChanged(getIndex());
                 fireValueChanged(oldValue, value);
             }
         }
-        
+
         public void fireIndexedObjectChanged() {
             fireContentsChanged(getIndex());
         }
