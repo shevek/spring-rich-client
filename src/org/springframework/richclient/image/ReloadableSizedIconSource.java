@@ -73,7 +73,7 @@ public class ReloadableSizedIconSource extends DefaultIconSource implements
     public void reload(IconSize size) {
         Assert.notNull(size);
         this.iconSize = size;
-        Iterator keys = cache().keys();
+        Iterator keys = cache().keySet().iterator();
         if (!keys.hasNext()) {
             logger
                     .warn("No icons currently in the registry--nothing to reload.");

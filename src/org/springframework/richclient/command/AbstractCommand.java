@@ -16,7 +16,6 @@
 package org.springframework.richclient.command;
 
 import java.awt.Container;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -45,6 +44,7 @@ import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.CachingMapTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.util.ToStringCreator;
 
@@ -126,13 +126,9 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         setFaceDescriptor(getDefaultFaceDescriptorKey(), faceDescriptor);
     }
 
-    public String getDefaultFaceDescriptorKey() {
-        if (!StringUtils.hasText(defaultFaceDescriptorKey)) { return DEFAULT_FACE_DESCRIPTOR_KEY; }
-        return defaultFaceDescriptorKey;
-    }
-
-    public void setDefaultFaceDescriptorKey(String defaultFaceDescriptorKey) {
-        this.defaultFaceDescriptorKey = defaultFaceDescriptorKey;
+    public void setFaceDescriptor(String faceDescriptorKey,
+            CommandFaceDescriptor faceDescriptor) {
+        getButtonManager(faceDescriptorKey).setFaceDescriptor(faceDescriptor);
     }
 
     public void setFaceDescriptors(Map faceDescriptors) {
@@ -146,9 +142,13 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         }
     }
 
-    public void setFaceDescriptor(String faceDescriptorKey,
-            CommandFaceDescriptor faceDescriptor) {
-        getButtonManager(faceDescriptorKey).setFaceDescriptor(faceDescriptor);
+    public String getDefaultFaceDescriptorKey() {
+        if (!StringUtils.hasText(defaultFaceDescriptorKey)) { return DEFAULT_FACE_DESCRIPTOR_KEY; }
+        return defaultFaceDescriptorKey;
+    }
+
+    public void setDefaultFaceDescriptorKey(String defaultFaceDescriptorKey) {
+        this.defaultFaceDescriptorKey = defaultFaceDescriptorKey;
     }
 
     protected CommandFaceDescriptor getFaceDescriptor() {
@@ -401,21 +401,15 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
 
     private CommandButtonManager getButtonManager(String faceDescriptorKey) {
         if (this.faceButtonManagers == null) {
-            this.faceButtonManagers = new HashMap();
-            /*
-             * this.faceButtonManagers = new CachingMapTemplate() { protected
-             * Object create(Object key) { System.out.println(id + ":'" + key +
-             * "'"); return new CommandButtonManager(AbstractCommand.this,
-             * (String)key); } };
-             */
+            this.faceButtonManagers = new CachingMapTemplate() {
+                protected Object create(Object key) {
+                    return new CommandButtonManager(AbstractCommand.this,
+                            (String)key);
+                }
+            };
         }
         CommandButtonManager m = (CommandButtonManager)this.faceButtonManagers
                 .get(faceDescriptorKey);
-        if (m == null) {
-            m = new CommandButtonManager(AbstractCommand.this,
-                    faceDescriptorKey);
-            faceButtonManagers.put(faceDescriptorKey, m);
-        }
         return m;
     }
 

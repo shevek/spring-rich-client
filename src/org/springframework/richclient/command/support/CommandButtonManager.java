@@ -32,6 +32,7 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.ToStringCreator;
 
 public class CommandButtonManager implements PropertyChangeListener {
     private ReferenceQueue queue = new ReferenceQueue();
@@ -74,10 +75,6 @@ public class CommandButtonManager implements PropertyChangeListener {
 
     public CommandButtonManager(AbstractCommand command,
             String faceDescriptorKey) {
-        //System.out.println("Creating button manager for command " + command.getId());
-        if ("deleteCommand".equals(command.getId())) {
-        Thread.dumpStack();
-    }
         Assert.notNull(command,
                 "The command to manage buttons for cannot be null");
         Assert
@@ -106,11 +103,10 @@ public class CommandButtonManager implements PropertyChangeListener {
                 this.faceDescriptor.removePropertyChangeListener(this);
             }
             this.faceDescriptor = faceDescriptor;
-            //System.out.println("Setting face descriptor for " + command.getId() + ": " + this.faceDescriptor.getText());
             this.faceDescriptor.addPropertyChangeListener(this);
         }
     }
-    
+
     public boolean isFaceSet() {
         return this.faceDescriptor != null;
     }
@@ -139,7 +135,6 @@ public class CommandButtonManager implements PropertyChangeListener {
     protected void configure(AbstractButton button,
             CommandButtonConfigurer strategy) {
         if (this.faceDescriptor == null) {
-            //System.out.println("Face descriptor is null: " + command.getId());
             this.faceDescriptor = getFaceDescriptor(faceDescriptorKey);
         }
         this.faceDescriptor.configure(button, command, strategy);
@@ -199,6 +194,11 @@ public class CommandButtonManager implements PropertyChangeListener {
                 configure(mb.getButton(), mb.buttonConfigurer);
             }
         }
+    }
+
+    public String toString() {
+        return new ToStringCreator(this).append("commandId", command.getId())
+                .append("faceDescriptor", faceDescriptor).toString();
     }
 
 }
