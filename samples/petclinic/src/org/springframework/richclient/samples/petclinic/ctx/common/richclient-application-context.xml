@@ -121,7 +121,15 @@
 		</property>
 	</bean>
 	
-	<bean id="ownerManagerView" 
+	<bean id="applicationWindow" singleton="false"
+		class="org.springframework.richclient.application.DefaultApplicationWindow">
+	</bean>
+
+	<bean id="applicationPage" singleton="false"
+		class="org.springframework.richclient.application.DefaultApplicationPage">
+	</bean>
+
+	<bean id="ownerManagerView"
 		class="org.springframework.richclient.application.DefaultViewDescriptor">
 		<property name="viewClass">
 			<value>org.springframework.richclient.samples.petclinic.ui.OwnerManagerView</value>

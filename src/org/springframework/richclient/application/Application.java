@@ -33,6 +33,8 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class Application extends ApplicationObjectSupport {
+    private static final String APPLICATION_WINDOW = "applicationWindow";
+
     private static Application INSTANCE;
 
     private ApplicationServices applicationServices;
@@ -97,9 +99,8 @@ public class Application extends ApplicationObjectSupport {
      * @return The application
      */
     public static Application instance() {
-        Assert
-                .notNull(INSTANCE,
-                        "The global application instance has not yet been initialized.");
+        Assert.notNull(INSTANCE,
+                "The global application instance has not yet been initialized.");
         return INSTANCE;
     }
 
@@ -150,7 +151,15 @@ public class Application extends ApplicationObjectSupport {
     }
 
     protected ApplicationWindow createNewWindow() {
-        return new DefaultApplicationWindow(windowManager.size());
+        return (ApplicationWindow)getApplicationContext().getBean(APPLICATION_WINDOW);
+    }
+
+    public WindowManager getWindowManager() {
+        return windowManager;
+    }
+
+    public void setWindowManager(WindowManager windowManager) {
+        this.windowManager = windowManager;
     }
 
     public ApplicationWindow getActiveWindow() {

@@ -57,8 +57,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private WindowManager windowManager;
 
-    public DefaultApplicationWindow(int number) {
-        this.number = number;
+    public DefaultApplicationWindow() {
+        this.number = getApplication().getWindowManager().size();
         ApplicationAdvisor advisor = getApplicationAdvisor();
         advisor.onPreWindowOpen(getWindowConfigurer());
         this.commandManager = advisor.createWindowCommandManager();
@@ -103,7 +103,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         return statusBarCommandGroup;
     }
 
-    protected Application getApplication() {
+    protected final Application getApplication() {
         return Application.instance();
     }
 
