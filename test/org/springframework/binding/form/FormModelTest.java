@@ -11,6 +11,8 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JTextField;
 
@@ -18,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.springframework.binding.form.support.CompoundFormModel;
 import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.value.PropertyEditorProvider;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.TypeConverter;
@@ -45,7 +48,7 @@ public class FormModelTest extends TestCase {
                 new StaticApplicationContext());
     }
 
-    public static class Employee {
+    public static class Employee implements PropertyEditorProvider {
         private String name;
 
         private Employee supervisor;
@@ -55,6 +58,8 @@ public class FormModelTest extends TestCase {
         private int age;
 
         private Date hireDate;
+        
+        private Map editors = new HashMap();
 
         public int getAge() {
             return age;
@@ -95,12 +100,18 @@ public class FormModelTest extends TestCase {
         public void setAddress(Address address) {
             this.address = address;
         }
+        
+        private void setPropertyEditor(String domainProperty, PropertyEditor propertyEditor) {
+            editors.put(domainProperty, propertyEditor);
+        }
+        
+        public PropertyEditor getPropertyEditor(String domainProperty) {            
+            return (PropertyEditor) editors.get(domainProperty);
+        }
 
         public String toString() {
             return new ToStringCreator(this).appendProperties().toString();
-        }
-
-    }
+        }    }
 
     public static class Address {
         private String streetAddress1;
@@ -278,28 +289,34 @@ public class FormModelTest extends TestCase {
     public void testCustomPropertyEditorRegistration() {
         DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application
                 .services().getPropertyEditorRegistry();
-
-        ValidatingFormModel fm = new ValidatingFormModel(new Employee());
+        Employee employee = new Employee();
+        ValidatingFormModel fm = new ValidatingFormModel(employee);
         ValueModel vm = fm.add("age");
         assertHasNoPropertyEditor(vm);
         
         per.setPropertyEditor(int.class, PropertyEditorA.class);
-        fm = new ValidatingFormModel(new Employee());
+        fm = new ValidatingFormModel(employee);
         assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class); 
         
         per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);
-        fm = new ValidatingFormModel(new Employee());
+        fm = new ValidatingFormModel(employee);
         assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class); 
         
         PropertyEditor pe1 = new PropertyEditorA();
-        fm = new ValidatingFormModel(new Employee());
+        fm = new ValidatingFormModel(employee);
         fm.getPropertyAccessStrategy().registerCustomEditor(int.class, pe1);
         assertTrue(getPropertyEditor(fm.add("age")) == pe1);
                 
         PropertyEditor pe2 = new PropertyEditorA();
-        fm = new ValidatingFormModel(new Employee());
+        fm = new ValidatingFormModel(employee);
         fm.getPropertyAccessStrategy().registerCustomEditor("age", pe2);
         assertTrue(getPropertyEditor(fm.add("age")) == pe2);        
+        
+        PropertyEditor pe3 = new PropertyEditorA();
+        employee.setPropertyEditor("age", pe3);
+        fm = new ValidatingFormModel(employee);
+        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe3);
+        assertTrue(getPropertyEditor(fm.add("age")) == pe3);     
     }
     
     private void assertHasNoPropertyEditor(ValueModel vm) {
