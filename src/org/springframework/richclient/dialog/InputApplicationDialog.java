@@ -103,9 +103,6 @@ public class InputApplicationDialog extends ApplicationDialog {
         return reporter;
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.ApplicationDialog#createDialogContentPane()
-     */
     protected JComponent createDialogContentPane() {
         FormLayout layout = new FormLayout("left:pref, 6dlu, pref:grow");
         FormBuilder formBuilder = new JGoodiesFormBuilder(layout);
@@ -136,9 +133,6 @@ public class InputApplicationDialog extends ApplicationDialog {
         return inputLabelMessage;
     }
 
-    /**
-     * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
-     */
     protected boolean onFinish() {
         if (checkInputConstraint()) {
             onFinish(getInputValue());
