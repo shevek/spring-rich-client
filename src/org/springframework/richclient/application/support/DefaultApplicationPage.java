@@ -85,14 +85,6 @@ public class DefaultApplicationPage implements ApplicationPage,
         return pageControl;
     }
 
-    public void addViewListener(ViewListener listener) {
-        viewListeners.add(listener);
-    }
-
-    public void removeViewListener(ViewListener listener) {
-        viewListeners.remove(listener);
-    }
-
     public void showView(String viewDescriptorId) {
         showView(getViewDescriptor(viewDescriptorId));
     }
@@ -152,6 +144,14 @@ public class DefaultApplicationPage implements ApplicationPage,
 
     public View getActiveView() {
         return activeView.getView();
+    }
+
+    public void addViewListener(ViewListener listener) {
+        viewListeners.add(listener);
+    }
+
+    public void removeViewListener(ViewListener listener) {
+        viewListeners.remove(listener);
     }
 
     protected void fireViewFocusGained(View view) {
