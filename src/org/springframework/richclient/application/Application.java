@@ -122,7 +122,7 @@ public class Application extends ApplicationObjectSupport {
 
     protected void openFirstTimeApplicationWindow() {
         this.activeWindow = createNewWindow();
-        this.activeWindow.openPage(getAdvisor().getStartingPageId());        
+        openWindow(getAdvisor().getStartingPageId());
     }
 
     private ApplicationWindow createNewWindow() {
@@ -139,19 +139,20 @@ public class Application extends ApplicationObjectSupport {
         return newWindow;
     }
 
+    public void openWindow(String pageId) {
+        ApplicationWindow newWindow = createNewWindow();
+        newWindow.openPage(pageId);
+        newWindow.open();
+        // @TODO track active window...
+        this.activeWindow = newWindow;
+    }
+
     public ApplicationWindow getActiveWindow() {
         return activeWindow;
     }
 
     public void close() {
         System.exit(0);
-    }
-
-    public void openWindow(String pageId) {
-        ApplicationWindow newWindow = createNewWindow();
-        newWindow.openPage(pageId);
-        // @TODO track active window...
-        this.activeWindow = newWindow;
     }
 
 }

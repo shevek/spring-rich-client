@@ -24,7 +24,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -76,6 +75,7 @@ public class ApplicationWindow implements PersistableElement {
                 .getToolBarCommandGroup();
         this.statusBarCommandGroup = getLifecycleAdvisor()
                 .getStatusBarCommandGroup();
+        getLifecycleAdvisor().onCommandsInitialized(this);
     }
 
     public int getNumber() {
@@ -123,28 +123,26 @@ public class ApplicationWindow implements PersistableElement {
 
     public void openPage(String pageId) {
         Assert.notNull(pageId);
-        if (pageId == activePageId) { return; }
-        if (control == null) {
-            this.control = createWindowControl();
-            getLifecycleAdvisor().showIntroIfNecessary(this);
-            this.control.setVisible(true);
-            getLifecycleAdvisor().onWindowOpened(this);
+        if (this.activePage == null) {
+            Perspective perspective = (Perspective)getPageTemplate(pageId);
+            ApplicationPage page = new ApplicationPage(this);
+            page.addViewListener(new GlobalCommandTargeterViewListener(
+                    getCommandRegistry()));
+            page.showView(perspective.getView());
+            this.activePage = page;
+            this.activePageId = pageId;
+        } else {
+            Application.instance().openWindow(pageId);
         }
-        Perspective perspective = (Perspective)getPageTemplate(pageId);
-        ApplicationPage page = new ApplicationPage(this);
-        page.addViewListener(new GlobalCommandTargeterViewListener(
-                getCommandRegistry()));
-        page.showView(perspective.getView());
-        setPage(page);
-        this.activePage = page;
-        this.activePageId = pageId;
     }
 
-    protected void setPage(ApplicationPage page) {
-        control.getContentPane().add(page.getControl(), BorderLayout.CENTER);
-        control.getContentPane().validate();
+    public void open() {
+        this.control = createWindowControl();
+        getLifecycleAdvisor().showIntroIfNecessary(this);
+        this.control.setVisible(true);
+        getLifecycleAdvisor().onWindowOpened(this);
     }
-    
+
     protected Perspective getPageTemplate(String pageId) {
         return (Perspective)Application.services().getApplicationContext()
                 .getBean(pageId);
@@ -175,7 +173,8 @@ public class ApplicationWindow implements PersistableElement {
 
         control.getContentPane().setLayout(new BorderLayout());
         control.getContentPane().add(createToolBar(), BorderLayout.NORTH);
-        control.getContentPane().add(new JPanel(), BorderLayout.CENTER);
+        control.getContentPane().add(this.activePage.getControl(),
+                BorderLayout.CENTER);
         control.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
         control.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         control.addWindowListener(new WindowAdapter() {

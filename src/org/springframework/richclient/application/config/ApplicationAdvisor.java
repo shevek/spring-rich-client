@@ -132,6 +132,10 @@ public abstract class ApplicationAdvisor {
         return new StatusBarCommandGroup();
     }
 
+    public void onCommandsInitialized(ApplicationWindow window) {
+        
+    }
+    
     public void onWindowCreated(ApplicationWindow window) {
 
     }
