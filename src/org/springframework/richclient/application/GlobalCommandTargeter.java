@@ -27,10 +27,10 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class GlobalCommandTargeterViewListener extends AbstractViewListener {
+public class GlobalCommandTargeter extends AbstractViewListener {
     private CommandManager globalCommandRegistry;
 
-    public GlobalCommandTargeterViewListener(CommandManager commandRegistry) {
+    public GlobalCommandTargeter(CommandManager commandRegistry) {
         Assert.notNull(commandRegistry);
         this.globalCommandRegistry = commandRegistry;
     }

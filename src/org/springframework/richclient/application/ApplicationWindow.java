@@ -127,7 +127,7 @@ public class ApplicationWindow implements PersistableElement {
         if (this.activePage == null) {
             Perspective perspective = getPageTemplate(pageId);
             ApplicationPage page = new ApplicationPage(this);
-            page.addViewListener(new GlobalCommandTargeterViewListener(
+            page.addViewListener(new GlobalCommandTargeter(
                     getCommandManager()));
             page.showView(perspective.getViewName());
             this.activePage = page;
