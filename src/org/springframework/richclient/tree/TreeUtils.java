@@ -72,7 +72,7 @@ public class TreeUtils {
         expandLevels(tree, new TreePath(root), levels, expand);
     }
 
-    private static void expandLevels(JTree tree, TreePath parent, int levels,
+    public static void expandLevels(JTree tree, TreePath parent, int levels,
             boolean expand) {
         // Traverse children
         TreeNode node = (TreeNode)parent.getLastPathComponent();
