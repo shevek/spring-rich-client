@@ -22,11 +22,14 @@ import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
 
 import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.values.ValueChangeable;
+import org.springframework.rules.values.ValueListener;
 
 /**
  * @author Keith Donald
  */
-public class FilteredListModel extends AbstractListModel implements Observer {
+public class FilteredListModel extends AbstractListModel implements Observer,
+        ValueListener {
 
     private ListModel filteredListModel;
 
@@ -42,8 +45,15 @@ public class FilteredListModel extends AbstractListModel implements Observer {
         if (this.filter instanceof Observable) {
             ((Observable)this.filter).addObserver(this);
         }
+        else if (this.filter instanceof ValueChangeable) {
+            ((ValueChangeable)this.filter).addValueListener(this);
+        }
         this.indexes = new int[listModel.getSize()];
         applyFilter();
+    }
+
+    public void valueChanged() {
+        update(null, null);
     }
 
     public void update(Observable changed, Object arg) {

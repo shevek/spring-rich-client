@@ -57,19 +57,16 @@ public class JGoodiesFormBuilder implements FormBuilder {
     public DefaultFormBuilder getDefaultFormBuilder() {
         return formBuilder;
     }
-    
-    /**
-     * @see org.springframework.richclient.forms.FormBuilder#add(java.lang.String,
-     *      javax.swing.JComponent)
-     */
-    public void add(String labelKey, JComponent labeledComponent) {
+
+    public JComponent[] add(String labelKey, JComponent labeledComponent) {
         JLabel label = componentFactory.createLabelFor(labelKey,
                 labeledComponent);
         Assert.notNull(labeledComponent);
         formBuilder.append(label, labeledComponent);
+        return new JComponent[] { label, labeledComponent };
     }
 
-    public void add(String labelKey, String labelConstraints,
+    public JComponent[] add(String labelKey, String labelConstraints,
             JComponent labeledComponent) {
         JLabel label = componentFactory.createLabelFor(labelKey,
                 labeledComponent);
@@ -84,6 +81,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
         formBuilder.nextColumn(2);
         formBuilder.add(labeledComponent);
         formBuilder.nextLine();
+        return new JComponent[] { label, labeledComponent };
     }
 
     public void addSeparator() {

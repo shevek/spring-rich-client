@@ -37,7 +37,7 @@ public class OwnerAddressForm extends AbstractFormPage {
         FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
         BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
                 getFormModel(), layout);
-        this.address = formBuilder.add("address");
+        this.address = formBuilder.add("address")[1];
         formBuilder.add("city");
         return formBuilder.getForm();
     }

@@ -16,12 +16,18 @@
 package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
+
+import org.springframework.rules.UnaryPredicate;
 
 public interface BeanFormBuilder {
-    public JComponent add(String propertyName);
-    public JPasswordField addPasswordField(String propertyName);
-    public JTextArea addTextArea(String propertyName);
+    public JComponent[] add(String formPropertyPath);
+
+    public JComponent[] addSelector(String formPropertyPath,
+            UnaryPredicate filter);
+
+    public JComponent[] addPasswordField(String formPropertyPath);
+
+    public JComponent[] addTextArea(String formPropertyPath);
+
     public JComponent getForm();
 }

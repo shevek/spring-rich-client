@@ -23,6 +23,8 @@ import javax.swing.JTextArea;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.rules.UnaryPredicate;
+import org.springframework.util.Assert;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -64,24 +66,37 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
         return formBuilder.getForm();
     }
 
-    public JComponent add(String propertyName) {
-        JComponent propertyEditor = formModel.createBoundControl(propertyName);
-        formBuilder.add(getPropertyLabelCode(propertyName), propertyEditor);
-        return propertyEditor;
+    public JComponent[] add(String formPropertyPath) {
+        JComponent propertyEditor = formModel
+                .createBoundControl(formPropertyPath);
+        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
+                propertyEditor);
     }
 
-    public JPasswordField addPasswordField(String propertyName) {
-        JPasswordField field = (JPasswordField)formModel.bind(new JPasswordField(8),
-                propertyName);
-        formBuilder.add(getPropertyLabelCode(propertyName), field);
-        return field;
+    public JComponent[] addSelector(String formPropertyPath,
+            UnaryPredicate filter) {
+        JComponent propertyEditor = null;
+        if (formModel.isEnumeration(formPropertyPath)) {
+            propertyEditor = formModel.createBoundEnumComboBox(
+                    formPropertyPath, filter);
+        }
+        Assert.notNull(propertyEditor, "Unsupported filterable property "
+                + formPropertyPath);
+        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
+                propertyEditor);
     }
 
-    public JTextArea addTextArea(String propertyName) {
+    public JComponent[] addPasswordField(String formPropertyPath) {
+        JPasswordField field = (JPasswordField)formModel.bind(
+                new JPasswordField(8), formPropertyPath);
+        return formBuilder.add(getPropertyLabelCode(formPropertyPath), field);
+    }
+
+    public JComponent[] addTextArea(String formPropertyPath) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-        formBuilder.add(getPropertyLabelCode(propertyName), "left,top",
-                new JScrollPane(formModel.bind(textArea, propertyName)));
-        return textArea;
+        return formBuilder.add(getPropertyLabelCode(formPropertyPath),
+                "left,top", new JScrollPane(formModel.bind(textArea,
+                        formPropertyPath)));
     }
 
     private String getPropertyLabelCode(String propertyName) {

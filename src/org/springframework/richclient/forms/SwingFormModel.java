@@ -48,18 +48,20 @@ import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.list.DynamicComboBoxListModel;
 import org.springframework.richclient.list.DynamicListModel;
+import org.springframework.richclient.list.FilteredComboBoxModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.rules.UnaryPredicate;
 import org.springframework.rules.values.BufferedValueModel;
 import org.springframework.rules.values.CommitListener;
 import org.springframework.rules.values.CompoundFormModel;
 import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.PropertyMetadataAccessStrategy;
 import org.springframework.rules.values.MutableFormModel;
 import org.springframework.rules.values.MutablePropertyAccessStrategy;
 import org.springframework.rules.values.NestingFormModel;
 import org.springframework.rules.values.PropertyAccessStrategy;
 import org.springframework.rules.values.PropertyAdapter;
+import org.springframework.rules.values.PropertyMetadataAccessStrategy;
 import org.springframework.rules.values.TypeConverter;
 import org.springframework.rules.values.ValidatingFormModel;
 import org.springframework.rules.values.ValidationListener;
@@ -239,35 +241,35 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.revert();
     }
 
-    public PropertyAccessStrategy getAspectAccessStrategy() {
+    public PropertyAccessStrategy getPropertyAccessStrategy() {
         return formModel.getPropertyAccessStrategy();
     }
 
-    protected PropertyMetadataAccessStrategy getMetaAspectAccessor() {
+    public PropertyMetadataAccessStrategy getMetadataAccessStrategy() {
         return formModel.getMetadataAccessStrategy();
     }
 
     private ValueModel newNestedAspectAdapter(ValueModel parentValueHolder,
             String childProperty) {
-        MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy)getAspectAccessStrategy();
+        MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy)getPropertyAccessStrategy();
         PropertyAdapter adapter = new PropertyAdapter(strategy
                 .newNestedAccessor(parentValueHolder), childProperty);
         return adapter;
     }
 
-    private boolean isEnumeration(String formProperty) {
-        return getMetaAspectAccessor().isEnumeration(formProperty);
+    protected boolean isEnumeration(String formProperty) {
+        return getMetadataAccessStrategy().isEnumeration(formProperty);
     }
 
-    private boolean isBoolean(String formProperty) {
-        Class aspectClass = getMetaAspectAccessor().getPropertyType(
+    protected boolean isBoolean(String formProperty) {
+        Class aspectClass = getMetadataAccessStrategy().getPropertyType(
                 formProperty);
         return aspectClass.equals(Boolean.class)
                 || aspectClass.equals(Boolean.TYPE);
     }
 
-    private boolean isWriteable(String formProperty) {
-        return getMetaAspectAccessor().isWriteable(formProperty);
+    protected boolean isWriteable(String formProperty) {
+        return getMetadataAccessStrategy().isWriteable(formProperty);
     }
 
     /**
@@ -307,7 +309,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         else {
             if (isEnumeration(formProperty)) {
-                return createBoundComboBoxFromEnum(formProperty);
+                return createBoundEnumComboBox(formProperty);
             }
             else if (isBoolean(formProperty)) {
                 return createBoundCheckBox(formProperty);
@@ -319,8 +321,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JFormattedTextField createBoundFormattedTextField(String formProperty) {
-        Class valueClass = getMetaAspectAccessor()
-                .getPropertyType(formProperty);
+        Class valueClass = getMetadataAccessStrategy().getPropertyType(
+                formProperty);
         return createBoundFormattedTextField(formProperty,
                 new FormatterFactory(valueClass, valueCommitPolicy));
     }
@@ -366,7 +368,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JSpinner createBoundSpinner(String formProperty) {
         final ValueModel model = getOrCreateValueModel(formProperty);
         final JSpinner spinner = createNewSpinner();
-        if (getMetaAspectAccessor().isDate(formProperty)) {
+        if (getMetadataAccessStrategy().isDate(formProperty)) {
             spinner.setModel(new SpinnerDateModel());
         }
         new SpinnerValueSetter(spinner, model);
@@ -487,7 +489,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox createBoundComboBox(String formProperty) {
         if (isEnumeration(formProperty)) {
-            return createBoundComboBoxFromEnum(formProperty);
+            return createBoundEnumComboBox(formProperty);
         }
         else {
             return bind(createNewComboBox(), formProperty);
@@ -531,12 +533,25 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return comboBox;
     }
 
-    public JComboBox createBoundComboBoxFromEnum(String selectionFormProperty) {
+    public JComboBox createBoundEnumComboBox(String selectionEnumProperty) {
         JComboBox comboBox = createNewComboBox();
         getComponentFactory().configureForEnum(comboBox,
-                getEnumType(selectionFormProperty));
-        return bind(comboBox, selectionFormProperty, (List)comboBox.getModel(),
+                getEnumType(selectionEnumProperty));
+        return bind(comboBox, selectionEnumProperty, (List)comboBox.getModel(),
                 AbstractCodedEnum.DEFAULT_ORDER);
+    }
+
+    public JComboBox createBoundEnumComboBox(String selectionFormProperty,
+            UnaryPredicate filter) {
+        JComboBox comboBox = createBoundEnumComboBox(selectionFormProperty);
+        return installFilter(comboBox, filter);
+    }
+
+    private JComboBox installFilter(JComboBox comboBox, UnaryPredicate filter) {
+        FilteredComboBoxModel model = new FilteredComboBoxModel(comboBox
+                .getModel(), filter);
+        comboBox.setModel(model);
+        return comboBox;
     }
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty,
@@ -571,7 +586,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     private String getEnumType(String formProperty) {
-        Class enumClass = getMetaAspectAccessor().getPropertyType(formProperty);
+        Class enumClass = getMetadataAccessStrategy().getPropertyType(
+                formProperty);
         try {
             Class.forName(enumClass.getName());
         }

@@ -19,22 +19,26 @@ import javax.swing.JComponent;
 
 import org.springframework.richclient.factory.ControlFactory;
 
-
 /**
  * Common interface to assist with building forms.
  * 
  * @author Keith Donald
  */
 public interface FormBuilder {
+    public static final int LABEL_INDEX = 0;
+
+    public static final int LABELED_INDEX = 1;
+
     public JComponent getForm();
 
-    public void add(String labelKey, JComponent labeledComponent);
+    public JComponent[] add(String labelKey, JComponent labeledComponent);
 
-    public void add(String labelKey, String labelConstraints, JComponent labeledComponent);
-    
+    public JComponent[] add(String labelKey, String labelConstraints,
+            JComponent labeledComponent);
+
     public void addSeparator();
-    
+
     public void addGapRow();
-    
+
     public void addRow(ControlFactory controlFactory);
 }

@@ -37,7 +37,7 @@ public class OwnerGeneralForm extends AbstractFormPage {
         FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
         BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(
                 getFormModel(), layout);
-        this.firstNameField = formBuilder.add("firstName");
+        this.firstNameField = formBuilder.add("firstName")[1];
         formBuilder.add("lastName");
         return formBuilder.getForm();
     }

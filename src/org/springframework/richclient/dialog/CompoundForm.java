@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.dialog;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.rules.values.NestingFormModel;
 import org.springframework.rules.values.ValueHolder;
@@ -24,13 +23,13 @@ import org.springframework.rules.values.ValueModel;
 /**
  * @author Keith Donald
  */
-public class CompoundForm implements InitializingBean {
+public class CompoundForm {
     private NestingFormModel formModel;
 
     public ValueModel formObjectHolder;
 
     public CompoundForm() {
-
+        this(null);
     }
 
     public CompoundForm(Object formObject) {
@@ -48,14 +47,15 @@ public class CompoundForm implements InitializingBean {
     }
 
     public void afterPropertiesSet() {
-        if (formModel == null) {
+        if (this.formModel == null) {
             this.formModel = SwingFormModel
                     .createCompoundFormModel(formObjectHolder);
         }
     }
 
     public SwingFormModel newPageFormModel(String formName) {
-        return SwingFormModel.createChildPageFormModel(getFormModel(), formName);
+        return SwingFormModel
+                .createChildPageFormModel(getFormModel(), formName);
     }
 
     public NestingFormModel getFormModel() {
