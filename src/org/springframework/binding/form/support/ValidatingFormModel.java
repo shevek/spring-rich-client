@@ -52,6 +52,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
 	private List validationListeners = new ArrayList();
 
+	private String validationContextId;
+
 	public ValidatingFormModel() {
 	}
 
@@ -69,6 +71,10 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
 	public ValidatingFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy, boolean bufferChanges) {
 		super(domainObjectAccessStrategy, bufferChanges);
+	}
+
+	public void setValidationContextId(String contextId) {
+		this.validationContextId = contextId;
 	}
 
 	public Object getPropertyValue(String propertyName) {
@@ -201,7 +207,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 		}
 		else {
 			if (getRulesSource() != null) {
-				constraint = getRulesSource().getRules(getFormObjectClass(), domainObjectProperty);
+				constraint = getRulesSource().getPropertyConstraint(getFormObjectClass(), domainObjectProperty,
+						validationContextId);
 			}
 			else {
 				logger.info("No rules source has been configured; "

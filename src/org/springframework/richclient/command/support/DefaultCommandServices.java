@@ -25,7 +25,7 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
-import org.springframework.richclient.command.config.DefaultButtonConfigurer;
+import org.springframework.richclient.command.config.DefaultCommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.DefaultButtonFactory;
 import org.springframework.richclient.factory.DefaultMenuFactory;
@@ -124,11 +124,11 @@ public class DefaultCommandServices implements CommandServices {
 	}
 
 	protected CommandButtonConfigurer createDefaultButtonConfigurer() {
-		return new DefaultButtonConfigurer();
+		return new DefaultCommandButtonConfigurer();
 	}
 
 	protected CommandButtonConfigurer createToolBarButtonConfigurer() {
-		return new DefaultButtonConfigurer() {
+		return new DefaultCommandButtonConfigurer() {
 			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
 				super.configure(button, command, faceDescriptor);
 				if (button.getIcon() != null) {
@@ -140,7 +140,7 @@ public class DefaultCommandServices implements CommandServices {
 	}
 
 	protected CommandButtonConfigurer createMenuItemButtonConfigurer() {
-		return new DefaultButtonConfigurer() {
+		return new DefaultCommandButtonConfigurer() {
 			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
 				super.configure(button, command, faceDescriptor);
 				button.setToolTipText(null);
@@ -149,7 +149,7 @@ public class DefaultCommandServices implements CommandServices {
 	}
 
 	protected CommandButtonConfigurer createPullDownMenuButtonConfigurer() {
-		return new DefaultButtonConfigurer() {
+		return new DefaultCommandButtonConfigurer() {
 			public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
 				super.configure(button, command, faceDescriptor);
 				button.setIcon(PULL_DOWN_ICON);

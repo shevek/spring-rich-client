@@ -48,7 +48,7 @@ public class DefaultButtonConfigurerTest extends TestCase {
     }
 
     public void testConfigureWithNullDescriptor() {
-        DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
+        DefaultCommandButtonConfigurer configurer = new DefaultCommandButtonConfigurer();
         try {
             configurer.configure(new JButton(), null, null);
             fail("Should throw IllegalArgumentException");
@@ -59,7 +59,7 @@ public class DefaultButtonConfigurerTest extends TestCase {
     }
 
     public void testConfigureWithNullButton() {
-        DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
+        DefaultCommandButtonConfigurer configurer = new DefaultCommandButtonConfigurer();
         try {
             configurer.configure(null, null, descriptor);
             fail("Should throw IllegalArgumentException");
@@ -71,7 +71,7 @@ public class DefaultButtonConfigurerTest extends TestCase {
 
     public void testConfigure() {
         JButton button = new JButton();
-        DefaultButtonConfigurer configurer = new DefaultButtonConfigurer();
+        DefaultCommandButtonConfigurer configurer = new DefaultCommandButtonConfigurer();
         configurer.configure(button, null, descriptor);
 
         assertEquals(labelInfo.configuredButton, button);

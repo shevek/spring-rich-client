@@ -50,9 +50,7 @@ import org.springframework.richclient.image.DefaultIconSource;
 import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
-import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
@@ -65,8 +63,7 @@ import org.springframework.rules.support.DefaultRulesSource;
  * @author Keith Donald
  */
 public class ApplicationServices extends ApplicationObjectSupport implements ApplicationObjectConfigurer,
-		CommandConfigurer, ResourceLoader, MessageSource, ImageSource, IconSource, RulesSource,
-		FormComponentInterceptorFactory {
+		CommandConfigurer, ResourceLoader, MessageSource, ImageSource, IconSource, FormComponentInterceptorFactory {
 
 	public static final String IMAGE_SOURCE_BEAN_ID = "imageSource";
 
@@ -396,14 +393,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements App
 		else {
 			return getApplicationContext().getResource(location);
 		}
-	}
-
-	public PropertyConstraint getRules(Class beanClass, String propertyName) {
-		return getRulesSource().getRules(beanClass, propertyName);
-	}
-
-	public Rules getRules(Class bean) {
-		return getRulesSource().getRules(bean);
 	}
 
 	public Object configure(Object applicationObject, String objectName) {

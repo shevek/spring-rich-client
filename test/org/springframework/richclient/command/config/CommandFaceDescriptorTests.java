@@ -190,7 +190,7 @@ public class CommandFaceDescriptorTests extends TestCase {
     }
 
     private static class TestCommandButtonConfigurer extends
-            DefaultButtonConfigurer implements CommandButtonConfigurer {
+            DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
         private CommandFaceDescriptor face;
 
         private AbstractButton button;

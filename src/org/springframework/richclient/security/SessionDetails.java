@@ -65,6 +65,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
 			protected int getPasswordMinLength() {
 				return 2;
 			}
+
 		};
 	}
 

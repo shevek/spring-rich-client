@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 /**
  * @author Keith Donald
  */
-public class DefaultButtonConfigurer implements CommandButtonConfigurer {
+public class DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
     public void configure(AbstractButton button, AbstractCommand command,
             CommandFaceDescriptor faceDescriptor) {
         Assert.notNull(button, "The button to configure cannot be null.");
