@@ -101,7 +101,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     public CommandGroup getToolBar() {
-        return menuBarCommandGroup;
+        return toolBarCommandGroup;
     }
 
     public StatusBarCommandGroup getStatusBar() {
