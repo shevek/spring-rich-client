@@ -181,7 +181,9 @@ public class ListListModel extends AbstractListModel implements List {
     }
 
     public Object set(int index, Object element) {
-        return items.set(index, element);
+        Object oldObject = items.set(index, element);
+        fireContentsChanged(this, index, index);
+        return  oldObject;
     }
 
     public int size() {
