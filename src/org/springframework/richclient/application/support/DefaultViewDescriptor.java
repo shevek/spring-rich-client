@@ -80,6 +80,10 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
     }
 
     public PageComponent createPageComponent() {
+        return createView();
+    }
+    
+    protected View createView() {
         Assert.state(viewClass != null, "View class to instantiate is not set");
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass
