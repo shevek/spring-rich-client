@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,7 @@ import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
+import org.springframework.richclient.form.FormAwarePropertyEditor;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
@@ -97,6 +99,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
 
     private FormComponentInterceptor interceptor;
+
+    private Map customEditors = new HashMap();
 
     public SwingFormModel(ConfigurableFormModel formModel) {
         Assert.notNull(formModel);
@@ -180,11 +184,21 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     public void registerCustomEditor(Class clazz, PropertyEditor customPropertyEditor) {
-        formModel.getPropertyAccessStrategy().registerCustomEditor(clazz, customPropertyEditor);
+        if (customPropertyEditor.supportsCustomEditor()) {
+            customEditors.put(clazz, customPropertyEditor);
+        }
+        else {
+            formModel.getPropertyAccessStrategy().registerCustomEditor(clazz, customPropertyEditor);
+        }
     }
 
     public void registerCustomEditor(String domainObjectProperty, PropertyEditor customPropertyEditor) {
-        formModel.getPropertyAccessStrategy().registerCustomEditor(domainObjectProperty, customPropertyEditor);
+        if (customPropertyEditor.supportsCustomEditor()) {
+            customEditors.put(domainObjectProperty, customPropertyEditor);
+        }
+        else {
+            formModel.getPropertyAccessStrategy().registerCustomEditor(domainObjectProperty, customPropertyEditor);
+        }
     }
 
     public void addCommitListener(CommitListener listener) {
@@ -332,7 +346,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     private ValueModel newNestedAspectAdapter(ValueModel parentValueHolder, String childProperty) {
-        MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy) getPropertyAccessStrategy();
+        MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy)getPropertyAccessStrategy();
         PropertyAdapter adapter = new PropertyAdapter(strategy.newPropertyAccessStrategy(parentValueHolder),
                 childProperty);
         return adapter;
@@ -356,63 +370,85 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
      * returning a JComponent array where the first component is the field label
      * and the second component is the editor control (e.g text field).
      * 
-     * @param formPropertyPath
-     *            the form property path
-     * 
+     * @param formPropertyPath the form property path
+     *
      * @return The labeled field array
      */
     public JComponent[] createBoundLabeledControl(String formPropertyPath) {
         JComponent editorControl = createBoundControl(formPropertyPath);
         JLabel label = createLabel(formPropertyPath);
         label.setLabelFor(editorControl);
-        return new JComponent[] { label, editorControl };
+        return new JComponent[] {label, editorControl};
     }
 
     /**
-     * Create a bound control for the given form property.
-     * <p />
-     * The strategy used for determining the control to bind to is:
+     * <p>Create a bound control for the given form property.</p>
+     * 
+     * <p>The strategy used for determining the control to bind to is:
      * <ol>
-     * <li>See if one is registered specificly against this FormModel
+     * <li>See if one is registered specifically against this FormModel
      * <li>See if one is registered in the global registry
      * <li>Try some hard-coded defaults if all else fails
      * </ol>
+     * </p>
      * 
      * @param formProperty
      *            the property to get the control for
      * @return a bound control; never null
-     * @see PropertyEditorRegistry#setPropertyEditor(Class, Class)
-     * @see PropertyEditorRegistry#setPropertyEditor(Class, String, Class)
      * @see SwingFormModel#registerCustomEditor(Class, PropertyEditor)
      * @see SwingFormModel#registerCustomEditor(String, PropertyEditor)
+     * @see PropertyEditorRegistry#setPropertyEditor(Class, Class)
+     * @see PropertyEditorRegistry#setPropertyEditor(Class, String, Class)
      */
     public JComponent createBoundControl(String formProperty) {
-        PropertyEditor propertyEditor = formModel.getPropertyAccessStrategy().findCustomEditor(formProperty);
+        PropertyEditor propertyEditor = locateCustomEditor(formProperty);
         if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
             return bindCustomEditor(propertyEditor, formProperty);
         }
-
-        final ApplicationServices applicationServices = Application.services();
-        final PropertyEditorRegistry propertyEditorRegistry = applicationServices.getPropertyEditorRegistry();
-        propertyEditor = propertyEditorRegistry.getPropertyEditor(getFormObject().getClass(), formProperty);
-        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
-            return bindCustomEditor(propertyEditor, formProperty);
-        } else {
+        else {
             if (isEnumeration(formProperty)) {
                 return createBoundEnumComboBox(formProperty);
-            } else if (isBoolean(formProperty)) {
+            }
+            else if (isBoolean(formProperty)) {
                 return createBoundCheckBox(formProperty);
-            } else {
+            }
+            else {
                 return createBoundTextField(formProperty);
             }
         }
     }
 
     /**
-     * Does binding that's common to <u>all </u> component types.
+     * Attempts to locate a custom property editor for the given form property.
+     * <p>
+	 * The custom editor is located in the following order:
+     * <ol>
+     * <li>See if one is registered with this <code>SwingFormModel</code>; first by property name then property type
+     * <li>See if one is registered with this <code>SwingFormModel's</code> <code>PropertyAccessStrategy</code>
+     * <li>Finally check if one is registered in the global registry
+     * </ol>
+     */
+    private PropertyEditor locateCustomEditor(String formProperty) {
+        PropertyEditor propertyEditor = (PropertyEditor)customEditors.get(formProperty);
+        if (propertyEditor == null || !propertyEditor.supportsCustomEditor()) {
+            propertyEditor = (PropertyEditor)customEditors.get(getMetadataAccessStrategy().getPropertyType(formProperty));
+            if (propertyEditor == null || !propertyEditor.supportsCustomEditor()) {
+                propertyEditor = formModel.getPropertyAccessStrategy().findCustomEditor(formProperty);
+                if (propertyEditor == null || !propertyEditor.supportsCustomEditor()) {
+                    final ApplicationServices applicationServices = Application.services();
+                    final PropertyEditorRegistry propertyEditorRegistry = applicationServices.getPropertyEditorRegistry();
+                    propertyEditor = propertyEditorRegistry.getPropertyEditor(getFormObject().getClass(), formProperty);
+                }
+            }
+        }
+        return propertyEditor;
+    }
+
+    /**
+     * Does binding that's common to <u>all</u> component types.
      * 
      * @param component
-     *            the compoenent to bind
+     *            the component to bind
      * @param formProperty
      *            the name of the component's property
      * @return the component that was passed in
@@ -460,7 +496,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         if (textField.isEditable()) {
             new JFormattedTextFieldValueSetter(textField, validatingModel, valueCommitPolicy);
         }
-        return (JFormattedTextField) bindControl(textField, formProperty);
+        return (JFormattedTextField)bindControl(textField, formProperty);
     }
 
     protected JFormattedTextField createNewFormattedTextField(AbstractFormatterFactory formatterFactory) {
@@ -468,11 +504,11 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     public JTextField createBoundTextField(String formProperty) {
-        return (JTextField) bind(createNewTextField(), formProperty);
+        return (JTextField)bind(createNewTextField(), formProperty);
     }
 
     public JTextField createBoundTextField(String formProperty, ValueCommitPolicy commitPolicy) {
-        return (JTextField) bind(createNewTextField(), formProperty, commitPolicy);
+        return (JTextField)bind(createNewTextField(), formProperty, commitPolicy);
     }
 
     protected JTextField createNewTextField() {
@@ -486,7 +522,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
             spinner.setModel(new SpinnerDateModel());
         }
         new SpinnerValueSetter(spinner, model);
-        return (JSpinner) bindControl(spinner, formProperty);
+        return (JSpinner)bindControl(spinner, formProperty);
     }
 
     protected JSpinner createNewSpinner() {
@@ -496,15 +532,19 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     public JComponent bindCustomEditor(PropertyEditor propertyEditor, String formProperty) {
         Assert.isTrue(propertyEditor.supportsCustomEditor(),
                 "The propertyEditor to bind must provide a customEditor component.");
+        if (propertyEditor instanceof FormAwarePropertyEditor) {
+            ((FormAwarePropertyEditor)propertyEditor).setFormDetails(this, formProperty);
+        }
         final Component component = propertyEditor.getCustomEditor();
         Assert.notNull(component, "The customEditor property cannot be null.");
         Assert.isTrue(component instanceof JComponent,
-                "customEditors must be JComponents; however, you have provided a " + component.getClass());
-        final JComponent customEditor = (JComponent) component;
+                "customEditors must be JComponents; however the propertyEditor has returned an instance of "
+                        + component.getClass().getName() + ".");
+        final JComponent customEditor = (JComponent)component;
         ValueModel valueModel = getValueModel(formProperty);
         if (valueModel == null) {
             createFormValueModel(formProperty);
-            // create above returns the display value model appyling the
+            // create above returns the display value model applying the
             // property editor, the setter listener wants the 'wrapped' value
             // model...
             valueModel = getValueModel(formProperty);
@@ -515,17 +555,15 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     public JTextComponent bind(JTextComponent component, String formProperty) {
-        if (component instanceof JTextArea) {
-            return bind(component, formProperty, ValueCommitPolicy.FOCUS_LOST);
-        }
         return bind(component, formProperty, valueCommitPolicy);
     }
 
     public JTextComponent bind(final JTextComponent component, String formProperty, ValueCommitPolicy valueCommitPolicy) {
         final ValueModel valueModel = getOrCreateDisplayValueModel(formProperty);
         try {
-            component.setText((String) valueModel.getValue());
-        } catch (ClassCastException e) {
+            component.setText((String)valueModel.getValue());
+        }
+        catch (ClassCastException e) {
             IllegalArgumentException ex = new IllegalArgumentException("Class cast exception converting '"
                     + formProperty + "' property value to string - did you install a type converter?");
             ex.initCause(e);
@@ -535,19 +573,21 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
             component.setEditable(true);
             if (valueCommitPolicy == ValueCommitPolicy.AS_YOU_TYPE) {
                 new AsYouTypeTextValueSetter(component, valueModel);
-            } else {
+            }
+            else {
                 new FocusLostTextValueSetter(component, valueModel);
             }
-        } else {
+        }
+        else {
             component.setEditable(false);
             valueModel.addValueChangeListener(new ValueChangeListener() {
 
                 public void valueChanged() {
-                    component.setText((String) valueModel.getValue());
+                    component.setText((String)valueModel.getValue());
                 }
             });
         }
-        return (JTextComponent) bindControl(component, formProperty);
+        return (JTextComponent)bindControl(component, formProperty);
     }
 
     public JTextComponent createBoundLabel(String formProperty) {
@@ -569,7 +609,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
                 component.setText(String.valueOf(value.getValue()));
             }
         });
-        return (JTextComponent) bindControl(component, formProperty);
+        return (JTextComponent)bindControl(component, formProperty);
     }
 
     // @TODO better support for nested properties...
@@ -584,7 +624,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
                 component.setText(String.valueOf(nestedAccessor.getValue()));
             }
         });
-        return (JTextComponent) bindControl(component, parentProperty);
+        return (JTextComponent)bindControl(component, parentProperty);
     }
 
     public JCheckBox createBoundCheckBox(String formProperty) {
@@ -604,23 +644,24 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
 
         ValueModel valueModel = getOrCreateDisplayValueModel(formProperty);
         checkBox.setModel(new SelectableButtonValueModel(valueModel));
-        return (JCheckBox) bindControl(checkBox, formProperty);
+        return (JCheckBox)bindControl(checkBox, formProperty);
     }
 
     public JComboBox createBoundComboBox(String formProperty) {
         if (isEnumeration(formProperty)) {
             return createBoundEnumComboBox(formProperty);
-        } else {
+        }
+        else {
             return bind(createNewComboBox(), formProperty);
         }
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty, Object[] selectableItems) {
         ValueModel selectionValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
-        ComboBoxModelAdapter comboBoxModel = new ComboBoxModelAdapter((ListModel) new SelectableItemsListModel(
+        ComboBoxModelAdapter comboBoxModel = new ComboBoxModelAdapter((ListModel)new SelectableItemsListModel(
                 selectableItems, selectionValueModel), selectionValueModel);
 
-        return (JComboBox) bindControl(createNewComboBox(comboBoxModel), selectionFormProperty);
+        return (JComboBox)bindControl(createNewComboBox(comboBoxModel), selectionFormProperty);
     }
 
     public JComboBox bind(JComboBox comboBox, String selectionFormProperty) {
@@ -633,7 +674,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         }
 
         comboBox.setModel(new DynamicComboBoxListModel(selectedValueModel, items));
-        return (JComboBox) bindControl(comboBox, selectionFormProperty);
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty, String selectableItemsProperty,
@@ -641,14 +682,14 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         ValueModel itemsValueModel = getOrCreateDisplayValueModel(selectableItemsProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel, itemsValueModel, renderedItemProperty);
-        return (JComboBox) bindControl(comboBox, selectionFormProperty);
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(String selectionFormProperty, ValueModel selectableItemsHolder,
             String renderedItemProperty) {
         ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         JComboBox comboBox = createBoundComboBox(selectedValueModel, selectableItemsHolder, renderedItemProperty);
-        return (JComboBox) bindControl(comboBox, selectionFormProperty);
+        return (JComboBox)bindControl(comboBox, selectionFormProperty);
     }
 
     public JComboBox createBoundComboBox(ValueModel selectedItemHolder, ValueModel selectableItemsHolder,
@@ -664,7 +705,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     public JComboBox createBoundEnumComboBox(String selectionEnumProperty) {
         JComboBox comboBox = createNewComboBox();
         getComponentFactory().configureForEnum(comboBox, getEnumType(selectionEnumProperty));
-        return bind(comboBox, selectionEnumProperty, (List) comboBox.getModel(), AbstractCodedEnum.DEFAULT_ORDER);
+        return bind(comboBox, selectionEnumProperty, (List)comboBox.getModel(), AbstractCodedEnum.DEFAULT_ORDER);
     }
 
     public JComboBox createBoundEnumComboBox(String selectionFormProperty, Constraint filter) {
@@ -683,7 +724,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         ValueModel selectedValueModel = getOrCreateDisplayValueModel(selectionFormProperty);
         final ValueHolder valueHolder = new ValueHolder(selectableItems);
         final JComboBox boundCombo = bind(comboBox, selectedValueModel, valueHolder, itemsComparator);
-        return (JComboBox) bindControl(boundCombo, selectionFormProperty);
+        return (JComboBox)bindControl(boundCombo, selectionFormProperty);
     }
 
     public JComboBox bind(JComboBox comboBox, ValueModel selectedItemHolder, ValueModel selectableItemsHolder,
@@ -691,10 +732,12 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         ComboBoxListModel model;
         if (selectableItemsHolder != null) {
             model = new DynamicComboBoxListModel(selectedItemHolder, selectableItemsHolder);
-        } else {
+        }
+        else {
             if (selectedItemHolder != null) {
                 model = new DynamicComboBoxListModel(selectedItemHolder);
-            } else {
+            }
+            else {
                 model = new ComboBoxListModel();
             }
         }
@@ -719,7 +762,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         try {
             Class.forName(enumClass.getName());
             return enumClass.getName();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -745,14 +789,14 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
                     formProperty));
             formModel.add(formProperty, valueModel);
         }
-        return (ObservableList) valueModel.getValue();
+        return (ObservableList)valueModel.getValue();
     }
 
     public JList createBoundList(String formProperty) {
         ListModel listModel = createBoundListModel(formProperty);
         JList list = createNewList();
         list.setModel(listModel);
-        return (JList) bindControl(list, formProperty);
+        return (JList)bindControl(list, formProperty);
     }
 
     public JList createBoundList(String selectionFormProperty, List selectableItems, String renderedProperty) {
@@ -776,7 +820,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
 
     public JList bind(JList list, String selectionFormProperty, ValueModel selectableItemsHolder,
             Comparator itemsComparator) {
-        return (JList) bindControl(bind(list, getOrCreateDisplayValueModel(selectionFormProperty),
+        return (JList)bindControl(bind(list, getOrCreateDisplayValueModel(selectionFormProperty),
                 selectableItemsHolder, itemsComparator), selectionFormProperty);
     }
 
@@ -785,7 +829,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         ListListModel model;
         if (selectableItemsHolder != null) {
             model = new DynamicListModel(selectableItemsHolder);
-        } else {
+        }
+        else {
             model = new ListListModel();
         }
         model.setComparator(itemsComparator);
@@ -817,7 +862,8 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
                         if (!updating) {
                             list.setSelectedValue(selectedValueModel.getValue(), true);
                         }
-                    } else {
+                    }
+                    else {
                         list.clearSelection();
                     }
                 }
@@ -836,7 +882,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     public JTextArea createBoundTextArea(String formProperty, int rows, int columns) {
         int numRows = (rows <= 0) ? 5 : rows;
         int numCols = (columns <= 0) ? 25 : columns;
-        return (JTextArea) bind(getComponentFactory().createTextArea(numRows, numCols), formProperty);
+        return (JTextArea)bind(getComponentFactory().createTextArea(numRows, numCols), formProperty, valueCommitPolicy);
     }
 
     public void interceptComponent(final String propertyName, final JComponent component) {
@@ -861,6 +907,6 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
     }
 
     public void validate() {
-        ((ValidatingFormModel) formModel).validate();
+        ((ValidatingFormModel)formModel).validate();
     }
 }

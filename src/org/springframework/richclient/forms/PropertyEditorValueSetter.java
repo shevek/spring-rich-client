@@ -23,7 +23,7 @@ import org.springframework.binding.value.ValueModel;
 
 public class PropertyEditorValueSetter extends AbstractValueSetter implements PropertyChangeListener {
 
-    private PropertyEditor propertyEditor;
+    private final PropertyEditor propertyEditor;
 
     public PropertyEditorValueSetter(PropertyEditor propertyEditor, ValueModel valueModel) {
         super(valueModel);
