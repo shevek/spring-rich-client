@@ -80,6 +80,7 @@ public class LabelInfo {
     }
 
     public JLabel configureLabel(JLabel label) {
+        Assert.notNull(label);
         label.setText(text);
         label.setDisplayedMnemonic(getMnemonic());
         int index = getMnemonicIndex();
