@@ -128,9 +128,8 @@ public class DefaultApplicationPage implements ApplicationPage,
     protected boolean giveFocusTo(ViewPane viewPane) {
         this.pageControl.removeAll();
         this.pageControl.add(viewPane.getControl());
-        this.pageControl.revalidate();
-        this.pageControl.repaint();
-        this.pageControl.requestFocusInWindow();
+        this.pageControl.validate();
+        viewPane.requestFocusInWindow();
         return true;
     }
 

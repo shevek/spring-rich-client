@@ -10,40 +10,43 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
+import javax.swing.JToolBar;
 
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.control.SimpleInternalFrame;
-import org.springframework.richclient.factory.ControlFactory;
+import org.springframework.richclient.factory.AbstractControlFactory;
 
-public class ViewPane implements ControlFactory, PropertyChangeListener {
-
+public class ViewPane extends AbstractControlFactory implements
+        PropertyChangeListener {
     private View view;
-
-    private SimpleInternalFrame pane;
 
     public ViewPane(View view) {
         this.view = view;
-        this.pane = new SimpleInternalFrame(view.getIcon(), view
-                .getDisplayName(), null, view.getControl());
         this.view.addPropertyChangeListener(this);
     }
 
     public View getView() {
         return view;
     }
-    
-    public JComponent getControl() {
-        return pane;
+
+    protected JComponent createControl() {
+        return new SimpleInternalFrame(view.getIcon(), view.getDisplayName(),
+                new JToolBar(), view.getControl());
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        update();
+       handleViewPropertyChange();
     }
 
-    private void update() {
-        pane.setTitle(view.getDisplayName());
-        pane.setFrameIcon(view.getIcon());
-        pane.setToolTipText(view.getCaption());
+    protected void handleViewPropertyChange() {
+        SimpleInternalFrame frame = (SimpleInternalFrame)getControl();
+        frame.setTitle(view.getDisplayName());
+        frame.setFrameIcon(view.getIcon());
+        frame.setToolTipText(view.getCaption());
+    }
+
+    public void requestFocusInWindow() {
+        getControl().requestFocusInWindow();
     }
 
 }
