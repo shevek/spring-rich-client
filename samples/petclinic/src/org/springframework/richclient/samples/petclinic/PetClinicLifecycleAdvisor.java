@@ -27,7 +27,7 @@ import org.springframework.richclient.command.ActionCommand;
  * 
  * @author Keith Donald
  */
-public class PetClinicApplicationLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
+public class PetClinicLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
         if (getApplicationServices().containsBean("setupWizard")) {
