@@ -38,7 +38,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.enums.AbstractCodedEnum;
-import org.springframework.richclient.application.*;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
+import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
@@ -47,16 +50,16 @@ import org.springframework.richclient.list.DynamicComboBoxListModel;
 import org.springframework.richclient.list.DynamicListModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.values.AspectAccessStrategy;
-import org.springframework.rules.values.AspectAdapter;
 import org.springframework.rules.values.BufferedValueModel;
 import org.springframework.rules.values.CommitListener;
 import org.springframework.rules.values.CompoundFormModel;
 import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.MetaAspectAccessStrategy;
-import org.springframework.rules.values.MutableAspectAccessStrategy;
+import org.springframework.rules.values.PropertyMetadataAccessStrategy;
 import org.springframework.rules.values.MutableFormModel;
+import org.springframework.rules.values.MutablePropertyAccessStrategy;
 import org.springframework.rules.values.NestingFormModel;
+import org.springframework.rules.values.PropertyAccessStrategy;
+import org.springframework.rules.values.PropertyAdapter;
 import org.springframework.rules.values.TypeConverter;
 import org.springframework.rules.values.ValidatingFormModel;
 import org.springframework.rules.values.ValidationListener;
@@ -130,14 +133,13 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public void registerCustomEditor(Class clazz,
             PropertyEditor customPropertyEditor) {
-        formModel.getAspectAccessStrategy().registerCustomEditor(clazz,
+        formModel.getPropertyAccessStrategy().registerCustomEditor(clazz,
                 customPropertyEditor);
     }
 
     public void registerCustomEditor(String domainObjectProperty,
             PropertyEditor customPropertyEditor) {
-        formModel.getAspectAccessStrategy().registerCustomEditor(
-                getMetaAspectAccessor().getAspectClass(domainObjectProperty),
+        formModel.getPropertyAccessStrategy().registerCustomEditor(
                 domainObjectProperty, customPropertyEditor);
     }
 
@@ -225,8 +227,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.setEnabled(enabled);
     }
 
-    public boolean getBufferChanges() {
-        return formModel.getBufferChanges();
+    public boolean getBufferChangesDefault() {
+        return formModel.getBufferChangesDefault();
     }
 
     public void commit() {
@@ -237,18 +239,18 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.revert();
     }
 
-    public AspectAccessStrategy getAspectAccessStrategy() {
-        return formModel.getAspectAccessStrategy();
+    public PropertyAccessStrategy getAspectAccessStrategy() {
+        return formModel.getPropertyAccessStrategy();
     }
 
-    protected MetaAspectAccessStrategy getMetaAspectAccessor() {
-        return formModel.getMetaAspectAccessor();
+    protected PropertyMetadataAccessStrategy getMetaAspectAccessor() {
+        return formModel.getMetadataAccessStrategy();
     }
 
     private ValueModel newNestedAspectAdapter(ValueModel parentValueHolder,
             String childProperty) {
-        MutableAspectAccessStrategy strategy = (MutableAspectAccessStrategy)getAspectAccessStrategy();
-        AspectAdapter adapter = new AspectAdapter(strategy
+        MutablePropertyAccessStrategy strategy = (MutablePropertyAccessStrategy)getAspectAccessStrategy();
+        PropertyAdapter adapter = new PropertyAdapter(strategy
                 .newNestedAccessor(parentValueHolder), childProperty);
         return adapter;
     }
@@ -258,8 +260,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     private boolean isBoolean(String formProperty) {
-        Class aspectClass = getMetaAspectAccessor()
-                .getAspectClass(formProperty);
+        Class aspectClass = getMetaAspectAccessor().getPropertyType(
+                formProperty);
         return aspectClass.equals(Boolean.class)
                 || aspectClass.equals(Boolean.TYPE);
     }
@@ -269,34 +271,37 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     /**
-     * Create a bound control for the given form property.<p />
-     *
-     * The strategy used for determining the control to bind to is:<ol>
+     * Create a bound control for the given form property.
+     * <p />
+     * 
+     * The strategy used for determining the control to bind to is:
+     * <ol>
      * <li>See if one is registered specificly against this FormModel
      * <li>See if one is registered in the global registry
      * <li>Try some hard-coded defaults if all else fails
      * </ol>
-     *
-     * @param formProperty the property to get the control for
-     *
+     * 
+     * @param formProperty
+     *            the property to get the control for
+     * 
      * @return a bound control; never null
-     *
+     * 
      * @see PropertyEditorRegistry#setPropertyEditor(Class, Class)
      * @see PropertyEditorRegistry#setPropertyEditor(Class, String, Class)
      * @see SwingFormModel#registerCustomEditor(Class, PropertyEditor)
      * @see SwingFormModel#registerCustomEditor(String, PropertyEditor)
      */
     public JComponent createBoundControl(String formProperty) {
-        PropertyEditor propertyEditor = formModel.getAspectAccessStrategy()
-            .findCustomEditor(null, formProperty);
-        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
-            return bindCustomEditor(propertyEditor, formProperty);
-        }
+        PropertyEditor propertyEditor = formModel.getPropertyAccessStrategy()
+                .findCustomEditor(formProperty);
+        if (propertyEditor != null && propertyEditor.supportsCustomEditor()) { return bindCustomEditor(
+                propertyEditor, formProperty); }
 
         final ApplicationServices applicationServices = Application.services();
-        final PropertyEditorRegistry propertyEditorRegistry = applicationServices.getPropertyEditorRegistry();
-        propertyEditor =
-            propertyEditorRegistry.getPropertyEditor(getFormObject().getClass(), formProperty);
+        final PropertyEditorRegistry propertyEditorRegistry = applicationServices
+                .getPropertyEditorRegistry();
+        propertyEditor = propertyEditorRegistry.getPropertyEditor(
+                getFormObject().getClass(), formProperty);
         if (propertyEditor != null && propertyEditor.supportsCustomEditor()) {
             return bindCustomEditor(propertyEditor, formProperty);
         }
@@ -314,16 +319,17 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JFormattedTextField createBoundFormattedTextField(String formProperty) {
-        Class valueClass = getMetaAspectAccessor().getAspectClass(formProperty);
+        Class valueClass = getMetaAspectAccessor()
+                .getPropertyType(formProperty);
         return createBoundFormattedTextField(formProperty,
                 new FormatterFactory(valueClass, valueCommitPolicy));
     }
 
     public JFormattedTextField createBoundFormattedTextField(
             String formProperty, AbstractFormatterFactory formatterFactory) {
-        ValueModel valueModel = new AspectAdapter(formModel
-                .getAspectAccessStrategy(), formProperty);
-        if (formModel.getBufferChanges()) {
+        ValueModel valueModel = new PropertyAdapter(formModel
+                .getPropertyAccessStrategy(), formProperty);
+        if (formModel.getBufferChangesDefault()) {
             valueModel = new BufferedValueModel(valueModel);
         }
         JFormattedTextField textField = createNewFormattedTextField(formatterFactory);
@@ -565,7 +571,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     private String getEnumType(String formProperty) {
-        Class enumClass = getMetaAspectAccessor().getAspectClass(formProperty);
+        Class enumClass = getMetaAspectAccessor().getPropertyType(formProperty);
         try {
             Class.forName(enumClass.getName());
         }
@@ -581,19 +587,19 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
      * when items are added or removed to/from the list model, the property's
      * list is also updated. Validation also occurs against the property when it
      * changes, etc.
-     *
+     * 
      * Changes to the list managed by the list model are buffered before being
      * committed to the underlying bean property. This prevents the domain
      * object from having to worry about returning a non-null List instance.
-     *
+     * 
      * @param formProperty
      * @return The bound list model.
      */
     public ListModel createBoundListModel(String formProperty) {
         ValueModel valueModel = formModel.getValueModel(formProperty);
         if (valueModel == null) {
-            AspectAdapter adapter = new AspectAdapter(formModel
-                    .getAspectAccessStrategy(), formProperty);
+            PropertyAdapter adapter = new PropertyAdapter(formModel
+                    .getPropertyAccessStrategy(), formProperty);
             valueModel = new BufferedListValueModel(adapter);
             formModel.add(formProperty, valueModel);
         }
