@@ -16,6 +16,7 @@
 package org.springframework.richclient.settings.support;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -25,82 +26,109 @@ import javax.swing.table.TableColumn;
 import org.springframework.richclient.settings.Settings;
 
 public class TableSettings {
-	private TableSettings() {
-		// no instantiation, static utility class
-	}
 
-	public static void saveState(Settings s, String key, JTable table) {
-		saveSelectedRows(s, key, table);
-		saveColumnOrder(s, key, table);
-	}
+    private TableSettings() {
+        // no instantiation, static utility class
+    }
 
-	public static void saveColumnOrder(Settings s, String key, JTable table) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
-			TableColumn column = table.getColumnModel().getColumn(i);
-			sb.append(column.getModelIndex());
-			if(i < table.getColumnModel().getColumnCount() -1 ) {
-				sb.append(",");
-			}
-		}
-		s.setString(key+".columnOrder", sb.toString());
-	}
+    public static void saveState(Settings s, String key, JTable table) {
+        saveSelectedRows(s, key, table);
+        saveColumnOrder(s, key, table);
+    }
+    
+    public static void saveColumnWidths(Settings s, String key, JTable table) {
+        
+    }
+    
+    public static void restoreColumnWidths(Settings s, String key, JTable table) {
+        
+    }
 
-	public static void saveSelectedRows(Settings s, String key, JTable table) {
-		int[] selection = table.getSelectedRows();
-		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < selection.length; i++) {
-			sb.append(selection[i]);
-			if (i < selection.length - 1) {
-				sb.append(",");
-			}
-		}
-		s.setString(key+".selectedRows", sb.toString());
-	}
+    public static void saveColumnOrder(Settings s, String key, JTable table) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            sb.append(column.getModelIndex());
+            if (i < table.getColumnModel().getColumnCount() - 1) {
+                sb.append(",");
+            }
+        }
+        s.setString(key + ".columnOrder", sb.toString());
+    }
 
-	public static void restoreSelectedRows(Settings s, String key, JTable table) {
-		table.getSelectionModel().clearSelection();
-		String selection = s.getString(key+".selectedRows");
-		if (!selection.equals("")) {
-			String[] indexes = selection.split(",");
-			for(int i = 0; i < indexes.length; i++) {
-				int index = Integer.parseInt(indexes[i]);
-				table.addRowSelectionInterval(index, index);
-			}
-		}
-	}
+    public static void saveSelectedRows(Settings s, String key, JTable table) {
+        String settingsKey = key + ".selectedRows";
+        if (s.contains(settingsKey)) {
+            s.remove(settingsKey);
+        }
 
-	public static void restoreColumnOrder(Settings s, String key, JTable table) {
-		String columnOrder = s.getString(key+".columnOrder");
-		if(!columnOrder.equals("")) {
-			List columns = new ArrayList();
-			Enumeration columnEnum = table.getColumnModel().getColumns();
-			while(columnEnum.hasMoreElements()) {
-				columns.add(columnEnum.nextElement());
-			}
-			System.out.println(columns);
+        int[] selection = table.getSelectedRows();
+        Arrays.sort(selection);
+        StringBuffer sb = new StringBuffer();
+        int i = 0;
+        while (i < selection.length) {
+            sb.append(selection[i]);
+            if (i < selection.length - 1) {
+                if (selection[i] == selection[i + 1] - 1) {
+                    while (i < selection.length - 1 && selection[i] == selection[i + 1] - 1) {
+                        i++;
+                    }
+                    sb.append("-");
+                    sb.append(selection[i]);
+                }
+                if (i < selection.length - 1) {
+                    sb.append(",");
+                }
+            }
+            i++;
+        }
+        if (sb.length() > 0) {
+            s.setString(key + ".selectedRows", sb.toString());
+        }
+    }
 
-			String[] columnIndexes = columnOrder.split(",");
-			for(int i = 0; i < columnIndexes.length; i++) {
-				TableColumn column = (TableColumn)columns.get(i);
-				int newIndex = Integer.parseInt(columnIndexes[i]);
-				System.out.println("old="+i+", new = "+newIndex);
-				System.out.println("index of column "+columns.indexOf(column));
-				if (columns.indexOf(column) != newIndex)
-				{
-					System.out.println("old <> newIndex: move column");
-					// move the column
-					table.getColumnModel().moveColumn(i, newIndex);
-					columns.remove(column);
-					columns.add(newIndex, column);
-					System.out.println(columns);
-				}
-			}
-		}
-	}
+    public static void restoreSelectedRows(Settings s, String key, JTable table) {
+        table.getSelectionModel().clearSelection();
+        String selection = s.getString(key + ".selectedRows");
+        if (!selection.equals("")) {
+            String[] indexes = selection.split(",");
+            for (int i = 0; i < indexes.length; i++) {
+                int index = Integer.parseInt(indexes[i]);
+                table.addRowSelectionInterval(index, index);
+            }
+        }
+    }
 
-	public static void restoreState(Settings s, String key, JTable table) {
-		restoreSelectedRows(s, key, table);
-		restoreColumnOrder(s, key, table);
-	}
+    public static void restoreColumnOrder(Settings s, String key, JTable table) {
+        String columnOrder = s.getString(key + ".columnOrder");
+        if (!columnOrder.equals("")) {
+            List columns = new ArrayList();
+            Enumeration columnEnum = table.getColumnModel().getColumns();
+            while (columnEnum.hasMoreElements()) {
+                columns.add(columnEnum.nextElement());
+            }
+            System.out.println(columns);
+
+            String[] columnIndexes = columnOrder.split(",");
+            for (int i = 0; i < columnIndexes.length; i++) {
+                TableColumn column = (TableColumn) columns.get(i);
+                int newIndex = Integer.parseInt(columnIndexes[i]);
+                System.out.println("old=" + i + ", new = " + newIndex);
+                System.out.println("index of column " + columns.indexOf(column));
+                if (columns.indexOf(column) != newIndex) {
+                    System.out.println("old <> newIndex: move column");
+                    // move the column
+                    table.getColumnModel().moveColumn(i, newIndex);
+                    columns.remove(column);
+                    columns.add(newIndex, column);
+                    System.out.println(columns);
+                }
+            }
+        }
+    }
+
+    public static void restoreState(Settings s, String key, JTable table) {
+        restoreSelectedRows(s, key, table);
+        restoreColumnOrder(s, key, table);
+    }
 }
