@@ -28,10 +28,12 @@ public abstract class ListTableModel extends BaseTableModel {
 
     public ListTableModel() {
         super();
+        init();
     }
 
     public ListTableModel(List rows) {
         super(rows);
+        init();
     }
 
     protected Object getValueAtInternal(Object row, int columnIndex) {
