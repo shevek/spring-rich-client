@@ -155,8 +155,10 @@ public class DefaultApplicationWindow implements ApplicationWindow {
                 final ApplicationPage oldPage = this.currentPage;
                 this.currentPage = createPage(this, pageId);
                 updatePageControl(oldPage);
+                pageListeners.fire("pageClosed", oldPage);
             }
         }
+        pageListeners.fire("pageOpened", this.currentPage);
     }
 
     protected final ApplicationPage createPage(ApplicationWindow window, String pageDescriptorId) {
