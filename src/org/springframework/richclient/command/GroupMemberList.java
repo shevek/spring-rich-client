@@ -68,6 +68,15 @@ public class GroupMemberList {
         return Collections.unmodifiableList(members).iterator();
     }
 
+    public void setContainersVisible(boolean visible) {
+        Iterator it = builders.values().iterator();
+        while (it.hasNext()) {
+            GroupMemberContainerManager gcm = (GroupMemberContainerManager)it
+                    .next();
+            gcm.setVisible(visible);
+        }
+    }
+
     protected void bindMembers(Object owner, GroupContainerPopulator container,
             Object factory, CommandButtonConfigurer configurer) {
         GroupMemberContainerManager builder = new GroupMemberContainerManager(

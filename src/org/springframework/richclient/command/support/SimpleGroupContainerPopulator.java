@@ -55,7 +55,7 @@ public class SimpleGroupContainerPopulator implements GroupContainerPopulator {
         }
     }
 
-    public void onComponentsAdded() {
+    public void onPopulated() {
 
     }
 }

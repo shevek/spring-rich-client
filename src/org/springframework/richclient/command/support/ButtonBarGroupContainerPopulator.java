@@ -56,7 +56,7 @@ public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopula
         buttons.add(CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE);
     }
 
-    public void onComponentsAdded() {
+    public void onPopulated() {
         builder.addGlue();
         int length = buttons.size();
         for (int i = 0; i < length; i++) {

@@ -66,7 +66,7 @@ class GroupMemberContainerManager {
             GroupMember member = (GroupMember)iterator.next();
             member.fill(containerPopulator, factory, configurer, previousButtons);
         }
-        containerPopulator.onComponentsAdded();
+        containerPopulator.onPopulated();
         containerPopulator.getControl().revalidate();
         containerPopulator.getControl().repaint();
         if (logger.isDebugEnabled()) {

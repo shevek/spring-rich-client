@@ -387,7 +387,7 @@ public abstract class ApplicationDialog implements TitleConfigurable, Guarded {
      * per the Java Look and Feel guidelines.
      */
     protected JComponent createButtonBar() {
-        this.dialogCommandGroup = CommandGroup.newConfiguredCommandGroup(null,
+        this.dialogCommandGroup = CommandGroup.createCommandGroup(null,
                 getCommandGroupMembers());
         JComponent buttonBar = this.dialogCommandGroup.createButtonBar();
         GuiStandardUtils.attachBorder(buttonBar, Borders.DIALOG_BORDER);

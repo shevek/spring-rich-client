@@ -29,7 +29,8 @@ public class PetClinicApplicationLifecycle extends
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
-        // comment out to hide the toolbar or reduce window size...
+        // comment out to hide the menubar, toolbar, or reduce window size...
+        //configurer.setShowMenuBar(false);
         //configurer.setShowToolBar(false);
         //configurer.setInitialSize(new Dimension(640, 480));
     }

@@ -109,6 +109,12 @@ public class CommandGroup extends AbstractCommand {
 
     public void setCommandRegistry(CommandRegistry registry) {
         if (!ObjectUtils.nullSafeEquals(this.commandRegistry, registry)) {
+
+            //@TODO should groups listen to command registration events if
+            // they've
+            //got lazy members that haven't been instantiated? Or are
+            // targetable
+            //commands lightweight enough?
             if (logger.isDebugEnabled()) {
                 logger.debug("Setting registry " + registry
                         + " for command group '" + getId() + "'");
@@ -117,19 +123,13 @@ public class CommandGroup extends AbstractCommand {
         }
     }
 
-    /**
-     * Creates a command group, configuring the group using the ObjectConfigurer
-     * service (pulling visual configuration properties from an external
-     * source). This method will also auto-configure contained Command members
-     * that have not yet been configured.
-     * 
-     * @param groupId
-     * @param members
-     * @return
-     */
-    public static CommandGroup newConfiguredCommandGroup(String groupId,
-            Object[] members) {
-        return newConfiguredCommandGroup(groupId, members, null);
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+    }
+
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        getMemberList().setContainersVisible(visible);
     }
 
     /**
@@ -142,7 +142,22 @@ public class CommandGroup extends AbstractCommand {
      * @param members
      * @return
      */
-    public static CommandGroup newConfiguredCommandGroup(String groupId,
+    public static CommandGroup createCommandGroup(String groupId,
+            Object[] members) {
+        return createCommandGroup(groupId, members, null);
+    }
+
+    /**
+     * Creates a command group, configuring the group using the ObjectConfigurer
+     * service (pulling visual configuration properties from an external
+     * source). This method will also auto-configure contained Command members
+     * that have not yet been configured.
+     * 
+     * @param groupId
+     * @param members
+     * @return
+     */
+    public static CommandGroup createCommandGroup(String groupId,
             Object[] members, CommandConfigurer configurer) {
         if (configurer == null) {
             configurer = Application.locator();
@@ -257,6 +272,10 @@ public class CommandGroup extends AbstractCommand {
     protected Iterator memberIterator() {
         return getMemberList().iterator();
     }
+    
+    public int size() {
+        return getMemberCount();
+    }
 
     public boolean isAllowedMember(AbstractCommand proposedMember) {
         return true;
@@ -345,6 +364,12 @@ public class CommandGroup extends AbstractCommand {
         }
     }
 
+    /**
+     * Creates a pull down button that, when clicked, displays a popup menu that
+     * displays this group's members.
+     * 
+     * @see org.springframework.richclient.command.AbstractCommand#createButton()
+     */
     public AbstractButton createButton() {
         return createButton(getButtonFactory(), getMenuFactory());
     }
@@ -369,9 +394,9 @@ public class CommandGroup extends AbstractCommand {
     }
 
     public AbstractButton createButton(ButtonFactory buttonFactory,
-            MenuFactory menuFactory, CommandButtonConfigurer configurer) {
+            MenuFactory menuFactory, CommandButtonConfigurer buttonConfigurer) {
         JToggleButton button = buttonFactory.createToggleButton();
-        attach(button, configurer);
+        attach(button, buttonConfigurer);
         JPopupMenu popup = menuFactory.createPopupMenu();
         bindMembers(button, popup, menuFactory, getMenuItemButtonConfigurer());
         ToggleButtonPopupListener.bind(button, popup);
@@ -404,7 +429,7 @@ public class CommandGroup extends AbstractCommand {
     }
 
     public JToolBar createToolBar(ButtonFactory factory) {
-        JToolBar toolbar = newToolBar(getText());
+        JToolBar toolbar = createNewToolBar(getText());
         bindMembers(toolbar, toolbar, factory, getToolBarButtonConfigurer());
         toolbar.setEnabled(false);
         toolbar.setVisible(true);
@@ -421,7 +446,7 @@ public class CommandGroup extends AbstractCommand {
         return menubar;
     }
 
-    protected JToolBar newToolBar(String text) {
+    protected JToolBar createNewToolBar(String text) {
         JToolBar toolBar = new JToolBar(text);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -457,7 +482,7 @@ public class CommandGroup extends AbstractCommand {
                         getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
             }
         }
-        container.onComponentsAdded();
+        container.onPopulated();
         return GuiStandardUtils.attachBorder(container.getButtonBar(),
                 GuiStandardUtils
                         .createTopAndBottomBorder(UIConstants.TWO_SPACES));

@@ -28,10 +28,12 @@ import org.springframework.richclient.command.CommandGroup;
 public class ShowViewMenu extends CommandGroup implements
         ApplicationWindowAware {
 
+    private static final String ID = "showViewMenu";
+
     private ApplicationWindow window;
 
     public ShowViewMenu() {
-        super("showViewMenu");
+        super(ID);
     }
 
     public void setApplicationWindow(ApplicationWindow window) {
