@@ -151,4 +151,20 @@ public class TableUtils {
                 .getFilteredModel()); }
         return tableModel;
     }
+
+    /**
+     * Workaround for a very annoying bug in jtable where an editing cell value
+     * does not get committed on focus lost.
+     * 
+     * @param table
+     */
+    public static void stopCellEditing(JTable table) {
+        int row = table.getEditingRow();
+        int col = table.getEditingColumn();
+        if (table.isEditing()) {
+            if (row < table.getRowCount()) {
+                table.getCellEditor(row, col).stopCellEditing();
+            }
+        }
+    }
 }
