@@ -26,7 +26,7 @@ import org.springframework.richclient.command.ParameterizableActionCommandExecut
 /**
  * @author Keith Donald
  */
-public class AbstractCommandExecutor implements
+public class AbstractActionCommandExecutor implements
         ParameterizableActionCommandExecutor, GuardedActionCommandExecutor {
 
     private ValueModel enabled = new ValueHolder(Boolean.FALSE);

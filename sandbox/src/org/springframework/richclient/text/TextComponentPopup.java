@@ -38,7 +38,7 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.command.support.AbstractCommandExecutor;
+import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.DefaultCommandManager;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 
@@ -288,37 +288,37 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener,
                 GlobalCommandIds.SELECT_ALL, null);
     }
 
-    private class UndoCommandDelegate extends AbstractCommandExecutor {
+    private class UndoCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             undoManager.undo();
         }
     }
 
-    private class RedoCommandDelegate extends AbstractCommandExecutor {
+    private class RedoCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             undoManager.redo();
         }
     }
 
-    private class CutCommandDelegate extends AbstractCommandExecutor {
+    private class CutCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.cut();
         }
     }
 
-    private class CopyCommandDelegate extends AbstractCommandExecutor {
+    private class CopyCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.copy();
         }
     }
 
-    private class PasteCommandDelegate extends AbstractCommandExecutor {
+    private class PasteCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.paste();
         }
     }
 
-    private class SelectAllCommandDelegate extends AbstractCommandExecutor {
+    private class SelectAllCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             textComponent.selectAll();
         }

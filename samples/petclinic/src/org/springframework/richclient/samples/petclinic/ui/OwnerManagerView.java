@@ -41,7 +41,7 @@ import org.springframework.richclient.application.ViewContext;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.support.AbstractCommandExecutor;
+import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.dialog.InputApplicationDialog;
@@ -246,7 +246,7 @@ public class OwnerManagerView extends AbstractView implements
         return clinic.loadOwner(ownerId);
     }
 
-    private class DeleteCommandDelegate extends AbstractCommandExecutor {
+    private class DeleteCommandDelegate extends AbstractActionCommandExecutor {
         public void execute() {
             ConfirmationDialog dialog = new ConfirmationDialog() {
                 protected void onConfirm() {
@@ -270,7 +270,7 @@ public class OwnerManagerView extends AbstractView implements
         }
     }
 
-    private class PropertiesCommandDelegate extends AbstractCommandExecutor {
+    private class PropertiesCommandDelegate extends AbstractActionCommandExecutor {
         private OwnerGeneralForm ownerGeneralPanel;
 
         private NestingFormModel ownerFormModel;
