@@ -23,7 +23,10 @@ import org.springframework.binding.value.ValueModel;
 
 public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
         DocumentListener {
+
     private JTextComponent component;
+    
+    private boolean settingText;
 
     protected AsYouTypeTextValueSetter(JTextComponent component) {
         super(null);
@@ -39,7 +42,17 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
     }
 
     protected void setComponentValue(Object value) {
-        component.setText((String)value);
+        // this try block will coalesce the 2 DocumentEvents that
+        // JTextComponent.setText() fires into 1 call to 
+        // componentValueChanged()
+        try {
+            settingText = true;
+            component.setText((String)value);
+        }
+        finally {
+            settingText = false;
+        }
+        componentValueChanged();
     }
 
     public void removeUpdate(DocumentEvent e) {
@@ -53,9 +66,10 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
     public void changedUpdate(DocumentEvent e) {
         componentValueChanged();
     }
-    
-    private void componentValueChanged() {
-        componentValueChanged(component.getText());
-    }
 
+    private void componentValueChanged() {
+        if (!settingText) {
+            componentValueChanged(component.getText());
+        }
+    }
 }
