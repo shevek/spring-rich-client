@@ -182,19 +182,14 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts a new row. A related component gap row will be inserted before
-     * this row.
-     * <p>
-     * NOTE: no gap row will be inserted if this is called on the first row of
-     * the table. To have a gap for the first row use of the other "row"
-     * methods.
+     * Inserts a new row. No gap row is inserted  before this row.
      */
     public TableLayoutBuilder row() {
-        if (currentRow == -1) {
-            currentRow = 0;
-            return this;
-        }
-        return row(FormFactory.RELATED_GAP_ROWSPEC);
+        ++currentRow;
+        lastCC = null;
+        maxColumns = Math.max(maxColumns, currentCol);
+        currentCol = 0;
+        return this;
     }
 
     /**
@@ -210,12 +205,17 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * before this row.
      */
     public TableLayoutBuilder row(RowSpec gapRowSpec) {
-        ++currentRow;
+        row();
         gapRows.put(new Integer(currentRow), gapRowSpec);
-        lastCC = null;
-        maxColumns = Math.max(maxColumns, currentCol);
-        currentCol = 0;
         return this;
+    }
+    
+    /**
+     * Inserts a new row. A related component gap row will be inserted before
+     * this row.
+     */
+    public TableLayoutBuilder relatedGapRow() {
+        return row(FormFactory.RELATED_GAP_ROWSPEC);
     }
 
     /**
@@ -348,7 +348,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
         Map attributeMap = getAttributes(attributes);
         RowSpec rowSpec = getRowSpec(getAttribute(ROWSPEC, attributeMap, ""));
         if (rowSpec != null) {
-            setRowSpec(currentCol, rowSpec);
+            setRowSpec(currentRow, rowSpec);
         }
         ColumnSpec columnSpec = getColumnSpec(getAttribute(COLSPEC, attributeMap, ""));
         if (columnSpec != null) {

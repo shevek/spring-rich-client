@@ -34,13 +34,15 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     private boolean skipRow;
 
+    private String labelAttributes = DEFAULT_LABEL_ATTRIBUTES;
+
     public TableFormBuilder(SwingFormModel formModel) {
         super(formModel);
         this.builder = new TableLayoutBuilder(new JPanel());
     }
 
     public void row() {
-        builder.row();
+        builder.relatedGapRow();
     }
     
     public JComponent[] add(String propertyName) {
@@ -101,9 +103,13 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     protected String getLabelAttributes() {
-        return DEFAULT_LABEL_ATTRIBUTES;
+        return labelAttributes;
     }
 
+    public void setLabelAttributes(String labelAttributes) {
+        this.labelAttributes = labelAttributes;
+    }
+    
     private JComponent[] addComponents(JComponent component, String attributes, String propertyName,
             String labelAttributes) {
         JLabel label = getLabelFor(propertyName, component);
