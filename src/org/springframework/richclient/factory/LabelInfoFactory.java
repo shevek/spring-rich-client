@@ -108,7 +108,6 @@ public class LabelInfoFactory {
 
         int mnemonic = 0;
         int mnemonicIndex = 0;
-        KeyStroke accelerator = null;
 
         for (; text != null;) {
             int i = text.indexOf('&');
