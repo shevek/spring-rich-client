@@ -49,6 +49,10 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     
     private boolean autoConfigureChildPages = true;
     
+    public AbstractWizard() {
+        this(null);
+    }
+    
     public AbstractWizard(String wizardId) {
         this.wizardId = wizardId;        
     }
@@ -124,7 +128,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
         pages.add(page);
         page.setWizard(this);
         if (autoConfigureChildPages) {
-            String id = getWizardId() + "." + page.getId();
+            String id = ((getWizardId() != null) ?  getWizardId() + "." : "") + page.getId();
             getObjectConfigurer().configure(page, id);
         }
     }
@@ -139,7 +143,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
      * @return the WizardPage that wraps formPage
      */
     public WizardPage addForm(FormPage formPage) {
-        WizardPage page = new FormBackedWizardPage(formPage);
+        WizardPage page = new FormBackedWizardPage(formPage, !autoConfigureChildPages);
         addPage(page);
         return page;
     }
