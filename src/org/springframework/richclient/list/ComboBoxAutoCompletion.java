@@ -149,6 +149,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
 
     private void fillItem2StringMap() {
         editor.setDocument(new PlainDocument());
+        
+        item2string.clear();
 
         JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
 
