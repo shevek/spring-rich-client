@@ -95,7 +95,7 @@ public class TreeUtils {
         }
     }
 
-    private static void expandAll(JTree tree, TreePath parent, boolean expand) {
+    public static void expandAll(JTree tree, TreePath parent, boolean expand) {
         // Traverse children
         TreeNode node = (TreeNode)parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
