@@ -147,7 +147,7 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
             Alignment alignment) {
         return com.jgoodies.forms.factories.DefaultComponentFactory
                 .getInstance().createSeparator(getRequiredMessage(labelKey),
-                        ((Integer)alignment.getCode()).intValue());
+                        ((Number)alignment.getCode()).intValue());
     }
 
     public JList createList() {
