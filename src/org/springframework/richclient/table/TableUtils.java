@@ -122,4 +122,17 @@ public class TableUtils {
         return width;
     }
 
+    /**
+     * Returns the innermost table model associated with this table; if layers
+     * of table model filters are wrapping it.
+     */
+    public static TableModel getUnfilteredTableModel(JTable table) {
+        return getUnfilteredTableModel(table.getModel());
+    }
+
+    private static TableModel getUnfilteredTableModel(TableModel tableModel) {
+        if (tableModel instanceof AbstractTableModelFilter) { return getUnfilteredTableModel(((AbstractTableModelFilter)tableModel)
+                .getFilteredModel()); }
+        return tableModel;
+    }
 }
