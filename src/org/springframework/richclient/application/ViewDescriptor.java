@@ -17,9 +17,11 @@ package org.springframework.richclient.application;
 
 import java.util.Map;
 
-import org.springframework.beans.*;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;

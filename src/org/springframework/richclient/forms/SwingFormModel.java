@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.enum.AbstractCodedEnum;
+import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.core.Guarded;

@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.springframework.enum.CodedEnum;
+import org.springframework.enums.CodedEnum;
 import org.springframework.richclient.table.TableUtils;
 import org.springframework.richclient.table.renderers.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderers.OptimizedTableCellRenderer;

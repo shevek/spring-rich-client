@@ -22,7 +22,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import org.springframework.context.MessageSource;
-import org.springframework.enum.CodedEnum;
+import org.springframework.enums.CodedEnum;
 
 /**
  * Renders a enumeration in a list.

@@ -32,9 +32,9 @@ import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.context.support.ApplicationObjectSupport;
-import org.springframework.enum.AbstractCodedEnum;
-import org.springframework.enum.CodedEnumResolver;
-import org.springframework.enum.support.StaticCodedEnumResolver;
+import org.springframework.enums.AbstractCodedEnum;
+import org.springframework.enums.CodedEnumResolver;
+import org.springframework.enums.support.StaticCodedEnumResolver;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.controls.PatchedJFormattedTextField;

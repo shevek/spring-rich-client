@@ -18,7 +18,7 @@ package org.springframework.richclient.forms;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.DefaultFormatter;
 
-import org.springframework.enum.ShortCodedEnum;
+import org.springframework.enums.ShortCodedEnum;
 
 /**
  * @author Keith Donald

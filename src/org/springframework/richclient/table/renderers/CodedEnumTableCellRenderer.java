@@ -22,7 +22,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.springframework.context.MessageSource;
-import org.springframework.enum.CodedEnum;
+import org.springframework.enums.CodedEnum;
 
 /**
  * @author Keith Donald

@@ -9,7 +9,7 @@ package org.springframework.richclient.util;
 
 import javax.swing.SwingConstants;
 
-import org.springframework.enum.ShortCodedEnum;
+import org.springframework.enums.ShortCodedEnum;
 
 /**
  * 
