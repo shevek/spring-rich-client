@@ -18,9 +18,9 @@ package org.springframework.richclient.table;
 import java.util.List;
 
 /**
- * Desinged for display object arrays in a list for multi-column tables, or just
- * plain objects for single column table. Nicely aligned with Hibernate List
- * behaivior for query result sets.
+ * Designed to display object arrays / lists in a list for multi-column tables,
+ * or just plain objects for single column table. Nicely aligned with Hibernate
+ * List behaivior for query result sets.
  * 
  * @author keith
  */
@@ -34,17 +34,27 @@ public abstract class ListTableModel extends BaseTableModel {
         super(rows);
     }
 
-    /**
-     * @see org.springframework.richclient.table.BaseTableModel#getValueAtInternal(int,
-     *      int)
-     */
     protected Object getValueAtInternal(Object row, int columnIndex) {
         if (getDataColumnCount() > 1) {
-            Object[] arrayRow = (Object[])row;
-            return arrayRow[columnIndex];
+            if (row.getClass().isArray()) {
+                Object[] arrayRow = (Object[])row;
+                return arrayRow[columnIndex];
+            }
+            else if (row instanceof List) {
+                return ((List)row).get(columnIndex);
+            }
+            else {
+                throw new IllegalArgumentException(
+                        "Unsupported row collection type " + row);
+            }
         }
         else {
-            return row;
+            if (row != null & row.getClass().isArray()) {
+                return ((Object[])row)[0];
+            }
+            else {
+                return row;
+            }
         }
     }
 }
