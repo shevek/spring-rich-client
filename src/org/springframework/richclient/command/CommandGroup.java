@@ -149,6 +149,18 @@ public class CommandGroup extends AbstractCommand {
      * source). This method will also auto-configure contained Command members
      * that have not yet been configured.
      * 
+     * @param members
+     */
+    public static CommandGroup createCommandGroup(Object[] members) {
+        return createCommandGroup(null, members, null);
+    }
+
+    /**
+     * Creates a command group, configuring the group using the ObjectConfigurer
+     * service (pulling visual configuration properties from an external
+     * source). This method will also auto-configure contained Command members
+     * that have not yet been configured.
+     * 
      * @param groupId
      * @param members
      * @return
@@ -397,7 +409,7 @@ public class CommandGroup extends AbstractCommand {
     public AbstractButton createButton(ButtonFactory buttonFactory,
             MenuFactory menuFactory) {
         return createButton(buttonFactory, menuFactory,
-            getPullDownMenuButtonConfigurer());
+                getPullDownMenuButtonConfigurer());
     }
 
     protected CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
@@ -485,23 +497,25 @@ public class CommandGroup extends AbstractCommand {
             GroupMember member = (GroupMember)members.next();
             if (member.getCommand() instanceof CommandGroup) {
                 member.fill(container, getButtonFactory(),
-                    getPullDownMenuButtonConfigurer(), Collections.EMPTY_LIST);
+                        getPullDownMenuButtonConfigurer(),
+                        Collections.EMPTY_LIST);
             }
             else {
                 member.fill(container, getButtonFactory(),
-                    getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
+                        getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
             }
         }
         container.onPopulated();
         return GuiStandardUtils.attachBorder(container.getButtonBar(),
-            GuiStandardUtils.createTopAndBottomBorder(UIConstants.TWO_SPACES));
+                GuiStandardUtils
+                        .createTopAndBottomBorder(UIConstants.TWO_SPACES));
     }
 
     private void bindMembers(Object owner, JComponent memberContainer,
             Object controlFactory, CommandButtonConfigurer configurer) {
         getMemberList().bindMembers(owner,
-            new SimpleGroupContainerPopulator(memberContainer), controlFactory,
-            configurer);
+                new SimpleGroupContainerPopulator(memberContainer),
+                controlFactory, configurer);
     }
 
     public void addGroupListener(CommandGroupListener l) {
@@ -513,7 +527,7 @@ public class CommandGroup extends AbstractCommand {
 
     public void removeGroupListener(CommandGroupListener l) {
         Assert.notNull(listenerList,
-            "Listener list has not yet been instantiated!");
+                "Listener list has not yet been instantiated!");
         listenerList.remove(CommandGroupListener.class, l);
     }
 

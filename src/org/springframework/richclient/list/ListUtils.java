@@ -15,15 +15,10 @@
  */
 package org.springframework.richclient.list;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.JButton;
-
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.core.GuardedGroup;
-import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.command.ActionCommand;
 
 public class ListUtils {
 
@@ -31,19 +26,17 @@ public class ListUtils {
 
     }
 
-    public static JButton createRemoveRowButton(ComponentFactory factory,
-            final List list, final ValueModel selectionIndexHolder) {
-        JButton removeButton = factory.createButton("label.remove");
-        removeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    public static ActionCommand createRemoveRowCommand(final List list,
+            final ValueModel selectionIndexHolder) {
+        ActionCommand removeCommand = new ActionCommand("removeCommand") {
+            protected void doExecuteCommand() {
                 int selectedRowIndex = ((Integer)selectionIndexHolder
                         .getValue()).intValue();
                 list.remove(selectedRowIndex);
             }
-        });
-        new SingleListSelectionGuard(selectionIndexHolder, GuardedGroup
-                .createGuardedAdapter(removeButton));
-        return removeButton;
+        };
+        new SingleListSelectionGuard(selectionIndexHolder, removeCommand);
+        return removeCommand;
     }
 
 }

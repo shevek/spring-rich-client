@@ -44,6 +44,8 @@ public abstract class ActionCommand extends AbstractCommand implements
 
     public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
 
+    private static final String ELLIPSES = "...";
+    
     private List commandInterceptors;
 
     private String actionCommand;
@@ -51,6 +53,8 @@ public abstract class ActionCommand extends AbstractCommand implements
     private SwingActionAdapter swingActionAdapter;
 
     private Map parameters = new HashMap(6);
+
+    private boolean displaysInputDialog;
 
     public ActionCommand() {
         super();
@@ -107,6 +111,11 @@ public abstract class ActionCommand extends AbstractCommand implements
         super.onButtonAttached(button);
         button.setActionCommand(actionCommand);
         button.addActionListener(actionPerformedHandler);
+        if (displaysInputDialog) {
+            if (!button.getText().endsWith(ELLIPSES)) {
+                button.setText(getText() + ELLIPSES);
+            }
+        }
     }
 
     ActionListener actionPerformedHandler = new ActionListener() {
@@ -168,6 +177,10 @@ public abstract class ActionCommand extends AbstractCommand implements
         }
     }
 
+    public void setDisplaysInputDialog(boolean displaysInputDialog) {
+        this.displaysInputDialog = displaysInputDialog;
+    }
+
     public final void execute(Map parameters) {
         this.parameters.putAll(parameters);
         execute();
@@ -203,4 +216,5 @@ public abstract class ActionCommand extends AbstractCommand implements
             interceptor.postExecution(this);
         }
     }
+
 }
