@@ -48,7 +48,7 @@ public class DefaultViewContext implements ViewContext {
     }
 
     public ApplicationWindow getWindow() {
-        return page.geWindow();
+        return page.getWindow();
     }
 
     public ApplicationPage getPage() {

@@ -83,7 +83,7 @@ public class DefaultApplicationPage implements ApplicationPage, PageLayoutBuilde
         return descriptor.getId();
     }
 
-    public ApplicationWindow geWindow() {
+    public ApplicationWindow getWindow() {
         return window;
     }
 
