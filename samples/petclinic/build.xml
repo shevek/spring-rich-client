@@ -153,10 +153,9 @@
 
 	</target>
 
-	<target name="build" depends="build-standalone,build-clientserver" description="Build standalone and clientserver versions"/>
+	<target name="build" depends="build-standalone" description="Build default standalone version"/>
 	
-	<target name="warfile" depends="build" description="Build the web application archives">
-
+	<target name="warfile" depends="build-clientserver" description="Build the web application archives">
 		<mkdir dir="${dist.dir}" />
 		<delete file="${dist.dir}/petclinic-server.war" />
 
