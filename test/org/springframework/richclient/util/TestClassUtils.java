@@ -9,6 +9,7 @@ import junit.framework.TestCase;
  * Test case for {@link ClassUtils}
  */
 public class TestClassUtils extends TestCase {
+
     public void testGetValueFromMapForClass() throws Exception {
         Object val;
         Map map = new HashMap();
@@ -32,16 +33,37 @@ public class TestClassUtils extends TestCase {
         assertEquals("A", val);
     }
 
+
+    public void testIsAProperty() throws Exception {
+        assertTrue(ClassUtils.isAProperty(B.class, "something"));
+        assertTrue(ClassUtils.isAProperty(E.class, "something"));
+        assertTrue(ClassUtils.isAProperty(A.class, "something"));
+    }
+
+
     interface A {
+        public void setSomething(String newSomething);
     }
 
     interface B {
+        public String getSomething();
     }
 
     interface C extends A {
     }
 
     static class D implements B, C {
+        private String something;
+
+
+        public String getSomething() {
+            return something;
+        }
+
+
+        public void setSomething(String something) {
+            this.something = something;
+        }
     }
 
     static class E extends D {

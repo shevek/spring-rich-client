@@ -318,4 +318,49 @@ public class ClassUtils {
         return null;
     }
 
+
+    /**
+     * Is the given name a property in the class?  In other words, does it
+     * have a setter and/or a getter method?
+     *
+     * @param theClass     the class to look for the property in
+     * @param propertyName the name of the property
+     *
+     * @return true if there is either a setter or a getter for the property
+     */
+    public static boolean isAProperty(Class theClass, String propertyName) {
+        if (theClass == null) throw new IllegalArgumentException("theClass == null");
+        if (propertyName == null) throw new IllegalArgumentException("propertyName == null");
+
+        // assumes propertyName.length > 1
+        final String getterName = "get" +
+            propertyName.substring(0, 1).toUpperCase() +
+            propertyName.substring(1);
+        try {
+            theClass.getMethod(getterName, null);
+            // the fact that it didn't throw an exception means that it's here
+            // currently ignores such things as being public or non-void
+            return true;
+        }
+        catch (NoSuchMethodException e) {
+            // ignore
+        }
+
+        // assumes propertyName.length > 1
+        final String setterName = "set" +
+            propertyName.substring(0, 1).toUpperCase() +
+            propertyName.substring(1);
+        final Method[] methods = theClass.getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            if (setterName.equals(method.getName())) {
+                // currently ignores such things as being public void, or
+                //   taking a single parameter
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
