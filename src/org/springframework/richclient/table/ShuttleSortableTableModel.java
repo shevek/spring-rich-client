@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.table;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableModel;
 
 import org.springframework.util.Assert;
+import org.springframework.util.DefaultObjectStyler;
 
 /**
  * A sorter for TableModels. The sorter has a model (conforming to TableModel)
@@ -131,14 +133,18 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     public void sortByColumns(ColumnToSort[] columnsToSort) {
         this.columnsToSort = Arrays.asList(columnsToSort);
         sort();
-        SwingUtilities.invokeLater(notifyTableRunnable);
+        notifyTableChanged();
     }
 
     public int[] sortByColumns(ColumnToSort[] columnsToSort,
-            int[] preSortSelectedTableRows) {
-        int[] modelIndexes = new int[preSortSelectedTableRows.length];
-        for (int i = 0; i < preSortSelectedTableRows.length; i++) {
-            modelIndexes[i] = convertSortedIndexToDataIndex(preSortSelectedTableRows[i]);
+            int[] preSortSelectedRows) {
+        int[] modelIndexes = new int[preSortSelectedRows.length];
+        if (logger.isDebugEnabled()) {
+            logger.debug("Selected row indexes before sort"
+                    + DefaultObjectStyler.evaluate(preSortSelectedRows));
+        }
+        for (int i = 0; i < preSortSelectedRows.length; i++) {
+            modelIndexes[i] = convertSortedIndexToDataIndex(preSortSelectedRows[i]);
         }
         this.columnsToSort = Arrays.asList(columnsToSort);
         sort();
@@ -146,8 +152,20 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
         for (int i = 0; i < modelIndexes.length; i++) {
             postSortSelectedRows[i] = convertModelToRowIndex(modelIndexes[i]);
         }
-        SwingUtilities.invokeLater(notifyTableRunnable);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Selected row indexes after sort"
+                    + DefaultObjectStyler.evaluate(postSortSelectedRows));
+        }
+        notifyTableChanged();
         return postSortSelectedRows;
+    }
+    
+    protected void notifyTableChanged() {
+        if (!EventQueue.isDispatchThread()) {
+            SwingUtilities.invokeLater(notifyTableRunnable);
+        } else {
+            notifyTableRunnable.run();
+        }
     }
 
     public int convertSortedIndexToDataIndex(int index) {

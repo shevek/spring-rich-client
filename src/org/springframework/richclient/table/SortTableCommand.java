@@ -30,18 +30,18 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class TableSortAction extends ActionCommand implements Observer {
+public class SortTableCommand extends ActionCommand implements Observer {
     private JTable table;
 
     private SortableTableModel sortableTableModel;
 
     private ColumnSortList sortList;
 
-    public TableSortAction(JTable table, ColumnSortList sortList) {
+    public SortTableCommand(JTable table, ColumnSortList sortList) {
         super("sortCommand");
         this.table = table;
         Assert.isTrue((table.getModel() instanceof SortableTableModel),
-                "Table's model must be sortable!");
+                "The specified table's model must be sortable!");
         this.sortableTableModel = (SortableTableModel)table.getModel();
         this.sortList = sortList;
         this.sortList.addObserver(this);

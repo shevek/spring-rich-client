@@ -68,7 +68,7 @@ public class TableUtils {
                 .getColumnModel().getTotalColumnWidth(), 300));
         installDefaultRenderers(table);
         TableSortIndicator sortIndicator = new TableSortIndicator(table);
-        new TableSortAction(table, sortIndicator.getColumnSortList());
+        new SortTableCommand(table, sortIndicator.getColumnSortList());
         return table;
     }
 
@@ -130,7 +130,7 @@ public class TableUtils {
         return getUnfilteredTableModel(table.getModel());
     }
 
-    private static TableModel getUnfilteredTableModel(TableModel tableModel) {
+    public static TableModel getUnfilteredTableModel(TableModel tableModel) {
         if (tableModel instanceof AbstractTableModelFilter) { return getUnfilteredTableModel(((AbstractTableModelFilter)tableModel)
                 .getFilteredModel()); }
         return tableModel;
