@@ -32,7 +32,6 @@ import org.springframework.util.ToStringBuilder;
 /**
  * A collection of image resources, each indexed by a common key alias.
  * <p>
- * <p>
  * For example, <code>action.edit.copy = /images/edit/copy.gif</code>
  * <p>
  * This class by default performs caching of all loaded image resources using
@@ -46,31 +45,17 @@ public class DefaultImageSource implements ImageSource {
 
     private Map imageResources;
 
-    class ImageCache extends Cache {
-        public ImageCache() {
-            super(true);
-        }
-
-        public Object create(Object resource) {
-            try {
-                return ((AwtImageResource)resource).getImage();
-            }
-            catch (IOException e) {
-                throw new DataAccessResourceFailureException(
-                        "No image found at resource '" + resource + '"', e);
-            }
-        }
-    }
-
     private ImageCache imageCache;
+    
+    private AwtImageResource brokenImageIndicatorResource;
 
-    private Image brokenImageIndicator;
+    private Image brokenImageIndicator;    
 
     /**
      * Creates a image resource bundle containing the specified map of keys to
      * resource paths.
      * <p>
-     * A custom URL protocol {@link ImageURLStreamHandler handler}will be installed for the
+     * A custom URL protocol {@link Handler handler}will be installed for the
      * "image:" protocol. This allows for images in this image source to be
      * located using the Java URL classes: <br>
      * <code>URL imageUrl = new URL("image:the.image.key")</code>
@@ -87,7 +72,7 @@ public class DefaultImageSource implements ImageSource {
      * resource paths.
      * 
      * @param installUrlHandler
-     *            should a URL handler be installed
+     *            should a URL handler be installed.
      * @param imageResources
      *            a map of key-to-image-resources.
      */
@@ -97,7 +82,7 @@ public class DefaultImageSource implements ImageSource {
         debugPrintResources();
         this.imageCache = new ImageCache();
         if (installUrlHandler) {
-            ImageURLStreamHandler.installImageUrlHandler(this);
+            Handler.installImageUrlHandler(this);
         }
     }
 
@@ -106,10 +91,6 @@ public class DefaultImageSource implements ImageSource {
             logger.debug("Initialing image source with resources: "
                     + DefaultObjectStyler.call(this.imageResources));
         }
-    }
-
-    protected DefaultImageSource() {
-
     }
 
     public Image getImage(String key) {
@@ -128,14 +109,23 @@ public class DefaultImageSource implements ImageSource {
         Assert.notNull(key);
         Resource resource = (Resource)imageResources.get(key);
         if (resource == null) { throw new NoSuchImageResourceException(key); }
-        return new AwtImageResource(resource);
+        try {
+            resource.getInputStream();
+            return new AwtImageResource(resource);
+        } catch (IOException e) {
+            if (brokenImageIndicatorResource == null) { throw new NoSuchImageResourceException(
+                    resource, e); }
+            logger.warn("Unable to load image resource at '" + resource
+                    + "'; returning the broken image indicator.");
+            return brokenImageIndicatorResource;
+        }        
     }
 
     public boolean containsKey(Object key) {
         return imageResources.containsKey(key);
     }
 
-    private Image returnBrokenImageIndicator(Object resource) {
+    private Image returnBrokenImageIndicator(Resource resource) {
         logger.warn("Unable to load image resource at '" + resource
                 + "'; returning the broken image indicator.");
         return brokenImageIndicator;
@@ -158,10 +148,11 @@ public class DefaultImageSource implements ImageSource {
 
     public void setBrokenImageIndicator(Resource resource) {
         try {
-            this.brokenImageIndicator = new AwtImageResource(resource)
-                    .getImage();
+            brokenImageIndicatorResource = new AwtImageResource(resource);
+            brokenImageIndicator = brokenImageIndicatorResource.getImage();            
         }
         catch (IOException e) {
+            brokenImageIndicatorResource = null;
             throw new NoSuchImageResourceException(resource, e);
         }
     }
@@ -170,5 +161,20 @@ public class DefaultImageSource implements ImageSource {
         return new ToStringBuilder(this).append("imageResources",
                 imageResources).toString();
     }
+    
+    private class ImageCache extends Cache {
+        public ImageCache() {
+            super(true);
+        }
 
+        public Object create(Object resource) {
+            try {
+                return ((AwtImageResource)resource).getImage();
+            }
+            catch (IOException e) {
+                throw new DataAccessResourceFailureException(
+                        "No image found at resource '" + resource + '"', e);
+            }
+        }
+    }
 }

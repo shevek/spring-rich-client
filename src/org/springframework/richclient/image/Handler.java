@@ -30,14 +30,13 @@ import org.springframework.util.StringUtils;
 /**
  * A URL protocol handler that resolves images from an ImageSource.
  * <p>
- * The syntax of an "image:" URL is: <br>
- * <code>image:{imageKey}</code>
+ * The syntax of an "image:" URL is: <code>image:{imageKey}</code>
  * 
  * @author oliverh
  */
-public class ImageURLStreamHandler extends URLStreamHandler {
+public class Handler extends URLStreamHandler {
 
-    private static final Log logger = LogFactory.getLog(ImageURLStreamHandler.class);
+    private static final Log logger = LogFactory.getLog(Handler.class);
 
     private static ImageSource urlHandlerImageSource;
 
@@ -48,7 +47,7 @@ public class ImageURLStreamHandler extends URLStreamHandler {
     public static void installImageUrlHandler(ImageSource urlHandlerImageSource) {
         Assert.notNull(urlHandlerImageSource);
 
-        ImageURLStreamHandler.urlHandlerImageSource = urlHandlerImageSource;
+        Handler.urlHandlerImageSource = urlHandlerImageSource;
 
         try {
             String packagePrefixList = System
@@ -62,14 +61,14 @@ public class ImageURLStreamHandler extends URLStreamHandler {
         }
         catch (SecurityException e) {
             logger.warn("Unable to install image URL handler", e);
-            ImageURLStreamHandler.urlHandlerImageSource = null;
+            Handler.urlHandlerImageSource = null;
         }
     }
 
     /**
      * Creates an instance of <code>Handeler</code>.
      */
-    public ImageURLStreamHandler() {
+    public Handler() {
     }
 
     protected URLConnection openConnection(URL url) throws IOException {
