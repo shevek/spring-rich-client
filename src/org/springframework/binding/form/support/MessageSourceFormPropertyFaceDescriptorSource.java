@@ -149,13 +149,14 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
         boolean hasFormId = StringUtils.hasText(formModel.getId());
         String[] formPropertyPathElements = StringUtils.delimitedListToStringArray(formPropertyPath, ".");
         String[] keys = new String[hasFormId ? 2*formPropertyPathElements.length : formPropertyPathElements.length];
-        int keyCount = 0;
+        int startIndex = 0;
         if (hasFormId) {
             String prefix = formModel.getId() + '.';
-            insertKeys(keys, 0, prefix, formPropertyPathElements, faceDescriptorProperty);            
+            insertKeys(keys, startIndex, prefix, formPropertyPathElements, faceDescriptorProperty);
+            startIndex = formPropertyPathElements.length;
         }
-        insertKeys(keys, formPropertyPathElements.length, "", formPropertyPathElements, faceDescriptorProperty);   
-        return keys;
+        insertKeys(keys, startIndex, "", formPropertyPathElements, faceDescriptorProperty);   
+        return keys; 
     }
 
     private void insertKeys(String[] keys, int startIndex, String prefix, String[] formPropertyPathElements, String suffix) {
