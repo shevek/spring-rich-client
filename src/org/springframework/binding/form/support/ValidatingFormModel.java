@@ -32,6 +32,8 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueModelWrapper;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.rules.RulesProvider;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
@@ -137,20 +139,42 @@ public class ValidatingFormModel extends DefaultFormModel implements
     protected ValueModel preProcessNewFormValueModel(
             String domainObjectProperty, ValueModel formValueModel) {
         if (!(formValueModel instanceof TypeConverter)) {
-            PropertyEditor editor = null;
-            if (getFormObject() instanceof PropertyEditorProvider) {
-                PropertyEditorProvider provider = (PropertyEditorProvider)getFormObject();
-                editor = provider.getPropertyEditor(domainObjectProperty);
-            }
-            if (editor == null) {
-                editor = getPropertyAccessStrategy().findCustomEditor(
-                        domainObjectProperty);
-            }
             formValueModel = installTypeConverter(formValueModel,
-                    domainObjectProperty, editor);
+                    domainObjectProperty,
+                    findCustomEditor(domainObjectProperty));
         }
         return new ValidatingFormValueModel(domainObjectProperty,
                 formValueModel, getValidationRule(domainObjectProperty));
+    }
+    
+    protected PropertyEditor findCustomEditor(String domainObjectProperty) {
+        PropertyEditor editor = null;
+        if (getFormObject() instanceof PropertyEditorProvider) {
+            PropertyEditorProvider provider = (PropertyEditorProvider)getFormObject();
+            editor = provider.getPropertyEditor(domainObjectProperty);
+        }
+        if (editor == null || editor.supportsCustomEditor()) {
+            editor = getPropertyAccessStrategy().findCustomEditor(
+                    domainObjectProperty);
+            if ((editor == null || editor.supportsCustomEditor())
+                    && getPropertyEditorRegistry() != null) {
+                editor = getPropertyEditorRegistry().getPropertyEditor(
+                        getFormObjectClass(), domainObjectProperty);
+                if (editor == null || editor.supportsCustomEditor()) {
+                    editor = getPropertyEditorRegistry().getPropertyEditor(
+                            getMetadataAccessStrategy().getPropertyType(
+                                    domainObjectProperty));
+                    if (editor != null && editor.supportsCustomEditor()) {
+                        editor = null;
+                    }
+                }
+            }
+        }
+        return editor;
+    }
+
+    protected PropertyEditorRegistry getPropertyEditorRegistry() {
+        return Application.services().getPropertyEditorRegistry();
     }
 
     private ValueModel installTypeConverter(ValueModel formValueModel,

@@ -7,6 +7,9 @@
  */
 package org.springframework.binding.form;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorSupport;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import javax.swing.JTextField;
@@ -14,8 +17,10 @@ import javax.swing.JTextField;
 import junit.framework.TestCase;
 
 import org.springframework.binding.form.support.CompoundFormModel;
+import org.springframework.binding.form.support.ValidatingFormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
+import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
@@ -24,9 +29,9 @@ import org.springframework.richclient.application.config.BeanFactoryApplicationA
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.util.ToStringCreator;
+import org.springframework.util.closure.Closure;
 
 /**
- * 
  * @author HP
  */
 public class FormModelTest extends TestCase {
@@ -270,4 +275,71 @@ public class FormModelTest extends TestCase {
         assertTrue(emp.getSupervisor().getName().equals("Don"));
     }
 
+    public void testCustomPropertyEditorRegistration() {
+        DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application
+                .services().getPropertyEditorRegistry();
+
+        ValidatingFormModel fm = new ValidatingFormModel(new Employee());
+        ValueModel vm = fm.add("age");
+        assertHasNoPropertyEditor(vm);
+        
+        per.setPropertyEditor(int.class, PropertyEditorA.class);
+        fm = new ValidatingFormModel(new Employee());
+        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class); 
+        
+        per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);
+        fm = new ValidatingFormModel(new Employee());
+        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class); 
+        
+        PropertyEditor pe1 = new PropertyEditorA();
+        fm = new ValidatingFormModel(new Employee());
+        fm.getPropertyAccessStrategy().registerCustomEditor(int.class, pe1);
+        assertTrue(getPropertyEditor(fm.add("age")) == pe1);
+                
+        PropertyEditor pe2 = new PropertyEditorA();
+        fm = new ValidatingFormModel(new Employee());
+        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe2);
+        assertTrue(getPropertyEditor(fm.add("age")) == pe2);        
+    }
+    
+    private void assertHasNoPropertyEditor(ValueModel vm) {
+        ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
+        assertTrue(wrappedModel instanceof BufferedValueModel);    
+    }
+
+    private PropertyEditor getPropertyEditor(ValueModel vm) {
+        ValueModel wrappedModel = (ValueModel) getFieldValue(vm, "wrappedModel");
+        assertTrue(wrappedModel instanceof TypeConverter);        
+        Closure c = (Closure) getFieldValue(wrappedModel, "convertFrom");
+        PropertyEditor pe = (PropertyEditor) getFieldValue(c, "val$propertyEditor");
+        return pe;
+    }
+
+    private Object getFieldValue(Object object, String fieldName) {
+        Class clazz = object.getClass();
+        Field field = null;        
+        do {
+            try {
+                field = clazz.getDeclaredField(fieldName); 
+            } catch(NoSuchFieldException e) {                
+                clazz = clazz.getSuperclass();
+            }
+        }
+        while (field == null && clazz != null);            
+        assertNotNull("unable to find field", field);        
+        try {
+            field.setAccessible(true);
+            return field.get(object);
+        }
+        catch (Exception e) {
+            fail("unable to access field [" + fieldName + "]. " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static class PropertyEditorA extends PropertyEditorSupport {
+    }
+
+    public static class PropertyEditorB extends PropertyEditorSupport {
+    }
 }
