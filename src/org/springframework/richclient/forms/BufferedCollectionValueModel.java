@@ -38,7 +38,6 @@ import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.closure.support.NoArgBlock;
 
 /**
  * A <code>BufferedValueModel</code> that wraps a value model containing a
@@ -246,27 +245,25 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             });
         }
         final Object wrappedCollection = getWrappedValue();
-        if (wrappedCollection != null) {
-            doSilently(new NoArgBlock() {
-                protected void handle() {
-                    if (wrappedType.isAssignableFrom(wrappedCollection.getClass())) {
-                        Collection buffer = null;
-                        if (wrappedCollection instanceof Object[]) {
-                            Object[] wrappedArray = (Object[])wrappedCollection;
-                            buffer = Arrays.asList(wrappedArray);
-                        }
-                        else {
-                            buffer = (Collection)wrappedCollection;
-                        }
-                        listListModel.replaceWith(buffer);
-                    }
-                    else {
-                        throw new IllegalArgumentException("wrappedCollection must be an instance of "
-                                + wrappedType.getName());
-                    }
+        if (wrappedCollection == null) {
+            listListModel.clear();
+        } else {
+            if (wrappedType.isAssignableFrom(wrappedCollection.getClass())) {
+                Collection buffer = null;
+                if (wrappedCollection instanceof Object[]) {
+                    Object[] wrappedArray = (Object[])wrappedCollection;
+                    buffer = Arrays.asList(wrappedArray);
                 }
-            });
-        }
+                else {
+                    buffer = (Collection)wrappedCollection;
+                }
+                listListModel.replaceWith(buffer);
+            }
+            else {
+                throw new IllegalArgumentException("wrappedCollection must be assignable from " + wrappedType.getName());
+            }
+                
+        } 
         return listListModel;
     }
 
@@ -277,5 +274,12 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         else {
             super.setValue(listListModel);
         }
+    }
+    
+    protected void fireValueChanged() {
+        if (!hasChangeBuffered()) {
+            updateListModel();
+        }
+        super.fireValueChanged();
     }
 }

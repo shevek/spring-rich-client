@@ -269,33 +269,33 @@ public class BufferedCollectionValueModelTest extends TestCase {
         vm.addValueChangeListener(vl);
 
         ListListModel llm = (ListListModel)vm.getValue();
-        assertEquals(vl.getEventCount(), 1);
+        assertEquals(0, vl.getEventCount());
 
         vl.reset();
         llm.add(new Integer(100));
-        assertEquals(vl.getEventCount(), 1);
+        assertEquals(1, vl.getEventCount());
         llm.add(1, new Integer(102));
-        assertEquals(vl.getEventCount(), 2);
+        assertEquals(2, vl.getEventCount());
 
         vl.reset();
         llm.addAll(getCollection(ArrayList.class, 101));
-        assertEquals(vl.getEventCount(), 1);
+        assertEquals(1, vl.getEventCount());
         llm.addAll(1, getCollection(ArrayList.class, 101));
-        assertEquals(vl.getEventCount(), 2);
+        assertEquals(2, vl.getEventCount());
 
         vl.reset();
         llm.remove(1);
-        assertEquals(vl.getEventCount(), 1);
+        assertEquals(1, vl.getEventCount());
         llm.removeAll(getCollection(ArrayList.class, 101));
-        assertEquals(vl.getEventCount(), 2);
+        assertEquals(2, vl.getEventCount());
 
         vl.reset();
         llm.set(1, llm.get(1));
-        assertEquals(vl.getEventCount(), 0);
+        assertEquals(0, vl.getEventCount());
 
         vl.reset();
         llm.clear();
-        assertEquals(vl.getEventCount(), 1);
+        assertEquals(1, vl.getEventCount());
     }
 
     public void testRevert() {
