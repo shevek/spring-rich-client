@@ -103,8 +103,8 @@ public class ComboBoxModelAdapter extends AbstractListModel implements ComboBoxM
      * Constructs a <code>ComboBoxValueModel</code> for the given
      * <code>SelectionInList</code>.
      */
-    public ComboBoxModelAdapter(SelectableItemsListModel selectionInList) {
-        this(selectionInList, null, true);
+    public ComboBoxModelAdapter(SelectableItemsListModel selectableItems) {
+        this(selectableItems, null, true);
     }
 
     /**
