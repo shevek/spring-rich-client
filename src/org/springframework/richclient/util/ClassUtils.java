@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,10 +22,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +31,7 @@ import org.springframework.util.ArrayUtils;
 
 /**
  * Misc static utility functions for java classes.
- * 
+ *
  * @author Kerth Donald
  */
 public class ClassUtils {
@@ -63,11 +60,9 @@ public class ClassUtils {
 
     /**
      * Intializes the specified class if not initialized already.
-     * 
+     *
      * This is required for EnumUtils if the enum class has not yet been
      * loaded.
-     * 
-     * @param enumClass
      */
     public static void initializeClass(Class clazz) {
         try {
@@ -82,9 +77,7 @@ public class ClassUtils {
      * Returns the qualified class field name with the specified value. For
      * example, with a class defined with a static field "NORMAL" with value =
      * "0", passing in "0" would return: className.NORMAL.
-     * 
-     * @param clazz
-     * @param value
+     *
      * @return The qualified field.
      */
     public static String getClassFieldNameWithValue(Class clazz, Object value) {
@@ -105,9 +98,6 @@ public class ClassUtils {
 
     /**
      * Gets the field value for the specified qualified field name.
-     * 
-     * @param name
-     * @return
      */
     public static Object getFieldValue(String qualifiedFieldName) {
         Class clazz;
@@ -126,7 +116,7 @@ public class ClassUtils {
 
     /**
      * Load the class with the specified name.
-     * 
+     *
      * @param name
      * @return The loaded class.
      * @throws ClassNotFoundException
@@ -155,9 +145,8 @@ public class ClassUtils {
 
     /**
      * Returns the unqualified class name of the specified class.
-     * 
-     * @param string
-     *            The class
+     *
+     * @param clazz the class to get the name for
      * @return The unqualified, short name.
      */
     public static String unqualify(Class clazz) {
@@ -172,7 +161,7 @@ public class ClassUtils {
     /**
      * Returns the qualifier for a name separated by dots. The qualified part
      * is everything up to the last dot separator.
-     * 
+     *
      * @param qualifiedName
      *            The qualified name.
      * @return The qualifier portion.
@@ -206,9 +195,6 @@ public class ClassUtils {
      * simple scalar property is considered a value property; that is, it is
      * not another bean. Examples include primitives, primitive wrappers,
      * Enums, and Strings.
-     * 
-     * @param clazz
-     * @return true or false
      */
     public static boolean isSimpleScalar(Class clazz) {
         return clazz.isPrimitive() || simpleClasses.contains(clazz)
@@ -230,6 +216,106 @@ public class ClassUtils {
         } catch (NoSuchMethodException e) {
             return null;
         }
+    }
+
+    /**
+     * Given a {@link Map} where the keys are {@link Class}es, search the map
+     * for the closest match of the key to the <tt>typeClass</tt>.  This is
+     * extremely useful to support polymorphism (and an absolute requirement
+     * to find proxied classes where classes are acting as keys in a map).<p />
+     *
+     * For example: If the Map has keys of Number.class and String.class,
+     * using a <tt>typeClass</tt> of Long.class will find the Number.class
+     * entry and return its value.<p />
+     *
+     * When doing the search, it looks for the most exact match it can,
+     * giving preference to interfaces over class inheritance.  As a
+     * performance optimiziation, if it finds a match it stores the
+     * derived match in the map so it does not have to be derived again.
+     *
+     * @param typeClass the kind of class to search for
+     * @param classMap the map where the keys are of type Class
+     * @return null only if it can't find any match
+     */
+    public static Object getValueFromMapForClass(final Class typeClass,
+                                                 final Map classMap) {
+        Object val = classMap.get(typeClass);
+        if (val == null) {
+            // search through the interfaces first
+            val = getValueFromMapForInterfaces(typeClass, classMap);
+
+            if (val == null) {
+                // now go up through the inheritance hierarchy
+                val = getValueFromMapForSuperClass(typeClass, classMap);
+            }
+
+            if (val == null) {
+                // not found anywhere
+                logger.warn("Could not find a definition for " + typeClass +
+                    " in " + classMap.keySet());
+                return null;
+            }
+            else {
+                // remember this so it doesn't have to be looked-up again
+                classMap.put(typeClass, val);
+                return val;
+            }
+        }
+        else {
+            return val;
+        }
+    }
+
+    private static Object getValueFromMapForInterfaces(final Class typeClass,
+                                                       final Map classMap) {
+        final Class[] interfaces = typeClass.getInterfaces();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("searching through " + Arrays.asList(interfaces));
+        }
+
+        for (int i = 0; i < interfaces.length; i++) {
+            final Class anInterface = interfaces[i];
+            final Object val = classMap.get(anInterface);
+            if (val != null) {
+                return val;
+            }
+        }
+
+        // not found, but now check the parent interfaces
+        for (int i = 0; i < interfaces.length; i++) {
+            final Class anInterface = interfaces[i];
+            final Object val = getValueFromMapForInterfaces(anInterface,
+                classMap);
+            if (val != null) {
+                return val;
+            }
+        }
+
+        return null;
+    }
+
+    private static Object getValueFromMapForSuperClass(final Class typeClass,
+                                                       final Map classMap) {
+        Class superClass = typeClass.getSuperclass();
+        while (superClass != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("searching for " + superClass);
+            }
+            Object val = classMap.get(superClass);
+            if (val != null) {
+                return val;
+            }
+
+            // try the interfaces
+            val = getValueFromMapForInterfaces(superClass, classMap);
+            if (val != null) {
+                return val;
+            }
+
+            superClass = superClass.getSuperclass();
+        }
+        return null;
     }
 
 }
