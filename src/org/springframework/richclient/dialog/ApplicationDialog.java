@@ -135,16 +135,21 @@ public abstract class ApplicationDialog extends
     }
 
     protected String getTitle() {
-        return title;
+        if (!StringUtils.hasText(this.title)) {
+            if (StringUtils.hasText(getCallingCommandText())) {
+                return getCallingCommandText();
+            }
+            else {
+                return DEFAULT_DIALOG_TITLE;
+            }
+        }
+        return this.title;
     }
 
     public void setTitle(String title) {
-        if (!StringUtils.hasText(title)) {
-            title = DEFAULT_DIALOG_TITLE;
-        }
         this.title = title;
         if (dialog != null) {
-            dialog.setTitle(title);
+            dialog.setTitle(getTitle());
         }
     }
 
