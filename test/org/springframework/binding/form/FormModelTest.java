@@ -28,7 +28,7 @@ import org.springframework.util.ToStringBuilder;
  * 
  * @author HP
  */
-public class FormModelTestSuite extends TestCase {
+public class FormModelTest extends TestCase {
 
     static {
         Application application = new Application(new ApplicationServices(),
@@ -183,7 +183,7 @@ public class FormModelTestSuite extends TestCase {
 
     }
 
-    public FormModelTestSuite() {
+    public FormModelTest() {
         super();
     }
 

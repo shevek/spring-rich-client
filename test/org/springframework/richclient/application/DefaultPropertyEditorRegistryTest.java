@@ -23,7 +23,7 @@ import org.springframework.beans.propertyeditors.ClassEditor;
 /**
  * Test cases for {@link DefaultPropertyEditorRegistry}
  */
-public class TestDefaultPropertyEditorRegistry extends TestCase {
+public class DefaultPropertyEditorRegistryTest extends TestCase {
 
     public void testRegisteringClass() throws Exception {
         PropertyEditor pe;
