@@ -47,7 +47,6 @@ import org.springframework.rules.DefaultRulesSource;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.predicates.beans.BeanPropertyExpression;
-import org.springframework.util.Assert;
 
 /**
  * A singleton service locator of a rich client application.
@@ -66,6 +65,8 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     public static final String IMAGE_SOURCE_BEAN_KEY = "imageSource";
 
     public static final String ICON_SOURCE_BEAN_KEY = "iconSource";
+
+    public static final String COMPONENT_FACTORY_BEAN_KEY = "componentFactory";
 
     public static final String RULES_SOURCE_BEAN_KEY = "rulesSource";
 
@@ -93,22 +94,87 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private Map attributes;
 
+    private boolean lazyInit = true;
+
+    public void setLazyInit(boolean lazyInit) {
+        this.lazyInit = lazyInit;
+    }
+
     public ComponentFactory getComponentFactory() {
+        if (componentFactory == null) {
+            initComponentFactory();
+        }
         return componentFactory;
     }
 
     public void setComponentFactory(ComponentFactory factory) {
-        Assert.notNull(factory);
         this.componentFactory = factory;
     }
 
     public ViewRegistry getViewRegistry() {
+        if (viewRegistry == null) {
+            initViewRegistry();
+        }
         return viewRegistry;
     }
 
     public void setViewRegistry(ViewRegistry registry) {
-        Assert.notNull(registry);
         this.viewRegistry = registry;
+    }
+
+    public CommandConfigurer getCommandConfigurer() {
+        if (commandConfigurer == null) {
+            initCommandConfigurer();
+        }
+        return commandConfigurer;
+    }
+
+    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
+        this.commandConfigurer = commandConfigurer;
+    }
+
+    public IconSource getIconSource() {
+        if (iconSource == null) {
+            initIconSource();
+        }
+        return iconSource;
+    }
+
+    public void setIconSource(IconSource iconSource) {
+        this.iconSource = iconSource;
+    }
+
+    public ImageSource getImageSource() {
+        if (imageSource == null) {
+            initImageSource();
+        }
+        return imageSource;
+    }
+
+    public void setImageSource(ImageSource imageSource) {
+        this.imageSource = imageSource;
+    }
+
+    public ObjectConfigurer getObjectConfigurer() {
+        if (objectConfigurer == null) {
+            initObjectConfigurer();
+        }
+        return objectConfigurer;
+    }
+
+    public void setObjectConfigurer(ObjectConfigurer objectConfigurer) {
+        this.objectConfigurer = objectConfigurer;
+    }
+
+    public RulesSource getRulesSource() {
+        if (rulesSource == null) {
+            initRulesSource();
+        }
+        return rulesSource;
+    }
+
+    public void setRulesSource(RulesSource rulesSource) {
+        this.rulesSource = rulesSource;
     }
 
     protected Map getAttributes() {
@@ -127,24 +193,26 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     protected void initApplicationContext() throws BeansException {
-        initStandardServices();
+        if (!lazyInit) {
+            initStandardServices();
+        }
+        initLookAndFeelConfigurer();
     }
 
-    protected void initStandardServices() {
-        initImageSource();
-        initIconSource();
-        initComponentFactory();
-        initViewRegistry();
-        initRulesSource();
-        initObjectConfigurer();
-        initCommandConfigurer();
-        initLookAndFeelConfigurer();
+    public void initStandardServices() {
+        getImageSource();
+        getIconSource();
+        getComponentFactory();
+        getViewRegistry();
+        getRulesSource();
+        getObjectConfigurer();
+        getCommandConfigurer();
     }
 
     private void initImageSource() {
         try {
             this.imageSource = (ImageSource)getApplicationContext().getBean(
-                IMAGE_SOURCE_BEAN_KEY);
+                IMAGE_SOURCE_BEAN_KEY, ImageSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No image source bean found in context under name '"
@@ -156,7 +224,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     private void initIconSource() {
         try {
             this.iconSource = (IconSource)getApplicationContext().getBean(
-                ICON_SOURCE_BEAN_KEY);
+                ICON_SOURCE_BEAN_KEY, IconSource.class);
         }
         catch (NoSuchBeanDefinitionException e) {
             logger.info("No icon source bean found under name "
@@ -167,7 +235,14 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     private void initComponentFactory() {
-        if (componentFactory == null) {
+        try {
+            this.componentFactory = (ComponentFactory)getApplicationContext()
+                    .getBean(COMPONENT_FACTORY_BEAN_KEY, ComponentFactory.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No component factory bean found under name "
+                    + COMPONENT_FACTORY_BEAN_KEY
+                    + "; creating using existing image source.");
             DefaultComponentFactory f = new DefaultComponentFactory();
             f.setApplicationContext(getApplicationContext());
             this.componentFactory = f;
@@ -175,63 +250,52 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     private void initViewRegistry() {
-        if (viewRegistry == null) {
-            ApplicationContextViewRegistry r = new ApplicationContextViewRegistry();
-            r.setApplicationContext(getApplicationContext());
-            this.viewRegistry = r;
-        }
+        ApplicationContextViewRegistry r = new ApplicationContextViewRegistry();
+        r.setApplicationContext(getApplicationContext());
+        this.viewRegistry = r;
     }
 
     private void initRulesSource() {
-        if (rulesSource == null) {
-            try {
-                rulesSource = (RulesSource)getApplicationContext().getBean(
-                    RULES_SOURCE_BEAN_KEY);
-            }
-            catch (NoSuchBeanDefinitionException e) {
-                logger.info("No rule source found in context under name '"
-                        + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
-                this.rulesSource = new DefaultRulesSource();
-            }
+        try {
+            rulesSource = (RulesSource)getApplicationContext().getBean(
+                RULES_SOURCE_BEAN_KEY, RulesSource.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No rule source found in context under name '"
+                    + RULES_SOURCE_BEAN_KEY + "'; configuring defaults.");
+            this.rulesSource = new DefaultRulesSource();
         }
     }
 
     private void initObjectConfigurer() {
-        if (objectConfigurer == null) {
-            try {
-                objectConfigurer = (ObjectConfigurer)getApplicationContext()
-                        .getBean(OBJECT_CONFIGURER_BEAN_KEY);
-            }
-            catch (NoSuchBeanDefinitionException e) {
-                logger
-                        .info("No object configurer found in context under name '"
-                                + OBJECT_CONFIGURER_BEAN_KEY
-                                + "'; configuring defaults.");
-                ApplicationObjectConfigurer objectConfigurer = new ApplicationObjectConfigurer();
-                objectConfigurer.setApplicationContext(getApplicationContext());
-                objectConfigurer.afterPropertiesSet();
-                this.objectConfigurer = objectConfigurer;
-            }
+        try {
+            objectConfigurer = (ObjectConfigurer)getApplicationContext()
+                    .getBean(OBJECT_CONFIGURER_BEAN_KEY, ObjectConfigurer.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No object configurer found in context under name '"
+                    + OBJECT_CONFIGURER_BEAN_KEY + "'; configuring defaults.");
+            ApplicationObjectConfigurer objectConfigurer = new ApplicationObjectConfigurer();
+            objectConfigurer.setApplicationContext(getApplicationContext());
+            objectConfigurer.afterPropertiesSet();
+            this.objectConfigurer = objectConfigurer;
         }
     }
 
     private void initCommandConfigurer() {
-        if (commandConfigurer == null) {
-            try {
-                commandConfigurer = (CommandConfigurer)getApplicationContext()
-                        .getBean(COMMAND_CONFIGURER_BEAN_KEY);
-            }
-            catch (NoSuchBeanDefinitionException e) {
-                logger
-                        .info("No command configurer found in context under name '"
-                                + COMMAND_CONFIGURER_BEAN_KEY
-                                + "'; configuring defaults.");
-                this.commandConfigurer = new ApplicationCommandConfigurer();
-            }
+        try {
+            commandConfigurer = (CommandConfigurer)getApplicationContext()
+                    .getBean(COMMAND_CONFIGURER_BEAN_KEY,
+                        CommandConfigurer.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No command configurer found in context under name '"
+                    + COMMAND_CONFIGURER_BEAN_KEY + "'; configuring defaults.");
+            this.commandConfigurer = new ApplicationCommandConfigurer();
         }
     }
 
-    private void initLookAndFeelConfigurer() {
+    public void initLookAndFeelConfigurer() {
         try {
             getApplicationContext().getBean(LOOK_AND_FEEL_CONFIGURER_BEAN_KEY);
         }
@@ -244,20 +308,20 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     public AbstractCommand configure(AbstractCommand command) {
-        return commandConfigurer.configure(command);
+        return getCommandConfigurer().configure(command);
     }
 
     public AbstractCommand configure(AbstractCommand command,
             String faceConfigurationKey) {
-        return commandConfigurer.configure(command, faceConfigurationKey);
+        return getCommandConfigurer().configure(command, faceConfigurationKey);
     }
 
     public Object configure(Object applicationObject, String objectName) {
-        return objectConfigurer.configure(applicationObject, objectName);
+        return getObjectConfigurer().configure(applicationObject, objectName);
     }
 
     public MessageSourceAccessor getMessages() {
-        return super.getMessageSourceAccessor();
+        return getMessageSourceAccessor();
     }
 
     public String getMessage(MessageSourceResolvable resolvable, Locale locale)
@@ -277,22 +341,22 @@ public class ApplicationServices extends ApplicationObjectSupport implements
     }
 
     public Image getImage(String key) {
-        return imageSource.getImage(key);
+        return getImageSource().getImage(key);
     }
 
     public AwtImageResource getImageResource(String key) {
-        return imageSource.getImageResource(key);
+        return getImageSource().getImageResource(key);
     }
 
     public Icon getIcon(String key) {
-        return iconSource.getIcon(key);
+        return getIconSource().getIcon(key);
     }
 
     public BeanPropertyExpression getRules(Class beanClass, String propertyName) {
-        return rulesSource.getRules(beanClass, propertyName);
+        return getRulesSource().getRules(beanClass, propertyName);
     }
 
     public Rules getRules(Class bean) {
-        return rulesSource.getRules(bean);
+        return getRulesSource().getRules(bean);
     }
 }
