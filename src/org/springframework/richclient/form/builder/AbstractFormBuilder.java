@@ -42,6 +42,7 @@ public abstract class AbstractFormBuilder {
     protected AbstractFormBuilder(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
+        this.interceptor = Application.services().getInterceptor(formModel);        
     }
 
     protected ComponentFactory getComponentFactory() {
@@ -55,10 +56,7 @@ public abstract class AbstractFormBuilder {
         this.componentFactory = componentFactory;
     }
 
-    protected FormComponentInterceptor getInterceptor() {
-        if (interceptor == null) {
-            interceptor = Application.services().getInterceptor(formModel);
-        }
+    protected FormComponentInterceptor getInterceptor() {        
         return interceptor;
     }
 
