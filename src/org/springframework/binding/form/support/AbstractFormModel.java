@@ -71,11 +71,15 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher
         if (formObject == null) {
             if (logger.isInfoEnabled()) {
                 logger
-                        .info("New form object value is null; resetting to a new fresh object instance");
-                formObject = BeanUtils.instantiateClass(getFormObjectClass());
+                        .info("New form object value is null; resetting to a new fresh object instance and disabling form");
             }
+            getFormObjectHolder().setValue(
+                    BeanUtils.instantiateClass(getFormObjectClass()));
+            setEnabled(false);
         }
-        getFormObjectHolder().setValue(formObject);
+        else {
+            getFormObjectHolder().setValue(formObject);
+        }
     }
 
     protected ValueModel getFormObjectHolder() {
