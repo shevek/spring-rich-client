@@ -18,10 +18,12 @@ package org.springframework.richclient.command;
 import java.util.Iterator;
 
 import javax.swing.AbstractButton;
+import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
+import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
 
@@ -38,6 +40,19 @@ public abstract class ToggleCommand extends ActionCommand {
 
     public ToggleCommand(String commandId) {
         super(commandId);
+    }
+
+    public ToggleCommand(String id, CommandFaceDescriptor face) {
+        super(id, face);
+    }
+
+    public ToggleCommand(String id, String encodedLabel) {
+        super(id, encodedLabel);
+    }
+
+    public ToggleCommand(String id, String encodedLabel, Icon icon,
+            String caption) {
+        super(id, encodedLabel, icon, caption);
     }
 
     public void setExclusiveController(
