@@ -29,11 +29,12 @@ import org.springframework.rules.predicates.beans.BeanPropertyExpression;
  * @author Ben Alex
  */
 public class SessionDetails implements Serializable, RulesProvider {
-    private transient AuthenticationManager authenticationManager;
-    
     public static final String PROPERTY_USERNAME = "username";
+
     public static final String PROPERTY_PASSWORD = "password";
-    
+
+    private transient AuthenticationManager authenticationManager;
+
     private String username;
 
     private String password;
