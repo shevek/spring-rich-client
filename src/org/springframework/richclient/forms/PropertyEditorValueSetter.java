@@ -21,10 +21,8 @@ import java.beans.PropertyEditor;
 
 import org.springframework.rules.values.ValueModel;
 
-
-public class PropertyEditorValueSetter
-extends AbstractValueSetter
-implements PropertyChangeListener {
+public class PropertyEditorValueSetter extends AbstractValueSetter implements
+        PropertyChangeListener {
     private PropertyEditor propertyEditor;
 
     public PropertyEditorValueSetter(PropertyEditor propertyEditor,
@@ -37,11 +35,11 @@ implements PropertyChangeListener {
     protected void setComponentValue(Object value) {
         propertyEditor.setValue(value);
     }
-    
+
     public void dispose() {
         this.propertyEditor.removePropertyChangeListener(this);
     }
-    
+
     public void propertyChange(PropertyChangeEvent event) {
         componentValueChanged(propertyEditor.getValue());
     }

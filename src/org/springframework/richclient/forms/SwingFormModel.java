@@ -342,9 +342,16 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         Assert.isTrue(customEditor instanceof JComponent,
                 "customEditors must be JComponents; however, you have provided a "
                         + customEditor.getClass());
-        ValueModel valueModel = getOrCreateValueModel(formProperty);
-        new PropertyEditorValueSetter(propertyEditor, valueModel);
+        ValueModel valueModel = getValueModel(formProperty);
+        if (valueModel == null) {
+            createFormValueModel(formProperty);
+            // create above returns the display value model appyling the
+            // property editor, the setter listener wants the 'wrapped' value
+            // model...
+            valueModel = getValueModel(formProperty);
+        }
         propertyEditor.setValue(valueModel.get());
+        new PropertyEditorValueSetter(propertyEditor, valueModel);
         return (JComponent)customEditor;
     }
 

@@ -24,7 +24,8 @@ import org.springframework.rules.values.ValueModel;
  * @author oliverh
  */
 public abstract class AbstractValueSetter implements ValueListener {
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected static final Log logger = LogFactory
+            .getLog(AbstractValueSetter.class);
 
     private ValueModel valueModel;
 
@@ -40,7 +41,7 @@ public abstract class AbstractValueSetter implements ValueListener {
     protected ValueModel getValueModel() {
         return valueModel;
     }
-    
+
     protected boolean isUpdating() {
         return updating;
     }
