@@ -50,7 +50,6 @@ import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.support.DefaultRulesSource;
-import org.springframework.util.Assert;
 
 /**
  * A singleton service locator of a rich client application. The application
@@ -258,7 +257,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initComponentFactory() {
         try {
-            Assert.isTrue(getApplicationContext() != null);
             this.componentFactory = (ComponentFactory)getApplicationContext()
                     .getBean(COMPONENT_FACTORY_BEAN_KEY, ComponentFactory.class);
         }
@@ -283,7 +281,6 @@ public class ApplicationServices extends ApplicationObjectSupport implements
 
     private void initRulesSource() {
         try {
-            Assert.notNull(getApplicationContext());
             this.rulesSource = (RulesSource)getApplicationContext().getBean(
                     RULES_SOURCE_BEAN_KEY, RulesSource.class);
         }
@@ -418,10 +415,11 @@ public class ApplicationServices extends ApplicationObjectSupport implements
                             FormComponentInterceptorFactory.class);
         }
         catch (NoSuchBeanDefinitionException e) {
-            logger.info("No bean named " + INTERCEPTOR_FACTORY_BEAN_KEY +
-                    " found. Using empty interceptor.");
+            logger.info("No bean named " + INTERCEPTOR_FACTORY_BEAN_KEY
+                    + " found. Using empty interceptor.");
             this.formComponentInterceptorFactory = new FormComponentInterceptorFactory() {
-                public FormComponentInterceptor getInterceptor(FormModel formModel) {
+                public FormComponentInterceptor getInterceptor(
+                        FormModel formModel) {
                     return null;
                 }
             };

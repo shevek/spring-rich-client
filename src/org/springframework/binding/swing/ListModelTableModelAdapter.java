@@ -117,7 +117,7 @@ public abstract class ListModelTableModelAdapter extends AbstractTableModel {
      *             if the list model is <code>null</code>
      */
     public ListModelTableModelAdapter(ListModel listModel, String[] columnNames) {
-        Assert.notNull(listModel);
+        Assert.notNull(listModel, "The listModel property is required");
         this.listModel = listModel;
         this.columnNames = columnNames;
         listModel.addListDataListener(createChangeHandler());

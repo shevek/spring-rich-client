@@ -25,7 +25,7 @@ import javax.swing.event.EventListenerList;
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.rules.constraint.Range;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 /**
  * Converts a <code>ValueModel</code> to <code>BoundedRangeModel</code>.
@@ -234,7 +234,7 @@ public final class BoundedRangeModelAdapter implements BoundedRangeModel,
     }
 
     public String toString() {
-        return new ToStringBuilder(this).appendProperties().toString();
+        return new ToStringCreator(this).appendProperties().toString();
     }
 
 }

@@ -38,7 +38,7 @@ public class SimpleViewContext implements ViewContext {
     private Map commandDelegates = new HashMap();
 
     public SimpleViewContext(String viewName, ApplicationPage page) {
-        Assert.hasText(viewName);
+        Assert.hasText(viewName, "The view name is required");
         Assert.notNull(page);
         this.viewName = viewName;
         this.page = page;

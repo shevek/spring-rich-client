@@ -46,7 +46,7 @@ public class VetManagerView extends AbstractView {
     private DefaultTreeModel vetsTreeModel;
 
     public void setClinic(Clinic clinic) {
-        Assert.notNull(clinic);
+        Assert.notNull(clinic, "The clinic property is required");
         this.clinic = clinic;
     }
 
@@ -116,7 +116,7 @@ public class VetManagerView extends AbstractView {
                 boolean sel, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                leaf, row, hasFocus);
+                    leaf, row, hasFocus);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
                 this.setIcon(getIconSource().getIcon("folder.icon"));

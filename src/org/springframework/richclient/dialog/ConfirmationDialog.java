@@ -51,7 +51,7 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     }
 
     public void setConfirmationMessage(String message) {
-        Assert.hasText(message);
+        Assert.hasText(message, "The confirmation message is required");
         this.confirmationMessage = message;
     }
 

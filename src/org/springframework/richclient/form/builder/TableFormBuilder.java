@@ -15,11 +15,13 @@
  */
 package org.springframework.richclient.form.builder;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.layout.TableLayoutBuilder;
-import org.springframework.rules.Constraint;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author oliverh
@@ -47,8 +49,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] add(String propertyName, String attributes) {
-        return addComponents(getDefaultComponent(propertyName), attributes, propertyName,
-                getLabelAttributes());
+        return addComponents(getDefaultComponent(propertyName), attributes,
+                propertyName, getLabelAttributes());
     }
 
     public JComponent[] add(String propertyName, JComponent component) {
@@ -63,17 +65,20 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public JComponent[] addSelector(String propertyName, Constraint filter) {
         return addSelector(propertyName, filter, "");
     }
-    
-    public JComponent[] addSelector(String propertyName, Constraint filter, String attributes) {
-        return addComponents(getSelector(propertyName, filter), attributes, propertyName, getLabelAttributes());
+
+    public JComponent[] addSelector(String propertyName, Constraint filter,
+            String attributes) {
+        return addComponents(getSelector(propertyName, filter), attributes,
+                propertyName, getLabelAttributes());
     }
-    
+
     public JComponent[] addPasswordField(String propertyName) {
         return addPasswordField(propertyName, "");
     }
 
     public JComponent[] addPasswordField(String propertyName, String attributes) {
-        return addComponents(getPasswordField(propertyName), attributes, propertyName, getLabelAttributes());
+        return addComponents(getPasswordField(propertyName), attributes,
+                propertyName, getLabelAttributes());
     }
 
     public JComponent[] addTextArea(String propertyName) {
@@ -81,8 +86,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] addTextArea(String propertyName, String attributes) {
-        return addComponents(getTextArea(propertyName), attributes, propertyName,
-                getLabelAttributes() + " valign=top");
+        return addComponents(getTextArea(propertyName), attributes,
+                propertyName, getLabelAttributes() + " valign=top");
     }
 
     public void addSeparator(String text) {
@@ -113,6 +118,6 @@ public class TableFormBuilder extends AbstractFormBuilder {
         builder.cell(label, labelAttributes);
         builder.labelGapCol();
         builder.cell(component, attributes);
-        return new JComponent[] {label, component};
+        return new JComponent[] { label, component };
     }
 }

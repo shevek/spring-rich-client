@@ -31,7 +31,7 @@ public class GlobalCommandTargeter extends AbstractViewListener {
     private CommandManager globalCommandRegistry;
 
     public GlobalCommandTargeter(CommandManager commandRegistry) {
-        Assert.notNull(commandRegistry);
+        Assert.notNull(commandRegistry, "Command manager is required");
         this.globalCommandRegistry = commandRegistry;
     }
 

@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.util.Assert;
-import org.springframework.util.Cache;
+import org.springframework.util.CachingMapTemplate;
 import org.springframework.util.DefaultObjectStyler;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 /**
  * A collection of image resources, each indexed by a common key alias.
@@ -158,11 +158,11 @@ public class DefaultImageSource implements ImageSource {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("imageResources",
+        return new ToStringCreator(this).append("imageResources",
                 imageResources).toString();
     }
     
-    private class ImageCache extends Cache {
+    private class ImageCache extends CachingMapTemplate {
         public ImageCache() {
             super(true);
         }

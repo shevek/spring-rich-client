@@ -69,7 +69,7 @@ public class Application extends ApplicationObjectSupport {
     }
 
     private void setApplicationAdvisor(ApplicationAdvisor advisor) {
-        Assert.notNull(advisor);
+        Assert.notNull(advisor, "The application advisor is required");
         this.applicationAdvisor = advisor;
     }
 

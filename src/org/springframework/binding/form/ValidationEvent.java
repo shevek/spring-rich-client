@@ -15,10 +15,10 @@
  */
 package org.springframework.binding.form;
 
-import org.springframework.rules.Constraint;
 import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.util.Assert;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald
@@ -36,8 +36,8 @@ public class ValidationEvent {
 
     public ValidationEvent(FormModel formModel, Constraint constraint,
             ValidationResults results) {
-        Assert.notNull(formModel);
-        Assert.notNull(constraint);
+        Assert.notNull(formModel, "The form model property is required");
+        Assert.notNull(constraint, "The constraint property is required");
         this.formModel = formModel;
         this.constraint = constraint;
         this.results = results;
@@ -66,6 +66,6 @@ public class ValidationEvent {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).appendProperties().toString();
+        return new ToStringCreator(this).appendProperties().toString();
     }
 }

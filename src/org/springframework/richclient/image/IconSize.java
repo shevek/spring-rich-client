@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.springframework.richclient.image;
 
 import org.springframework.util.Assert;
@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
  */
 public class IconSize {
     private String name;
+
     private int pixels;
 
     /**
@@ -39,7 +40,6 @@ public class IconSize {
 
     private IconSize(String name, int value) {
         Assert.isTrue(StringUtils.hasText(name));
-        Assert.isInRange(value, 1, 100);
         this.name = name;
         this.pixels = value;
     }
@@ -63,10 +63,7 @@ public class IconSize {
     }
 
     public String toString() {
-        return "[IconSize name = '"
-            + getName()
-            + "', value = "
-            + getValue()
-            + "]";
+        return "[IconSize name = '" + getName() + "', value = " + getValue()
+                + "]";
     }
 }

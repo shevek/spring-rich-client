@@ -32,7 +32,7 @@ import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 /**
  * A convenient super class for objects that can be labeled for display in a
@@ -234,7 +234,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
     }
 
     public String toString() {
-        return new ToStringBuilder(this).appendProperties().toString();
+        return new ToStringCreator(this).appendProperties().toString();
     }
 
 }

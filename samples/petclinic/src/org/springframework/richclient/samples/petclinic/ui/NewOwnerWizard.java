@@ -38,7 +38,7 @@ public class NewOwnerWizard extends AbstractWizard implements
     }
 
     public void setClinic(Clinic clinic) {
-        Assert.notNull(clinic);
+        Assert.notNull(clinic, "The clinic property is required");
         this.clinic = clinic;
     }
 

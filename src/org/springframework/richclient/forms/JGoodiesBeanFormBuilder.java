@@ -20,7 +20,7 @@ import javax.swing.JComponent;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.builder.AbstractFormBuilder;
-import org.springframework.rules.Constraint;
+import org.springframework.util.closure.Constraint;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;

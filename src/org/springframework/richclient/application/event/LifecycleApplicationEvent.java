@@ -8,7 +8,7 @@
 package org.springframework.richclient.application.event;
 
 import org.springframework.context.ApplicationEvent;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 /**
  * Application event that communicates lifecycle changes in application objects.
@@ -47,6 +47,6 @@ public class LifecycleApplicationEvent extends ApplicationEvent {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).appendProperties().toString();
+        return new ToStringCreator(this).appendProperties().toString();
     }
 }

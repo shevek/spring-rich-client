@@ -27,14 +27,13 @@ import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
-import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
  */
 public class ApplicationServicesAccessorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     protected Application getApplication() {
         return Application.instance();
     }
@@ -65,7 +64,6 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected String getMessage(final String[] messageCodes) {
-        Assert.hasElements(messageCodes);
         MessageSourceResolvable resolvable = new MessageSourceResolvable() {
             public String[] getCodes() {
                 return messageCodes;
@@ -89,7 +87,6 @@ public class ApplicationServicesAccessorSupport {
     }
 
     protected String getMessage(final String[] messageCodes, final Object[] args) {
-        Assert.hasElements(messageCodes);
         MessageSourceResolvable resolvable = new MessageSourceResolvable() {
             public String[] getCodes() {
                 return messageCodes;

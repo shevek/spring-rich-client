@@ -31,11 +31,9 @@ import org.springframework.richclient.application.config.ApplicationAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.progress.StatusBar;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.Memento;
 import org.springframework.richclient.util.PersistableElement;
-import org.springframework.util.Assert;
 
 /**
  * A main application window (or frame) consisting of a menu bar, tool bar,
@@ -117,11 +115,10 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     public void openPage(ViewDescriptor viewDescriptor) {
-        Assert.notNull(viewDescriptor);
         if (this.activePage == null) {
             ApplicationPage page = new ApplicationPage(this);
-            final GlobalCommandTargeter commandTargeter =
-                    new GlobalCommandTargeter(getCommandManager());
+            final GlobalCommandTargeter commandTargeter = new GlobalCommandTargeter(
+                    getCommandManager());
             page.addViewListener(commandTargeter);
             page.showView(viewDescriptor);
             this.activePage = page;
@@ -195,7 +192,7 @@ public class ApplicationWindow implements PersistableElement {
     }
 
     protected JComponent createStatusBar() {
-        StatusBar statusBar = statusBarCommandGroup.createStatusBar();
+        JComponent statusBar = statusBarCommandGroup.getControl();
         statusBarCommandGroup.setVisible(getWindowConfigurer()
                 .getShowStatusBar());
         return statusBar;

@@ -23,7 +23,7 @@ import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueChangePublisher;
-import org.springframework.rules.Constraint;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald

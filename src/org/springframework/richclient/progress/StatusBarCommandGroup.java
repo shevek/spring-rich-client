@@ -16,19 +16,17 @@
 package org.springframework.richclient.progress;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandRegistry;
+import org.springframework.richclient.factory.ControlFactory;
 
-/**
- * @TODO
- * 
- * @author Keith Donald
- */
-public class StatusBarCommandGroup extends CommandGroup {
+public class StatusBarCommandGroup extends CommandGroup implements
+        ControlFactory {
 
     private StatusBar statusBar;
-    
+
     public StatusBarCommandGroup() {
         super();
     }
@@ -41,15 +39,25 @@ public class StatusBarCommandGroup extends CommandGroup {
         super(groupId, commandRegistry);
     }
 
+    public JComponent getControl() {
+        if (statusBar == null) {
+            this.statusBar = createStatusBar();
+        }
+        return statusBar;
+    }
+
+    protected StatusBar createStatusBar() {
+        return new StatusBar();
+    }
+
     protected StatusBar getStatusBar() {
         return statusBar;
     }
-    
-    public StatusBar createStatusBar() {
-        this.statusBar = new StatusBar();
-        return statusBar;
+
+    public ProgressMonitor getProgressMonitor() {
+        return getStatusBar();
     }
-    
+
     public void setMessage(String message) {
         getStatusBar().setMessage(message);
     }

@@ -64,7 +64,7 @@ public final class RadioButtonAdapter extends JToggleButton.ToggleButtonModel {
     private ValueChangeListener valueChangeHandler;
 
     public RadioButtonAdapter(ValueModel valueModel, Object choice) {
-        Assert.notNull("The subject must not be null.");
+        Assert.notNull(valueModel, "The subject must not be null.");
         this.valueModel = valueModel;
         this.choice = choice;
         this.valueChangeHandler = new ValueChangeHandler();

@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.springframework.core.io.Resource;
-import org.springframework.rules.Closure;
-import org.springframework.rules.Constraint;
 import org.springframework.rules.factory.Constraints;
+import org.springframework.util.closure.Closure;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald

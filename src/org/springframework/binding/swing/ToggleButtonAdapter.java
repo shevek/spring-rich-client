@@ -80,7 +80,7 @@ public final class ToggleButtonAdapter extends JToggleButton.ToggleButtonModel {
      */
     public ToggleButtonAdapter(ValueModel valueModel, Object selectedValue,
             Object deselectedValue) {
-        Assert.notNull(valueModel);
+        Assert.notNull(valueModel, "The subject value model is required.");
         this.valueModel = valueModel;
         this.selectedValue = selectedValue;
         this.deselectedValue = deselectedValue;

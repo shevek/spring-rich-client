@@ -31,7 +31,6 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -324,10 +323,6 @@ public final class SelectableItemsListModel extends AbstractValueModel
      */
     public SelectableItemsListModel(ValueModel selectableItemsHolder,
             ValueModel selectionHolder, ValueModel selectionIndexHolder) {
-        Assert.notNull(selectableItemsHolder);
-        Assert.notNull(selectionHolder);
-        Assert.notNull(selectionIndexHolder);
-
         this.selectableItemsHolder = selectableItemsHolder;
         this.selectionHolder = (BoundValueModel)selectionHolder;
         this.selectionIndexHolder = selectionIndexHolder;

@@ -17,7 +17,7 @@ package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
 
-import org.springframework.rules.Constraint;
+import org.springframework.util.closure.Constraint;
 
 public interface BeanFormBuilder {
     public JComponent[] add(String formPropertyPath);

@@ -74,11 +74,11 @@ import org.springframework.richclient.list.FilteredComboBoxListModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.list.ObservableList;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.comparator.BeanPropertyComparator;
+import org.springframework.util.closure.Constraint;
+import org.springframework.util.comparator.PropertyComparator;
 
 /**
  * @author Keith Donald
@@ -693,7 +693,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JComboBox createBoundComboBox(ValueModel selectedItemHolder,
             ValueModel selectableItemsHolder, String renderedProperty) {
         Comparator comparator = (renderedProperty != null
-                ? new BeanPropertyComparator(renderedProperty)
+                ? new PropertyComparator(renderedProperty)
                 : null);
         JComboBox comboBox = bind(createNewComboBox(), selectedItemHolder,
                 selectableItemsHolder, comparator);
@@ -818,7 +818,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JList createBoundList(String selectionFormProperty,
             ValueModel selectableItemsHolder, String renderedProperty) {
         Comparator itemsComparator = (renderedProperty != null
-                ? new BeanPropertyComparator(renderedProperty)
+                ? new PropertyComparator(renderedProperty)
                 : null);
         JList list = bind(createNewList(), selectionFormProperty,
                 selectableItemsHolder, itemsComparator);

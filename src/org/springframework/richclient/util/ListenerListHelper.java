@@ -21,11 +21,11 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.springframework.beans.BeansException;
-import org.springframework.rules.Closure;
 import org.springframework.util.ArrayUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.Cache;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.ToStringCreator;
+import org.springframework.util.closure.Closure;
 
 /**
  * Helper implementation of an event listener list.
@@ -74,7 +74,7 @@ public class ListenerListHelper implements Serializable {
         }
     };
 
-    private static final Cache methodCache = new Cache() {
+    private static final CachingMapTemplate methodCache = new CachingMapTemplate() {
         protected Object create(Object o) {
             MethodCacheKey key = (MethodCacheKey)o;
             Method fireMethod = null;
@@ -289,7 +289,7 @@ public class ListenerListHelper implements Serializable {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("listenerClass", listenerClass)
+        return new ToStringCreator(this).append("listenerClass", listenerClass)
                 .append("listeners", listeners).toString();
     }
 

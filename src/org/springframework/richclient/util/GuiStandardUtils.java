@@ -29,7 +29,6 @@ import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.richclient.core.UIConstants;
-import org.springframework.util.Assert;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -104,7 +103,6 @@ public class GuiStandardUtils {
      *            the short name of the dialog.
      */
     public static String createDialogTitle(String appName, String dialogName) {
-        Assert.hasText(dialogName);
         if (appName != null) {
             StringBuffer buf = new StringBuffer(appName);
             buf.append(": ");

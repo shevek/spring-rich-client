@@ -109,8 +109,8 @@ public final class DocumentAdapter implements Document, ValueChangeListener,
      *             if the subject or document is <code>null</code>
      */
     public DocumentAdapter(ValueModel valueModel, Document document) {
-        Assert.notNull(valueModel);
-        Assert.notNull(document);
+        Assert.notNull(valueModel, "The valueModel property is required");
+        Assert.notNull(document, "The document property is required");
         this.valueModel = valueModel;
         this.delegate = document;
         document.addDocumentListener(this);

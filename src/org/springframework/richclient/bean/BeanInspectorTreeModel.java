@@ -29,7 +29,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.richclient.treetable.AbstractTreeTableModel;
 import org.springframework.richclient.treetable.TreeTableModel;
 import org.springframework.richclient.util.ClassUtils;
-import org.springframework.util.comparator.BeanPropertyComparator;
+import org.springframework.util.comparator.PropertyComparator;
 import org.springframework.util.comparator.BooleanComparator;
 import org.springframework.util.comparator.CompoundComparator;
 
@@ -68,9 +68,9 @@ public class BeanInspectorTreeModel extends AbstractTreeTableModel {
     public static class BeanFeatureNode {
         public static final CompoundComparator TYPE_THEN_NAME_COMPARATOR = new CompoundComparator();
         static {
-            TYPE_THEN_NAME_COMPARATOR.addComparator(new BeanPropertyComparator(
+            TYPE_THEN_NAME_COMPARATOR.addComparator(new PropertyComparator(
                     "simpleScalar", BooleanComparator.trueFirst()));
-            TYPE_THEN_NAME_COMPARATOR.addComparator(new BeanPropertyComparator(
+            TYPE_THEN_NAME_COMPARATOR.addComparator(new PropertyComparator(
                     "name", String.CASE_INSENSITIVE_ORDER));
         }
 

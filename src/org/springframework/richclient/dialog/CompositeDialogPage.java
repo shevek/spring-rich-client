@@ -148,7 +148,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
 
     protected void createPageControls() {
         addPages();
-        Assert.hasElements(getPages());
+        Assert.notEmpty(getPages(), "Pages must have been added first");
         for (Iterator i = pages.iterator(); i.hasNext();) {
             DialogPage page = (DialogPage)i.next();
             page.addMessageListener(new MessageListener() {

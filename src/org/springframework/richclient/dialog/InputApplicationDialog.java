@@ -27,9 +27,9 @@ import org.springframework.richclient.forms.FormBuilder;
 import org.springframework.richclient.forms.JGoodiesFormBuilder;
 import org.springframework.richclient.forms.SimpleValidationResultsReporter;
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.rules.Closure;
-import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
+import org.springframework.util.closure.Closure;
+import org.springframework.util.closure.Constraint;
 
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -88,7 +88,7 @@ public class InputApplicationDialog extends ApplicationDialog {
     }
 
     public void setInputLabelMessage(String inputLabel) {
-        Assert.hasText(inputLabel);
+        Assert.hasText(inputLabel, "The input label is required");
         this.inputLabelMessage = inputLabel;
     }
 

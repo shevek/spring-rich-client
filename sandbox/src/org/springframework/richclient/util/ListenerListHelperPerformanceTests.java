@@ -21,8 +21,8 @@ import java.util.Iterator;
 
 import javax.swing.event.EventListenerList;
 
-import org.springframework.rules.Closure;
 import org.springframework.util.StopWatch;
+import org.springframework.util.closure.Closure;
 
 /**
  * Some benchmarking of ListenerListHelper

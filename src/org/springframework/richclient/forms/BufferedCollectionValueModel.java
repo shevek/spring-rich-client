@@ -36,9 +36,9 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
-import org.springframework.rules.closure.NoArgBlock;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.closure.support.NoArgBlock;
 
 /**
  * A <code>BufferedValueModel</code> that wraps a value model containing a

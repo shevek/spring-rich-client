@@ -25,8 +25,8 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author oliverh
@@ -34,13 +34,13 @@ import org.springframework.util.Assert;
 public abstract class AbstractFormBuilder {
 
     private final SwingFormModel formModel;
-    
+
     private ComponentFactory componentFactory;
 
     protected AbstractFormBuilder(SwingFormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
-        
+
     }
 
     protected ComponentFactory getComponentFactory() {

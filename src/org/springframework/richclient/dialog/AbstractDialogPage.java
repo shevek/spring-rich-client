@@ -126,7 +126,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     }
 
     protected void setId(String pageId, boolean autoConfigure) {
-        Assert.hasText(pageId);
+        Assert.hasText(pageId, "pageId is required");
         String oldValue = this.pageId;
         this.pageId = pageId;
         firePropertyChange("id", oldValue, pageId);

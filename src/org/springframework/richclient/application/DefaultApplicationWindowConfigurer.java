@@ -20,7 +20,7 @@ import java.awt.Image;
 
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.util.Assert;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald
@@ -43,7 +43,7 @@ public class DefaultApplicationWindowConfigurer implements
     private ApplicationWindow window;
 
     public DefaultApplicationWindowConfigurer(ApplicationWindow window) {
-        Assert.notNull(window);
+        Assert.notNull(window, "Application window is required");
         this.window = window;
     }
 
@@ -76,7 +76,6 @@ public class DefaultApplicationWindowConfigurer implements
     }
 
     public void setTitle(String title) {
-        Assert.notNull(title);
         this.title = title;
         if (window.isControlCreated()) {
             window.getControl().setTitle(title);
@@ -118,7 +117,7 @@ public class DefaultApplicationWindowConfigurer implements
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("title", title).append("image",
+        return new ToStringCreator(this).append("title", title).append("image",
             image).append("showMenuBar", showMenuBar).append("showToolBar",
             showToolBar).append("showStatusBar", showStatusBar).append(
             "initialSize", initialSize).append("window", window).toString();

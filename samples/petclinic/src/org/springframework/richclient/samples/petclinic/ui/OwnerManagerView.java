@@ -51,10 +51,10 @@ import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.PopupMenuMouseListener;
-import org.springframework.rules.closure.Block;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
+import org.springframework.util.closure.support.Block;
 
 public class OwnerManagerView extends AbstractView implements
         ApplicationListener {
@@ -74,7 +74,7 @@ public class OwnerManagerView extends AbstractView implements
     private PropertiesCommandExecutor propertiesCommand = new PropertiesCommandExecutor();
 
     public void setClinic(Clinic clinic) {
-        Assert.notNull(clinic);
+        Assert.notNull(clinic, "The clinic property is required");
         this.clinic = clinic;
     }
 

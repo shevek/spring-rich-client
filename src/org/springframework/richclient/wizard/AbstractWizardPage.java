@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.dialog.AbstractDialogPage;
-import org.springframework.util.ToStringBuilder;
+import org.springframework.util.ToStringCreator;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements
         WizardPage {
@@ -157,6 +157,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements
     }
 
     public String toString() {
-        return new ToStringBuilder(this).appendProperties().toString();
+        return new ToStringCreator(this).appendProperties().toString();
     }
 }

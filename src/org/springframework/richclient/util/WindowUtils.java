@@ -20,8 +20,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 
-import org.springframework.util.Assert;
-
 /**
  * Utility functions for manipulating the display of windows.
  * 
@@ -101,8 +99,6 @@ public class WindowUtils {
      */
     public static final Dimension getDimensionFromPercent(int percentWidth,
             int percentHeight) {
-        Assert.isInRange(percentWidth, 1, 100);
-        Assert.isInRange(percentHeight, 1, 100);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         return calcDimensionFromPercent(screenSize, percentWidth, percentHeight);
     }

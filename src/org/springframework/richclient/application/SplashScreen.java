@@ -70,7 +70,7 @@ public class SplashScreen {
     }
 
     public void setImageResourcePath(String path) {
-        Assert.hasText(path);
+        Assert.hasText(path, "The splash screen image resource path is required");
         this.imageResourcePath = path;
     }
 

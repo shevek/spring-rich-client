@@ -95,7 +95,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
             it.remove();
             fireConstraintSatisfied(exp);
         }
-        Assert.isTrue(getHasErrors() == false);
+        Assert.state(getHasErrors() == false, "There should be no errors after a clear");
         if (hadErrorsBefore) {
             firePropertyChange(HAS_ERRORS_PROPERTY, true, false);
         }

@@ -19,7 +19,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import org.springframework.richclient.core.UIConstants;
-import org.springframework.util.Assert;
 
 /**
  * Utility functions to assist using the horridily complex Grid bag layout.
@@ -30,23 +29,27 @@ public class GridBagCellConstraints {
 
     public static Insets RIGHT_INSETS = new Insets(0, 0, 0,
             UIConstants.ONE_SPACE);
+
     public static Insets LEFT_INSETS = new Insets(0, UIConstants.ONE_SPACE, 0,
             0);
+
     public static Insets TOP_INSETS = new Insets(UIConstants.ONE_SPACE, 0, 0, 0);
+
     public static Insets BOTTOM_INSETS = new Insets(0, 0,
             UIConstants.ONE_SPACE, 0);
+
     public static Insets TITLE_LABEL_INSETS = new Insets(0, 0,
             UIConstants.ONE_SPACE, UIConstants.ONE_SPACE);
+
     public static Insets RIGHT_INSETS_TWO_SPACES = new Insets(0, 0, 0,
             UIConstants.ONE_SPACE);
+
     public static Insets EVEN_INSETS = new Insets(UIConstants.ONE_SPACE,
             UIConstants.ONE_SPACE, UIConstants.ONE_SPACE, UIConstants.ONE_SPACE);
 
     public GridBagConstraints xy(int x, int y) {
         int low = 0;
         int high = 10;
-        Assert.isInRange(x, low, high);
-        Assert.isInRange(y, low, high);
         GridBagConstraints result = new GridBagConstraints();
         result.gridx = x;
         result.gridy = y;
@@ -56,8 +59,6 @@ public class GridBagCellConstraints {
     public GridBagConstraints xywh(int x, int y, int width, int height) {
         int low = 0;
         int high = 10;
-        Assert.isInRange(width, low, high);
-        Assert.isInRange(height, low, high);
         GridBagConstraints result = xy(x, y);
         result.gridheight = height;
         result.gridwidth = width;
@@ -75,30 +76,25 @@ public class GridBagCellConstraints {
             result.insets = insets;
         }
         switch (result.fill) {
-            case GridBagConstraints.NONE:
-                {
-                }
-                break;
-            case GridBagConstraints.BOTH:
-                {
-                    result.weightx = result.weighty = 1.0;
-                }
-                break;
-            case GridBagConstraints.VERTICAL:
-                {
-                    result.weighty = 1.0;
-                }
-                break;
-            case GridBagConstraints.HORIZONTAL:
-                {
-                    result.weightx = 1.0;
-                }
-                break;
-            default:
-                {
-                    result.fill = GridBagConstraints.NONE;
-                }
-                break;
+        case GridBagConstraints.NONE: {
+        }
+            break;
+        case GridBagConstraints.BOTH: {
+            result.weightx = result.weighty = 1.0;
+        }
+            break;
+        case GridBagConstraints.VERTICAL: {
+            result.weighty = 1.0;
+        }
+            break;
+        case GridBagConstraints.HORIZONTAL: {
+            result.weightx = 1.0;
+        }
+            break;
+        default: {
+            result.fill = GridBagConstraints.NONE;
+        }
+            break;
         }
         return result;
     }

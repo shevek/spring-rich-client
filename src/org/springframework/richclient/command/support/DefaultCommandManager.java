@@ -26,8 +26,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
-import org.springframework.richclient.command.ActionCommandInterceptor;
 import org.springframework.richclient.command.ActionCommandExecutor;
+import org.springframework.richclient.command.ActionCommandInterceptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandGroupFactoryBean;
 import org.springframework.richclient.command.CommandManager;
@@ -80,12 +80,16 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
     }
 
     public void setGlobalCommandIds(String[] globalCommandIds) {
-        Assert.hasElements(globalCommandIds);
-        this.globalCommands = new ArrayList(globalCommandIds.length);
-        for (int i = 0; i < globalCommandIds.length; i++) {
-            ActionCommand globalCommand = createTargetableActionCommand(
-                    globalCommandIds[i], null);
-            globalCommands.add(globalCommand);
+        if (globalCommandIds.length == 0) {
+            globalCommands = Collections.EMPTY_LIST;
+        }
+        else {
+            this.globalCommands = new ArrayList(globalCommandIds.length);
+            for (int i = 0; i < globalCommandIds.length; i++) {
+                ActionCommand globalCommand = createTargetableActionCommand(
+                        globalCommandIds[i], null);
+                globalCommands.add(globalCommand);
+            }
         }
     }
 
@@ -206,8 +210,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
 
     public void setTargetableActionCommandExecutor(String commandId,
             ActionCommandExecutor delegate) {
-        commandRegistry.setTargetableActionCommandExecutor(commandId,
-                delegate);
+        commandRegistry.setTargetableActionCommandExecutor(commandId, delegate);
     }
 
     public void addCommandRegistryListener(CommandRegistryListener l) {

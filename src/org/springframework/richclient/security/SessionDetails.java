@@ -12,13 +12,13 @@ import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.richclient.application.Application;
-import org.springframework.rules.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesProvider;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.factory.Constraints;
 import org.springframework.rules.support.DefaultRulesSource;
+import org.springframework.util.closure.Constraint;
 
 /**
  * JavaBean suitable for use with form model.

@@ -17,7 +17,7 @@ package org.springframework.richclient.list;
 
 import javax.swing.ComboBoxModel;
 
-import org.springframework.rules.Constraint;
+import org.springframework.util.closure.Constraint;
 
 /**
  * @author kdonald
