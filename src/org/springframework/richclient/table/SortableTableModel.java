@@ -23,7 +23,7 @@ import javax.swing.table.TableModel;
  * @author Keith Donald
  */
 public interface SortableTableModel extends TableModel {
-    public TableModel getModel();
+    public TableModel getFilteredModel();
 
     public void setComparator(int columnIndex, Comparator comparator);
 

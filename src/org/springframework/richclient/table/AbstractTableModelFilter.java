@@ -35,7 +35,7 @@ public class AbstractTableModelFilter extends AbstractTableModel implements
         this.model.addTableModelListener(this);
     }
 
-    public TableModel getModel() {
+    public TableModel getFilteredModel() {
         return model;
     }
 
