@@ -95,8 +95,8 @@ public class TargetableActionCommand extends ActionCommand {
     }
 
     protected void doExecuteCommand() {
-        if (commandDelegate instanceof ParameterizedActionCommandExecutor) {
-            ((ParameterizedActionCommandExecutor)commandDelegate)
+        if (commandDelegate instanceof ParameterizableActionCommandExecutor) {
+            ((ParameterizableActionCommandExecutor)commandDelegate)
                     .execute(getParameters());
         }
         else {

@@ -21,13 +21,13 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
-import org.springframework.richclient.command.ParameterizedActionCommandExecutor;
+import org.springframework.richclient.command.ParameterizableActionCommandExecutor;
 
 /**
  * @author Keith Donald
  */
 public class AbstractCommandExecutor implements
-        ParameterizedActionCommandExecutor, GuardedActionCommandExecutor {
+        ParameterizableActionCommandExecutor, GuardedActionCommandExecutor {
 
     private ValueModel enabled = new ValueHolder(Boolean.FALSE);
 

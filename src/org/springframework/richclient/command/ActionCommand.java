@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 public abstract class ActionCommand extends AbstractCommand implements
-        ActionCommandExecutor, ParameterizedActionCommandExecutor {
+        ActionCommandExecutor, ParameterizableActionCommandExecutor {
     public static final String ACTION_COMMAND_PROPERTY = "actionCommand";
 
     public static final String ACTION_EVENT_PARAMETER_KEY = "actionEvent";
