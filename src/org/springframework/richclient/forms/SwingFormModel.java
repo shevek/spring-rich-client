@@ -517,6 +517,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     private static class BufferedListValueModel extends BufferedValueModel {
         private ListListModel items;
+        
+        private boolean updating;
 
         public BufferedListValueModel(ValueModel wrappedModel) {
             super(wrappedModel);
@@ -547,7 +549,12 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                 });
             }
             else {
-                this.items.clear();
+                try {   
+                    updating = true;
+                    this.items.clear();
+                } finally {
+                    updating = false;
+                }
             }
             List list = (List)getWrappedModel().get();
             if (list != null) {
@@ -558,6 +565,12 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
         protected void onWrappedValueChanged() {
             super.set(internalGet());
+        }
+        
+        protected void fireValueChanged() {
+            if (! updating) {
+                super.fireValueChanged();
+            }
         }
     }
 
