@@ -181,8 +181,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     protected JComponent createToolBar() {
         JToolBar toolBar = toolBarCommandGroup.createToolBar();
-        toolBarCommandGroup.setVisible(
-                getWindowConfigurer().getShowToolBar());
+        toolBarCommandGroup.setVisible(getWindowConfigurer().getShowToolBar());
         return toolBar;
     }
 

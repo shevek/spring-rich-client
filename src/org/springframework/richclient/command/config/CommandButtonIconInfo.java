@@ -53,12 +53,8 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
         this.rolloverIcon = rolloverIcon;
     }
 
-    public CommandButtonIconInfo(
-        Icon icon,
-        Icon selectedIcon,
-        Icon rolloverIcon,
-        Icon disabledIcon,
-        Icon pressedIcon) {
+    public CommandButtonIconInfo(Icon icon, Icon selectedIcon,
+            Icon rolloverIcon, Icon disabledIcon, Icon pressedIcon) {
         this.icon = icon;
         this.selectedIcon = selectedIcon;
         this.rolloverIcon = rolloverIcon;
@@ -76,18 +72,17 @@ public class CommandButtonIconInfo implements ButtonConfigurer {
             button.setPressedIcon(null);
             button.setRolloverIcon(null);
         }
-        else
-            if (button instanceof JMenuItem) {
-                button.setIcon(icon);
-                button.setDisabledIcon(disabledIcon);
-            }
-            else {
-                button.setIcon(icon);
-                button.setSelectedIcon(selectedIcon);
-                button.setDisabledIcon(disabledIcon);
-                button.setPressedIcon(pressedIcon);
-                button.setRolloverIcon(rolloverIcon);
-            }
+        else if (button instanceof JMenuItem) {
+            button.setIcon(icon);
+            button.setDisabledIcon(disabledIcon);
+        }
+        else {
+            button.setIcon(icon);
+            button.setSelectedIcon(selectedIcon);
+            button.setDisabledIcon(disabledIcon);
+            button.setPressedIcon(pressedIcon);
+            button.setRolloverIcon(rolloverIcon);
+        }
         return button;
     }
 

@@ -20,5 +20,6 @@ import org.springframework.util.closure.Constraint;
 
 public interface ValidationResultsReporter {
     public void valid(Constraint constraint);
+
     public void invalid(Constraint constraint, ValidationResults results);
 }

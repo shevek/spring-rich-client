@@ -102,7 +102,8 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
     protected CommandGroup createCommandGroup() {
         CommandGroup group;
         if (isExclusive()) {
-            ExclusiveCommandGroup g = new ExclusiveCommandGroup(groupId, commandRegistry);
+            ExclusiveCommandGroup g = new ExclusiveCommandGroup(groupId,
+                    commandRegistry);
             g.setAllowsEmptySelection(allowsEmptySelection);
             group = g;
         }

@@ -62,7 +62,8 @@ public class ApplicationLauncher {
      *            the classpath application context paths
      */
     public ApplicationLauncher(String[] contextPaths) {
-        Assert.notEmpty(contextPaths, "One or more context paths must be provided");
+        Assert.notEmpty(contextPaths,
+                "One or more context paths must be provided");
         launch(null, contextPaths);
     }
 
@@ -91,7 +92,8 @@ public class ApplicationLauncher {
      *            the classpath application context paths
      */
     public ApplicationLauncher(String startupContext, String[] contextPaths) {
-        Assert.notEmpty(contextPaths, "One or more context paths must be provided");
+        Assert.notEmpty(contextPaths,
+                "One or more context paths must be provided");
         launch(startupContext, contextPaths);
     }
 
@@ -153,7 +155,8 @@ public class ApplicationLauncher {
     }
 
     private void launch() {
-        Assert.state(applicationContext != null, "The application context is required");
+        Assert.state(applicationContext != null,
+                "The application context is required");
 
         if (splashScreen == null) {
             displaySplashScreen(applicationContext);

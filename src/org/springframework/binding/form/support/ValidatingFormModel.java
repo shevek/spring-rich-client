@@ -95,7 +95,8 @@ public class ValidatingFormModel extends DefaultFormModel implements
             it.remove();
             fireConstraintSatisfied(exp);
         }
-        Assert.state(getHasErrors() == false, "There should be no errors after a clear");
+        Assert.state(getHasErrors() == false,
+                "There should be no errors after a clear");
         if (hadErrorsBefore) {
             firePropertyChange(HAS_ERRORS_PROPERTY, true, false);
         }
@@ -180,8 +181,7 @@ public class ValidatingFormModel extends DefaultFormModel implements
         }
     }
 
-    protected PropertyConstraint getValidationRule(
-            String domainObjectProperty) {
+    protected PropertyConstraint getValidationRule(String domainObjectProperty) {
         PropertyConstraint constraint = null;
         //@TODO if form object changes, rules aren't updated...introduces
         // subtle bugs...

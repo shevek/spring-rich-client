@@ -51,37 +51,39 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
         super();
         this.selectedItemHolder = selectedItemHolder;
         if (selectedItemHolder != null) {
-            selectedItemHolder.addValueChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
-                    if (logger.isDebugEnabled()) {
-                        logger
-                                .debug("Notifying combo box view selected value changed; new value is '"
-                                        + selectedItemHolder.getValue() + "'");
-                    }
-                    //Thread.dumpStack();
-                    if (selectedItemHolder.getValue() == null) {
-                        if (size() > 0 && get(0) != null) {
+            selectedItemHolder
+                    .addValueChangeListener(new ValueChangeListener() {
+                        public void valueChanged() {
                             if (logger.isDebugEnabled()) {
                                 logger
-                                        .debug("Backing value model is null; Pre-setting initial value to first combo-box element "
-                                                + get(0));
+                                        .debug("Notifying combo box view selected value changed; new value is '"
+                                                + selectedItemHolder.getValue()
+                                                + "'");
                             }
-                            setSelectedItem(get(0));
+                            //Thread.dumpStack();
+                            if (selectedItemHolder.getValue() == null) {
+                                if (size() > 0 && get(0) != null) {
+                                    if (logger.isDebugEnabled()) {
+                                        logger
+                                                .debug("Backing value model is null; Pre-setting initial value to first combo-box element "
+                                                        + get(0));
+                                    }
+                                    setSelectedItem(get(0));
+                                }
+                            }
+                            else {
+                                if (logger.isDebugEnabled()) {
+                                    logger
+                                            .debug("Firing contents change event; selected item may have changed");
+                                }
+                                fireContentsChanged(this, -1, -1);
+                                if (logger.isDebugEnabled()) {
+                                    logger
+                                            .debug("Fired contents change event!");
+                                }
+                            }
                         }
-                    }
-                    else {
-                        if (logger.isDebugEnabled()) {
-                            logger
-                                    .debug("Firing contents change event; selected item may have changed");
-                        }
-                        fireContentsChanged(this, -1, -1);
-                        if (logger.isDebugEnabled()) {
-                            logger
-                                    .debug("Fired contents change event!");
-                        }
-                    }
-                }
-            });
+                    });
         }
         setSelectableItemsHolder(selectableItemsHolder);
     }

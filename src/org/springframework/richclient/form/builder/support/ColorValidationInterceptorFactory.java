@@ -15,9 +15,9 @@
  */
 package org.springframework.richclient.form.builder.support;
 
-import java.awt.*;
+import java.awt.Color;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.FormModel;
@@ -27,15 +27,15 @@ import org.springframework.richclient.form.builder.FormComponentInterceptorFacto
 import org.springframework.util.Assert;
 
 /**
- * Adds an "overlay" to a component that is triggered by a validation event
- * for JTextComponents.  When an error is triggered, the background color
- * of the component is changed to the color set in
- * {@link #setErrorColor(Color)}.  (The default color is a very light red.)
- *
+ * Adds an "overlay" to a component that is triggered by a validation event for
+ * JTextComponents. When an error is triggered, the background color of the
+ * component is changed to the color set in {@link #setErrorColor(Color)}. (The
+ * default color is a very light red.)
+ * 
  * @author oliverh
  */
 public class ColorValidationInterceptorFactory implements
-    FormComponentInterceptorFactory {
+        FormComponentInterceptorFactory {
 
     private static final Color DEFAULT_ERROR_COLOR = new Color(255, 240, 240);
 
@@ -53,15 +53,13 @@ public class ColorValidationInterceptorFactory implements
         return new ColorValidationInterceptor(formModel);
     }
 
-    private class ColorValidationInterceptor extends
-        ValidationInterceptor {
+    private class ColorValidationInterceptor extends ValidationInterceptor {
 
         public ColorValidationInterceptor(FormModel formModel) {
             super(formModel);
         }
 
-        public void processComponent(String propertyName,
-                                           JComponent component) {
+        public void processComponent(String propertyName, JComponent component) {
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 ColorChanger colorChanger = new ColorChanger(component);

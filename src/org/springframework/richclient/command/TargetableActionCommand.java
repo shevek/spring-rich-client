@@ -34,7 +34,8 @@ public class TargetableActionCommand extends ActionCommand {
         this(commandId, null);
     }
 
-    public TargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
+    public TargetableActionCommand(String commandId,
+            ActionCommandExecutor delegate) {
         super(commandId);
         setEnabled(false);
         setCommandDelegate(delegate);

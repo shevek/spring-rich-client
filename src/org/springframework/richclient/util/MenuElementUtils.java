@@ -38,12 +38,8 @@ public class MenuElementUtils {
         for (int i = 0; i < elements.length; i++) {
             MenuElement element = elements[i];
             if (element instanceof JMenuItem
-                && (((JMenuItem)element).getIcon() != null)) {
-                return true;
-            }
-            if (element instanceof JPopupMenu) {
-                return hasIcons(element);
-            }
+                    && (((JMenuItem)element).getIcon() != null)) { return true; }
+            if (element instanceof JPopupMenu) { return hasIcons(element); }
         }
         return false;
     }
@@ -77,13 +73,12 @@ public class MenuElementUtils {
         }
     }
 
-    public static void showButtonPopupMenu(
-        AbstractButton button,
-        JPopupMenu popup) {
+    public static void showButtonPopupMenu(AbstractButton button,
+            JPopupMenu popup) {
         if (!popup.isVisible()) {
             Dimension size = button.getSize();
             popup.show(button, 0, size.height);
         }
     }
-    
+
 }

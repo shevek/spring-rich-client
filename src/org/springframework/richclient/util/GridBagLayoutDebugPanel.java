@@ -15,9 +15,12 @@
  */
 package org.springframework.richclient.util;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.Point;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * A useful class for debugging layout problems when using {@link GridBagLayout}.

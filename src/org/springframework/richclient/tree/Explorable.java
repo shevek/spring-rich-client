@@ -17,5 +17,6 @@ package org.springframework.richclient.tree;
 
 public interface Explorable {
     public void explore();
+
     public boolean isExplored();
 }

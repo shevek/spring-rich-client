@@ -40,7 +40,7 @@ import org.springframework.util.ObjectUtils;
 /**
  * Converts ValueModels to the <code>ToggleButtonModel</code> interface.
  * Useful to bind {@link javax.swing.JRadioButton}and
- * {@link javax.swing.JRadioButtonMenuItem} to a ValueModel.
+ * {@link javax.swing.JRadioButtonMenuItem}to a ValueModel.
  * <p>
  * 
  * This adapter holds a <em>choice</em> object that is used to determine the

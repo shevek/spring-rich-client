@@ -22,9 +22,9 @@ import org.springframework.richclient.factory.ControlFactory;
 
 /**
  * A view is a panel-like component displayed within an area on the page
- * associated with an application window.  There can be multiple views per page;
+ * associated with an application window. There can be multiple views per page;
  * a single view can only be displayed once on a single page.
- *  
+ * 
  * View instances encapsulate the creation of and access to the visual
  * presentation of the underlying control. A view's descriptor -- which is
  * effectively a singleton -- can be asked to instantiate new instances of a

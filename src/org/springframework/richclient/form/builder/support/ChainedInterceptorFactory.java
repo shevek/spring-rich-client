@@ -37,9 +37,9 @@ public class ChainedInterceptorFactory implements
 
     public ChainedInterceptorFactory() {
     }
-    
+
     public void setInterceptorFactories(List interceptorFactories) {
-        Assert.notNull(interceptorFactories); 
+        Assert.notNull(interceptorFactories);
         this.interceptorFactories = interceptorFactories;
     }
 
@@ -60,7 +60,7 @@ public class ChainedInterceptorFactory implements
         }
         return interceptors;
     }
-    
+
     private static class ChainedInterceptor implements FormComponentInterceptor {
         private List interceptors;
 
@@ -69,15 +69,17 @@ public class ChainedInterceptorFactory implements
         }
 
         public void processLabel(String propertyName, JComponent label) {
-            for (Iterator i=interceptors.iterator(); i.hasNext(); ) {
-                FormComponentInterceptor interceptor = ((FormComponentInterceptor) i.next());
+            for (Iterator i = interceptors.iterator(); i.hasNext();) {
+                FormComponentInterceptor interceptor = ((FormComponentInterceptor)i
+                        .next());
                 interceptor.processLabel(propertyName, label);
             }
         }
 
         public void processComponent(String propertyName, JComponent component) {
-            for (Iterator i=interceptors.iterator(); i.hasNext(); ) {
-                FormComponentInterceptor interceptor = ((FormComponentInterceptor) i.next());
+            for (Iterator i = interceptors.iterator(); i.hasNext();) {
+                FormComponentInterceptor interceptor = ((FormComponentInterceptor)i
+                        .next());
                 interceptor.processComponent(propertyName, component);
             }
         }

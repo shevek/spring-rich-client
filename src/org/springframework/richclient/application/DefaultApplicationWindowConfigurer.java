@@ -118,9 +118,9 @@ public class DefaultApplicationWindowConfigurer implements
 
     public String toString() {
         return new ToStringCreator(this).append("title", title).append("image",
-            image).append("showMenuBar", showMenuBar).append("showToolBar",
-            showToolBar).append("showStatusBar", showStatusBar).append(
-            "initialSize", initialSize).append("window", window).toString();
+                image).append("showMenuBar", showMenuBar).append("showToolBar",
+                showToolBar).append("showStatusBar", showStatusBar).append(
+                "initialSize", initialSize).append("window", window).toString();
     }
 
 }

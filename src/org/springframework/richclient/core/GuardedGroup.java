@@ -147,13 +147,14 @@ public class GuardedGroup implements Guarded {
     public static final GuardedGroup createGuardedGroup(Object[] components) {
         return doCreateGuardedGroup(components);
     }
-    
+
     public static final GuardedGroup createGuardedGroup(
             final JComponent[] components) {
         return doCreateGuardedGroup(components);
     };
 
-    public static final GuardedGroup createGuardedGroup(JComponent[][] componentArrays) {
+    public static final GuardedGroup createGuardedGroup(
+            JComponent[][] componentArrays) {
         return doCreateGuardedGroup(componentArrays);
     }
 

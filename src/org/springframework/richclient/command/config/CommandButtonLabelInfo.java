@@ -37,7 +37,7 @@ public class CommandButtonLabelInfo implements ButtonConfigurer {
     public CommandButtonLabelInfo(String text) {
         this(new LabelInfo(text), null);
     }
-    
+
     public CommandButtonLabelInfo(LabelInfo labelInfo, KeyStroke accelerator) {
         Assert.notNull(labelInfo);
         this.labelInfo = labelInfo;

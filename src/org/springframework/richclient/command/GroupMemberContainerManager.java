@@ -37,8 +37,9 @@ class GroupMemberContainerManager {
 
     private CommandButtonConfigurer configurer;
 
-    public GroupMemberContainerManager(GroupContainerPopulator containerPopulator,
-            Object factory, CommandButtonConfigurer configurer) {
+    public GroupMemberContainerManager(
+            GroupContainerPopulator containerPopulator, Object factory,
+            CommandButtonConfigurer configurer) {
         this.containerPopulator = containerPopulator;
         this.factory = factory;
         this.configurer = configurer;
@@ -47,14 +48,15 @@ class GroupMemberContainerManager {
     public void setVisible(boolean visible) {
         containerPopulator.getControl().setVisible(visible);
     }
-    
+
     public void rebuildControlsFor(Collection members) {
         if (logger.isDebugEnabled()) {
             logger
                     .debug("Rebuilding group member controls; members="
                             + members);
         }
-        Component[] components = containerPopulator.getControl().getComponents();
+        Component[] components = containerPopulator.getControl()
+                .getComponents();
         List previousButtons = new ArrayList(components.length);
         for (int i = 0; i < components.length; i++) {
             if (components[i] instanceof AbstractButton) {
@@ -64,7 +66,8 @@ class GroupMemberContainerManager {
         containerPopulator.getControl().removeAll();
         for (Iterator iterator = members.iterator(); iterator.hasNext();) {
             GroupMember member = (GroupMember)iterator.next();
-            member.fill(containerPopulator, factory, configurer, previousButtons);
+            member.fill(containerPopulator, factory, configurer,
+                    previousButtons);
         }
         containerPopulator.onPopulated();
         containerPopulator.getControl().revalidate();

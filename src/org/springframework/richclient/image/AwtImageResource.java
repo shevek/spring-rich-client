@@ -64,31 +64,27 @@ public class AwtImageResource extends AbstractResource implements ImageObserver 
     public Resource createRelative(String relativePath) throws IOException {
         return wrappedResource.createRelative(relativePath);
     }
-    
+
     public boolean exists() {
         return wrappedResource.exists();
     }
-    
-    
+
     public boolean isOpen() {
         return wrappedResource.isOpen();
     }
-    
-    
+
     public URL getURL() throws IOException {
         return wrappedResource.getURL();
     }
-    
+
     public File getFile() throws IOException {
         return wrappedResource.getFile();
     }
-    
+
     public String getFilename() throws IllegalStateException {
         return wrappedResource.getFilename();
     }
 
-
-    
     public InputStream getInputStream() throws IOException {
         return wrappedResource.getInputStream();
     }
@@ -157,7 +153,7 @@ public class AwtImageResource extends AbstractResource implements ImageObserver 
         }
         return true;
     }
-    
+
     public boolean equals(Object o) {
         if (!(o instanceof AwtImageResource)) { return false; }
         AwtImageResource r = (AwtImageResource)o;

@@ -133,19 +133,22 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher
         if (faceDescriptor != null) { return getFaceDescriptor().getText(); }
         return CommandFaceDescriptor.EMPTY_LABEL.getText();
     }
-    
+
     public int getMnemonic() {
-        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getMnemonic(); }
+        if (faceDescriptor != null) { return getFaceDescriptor()
+                .getButtonLabelInfo().getMnemonic(); }
         return CommandFaceDescriptor.EMPTY_LABEL.getMnemonic();
     }
 
     public int getMnemonicIndex() {
-        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getMnemonicIndex(); }
+        if (faceDescriptor != null) { return getFaceDescriptor()
+                .getButtonLabelInfo().getMnemonicIndex(); }
         return CommandFaceDescriptor.EMPTY_LABEL.getMnemonicIndex();
     }
 
     public KeyStroke getAccelerator() {
-        if (faceDescriptor != null) { return getFaceDescriptor().getButtonLabelInfo().getAccelerator(); }
+        if (faceDescriptor != null) { return getFaceDescriptor()
+                .getButtonLabelInfo().getAccelerator(); }
         return CommandFaceDescriptor.EMPTY_LABEL.getAccelerator();
     }
 

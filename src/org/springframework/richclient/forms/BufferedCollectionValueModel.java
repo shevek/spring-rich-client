@@ -253,7 +253,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                         if (wrappedCollection instanceof Object[]) {
                             Object[] wrappedArray = (Object[])wrappedCollection;
                             buffer = Arrays.asList(wrappedArray);
-                        } else {
+                        }
+                        else {
                             buffer = (Collection)wrappedCollection;
                         }
                         listListModel.replaceWith(buffer);

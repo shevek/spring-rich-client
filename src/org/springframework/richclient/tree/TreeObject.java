@@ -21,14 +21,16 @@ import org.springframework.richclient.core.ManagedElement;
 
 /**
  * A interface to be implemented by any object participating in a hierarchical
- * tree structure.  For example, business objects that were linked via a graph
- * of references may implement this interface to allow for traversing the graph
- * by a client such as a user interface application.
+ * tree structure. For example, business objects that were linked via a graph of
+ * references may implement this interface to allow for traversing the graph by
+ * a client such as a user interface application.
  * 
- * @author  Keith Donald
+ * @author Keith Donald
  */
 public interface TreeObject extends ManagedElement {
     public TreeObject getParent();
+
     public Collection getChildren();
+
     public int getChildCount();
 }

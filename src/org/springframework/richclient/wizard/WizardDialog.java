@@ -25,8 +25,8 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.dialog.DialogPage;
-import org.springframework.richclient.dialog.MessageListener;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaChangeListener;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
@@ -38,7 +38,7 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public class WizardDialog extends TitledApplicationDialog implements
-        WizardContainer, MessageListener, PropertyChangeListener {
+        WizardContainer, MessageAreaChangeListener, PropertyChangeListener {
     private static final String NEXT_MESSAGE_CODE = "wizard.next";
 
     private static final String BACK_MESSAGE_CODE = "wizard.back";
@@ -146,13 +146,13 @@ public class WizardDialog extends TitledApplicationDialog implements
     public void showPage(WizardPage page) {
         if (currentPage == page) { return; }
         if (currentPage != null) {
-            currentPage.removeMessageListener(this);
+            currentPage.removeMessageAreaChangeListener(this);
             currentPage.removePropertyChangeListener(this);
         }
         page.onAboutToShow();
         this.currentPage = page;
         update();
-        this.currentPage.addMessageListener(this);
+        this.currentPage.addMessageAreaChangeListener(this);
         this.currentPage.addPropertyChangeListener(this);
         setContentPane(page.getControl());
         this.currentPage.setVisible(true);
@@ -245,7 +245,7 @@ public class WizardDialog extends TitledApplicationDialog implements
         return currentPage.canFlipToNextPage();
     }
 
-    public void messageUpdated(MessageReceiver source) {
+    public void messageUpdated(MessageAreaModel source) {
         updateMessage();
     }
 

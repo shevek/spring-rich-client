@@ -24,7 +24,8 @@ import java.util.Map;
  * 
  * @author Keith Donald
  */
-public interface ParameterizableActionCommandExecutor extends ActionCommandExecutor {
+public interface ParameterizableActionCommandExecutor extends
+        ActionCommandExecutor {
 
     /**
      * Invoke the specified command, passing in the set of arbitrary execution

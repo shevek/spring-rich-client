@@ -17,5 +17,6 @@ package org.springframework.richclient.application;
 
 public interface ViewRegistry {
     public ViewDescriptor[] getViewDescriptors();
+
     public ViewDescriptor getViewDescriptor(String viewName);
 }

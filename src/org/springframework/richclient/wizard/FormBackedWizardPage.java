@@ -20,8 +20,8 @@ import javax.swing.JComponent;
 import org.springframework.richclient.forms.Form;
 
 /**
- * An implementation of WizardPage that delegates to a FormPage for its
- * control, pageComplete status and messages.
+ * An implementation of WizardPage that delegates to a FormPage for its control,
+ * pageComplete status and messages.
  * 
  * @author oliverh
  */
@@ -54,14 +54,13 @@ public class FormBackedWizardPage extends AbstractWizardPage {
      *            the names form page which will provide the control for this
      *            wizard page.
      */
-    public FormBackedWizardPage(String parentPageId,
-            Form backingFormPage) {
+    public FormBackedWizardPage(String parentPageId, Form backingFormPage) {
         super(parentPageId
                 + (backingFormPage.getId() != null ? "."
                         + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
-    
+
     protected Form getBackingFormPage() {
         return backingFormPage;
     }

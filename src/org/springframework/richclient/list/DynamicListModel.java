@@ -27,7 +27,8 @@ import org.springframework.binding.value.ValueModel;
  * 
  * @author Keith Donald
  */
-public class DynamicListModel extends ListListModel implements ValueChangeListener {
+public class DynamicListModel extends ListListModel implements
+        ValueChangeListener {
     private static final Log logger = LogFactory.getLog(DynamicListModel.class);
 
     private ValueModel listItemsValueModel;

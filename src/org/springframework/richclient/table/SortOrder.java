@@ -20,25 +20,28 @@ package org.springframework.richclient.table;
  */
 public class SortOrder {
     public static final SortOrder ASCENDING = new SortOrder(0);
+
     public static final SortOrder DESCENDING = new SortOrder(1);
+
     private int value;
-    
+
     private SortOrder(int value) {
         this.value = value;
     }
-    
+
     public int getValue() {
         return value;
     }
-    
+
     public SortOrder flip() {
         if (this == SortOrder.ASCENDING) {
             return SortOrder.DESCENDING;
-        } else {
+        }
+        else {
             return SortOrder.ASCENDING;
         }
     }
-    
+
     public String toString() {
         return new StringBuffer().append(value).toString();
     }

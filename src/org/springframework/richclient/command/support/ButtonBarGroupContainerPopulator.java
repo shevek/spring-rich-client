@@ -28,7 +28,8 @@ import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.Size;
 
-public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopulator {
+public class ButtonBarGroupContainerPopulator extends
+        SimpleGroupContainerPopulator {
     private Size minimumSize;
 
     private ButtonBarBuilder builder;

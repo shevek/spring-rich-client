@@ -44,11 +44,10 @@ public abstract class ApplicationWindowAwareCommand extends ActionCommand
     protected ApplicationWindow getApplicationWindow() {
         return window;
     }
-    
+
     protected JFrame getParentWindowControl() {
-        if (window == null) {
-            return Application.instance().getActiveWindow().getControl();
-        }
+        if (window == null) { return Application.instance().getActiveWindow()
+                .getControl(); }
         return window.getControl();
     }
 }

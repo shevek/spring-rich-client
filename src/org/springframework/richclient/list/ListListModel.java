@@ -258,9 +258,11 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     }
 
     /**
-     * Replace this list model's items with the contents of the provided collection.
+     * Replace this list model's items with the contents of the provided
+     * collection.
      * 
-     * @param collection The collection to replace with
+     * @param collection
+     *            The collection to replace with
      */
     public boolean replaceWith(Collection collection) {
         boolean changed = false;

@@ -64,7 +64,7 @@ import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesAccessorSupport;
 import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ComboBoxListModel;
@@ -84,9 +84,7 @@ import org.springframework.util.comparator.PropertyComparator;
  * @author Keith Donald
  */
 public class SwingFormModel extends ApplicationServicesAccessorSupport
-        implements
-            FormModel,
-            PropertyChangePublisher {
+        implements FormModel, PropertyChangePublisher {
 
     private static final String LABEL_MESSAGE_KEY_PREFIX = "label";
 
@@ -97,7 +95,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     private ConfigurableFormModel formModel;
 
     private ValueCommitPolicy valueCommitPolicy = ValueCommitPolicy.AS_YOU_TYPE;
-    
+
     private FormComponentInterceptor interceptor;
 
     public SwingFormModel(ConfigurableFormModel formModel) {
@@ -175,16 +173,16 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public void setValueCommitPolicy(ValueCommitPolicy policy) {
         Assert.notNull(policy);
         this.valueCommitPolicy = policy;
     }
-        
+
     public FormComponentInterceptor getInterceptor() {
         return interceptor;
     }
-    
+
     public void setInterceptor(FormComponentInterceptor interceptor) {
         this.interceptor = interceptor;
     }
@@ -387,7 +385,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         JComponent editorControl = createBoundControl(formPropertyPath);
         JLabel label = createLabel(formPropertyPath);
         label.setLabelFor(editorControl);
-        return new JComponent[]{label, editorControl};
+        return new JComponent[] { label, editorControl };
     }
 
     /**
@@ -692,8 +690,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JComboBox createBoundComboBox(ValueModel selectedItemHolder,
             ValueModel selectableItemsHolder, String renderedProperty) {
-        Comparator comparator = (renderedProperty != null
-                ? new PropertyComparator(renderedProperty)
+        Comparator comparator = (renderedProperty != null ? new PropertyComparator(
+                renderedProperty)
                 : null);
         JComboBox comboBox = bind(createNewComboBox(), selectedItemHolder,
                 selectableItemsHolder, comparator);
@@ -817,8 +815,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
 
     public JList createBoundList(String selectionFormProperty,
             ValueModel selectableItemsHolder, String renderedProperty) {
-        Comparator itemsComparator = (renderedProperty != null
-                ? new PropertyComparator(renderedProperty)
+        Comparator itemsComparator = (renderedProperty != null ? new PropertyComparator(
+                renderedProperty)
                 : null);
         JList list = bind(createNewList(), selectionFormProperty,
                 selectableItemsHolder, itemsComparator);
@@ -859,9 +857,8 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return list;
     }
 
-    private static class ListSelectedValueMediator
-            implements
-                ListSelectionListener {
+    private static class ListSelectedValueMediator implements
+            ListSelectionListener {
 
         private JList list;
 
@@ -914,30 +911,29 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         return (JTextArea)bind(getComponentFactory().createTextArea(rows,
                 columns), formProperty, valueCommitPolicy);
     }
-    
+
     public void interceptComponent(final String propertyName,
-                                          final JComponent component) {
+            final JComponent component) {
         if (getInterceptor() != null) {
             getInterceptor().processComponent(propertyName, component);
-        }   
+        }
     }
 
-    public void interceptLabel(final String propertyName,
-                                      final JComponent label) {
+    public void interceptLabel(final String propertyName, final JComponent label) {
         if (getInterceptor() != null) {
             getInterceptor().processLabel(propertyName, label);
         }
     }
 
     public ValidationListener createSingleLineResultsReporter(
-            Guarded guardedComponent, MessageReceiver messageAreaPane) {
+            Guarded guardedComponent, MessageAreaModel messageAreaPane) {
         return createSingleLineResultsReporter(this, guardedComponent,
                 messageAreaPane);
     }
 
     public static ValidationListener createSingleLineResultsReporter(
             FormModel formModel, Guarded guardedComponent,
-            MessageReceiver messageAreaPane) {
+            MessageAreaModel messageAreaPane) {
         return new SimpleValidationResultsReporter(formModel, guardedComponent,
                 messageAreaPane);
     }

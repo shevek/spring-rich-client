@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationEvent;
  * @author Ben Alex
  */
 public abstract class ClientSecurityEvent extends ApplicationEvent {
-	public ClientSecurityEvent(Object source) {
-		super(source);
-	}
+    public ClientSecurityEvent(Object source) {
+        super(source);
+    }
 }

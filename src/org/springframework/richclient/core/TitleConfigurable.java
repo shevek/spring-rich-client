@@ -14,7 +14,7 @@ package org.springframework.richclient.core;
  * @author Keith Donald
  */
 public interface TitleConfigurable {
-    
+
     /**
      * Sets the title.
      * 

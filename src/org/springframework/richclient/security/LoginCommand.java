@@ -70,7 +70,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
 
     protected void doExecuteCommand() {
         CompositeDialogPage tabbedPage = new TabbedDialogPage("loginForm");
-        
+
         final LoginForm loginForm = new LoginForm(authenticationManager);
         tabbedPage.addForm(loginForm);
 
@@ -79,7 +79,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 loginForm.commit();
                 return true;
             }
-            
+
             protected ActionCommand getCallingCommand() {
                 return LoginCommand.this;
             }

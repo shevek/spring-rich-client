@@ -25,23 +25,24 @@ import javax.swing.text.DefaultFormatter;
  */
 public class PropertyEditorFormatter extends DefaultFormatter {
     private PropertyEditor editor;
-    
+
     public PropertyEditorFormatter(PropertyEditor editor) {
         this.editor = editor;
     }
-    
+
     /**
      * @see javax.swing.JFormattedTextField.AbstractFormatter#stringToValue(java.lang.String)
      */
     public Object stringToValue(String string) throws ParseException {
         try {
             editor.setAsText(string);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return new ParseException(e.getMessage(), 0);
         }
         return editor.getValue();
     }
-    
+
     /**
      * @see javax.swing.JFormattedTextField.AbstractFormatter#valueToString(java.lang.Object)
      */

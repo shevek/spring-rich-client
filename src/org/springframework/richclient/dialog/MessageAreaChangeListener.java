@@ -18,19 +18,18 @@ package org.springframework.richclient.dialog;
 import java.util.EventListener;
 
 /**
- * The listener interface for reciving notification of changes to 
- * the messages of a MessageReceiver.
+ * The listener interface for reciving notification of changes to the messages
+ * of a MessageReceiver.
  * 
  * @author oliverh
  */
-public interface MessageListener 
-extends EventListener {
+public interface MessageAreaChangeListener extends EventListener {
 
     /**
      * Invoked when the messages have been updated.
      * 
      * @param source
-     *          the MessageReceiver that has been updated
+     *            the MessageReceiver that has been updated
      */
-    void messageUpdated(MessageReceiver source);
+    public void messageUpdated(MessageAreaModel source);
 }

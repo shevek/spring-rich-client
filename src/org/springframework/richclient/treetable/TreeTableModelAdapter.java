@@ -10,13 +10,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreePath;
 
 /**
- * This is a wrapper class takes a TreeTableModel and implements 
- * the table model interface. The implementation is trivial, with 
- * all of the event dispatching support provided by the superclass: 
- * the AbstractTableModel. 
+ * This is a wrapper class takes a TreeTableModel and implements the table model
+ * interface. The implementation is trivial, with all of the event dispatching
+ * support provided by the superclass: the AbstractTableModel.
  */
 public class TreeTableModelAdapter extends AbstractTableModel {
     private JTree tree;
+
     private TreeTableModel treeTableModel;
 
     public TreeTableModelAdapter(TreeTableModel treeTableModel, JTree tree) {
@@ -25,10 +25,11 @@ public class TreeTableModelAdapter extends AbstractTableModel {
 
         tree.addTreeExpansionListener(new TreeExpansionListener() {
             // Don't use fireTableRowsInserted() here; the selection model
-            // would get updated twice. 
+            // would get updated twice.
             public void treeExpanded(TreeExpansionEvent event) {
                 fireTableDataChanged();
             }
+
             public void treeCollapsed(TreeExpansionEvent event) {
                 fireTableDataChanged();
             }
@@ -57,7 +58,7 @@ public class TreeTableModelAdapter extends AbstractTableModel {
         });
     }
 
-    // Wrappers, implementing TableModel interface. 
+    // Wrappers, implementing TableModel interface.
 
     public int getColumnCount() {
         return treeTableModel.getColumnCount();

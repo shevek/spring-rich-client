@@ -46,11 +46,11 @@ public class HelpContents {
     public void setHelpSetPath(Resource helpSetPath) {
         this.helpSetPath = helpSetPath;
     }
-    
+
     protected String getApplicationName() {
         return Application.instance().getName();
     }
-    
+
     protected Image getApplicationImage() {
         return Application.instance().getImage();
     }

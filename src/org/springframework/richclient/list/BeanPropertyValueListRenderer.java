@@ -24,6 +24,7 @@ import org.springframework.beans.BeanWrapperImpl;
  */
 public class BeanPropertyValueListRenderer extends TextValueListRenderer {
     private BeanWrapperImpl beanWrapper;
+
     private String propertyName;
 
     public BeanPropertyValueListRenderer(String propertyName) {
@@ -31,12 +32,11 @@ public class BeanPropertyValueListRenderer extends TextValueListRenderer {
     }
 
     protected String getTextValue(Object value) {
-        if (value == null) {
-            return "";
-        }
+        if (value == null) { return ""; }
         if (beanWrapper == null) {
             beanWrapper = new BeanWrapperImpl(value);
-        } else {
+        }
+        else {
             beanWrapper.setWrappedInstance(value);
         }
         return String.valueOf(beanWrapper.getPropertyValue(propertyName));

@@ -64,7 +64,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public String getDescription() {
         return description;
     }
@@ -93,14 +93,14 @@ public abstract class TitledApplicationDialog extends ApplicationDialog
     public void setErrorMessage(String message) {
         setMessage(message, Severity.ERROR);
     }
-    
-    public void addMessageListener(MessageListener messageListener) {
-        titleAreaPane.addMessageListener(messageListener);        
+
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        titleAreaPane.addMessageAreaChangeListener(messageListener);
     }
-    
-    public void removeMessageListener(MessageListener messageListener) {
-        titleAreaPane.removeMessageListener(messageListener);        
-    }  
+
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        titleAreaPane.removeMessageAreaChangeListener(messageListener);
+    }
 
     public void updateDescription() {
         titleAreaPane.setMessage(getDescription());

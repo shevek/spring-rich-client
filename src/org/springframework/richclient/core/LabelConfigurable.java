@@ -24,7 +24,7 @@ import org.springframework.richclient.factory.LabelInfo;
  * @author Keith Donald
  */
 public interface LabelConfigurable {
-    
+
     /**
      * @param label
      */

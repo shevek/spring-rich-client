@@ -33,7 +33,7 @@ import org.springframework.util.ObjectUtils;
 
 public class CommandButtonManager implements PropertyChangeListener {
     private ReferenceQueue queue = new ReferenceQueue();
-    
+
     private Set buttons = new HashSet(6);
 
     private CommandFaceDescriptor face;
@@ -88,7 +88,7 @@ public class CommandButtonManager implements PropertyChangeListener {
             configure(button, strategy);
         }
     }
-    
+
     private void cleanUp() {
         Reference reference;
         while ((reference = this.queue.poll()) != null) {

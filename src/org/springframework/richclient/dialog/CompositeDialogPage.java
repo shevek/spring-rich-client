@@ -144,10 +144,9 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
     public DialogPage getActivePage() {
         return activePage;
     }
-    
+
     protected DialogPage createDialogPage(Form form) {
-        return new FormBackedDialogPage(form,
-                !autoConfigureChildPages);
+        return new FormBackedDialogPage(form, !autoConfigureChildPages);
     }
 
     protected void createPageControls() {
@@ -155,8 +154,8 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
         Assert.notEmpty(getPages(), "Pages must have been added first");
         for (Iterator i = pages.iterator(); i.hasNext();) {
             DialogPage page = (DialogPage)i.next();
-            page.addMessageListener(new MessageListener() {
-                public void messageUpdated(MessageReceiver target) {
+            page.addMessageAreaChangeListener(new MessageAreaChangeListener() {
+                public void messageUpdated(MessageAreaModel target) {
                     if (getActivePage() == target) {
                         updateMessage();
                     }

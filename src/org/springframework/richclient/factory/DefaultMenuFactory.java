@@ -19,11 +19,11 @@ import javax.swing.JRadioButtonMenuItem;
 public class DefaultMenuFactory implements MenuFactory {
 
     private static final MenuFactory INSTANCE = new DefaultMenuFactory();
-    
+
     public static final MenuFactory instance() {
         return INSTANCE;
     }
-    
+
     public JMenu createMenu() {
         return new JMenu();
     }

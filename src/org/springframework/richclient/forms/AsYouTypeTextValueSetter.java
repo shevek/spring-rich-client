@@ -26,7 +26,7 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
         DocumentListener {
 
     private JTextComponent component;
-    
+
     private boolean settingText;
 
     protected AsYouTypeTextValueSetter(JTextComponent component) {
@@ -43,7 +43,7 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
 
     protected void setComponentValue(Object value) {
         // this try block will coalesce the 2 DocumentEvents that
-        // JTextComponent.setText() fires into 1 call to 
+        // JTextComponent.setText() fires into 1 call to
         // componentValueChanged()
         try {
             settingText = true;

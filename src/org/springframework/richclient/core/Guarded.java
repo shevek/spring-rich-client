@@ -23,5 +23,6 @@ package org.springframework.richclient.core;
  */
 public interface Guarded {
     public boolean isEnabled();
+
     public void setEnabled(boolean enabled);
 }

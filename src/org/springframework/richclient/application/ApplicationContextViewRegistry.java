@@ -23,7 +23,7 @@ import org.springframework.context.support.ApplicationObjectSupport;
 /**
  * Simple <code>ViewRegistry</code> that pulls singleton view definitions out
  * of a spring application context.
- *
+ * 
  * @author Keith Donald
  */
 public class ApplicationContextViewRegistry extends ApplicationObjectSupport

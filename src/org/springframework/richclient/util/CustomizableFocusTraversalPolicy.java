@@ -144,13 +144,13 @@ public class CustomizableFocusTraversalPolicy extends
             int index2 = comp2Ancestors.size();
             while (true) {
                 if (index1 > 0) {
-                    comp1 = (Component)comp1Ancestors.get(--index1); 
+                    comp1 = (Component)comp1Ancestors.get(--index1);
                 }
                 else {
                     return -1;
                 }
                 if (index2 > 0) {
-                    comp2 = (Component)comp2Ancestors.get(--index2); 
+                    comp2 = (Component)comp2Ancestors.get(--index2);
                 }
                 else {
                     return 1;

@@ -30,7 +30,9 @@ import org.springframework.util.Assert;
  * 
  * <pre>
  * 
- *   &lt;iconKey&gt;.&lt;iconSize&gt;
+ *  
+ *    &lt;iconKey&gt;.&lt;iconSize&gt;
+ *   
  *  
  * </pre>
  * 
@@ -40,7 +42,9 @@ import org.springframework.util.Assert;
  * 
  * <pre>
  * 
- *   action.edit.copy.small=/images/edit/copy16.gif
+ *  
+ *    action.edit.copy.small=/images/edit/copy16.gif
+ *   
  *  
  * </pre>
  * 
@@ -92,7 +96,8 @@ public class ReloadableSizedIconSource extends DefaultIconSource implements
     private String appendIconSizeSuffix(String key) {
         if (iconSize == null) {
             return key;
-        } else {
+        }
+        else {
             logger.debug("Appending icon suffix '." + iconSize.getName() + "'");
             return key + "." + iconSize.getName();
         }

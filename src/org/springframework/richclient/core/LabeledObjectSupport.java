@@ -64,7 +64,8 @@ public class LabeledObjectSupport extends ApplicationServicesAccessorSupport
         int oldMnemonicIndex = getMnemonicIndex();
         KeyStroke oldAccelerator = getAccelerator();
         this.label = label;
-        firePropertyChange(DISPLAY_NAME_PROPERTY, oldDisplayName, getDisplayName());
+        firePropertyChange(DISPLAY_NAME_PROPERTY, oldDisplayName,
+                getDisplayName());
         firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
         firePropertyChange("mnemonicIndex", oldMnemonicIndex,
                 getMnemonicIndex());

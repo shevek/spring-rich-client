@@ -190,7 +190,8 @@ public abstract class AbstractWizard extends ApplicationServicesAccessorSupport
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         for (int i = 0; i < pages.size(); i++) {
-            if (!((WizardPage)pages.get(i)).isPageComplete()) return false;
+            if (!((WizardPage)pages.get(i)).isPageComplete())
+                return false;
         }
         return true;
     }

@@ -36,11 +36,11 @@ import com.jgoodies.forms.layout.Sizes;
 /**
  * @author Keith Donald
  */
-public class SimpleMessageAreaPane extends AbstractControlFactory implements
-        MessageAreaPane, MessageListener {
+public class DefaultMessageAreaPane extends AbstractControlFactory implements
+        MessageAreaPane, MessageAreaChangeListener {
 
     private static final Log logger = LogFactory
-            .getLog(SimpleMessageAreaPane.class);
+            .getLog(DefaultMessageAreaPane.class);
 
     private static final int ONE_LINE_IN_DLU = 10;
 
@@ -52,26 +52,26 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
 
     private Icon defaultIcon = EmptyIcon.SMALL;
 
-    private MessageBuffer messageBuffer;
+    private DefaultMessageAreaModel messageReceiver;
 
-    public SimpleMessageAreaPane() {
+    public DefaultMessageAreaPane() {
         this(DEFAULT_LINES_TO_DISPLAY);
     }
 
-    public SimpleMessageAreaPane(int linesToDisplay) {
+    public DefaultMessageAreaPane(int linesToDisplay) {
         this.linesToDisplay = linesToDisplay;
-        this.messageBuffer = new MessageBuffer(this);
-        this.messageBuffer.addMessageListener(this);
+        this.messageReceiver = new DefaultMessageAreaModel(this);
+        this.messageReceiver.addMessageAreaChangeListener(this);
     }
 
-    public SimpleMessageAreaPane(MessageReceiver delegateFor) {
+    public DefaultMessageAreaPane(MessageAreaModel delegateFor) {
         this(DEFAULT_LINES_TO_DISPLAY, delegateFor);
     }
 
-    public SimpleMessageAreaPane(int linesToDisplay, MessageReceiver delegateFor) {
+    public DefaultMessageAreaPane(int linesToDisplay, MessageAreaModel delegateFor) {
         this.linesToDisplay = linesToDisplay;
-        this.messageBuffer = new MessageBuffer(delegateFor);
-        this.messageBuffer.addMessageListener(this);
+        this.messageReceiver = new DefaultMessageAreaModel(delegateFor);
+        this.messageReceiver.addMessageAreaChangeListener(this);
     }
 
     public void setDefaultIcon(Icon defaultIcon) {
@@ -98,30 +98,28 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
     }
 
     public boolean messageShowing() {
-        if (messageLabel == null) {
-            return false;
-        }
+        if (messageLabel == null) { return false; }
         return StringUtils.hasText(messageLabel.getText());
     }
 
     public void setMessage(String newMessage) {
-        messageBuffer.setMessage(newMessage);
+        messageReceiver.setMessage(newMessage);
     }
 
     public void setInfoMessage(String infoMessage) {
-        messageBuffer.setMessage(infoMessage, Severity.INFO);
+        messageReceiver.setMessage(infoMessage, Severity.INFO);
     }
 
     public void setWarningMessage(String warningMessage) {
-        messageBuffer.setMessage(warningMessage, Severity.WARNING);
+        messageReceiver.setMessage(warningMessage, Severity.WARNING);
     }
 
     public void setErrorMessage(String errorMessage) {
-        messageBuffer.setErrorMessage(errorMessage);
+        messageReceiver.setErrorMessage(errorMessage);
     }
 
     public void setMessage(String message, Severity severity) {
-        messageBuffer.setMessage(message, severity);
+        messageReceiver.setMessage(message, severity);
     }
 
     private Icon getIcon(Severity severity) {
@@ -140,20 +138,20 @@ public class SimpleMessageAreaPane extends AbstractControlFactory implements
         setMessage("");
     }
 
-    public void addMessageListener(MessageListener messageListener) {
-        messageBuffer.addMessageListener(messageListener);
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageReceiver.addMessageAreaChangeListener(messageListener);
     }
 
-    public void removeMessageListener(MessageListener messageListener) {
-        messageBuffer.removeMessageListener(messageListener);
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageReceiver.removeMessageAreaChangeListener(messageListener);
     }
 
-    public void messageUpdated(MessageReceiver source) {
+    public void messageUpdated(MessageAreaModel source) {
         if (messageLabel == null) {
             messageLabel = new JLabel();
         }
-        String message = messageBuffer.getMessage();
-        Severity severity = messageBuffer.getSeverity();
+        String message = messageReceiver.getMessage();
+        Severity severity = messageReceiver.getSeverity();
         if (StringUtils.hasText(message)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("[Setting message '" + message + ", severity="

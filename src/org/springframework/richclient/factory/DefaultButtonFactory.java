@@ -19,11 +19,11 @@ import javax.swing.JToggleButton;
 public class DefaultButtonFactory implements ButtonFactory {
 
     private static final ButtonFactory INSTANCE = new DefaultButtonFactory();
-    
+
     public static final ButtonFactory instance() {
         return INSTANCE;
     }
-    
+
     /**
      * @see org.springframework.richclient.factory.ButtonFactory#createButton()
      */

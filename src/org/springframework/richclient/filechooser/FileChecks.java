@@ -28,8 +28,11 @@ import org.springframework.util.closure.Constraint;
  */
 public class FileChecks {
     private static FileExists exists = new FileExists();
+
     private static FileIsFile file = new FileIsFile();
+
     private static FileIsReadable readable = new FileIsReadable();
+
     private static FileConverter fileConverter = new FileConverter();
 
     private FileChecks() {
@@ -38,9 +41,7 @@ public class FileChecks {
 
     public static Constraint readableFileCheck() {
         Constraints c = Constraints.instance();
-        Constraint checks = c.all(new Constraint[] { exists,
-                file,
-                readable });
+        Constraint checks = c.all(new Constraint[] { exists, file, readable });
         return c.testResultOf(fileConverter, checks);
     }
 
@@ -68,21 +69,20 @@ public class FileChecks {
     public static class FileConverter implements Closure {
         public Object call(Object argument) {
             File f;
-            if (argument == null) {
-                return null;
-            }
-            if (argument instanceof File) {
-                return argument;
-            }
+            if (argument == null) { return null; }
+            if (argument instanceof File) { return argument; }
             if (argument instanceof String) {
                 f = new File((String)argument);
-              } else if (argument instanceof Resource) {
+            }
+            else if (argument instanceof Resource) {
                 try {
                     f = ((Resource)argument).getFile();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     return null;
                 }
-            } else {
+            }
+            else {
                 f = (File)argument;
             }
             return f;

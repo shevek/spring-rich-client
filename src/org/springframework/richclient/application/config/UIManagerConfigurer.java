@@ -117,7 +117,7 @@ public class UIManagerConfigurer {
     public void setLookAndFeel(Class lookAndFeel) {
         setLookAndFeel(lookAndFeel.getName());
     }
-    
+
     public void setLookAndFeel(String className) {
         try {
             UIManager.setLookAndFeel(className);

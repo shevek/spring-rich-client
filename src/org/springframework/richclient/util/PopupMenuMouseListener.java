@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 
 /**
  * Convenient listener that will show a popup menu when it receives a popup
- * trigger. 
+ * trigger.
  * 
  * @author Keith Donald
  * @author Oliver Hutchison

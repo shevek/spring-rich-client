@@ -31,11 +31,11 @@ import org.springframework.enums.CodedEnum;
  */
 public class CodedEnumListRenderer extends DefaultListCellRenderer {
     private MessageSource messages;
-    
+
     public CodedEnumListRenderer() {
 
     }
-    
+
     public CodedEnumListRenderer(MessageSource messages) {
         this.messages = messages;
     }
@@ -44,12 +44,11 @@ public class CodedEnumListRenderer extends DefaultListCellRenderer {
             int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected,
                 cellHasFocus);
-        if (value == null) {
-            return this;
-        }
+        if (value == null) { return this; }
         if (messages != null) {
             setText(messages.getMessage((CodedEnum)value, Locale.getDefault()));
-        } else {
+        }
+        else {
             setText(((CodedEnum)value).getLabel());
         }
         return this;

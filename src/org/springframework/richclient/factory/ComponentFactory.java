@@ -50,7 +50,6 @@ public interface ComponentFactory {
      */
     public JLabel createLabel(String labelKey);
 
-
     /**
      * Create and configure a label with the specified label key. For example:
      * "&My Control Label:", where the '&' marks a positional mnemonic.
@@ -61,7 +60,7 @@ public interface ComponentFactory {
      * @return The configured label.
      */
     public JLabel createLabel(String[] labelKeys);
-    
+
     /**
      * Creates and configure a label with the specified label key and
      * parameterized arguments. Argument values are resolved to {digit
@@ -82,7 +81,8 @@ public interface ComponentFactory {
      * underlying arguments change.
      * 
      * @param labelKey
-     * @param argumentValueHolders The value model of the arguments;
+     * @param argumentValueHolders
+     *            The value model of the arguments;
      * @return The configured label.
      */
     public JLabel createLabel(String labelKey, ValueModel[] argumentValueHolders);

@@ -76,8 +76,8 @@ public class DefaultApplicationPage implements ApplicationPage {
             viewPane.remove(view.getControl());
         }
         view = viewDescriptor.createView();
-        view.initialize(viewDescriptor, new SimpleViewContext(
-                viewDescriptor.getDisplayName(), this));
+        view.initialize(viewDescriptor, new SimpleViewContext(viewDescriptor
+                .getDisplayName(), this));
         viewPane.add(view.getControl());
         view.addPropertyChangeListener(this);
         updateViewPane();

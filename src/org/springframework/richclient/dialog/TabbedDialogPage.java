@@ -46,7 +46,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
         tabbedPane = new JTabbedPane();
         List pages = getPages();
         for (int i = 0; i < pages.size(); i++) {
-            final DialogPage page = (DialogPage) pages.get(i);
+            final DialogPage page = (DialogPage)pages.get(i);
             JComponent control = page.getControl();
             control.setPreferredSize(getLargestPageSize());
             tabbedPane.add(control);
@@ -59,8 +59,8 @@ public class TabbedDialogPage extends CompositeDialogPage {
                     super.setSelectedIndex(index);
                     if (index >= 0) {
                         TabbedDialogPage.super
-                                .setActivePage((DialogPage) getPages().get(
-                                        index));
+                                .setActivePage((DialogPage)getPages()
+                                        .get(index));
                     }
                     else {
                         TabbedDialogPage.super.setActivePage(null);
@@ -68,7 +68,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
                 }
             }
         });
-        setActivePage((DialogPage) pages.get(0));
+        setActivePage((DialogPage)pages.get(0));
         return tabbedPane;
     }
 

@@ -24,7 +24,7 @@ import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.ValidationResults;
@@ -41,12 +41,12 @@ public class SimpleValidationResultsReporter implements ValidationListener {
 
     private Guarded guarded;
 
-    private MessageReceiver messageAreaPane;
+    private MessageAreaModel messageAreaPane;
 
     private Stack messages = new Stack();
 
     public SimpleValidationResultsReporter(FormModel formModel,
-            Guarded guarded, MessageReceiver messagePane) {
+            Guarded guarded, MessageAreaModel messagePane) {
         Assert.notNull(formModel);
         Assert.notNull(guarded);
         Assert.notNull(messagePane);
@@ -96,7 +96,7 @@ public class SimpleValidationResultsReporter implements ValidationListener {
         messageAreaPane.setMessage("", null);
         guarded.setEnabled(true);
     }
-    
+
     private void update(ValidationEvent event) {
         if (!event.getFormModel().getHasErrors()) {
             messageAreaPane.setMessage("", null);

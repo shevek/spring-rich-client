@@ -22,11 +22,11 @@ import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.rules.reporting.Severity;
 
-public interface DialogPage extends ControlFactory, MessageReceiver, Guarded,
+public interface DialogPage extends ControlFactory, MessageAreaModel, Guarded,
         PropertyChangePublisher {
 
     public static final String DESCRIPTION_PROPERTY = "description";
-    
+
     public static final String PAGE_COMPLETE_PROPERTY = "pageComplete";
 
     /**

@@ -17,4 +17,5 @@ package org.springframework.richclient.tree;
 
 import javax.swing.tree.TreeNode;
 
-public interface ExplorableTreeNode extends Explorable, TreeNode {}
+public interface ExplorableTreeNode extends Explorable, TreeNode {
+}

@@ -97,7 +97,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     }
 
     public boolean isCellEditable(int row, int column) {
-      return filteredModel.isCellEditable(indexes[row], column);
+        return filteredModel.isCellEditable(indexes[row], column);
     }
 
     public boolean isAutoSortEnabled() {
@@ -167,7 +167,8 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
     protected void notifyTableChanged() {
         if (!EventQueue.isDispatchThread()) {
             SwingUtilities.invokeLater(notifyTableRunnable);
-        } else {
+        }
+        else {
             notifyTableRunnable.run();
         }
     }
@@ -355,7 +356,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
             fireTableDataChanged();
         }
         else {
-            logger.warn("Doing an unknown table change type: "+e.getType());
+            logger.warn("Doing an unknown table change type: " + e.getType());
             allocateIndexes();
             sort();
             super.tableChanged(e);

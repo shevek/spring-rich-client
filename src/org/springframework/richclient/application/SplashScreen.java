@@ -39,7 +39,9 @@ import org.springframework.util.Assert;
  */
 public class SplashScreen {
     private Frame frame;
+
     private Image image;
+
     private String imageResourcePath;
 
     private static final Logger logger = Logger.getLogger(SplashScreen.class
@@ -70,7 +72,8 @@ public class SplashScreen {
     }
 
     public void setImageResourcePath(String path) {
-        Assert.hasText(path, "The splash screen image resource path is required");
+        Assert.hasText(path,
+                "The splash screen image resource path is required");
         this.imageResourcePath = path;
     }
 
@@ -81,15 +84,14 @@ public class SplashScreen {
         frame = new Frame();
         if (image == null) {
             image = loadImage(imageResourcePath);
-            if (image == null) {
-                return;
-            }
+            if (image == null) { return; }
         }
         MediaTracker mediaTracker = new MediaTracker(frame);
         mediaTracker.addImage(image, 0);
         try {
             mediaTracker.waitForID(0);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             logger
                     .warning("Interrupted while waiting for splash image to load.");
         }

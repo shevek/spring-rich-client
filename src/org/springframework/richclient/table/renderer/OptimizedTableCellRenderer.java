@@ -32,11 +32,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
     protected Border focusBorder = UIManager
             .getBorder("Table.focusCellHighlightBorder");
+
     protected Color background = UIManager
             .getColor("Table.focusCellForeground");
+
     protected Color foreground = UIManager
             .getColor("Table.focusCellBackground");
+
     protected Color editableForeground;
+
     protected Color editableBackground;
 
     protected void doPrepareRenderer(JTable table, boolean isSelected,
@@ -44,7 +48,8 @@ public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
         if (isSelected) {
             setForeground(table.getSelectionForeground());
             setBackground(table.getSelectionBackground());
-        } else {
+        }
+        else {
             setForeground(table.getForeground());
             setBackground(table.getBackground());
         }
@@ -56,7 +61,8 @@ public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
                 //setForeground(editableForeground);
                 //setBackground(editableBackground);
             }
-        } else {
+        }
+        else {
             setBorder(noFocusBorder);
         }
     }

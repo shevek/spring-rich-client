@@ -61,8 +61,8 @@ public abstract class TitledPageApplicationDialog extends
 
     protected JComponent createTitledDialogContentPane() {
         Assert.notNull(dialogPage);
-        dialogPage.addMessageListener(new MessageListener() {
-            public void messageUpdated(MessageReceiver source) {
+        dialogPage.addMessageAreaChangeListener(new MessageAreaChangeListener() {
+            public void messageUpdated(MessageAreaModel source) {
                 update();
             }
         });

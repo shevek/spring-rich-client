@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.command.config;
 
-
 /**
  * @author Keith Donald
  */

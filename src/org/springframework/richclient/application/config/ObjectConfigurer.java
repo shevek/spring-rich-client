@@ -16,13 +16,13 @@
 package org.springframework.richclient.application.config;
 
 /**
- * Facade interface for configuring application objects.  Relieves the burden of the
- * objects having to configure themselves.
+ * Facade interface for configuring application objects. Relieves the burden of
+ * the objects having to configure themselves.
  * 
  * @author Keith Donald
  */
 public interface ObjectConfigurer {
-    
+
     /**
      * Configure the specified object with the provided object name.
      * 

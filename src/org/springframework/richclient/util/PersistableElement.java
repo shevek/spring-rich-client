@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.util;
 
-
 /**
  * Interface to be implemented by objects that can persist their state in an
  * memento.

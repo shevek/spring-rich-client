@@ -61,12 +61,10 @@ public abstract class SwingWorker extends FutureResult implements Runnable {
             return null;
         }
     }
-    
+
     protected Throwable getTargetException() {
         InvocationTargetException e = getException();
-        if (e != null) {
-            return e.getTargetException();
-        }
+        if (e != null) { return e.getTargetException(); }
         return e;
     }
 

@@ -31,8 +31,9 @@ public abstract class GroupMember {
             List previousButtons);
 
     public void setEnabled(boolean enabled) {
-        
+
     }
+
     /**
      * Returns <code>true</code> if this member manages a command and its
      * managed command id equals the specified <code>commandId</code>. This

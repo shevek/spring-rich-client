@@ -217,7 +217,7 @@ public class AboutBox {
                     else if (e.getEventType().equals(
                             HyperlinkEvent.EventType.ACTIVATED)) {
                         System.out.println(e.getURL()); // XXX need to open a
-                                                        // browser
+                        // browser
                     }
                 }
             });

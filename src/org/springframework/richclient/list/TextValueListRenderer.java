@@ -22,7 +22,7 @@ import javax.swing.JList;
 
 /**
  * Abstract base class for ListCellRenderer that convert the cell value into a
- * String. 
+ * String.
  * <p>
  * Subclasses need to override <code>getTextValue</code> which is responsible
  * for the conversion.

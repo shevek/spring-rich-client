@@ -45,7 +45,7 @@ public abstract class ActionCommand extends AbstractCommand implements
     public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
 
     private static final String ELLIPSES = "...";
-    
+
     private List commandInterceptors;
 
     private String actionCommand;

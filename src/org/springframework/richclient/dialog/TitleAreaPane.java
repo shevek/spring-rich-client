@@ -15,16 +15,24 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
-import com.jgoodies.forms.factories.FormFactory;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.rules.reporting.Severity;
+
+import com.jgoodies.forms.factories.FormFactory;
 
 /**
  * A container class that that has a title area for displaying a title and an
@@ -48,13 +56,13 @@ public class TitleAreaPane extends AbstractControlFactory implements
     private Image image;
 
     private MessageAreaPane messageAreaPane;
-    
+
     public TitleAreaPane() {
-        this(SimpleMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
+        this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
     }
-    
+
     public TitleAreaPane(int linesToDisplay) {
-        this.messageAreaPane = new SimpleMessageAreaPane(linesToDisplay, this);
+        this.messageAreaPane = new DefaultMessageAreaPane(linesToDisplay, this);
     }
 
     public void setTitle(String newTitle) {
@@ -81,18 +89,18 @@ public class TitleAreaPane extends AbstractControlFactory implements
         iconLabel = new JLabel();
         iconLabel.setBackground(getBackgroundColor());
         iconLabel.setIcon(getIcon());
-        
+
         JPanel panel = new JPanel();
-        panel.setBackground(getBackgroundColor());        
+        panel.setBackground(getBackgroundColor());
         TableLayoutBuilder table = new TableLayoutBuilder(panel);
         table.row(FormFactory.LINE_GAP_ROWSPEC);
         table.gapCol();
-        table.cell(titleLabel);        
+        table.cell(titleLabel);
         table.gapCol();
         table.cell(iconLabel, "rowspan=2 colspec=pref");
         table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
         table.cell(messageAreaPane.getControl());
-        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);                
+        table.row(FormFactory.NARROW_LINE_GAP_ROWSPEC);
         return table.getPanel();
     }
 
@@ -134,12 +142,12 @@ public class TitleAreaPane extends AbstractControlFactory implements
         messageAreaPane.setMessage(newMessage);
     }
 
-    public void addMessageListener(MessageListener messageListener) {
-        messageAreaPane.addMessageListener(messageListener);
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageAreaPane.addMessageAreaChangeListener(messageListener);
     }
 
-    public void removeMessageListener(MessageListener messageListener) {
-        messageAreaPane.removeMessageListener(messageListener);
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageAreaPane.removeMessageAreaChangeListener(messageListener);
     }
 
 }

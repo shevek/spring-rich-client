@@ -26,36 +26,36 @@ public class FilteredComboBoxListModel extends FilteredListModel implements
         ComboBoxModel {
 
     private boolean matchedSelected;
-    
-    public FilteredComboBoxListModel(ComboBoxModel filteredModel, Constraint filter) {
+
+    public FilteredComboBoxListModel(ComboBoxModel filteredModel,
+            Constraint filter) {
         super(filteredModel, filter);
     }
-    
+
     protected ComboBoxModel getComboBoxModel() {
         return (ComboBoxModel)getFilteredModel();
     }
-    
+
     protected void onMatchingElement(Object element) {
         if (element == getSelectedItem()) {
             matchedSelected = true;
         }
     }
-    
+
     protected void postConstraintApplied() {
         if (!matchedSelected) {
-            if (getSize() > 0 ) {
+            if (getSize() > 0) {
                 setSelectedItem(getElementAt(0));
-            } else {
+            }
+            else {
                 setSelectedItem(null);
             }
         }
         matchedSelected = false;
     }
-    
+
     public Object getSelectedItem() {
-        if (getSize() == 0) {
-            return null;
-        }
+        if (getSize() == 0) { return null; }
         return getComboBoxModel().getSelectedItem();
     }
 

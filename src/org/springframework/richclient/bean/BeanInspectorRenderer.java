@@ -56,7 +56,7 @@ public class BeanInspectorRenderer extends DefaultTreeCellRenderer implements
             boolean sel, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-            row, hasFocus);
+                row, hasFocus);
         BeanInspectorTreeModel.BeanFeatureNode n = (BeanInspectorTreeModel.BeanFeatureNode)value;
         FeatureDescriptor f = n.getFeature();
         setText(propertyRenderer.renderShortName(f.getDisplayName()));

@@ -24,7 +24,7 @@ import org.springframework.binding.value.PropertyChangePublisher;
  * @author Keith Donald
  */
 public interface FormObject extends PropertyChangePublisher {
-    
+
     /**
      * Does this form object have changes that have not yet been committed? This
      * can be used to determine if a warning needs to be displayed when a user

@@ -30,7 +30,7 @@ import org.springframework.util.Assert;
 public class AbstractTableModelFilter extends AbstractTableModel implements
         TableModelListener {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     protected TableModel filteredModel;
 
     public AbstractTableModelFilter(TableModel model) {

@@ -46,10 +46,10 @@ public class DefaultImageSource implements ImageSource {
     private Map imageResources;
 
     private ImageCache imageCache;
-    
+
     private AwtImageResource brokenImageIndicatorResource;
 
-    private Image brokenImageIndicator;    
+    private Image brokenImageIndicator;
 
     /**
      * Creates a image resource bundle containing the specified map of keys to
@@ -112,13 +112,14 @@ public class DefaultImageSource implements ImageSource {
         try {
             resource.getInputStream();
             return new AwtImageResource(resource);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             if (brokenImageIndicatorResource == null) { throw new NoSuchImageResourceException(
                     resource, e); }
             logger.warn("Unable to load image resource at '" + resource
                     + "'; returning the broken image indicator.");
             return brokenImageIndicatorResource;
-        }        
+        }
     }
 
     public boolean containsKey(Object key) {
@@ -149,7 +150,7 @@ public class DefaultImageSource implements ImageSource {
     public void setBrokenImageIndicator(Resource resource) {
         try {
             brokenImageIndicatorResource = new AwtImageResource(resource);
-            brokenImageIndicator = brokenImageIndicatorResource.getImage();            
+            brokenImageIndicator = brokenImageIndicatorResource.getImage();
         }
         catch (IOException e) {
             brokenImageIndicatorResource = null;
@@ -161,7 +162,7 @@ public class DefaultImageSource implements ImageSource {
         return new ToStringCreator(this).append("imageResources",
                 imageResources).toString();
     }
-    
+
     private class ImageCache extends CachingMapTemplate {
         public ImageCache() {
             super(true);

@@ -32,7 +32,7 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.list.ObservableList;
 import org.springframework.util.Assert;
@@ -484,7 +484,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements
     }
 
     public ValidationListener newSingleLineResultsReporter(Guarded guarded,
-            MessageReceiver messageAreaPane) {
+            MessageAreaModel messageAreaPane) {
         return getFormModel().createSingleLineResultsReporter(guarded,
                 messageAreaPane);
     }

@@ -21,7 +21,7 @@ package org.springframework.richclient.command;
 public interface CommandFactory {
     public TargetableActionCommand createTargetableActionCommand(
             String commandId, ActionCommandExecutor delegate);
-    
+
     public CommandGroup createCommandGroup(String groupId, Object[] members);
 
     public ExclusiveCommandGroup createExclusiveCommandGroup(String groupId,

@@ -24,7 +24,7 @@ import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.util.ListenerListHelper;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
@@ -39,14 +39,14 @@ public abstract class ValidationInterceptor extends
         AbstractFormComponentInterceptor {
 
     private final SimplePropertyValidationResultsReporter propertyValidatonReporter;
-    
+
     public ValidationInterceptor(FormModel formModel) {
         super(formModel);
         propertyValidatonReporter = new SimplePropertyValidationResultsReporter();
     }
 
     protected void registerErrorMessageReceiver(String propertyName,
-            MessageReceiver messageReceiver) {
+            MessageAreaModel messageReceiver) {
         propertyValidatonReporter.registerMessageReceiver(propertyName,
                 messageReceiver);
     }
@@ -84,7 +84,7 @@ public abstract class ValidationInterceptor extends
         }
 
         public void registerMessageReceiver(String propertyName,
-                MessageReceiver messageReceiver) {
+                MessageAreaModel messageReceiver) {
             getMessageReceivers(propertyName).add(messageReceiver);
             update(propertyName);
         }
@@ -93,7 +93,7 @@ public abstract class ValidationInterceptor extends
             ListenerListHelper messageReceivers = (ListenerListHelper)propertyMessage
                     .get(propertyName);
             if (messageReceivers == null) {
-                messageReceivers = new ListenerListHelper(MessageReceiver.class);
+                messageReceivers = new ListenerListHelper(MessageAreaModel.class);
                 propertyMessage.put(propertyName, messageReceivers);
             }
             return messageReceivers;

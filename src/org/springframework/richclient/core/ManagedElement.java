@@ -23,10 +23,12 @@ import org.springframework.binding.value.PropertyChangePublisher;
  * @author Keith Donald
  */
 public interface ManagedElement extends PropertyChangePublisher {
-	public static final String DISPLAY_NAME_PROPERTY = "displayName";
-	public static final String CAPTION_PROPERTY = "caption";
-	public static final String DESCRIPTION_PROPERTY = "description";
-	
+    public static final String DISPLAY_NAME_PROPERTY = "displayName";
+
+    public static final String CAPTION_PROPERTY = "caption";
+
+    public static final String DESCRIPTION_PROPERTY = "description";
+
     public String getDisplayName();
 
     public String getCaption();

@@ -20,7 +20,7 @@ import org.springframework.binding.form.FormModel;
 /**
  * Factory for creating {@link FormComponentInterceptor}s for a given
  * {@link FormModel}.
- *
+ * 
  * @author oliverh
  */
 public interface FormComponentInterceptorFactory {

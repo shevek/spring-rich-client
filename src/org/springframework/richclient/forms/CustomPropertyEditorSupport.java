@@ -57,7 +57,7 @@ public abstract class CustomPropertyEditorSupport extends PropertyEditorSupport 
         if (policy == ValueCommitPolicy.AS_YOU_TYPE) {
             new AsYouTypeTextValueSetter(component) {
                 protected void componentValueChanged(Object newValue) {
-                    customPropertyEditor.setAsText((String) newValue);
+                    customPropertyEditor.setAsText((String)newValue);
                 }
             };
         }

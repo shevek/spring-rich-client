@@ -54,14 +54,16 @@ import org.springframework.util.Assert;
  * <strong>Example Usage: </strong>
  * 
  * <pre>
- *                ValueModel lastNameModel = new PropertyAdapter(customer, &quot;lastName&quot;, true);
- *                JTextField lastNameField = new JTextField();
- *                lastNameField.setDocument(new DocumentAdapter(lastNameModel));
- *                
- *                ValueModel codeModel = new PropertyAdapter(shipment, &quot;code&quot;, true);
- *                JTextField codeField = new JTextField();
- *                codeField.setDocument(new DocumentAdapter(codeModel), 
- *                                      new MaskedDocument(...));
+ * 
+ *                 ValueModel lastNameModel = new PropertyAdapter(customer, &quot;lastName&quot;, true);
+ *                 JTextField lastNameField = new JTextField();
+ *                 lastNameField.setDocument(new DocumentAdapter(lastNameModel));
+ *                 
+ *                 ValueModel codeModel = new PropertyAdapter(shipment, &quot;code&quot;, true);
+ *                 JTextField codeField = new JTextField();
+ *                 codeField.setDocument(new DocumentAdapter(codeModel), 
+ *                                       new MaskedDocument(...));
+ *  
  * </pre>
  * 
  * @see ValueModel

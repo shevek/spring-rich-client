@@ -283,7 +283,7 @@ public class OwnerManagerView extends AbstractView implements
             final Owner owner = getSelectedOwner();
             ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
             ownerGeneralForm = new OwnerGeneralForm(ownerFormModel);
-            
+
             tabbedPage = new TabbedDialogPage("ownerProperties");
             tabbedPage.addForm(ownerGeneralForm);
             tabbedPage.addForm(new OwnerAddressForm(ownerFormModel));

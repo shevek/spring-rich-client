@@ -17,31 +17,20 @@ package org.springframework.richclient.dialog;
 
 import org.springframework.rules.reporting.Severity;
 
-
 /**
  * Interface to be implemented by object capable of receiving messages to the
  * user.
  * 
  * @author Keith Donald
  */
-public interface MessageReceiver
-{
+public interface MessageAreaModel {
+
     /**
      * Set the message text. If the message line currently displays an error,
      * the message is stored and will be shown after a call to
      * setErrorMessage(null)
      */
     public void setMessage(String newMessage);
-
-
-    /**
-     * Display the given error message of the provided severity.
-     * 
-     * @param errorMessage
-     * @param severity
-     */
-    public void setMessage(String message, Severity severity);
-
 
     /**
      * Display the given error message. The currently displayed message is saved
@@ -52,22 +41,30 @@ public interface MessageReceiver
      *            the errorMessage to display or <code>null</code> to clear
      */
     public void setErrorMessage(String errorMessage);
-    
+
     /**
-     * Adds the specified message listener to receive events from
-     * this MessageReceiver whenever messages are updated.
+     * Display the given error message of the provided severity.
+     * 
+     * @param newMessage
+     * @param severity
+     */
+    public void setMessage(String newMessage, Severity severity);
+
+    /**
+     * Adds the specified message listener to receive events from this
+     * MessageReceiver whenever messages are updated.
      * 
      * @param listener
      *            the MessageListener to be added
-     */    
-    public void addMessageListener(MessageListener messageListener);
-    
+     */
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener);
+
     /**
      * Removes the specified message listener
      * 
      * @param listener
      *            the MessageListener to be removed
-     */    
-    public void removeMessageListener(MessageListener messageListener);
+     */
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener);
 
 }

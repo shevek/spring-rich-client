@@ -32,6 +32,6 @@ public interface CommandServices {
     public CommandButtonConfigurer getToolBarButtonConfigurer();
 
     public CommandButtonConfigurer getMenuItemButtonConfigurer();
-    
+
     public CommandButtonConfigurer getPullDownMenuButtonConfigurer();
 }

@@ -17,7 +17,6 @@ package org.springframework.binding.form;
 
 import org.springframework.binding.value.ValueModel;
 
-
 /**
  * 
  * @author Keith Donald

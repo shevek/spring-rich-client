@@ -22,8 +22,7 @@ import org.springframework.util.closure.Constraint;
 public interface BeanFormBuilder {
     public JComponent[] add(String formPropertyPath);
 
-    public JComponent[] addSelector(String formPropertyPath,
-            Constraint filter);
+    public JComponent[] addSelector(String formPropertyPath, Constraint filter);
 
     public JComponent[] addPasswordField(String formPropertyPath);
 

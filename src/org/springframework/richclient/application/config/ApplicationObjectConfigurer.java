@@ -96,7 +96,7 @@ public class ApplicationObjectConfigurer extends ApplicationObjectSupport
     private ImageSource findImageSource() {
         try {
             return (ImageSource)getApplicationContext().getBean(
-                ApplicationServices.IMAGE_SOURCE_BEAN_KEY);
+                    ApplicationServices.IMAGE_SOURCE_BEAN_KEY);
         }
         catch (NoSuchBeanDefinitionException e) {
             return null;

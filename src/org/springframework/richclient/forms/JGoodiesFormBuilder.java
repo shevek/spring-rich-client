@@ -68,7 +68,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
         formBuilder.append(label, labeledComponent);
         return new JComponent[] { label, labeledComponent };
     }
-    
+
     public JComponent[] add(String labelKey, String labelConstraints,
             JComponent labeledComponent) {
         JLabel label = componentFactory.createLabelFor(labelKey,
@@ -77,7 +77,7 @@ public class JGoodiesFormBuilder implements FormBuilder {
     }
 
     public JComponent[] add(JComponent label, String labelConstraints,
-            JComponent labeledComponent) {        
+            JComponent labeledComponent) {
         Assert.notNull(labeledComponent);
         formBuilder.nextLine();
         formBuilder.appendRelatedComponentsGapRow();

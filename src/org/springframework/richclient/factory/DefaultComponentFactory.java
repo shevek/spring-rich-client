@@ -130,7 +130,7 @@ public class DefaultComponentFactory extends ApplicationObjectSupport implements
                 argHolder.addValueChangeListener(this);
             }
         }
-        
+
         public JLabel getLabel() {
             return label;
         }

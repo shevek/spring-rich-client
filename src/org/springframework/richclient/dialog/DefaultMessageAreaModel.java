@@ -29,11 +29,11 @@ import org.springframework.util.ObjectUtils;
  * more complex classes.
  * 
  * @author oliverh
- * @see SimpleMessageAreaPane
+ * @see DefaultMessageAreaPane
  */
-public class MessageBuffer implements MessageReceiver {
+public class DefaultMessageAreaModel implements MessageAreaModel {
 
-    private MessageReceiver delegateFor;
+    private MessageAreaModel delegate;
 
     private String message;
 
@@ -41,19 +41,19 @@ public class MessageBuffer implements MessageReceiver {
 
     private EventListenerList listenerList = new EventListenerList();
 
-    public MessageBuffer() {
-        this.delegateFor = this;
+    public DefaultMessageAreaModel() {
+        this.delegate = this;
     }
 
-    public MessageBuffer(MessageReceiver delegateFor) {
-        this.delegateFor = delegateFor;
+    public DefaultMessageAreaModel(MessageAreaModel delegate) {
+        this.delegate = delegate;
     }
 
     /**
      * @return Returns the delegateFor.
      */
-    protected MessageReceiver getDelegateFor() {
-        return delegateFor;
+    protected MessageAreaModel getDelegateFor() {
+        return delegate;
     }
 
     public String getMessage() {
@@ -74,31 +74,29 @@ public class MessageBuffer implements MessageReceiver {
 
     public void setMessage(String message, Severity severity) {
         if (ObjectUtils.nullSafeEquals(this.message, message)
-            && ObjectUtils.nullSafeEquals(this.severity, severity)) {
-            return;
-        }
+                && ObjectUtils.nullSafeEquals(this.severity, severity)) { return; }
         this.message = message;
         this.severity = severity;
         fireMessageUpdated();
     }
 
-    public void addMessageListener(MessageListener messageListener) {
-        listenerList.add(MessageListener.class, messageListener);
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        listenerList.add(MessageAreaChangeListener.class, messageListener);
     }
 
-    public void removeMessageListener(MessageListener messageListener) {
-        listenerList.remove(MessageListener.class, messageListener);
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        listenerList.remove(MessageAreaChangeListener.class, messageListener);
     }
 
     protected void fireMessageUpdated() {
-        MessageListener[] listeners =
-            (MessageListener[]) listenerList.getListeners(MessageListener.class);
+        MessageAreaChangeListener[] listeners = (MessageAreaChangeListener[])listenerList
+                .getListeners(MessageAreaChangeListener.class);
         for (int i = 0; i < listeners.length; i++) {
-            listeners[i].messageUpdated(delegateFor);
+            listeners[i].messageUpdated(delegate);
         }
     }
 
     protected List getMessageListeners() {
-        return Arrays.asList(listenerList.getListeners(MessageListener.class));
+        return Arrays.asList(listenerList.getListeners(MessageAreaChangeListener.class));
     }
 }

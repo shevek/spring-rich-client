@@ -29,27 +29,27 @@ public class MessageBufferTest extends TestCase {
     private TestMessageListener ml2;
 
     public void testAddAndRemoveMessageListener() {
-        MessageBuffer buffer = new MessageBuffer();
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
 
-        buffer.addMessageListener(ml1);
+        buffer.addMessageAreaChangeListener(ml1);
         assertTrue(buffer.getMessageListeners().contains(ml1));
         assertEquals(1, buffer.getMessageListeners().size());
 
-        buffer.addMessageListener(ml2);
+        buffer.addMessageAreaChangeListener(ml2);
         assertTrue(buffer.getMessageListeners().contains(ml1));
         assertEquals(2, buffer.getMessageListeners().size());
 
-        buffer.removeMessageListener(ml1);
+        buffer.removeMessageAreaChangeListener(ml1);
         assertFalse(buffer.getMessageListeners().contains(ml1));
         assertEquals(1, buffer.getMessageListeners().size());
 
-        buffer.removeMessageListener(ml2);
+        buffer.removeMessageAreaChangeListener(ml2);
         assertFalse(buffer.getMessageListeners().contains(ml2));
         assertTrue(buffer.getMessageListeners().isEmpty());
     }
 
     public void testConstructor() {
-        MessageBuffer buffer = new MessageBuffer();
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
         assertNull(buffer.getMessage());
         assertNull(buffer.getSeverity());
         assertTrue(buffer.getMessageListeners().isEmpty());
@@ -57,8 +57,8 @@ public class MessageBufferTest extends TestCase {
     }
 
     public void testConstructorWithDelegate() {
-        MessageBuffer delegateFor = new MessageBuffer();
-        MessageBuffer buffer = new MessageBuffer(delegateFor);
+        DefaultMessageAreaModel delegateFor = new DefaultMessageAreaModel();
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel(delegateFor);
         assertNull(buffer.getMessage());
         assertNull(buffer.getSeverity());
         assertTrue(buffer.getMessageListeners().isEmpty());
@@ -68,26 +68,26 @@ public class MessageBufferTest extends TestCase {
     public void testSetMessage() {
         String msg = "Info message";
 
-        MessageBuffer buffer = new MessageBuffer();
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setMessage(msg);
 
         assertMessageAndSeveritySet(buffer, msg, Severity.INFO);
 
         // with delegate
-        MessageBuffer delegate = new MessageBuffer();
-        buffer = new MessageBuffer(delegate);
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
+        buffer = new DefaultMessageAreaModel(delegate);
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setMessage(msg);
 
         assertMessageAndSeveritySet(buffer, msg, Severity.INFO);
     }
 
-    private void assertMessageAndSeveritySet(MessageBuffer buffer, String msg,
+    private void assertMessageAndSeveritySet(DefaultMessageAreaModel buffer, String msg,
             Severity severity) {
         assertEquals("message was not set", msg, buffer.getMessage());
         assertEquals("severity must be info", severity, buffer.getSeverity());
@@ -100,19 +100,19 @@ public class MessageBufferTest extends TestCase {
     public void testSetErrorMessage() {
         String msg = "Error message";
 
-        MessageBuffer buffer = new MessageBuffer();
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setErrorMessage(msg);
 
         assertMessageAndSeveritySet(buffer, msg, Severity.ERROR);
 
         // with delegate
-        MessageBuffer delegate = new MessageBuffer();
-        buffer = new MessageBuffer(delegate);
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
+        buffer = new DefaultMessageAreaModel(delegate);
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setErrorMessage(msg);
 
@@ -123,19 +123,19 @@ public class MessageBufferTest extends TestCase {
         String msg = "Error message";
         Severity severity = Severity.WARNING;
 
-        MessageBuffer buffer = new MessageBuffer();
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
         assertMessageAndSeveritySet(buffer, msg, severity);
 
         // with delegate
-        MessageBuffer delegate = new MessageBuffer();
-        buffer = new MessageBuffer(delegate);
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel delegate = new DefaultMessageAreaModel();
+        buffer = new DefaultMessageAreaModel(delegate);
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
@@ -146,9 +146,9 @@ public class MessageBufferTest extends TestCase {
         String msg = "Test message";
         Severity severity = Severity.WARNING;
 
-        MessageBuffer buffer = new MessageBuffer();
-        buffer.addMessageListener(ml1);
-        buffer.addMessageListener(ml2);
+        DefaultMessageAreaModel buffer = new DefaultMessageAreaModel();
+        buffer.addMessageAreaChangeListener(ml1);
+        buffer.addMessageAreaChangeListener(ml2);
 
         buffer.setMessage(msg, severity);
 
@@ -174,16 +174,16 @@ public class MessageBufferTest extends TestCase {
         ml2 = new TestMessageListener();
     }
 
-    private static class TestMessageListener implements MessageListener {
+    private static class TestMessageListener implements MessageAreaChangeListener {
 
-        private MessageReceiver lastUpdated;
+        private MessageAreaModel lastUpdated;
 
         /*
          * (non-Javadoc)
          * 
          * @see org.springframework.richclient.dialog.MessageListener#messageUpdated(org.springframework.richclient.dialog.MessageReceiver)
          */
-        public void messageUpdated(MessageReceiver source) {
+        public void messageUpdated(MessageAreaModel source) {
             this.lastUpdated = source;
         }
 

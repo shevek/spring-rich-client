@@ -43,7 +43,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     private boolean pageComplete = true;
 
-    private MessageBuffer messageBuffer;
+    private DefaultMessageAreaModel messageBuffer;
 
     private AbstractControlFactory factory = new AbstractControlFactory() {
         public JComponent createControl() {
@@ -52,7 +52,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     };
 
     protected AbstractDialogPage() {
-        
+
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      *            titles of this dialog page using the given pageId
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure) {
-        this.messageBuffer = new MessageBuffer(this);
+        this.messageBuffer = new DefaultMessageAreaModel(this);
         setId(pageId, autoConfigure);
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     /**
      * Sets or clears the message for this page.
-     *
+     * 
      * @param newMessage
      *            the message, or <code>null</code> to clear the message
      */
@@ -183,12 +183,12 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         messageBuffer.setErrorMessage(newMessage);
     }
 
-    public void addMessageListener(MessageListener messageListener) {
-        messageBuffer.addMessageListener(messageListener);
+    public void addMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageBuffer.addMessageAreaChangeListener(messageListener);
     }
 
-    public void removeMessageListener(MessageListener messageListener) {
-        messageBuffer.removeMessageListener(messageListener);
+    public void removeMessageAreaChangeListener(MessageAreaChangeListener messageListener) {
+        messageBuffer.removeMessageAreaChangeListener(messageListener);
     }
 
     public void setVisible(boolean visible) {
@@ -218,7 +218,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     public JComponent getControl() {
         return factory.getControl();
     }
-    
+
     public boolean isControlCreated() {
         return factory.isControlCreated();
     }
@@ -233,7 +233,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      * response to a help request.
      */
     public void performHelp() {
-        // nothing by default
+        // do nothing by default
     }
 
     protected abstract JComponent createControl();

@@ -42,13 +42,12 @@ public class TextComponentPopupInterceptorFactory implements
     private class TextComponentPopupInterceptor extends
             AbstractFormComponentInterceptor {
         private CommitTrigger resetTrigger;
-        
+
         protected TextComponentPopupInterceptor(FormModel formModel) {
             super(formModel);
         }
 
-        public void processComponent(String propertyName,
-                JComponent component) {
+        public void processComponent(String propertyName, JComponent component) {
             JComponent innerComp = getInnerComponent(component);
             if (innerComp instanceof JTextComponent) {
                 TextComponentPopup.attachPopup((JTextComponent)innerComp,

@@ -89,7 +89,7 @@ public class LabelInfo {
         }
         return label;
     }
-    
+
     public JLabel configureLabelFor(JLabel label, JComponent component) {
         configureLabel(label);
         if (!(component instanceof JPanel)) {

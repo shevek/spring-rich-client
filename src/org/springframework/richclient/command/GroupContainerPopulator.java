@@ -24,7 +24,10 @@ import javax.swing.JComponent;
  */
 public interface GroupContainerPopulator {
     public JComponent getControl();
+
     public void add(Component component);
+
     public void addSeparator();
+
     public void onPopulated();
 }

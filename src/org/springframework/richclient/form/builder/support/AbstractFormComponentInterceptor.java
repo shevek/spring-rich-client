@@ -14,36 +14,35 @@ import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.util.Assert;
 
 /**
- * @author  oliverh
+ * @author oliverh
  */
 public abstract class AbstractFormComponentInterceptor implements
         FormComponentInterceptor {
 
     private final FormModel formModel;
-    
+
     protected AbstractFormComponentInterceptor() {
         formModel = null;
     }
-    
+
     protected AbstractFormComponentInterceptor(FormModel formModel) {
         Assert.notNull(formModel);
         this.formModel = formModel;
     }
-    
+
     protected FormModel getFormModel() {
         return formModel;
     }
-    
+
     public void processLabel(String propertyName, JComponent label) {
     }
 
     public void processComponent(String propertyName, JComponent component) {
     }
-    
+
     protected JComponent getInnerComponent(JComponent component) {
-        if (component instanceof JScrollPane) {
-            return (JComponent) ((JScrollPane) component).getViewport().getView();
-        }
+        if (component instanceof JScrollPane) { return (JComponent)((JScrollPane)component)
+                .getViewport().getView(); }
         return component;
     }
 }

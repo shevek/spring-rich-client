@@ -19,8 +19,8 @@ import org.springframework.richclient.application.*;
 import org.springframework.richclient.command.ActionCommand;
 
 /**
- * {@link ActionCommand} for displaying a {@link View} based on the
- * provided {@link ViewDescriptor}.
+ * {@link ActionCommand}for displaying a {@link View}based on the provided
+ * {@link ViewDescriptor}.
  */
 public class ShowViewCommand extends ApplicationWindowAwareCommand {
     private ViewDescriptor viewDescriptor;
@@ -31,7 +31,7 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
     }
 
     public ShowViewCommand(ViewDescriptor viewDescriptor,
-                           ApplicationWindow window) {
+            ApplicationWindow window) {
         this();
         setViewDescriptor(viewDescriptor);
         setApplicationWindow(window);

@@ -18,7 +18,6 @@ package org.springframework.richclient.command.support;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandInterceptor;
 
-
 /**
  * @author Keith Donald
  */

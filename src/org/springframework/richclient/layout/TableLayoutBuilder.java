@@ -15,21 +15,31 @@
  */
 package org.springframework.richclient.layout;
 
-import java.awt.*;
+import java.awt.Component;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
-import com.jgoodies.forms.factories.FormFactory;
-import com.jgoodies.forms.layout.*;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.CustomizableFocusTraversalPolicy;
 import org.springframework.util.StringUtils;
+
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 /**
  * A panel builder that provides the capability to quickly build grid based
@@ -315,9 +325,9 @@ public class TableLayoutBuilder implements LayoutBuilder {
     public JPanel getPanel() {
         insertMissingSpecs();
         fixColSpans();
-        fillInGaps();        
+        fillInGaps();
         fillPanel();
-//        buildFocusOrder();
+        //        buildFocusOrder();
         return panel;
     }
 
@@ -438,7 +448,8 @@ public class TableLayoutBuilder implements LayoutBuilder {
                 cc.endCol < cc.startCol ? cc.startCol : cc.endCol);
     }
 
-    private void setOccupier(Cell occupier, int startRow, int endRow, int startCol, int endCol) {
+    private void setOccupier(Cell occupier, int startRow, int endRow,
+            int startCol, int endCol) {
         for (int row = startRow; row <= endRow; row++) {
             List occupiers = getOccupiers(row);
             if (endCol >= occupiers.size()) {
@@ -451,7 +462,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
                 occupiers.set(i, occupier);
             }
         }
-        
+
     }
 
     private Cell createCell(JComponent component, Map attributes) {
@@ -553,8 +564,8 @@ public class TableLayoutBuilder implements LayoutBuilder {
     private void buildFocusOrder() {
         List focusOrder = new ArrayList(items.size());
         for (int col = maxColumns; col >= 0; col--) {
-            for (int row = rowOccupiers.size()-1; row >= 0; row--) {
-                
+            for (int row = rowOccupiers.size() - 1; row >= 0; row--) {
+
                 Cell currentCell = getOccupier(row, col);
                 if (currentCell != null
                         && !focusOrder.contains(currentCell.getComponent())) {
@@ -562,8 +573,10 @@ public class TableLayoutBuilder implements LayoutBuilder {
                 }
             }
         }
-        CustomizableFocusTraversalPolicy.installCustomizableFocusTraversalPolicy();
-        CustomizableFocusTraversalPolicy.customizeFocusTraversalOrder(panel, focusOrder);
+        CustomizableFocusTraversalPolicy
+                .installCustomizableFocusTraversalPolicy();
+        CustomizableFocusTraversalPolicy.customizeFocusTraversalOrder(panel,
+                focusOrder);
     }
 
     private void fillPanel() {

@@ -36,7 +36,7 @@ import org.springframework.util.Assert;
  * of a given view when requested, typically by a requesting application page. A
  * view descriptor can also produce a command which launches a view for display
  * on the page within the current active window.
- *
+ * 
  * @author Keith Donald
  */
 public class ViewDescriptor extends LabeledObjectSupport implements
@@ -48,7 +48,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     /**
      * Sets the class that is the implementation of the View described by this
      * descriptor.
-     *
+     * 
      * @param viewClass
      */
     public void setViewClass(Class viewClass) {
@@ -56,8 +56,8 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     }
 
     /**
-     * Sets the map of properties to inject when new view instances
-     * are instantiated by this descriptor.
+     * Sets the map of properties to inject when new view instances are
+     * instantiated by this descriptor.
      */
     public void setViewProperties(Map viewProperties) {
         this.viewProperties = viewProperties;
@@ -68,7 +68,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
      * application context (service registry) of this application. If no
      * multicaster, bean is defined, null is returned, and View instances
      * created by this ViewDescriptor will not be wired as ApplicationListeners.
-     *
+     * 
      * @return The event multicaster
      */
     public ApplicationEventMulticaster getApplicationEventMulticaster() {
@@ -94,7 +94,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
      * ApplicationListener, and an ApplicationEventMulticaster is configured in
      * this application's ApplicationContext, the view is registered as an
      * ApplicationListener.
-     *
+     * 
      * @return The new view prototype
      */
     public View createView() {
@@ -122,7 +122,8 @@ public class ViewDescriptor extends LabeledObjectSupport implements
                 ((InitializingBean)view).afterPropertiesSet();
             }
             catch (Exception e) {
-                throw new BeanInitializationException("Problem running on "+view, e);
+                throw new BeanInitializationException("Problem running on "
+                        + view, e);
             }
         }
 
@@ -132,7 +133,7 @@ public class ViewDescriptor extends LabeledObjectSupport implements
     /**
      * Create a command that when executed, will attempt to show the view
      * described by this descriptor in the provided application window.
-     *
+     * 
      * @param window
      *            The window
      * @return The show view command.

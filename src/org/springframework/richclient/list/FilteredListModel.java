@@ -28,8 +28,8 @@ import org.springframework.util.closure.Constraint;
 /**
  * @author Keith Donald
  */
-public class FilteredListModel extends AbstractFilteredListModel
-        implements Observer, ValueChangeListener {
+public class FilteredListModel extends AbstractFilteredListModel implements
+        Observer, ValueChangeListener {
 
     private Constraint constraint;
 
@@ -37,19 +37,19 @@ public class FilteredListModel extends AbstractFilteredListModel
 
     private int filteredSize;
 
-    public FilteredListModel(ListModel listModel,
-            Constraint constraint) {
+    public FilteredListModel(ListModel listModel, Constraint constraint) {
         super(listModel);
         this.constraint = constraint;
         if (this.constraint instanceof Observable) {
             ((Observable)this.constraint).addObserver(this);
         }
         else if (this.constraint instanceof ValueChangePublisher) {
-            ((ValueChangePublisher)this.constraint).addValueChangeListener(this);
+            ((ValueChangePublisher)this.constraint)
+                    .addValueChangeListener(this);
         }
         reallocateIndexes();
     }
-    
+
     protected void reallocateIndexes() {
         this.indexes = new int[getFilteredModel().getSize()];
         applyConstraint();

@@ -19,7 +19,7 @@ package org.springframework.richclient.forms;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.dialog.MessageReceiver;
+import org.springframework.richclient.dialog.MessageAreaModel;
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
@@ -33,7 +33,7 @@ public interface Form extends ControlFactory {
     public Object getFormObject();
 
     public void setFormObject(Object formObject);
-    
+
     public Object getValue(String formProperty);
 
     public ValueModel getValueModel(String formProperty);
@@ -43,7 +43,7 @@ public interface Form extends ControlFactory {
     public void removeValidationListener(ValidationListener listener);
 
     public ValidationListener newSingleLineResultsReporter(Guarded guarded,
-            MessageReceiver messageAreaPane);
+            MessageAreaModel messageAreaPane);
 
     public boolean hasErrors();
 

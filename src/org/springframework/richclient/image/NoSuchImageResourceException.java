@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.springframework.richclient.image;
 
 import org.springframework.core.io.Resource;
@@ -55,10 +55,10 @@ public class NoSuchImageResourceException extends RuntimeException {
     public String getMessage() {
         if (Resource.class.isInstance(imageKey)) {
             return "No image at resource '" + imageKey + "' exists.";
-        } else {
-            return "No image with key '"
-                + imageKey
-                + "' exists in source bundle.";
+        }
+        else {
+            return "No image with key '" + imageKey
+                    + "' exists in source bundle.";
         }
     }
 

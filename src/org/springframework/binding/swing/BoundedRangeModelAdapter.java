@@ -36,12 +36,13 @@ import org.springframework.util.ToStringCreator;
  * 
  * <pre>
  * int minSaturation = 0;int maxSaturation = 255;
- *        ValueModel saturationModel = new PropertyAdapter(settingsBean, &quot;saturation&quot;);
- *        JSlider saturationSlider = new JSlider(
- *            new BoundedRangeAdapter(saturationModel, 
- *                                    0, 
- *                                    minSaturation, 
- *                                    maxSaturation));
+ *         ValueModel saturationModel = new PropertyAdapter(settingsBean, &quot;saturation&quot;);
+ *         JSlider saturationSlider = new JSlider(
+ *             new BoundedRangeAdapter(saturationModel, 
+ *                                     0, 
+ *                                     minSaturation, 
+ *                                     maxSaturation));
+ *   
  *  
  * </pre>
  * 
@@ -73,7 +74,7 @@ public final class BoundedRangeModelAdapter implements BoundedRangeModel,
     private boolean isAdjusting;
 
     private ValueChangeListener currentValueChangeHandler;
-    
+
     /**
      * Constructs a <code>BoundedRangeModelAdapter</code> on the given subject
      * using the specified extent, minimum and maximum values.

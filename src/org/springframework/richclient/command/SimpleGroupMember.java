@@ -30,8 +30,7 @@ public class SimpleGroupMember extends GroupMember {
 
     private AbstractCommand command;
 
-    public SimpleGroupMember(CommandGroup parentGroup,
-            AbstractCommand command) {
+    public SimpleGroupMember(CommandGroup parentGroup, AbstractCommand command) {
         this.parent = parentGroup;
         this.command = command;
         if (!parentGroup.isAllowedMember(command))

@@ -18,13 +18,15 @@ package org.springframework.richclient.bean;
 import javax.swing.JComponent;
 
 /**
- * The interface for a bean property inspector; a GUI widget for
- * inspecting a java bean and presenting its properties to the user.
+ * The interface for a bean property inspector; a GUI widget for inspecting a
+ * java bean and presenting its properties to the user.
  * 
- * @author  Keith Donald
+ * @author Keith Donald
  */
 public interface BeanPropertyInspector {
     public String getBeanClassName();
+
     public void setBean(Object bean);
+
     public JComponent getControl();
 }
