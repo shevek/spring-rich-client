@@ -140,10 +140,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return getAdvisor().getApplicationImage();
     }
 
-    void openFirstApplicationWindow() {
-        openWindow(getAdvisor().getStartingPageId());
-    }
-
     public void openWindow(String pageDescriptorId) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
         newWindow.showPage(pageDescriptorId);

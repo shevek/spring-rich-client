@@ -184,7 +184,7 @@ public class ApplicationLauncher {
         try {
             Application application = (Application)rootApplicationContext
                     .getBean(APPLICATION_BEAN_ID, Application.class);
-            application.openFirstApplicationWindow();
+            application.openWindow(application.getAdvisor().getStartingPageId());
             application.getAdvisor().onPostStartup();
         }
         catch (NoSuchBeanDefinitionException e) {
