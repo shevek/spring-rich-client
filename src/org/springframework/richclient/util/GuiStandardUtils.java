@@ -17,15 +17,11 @@ package org.springframework.richclient.util;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
@@ -35,7 +31,11 @@ import javax.swing.text.JTextComponent;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.util.Assert;
 
+import com.jgoodies.forms.builder.ButtonStackBuilder;
 import com.jgoodies.forms.factories.Borders;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.ConstantSize;
+import com.jgoodies.forms.layout.Sizes;
 
 /**
  * Utility functions that help enforce a standard look and feel in accordance
@@ -49,11 +49,11 @@ public class GuiStandardUtils {
     }
 
     public static JComponent attachBorder(JComponent c) {
-        return attachBorder(c, createStandardBorder());
+        return attachDialogBorder(c);
     }
 
     public static JComponent attachBorder(JComponent c, Border border) {
-        c.setBorder(border);
+		c.setBorder(border);
         return c;
     }
     
@@ -65,33 +65,29 @@ public class GuiStandardUtils {
         }
         return c;
     }
-
-    /**
-     * Return a border of dimensions recommended by the Java Look and Feel
-     * Design Guidelines, suitable for many common cases.
-     * <p>
-     * Each side of the border has size SwingConstants.STANDARD_BORDER
-     */
-    public static Border createStandardBorder() {
-        return createEvenlySpacedBorder(UIConstants.STANDARD_BORDER);
+    
+    public static Border createEvenlySpacedBorder(int spacePx) {
+        return createEvenlySpacedBorder(Sizes.pixel(spacePx));
     }
 
-    /**
-     * Return a border of dimensions recommended by the Java Look and Feel
-     * Design Guidelines, suitable for many common cases.
-     * <p>
-     * Each side of the border has size SwingConstants.STANDARD_BORDER
-     */
-    public static Border createEvenlySpacedBorder(int spaces) {
-        return BorderFactory.createEmptyBorder(spaces, spaces, spaces, spaces);
+    public static Border createEvenlySpacedBorder(ConstantSize space) {
+        return Borders.createEmptyBorder(space, space, space, space);
+    }
+    
+    public static Border createLeftAndRightBorder(int spacePx) {
+        return createLeftAndRightBorder(Sizes.pixel(spacePx));
     }
 
-    public static Border createLeftAndRightBorder(int spaces) {
-        return BorderFactory.createEmptyBorder(0, spaces, 0, spaces);
+    public static Border createLeftAndRightBorder(ConstantSize space) {
+        return Borders.createEmptyBorder(Sizes.ZERO, space, Sizes.ZERO, space);
+    }
+    
+    public static Border createTopAndBottomBorder(int spacePx) {
+        return createTopAndBottomBorder(Sizes.pixel(spacePx));
     }
 
-    public static Border createTopAndBottomBorder(int spaces) {
-        return BorderFactory.createEmptyBorder(spaces, 0, spaces, 0);
+    public static Border createTopAndBottomBorder(ConstantSize space) {
+        return Borders.createEmptyBorder(space, Sizes.ZERO, space, Sizes.ZERO);
     }
 
     /**
@@ -130,19 +126,7 @@ public class GuiStandardUtils {
      * @return A row displaying the buttons horizontally.
      */
     public static JComponent createCommandButtonRow(JButton[] buttons) {
-        equalizeSizes(buttons);
-        JPanel panel = new JPanel();
-        LayoutManager layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-        panel.setLayout(layout);
-        panel.add(Box.createHorizontalGlue());
-        for (int i = 0; i < buttons.length; i++) {
-            panel.add(buttons[i]);
-            if (i < (buttons.length - 1)) {
-                panel.add(Box.createHorizontalStrut(UIConstants.ONE_SPACE));
-            }
-        }
-        panel.setBorder(createStandardBorder());
-        return panel;
+        return ButtonBarFactory.buildRightAlignedBar(buttons);
     }
 
     /**
@@ -160,20 +144,15 @@ public class GuiStandardUtils {
      * @return A column displaying the buttons vertically.
      */
     public static JComponent createCommandButtonColumn(JButton[] buttons) {
-        equalizeSizes(buttons);
-        JPanel panel = new JPanel();
-        LayoutManager layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-        panel.setLayout(layout);
-        panel.setBorder(BorderFactory.createEmptyBorder(0,
-                UIConstants.TWO_SPACES, 0, 0));
+        ButtonStackBuilder builder = new ButtonStackBuilder();
+        
         for (int i = 0; i < buttons.length; i++) {
-            panel.add(buttons[i]);
-            if (i < (buttons.length - 1)) {
-                panel.add(Box.createVerticalStrut(UIConstants.ONE_SPACE));
+            if (i > 0) {
+                builder.addRelatedGap();
             }
+            builder.addGridded(buttons[i]);            
         }
-        panel.add(Box.createVerticalGlue());
-        return panel;
+        return builder.getPanel();
     }
 
     /**

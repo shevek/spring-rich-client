@@ -172,7 +172,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
                 }
             });
             JComponent c = page.getControl();
-            c.setBorder(GuiStandardUtils.createStandardBorder());
+            GuiStandardUtils.attachDialogBorder(c);
             Dimension size = c.getPreferredSize();
             if (size.width > largestPageWidth) {
                 largestPageWidth = size.width;

@@ -132,7 +132,7 @@ public class WizardDialog extends TitledApplicationDialog implements
         WizardPage[] pages = wizard.getPages();
         for (int i = 0; i < pages.length; i++) {
             JComponent c = pages[i].getControl();
-            c.setBorder(GuiStandardUtils.createStandardBorder());
+            GuiStandardUtils.attachDialogBorder(c);
             Dimension size = c.getPreferredSize();
             if (size.width > largestPageWidth) {
                 largestPageWidth = size.width;
