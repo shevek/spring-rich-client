@@ -11,7 +11,6 @@
 	<classpathentry output="samples/petclinic/target/classes" kind="src" path="samples/petclinic/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/concurrent/concurrent.jar"/>
-	<classpathentry kind="lib" path="lib/javahelp/jh.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance/aopalliance.jar"/>
 	<classpathentry sourcepath="/acegisecurity" kind="lib" path="lib/acegisecurity/acegi-security.jar"/>
@@ -31,5 +30,6 @@
 	<classpathentry kind="lib" path="lib/spin/spin.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-attributes-api.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-collections.jar"/>
+	<classpathentry kind="lib" path="lib/javahelp/javahelp.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
