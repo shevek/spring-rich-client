@@ -61,7 +61,7 @@ public class SimpleServiceExporter extends RemoteExporter implements Controller 
 
     public void afterPropertiesSet() throws Exception {
         if (services == null) {
-            super.afterPropertiesSet();
+            //super.afterPropertiesSet();
             services = new ArrayList(1);
         }
         if (getService() != null || getServiceInterface() != null) {

@@ -15,16 +15,16 @@
  */
 package org.springframework.richclient.command;
 
-import org.springframework.rules.values.ValueListener;
+import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.util.ObjectUtils;
 
 /**
  * @author Keith Donald
  */
 public class TargetableActionCommand extends ActionCommand {
-    private CommandDelegate commandDelegate;
+    private ActionCommandExecutor commandDelegate;
 
-    private ValueListener guardRelay;
+    private ValueChangeListener guardRelay;
 
     public TargetableActionCommand() {
         this(null);
@@ -34,19 +34,19 @@ public class TargetableActionCommand extends ActionCommand {
         this(commandId, null);
     }
 
-    public TargetableActionCommand(String commandId, CommandDelegate delegate) {
+    public TargetableActionCommand(String commandId, ActionCommandExecutor delegate) {
         super(commandId);
         setEnabled(false);
         setCommandDelegate(delegate);
     }
 
-    public void setCommandDelegate(CommandDelegate delegate) {
+    public void setCommandDelegate(ActionCommandExecutor delegate) {
         if (ObjectUtils.nullSafeEquals(this.commandDelegate, delegate)) { return; }
         if (delegate == null) {
             removeCommandDelegate();
         }
         else {
-            if (this.commandDelegate instanceof GuardedCommandDelegate) {
+            if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
                 unsubscribeFromGuardedCommandDelegate();
             }
             this.commandDelegate = delegate;
@@ -55,8 +55,8 @@ public class TargetableActionCommand extends ActionCommand {
     }
 
     private void handlerSet() {
-        if (this.commandDelegate instanceof GuardedCommandDelegate) {
-            GuardedCommandDelegate dynamicHandler = (GuardedCommandDelegate)commandDelegate;
+        if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
+            GuardedActionCommandExecutor dynamicHandler = (GuardedActionCommandExecutor)commandDelegate;
             setEnabled(dynamicHandler.isEnabled());
             subscribeToGuardedCommandDelegate();
         }
@@ -70,18 +70,18 @@ public class TargetableActionCommand extends ActionCommand {
     }
 
     private void subscribeToGuardedCommandDelegate() {
-        this.guardRelay = new ValueListener() {
+        this.guardRelay = new ValueChangeListener() {
             public void valueChanged() {
-                setEnabled(((GuardedCommandDelegate)commandDelegate)
+                setEnabled(((GuardedActionCommandExecutor)commandDelegate)
                         .isEnabled());
             }
         };
-        ((GuardedCommandDelegate)commandDelegate)
+        ((GuardedActionCommandExecutor)commandDelegate)
                 .addEnabledListener(guardRelay);
     }
 
     public void removeCommandDelegate() {
-        if (this.commandDelegate instanceof GuardedCommandDelegate) {
+        if (this.commandDelegate instanceof GuardedActionCommandExecutor) {
             unsubscribeFromGuardedCommandDelegate();
         }
         this.commandDelegate = null;
@@ -90,13 +90,13 @@ public class TargetableActionCommand extends ActionCommand {
     }
 
     private void unsubscribeFromGuardedCommandDelegate() {
-        ((GuardedCommandDelegate)this.commandDelegate)
+        ((GuardedActionCommandExecutor)this.commandDelegate)
                 .removeEnabledListener(guardRelay);
     }
 
     protected void doExecuteCommand() {
-        if (commandDelegate instanceof ParameterizedCommandDelegate) {
-            ((ParameterizedCommandDelegate)commandDelegate)
+        if (commandDelegate instanceof ParameterizedActionCommandExecutor) {
+            ((ParameterizedActionCommandExecutor)commandDelegate)
                     .execute(getParameters());
         }
         else {

@@ -43,10 +43,10 @@ import org.springframework.richclient.image.DefaultIconSource;
 import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
-import org.springframework.rules.DefaultRulesSource;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.predicates.beans.BeanPropertyExpression;
+import org.springframework.rules.constraints.beans.BeanPropertyConstraint;
+import org.springframework.rules.support.DefaultRulesSource;
 
 /**
  * A singleton service locator of a rich client application.
@@ -383,7 +383,7 @@ public class ApplicationServices extends ApplicationObjectSupport implements
         return getIconSource().getIcon(key);
     }
 
-    public BeanPropertyExpression getRules(Class beanClass, String propertyName) {
+    public BeanPropertyConstraint getRules(Class beanClass, String propertyName) {
         return getRulesSource().getRules(beanClass, propertyName);
     }
 

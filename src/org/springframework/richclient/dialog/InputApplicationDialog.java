@@ -27,8 +27,8 @@ import org.springframework.richclient.forms.FormBuilder;
 import org.springframework.richclient.forms.JGoodiesFormBuilder;
 import org.springframework.richclient.forms.SimpleValidationResultsReporter;
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.rules.UnaryPredicate;
-import org.springframework.rules.UnaryProcedure;
+import org.springframework.rules.Closure;
+import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 
 import com.jgoodies.forms.layout.FormLayout;
@@ -45,9 +45,9 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     private JComponent inputField;
 
-    private UnaryPredicate inputConstraint;
+    private Constraint inputConstraint;
 
-    private UnaryProcedure finishAction;
+    private Closure finishAction;
 
     private SimpleMessageAreaPane reporter;
 
@@ -59,9 +59,9 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     public InputApplicationDialog(Object bean, String propertyName,
             boolean bufferChanges) {
-        this( SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
+        this(SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
     }
-    
+
     public InputApplicationDialog(SwingFormModel formModel, String propertyName) {
         this();
         this.formModel = formModel;
@@ -92,11 +92,11 @@ public class InputApplicationDialog extends ApplicationDialog {
         this.inputLabelMessage = inputLabel;
     }
 
-    public void setInputConstraint(UnaryPredicate constraint) {
+    public void setInputConstraint(Constraint constraint) {
         this.inputConstraint = constraint;
     }
 
-    public void setFinishAction(UnaryProcedure procedure) {
+    public void setFinishAction(Closure procedure) {
         this.finishAction = procedure;
     }
 
@@ -175,7 +175,7 @@ public class InputApplicationDialog extends ApplicationDialog {
             formModel.commit();
         }
         if (finishAction != null) {
-            finishAction.run(inputValue);
+            finishAction.call(inputValue);
         }
     }
 

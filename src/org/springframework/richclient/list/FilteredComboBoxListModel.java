@@ -17,7 +17,7 @@ package org.springframework.richclient.list;
 
 import javax.swing.ComboBoxModel;
 
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.Constraint;
 
 /**
  * @author kdonald
@@ -27,7 +27,7 @@ public class FilteredComboBoxListModel extends FilteredListModel implements
 
     private boolean matchedSelected;
     
-    public FilteredComboBoxListModel(ComboBoxModel filteredModel, UnaryPredicate filter) {
+    public FilteredComboBoxListModel(ComboBoxModel filteredModel, Constraint filter) {
         super(filteredModel, filter);
     }
     

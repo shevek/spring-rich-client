@@ -21,31 +21,31 @@ import java.util.Observer;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
-import org.springframework.rules.UnaryPredicate;
-import org.springframework.rules.values.ValueChangeable;
-import org.springframework.rules.values.ValueListener;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueChangePublisher;
+import org.springframework.rules.Constraint;
 
 /**
  * @author Keith Donald
  */
 public class FilteredListModel extends AbstractFilteredListModel
-        implements Observer, ValueListener {
+        implements Observer, ValueChangeListener {
 
-    private UnaryPredicate constraint;
+    private Constraint constraint;
 
     private int[] indexes;
 
     private int filteredSize;
 
     public FilteredListModel(ListModel listModel,
-            UnaryPredicate constraint) {
+            Constraint constraint) {
         super(listModel);
         this.constraint = constraint;
         if (this.constraint instanceof Observable) {
             ((Observable)this.constraint).addObserver(this);
         }
-        else if (this.constraint instanceof ValueChangeable) {
-            ((ValueChangeable)this.constraint).addValueListener(this);
+        else if (this.constraint instanceof ValueChangePublisher) {
+            ((ValueChangePublisher)this.constraint).addValueChangeListener(this);
         }
         reallocateIndexes();
     }

@@ -27,7 +27,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandInterceptor;
-import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandGroupFactoryBean;
 import org.springframework.richclient.command.CommandManager;
@@ -156,8 +156,8 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         return commandRegistry.containsCommandGroup(groupId);
     }
 
-    public boolean containsCommand(String commandId) {
-        return commandRegistry.containsCommand(commandId);
+    public boolean containsActionCommand(String commandId) {
+        return commandRegistry.containsActionCommand(commandId);
     }
 
     /**
@@ -204,9 +204,9 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
         commandRegistry.registerCommand(command);
     }
 
-    public void registerTargetableActionCommandDelegate(String commandId,
-            CommandDelegate delegate) {
-        commandRegistry.registerTargetableActionCommandDelegate(commandId,
+    public void setTargetableActionCommandExecutor(String commandId,
+            ActionCommandExecutor delegate) {
+        commandRegistry.setTargetableActionCommandExecutor(commandId,
                 delegate);
     }
 
@@ -219,7 +219,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor 
     }
 
     public TargetableActionCommand createTargetableActionCommand(
-            String commandId, CommandDelegate delegate) {
+            String commandId, ActionCommandExecutor delegate) {
         Assert.notNull(commandId,
                 "Registered targetable action commands must have an id.");
         TargetableActionCommand newCommand = new TargetableActionCommand(

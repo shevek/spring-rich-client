@@ -29,9 +29,9 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.rules.values.ValidationListener;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

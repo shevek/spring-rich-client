@@ -443,11 +443,11 @@ public abstract class ApplicationDialog extends
     protected void addActionKeyBinding(KeyStroke key, String actionKey) {
         if (actionKey == finishCommand.getId()) {
             addActionKeyBinding(key, actionKey, finishCommand
-                    .getActionAdapter());
+                    .getSwingActionAdapter());
         }
         else if (actionKey == cancelCommand.getId()) {
             addActionKeyBinding(key, actionKey, cancelCommand
-                    .getActionAdapter());
+                    .getSwingActionAdapter());
         }
         else {
             throw new IllegalArgumentException("Unknown action key "

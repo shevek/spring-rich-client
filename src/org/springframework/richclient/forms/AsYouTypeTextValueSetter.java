@@ -19,7 +19,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueModel;
 
 public class AsYouTypeTextValueSetter extends AbstractValueSetter implements
         DocumentListener {

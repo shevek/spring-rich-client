@@ -17,10 +17,10 @@ package org.springframework.richclient.dialog;
 
 import java.awt.Image;
 
+import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ControlFactory;
 import org.springframework.rules.reporting.Severity;
-import org.springframework.rules.values.PropertyChangePublisher;
 
 public interface DialogPage extends ControlFactory, MessageReceiver, Guarded,
         PropertyChangePublisher {

@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.rules.values.ValueHolder;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 
 /**
  * A combobox whose contents are dynamically refreshable.
@@ -30,7 +30,7 @@ import org.springframework.rules.values.ValueModel;
  * @author Keith Donald
  */
 public class DynamicComboBoxListModel extends ComboBoxListModel implements
-        ValueListener {
+        ValueChangeListener {
     private static final Log logger = LogFactory
             .getLog(DynamicComboBoxListModel.class);
 
@@ -51,15 +51,15 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
         super();
         this.selectedItemHolder = selectedItemHolder;
         if (selectedItemHolder != null) {
-            selectedItemHolder.addValueListener(new ValueListener() {
+            selectedItemHolder.addValueChangeListener(new ValueChangeListener() {
                 public void valueChanged() {
                     if (logger.isDebugEnabled()) {
                         logger
                                 .debug("Notifying combo box view selected value changed; new value is '"
-                                        + selectedItemHolder.get() + "'");
+                                        + selectedItemHolder.getValue() + "'");
                     }
                     //Thread.dumpStack();
-                    if (selectedItemHolder.get() == null) {
+                    if (selectedItemHolder.getValue() == null) {
                         if (size() > 0 && get(0) != null) {
                             if (logger.isDebugEnabled()) {
                                 logger
@@ -89,12 +89,12 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
     public void setSelectableItemsHolder(ValueModel holder) {
         if (this.selectableItemsHolder == holder) { return; }
         if (this.selectableItemsHolder != null) {
-            holder.removeValueListener(this);
+            holder.removeValueChangeListener(this);
         }
         this.selectableItemsHolder = holder;
         if (this.selectableItemsHolder != null) {
-            doAdd(holder.get());
-            this.selectableItemsHolder.addValueListener(this);
+            doAdd(holder.getValue());
+            this.selectableItemsHolder.addValueChangeListener(this);
         }
     }
 
@@ -102,9 +102,9 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
         if (selectedItemHolder != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Returning selected item "
-                        + selectedItemHolder.get());
+                        + selectedItemHolder.getValue());
             }
-            return selectedItemHolder.get();
+            return selectedItemHolder.getValue();
         }
         else {
             return super.getSelectedItem();
@@ -117,7 +117,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
                 logger.debug("Setting newly selected item on value holder to "
                         + selectedItem);
             }
-            selectedItemHolder.set(selectedItem);
+            selectedItemHolder.setValue(selectedItem);
         }
         else {
             super.setSelectedItem(selectedItem);
@@ -129,7 +129,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements
             logger.debug("Backing collection of selectable items changed; "
                     + "refreshing combo box with contents of new collection.");
         }
-        doAdd(selectableItemsHolder.get());
+        doAdd(selectableItemsHolder.getValue());
     }
 
     private void doAdd(Object items) {

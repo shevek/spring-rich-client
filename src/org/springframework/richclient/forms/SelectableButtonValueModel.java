@@ -23,16 +23,16 @@ import java.awt.event.ItemEvent;
 
 import javax.swing.DefaultButtonModel;
 
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
 
 final class SelectableButtonValueModel extends DefaultButtonModel implements
-        ValueListener {
+        ValueChangeListener {
     private ValueModel valueModel;
 
     public SelectableButtonValueModel(ValueModel valueModel) {
         this.valueModel = valueModel;
-        this.valueModel.addValueListener(this);
+        this.valueModel.addValueChangeListener(this);
     }
 
     public void valueChanged() {
@@ -73,7 +73,7 @@ final class SelectableButtonValueModel extends DefaultButtonModel implements
     }
 
     public boolean isSelected() {
-        Boolean selected = (Boolean)valueModel.get();
+        Boolean selected = (Boolean)valueModel.getValue();
         if (selected == null) { return false; }
         return selected.booleanValue();
     }
@@ -91,10 +91,10 @@ final class SelectableButtonValueModel extends DefaultButtonModel implements
         fireStateChanged();
 
         if (b) {
-            valueModel.set(Boolean.TRUE);
+            valueModel.setValue(Boolean.TRUE);
         }
         else {
-            valueModel.set(Boolean.FALSE);
+            valueModel.setValue(Boolean.FALSE);
         }
 
     }

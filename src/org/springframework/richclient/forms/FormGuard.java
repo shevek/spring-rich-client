@@ -17,10 +17,10 @@ package org.springframework.richclient.forms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.ValidationEvent;
+import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.ValidationEvent;
-import org.springframework.rules.values.ValidationListener;
 
 /**
  * @author Keith Donald

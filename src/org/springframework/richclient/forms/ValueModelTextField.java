@@ -17,10 +17,10 @@ package org.springframework.richclient.forms;
 
 import java.text.ParseException;
 
-import org.springframework.richclient.controls.PatchedJFormattedTextField;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
-import org.springframework.rules.values.ValueModelWrapper;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueModelWrapper;
+import org.springframework.richclient.control.PatchedJFormattedTextField;
 
 class ValueModelTextField extends PatchedJFormattedTextField {
     private ValueModel valueModel;
@@ -32,7 +32,7 @@ class ValueModelTextField extends PatchedJFormattedTextField {
         super();
         this.valueModel = valueModel;
         this.setFormatterFactory(factory);
-        this.valueModel.addValueListener(new ValueListener() {
+        this.valueModel.addValueChangeListener(new ValueChangeListener() {
             public void valueChanged() {
                 if (!committingEdit) {
                     ValueModelTextField.super.setValue(getValue());
@@ -43,15 +43,15 @@ class ValueModelTextField extends PatchedJFormattedTextField {
 
     public Object getValue() {
         if (valueModel instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)valueModel).getWrapped();
+            return ((ValueModelWrapper)valueModel).getWrappedValue();
         }
         else {
-            return valueModel.get();
+            return valueModel.getValue();
         }
     }
 
     public void setValue(Object value) {
-        valueModel.set(value);
+        valueModel.setValue(value);
         super.setValue(value);
     }
 
@@ -59,7 +59,7 @@ class ValueModelTextField extends PatchedJFormattedTextField {
         committingEdit = true;
         AbstractFormatter format = getFormatter();
         if (format != null) {
-            this.valueModel.set(format.stringToValue(super.getText()));
+            this.valueModel.setValue(format.stringToValue(super.getText()));
         }
         committingEdit = false;
     }

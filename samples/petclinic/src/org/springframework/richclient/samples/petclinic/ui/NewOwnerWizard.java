@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.samples.petclinic.ui;
 
-import org.springframework.richclient.application.events.LifecycleApplicationEvent;
-import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.application.event.LifecycleApplicationEvent;
+import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.dialog.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.FormBackedWizardPage;
@@ -25,7 +25,7 @@ import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
 
-public class NewOwnerWizard extends AbstractWizard implements CommandDelegate {
+public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecutor {
     private WizardDialog wizardDialog;
 
     private CompoundForm wizardForm;

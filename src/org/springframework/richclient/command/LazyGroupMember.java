@@ -86,7 +86,7 @@ public class LazyGroupMember extends GroupMember {
                 loadedMember = new SimpleGroupMember(parentGroup, group);
             }
         }
-        else if (commandRegistry.containsCommand(lazyCommandId)) {
+        else if (commandRegistry.containsActionCommand(lazyCommandId)) {
             ActionCommand command = commandRegistry
                     .getActionCommand(lazyCommandId);
             Assert.notNull(command);

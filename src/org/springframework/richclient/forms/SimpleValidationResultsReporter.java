@@ -19,15 +19,15 @@ import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.ValidationEvent;
+import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.rules.reporting.DefaultMessageTranslator;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.ValidationResults;
-import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.ValidationEvent;
-import org.springframework.rules.values.ValidationListener;
 import org.springframework.util.Assert;
 
 /**

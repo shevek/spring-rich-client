@@ -28,8 +28,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
+import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.util.Alignment;
-import org.springframework.rules.values.ValueModel;
 
 /**
  * A factory interface for encapsulating logic to create well-formed, configured

@@ -19,8 +19,8 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.springframework.rules.values.ValueModel;
-import org.springframework.rules.values.ValueModelWrapper;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueModelWrapper;
 
 public class SpinnerValueSetter extends AbstractValueSetter implements
         ChangeListener {
@@ -29,8 +29,8 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
     public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
         super(valueModel);
         this.spinner = spinner;
-        if (valueModel.get() != null) {
-            this.spinner.setValue(valueModel.get());
+        if (valueModel.getValue() != null) {
+            this.spinner.setValue(valueModel.getValue());
         }
         this.spinner.addChangeListener(this);
     }
@@ -41,10 +41,10 @@ public class SpinnerValueSetter extends AbstractValueSetter implements
 
     protected Object getWrappedValue() {
         if (getValueModel() instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)getValueModel()).getWrapped();
+            return ((ValueModelWrapper)getValueModel()).getWrappedValue();
         }
         else {
-            return getValueModel().get();
+            return getValueModel().getValue();
         }
     }
 

@@ -32,9 +32,9 @@ import javax.swing.event.ListDataListener;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
-import org.springframework.rules.values.BufferedValueModel;
-import org.springframework.rules.values.ValueModel;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -90,17 +90,17 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         updateListListModelFromWrappedCollection();
     }
 
-    public Object get() {
-        if (!isChangeBuffered()) {
-            super.set(listListModel);
+    public Object getValue() {
+        if (!hasChangeBuffered()) {
+            super.setValue(listListModel);
         }
-        return super.get();
+        return super.getValue();
     }
 
     protected void doBufferedValueCommit(Object bufferedValue) {
         if (listListModelHasSameStructureAsWrappedCollection()) { return; }
         Object newCollection = createNewWrappedCollection();
-        getWrappedModel().set(newCollection);
+        getWrappedModel().setValue(newCollection);
         if (listListModelHasSameStructureAsWrappedCollection()) { return; }
         updateListListModelFromWrappedCollection();
     }
@@ -279,7 +279,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     private Object getWrappedValue() {
-        return super.getWrappedModel().get();
+        return super.getWrappedModel().getValue();
     }
 
     protected void onWrappedValueChanged() {
@@ -290,18 +290,18 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     
     protected void fireListListModelChanged() {
         if (!updating) {        
-            if (isChangeBuffered()) {
+            if (hasChangeBuffered()) {
                 super.fireValueChanged();
             }
             else {
-                super.set(listListModel);
+                super.setValue(listListModel);
             }            
         }
     }
 
     protected void fireValueChanged() {
         if (!updating) {
-            if (! isChangeBuffered()) {
+            if (! hasChangeBuffered()) {
                 updateListListModelFromWrappedCollection();
             }
         }

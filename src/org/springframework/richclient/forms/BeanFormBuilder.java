@@ -17,13 +17,13 @@ package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
 
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.Constraint;
 
 public interface BeanFormBuilder {
     public JComponent[] add(String formPropertyPath);
 
     public JComponent[] addSelector(String formPropertyPath,
-            UnaryPredicate filter);
+            Constraint filter);
 
     public JComponent[] addPasswordField(String formPropertyPath);
 

@@ -16,11 +16,11 @@
 
 package org.springframework.richclient.forms;
 
+import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.factory.ControlFactory;
-import org.springframework.rules.values.ValidationListener;
-import org.springframework.rules.values.ValueModel;
 
 /**
  * @author Keith Donald

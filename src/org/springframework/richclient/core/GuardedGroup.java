@@ -22,10 +22,10 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.rules.Algorithms;
-import org.springframework.rules.UnaryProcedure;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.rules.support.Algorithms;
+import org.springframework.rules.support.ClosureWithoutResult;
 
 /**
  * @author Keith Donald
@@ -52,19 +52,15 @@ public class GuardedGroup implements Guarded {
     }
 
     public boolean isEnabled() {
-        if (groupEnabledState == null) {
-            return false;
-        }
+        if (groupEnabledState == null) { return false; }
         return groupEnabledState.booleanValue();
     }
 
     public void setEnabled(final boolean enabled) {
         if (this.groupEnabledState != null
-                && this.groupEnabledState.booleanValue() == enabled) {
-            return;
-        }
-        Algorithms.instance().forEachIn(guardedGroup, new UnaryProcedure() {
-            public void run(Object guarded) {
+                && this.groupEnabledState.booleanValue() == enabled) { return; }
+        Algorithms.instance().forEach(guardedGroup, new ClosureWithoutResult() {
+            protected void doCall(Object guarded) {
                 ((Guarded)guarded).setEnabled(enabled);
             }
         });
@@ -80,7 +76,7 @@ public class GuardedGroup implements Guarded {
                 ValueModel valueModel) {
             this.guardedGroup = guardedGroup;
             this.guardedHolder = valueModel;
-            this.guardedHolder.addValueListener(new ValueListener() {
+            this.guardedHolder.addValueChangeListener(new ValueChangeListener() {
                 public void valueChanged() {
                     Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
                     if (groupEnabled != null) {
@@ -91,7 +87,7 @@ public class GuardedGroup implements Guarded {
         }
 
         public boolean isEnabled() {
-            Guarded g = (Guarded)guardedHolder.get();
+            Guarded g = (Guarded)guardedHolder.getValue();
             if (g != null) {
                 return g.isEnabled();
             }
@@ -101,7 +97,7 @@ public class GuardedGroup implements Guarded {
         }
 
         public void setEnabled(boolean enabled) {
-            Guarded g = (Guarded)guardedHolder.get();
+            Guarded g = (Guarded)guardedHolder.getValue();
             if (g != null) {
                 g.setEnabled(enabled);
             }

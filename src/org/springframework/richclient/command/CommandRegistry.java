@@ -15,20 +15,19 @@
  */
 package org.springframework.richclient.command;
 
-
 public interface CommandRegistry {
     public ActionCommand getActionCommand(String commandId);
 
     public CommandGroup getCommandGroup(String groupId);
 
-    public boolean containsCommand(String commandId);
+    public boolean containsActionCommand(String commandId);
 
     public boolean containsCommandGroup(String groupId);
 
     public void registerCommand(AbstractCommand command);
 
-    public void registerTargetableActionCommandDelegate(String commandId,
-            CommandDelegate delegate);
+    public void setTargetableActionCommandExecutor(String targetableCommandId,
+            ActionCommandExecutor commandExecutor);
 
     public void addCommandRegistryListener(CommandRegistryListener l);
 

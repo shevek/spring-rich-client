@@ -12,13 +12,13 @@ import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.richclient.application.Application;
-import org.springframework.rules.DefaultRulesSource;
+import org.springframework.rules.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesProvider;
 import org.springframework.rules.RulesSource;
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.constraints.beans.BeanPropertyConstraint;
 import org.springframework.rules.factory.Constraints;
-import org.springframework.rules.predicates.beans.BeanPropertyExpression;
+import org.springframework.rules.support.DefaultRulesSource;
 
 /**
  * JavaBean suitable for use with form model.
@@ -59,14 +59,14 @@ public class SessionDetails implements Serializable, RulesProvider {
     protected Rules getRules() {
         Rules rules = Rules.createRules(getClass());
         Constraints c = Constraints.instance();
-        rules.add(PROPERTY_USERNAME, c.all(new UnaryPredicate[] { c.required(),
+        rules.add(PROPERTY_USERNAME, c.all(new Constraint[] { c.required(),
                 c.maxLength(getUsernameMaxLength()) }));
-        rules.add(PROPERTY_PASSWORD, c.all(new UnaryPredicate[] { c.required(),
+        rules.add(PROPERTY_PASSWORD, c.all(new Constraint[] { c.required(),
                 c.minLength(getPasswordMinLength()) }));
         return rules;
     }
 
-    public BeanPropertyExpression getRules(String property) {
+    public BeanPropertyConstraint getRules(String property) {
         return rulesSource.getRules(getClass(), property);
     }
 

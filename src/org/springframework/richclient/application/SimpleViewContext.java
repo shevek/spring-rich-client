@@ -18,7 +18,7 @@ package org.springframework.richclient.application;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.util.Assert;
 
 /**
@@ -52,13 +52,13 @@ public class SimpleViewContext implements ViewContext {
         return viewName;
     }
 
-    public CommandDelegate findGlobalCommandDelegate(String commandId) {
+    public ActionCommandExecutor findGlobalCommandDelegate(String commandId) {
         Assert.notNull(commandId);
-        return (CommandDelegate)commandDelegates.get(commandId);
+        return (ActionCommandExecutor)commandDelegates.get(commandId);
     }
 
     public void registerGlobalCommandDelegate(String commandId,
-            CommandDelegate delegate) {
+            ActionCommandExecutor delegate) {
         Assert.notNull(commandId);
         commandDelegates.put(commandId, delegate);
     }

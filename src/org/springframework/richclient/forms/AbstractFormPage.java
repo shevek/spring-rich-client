@@ -15,20 +15,21 @@
  */
 package org.springframework.richclient.forms;
 
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.MessageReceiver;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.NestingFormModel;
-import org.springframework.rules.values.ValidationListener;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
 import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
  */
-public abstract class AbstractFormPage extends AbstractControlFactory implements FormPage {
+public abstract class AbstractFormPage extends AbstractControlFactory implements
+        FormPage {
     private NestingFormModel parent;
 
     private SwingFormModel pageFormModel;
@@ -55,16 +56,16 @@ public abstract class AbstractFormPage extends AbstractControlFactory implements
     protected AbstractFormPage(NestingFormModel parent, String formPageId,
             String parentFormObjectPropertyPath) {
         this.parent = parent;
-        setFormModel(SwingFormModel.createChildPageFormModel(parent, formPageId,
-                parentFormObjectPropertyPath));
+        setFormModel(SwingFormModel.createChildPageFormModel(parent,
+                formPageId, parentFormObjectPropertyPath));
         this.formPageId = formPageId;
     }
 
     protected AbstractFormPage(NestingFormModel parent, String formPageId,
             ValueModel childFormObjectHolder) {
         this.parent = parent;
-        setFormModel(SwingFormModel.createChildPageFormModel(parent, formPageId,
-                childFormObjectHolder));
+        setFormModel(SwingFormModel.createChildPageFormModel(parent,
+                formPageId, childFormObjectHolder));
         this.formPageId = formPageId;
     }
 
@@ -136,22 +137,22 @@ public abstract class AbstractFormPage extends AbstractControlFactory implements
                 messageAreaPane);
     }
 
-    protected void addFormObjectListener(ValueListener listener) {
-        getFormObjectHolder().addValueListener(listener);
+    protected void addFormObjectListener(ValueChangeListener listener) {
+        getFormObjectHolder().addValueChangeListener(listener);
     }
 
-    protected void removeFormObjectListener(ValueListener listener) {
-        getFormObjectHolder().removeValueListener(listener);
+    protected void removeFormObjectListener(ValueChangeListener listener) {
+        getFormObjectHolder().removeValueChangeListener(listener);
     }
 
-    protected void addFormValueListener(String formProperty,
-            ValueListener listener) {
-        getFormModel().addValueListener(formProperty, listener);
+    protected void addFormPropertyListener(String formProperty,
+            ValueChangeListener listener) {
+        getFormModel().addValueChangeListener(formProperty, listener);
     }
 
-    protected void removeFormValueListener(String formProperty,
-            ValueListener listener) {
-        getFormModel().removeValueListener(formProperty, listener);
+    protected void removeFormPropertyListener(String formProperty,
+            ValueChangeListener listener) {
+        getFormModel().removeValueChangeListener(formProperty, listener);
     }
 
     protected void registerGuard(Guarded guarded) {

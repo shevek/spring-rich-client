@@ -36,18 +36,19 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
-public abstract class ActionCommand extends AbstractCommand {
+public abstract class ActionCommand extends AbstractCommand implements
+        ActionCommandExecutor, ParameterizedActionCommandExecutor {
     public static final String ACTION_COMMAND_PROPERTY = "actionCommand";
 
     public static final String ACTION_EVENT_PARAMETER_KEY = "actionEvent";
 
     public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
 
+    private List commandInterceptors;
+
     private String actionCommand;
 
-    private ActionAdapter actionAdapter;
-
-    private List commandInterceptors;
+    private SwingActionAdapter swingActionAdapter;
 
     private Map parameters = new HashMap(6);
 
@@ -121,11 +122,11 @@ public abstract class ActionCommand extends AbstractCommand {
                 .intValue();
     }
 
-    public Action getActionAdapter() {
-        if (actionAdapter == null) {
-            actionAdapter = new ActionAdapter(this);
+    public Action getSwingActionAdapter() {
+        if (swingActionAdapter == null) {
+            this.swingActionAdapter = new SwingActionAdapter(this);
         }
-        return actionAdapter;
+        return swingActionAdapter;
     }
 
     public String getActionCommand() {
@@ -152,8 +153,8 @@ public abstract class ActionCommand extends AbstractCommand {
             rootPane.setDefaultButton(button);
         }
     }
-    
-    public void setFirstButtonAsDefault() {
+
+    public void setDefaultButton() {
         Iterator it = buttonIterator();
         while (it.hasNext()) {
             Object o = it.next();

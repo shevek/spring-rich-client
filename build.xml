@@ -88,7 +88,7 @@
 
 		<jar jarfile="${dist.dir}/spring-richclient.jar">
 			<fileset dir="${target.classes.dir}">
-				<include name="org/springframework/richclient/**"/>
+				<include name="org/springframework/**"/>
 			</fileset>
 			<manifest>
 				<attribute name="Spring-Version" value="${spring-version}"/>
@@ -109,7 +109,7 @@
 		<jar jarfile="${dist.dir}/spring-richclient.jar">
 			<fileset dir="${target.classes.dir}">
 				<include name="META-INF/**"/>
-				<include name="org/springframework/richclient/**"/>
+				<include name="org/springframework/**"/>
 			</fileset>
 			<manifest>
 				<attribute name="Spring-Version" value="${spring-version}"/>
@@ -121,7 +121,7 @@
 		<delete file="${dist.dir}/spring-richclient-src.zip"/>
 		<zip zipfile="${dist.dir}/spring-richclient-src.zip">
 			<fileset dir="${src.dir}">
-				<include name="org/springframework/richclient/**"/>
+				<include name="org/springframework/**"/>
 			</fileset>
 		</zip>
 	</target>
@@ -136,7 +136,7 @@
 			<bottom><![CDATA[<i>Copyright (C) 2003-2004 The Spring Framework Project.</i>]]></bottom>
 			<classpath refid="all-libs"/>
 			<packageset dir="${src.dir}">
-				<include name="org/springframework/richclient/**"/>
+				<include name="org/springframework/**"/>
 			</packageset>
 		</javadoc>
 	</target>

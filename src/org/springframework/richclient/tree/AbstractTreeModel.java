@@ -20,8 +20,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
 
 /**
  * 
@@ -41,11 +41,11 @@ public abstract class AbstractTreeModel implements TreeModel {
 
     protected AbstractTreeModel(ValueModel rootHolder) {
         this.rootHolder = rootHolder;
-        this.root = rootHolder.get();
-        this.rootHolder.addValueListener(new ValueListener() {
+        this.root = rootHolder.getValue();
+        this.rootHolder.addValueChangeListener(new ValueChangeListener() {
             public void valueChanged() {
                 fireRootTreeStructureChanged(root);
-                root = AbstractTreeModel.this.rootHolder.get();
+                root = AbstractTreeModel.this.rootHolder.getValue();
             }
         });
     }

@@ -19,15 +19,15 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
 
 /**
  * A list whose contents are dynamically refreshable.
  * 
  * @author Keith Donald
  */
-public class DynamicListModel extends ListListModel implements ValueListener {
+public class DynamicListModel extends ListListModel implements ValueChangeListener {
     private static final Log logger = LogFactory.getLog(DynamicListModel.class);
 
     private ValueModel listItemsValueModel;
@@ -40,12 +40,12 @@ public class DynamicListModel extends ListListModel implements ValueListener {
     public void setListItemsValueModel(ValueModel valueModel) {
         if (this.listItemsValueModel == valueModel) { return; }
         if (this.listItemsValueModel != null) {
-            valueModel.removeValueListener(this);
+            valueModel.removeValueChangeListener(this);
         }
         this.listItemsValueModel = valueModel;
         if (this.listItemsValueModel != null) {
-            doAdd((Collection)valueModel.get());
-            this.listItemsValueModel.addValueListener(this);
+            doAdd((Collection)valueModel.getValue());
+            this.listItemsValueModel.addValueChangeListener(this);
         }
     }
 
@@ -54,7 +54,7 @@ public class DynamicListModel extends ListListModel implements ValueListener {
             logger
                     .debug("Backing collection of items changed; refreshing list model.");
         }
-        doAdd((Collection)listItemsValueModel.get());
+        doAdd((Collection)listItemsValueModel.getValue());
     }
 
     private void doAdd(Collection c) {

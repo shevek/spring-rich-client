@@ -15,10 +15,10 @@
  */
 package org.springframework.richclient.forms;
 
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.Constraint;
 import org.springframework.rules.reporting.ValidationResults;
 
 public interface ValidationResultsReporter {
-    public void valid(UnaryPredicate constraint);
-    public void invalid(UnaryPredicate constraint, ValidationResults results);
+    public void valid(Constraint constraint);
+    public void invalid(Constraint constraint, ValidationResults results);
 }

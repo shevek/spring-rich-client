@@ -18,7 +18,7 @@ package org.springframework.richclient.util;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.springframework.rules.values.RefreshableValueHolder;
+import org.springframework.binding.value.support.RefreshableValueHolder;
 
 /**
  * Popup menu listener that refreshes a value holder -- typically a holder

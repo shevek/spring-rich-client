@@ -15,16 +15,16 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.command.ActionCommandExecutor;
 
 public interface ViewContext {
     public ApplicationWindow getApplicationWindow();
 
     public String getViewName();
 
-    public CommandDelegate findGlobalCommandDelegate(String globalCommandId);
+    public ActionCommandExecutor findGlobalCommandDelegate(String globalCommandId);
 
     public void registerGlobalCommandDelegate(String globalCommandId,
-            CommandDelegate localCommandDelegate);
+            ActionCommandExecutor localCommandDelegate);
 
 }

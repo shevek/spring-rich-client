@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.springframework.core.io.Resource;
-import org.springframework.rules.UnaryFunction;
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.Closure;
+import org.springframework.rules.Constraint;
 import org.springframework.rules.factory.Constraints;
 
 /**
@@ -36,37 +36,37 @@ public class FileChecks {
 
     }
 
-    public static UnaryPredicate readableFileCheck() {
+    public static Constraint readableFileCheck() {
         Constraints c = Constraints.instance();
-        UnaryPredicate checks = c.all(new UnaryPredicate[] { exists,
+        Constraint checks = c.all(new Constraint[] { exists,
                 file,
                 readable });
         return c.testResultOf(fileConverter, checks);
     }
 
-    public static class FileExists implements UnaryPredicate {
+    public static class FileExists implements Constraint {
         public boolean test(Object argument) {
             File f = (File)argument;
             return f != null && f.exists();
         }
     }
 
-    public static class FileIsFile implements UnaryPredicate {
+    public static class FileIsFile implements Constraint {
         public boolean test(Object argument) {
             File f = (File)argument;
             return f != null && !f.isDirectory();
         }
     }
 
-    public static class FileIsReadable implements UnaryPredicate {
+    public static class FileIsReadable implements Constraint {
         public boolean test(Object argument) {
             File f = (File)argument;
             return f != null && f.canRead();
         }
     }
 
-    public static class FileConverter implements UnaryFunction {
-        public Object evaluate(Object argument) {
+    public static class FileConverter implements Closure {
+        public Object call(Object argument) {
             File f;
             if (argument == null) {
                 return null;

@@ -17,10 +17,10 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import javax.swing.JComponent;
 
+import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.forms.AbstractFormPage;
 import org.springframework.richclient.forms.BeanFormBuilder;
 import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
-import org.springframework.rules.values.FormModel;
 
 import com.jgoodies.forms.layout.FormLayout;
 

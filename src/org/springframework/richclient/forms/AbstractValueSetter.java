@@ -17,13 +17,13 @@ package org.springframework.richclient.forms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
 
 /**
  * @author oliverh
  */
-public abstract class AbstractValueSetter implements ValueListener {
+public abstract class AbstractValueSetter implements ValueChangeListener {
     protected static final Log logger = LogFactory
             .getLog(AbstractValueSetter.class);
 
@@ -34,7 +34,7 @@ public abstract class AbstractValueSetter implements ValueListener {
     public AbstractValueSetter(ValueModel valueModel) {
         this.valueModel = valueModel;
         if (this.valueModel != null) {
-            this.valueModel.addValueListener(this);
+            this.valueModel.addValueChangeListener(this);
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractValueSetter implements ValueListener {
         if (valueModel != null) {
             try {
                 updating = true;
-                valueModel.set(newValue);
+                valueModel.setValue(newValue);
             }
             finally {
                 updating = false;
@@ -60,7 +60,7 @@ public abstract class AbstractValueSetter implements ValueListener {
 
     public void valueChanged() {
         if (!updating) {
-            setComponentValue(valueModel.get());
+            setComponentValue(valueModel.getValue());
         }
     }
 

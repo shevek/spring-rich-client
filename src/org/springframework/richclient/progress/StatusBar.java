@@ -37,7 +37,7 @@ import javax.swing.border.Border;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.controls.ShadowBorder;
+import org.springframework.richclient.control.ShadowBorder;
 import org.springframework.richclient.util.GridBagCellConstraints;
 import org.springframework.util.StringUtils;
 

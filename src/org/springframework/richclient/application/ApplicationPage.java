@@ -23,7 +23,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.springframework.richclient.controls.SimpleInternalFrame;
+import org.springframework.richclient.control.SimpleInternalFrame;
 
 public class ApplicationPage {
     private JComponent pageControl = new JPanel(new BorderLayout());

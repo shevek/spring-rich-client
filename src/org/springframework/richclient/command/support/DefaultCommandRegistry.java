@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
-import org.springframework.richclient.command.CommandDelegate;
+import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.CommandRegistryEvent;
@@ -97,9 +97,9 @@ public class DefaultCommandRegistry implements CommandRegistry,
         return group;
     }
 
-    public boolean containsCommand(String commandId) {
+    public boolean containsActionCommand(String commandId) {
         if (commandRegistry.containsKey(commandId)) { return true; }
-        if (parent != null) { return parent.containsCommand(commandId); }
+        if (parent != null) { return parent.containsActionCommand(commandId); }
         return false;
     }
 
@@ -113,7 +113,7 @@ public class DefaultCommandRegistry implements CommandRegistry,
         Assert
                 .isTrue(command.getId() != null,
                         "A command must have an identifier to be placed in a registry.");
-        if (containsCommand(command.getId())) {
+        if (containsActionCommand(command.getId())) {
             logger
                     .warn("This command registry already contains a command with id '"
                             + command.getId() + "'; will overwrite...");
@@ -141,8 +141,8 @@ public class DefaultCommandRegistry implements CommandRegistry,
         }
     }
 
-    public void registerTargetableActionCommandDelegate(String commandId,
-            CommandDelegate delegate) {
+    public void setTargetableActionCommandExecutor(String commandId,
+            ActionCommandExecutor delegate) {
         try {
             TargetableActionCommand command = (TargetableActionCommand)getActionCommand(commandId);
             Assert.isTrue(command != null,

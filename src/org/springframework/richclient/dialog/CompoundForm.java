@@ -15,10 +15,10 @@
  */
 package org.springframework.richclient.dialog;
 
+import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.rules.values.NestingFormModel;
-import org.springframework.rules.values.ValueHolder;
-import org.springframework.rules.values.ValueModel;
 
 /**
  * @author Keith Donald
@@ -42,7 +42,7 @@ public class CompoundForm {
             this.formObjectHolder = new ValueHolder(formObject);
         }
         else {
-            this.formObjectHolder.set(formObject);
+            this.formObjectHolder.setValue(formObject);
         }
     }
 
@@ -63,7 +63,7 @@ public class CompoundForm {
     }
 
     public Object getFormObject() {
-        return formObjectHolder.get();
+        return formObjectHolder.getValue();
     }
 
     public ValueModel getFormObjectHolder() {

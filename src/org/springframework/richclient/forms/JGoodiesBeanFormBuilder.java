@@ -23,7 +23,7 @@ import javax.swing.JTextArea;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -74,7 +74,7 @@ public class JGoodiesBeanFormBuilder implements BeanFormBuilder {
     }
 
     public JComponent[] addSelector(String formPropertyPath,
-            UnaryPredicate filter) {
+            Constraint filter) {
         JComponent propertyEditor = null;
         if (formModel.isEnumeration(formPropertyPath)) {
             propertyEditor = formModel.createBoundEnumComboBox(

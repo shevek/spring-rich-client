@@ -21,9 +21,9 @@ import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
-import org.springframework.rules.values.BufferedValueModel;
-import org.springframework.rules.values.ValueModel;
 
 class BufferedListValueModel extends BufferedValueModel {
     private ListListModel itemsBuffer;
@@ -34,11 +34,11 @@ class BufferedListValueModel extends BufferedValueModel {
         super(wrappedModel);
     }
 
-    public Object get() {
-        if (!isChangeBuffered()) {
-            super.set(internalGet());
+    public Object getValue() {
+        if (!hasChangeBuffered()) {
+            super.setValue(internalGet());
         }
-        return super.get();
+        return super.getValue();
     }
 
     /**
@@ -48,7 +48,7 @@ class BufferedListValueModel extends BufferedValueModel {
      * @return The list model buffer
      */
     protected Object internalGet() {
-        List itemsList = (List)getWrappedModel().get();
+        List itemsList = (List)getWrappedModel().getValue();
         if (this.itemsBuffer == null) {
             this.itemsBuffer = new ListListModel(itemsList);
             this.itemsBuffer.addListDataListener(new ListDataListener() {
@@ -87,7 +87,7 @@ class BufferedListValueModel extends BufferedValueModel {
      */
     protected void doBufferedValueCommit(Object bufferedValue) {
         List list = (List)bufferedValue;
-        getWrappedModel().set(new ArrayList(list));
+        getWrappedModel().setValue(new ArrayList(list));
     }
 
     protected void fireValueChanged() {
@@ -98,7 +98,7 @@ class BufferedListValueModel extends BufferedValueModel {
 
     protected void onWrappedValueChanged() {
         if (!updating) {
-            super.set(internalGet());
+            super.setValue(internalGet());
         }
     }
 

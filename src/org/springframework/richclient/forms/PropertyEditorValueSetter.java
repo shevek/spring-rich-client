@@ -19,7 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 
-import org.springframework.rules.values.ValueModel;
+import org.springframework.binding.value.ValueModel;
 
 public class PropertyEditorValueSetter extends AbstractValueSetter implements
         PropertyChangeListener {

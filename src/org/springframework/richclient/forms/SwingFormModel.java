@@ -36,6 +36,22 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.PropertyAccessStrategy;
+import org.springframework.binding.PropertyMetadataAccessStrategy;
+import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.MutableFormModel;
+import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.support.CompoundFormModel;
+import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.value.ValueChangeListener;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedValueModel;
+import org.springframework.binding.value.support.PropertyAdapter;
+import org.springframework.binding.value.support.TypeConverter;
+import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.enums.AbstractCodedEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
@@ -50,23 +66,7 @@ import org.springframework.richclient.list.DynamicListModel;
 import org.springframework.richclient.list.FilteredComboBoxListModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.rules.UnaryPredicate;
-import org.springframework.rules.values.BufferedValueModel;
-import org.springframework.rules.values.CommitListener;
-import org.springframework.rules.values.CompoundFormModel;
-import org.springframework.rules.values.FormModel;
-import org.springframework.rules.values.MutableFormModel;
-import org.springframework.rules.values.MutablePropertyAccessStrategy;
-import org.springframework.rules.values.NestingFormModel;
-import org.springframework.rules.values.PropertyAccessStrategy;
-import org.springframework.rules.values.PropertyAdapter;
-import org.springframework.rules.values.PropertyMetadataAccessStrategy;
-import org.springframework.rules.values.TypeConverter;
-import org.springframework.rules.values.ValidatingFormModel;
-import org.springframework.rules.values.ValidationListener;
-import org.springframework.rules.values.ValueHolder;
-import org.springframework.rules.values.ValueListener;
-import org.springframework.rules.values.ValueModel;
+import org.springframework.rules.Constraint;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.comparators.BeanPropertyComparator;
@@ -183,12 +183,14 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         formModel.removeValidationListener(listener);
     }
 
-    public void addValueListener(String formProperty, ValueListener listener) {
-        formModel.addValueListener(formProperty, listener);
+    public void addValueChangeListener(String formProperty,
+            ValueChangeListener listener) {
+        formModel.addValueChangeListener(formProperty, listener);
     }
 
-    public void removeValueListener(String formProperty, ValueListener listener) {
-        formModel.removeValueListener(formProperty, listener);
+    public void removeValueChangeListener(String formProperty,
+            ValueChangeListener listener) {
+        formModel.removeValueChangeListener(formProperty, listener);
     }
 
     public Object getFormObject() {
@@ -371,7 +373,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         TypeConverter typeConverter = new TypeConverter(valueModel, textField);
         ValueModel validatingModel = formModel.add(formProperty, typeConverter);
         textField.setEditable(isWriteable(formProperty));
-        textField.setValue(valueModel.get());
+        textField.setValue(valueModel.getValue());
         if (textField.isEditable()) {
             new JFormattedTextFieldValueSetter(textField, validatingModel,
                     valueCommitPolicy);
@@ -432,7 +434,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
             // model...
             valueModel = getValueModel(formProperty);
         }
-        propertyEditor.setValue(valueModel.get());
+        propertyEditor.setValue(valueModel.getValue());
         new PropertyEditorValueSetter(propertyEditor, valueModel);
         return bindControl(customEditor, formProperty);
     }
@@ -444,7 +446,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     public JTextComponent bind(final JTextComponent component,
             String formProperty, ValueCommitPolicy valueCommitPolicy) {
         final ValueModel valueModel = getOrCreateValueModel(formProperty);
-        component.setText((String)valueModel.get());
+        component.setText((String)valueModel.getValue());
         if (isWriteable(formProperty)) {
             component.setEditable(true);
             if (valueCommitPolicy == ValueCommitPolicy.AS_YOU_TYPE
@@ -457,9 +459,9 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         else {
             component.setEditable(false);
-            valueModel.addValueListener(new ValueListener() {
+            valueModel.addValueChangeListener(new ValueChangeListener() {
                 public void valueChanged() {
-                    component.setText((String)valueModel.get());
+                    component.setText((String)valueModel.getValue());
                 }
             });
         }
@@ -478,11 +480,11 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     protected JTextComponent bindAsLabel(final JTextComponent component,
             String formProperty) {
         final ValueModel value = getOrCreateValueModel(formProperty);
-        component.setText((String)value.get());
+        component.setText((String)value.getValue());
         component.setEditable(false);
-        value.addValueListener(new ValueListener() {
+        value.addValueChangeListener(new ValueChangeListener() {
             public void valueChanged() {
-                component.setText((String)value.get());
+                component.setText((String)value.getValue());
             }
         });
         return (JTextComponent)bindControl(component, formProperty);
@@ -494,10 +496,10 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         ValueModel value = getOrCreateValueModel(parentProperty);
         final ValueModel nestedAccessor = newNestedAspectAdapter(value,
                 childPropertyToDisplay);
-        component.setText((String)nestedAccessor.get());
-        nestedAccessor.addValueListener(new ValueListener() {
+        component.setText((String)nestedAccessor.getValue());
+        nestedAccessor.addValueChangeListener(new ValueChangeListener() {
             public void valueChanged() {
-                component.setText((String)nestedAccessor.get());
+                component.setText((String)nestedAccessor.getValue());
             }
         });
         return (JTextComponent)bindControl(component, parentProperty);
@@ -578,15 +580,15 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
     }
 
     public JComboBox createBoundEnumComboBox(String selectionFormProperty,
-            UnaryPredicate filter) {
+            Constraint filter) {
         JComboBox comboBox = createBoundEnumComboBox(selectionFormProperty);
         return (JComboBox)bindControl(installFilter(comboBox, filter),
                 selectionFormProperty);
     }
 
-    private JComboBox installFilter(JComboBox comboBox, UnaryPredicate filter) {
-        FilteredComboBoxListModel model = new FilteredComboBoxListModel(comboBox
-                .getModel(), filter);
+    private JComboBox installFilter(JComboBox comboBox, Constraint filter) {
+        FilteredComboBoxListModel model = new FilteredComboBoxListModel(
+                comboBox.getModel(), filter);
         comboBox.setModel(model);
         return comboBox;
     }
@@ -658,7 +660,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
                     getMetadataAccessStrategy().getPropertyType(formProperty));
             formModel.add(formProperty, valueModel);
         }
-        return (ListModel)valueModel.get();
+        return (ListModel)valueModel.getValue();
     }
 
     public JList createBoundList(String formProperty) {
@@ -712,7 +714,7 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
         model.setComparator(itemsComparator);
         list.setModel(model);
-        list.setSelectedValue(selectedItemHolder.get(), true);
+        list.setSelectedValue(selectedItemHolder.getValue(), true);
         list.addListSelectionListener(new ListSelectedValueMediator(list,
                 selectedItemHolder));
         return list;
@@ -734,25 +736,26 @@ public class SwingFormModel extends ApplicationServicesAccessorSupport
         }
 
         private void subscribe() {
-            selectedValueModel.addValueListener(new ValueListener() {
-                public void valueChanged() {
-                    if (selectedValueModel.get() != null) {
-                        if (!updating) {
-                            list.setSelectedValue(selectedValueModel.get(),
-                                    true);
+            selectedValueModel
+                    .addValueChangeListener(new ValueChangeListener() {
+                        public void valueChanged() {
+                            if (selectedValueModel.getValue() != null) {
+                                if (!updating) {
+                                    list.setSelectedValue(selectedValueModel
+                                            .getValue(), true);
+                                }
+                            }
+                            else {
+                                list.clearSelection();
+                            }
                         }
-                    }
-                    else {
-                        list.clearSelection();
-                    }
-                }
-            });
+                    });
         }
 
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 updating = true;
-                selectedValueModel.set(list.getSelectedValue());
+                selectedValueModel.setValue(list.getSelectedValue());
                 updating = false;
             }
         }

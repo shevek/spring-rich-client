@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
@@ -38,7 +39,6 @@ import org.springframework.richclient.command.support.DefaultCommandServices;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
-import org.springframework.rules.values.AbstractPropertyChangePublisher;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

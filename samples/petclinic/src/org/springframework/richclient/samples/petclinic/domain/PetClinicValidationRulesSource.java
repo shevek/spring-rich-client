@@ -7,9 +7,9 @@
  */
 package org.springframework.richclient.samples.petclinic.domain;
 
-import org.springframework.rules.DefaultRulesSource;
+import org.springframework.rules.Constraint;
 import org.springframework.rules.Rules;
-import org.springframework.rules.UnaryPredicate;
+import org.springframework.rules.support.DefaultRulesSource;
 import org.springframework.samples.petclinic.Owner;
 
 /**
@@ -29,8 +29,8 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
         return rules;
     }
 
-    private UnaryPredicate getNamePropertyConstraint() {
-        return all(new UnaryPredicate[] { required(), maxLength(25),
+    private Constraint getNamePropertyConstraint() {
+        return all(new Constraint[] { required(), maxLength(25),
                 regexp("[a-zA-Z]*", "alphabetic") });
     }
 

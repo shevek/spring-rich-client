@@ -20,8 +20,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JFormattedTextField;
 
-import org.springframework.rules.values.ValueModel;
-import org.springframework.rules.values.ValueModelWrapper;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueModelWrapper;
 
 /**
  * Sets the value of the value model associated with a formatted text field when
@@ -74,9 +74,9 @@ public class JFormattedTextFieldValueSetter extends AbstractValueSetter
         if (getValueModel() instanceof ValueModelWrapper) {
             if (!isUpdating()) {
                 System.out.println("Underlying value changed "
-                        + ((ValueModelWrapper)getValueModel()).getWrapped());
+                        + ((ValueModelWrapper)getValueModel()).getWrappedValue());
                 setComponentValue(((ValueModelWrapper)getValueModel())
-                        .getWrapped());
+                        .getWrappedValue());
             }
         }
         else {

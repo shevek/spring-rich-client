@@ -33,14 +33,15 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import org.springframework.binding.form.NestingFormModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.AbstractView;
 import org.springframework.richclient.application.ViewContext;
-import org.springframework.richclient.application.events.LifecycleApplicationEvent;
+import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.support.AbstractCommandDelegate;
+import org.springframework.richclient.command.support.AbstractCommandExecutor;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.dialog.InputApplicationDialog;
@@ -50,8 +51,7 @@ import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.PopupMenuMouseListener;
-import org.springframework.rules.UnaryProcedure;
-import org.springframework.rules.values.NestingFormModel;
+import org.springframework.rules.support.ClosureWithoutResult;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.util.Assert;
@@ -133,7 +133,7 @@ public class OwnerManagerView extends AbstractView implements
     private Owner getSelectedOwner() {
         DefaultMutableTreeNode node = getSelectedOwnerNode();
         if (node != null) {
-            return (Owner) node.getUserObject();
+            return (Owner)node.getUserObject();
         }
         else {
             return null;
@@ -141,7 +141,7 @@ public class OwnerManagerView extends AbstractView implements
     }
 
     private DefaultMutableTreeNode getSelectedOwnerNode() {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) ownersTree
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree
                 .getLastSelectedPathComponent();
         if (node == null || !(node.getUserObject() instanceof Owner)) {
             return null;
@@ -177,12 +177,12 @@ public class OwnerManagerView extends AbstractView implements
                 boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded,
                     leaf, row, hasFocus);
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             if (node.isRoot()) {
                 this.setIcon(getIconSource().getIcon("folder.icon"));
             }
             else {
-                Owner o = (Owner) node.getUserObject();
+                Owner o = (Owner)node.getUserObject();
                 this.setText(o.getFirstName() + " " + o.getLastName());
                 this.setIcon(getIconSource().getIcon("owner.bullet"));
             }
@@ -205,11 +205,11 @@ public class OwnerManagerView extends AbstractView implements
 
     public void onApplicationEvent(ApplicationEvent e) {
         if (e instanceof LifecycleApplicationEvent) {
-            LifecycleApplicationEvent le = (LifecycleApplicationEvent) e;
+            LifecycleApplicationEvent le = (LifecycleApplicationEvent)e;
             if (le.getEventType() == LifecycleApplicationEvent.CREATED
                     && le.objectIs(Owner.class)) {
                 if (ownersTree != null) {
-                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) ownersTreeModel
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode)ownersTreeModel
                             .getRoot();
                     root.add(new DefaultMutableTreeNode(le.getObject()));
                     ownersTreeModel.nodeStructureChanged(root);
@@ -230,8 +230,8 @@ public class OwnerManagerView extends AbstractView implements
             renameDialog.setTitle(getMessage("renameOwnerDialog.title"));
             renameDialog.setInputLabelMessage("renameDialog.label");
             renameDialog.setParent(getParentWindowControl());
-            renameDialog.setFinishAction(new UnaryProcedure() {
-                public void run(Object o) {
+            renameDialog.setFinishAction(new ClosureWithoutResult() {
+                protected void doCall(Object o) {
                     clinic.storeOwner(owner);
                     getSelectedOwnerNode().setUserObject(owner);
                     ownersTreeModel.nodeChanged(getSelectedOwnerNode());
@@ -246,18 +246,18 @@ public class OwnerManagerView extends AbstractView implements
         return clinic.loadOwner(ownerId);
     }
 
-    private class DeleteCommandDelegate extends AbstractCommandDelegate {
+    private class DeleteCommandDelegate extends AbstractCommandExecutor {
         public void execute() {
             ConfirmationDialog dialog = new ConfirmationDialog() {
                 protected void onConfirm() {
                     TreePath[] paths = ownersTree.getSelectionPaths();
                     for (int i = 0; i < paths.length; i++) {
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i]
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[i]
                                 .getLastPathComponent();
                         if (node.isRoot()) {
                             continue;
                         }
-                        Owner owner = (Owner) node.getUserObject();
+                        Owner owner = (Owner)node.getUserObject();
                         //clinic.deleteOwner(owner);
                         ownersTreeModel.removeNodeFromParent(node);
                     }
@@ -270,7 +270,7 @@ public class OwnerManagerView extends AbstractView implements
         }
     }
 
-    private class PropertiesCommandDelegate extends AbstractCommandDelegate {
+    private class PropertiesCommandDelegate extends AbstractCommandExecutor {
         private OwnerGeneralForm ownerGeneralPanel;
 
         private NestingFormModel ownerFormModel;
@@ -287,8 +287,8 @@ public class OwnerManagerView extends AbstractView implements
             tabbedPage.addForm(ownerGeneralPanel);
             tabbedPage.addForm(new OwnerAddressForm(ownerFormModel));
 
-            TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage,
-                    getParentWindowControl()) {
+            TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(
+                    tabbedPage, getParentWindowControl()) {
                 protected void onWindowGainedFocus() {
                     ownerGeneralPanel.requestFocusInWindow();
                     setEnabled(tabbedPage.isPageComplete());

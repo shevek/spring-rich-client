@@ -32,11 +32,11 @@ import org.springframework.enums.LetterCodedEnum;
 import org.springframework.enums.ShortCodedEnum;
 import org.springframework.enums.StringCodedEnum;
 import org.springframework.richclient.core.UIConstants;
-import org.springframework.richclient.table.renderers.BeanTableCellRenderer;
-import org.springframework.richclient.table.renderers.BooleanTableCellRenderer;
-import org.springframework.richclient.table.renderers.CodedEnumTableCellRenderer;
-import org.springframework.richclient.table.renderers.DateTimeTableCellRenderer;
-import org.springframework.richclient.table.renderers.OptimizedTableCellRenderer;
+import org.springframework.richclient.table.renderer.BeanTableCellRenderer;
+import org.springframework.richclient.table.renderer.BooleanTableCellRenderer;
+import org.springframework.richclient.table.renderer.CodedEnumTableCellRenderer;
+import org.springframework.richclient.table.renderer.DateTimeTableCellRenderer;
+import org.springframework.richclient.table.renderer.OptimizedTableCellRenderer;
 import org.springframework.richclient.util.WindowUtils;
 
 /**
