@@ -96,6 +96,10 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter
         }
     }
 
+    public boolean isCellEditable(int row, int column) {
+      return filteredModel.isCellEditable(indexes[row], column);
+    }
+    
     public boolean isAutoSortEnabled() {
         return autoSortEnabled;
     }
