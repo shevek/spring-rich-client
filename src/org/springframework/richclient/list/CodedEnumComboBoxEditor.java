@@ -11,11 +11,11 @@ import org.springframework.enums.CodedEnum;
 import org.springframework.util.Assert;
 
 /**
- * <code>ComboBoxEditor</code> that wraps another editor, but performs conversion
- * between <code>CodedEnum</code>s and <code>String</code>s.
- * <br/>
- * It wraps another <code>ComboBoxEditor</code> to avoid visual differences between
- * the default editor and this editor.
+ * <code>ComboBoxEditor</code> that wraps another editor, but performs
+ * conversion between <code>CodedEnum</code> s and <code>String</code>s.
+ * <br/>It wraps another <code>ComboBoxEditor</code> to avoid visual
+ * differences between the default editor and this editor.
+ * 
  * @author peter.de.bruycker
  */
 public class CodedEnumComboBoxEditor implements ComboBoxEditor {
@@ -28,8 +28,11 @@ public class CodedEnumComboBoxEditor implements ComboBoxEditor {
 
     /**
      * Constructs a new <code>CodedEnumComboBoxEditor</code> instance.
-     * @param messageSource the <code>MessageSource</code> to use for conversion
-     * @param editor the <code>ComboBoxEditor</code> to use internally
+     * 
+     * @param messageSource
+     *            the <code>MessageSource</code> to use for conversion
+     * @param editor
+     *            the <code>ComboBoxEditor</code> to use internally
      */
     public CodedEnumComboBoxEditor(MessageSource messageSource, ComboBoxEditor editor) {
         Assert.notNull(editor, "Editor cannot be null");
@@ -37,51 +40,54 @@ public class CodedEnumComboBoxEditor implements ComboBoxEditor {
         messages = messageSource;
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#selectAll()
      */
     public void selectAll() {
         inner.selectAll();
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#getEditorComponent()
      */
     public Component getEditorComponent() {
         return inner.getEditorComponent();
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#addActionListener(java.awt.event.ActionListener)
      */
     public void addActionListener(ActionListener l) {
         inner.addActionListener(l);
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#removeActionListener(java.awt.event.ActionListener)
      */
     public void removeActionListener(ActionListener l) {
         inner.removeActionListener(l);
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#getItem()
      */
     public Object getItem() {
         return current;
     }
 
-    /** 
+    /**
      * @see javax.swing.ComboBoxEditor#setItem(java.lang.Object)
      */
     public void setItem(Object anObject) {
         current = anObject;
-        if (messages != null) {
-            inner.setItem(messages.getMessage((CodedEnum)anObject, Locale.getDefault()));
-        }
-        else {
-            inner.setItem(((CodedEnum)anObject).getLabel());
+        if (anObject != null) {
+            if (messages != null) {
+                inner.setItem(messages.getMessage((CodedEnum) anObject, Locale.getDefault()));
+            } else {
+                inner.setItem(((CodedEnum) anObject).getLabel());
+            }
+        } else {
+            inner.setItem(null);
         }
     }
 }
