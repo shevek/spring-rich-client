@@ -17,11 +17,10 @@ package org.springframework.richclient.command.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -35,8 +34,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ToStringCreator;
 
 public class CommandFaceButtonManager implements PropertyChangeListener {
-    private ReferenceQueue queue = new ReferenceQueue();
-
     private Set buttons = new HashSet(6);
 
     private AbstractCommand command;
@@ -51,10 +48,13 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
         private WeakReference buttonHolder;
 
         private CommandButtonConfigurer buttonConfigurer;
+        
+        private int hashCode;
 
-        public ManagedButton(AbstractButton button, CommandButtonConfigurer buttonConfigurer, ReferenceQueue queue) {
-            this.buttonHolder = new WeakReference(button, queue);
+        public ManagedButton(AbstractButton button, CommandButtonConfigurer buttonConfigurer) {
+            this.buttonHolder = new WeakReference(button);
             this.buttonConfigurer = buttonConfigurer;
+            this.hashCode = button.hashCode();
         }
 
         public AbstractButton getButton() {
@@ -62,11 +62,14 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
         }
 
         public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
             return ObjectUtils.nullSafeEquals(getButton(), ((ManagedButton)o).getButton());
         }
 
         public int hashCode() {
-            return getButton().hashCode();
+            return hashCode;
         }
     }
 
@@ -117,17 +120,20 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     public void attachAndConfigure(AbstractButton button, CommandButtonConfigurer strategy) {
         Assert.notNull(button, "The button to attach and configure is required");
         Assert.notNull(strategy, "The button configuration strategy is required");
-        cleanUp();
-        ManagedButton managedButton = new ManagedButton(button, strategy, queue);
-        if (buttons.add(managedButton)) {
-            configure(button, strategy);
+        if (!isAttachedTo(button)) {
+            ManagedButton managedButton = new ManagedButton(button, strategy);
+            if (buttons.add(managedButton)) {
+                configure(button, strategy);
+            }
         }
     }
 
     private void cleanUp() {
-        Reference reference;
-        while ((reference = this.queue.poll()) != null) {
-            buttons.remove(reference.get());
+        for (Iterator i = buttons.iterator(); i.hasNext();) {
+            ManagedButton button = (ManagedButton)i.next();
+            if (button.getButton() == null) {
+                i.remove();
+            }
         }
     }
 
@@ -136,7 +142,7 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     public void detach(AbstractButton button) {
-        buttons.remove(button);
+        buttons.remove(findManagedButton(button));
     }
 
     public void detachAll() {
@@ -144,31 +150,62 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     public boolean isAttachedTo(AbstractButton button) {
-        return buttons.contains(button);
+        return findManagedButton(button) != null;
+    }
+
+    protected ManagedButton findManagedButton(AbstractButton button) {
+        Assert.notNull(button, "The button is required");
+        cleanUp();
+        for (Iterator i = buttons.iterator(); i.hasNext();) {
+            ManagedButton managedButton = (ManagedButton)i.next();
+            if (button.equals(managedButton.getButton())) {
+                return managedButton;
+            }
+        }
+        return null;
     }
 
     public Iterator iterator() {
+        cleanUp();
         return new ButtonIterator(buttons.iterator());
     }
 
     private static class ButtonIterator implements Iterator {
         private Iterator it;
 
+        private AbstractButton nextButton;
+
         public ButtonIterator(Iterator it) {
             this.it = it;
+            fetchNextButton();
         }
 
         public boolean hasNext() {
-            return it.hasNext();
+            return nextButton != null;
         }
 
         public Object next() {
-            ManagedButton mb = ((ManagedButton)it.next());
-            return mb.getButton();
+            if (nextButton == null) {
+                throw new NoSuchElementException();
+            }
+            AbstractButton lastButton = nextButton;
+            fetchNextButton();
+            return lastButton;
         }
 
         public void remove() {
             throw new UnsupportedOperationException();
+        }
+
+        private void fetchNextButton() {
+            while (it.hasNext()) {
+                ManagedButton managedButton = (ManagedButton)it.next();
+                nextButton = managedButton.getButton();
+                if (nextButton != null) {
+                    return;
+                }
+            }
+            nextButton = null;
         }
     };
 
@@ -187,8 +224,9 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     public String toString() {
-        return new ToStringCreator(this).append("commandId", command.getId()).append("faceDescriptor", faceDescriptor)
-                .append("attachedButtonCount", buttons.size()).toString();
+        return new ToStringCreator(this).append("commandId", command.getId())
+                .append("faceDescriptor", faceDescriptor)
+                .append("attachedButtonCount", buttons.size())
+                .toString();
     }
-
 }
