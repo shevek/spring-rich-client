@@ -70,7 +70,7 @@ public class DefaultImageSource implements ImageSource {
      * Creates a image resource bundle containing the specified map of keys to
      * resource paths.
      * <p>
-     * A custom URL protocol {@link Handler handler}will be installed for the
+     * A custom URL protocol {@link ImageURLStreamHandler handler}will be installed for the
      * "image:" protocol. This allows for images in this image source to be
      * located using the Java URL classes: <br>
      * <code>URL imageUrl = new URL("image:the.image.key")</code>
@@ -97,7 +97,7 @@ public class DefaultImageSource implements ImageSource {
         debugPrintResources();
         this.imageCache = new ImageCache();
         if (installUrlHandler) {
-            Handler.installImageUrlHandler(this);
+            ImageURLStreamHandler.installImageUrlHandler(this);
         }
     }
 
@@ -164,10 +164,6 @@ public class DefaultImageSource implements ImageSource {
         catch (IOException e) {
             throw new NoSuchImageResourceException(resource, e);
         }
-    }
-
-    public void installImageUrlHandler() {
-
     }
 
     public String toString() {
