@@ -131,6 +131,10 @@ public abstract class ApplicationDialog extends
         setCloseAction(closeAction);
     }
 
+    protected String getTitle() {
+        return title;
+    }
+
     public void setTitle(String title) {
         if (!StringUtils.hasText(title)) {
             title = DEFAULT_DIALOG_TITLE;

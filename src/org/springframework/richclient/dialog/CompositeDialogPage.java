@@ -58,8 +58,14 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
 
     private int largestPageHeight;
 
+    private boolean autoConfigureChildPages = true;
+
     public CompositeDialogPage(String pageId) {
         super(pageId);
+    }
+
+    public void setAutoConfigureChildPages(boolean autoConfigure) {
+        this.autoConfigureChildPages = autoConfigure;
     }
 
     /**
@@ -71,6 +77,10 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
      */
     public void addPage(DialogPage page) {
         pages.add(page);
+        if (autoConfigureChildPages) {
+            String id = getId() + "." + page.getId();
+            getObjectConfigurer().configure(page, id);
+        }
     }
 
     /**
@@ -124,7 +134,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
         addPages();
         Assert.hasElements(getPages());
         for (Iterator i = pages.iterator(); i.hasNext();) {
-            DialogPage page = (DialogPage) i.next();
+            DialogPage page = (DialogPage)i.next();
             page.addMessageListener(new MessageListener() {
                 public void messageUpdated(MessageReceiver target) {
                     if (getActivePage() == target) {
@@ -134,13 +144,14 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
             });
             page.addPropertyChangeListener(new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e) {
-                    if ("pageComplete".equals(e.getPropertyName())) {
+                    if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e
+                            .getPropertyName())) {
                         CompositeDialogPage.this
-                                .updatePageComplete((DialogPage) e.getSource());
+                                .updatePageComplete((DialogPage)e.getSource());
                     }
                     else {
-                        CompositeDialogPage.this
-                                .updatePageLabels((DialogPage) e.getSource());
+                        CompositeDialogPage.this.updatePageLabels((DialogPage)e
+                                .getSource());
                     }
                 }
             });
@@ -164,7 +175,7 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
     protected void updatePageComplete(DialogPage page) {
         boolean pageComplete = true;
         for (Iterator i = pages.iterator(); i.hasNext();) {
-            if (!((DialogPage) i.next()).isPageComplete()) {
+            if (!((DialogPage)i.next()).isPageComplete()) {
                 pageComplete = false;
                 break;
             }

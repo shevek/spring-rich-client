@@ -29,20 +29,39 @@ public class FormBackedDialogPage extends AbstractDialogPage {
     private AbstractFormPage backingFormPage;
 
     /**
+     * Createa a new FormBackedDialogPage
+     * 
+     * @param backingFormPage
+     *            a named form page that will provide the control for this
+     *            dialog page
+     */
+    public FormBackedDialogPage(AbstractFormPage backingFormPage) {
+        this(backingFormPage, true);
+    }
+
+    public FormBackedDialogPage(AbstractFormPage backingFormPage, boolean autoConfigure) {
+        super(backingFormPage.getId(), autoConfigure);
+        this.backingFormPage = backingFormPage;
+    }
+
+    /**
      * Creates a new FormPageBackedDialogPage.
      * 
-     * @param pageId
-     *            the id of this page. This will be used to configure page
-     *            titles/description
+     * @param parentPageId
+     *            the id of a containing parent page. This will be used to
+     *            configure page titles/description
      * @param backingFormPage
      *            the AbstractFormPage which will provide the control for this
      *            page.
      */
-    public FormBackedDialogPage(String pageId, AbstractFormPage backingFormPage) {
-        super(pageId);
+    public FormBackedDialogPage(String parentPageId,
+            AbstractFormPage backingFormPage) {
+        super(parentPageId
+                + (backingFormPage.getId() != null ? "."
+                        + backingFormPage.getId() : ""));
         this.backingFormPage = backingFormPage;
     }
-
+    
     protected AbstractFormPage getBackingFormPage() {
         return backingFormPage;
     }
@@ -51,9 +70,13 @@ public class FormBackedDialogPage extends AbstractDialogPage {
         setEnabled(!backingFormPage.hasErrors());
     }
 
-    public JComponent createControl() {
-        backingFormPage.newSingleLineResultsReporter(this, this);
+    protected JComponent createControl() {
+        initPageValidationReporter();
         return backingFormPage.getControl();
+    }
+
+    protected void initPageValidationReporter() {
+        backingFormPage.newSingleLineResultsReporter(this, this);
     }
 
     public void setEnabled(boolean enabled) {

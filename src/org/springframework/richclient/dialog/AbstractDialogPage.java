@@ -51,6 +51,10 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         }
     };
 
+    protected AbstractDialogPage() {
+
+    }
+
     /**
      * Creates a new dialog page. This titles of this dialog page will be
      * configured using the default ObjectConfigurer.
@@ -127,6 +131,9 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         this.pageId = pageId;
         firePropertyChange("id", oldValue, pageId);
         if (autoConfigure) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Auto configuring dialog page with id " + pageId);
+            }
             getObjectConfigurer().configure(this, pageId);
         }
     }

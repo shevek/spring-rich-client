@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * A TitledApplicationDialog that delegates to a single DialogPage for its
@@ -84,7 +85,9 @@ public abstract class TitledPageApplicationDialog extends
     }
 
     protected void update() {
-        setTitle(dialogPage.getTitle());
+        if (!StringUtils.hasText(getTitle())) {
+            setTitle(dialogPage.getTitle());
+        }
         updateTitleBar();
         updateMessage();
     }

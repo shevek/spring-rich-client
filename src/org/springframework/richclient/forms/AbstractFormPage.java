@@ -33,41 +33,47 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
 
     private SwingFormModel pageFormModel;
 
+    private String formPageId;
+
     protected AbstractFormPage() {
 
     }
 
-    protected AbstractFormPage(NestingFormModel parent) {
-        this.parent = parent;
-    }
-
-    protected AbstractFormPage(NestingFormModel parent, String pageName) {
-        this(SwingFormModel.createChildPageFormModel(parent, pageName));
-    }
-
-    protected AbstractFormPage(NestingFormModel parent, String pageName,
-            String parentFormObjectPropertyPath) {
-        this.parent = parent;
-        setFormModel(SwingFormModel.createChildPageFormModel(parent, pageName,
-                parentFormObjectPropertyPath));
-    }
-
-    protected AbstractFormPage(NestingFormModel parent, String pageName,
-            ValueModel childFormObjectHolder) {
-        this.parent = parent;
-        setFormModel(SwingFormModel.createChildPageFormModel(parent, pageName,
-                childFormObjectHolder));
+    protected AbstractFormPage(String formPageId) {
+        this.formPageId = formPageId;
     }
 
     protected AbstractFormPage(SwingFormModel pageFormModel) {
         setFormModel(pageFormModel);
     }
 
-    protected AbstractFormPage(FormModel formModel, String pageName) {
+    protected AbstractFormPage(NestingFormModel parent, String formPageId) {
+        this(SwingFormModel.createChildPageFormModel(parent, formPageId));
+        this.formPageId = formPageId;
+    }
+
+    protected AbstractFormPage(NestingFormModel parent, String formPageId,
+            String parentFormObjectPropertyPath) {
+        this.parent = parent;
+        setFormModel(SwingFormModel.createChildPageFormModel(parent, formPageId,
+                parentFormObjectPropertyPath));
+        this.formPageId = formPageId;
+    }
+
+    protected AbstractFormPage(NestingFormModel parent, String formPageId,
+            ValueModel childFormObjectHolder) {
+        this.parent = parent;
+        setFormModel(SwingFormModel.createChildPageFormModel(parent, formPageId,
+                childFormObjectHolder));
+        this.formPageId = formPageId;
+    }
+
+    protected AbstractFormPage(FormModel formModel, String formPageId) {
+        this.formPageId = formPageId;
         if (formModel instanceof NestingFormModel) {
             this.parent = (NestingFormModel)formModel;
             setFormModel(SwingFormModel.createChildPageFormModel(this.parent,
-                    pageName));
+                    formPageId));
         }
         else if (formModel instanceof SwingFormModel) {
             setFormModel((SwingFormModel)formModel);
@@ -76,6 +82,10 @@ public abstract class AbstractFormPage extends AbstractControlFactory {
             throw new IllegalArgumentException(
                     "Unsupported form model implementation " + formModel);
         }
+    }
+
+    public String getId() {
+        return formPageId;
     }
 
     public SwingFormModel getFormModel() {
