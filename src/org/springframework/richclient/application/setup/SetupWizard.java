@@ -46,13 +46,13 @@ public class SetupWizard extends AbstractWizard implements ActionCommandExecutor
     }
 
     public boolean onCancel() {
-        if (showCancelLicenseDialog()) {
+        if (cancelConfirmed()) {
             System.exit(1);
         }
         return false;
     }
 
-    protected boolean showCancelLicenseDialog() {
+    protected boolean cancelConfirmed() {
         return JOptionPane.showConfirmDialog(wizardDialog.getDialog(), getCancelMessage(), getCancelTitle(),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.NO_OPTION;
     }

@@ -60,20 +60,25 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
         setLicenseTextLocation(licenseTextLocation);
     }
 
+    public void setLicenseTextLocation(Resource location) {
+        this.licenseTextLocation = location;
+        if (licenseTextPane != null) {
+            updateLicenseTextPane();
+        }
+    }
+
     protected JComponent createControl() {
         initLicenseTextPane();
 
         ToggleCommand acceptCommand = new ToggleCommand("acceptLicenseCommand") {
-            protected boolean onSelection(boolean selection) {
-                SetupLicenseWizardPage.this.setEnabled(selection);
-                return selection;
+            protected void onSelection() {
+                SetupLicenseWizardPage.this.setEnabled(true);
             }
         };
 
         ToggleCommand doNotAcceptCommand = new ToggleCommand("doNotAcceptLicenseCommand") {
-            protected boolean onSelection(boolean selection) {
-                SetupLicenseWizardPage.this.setEnabled(!selection);
-                return selection;
+            protected void onSelection() {
+                SetupLicenseWizardPage.this.setEnabled(false);
             }
         };
         doNotAcceptCommand.setSelected(true);
@@ -109,13 +114,6 @@ public class SetupLicenseWizardPage extends AbstractWizardPage {
             doc.getStyleSheet().loadRules(new StringReader(stylesheet), null);
         }
         catch (IOException e) {
-        }
-    }
-
-    public void setLicenseTextLocation(Resource location) {
-        this.licenseTextLocation = location;
-        if (licenseTextPane != null) {
-            updateLicenseTextPane();
         }
     }
 
