@@ -69,7 +69,7 @@ public class BeanInspectorTreeModel extends AbstractTreeTableModel {
         public static final CompoundComparator TYPE_THEN_NAME_COMPARATOR = new CompoundComparator();
         static {
             TYPE_THEN_NAME_COMPARATOR.addComparator(new PropertyComparator(
-                    "simpleScalar", BooleanComparator.trueFirst()));
+                    "simpleScalar", BooleanComparator.instance()));
             TYPE_THEN_NAME_COMPARATOR.addComparator(new PropertyComparator(
                     "name", String.CASE_INSENSITIVE_ORDER));
         }
