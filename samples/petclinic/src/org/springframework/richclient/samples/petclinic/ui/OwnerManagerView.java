@@ -289,7 +289,7 @@ public class OwnerManagerView extends AbstractView implements
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(
                     tabbedPage, getParentWindowControl()) {
-                protected void onWindowGainedFocus() {
+                protected void onAboutToShow() {
                     ownerGeneralPanel.requestFocusInWindow();
                     setEnabled(tabbedPage.isPageComplete());
                 }
