@@ -196,6 +196,15 @@ public abstract class ApplicationDialog extends
         this.resizable = resizable;
     }
 
+    public boolean isEnabled() {
+        if (isControlCreated()) {
+            return finishCommand.isEnabled();
+        }
+        else {
+            return false;
+        }
+    }
+
     public void setEnabled(boolean enabled) {
         setFinishEnabled(enabled);
     }

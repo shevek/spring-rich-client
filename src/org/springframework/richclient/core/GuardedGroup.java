@@ -50,6 +50,22 @@ public class GuardedGroup implements Guarded {
         this.guardedGroup.add(new GuardedValueModel(this, guardedHolder));
     }
 
+    public boolean isEnabled() {
+        if (groupEnabledState == null) { return false; }
+        return groupEnabledState.booleanValue();
+    }
+
+    public void setEnabled(final boolean enabled) {
+        if (this.groupEnabledState != null
+                && this.groupEnabledState.booleanValue() == enabled) { return; }
+        Algorithms.instance().forEachIn(guardedGroup, new UnaryProcedure() {
+            public void run(Object guarded) {
+                ((Guarded)guarded).setEnabled(enabled);
+            }
+        });
+        this.groupEnabledState = Boolean.valueOf(enabled);
+    }
+
     private static class GuardedValueModel implements Guarded {
         private GuardedGroup guardedGroup;
 
@@ -69,6 +85,16 @@ public class GuardedGroup implements Guarded {
             });
         }
 
+        public boolean isEnabled() {
+            Guarded g = (Guarded)guardedHolder.get();
+            if (g != null) {
+                return g.isEnabled();
+            }
+            else {
+                return false;
+            }
+        }
+
         public void setEnabled(boolean enabled) {
             Guarded g = (Guarded)guardedHolder.get();
             if (g != null) {
@@ -79,6 +105,10 @@ public class GuardedGroup implements Guarded {
 
     public static final Guarded createGuardedAdapter(final JComponent component) {
         return new Guarded() {
+            public boolean isEnabled() {
+                return component.isEnabled();
+            }
+
             public void setEnabled(boolean enabled) {
                 component.setEnabled(enabled);
             }
@@ -95,16 +125,4 @@ public class GuardedGroup implements Guarded {
         g.guardedGroup = guardedSet;
         return g;
     };
-
-    public void setEnabled(final boolean enabled) {
-        if (this.groupEnabledState != null
-                && this.groupEnabledState.booleanValue() == enabled) { return; }
-        Algorithms.instance().forEachIn(guardedGroup, new UnaryProcedure() {
-            public void run(Object guarded) {
-                ((Guarded)guarded).setEnabled(enabled);
-            }
-        });
-        this.groupEnabledState = Boolean.valueOf(enabled);
-    }
-
 }

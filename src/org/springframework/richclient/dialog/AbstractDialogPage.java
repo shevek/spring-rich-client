@@ -207,6 +207,10 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         firePropertyChange("pageComplete", oldValue, pageComplete);
     }
 
+    public boolean isEnabled() {
+        return isPageComplete();
+    }
+
     public void setEnabled(boolean enabled) {
         setPageComplete(enabled);
     }
