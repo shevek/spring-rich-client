@@ -32,7 +32,7 @@ import javax.swing.text.Keymap;
 import javax.swing.undo.UndoManager;
 
 import org.springframework.binding.value.ValueChangeListener;
-import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.CommitTrigger;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.ActionCommand;
@@ -54,7 +54,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     private static final String[] COMMANDS = new String[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
             GlobalCommandIds.COPY, GlobalCommandIds.CUT, GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL };
 
-    public static void attachPopup(JTextComponent textComponent, ValueModel resetUndoHistoryTrigger) {
+    public static void attachPopup(JTextComponent textComponent, CommitTrigger resetUndoHistoryTrigger) {
         new TextComponentPopup(textComponent, resetUndoHistoryTrigger);
     }
 
@@ -66,7 +66,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
 
     private UndoManager undoManager = new UndoManager();
 
-    private ValueModel resetUndoHistoryTrigger;
+    private CommitTrigger resetUndoHistoryTrigger;
 
     private static CommandManager localCommandManager;
 
@@ -82,7 +82,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
 
     private final SelectAllCommandExecutor selectAll = new SelectAllCommandExecutor();
 
-    protected TextComponentPopup(JTextComponent textComponent, ValueModel resetUndoHistoryTrigger) {
+    protected TextComponentPopup(JTextComponent textComponent, CommitTrigger resetUndoHistoryTrigger) {
         this.textComponent = textComponent;
         this.resetUndoHistoryTrigger = resetUndoHistoryTrigger;
         registerListeners();
@@ -97,7 +97,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         if (resetUndoHistoryTrigger != null) {
             resetUndoHistoryTrigger.addValueChangeListener(new ValueChangeListener() {
                 public void valueChanged() {
-                    if (Boolean.TRUE.equals(resetUndoHistoryTrigger.getValue())) {
+                    if (resetUndoHistoryTrigger.isCommit()) {
                         undoManager.discardAllEdits();
                         updateUndoRedoState();
                     }
@@ -136,16 +136,10 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         }
     }
 
-    /**
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
     public void mousePressed(MouseEvent evt) {
         maybeShowPopup(evt);
     }
 
-    /**
-     * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
-     */
     public void mouseReleased(MouseEvent evt) {
         maybeShowPopup(evt);
     }

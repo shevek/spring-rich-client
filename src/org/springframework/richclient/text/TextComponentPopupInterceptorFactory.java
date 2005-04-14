@@ -50,6 +50,9 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
             if (innerComp instanceof JTextComponent) {
                 TextComponentPopup.attachPopup((JTextComponent)innerComp, getResetTrigger());
             }
+            else if (innerComp instanceof TextComponentContainer) {
+                TextComponentPopup.attachPopup(((TextComponentContainer)innerComp).getComponent(), getResetTrigger());
+            }
         }
 
         private CommitTrigger getResetTrigger() {
