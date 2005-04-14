@@ -246,7 +246,7 @@ public class SwingFormModelTests extends TestCase {
 		assertEquals("checkBox selection value not set", initialValue, checkBox.isSelected());
 
 		formModel.getValueModel(formProperty).setValue(Boolean.valueOf(!initialValue));
-		assertEquals("change in valuemodel not propagated to the component", !initialValue, checkBox.isSelected());
+		assertEquals("change in value model not propagated to the component", !initialValue, checkBox.isSelected());
 	}
 
 	private void assertComboBoxBinding(JComboBox comboBox, String formProperty, Object initialValue, Object newValue) {
@@ -260,13 +260,13 @@ public class SwingFormModelTests extends TestCase {
 
 		assertEquals(0, interceptor.getLabelCount());
 
-		assertEquals("initial combobox item not selected", initialValue, comboBox.getSelectedItem());
+		assertEquals("initial combo box item not selected", initialValue, comboBox.getSelectedItem());
 
 		formModel.getValueModel(formProperty).setValue(newValue);
-		assertEquals("change in valuemodel not propagated to the component", newValue, comboBox.getSelectedItem());
+		assertEquals("change in value model not propagated to the component", newValue, comboBox.getSelectedItem());
 
 		comboBox.setSelectedItem(initialValue);
-		assertEquals("change in component not propagated to valuemodel", initialValue, formModel.getValue(formProperty));
+		assertEquals("change in component not propagated to value model", initialValue, formModel.getValue(formProperty));
 	}
 
 	private void assertTextComponentBinding(JTextComponent textComponent, String formProperty, String initialValue,
@@ -284,14 +284,14 @@ public class SwingFormModelTests extends TestCase {
 		assertEquals("label doesn't have text", initialValue, textComponent.getText());
 
 		formModel.getValueModel(formProperty).setValue(newValue);
-		assertEquals("change in valuemodel not propagated to the component", newValue, textComponent.getText());
+		assertEquals("change in value model not propagated to the component", newValue, textComponent.getText());
 
 		if (textComponent.isEditable()) {
 			textComponent.requestFocusInWindow();
 			textComponent.setText(initialValue);
 
 			if (commitOnFocusLost) {
-				assertFalse("change was already commited, should wait until focus lost", ObjectUtils.nullSafeEquals(
+				assertFalse("change was already committed, should wait until focus lost", ObjectUtils.nullSafeEquals(
 						initialValue, formModel.getValue(formProperty)));
 
 				// simulate focus lost
@@ -302,7 +302,7 @@ public class SwingFormModelTests extends TestCase {
 				}
 			}
 
-			assertEquals("change in component not propagated to valuemodel", initialValue, formModel
+			assertEquals("change in component not propagated to value model", initialValue, formModel
 					.getValue(formProperty));
 		}
 	}
@@ -407,7 +407,7 @@ public class SwingFormModelTests extends TestCase {
 
 		Calendar calendar = new GregorianCalendar(1977, Calendar.JANUARY, 10);
 		formModel.getValueModel("date").setValue(calendar.getTime());
-		assertEquals("change in valuemodel not propagated to the component", calendar.getTime(), customEditor
+		assertEquals("change in value model not propagated to the component", calendar.getTime(), customEditor
 				.getValue());
 	}
 
@@ -465,7 +465,7 @@ public class SwingFormModelTests extends TestCase {
 		JComboBox comboBox = formModel.createBoundComboBox("stringProperty");
 
 		// if we add items like this, it fails, because no action is taken when
-		// the model of the combobox changes
+		// the model of the combo box changes
 		// comboBox.setModel(new
 		// DefaultComboBoxModel(Arrays.asList(STRING_ARRAY)));
 
@@ -598,19 +598,19 @@ public class SwingFormModelTests extends TestCase {
 		assertEquals(valueModelList, listModel);
 
 		valueModelList.add(item);
-		assertEquals("item added to valuemodel but not to list", initialList.size() + 1, listModel.size());
-		assertEquals("item added to valuemodel but not to list", item, listModel.get(listModel.size() - 1));
+		assertEquals("item added to value model but not to list", initialList.size() + 1, listModel.size());
+		assertEquals("item added to value model but not to list", item, listModel.get(listModel.size() - 1));
 
 		valueModelList.remove(item);
-		assertEquals("item removed from valuemodel but not from list", initialList.size(), listModel.size());
+		assertEquals("item removed from value model but not from list", initialList.size(), listModel.size());
 
 		listModel.add(item);
-		assertEquals("item added to listmodel but not to valuemodel", initialList.size() + 1, valueModelList.size());
-		assertTrue("item added to listmodel but not to valuemodel", valueModelList.contains(item));
+		assertEquals("item added to list model but not to value model", initialList.size() + 1, valueModelList.size());
+		assertTrue("item added to list model but not to value model", valueModelList.contains(item));
 
 		valueModelList.remove(item);
-		assertEquals("item removed from listmodel but not from valuemodel", initialList.size(), valueModelList.size());
-		assertFalse("item removed from listmodel but not from valuemodel", valueModelList.contains(item));
+		assertEquals("item removed from list model but not from value model", initialList.size(), valueModelList.size());
+		assertFalse("item removed from list model but not from value model", valueModelList.contains(item));
 	}
 
 	public void testCreateBoundList() {
@@ -647,16 +647,16 @@ public class SwingFormModelTests extends TestCase {
 		assertEquals(formModel.getValue(formProperty), list.getSelectedValue());
 
 		list.setSelectedIndex(0);
-		assertEquals("selection in list changed, but valuemodel not updated", list.getSelectedValue(), formModel
+		assertEquals("selection in list changed, but value model not updated", list.getSelectedValue(), formModel
 				.getValue(formProperty));
 		list.clearSelection();
-		assertNull("selection in list cleared, but valuemodel not updated", formModel.getValue(formProperty));
+		assertNull("selection in list cleared, but value model not updated", formModel.getValue(formProperty));
 
 		formModel.getValueModel(formProperty).setValue(newValue);
-		assertEquals("selection in valuemodel changed, but list not updated", formModel.getValue(formProperty), list
+		assertEquals("selection in value model changed, but list not updated", formModel.getValue(formProperty), list
 				.getSelectedValue());
 		formModel.getValueModel(formProperty).setValue(null);
-		assertNull("valuemodel cleared, but list selection not cleared", list.getSelectedValue());
+		assertNull("value model cleared, but list selection not cleared", list.getSelectedValue());
 
 	}
 

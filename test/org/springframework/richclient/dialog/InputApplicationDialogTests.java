@@ -77,6 +77,7 @@ public class InputApplicationDialogTests extends TestCase {
      */
     protected void setUp() throws Exception {
         // load application
+        Application.load(null);
         new Application(new DefaultApplicationLifecycleAdvisor());
         Application.services().setRulesSource(new BusinessRulesSource());
         StaticApplicationContext applicationContext = new StaticApplicationContext();
@@ -101,7 +102,7 @@ public class InputApplicationDialogTests extends TestCase {
         }
     }
 
-    private class BusinessObject {
+    public class BusinessObject {
         private String name;
 
         public String getName() {

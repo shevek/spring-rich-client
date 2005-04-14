@@ -42,14 +42,14 @@ public class HandlerTest extends TestCase {
 
         URL url;
 
-        // make sure a handler is not installed
-        try {
-            url = new URL("image:test");
-            fail("image protocol is already installed. Do any of the other tests instantiate DefaultImageSource?");
-        }
-        catch (MalformedURLException e) {
-            // expected
-        }
+//        // make sure a handler is not installed
+//        try {
+//            url = new URL("image:test");
+//            fail("image protocol is already installed. Do any of the other tests instantiate DefaultImageSource?");
+//        }
+//        catch (MalformedURLException e) {
+//            // expected
+//        }
 
         // test install
         Handler.installImageUrlHandler((ImageSource)new ClassPathXmlApplicationContext(

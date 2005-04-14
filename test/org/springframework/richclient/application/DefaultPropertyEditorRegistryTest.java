@@ -32,8 +32,8 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
 
         PropertyEditorRegistry registry = new DefaultPropertyEditorRegistry();
 
-        registry.setPropertyEditor(Number.class, ClassEditor.class);
-        pe = registry.getPropertyEditor(Long.class);
+        registry.setPropertyEditor(D.class, ClassEditor.class);
+        pe = registry.getPropertyEditor(E.class);
         assertNotNull(pe);
         assertEquals(ClassEditor.class, pe.getClass());
 
@@ -74,7 +74,7 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
         assertEquals(ClassEditor.class, pe.getClass());
 
         pe = registry.getPropertyEditor(B.class, "bar");
-        assertNull(pe);
+        assertNotNull(pe);
 
         registry.setPropertyEditor(Long.class, ClassEditor.class);
         pe = registry.getPropertyEditor(B.class, "bar");

@@ -31,7 +31,7 @@ public class LabelInfoFactoryTest extends TestCase {
 
         assertEquals("Test", info.getText());
         assertEquals(0, info.getMnemonic());
-        assertEquals(0, info.getMnemonicIndex());
+        assertEquals(-1, info.getMnemonicIndex());
     }
 
     public void testCreateLabelInfoEncoded() {
