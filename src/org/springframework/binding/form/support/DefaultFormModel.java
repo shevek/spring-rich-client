@@ -221,8 +221,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
 
     public void revert() {
         if (getBufferChangesDefault()) {
-            commitTrigger.setValue(Boolean.FALSE);
-            commitTrigger.setValue(null);
+            commitTrigger.revert();
         }
     }
 }

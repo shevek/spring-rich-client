@@ -28,6 +28,8 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 
 /**
@@ -37,6 +39,10 @@ import javax.swing.text.html.HTMLDocument;
  */
 public class HtmlPane extends JTextPane {
     private boolean antiAlias;
+    
+    private Caret caret;
+
+    private boolean allowSelection;
 
     /**
      * Creates a new HtmlPane. A default hyperlink activation handler will be
@@ -55,6 +61,7 @@ public class HtmlPane extends JTextPane {
     public HtmlPane(boolean installHyperlinkActivationHandler) {
         setEditorKit(new SynchronousHTMLEditorKit());
         setEditable(false);
+        installLaFStyleSheet();
         HyperlinkEnterExitBugFixer bugFixer = new HyperlinkEnterExitBugFixer();
         addMouseListener(bugFixer);
         addHyperlinkListener(bugFixer);
@@ -79,7 +86,41 @@ public class HtmlPane extends JTextPane {
         firePropertyChange("antiAlias", !antiAlias, antiAlias);
         repaint();
     }
+    
+    /**
+     * Is selection allowed in this pane.
+     */
+    public boolean getAllowSelection() {
+        return allowSelection;
+    }
+    
+    /**
+     * Set wherer or not selection should be allowed in this pane.
+     */
+    public void setAllowSelection(boolean allowSelection) {
+        if (this.allowSelection == allowSelection) { return; }
+        this.allowSelection = allowSelection;
+        setCaretInternal();
+        firePropertyChange("allowSelection", !allowSelection, allowSelection);        
+    }
 
+    public void setCaret(Caret caret) {
+        this.caret = caret;
+        setCaretInternal();
+    }
+    
+    public Caret getCaret() {
+        return caret;
+    }
+
+    private void setCaretInternal() {
+        if (allowSelection) {
+            super.setCaret(caret);
+        } else {
+            super.setCaret(new NoSelectionCaret());
+        }        
+    }
+    
     /**
      * Applies the current LaF font setting to the document.
      */
@@ -102,6 +143,17 @@ public class HtmlPane extends JTextPane {
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         }
         super.paintComponent(g);
+    }
+    
+    private static class NoSelectionCaret extends DefaultCaret {
+        public void mouseDragged(MouseEvent e) {
+        }
+
+        public void mouseMoved(MouseEvent e) {
+        }
+
+        public void mouseClicked(MouseEvent e) {
+        }
     }
 
     /*

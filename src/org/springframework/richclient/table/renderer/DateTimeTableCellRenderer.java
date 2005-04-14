@@ -15,58 +15,40 @@
  */
 package org.springframework.richclient.table.renderer;
 
-import java.awt.Component;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.TimeZone;
-
-import javax.swing.JTable;
 
 /**
  * Renders a date/time in the standard format.
  * 
  * @author Keith Donald
  */
-public class DateTimeTableCellRenderer extends OptimizedTableCellRenderer {
-    private DateFormat dateFormatter;
-
+public class DateTimeTableCellRenderer extends FormatTableCellRenderer {
+    
     public DateTimeTableCellRenderer() {
-        this.dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
+        super(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss"));
     }
 
     public DateTimeTableCellRenderer(DateFormat formatter) {
-        this.dateFormatter = formatter;
+        super(formatter);
     }
 
     public DateTimeTableCellRenderer(TimeZone timeZone) {
         this();
-        this.dateFormatter.setTimeZone(timeZone);
+        getDateFormat().setTimeZone(timeZone);
     }
 
     public DateFormat getDateFormat() {
-        return dateFormatter;
-    }
-
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-            int row, int column) {
-        doPrepareRenderer(table, isSelected, hasFocus, row, column);
-        if (value != null) {
-            Date date = (Date)value;
-            setValue(dateFormatter.format(date));
-        }
-        else {
-            setValue(null);
-        }
-        return this;
+        return (DateFormat) getFormat();
     }
 
     public void useGMTTime() {
-        dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z");
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        setFormat(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z"));
+        getDateFormat().setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     public void useLocalTime() {
-        dateFormatter = new SimpleDateFormat("EEE M/d/yyyy H:mm:ss");
+        setFormat(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss"));
     }
 }

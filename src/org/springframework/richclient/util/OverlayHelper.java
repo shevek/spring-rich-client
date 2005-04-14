@@ -35,6 +35,8 @@ import javax.swing.JRootPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 
+import org.springframework.util.Assert;
+
 /**
  * A helper class that attaches one component (the overlay) on top of another
  * component.
@@ -67,7 +69,7 @@ public class OverlayHelper implements SwingConstants {
      * @param center
      *            position relative to <code>overlayTarget</code> that overlay
      *            should be centered. May be one of the
-     *            <code>SwingConstants</code> compass postions or
+     *            <code>SwingConstants</code> compass positions or
      *            <code>SwingConstants.CENTER</center>. 
      * @param xOffset
      *            x offset from center 
@@ -156,7 +158,7 @@ public class OverlayHelper implements SwingConstants {
         try {
             isUpdating = true;
             Container overlayCapableParent = getOverlayCapableParent(overlayTarget);
-            if (overlayCapableParent == null || !(overlayTarget.isShowing() && overlay.isVisible())) {
+            if (overlayCapableParent == null || !overlayTarget.isShowing() || !overlay.isVisible()) {
                 hideOverlay();
             }
             else {
@@ -258,6 +260,8 @@ public class OverlayHelper implements SwingConstants {
             JViewport viewPort = (JViewport)overlayCapableParent;
             JLayeredPane layeredPane = (JLayeredPane)viewPort.getClientProperty(LAYERED_PANE_PROPERTY);
             if (layeredPane != null) {
+                Assert.isTrue(viewPort.getView() == layeredPane,
+                        "JViewport's view has been modified since layeredPane was inserted.");
                 return layeredPane;
             }
             layeredPane = new JLayeredPane();
@@ -277,11 +281,12 @@ public class OverlayHelper implements SwingConstants {
 
     public static class SingleComponentLayoutManager implements LayoutManager {
         private Component singleComponent;
-        private JViewport m_viewport;
 
-        public SingleComponentLayoutManager(Component singleComponent, JViewport viewPort) {
+        private JViewport viewport;
+
+        public SingleComponentLayoutManager(Component singleComponent, JViewport viewport) {
             this.singleComponent = singleComponent;
-            m_viewport = viewPort;
+            this.viewport = viewport;
         }
 
         public void removeLayoutComponent(Component comp) {
@@ -292,7 +297,7 @@ public class OverlayHelper implements SwingConstants {
 
         public void layoutContainer(Container parent) {
             final Dimension prefSize = singleComponent.getPreferredSize();
-            final Dimension viewSize = m_viewport.getExtentSize();
+            final Dimension viewSize = viewport.getExtentSize();
             final int maxWidth = Math.max(prefSize.width, viewSize.width);
             final int maxHeight = Math.max(prefSize.height, viewSize.height);
 

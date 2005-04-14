@@ -121,7 +121,7 @@ public class LabelInfoFactory {
         }
 
         int mnemonic = 0;
-        int mnemonicIndex = 0;
+        int mnemonicIndex = -1;
 
         for (; text != null;) {
             int i = text.indexOf('&');

@@ -42,9 +42,12 @@ public abstract class AbstractValueSetter implements ValueChangeListener {
 
     protected void componentValueChanged(Object newValue) {
         if (displayValueModel != null) {
-            displayValueModel.removeValueChangeListener(this);
-            displayValueModel.setValue(newValue);
-            displayValueModel.addValueChangeListener(this);
+            try {
+                displayValueModel.removeValueChangeListener(this);
+                displayValueModel.setValue(newValue);
+            } finally {
+                displayValueModel.addValueChangeListener(this);
+            }
         }
     }
 

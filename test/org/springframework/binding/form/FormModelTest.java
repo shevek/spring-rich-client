@@ -47,9 +47,9 @@ import org.springframework.richclient.forms.SwingFormModel;
 public class FormModelTest extends TestCase {
 
     static {
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
-        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
-        Application.services().setApplicationContext(new StaticApplicationContext());
+        Application application = new Application(new DefaultApplicationLifecycleAdvisor());        
+        Application.instance().setApplicationContext(new StaticApplicationContext());
+        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());        
     }
 
     public static class Employee implements PropertyEditorProvider {

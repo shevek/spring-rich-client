@@ -49,23 +49,22 @@ public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
             setForeground(table.getForeground());
             setBackground(table.getBackground());
         }
-        // NOTICE that we do NOT set the font here, because CTTable knows
-        // about us, it will set the font as appropriate.
-        if (hasFocus) {
-            setBorder(focusBorder);
-            if (table.isCellEditable(row, column)) {
-                //setForeground(editableForeground);
-                //setBackground(editableBackground);
-            }
-        }
-        else {
-            setBorder(noFocusBorder);
-        }
+    	setFont(table.getFont());
+    	if (hasFocus) {
+    	    setBorder( UIManager.getBorder("Table.focusCellHighlightBorder") );
+    	    if (table.isCellEditable(row, column)) {
+    	        super.setForeground( UIManager.getColor("Table.focusCellForeground") );
+    	        super.setBackground( UIManager.getColor("Table.focusCellBackground") );
+    	    }
+    	} else {
+    	    setBorder(noFocusBorder);
+    	}
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        doPrepareRenderer(table, isSelected, hasFocus, row, column);
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//        doPrepareRenderer(table, isSelected, hasFocus, row, column);
         setValue(value);
         return this;
     }

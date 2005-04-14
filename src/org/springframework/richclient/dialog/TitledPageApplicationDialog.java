@@ -101,5 +101,5 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
 
     protected void updateMessagePane() {
         setMessage(dialogPage.getMessage());
-    }
+    }    
 }

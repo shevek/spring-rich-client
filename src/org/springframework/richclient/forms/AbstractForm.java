@@ -142,7 +142,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         if (this.formModel != null && isControlCreated()) {
             throw new UnsupportedOperationException("Cannot reset form model once form control has been created");
         }
-        if (this.formModel != null) {
+        if (this.formModel != null) {            
             this.formModel.removeCommitListener(this);
         }
         this.formModel = formModel;
@@ -236,6 +236,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             attachFormErrorGuard(getCommitCommand());
             getFormModel().addCommitListener(this);
         }
+        getFormModel().validate();
         return formControl;
     }
 
@@ -497,6 +498,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
         getFormModel().removeFormValueChangeListener(formPropertyPath, listener);
+    }
+    
+    public boolean isDirty() {
+        return formModel.isDirty();
     }
 
     public boolean hasErrors() {

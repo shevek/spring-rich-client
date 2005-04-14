@@ -21,6 +21,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.springframework.richclient.list.ObservableList;
+
 /**
  * @author Keith Donald
  */
@@ -151,10 +153,12 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
             columnIndex--;
         }
         setValueAtInternal(value, rows.get(rowIndex), columnIndex);
+        if (getRows() instanceof ObservableList) {
+            ((ObservableList) getRows()).getIndexAdapter(rowIndex).fireIndexedObjectChanged();
+        }
     }
 
     protected void setValueAtInternal(Object value, Object row, int columnIndex) {
-
     }
 
     public Object getRow(int rowIndex) {

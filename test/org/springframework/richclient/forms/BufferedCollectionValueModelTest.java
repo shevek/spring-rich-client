@@ -306,7 +306,7 @@ public class BufferedCollectionValueModelTest extends TestCase {
         vm.setCommitTrigger(commitTriger);
         ListListModel llm = (ListListModel)vm.getValue();
         llm.clear();
-        commitTriger.setValue(Boolean.FALSE);
+        commitTriger.revert();
         assertHasSameStructure(llm, backingCollection);
     }
 
@@ -349,7 +349,7 @@ public class BufferedCollectionValueModelTest extends TestCase {
     private BufferedCollectionValueModel getBufferedCollectionValueModel(Object backingCollecton,
             Class backingCollectionClass) {
         ValueModel vm = new ValueHolder(backingCollecton);
-        return new BufferedCollectionValueModel(vm, backingCollectionClass);
+        return new BufferedCollectionValueModel(vm, backingCollectionClass, true);
     }
 
     interface CustomCollectionInterface extends Collection {

@@ -17,6 +17,7 @@ package org.springframework.richclient.application.support;
 
 import java.beans.PropertyEditor;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +66,7 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
         setPropertyEditor(Float.class, DefaultFloatEditor.class);
         setPropertyEditor(double.class, DefaultDoubleEditor.class);
         setPropertyEditor(Double.class, DefaultDoubleEditor.class);
+        setPropertyEditor(BigDecimal.class, DefaultBigDecimalEditor.class);
         setPropertyEditor(Date.class, DefaultDateEditor.class);
     }
     
@@ -89,6 +91,12 @@ public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
     private static class DefaultDoubleEditor extends CustomNumberEditor {
         public DefaultDoubleEditor() {
             super(Double.class, true);
+        }
+    }
+    
+    private static class DefaultBigDecimalEditor extends CustomNumberEditor {
+        public DefaultBigDecimalEditor() {
+            super(BigDecimal.class, true);
         }
     }
 

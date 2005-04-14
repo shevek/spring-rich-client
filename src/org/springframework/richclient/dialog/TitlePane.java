@@ -58,7 +58,11 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
     private MessagePane messagePane;
 
     public TitlePane() {
-        this.messagePane = new DefaultMessageAreaPane(this);
+        this(DefaultMessageAreaPane.DEFAULT_LINES_TO_DISPLAY);
+    }
+
+    public TitlePane(int linesToDisplay) {
+        this.messagePane = new DefaultMessageAreaPane(linesToDisplay, this);
     }
 
     public void setTitle(String newTitle) {

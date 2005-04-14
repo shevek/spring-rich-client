@@ -20,6 +20,7 @@ import java.util.List;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -85,7 +86,11 @@ public abstract class BeanTableModel extends BaseTableModel {
         for (int i = 0; i < columnPropertyNames.length; i++) {
             String className = ClassUtils.getShortNameAsProperty(beanClass);
             String columnPropertyName = columnPropertyNames[i];
-            columnNames[i] = messages.getMessage(className + "." + columnPropertyName, columnPropertyName);
+            try {
+                columnNames[i] = messages.getMessage(className + "." + columnPropertyName);
+            } catch(NoSuchMessageException e) {
+                columnNames[i] = messages.getMessage(columnPropertyName, columnPropertyName);
+            }            
         }
         return columnNames;
     }
@@ -108,9 +113,8 @@ public abstract class BeanTableModel extends BaseTableModel {
         return beanWrapper.isWritableProperty(getColumnPropertyName(columnIndex));
     }
 
-    protected void setValueAtInternal(Object value, Object bean, int columnIndex) {
+    protected void setValueAtInternal(Object value, Object bean, int columnIndex) {        
         beanWrapper.setWrappedInstance(bean);
-        beanWrapper.setPropertyValue(getColumnPropertyName(columnIndex), value);
+        beanWrapper.setPropertyValue(getColumnPropertyName(columnIndex), value);        
     }
-
 }

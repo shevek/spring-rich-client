@@ -26,6 +26,7 @@ import javax.swing.text.JTextComponent;
 import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.image.NoSuchImageResourceException;
+import org.springframework.richclient.util.LabelUtils;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -85,7 +86,7 @@ public class Message implements Serializable {
         }
         else if (component instanceof JLabel) {
             JLabel label = (JLabel)component;
-            label.setText(text);
+            label.setText(LabelUtils.htmlBlock(text));
             label.setIcon(getIcon());
         }
         else {

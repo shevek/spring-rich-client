@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.BadLocationException;
 
 import org.springframework.richclient.factory.AbstractControlFactory;
 
@@ -28,16 +29,25 @@ import org.springframework.richclient.factory.AbstractControlFactory;
  * A simple pane which can display an exception stack trace.
  * 
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
 public class ExceptionDetailsPane extends AbstractControlFactory {
     private JTextArea exceptionDetails;
 
-    public void setException(Exception e) {
+    public void setException(Throwable t) {
         createControlIfNecessary();
         StringWriter writer = new StringWriter();
-        e.printStackTrace(new PrintWriter(writer));
+        t.printStackTrace(new PrintWriter(writer));
         exceptionDetails.setText(writer.toString());
+        exceptionDetails.setCaretPosition(0);
+        exceptionDetails.setSelectionStart(0);
+        exceptionDetails.setSelectionEnd(0);        
+        try {
+            exceptionDetails.scrollRectToVisible(exceptionDetails.modelToView(0));
+        } catch(BadLocationException ex) {            
+        }
     }
+    
 
     /**
      * @see org.springframework.richclient.factory.AbstractControlFactory#createControl()

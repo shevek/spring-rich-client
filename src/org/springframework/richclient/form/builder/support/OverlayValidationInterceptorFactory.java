@@ -15,9 +15,14 @@
  */
 package org.springframework.richclient.form.builder.support;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
@@ -54,20 +59,53 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
+        private JComponent component;
+
+        private ErrorReportingOverlay overlay;
+
+        private boolean attached;
+
         public OverlayValidationInterceptor(FormModel formModel) {
             super(formModel);
         }
 
         public void processComponent(String propertyName, JComponent component) {
-            ErrorReportingOverlay overlay = new ErrorReportingOverlay();
-
-            int yOffset = component.getPreferredSize().height;
-
-            OverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
-                    textCompHeight));
+            this.overlay = new ErrorReportingOverlay();
 
             registerGuarded(propertyName, overlay);
             registerMessageReceiver(propertyName, overlay);
+
+            this.component = component;
+            if (component.getParent() == null) {
+                component.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent e) {
+                        if (OverlayValidationInterceptor.this.component.getParent() != null && !attached) {
+                            OverlayValidationInterceptor.this.component.removePropertyChangeListener("ancestor", this);
+                            attachOverlay();
+                        }
+                    }
+                });
+            }
+            else {
+                attachOverlay();
+            }
+        }
+
+        private void attachOverlay() {
+            attached = true;
+            JComponent componentToOverlay = hasParentScrollPane(component) ? getParentScrollPane(component) : component;
+            int yOffset = componentToOverlay.getPreferredSize().height;
+            OverlayHelper.attachOverlay(overlay, componentToOverlay, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
+                    textCompHeight));
+        }
+
+        private JScrollPane getParentScrollPane(JComponent component) {
+            return (JScrollPane)component.getParent().getParent();
+        }
+
+        private boolean hasParentScrollPane(JComponent component) {
+            return component.getParent() != null && component.getParent() instanceof JViewport
+                    && component.getParent().getParent() instanceof JScrollPane;
         }
     }
 
@@ -90,7 +128,8 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             if (severity != null) {
                 setIcon(Application.services().getIconSource().getIcon(
                         "severity." + severity.getShortCode() + ".overlay"));
-            } else {
+            }
+            else {
                 setIcon(null);
             }
         }
