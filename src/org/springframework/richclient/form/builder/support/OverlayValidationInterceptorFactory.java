@@ -43,7 +43,7 @@ import org.springframework.rules.reporting.Severity;
  * the bottom-left corner of the component, and the image's tooltip is set to
  * the validation message.
  * 
- * @author oliverh
+ * @author Oliver Hutchison
  * @see OverlayHelper#attachOverlay
  */
 public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory {
@@ -59,40 +59,33 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
-        private JComponent component;
-
-        private ErrorReportingOverlay overlay;
-
-        private boolean attached;
-
+        
         public OverlayValidationInterceptor(FormModel formModel) {
             super(formModel);
         }
 
-        public void processComponent(String propertyName, JComponent component) {
-            this.overlay = new ErrorReportingOverlay();
+        public void processComponent(String propertyName, final JComponent component) {
+            final ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
             registerGuarded(propertyName, overlay);
             registerMessageReceiver(propertyName, overlay);
 
-            this.component = component;
             if (component.getParent() == null) {
                 component.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent e) {
-                        if (OverlayValidationInterceptor.this.component.getParent() != null && !attached) {
-                            OverlayValidationInterceptor.this.component.removePropertyChangeListener("ancestor", this);
-                            attachOverlay();
+                        if (component.getParent() != null) {
+                            component.removePropertyChangeListener("ancestor", this);
+                            attachOverlay(overlay, component);
                         }
                     }
                 });
             }
             else {
-                attachOverlay();
+                attachOverlay(overlay, component);
             }
         }
 
-        private void attachOverlay() {
-            attached = true;
+        private void attachOverlay(ErrorReportingOverlay overlay, JComponent component) {
             JComponent componentToOverlay = hasParentScrollPane(component) ? getParentScrollPane(component) : component;
             int yOffset = componentToOverlay.getPreferredSize().height;
             OverlayHelper.attachOverlay(overlay, componentToOverlay, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
