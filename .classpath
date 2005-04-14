@@ -27,16 +27,16 @@
 	<classpathentry kind="lib" path="lib/javahelp/javahelp.jar"/>
 	<classpathentry kind="lib" path="lib/jdnc/jdnc.jar"/>
 	<classpathentry sourcepath="lib/src/glazedlists-source.zip" kind="lib" path="lib/glazedlists/glazedlists.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-aop.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-beans.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-context.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-core.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-dao.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-jdbc.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-aop.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-beans.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-context.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-core.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-dao.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-jdbc.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-orm.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-orm.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry sourcepath="lib/src/spring-sandbox-src.zip" kind="lib" path="lib/spring/spring-sandbox.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-remoting.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring-remoting.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
