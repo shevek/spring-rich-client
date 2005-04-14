@@ -349,7 +349,7 @@ public class BufferedCollectionValueModelTest extends TestCase {
     private BufferedCollectionValueModel getBufferedCollectionValueModel(Object backingCollecton,
             Class backingCollectionClass) {
         ValueModel vm = new ValueHolder(backingCollecton);
-        return new BufferedCollectionValueModel(vm, backingCollectionClass, true);
+        return new BufferedCollectionValueModel(vm, backingCollectionClass);
     }
 
     interface CustomCollectionInterface extends Collection {
