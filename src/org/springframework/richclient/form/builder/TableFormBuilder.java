@@ -19,9 +19,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.layout.TableLayoutBuilder;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author oliverh

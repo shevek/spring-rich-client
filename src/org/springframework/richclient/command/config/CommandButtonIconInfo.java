@@ -23,11 +23,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald
@@ -143,7 +143,7 @@ public class CommandButtonIconInfo implements ButtonConfigurer, VisualizedElemen
     }
 
     public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
+        return new ToStringCreator(this).toString();
     }
 
     public boolean equals(Object o) {

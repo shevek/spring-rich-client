@@ -64,6 +64,8 @@ import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.PropertyAdapter;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.core.closure.Constraint;
+import org.springframework.core.enums.support.AbstractLabeledEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.PropertyEditorRegistry;
@@ -81,8 +83,6 @@ import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.list.ObservableList;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.closure.Constraint;
-import org.springframework.util.enums.support.AbstractLabeledEnum;
 
 /**
  * @author Keith Donald
@@ -698,7 +698,7 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
 
 	public JComboBox createBoundEnumComboBox(String selectionEnumProperty) {
 		JComboBox comboBox = createNewComboBox();
-		getComponentFactory().configureForEnum(comboBox, getEnumType(selectionEnumProperty));
+		getComponentFactory().configureForEnum(comboBox, getEnumClass(selectionEnumProperty));
 		return bind(comboBox, selectionEnumProperty, (List)comboBox.getModel(), AbstractLabeledEnum.DEFAULT_ORDER);
 	}
 
@@ -751,15 +751,9 @@ public class SwingFormModel extends ApplicationServicesAccessor implements FormM
         return getComponentFactory().createComboBox();
     }
 
-    private String getEnumType(String formProperty) {
-        Class enumClass = getMetadataAccessStrategy().getPropertyType(formProperty);
-        try {
-            Class.forName(enumClass.getName());
-            return enumClass.getName();
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private Class getEnumClass(String formProperty) {
+        Assert.isTrue(getMetadataAccessStrategy().isEnumeration(formProperty), formProperty);
+        return getMetadataAccessStrategy().getPropertyType(formProperty);
     }
 
     /**

@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.forms;
 
+import org.springframework.core.closure.Constraint;
 import org.springframework.rules.reporting.ValidationResults;
-import org.springframework.util.closure.Constraint;
 
 public interface ValidationResultsReporter {
     public void valid(Constraint constraint);

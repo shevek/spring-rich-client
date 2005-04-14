@@ -15,10 +15,10 @@
  */
 package org.springframework.binding.form;
 
+import org.springframework.core.ToStringCreator;
+import org.springframework.core.closure.Constraint;
 import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.util.Assert;
-import org.springframework.util.ToStringCreator;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald
@@ -67,6 +67,6 @@ public class ValidationEvent {
     }
 
     public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
+        return new ToStringCreator(this).toString();
     }
 }

@@ -19,8 +19,8 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.springframework.util.EventListenerListHelper;
-import org.springframework.util.closure.Closure;
+import org.springframework.core.EventListenerListHelper;
+import org.springframework.core.closure.Closure;
 
 /**
  * Test cases for {@link ListenerListHelper}

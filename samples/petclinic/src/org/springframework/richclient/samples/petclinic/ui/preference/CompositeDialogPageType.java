@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.samples.petclinic.ui.preference;
 
-import org.springframework.util.enums.support.StringCodedLabeledEnum;
+import org.springframework.core.enums.support.StringCodedLabeledEnum;
 
 public class CompositeDialogPageType extends StringCodedLabeledEnum {
 

@@ -18,7 +18,7 @@ package org.springframework.richclient.settings;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-import org.springframework.util.enums.LabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 
 /**
  * @author Peter De Bruycker

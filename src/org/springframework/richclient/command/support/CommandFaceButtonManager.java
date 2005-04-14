@@ -25,13 +25,13 @@ import java.util.Set;
 
 import javax.swing.AbstractButton;
 
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ToStringCreator;
 
 public class CommandFaceButtonManager implements PropertyChangeListener {
     private Set buttons = new HashSet(6);

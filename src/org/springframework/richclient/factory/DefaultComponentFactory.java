@@ -41,6 +41,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.comparator.ComparableComparator;
+import org.springframework.core.comparator.CompoundComparator;
+import org.springframework.core.enums.LabeledEnumResolver;
+import org.springframework.core.enums.support.AbstractLabeledEnum;
+import org.springframework.core.enums.support.StaticLabeledEnumResolver;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.control.PatchedJFormattedTextField;
@@ -50,12 +55,6 @@ import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.comparator.ComparableComparator;
-import org.springframework.util.comparator.CompoundComparator;
-import org.springframework.util.enums.LabeledEnumResolver;
-import org.springframework.util.enums.support.AbstractLabeledEnum;
-import org.springframework.util.enums.support.StaticLabeledEnumResolver;
 
 /**
  * Default component factory implementation that delegates to JGoodies component
@@ -284,9 +283,9 @@ public class DefaultComponentFactory implements ComponentFactory {
 		return new JComboBox();
 	}
 
-	public JComboBox createComboBox(String enumType) {
+	public JComboBox createComboBox(Class enumClass) {
 		JComboBox comboBox = createComboBox();
-		configureForEnum(comboBox, enumType);
+		configureForEnum(comboBox, enumClass);
 		return comboBox;
 	}
 
@@ -296,13 +295,9 @@ public class DefaultComponentFactory implements ComponentFactory {
 	}
 
 	public void configureForEnum(JComboBox comboBox, Class enumClass) {
-		configureForEnum(comboBox, ClassUtils.getShortNameAsProperty(enumClass));
-	}
-
-	public void configureForEnum(JComboBox comboBox, String enumType) {
-		Collection enumValues = enumResolver.getLabeledEnumCollection(enumType);
+		Collection enumValues = enumResolver.getLabeledEnumCollection(enumClass);
 		if (logger.isDebugEnabled()) {
-			logger.debug("Populating combo box model with enums of type '" + enumType + "'; enums are [" + enumValues
+			logger.debug("Populating combo box model with enums of type '" + enumClass.getName() + "'; enums are [" + enumValues
 					+ "]");
 		}
 		CompoundComparator comparator = new CompoundComparator();

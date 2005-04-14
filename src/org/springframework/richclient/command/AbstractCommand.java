@@ -30,6 +30,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
@@ -43,7 +44,6 @@ import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.CachingMapTemplate;
 import org.springframework.util.StringUtils;
-import org.springframework.util.ToStringCreator;
 
 public abstract class AbstractCommand extends AbstractPropertyChangePublisher implements InitializingBean,
         BeanNameAware, Guarded {

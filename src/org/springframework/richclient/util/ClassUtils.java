@@ -31,8 +31,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.Styler;
-import org.springframework.util.enums.LabeledEnum;
+import org.springframework.core.Styler;
+import org.springframework.core.enums.LabeledEnum;
 
 /**
  * Misc static utility functions for java classes.

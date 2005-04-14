@@ -19,7 +19,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.springframework.util.enums.LabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 
 /**
  * A <code>PreferenceStore</code> holds preferences.

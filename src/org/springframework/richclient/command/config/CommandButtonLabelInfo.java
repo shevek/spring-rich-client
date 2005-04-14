@@ -20,11 +20,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.richclient.factory.LabelInfo;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald
@@ -95,6 +95,6 @@ public class CommandButtonLabelInfo implements ButtonConfigurer {
     }
 
     public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
+        return new ToStringCreator(this).toString();
     }
 }

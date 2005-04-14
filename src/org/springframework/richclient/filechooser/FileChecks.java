@@ -18,10 +18,10 @@ package org.springframework.richclient.filechooser;
 import java.io.File;
 import java.io.IOException;
 
+import org.springframework.core.closure.Closure;
+import org.springframework.core.closure.Constraint;
 import org.springframework.core.io.Resource;
 import org.springframework.rules.factory.Constraints;
-import org.springframework.util.closure.Closure;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald

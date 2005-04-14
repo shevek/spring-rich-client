@@ -27,11 +27,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyComparator;
+import org.springframework.core.comparator.BooleanComparator;
+import org.springframework.core.comparator.CompoundComparator;
 import org.springframework.richclient.treetable.AbstractTreeTableModel;
 import org.springframework.richclient.treetable.TreeTableModel;
 import org.springframework.richclient.util.ClassUtils;
-import org.springframework.util.comparator.BooleanComparator;
-import org.springframework.util.comparator.CompoundComparator;
 
 /**
  * An implementation of a tree table model for inspecting bean properties. Each

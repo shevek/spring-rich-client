@@ -28,6 +28,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import org.springframework.core.enums.support.LetterCodedLabeledEnum;
+import org.springframework.core.enums.support.ShortCodedLabeledEnum;
+import org.springframework.core.enums.support.StringCodedLabeledEnum;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.table.renderer.BeanTableCellRenderer;
 import org.springframework.richclient.table.renderer.BooleanTableCellRenderer;
@@ -35,9 +38,6 @@ import org.springframework.richclient.table.renderer.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderer.LabeledEnumTableCellRenderer;
 import org.springframework.richclient.table.renderer.OptimizedTableCellRenderer;
 import org.springframework.richclient.util.WindowUtils;
-import org.springframework.util.enums.support.LetterCodedLabeledEnum;
-import org.springframework.util.enums.support.ShortCodedLabeledEnum;
-import org.springframework.util.enums.support.StringCodedLabeledEnum;
 
 /**
  * @author Keith Donald

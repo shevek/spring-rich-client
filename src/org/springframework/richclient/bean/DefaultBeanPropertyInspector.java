@@ -27,11 +27,11 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.richclient.table.TableUtils;
 import org.springframework.richclient.table.renderer.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderer.OptimizedTableCellRenderer;
 import org.springframework.richclient.treetable.JTreeTable;
-import org.springframework.util.enums.LabeledEnum;
 
 /**
  * A base implementation of a BeanPropertyInspector implemented as a tree table.

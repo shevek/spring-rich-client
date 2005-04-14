@@ -43,17 +43,6 @@ public class EnumComboBoxBinding extends ComboBoxBinding implements Binding {
     }
 
     private void configureForEnum(JComboBox comboBox) {
-        getComponentFactory().configureForEnum(comboBox, getEnumType());
-    }
-    
-    private String getEnumType() {
-        Class enumClass = getPropertyType();
-        try {
-            Class.forName(enumClass.getName());
-            return enumClass.getName();
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        getComponentFactory().configureForEnum(comboBox, getPropertyType());
     }
 }

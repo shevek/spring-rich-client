@@ -11,11 +11,11 @@ import net.sf.acegisecurity.context.SecureContextImpl;
 import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.PropertyConstraint;
-import org.springframework.util.closure.Constraint;
 
 /**
  * JavaBean suitable for use with form model.

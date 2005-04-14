@@ -44,14 +44,14 @@ import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.core.closure.Constraint;
+import org.springframework.core.enums.support.StringCodedLabeledEnum;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.list.ComboBoxListModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.closure.Constraint;
-import org.springframework.util.enums.support.StringCodedLabeledEnum;
 
 /**
  * TODO test commit

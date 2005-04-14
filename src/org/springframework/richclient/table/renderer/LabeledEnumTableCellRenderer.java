@@ -23,7 +23,7 @@ import javax.swing.table.TableCellRenderer;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.util.enums.LabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 
 /**
  * @author Keith Donald

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.core.EventListenerListHelper;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.forms.Form;
-import org.springframework.util.EventListenerListHelper;
 
 /**
  * Helper implementation of the wizard interface.
@@ -151,7 +151,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessor impleme
      * list.
      * 
      * @param formPage
-     *            the form page to be insterted
+     *            the form page to be inserted
      * @return the WizardPage that wraps formPage
      */
     public WizardPage addForm(Form formPage) {
@@ -269,7 +269,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessor impleme
 
     /**
      * This method invokes the performFinishImpl method and then fires
-     * appropraiate events to any wizard listeners listening to this wizard.
+     * appropriate events to any wizard listeners listening to this wizard.
      */
     public boolean performFinish() {
         boolean result = onFinish();
@@ -279,7 +279,7 @@ public abstract class AbstractWizard extends ApplicationServicesAccessor impleme
 
     /**
      * This method invokes the performFinishImpl method and then fires
-     * appropraiate events to any wizard listeners listening to this wizard.
+     * appropriate events to any wizard listeners listening to this wizard.
      */
     public boolean performCancel() {
         boolean result = onCancel();

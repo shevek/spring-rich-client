@@ -22,11 +22,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.Styler;
+import org.springframework.core.ToStringCreator;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapTemplate;
-import org.springframework.util.Styler;
-import org.springframework.util.ToStringCreator;
 
 /**
  * A collection of image resources, each indexed by a common key alias.

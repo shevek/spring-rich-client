@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.enums.LabeledEnum;
 
 /**
  * @author Peter De Bruycker

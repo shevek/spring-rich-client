@@ -21,9 +21,9 @@ import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.ToStringCreator;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.util.ToStringCreator;
 
 /**
  * A parameter object for a labelable component; consists of the text, mnemonic,
@@ -117,6 +117,6 @@ public class LabelInfo {
     }
 
     public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
+        return new ToStringCreator(this).toString();
     }
 }

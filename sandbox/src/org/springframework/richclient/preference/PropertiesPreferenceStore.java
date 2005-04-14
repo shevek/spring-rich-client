@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.enums.LabeledEnum;
 
 /**
  * @author Peter De Bruycker

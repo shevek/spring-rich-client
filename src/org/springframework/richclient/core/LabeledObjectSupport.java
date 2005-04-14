@@ -26,13 +26,13 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.ToStringCreator;
 
 /**
  * A convenient super class for objects that can be labeled for display in a
@@ -220,7 +220,7 @@ public class LabeledObjectSupport extends ApplicationServicesAccessor implements
     }
 
     public String toString() {
-        return new ToStringCreator(this).appendProperties().toString();
+        return new ToStringCreator(this).toString();
     }
 
 }

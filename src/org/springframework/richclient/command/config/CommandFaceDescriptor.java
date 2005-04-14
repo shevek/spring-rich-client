@@ -24,13 +24,13 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.ToStringCreator;
 
 /**
  * @author Keith Donald

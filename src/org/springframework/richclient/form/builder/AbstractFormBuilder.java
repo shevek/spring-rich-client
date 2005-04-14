@@ -21,12 +21,12 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author oliverh

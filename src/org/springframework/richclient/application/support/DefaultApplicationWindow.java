@@ -31,6 +31,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.core.EventListenerListHelper;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServices;
@@ -46,7 +47,6 @@ import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.Memento;
 import org.springframework.util.Assert;
-import org.springframework.util.EventListenerListHelper;
 
 /**
  * Provides a default implementation of {@link ApplicationWindow}

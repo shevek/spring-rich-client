@@ -15,10 +15,10 @@
  */
 package org.springframework.richclient.samples.petclinic.domain;
 
+import org.springframework.core.closure.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.support.DefaultRulesSource;
 import org.springframework.samples.petclinic.Owner;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author Keith Donald

@@ -33,6 +33,7 @@ import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueModelWrapper;
+import org.springframework.core.Styler;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.rules.PropertyConstraintProvider;
@@ -41,7 +42,6 @@ import org.springframework.rules.reporting.BeanValidationResultsCollector;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
-import org.springframework.util.Styler;
 
 /**
  * @author Keith Donald

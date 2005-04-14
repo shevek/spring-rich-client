@@ -23,7 +23,7 @@ import javax.swing.JList;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.util.enums.LabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 
 /**
  * Renders a enumeration in a list.

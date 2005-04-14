@@ -24,8 +24,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.util.closure.support.Algorithms;
-import org.springframework.util.closure.support.Block;
+import org.springframework.core.closure.support.Algorithms;
+import org.springframework.core.closure.support.Block;
 
 /**
  * @author Keith Donald

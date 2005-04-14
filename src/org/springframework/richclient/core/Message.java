@@ -23,12 +23,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.rules.reporting.Severity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.ToStringCreator;
 
 public class Message implements Serializable {
     private long timestamp = new Date().getTime();

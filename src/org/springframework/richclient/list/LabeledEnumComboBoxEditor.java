@@ -8,8 +8,8 @@ import javax.swing.ComboBoxEditor;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.util.Assert;
-import org.springframework.util.enums.LabeledEnum;
 
 /**
  * <code>ComboBoxEditor</code> that wraps another editor, but performs

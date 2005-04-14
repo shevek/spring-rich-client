@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.springframework.core.EventListenerListHelper;
+import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationWindow;
@@ -32,8 +34,6 @@ import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.util.Assert;
-import org.springframework.util.EventListenerListHelper;
-import org.springframework.util.closure.support.AbstractConstraint;
 
 /**
  * @author Peter De Bruycker
