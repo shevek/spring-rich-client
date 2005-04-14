@@ -17,6 +17,7 @@ package org.springframework.rules.metadata;
 
 import junit.framework.TestCase;
 
+import org.springframework.core.closure.Constraint;
 import org.springframework.metadata.Attributes;
 import org.springframework.metadata.commons.CommonsAttributes;
 import org.springframework.rules.Rules;
@@ -27,14 +28,12 @@ import org.springframework.rules.constraint.StringLengthConstraint;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.constraint.property.PropertyValueConstraint;
-import org.springframework.util.closure.Constraint;
 
 /**
  * @author Oliver Hutchison
  */    
 public class AttributesRulesSourceTests extends TestCase {
-    
-    
+        
     public void testLoadsAttributes() {
         Attributes attributes = new CommonsAttributes();        
         assertTrue("You must compile the attributes to run this test", 
@@ -69,7 +68,7 @@ public class AttributesRulesSourceTests extends TestCase {
                 } 
             }
         }
-        fail("Could not find constraint whith class [" + constraintClass + "]");
+        fail("Could not find constraint with class [" + constraintClass + "]");
     }
 
     /**

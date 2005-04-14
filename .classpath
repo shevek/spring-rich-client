@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry output="target/test-sandbox" kind="src" path="sandbox/test"/>
 	<classpathentry output="target/test-classes" kind="src" path="test"/>
 	<classpathentry output="target/sandbox/classes" kind="src" path="sandbox/src"/>
 	<classpathentry kind="src" path="resources"/>
