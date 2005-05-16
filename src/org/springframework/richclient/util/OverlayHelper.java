@@ -70,7 +70,7 @@ public class OverlayHelper implements SwingConstants {
      *            position relative to <code>overlayTarget</code> that overlay
      *            should be centered. May be one of the
      *            <code>SwingConstants</code> compass positions or
-     *            <code>SwingConstants.CENTER</center>. 
+     *            <code>SwingConstants.CENTER</code>. 
      * @param xOffset
      *            x offset from center 
      * @param yOffset
@@ -265,17 +265,18 @@ public class OverlayHelper implements SwingConstants {
                 return layeredPane;
             }
             layeredPane = new JLayeredPane();
+            viewPort.putClientProperty(LAYERED_PANE_PROPERTY, layeredPane);
             Component view = viewPort.getView();
             viewPort.remove(view);
             layeredPane.setLayout(new SingleComponentLayoutManager(view, viewPort));
             layeredPane.add(view);
             layeredPane.setLayer(view, JLayeredPane.DEFAULT_LAYER.intValue());
             viewPort.setView(layeredPane);
-            viewPort.putClientProperty(LAYERED_PANE_PROPERTY, layeredPane);
             return layeredPane;
         }
         else {
-            throw new IllegalArgumentException("Don't know how to handle parent [" + overlayCapableParent + "].");
+            throw new IllegalArgumentException("Don't know how to handle parent of type ["
+                    + overlayCapableParent.getClass().getName() + "].");
         }
     }
 
