@@ -287,11 +287,6 @@ public class FormModelTest extends TestCase {
                 .getPropertyEditorRegistry();
         Employee employee = new Employee();
         ValidatingFormModel fm = new ValidatingFormModel(employee);
-        ValueModel vm = fm.add("age");
-        assertHasNoPropertyEditor(vm);
-
-        per.setPropertyEditor(int.class, PropertyEditorA.class);
-        fm = new ValidatingFormModel(employee);
         assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class);
 
         per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);

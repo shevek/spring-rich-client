@@ -60,7 +60,7 @@ import org.springframework.util.ObjectUtils;
  */
 public class SwingFormModelTests extends TestCase {
 
-	private class CustomEditor extends CustomDateEditor {
+	private static class CustomEditor extends CustomDateEditor {
 
 		private boolean beSilent;
 
@@ -107,7 +107,7 @@ public class SwingFormModelTests extends TestCase {
 
 	}
 
-	private class TestBean {
+	private static class TestBean {
 
 		private Date date = new Date();
 
@@ -202,7 +202,7 @@ public class SwingFormModelTests extends TestCase {
 		}
 	}
 
-	private class TestItemBean {
+	private static class TestItemBean {
 
 		private String code;
 
@@ -415,7 +415,7 @@ public class SwingFormModelTests extends TestCase {
 		JTextArea textArea = new JTextArea();
 		formModel.bind(textArea, "stringProperty");
 
-		assertTextComponentBinding(textArea, "stringProperty", testBean.getStringProperty(), "new text", true);
+		assertTextComponentBinding(textArea, "stringProperty", testBean.getStringProperty(), "new text", false);
 	}
 
 	public void testBindTextComponentWithTextAreaValueCommitPolicyAsYouType() {
@@ -441,7 +441,7 @@ public class SwingFormModelTests extends TestCase {
 
 	public void testCreateBoundCheckBox() {
 		String checkBoxText = "flag checkbox text";
-		applicationContext.addMessage("checkBox.flag", Locale.getDefault(), checkBoxText);
+		applicationContext.addMessage("flag.description", Locale.getDefault(), checkBoxText);
 
 		JCheckBox checkBox = formModel.createBoundCheckBox("flag");
 
@@ -451,7 +451,7 @@ public class SwingFormModelTests extends TestCase {
 
 	public void testCreateBoundCheckBoxWithLabelKey() {
 		String checkBoxText = "custom";
-		applicationContext.addMessage("checkBox.customFlag", Locale.getDefault(), checkBoxText);
+		applicationContext.addMessage("customFlag.description", Locale.getDefault(), checkBoxText);
 
 		JCheckBox checkBox = formModel.createBoundCheckBox("customFlag", "flag");
 
@@ -557,7 +557,7 @@ public class SwingFormModelTests extends TestCase {
 		assertEquals(10, textArea.getRows());
 		assertEquals(40, textArea.getColumns());
 
-		assertTextComponentBinding(textArea, "stringProperty", testBean.getStringProperty(), "new text", true);
+		assertTextComponentBinding(textArea, "stringProperty", testBean.getStringProperty(), "new text", false);
 	}
 
 	public void testCreateBoundTextField() {
@@ -568,7 +568,7 @@ public class SwingFormModelTests extends TestCase {
 
 	public void testCreateLabel() {
 		String labelText = "date label";
-		applicationContext.addMessage("label.date", Locale.getDefault(), labelText);
+		applicationContext.addMessage("date.label", Locale.getDefault(), labelText);
 
 		JLabel label = formModel.createLabel("date");
 		assertNotNull("label not created", label);
