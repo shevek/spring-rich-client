@@ -30,7 +30,6 @@ public class TextComponentBinding extends AbstractBinding  {
 
     private JTextComponent textComponent;
     
-
     public TextComponentBinding(FormModel formModel, String formPropertyPath) {
         this(null, formModel, formPropertyPath);
     }

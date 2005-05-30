@@ -245,7 +245,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     private Owner reloadSelectedOwner() {
-        int ownerId = getSelectedOwner().getId();
+        int ownerId = getSelectedOwner().getId().intValue();
         return clinic.loadOwner(ownerId);
     }
 

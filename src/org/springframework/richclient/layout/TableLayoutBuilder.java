@@ -234,7 +234,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts an empty cell at the current row/column. Attibutes may be zero or
+     * Inserts an empty cell at the current row/column. Attributes may be zero or
      * more of rowSpec, columnSpec, colGrId and rowGrId.
      */
     public TableLayoutBuilder cell(String attributes) {
@@ -250,7 +250,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts a component at the current row/column. Attibutes may be zero or
+     * Inserts a component at the current row/column. Attributes may be zero or
      * more of rowSpec, columnSpec, colGrId, rowGrId, align and valign.
      */
     public TableLayoutBuilder cell(JComponent component, String attributes) {
@@ -261,7 +261,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts a related componet gap column.
+     * Inserts a related component gap column.
      */
     public TableLayoutBuilder gapCol() {
         return gapCol(FormFactory.RELATED_GAP_COLSPEC);
@@ -304,7 +304,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts a separator with the given label. Attibutes my be zero or more of
+     * Inserts a separator with the given label. Attributes my be zero or more of
      * rowSpec, columnSpec, colGrId, rowGrId, align and valign.
      */
     public TableLayoutBuilder separator(String labelKey, String attributes) {
@@ -679,7 +679,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
             }
         }
         catch (IOException e) {
-            throw new UnsupportedOperationException("Encounterd unexpected IOException. " + e.getMessage());
+            throw new UnsupportedOperationException("Encountered unexpected IOException. " + e.getMessage());
         }
 
         return attributeMap;

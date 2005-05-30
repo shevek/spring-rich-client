@@ -27,4 +27,4 @@ jgoodies/looks.jar: 1.2.2
 junit/junit.jar: 3.8.1
 log4j/log4j.jar: 1.2.8
 spin/spin.jar: 1.3
-spring/spring-*.jar: CVS Snapshot 14 April 2005
+spring/spring-*.jar: 1.2.1

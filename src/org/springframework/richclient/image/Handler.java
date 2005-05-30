@@ -64,7 +64,7 @@ public class Handler extends URLStreamHandler {
     }
 
     /**
-     * Creates an instance of <code>Handeler</code>.
+     * Creates an instance of <code>Handler</code>.
      */
     public Handler() {
     }
