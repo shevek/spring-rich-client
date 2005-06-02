@@ -27,6 +27,7 @@ import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.beans.PropertyComparator;
 import org.springframework.binding.form.ConfigurableFormModel;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
@@ -47,23 +48,22 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     public Binding createBoundTextField(String formProperty) {
         return createBinding(JTextField.class, formProperty);
     }
-    
+
     public Binding createBoundTextArea(String formProperty) {
         return createBinding(JTextArea.class, formProperty);
     }
-    
-    public Binding createBoundTextArea(String formProperty, int rows, int columns) {        
+
+    public Binding createBoundTextArea(String formProperty, int rows, int columns) {
         Map context = createContext(TextAreaBinder.ROWS_KEY, new Integer(rows));
         context.put(TextAreaBinder.COLUMNS_KEY, new Integer(columns));
         return createBinding(JTextArea.class, formProperty, context);
     }
-    
+
     public Binding createBoundFormattedTextField(String formProperty) {
         return createBinding(JFormattedTextField.class, formProperty);
     }
-    
-    public Binding createBoundFormattedTextField(String formProperty,
-            AbstractFormatterFactory formatterFactory) {
+
+    public Binding createBoundFormattedTextField(String formProperty, AbstractFormatterFactory formatterFactory) {
         Map context = createContext(FormattedTextFieldBinder.FORMATTER_FACTORY_KEY, formatterFactory);
         return createBinding(JFormattedTextField.class, formProperty, context);
     }
@@ -86,8 +86,13 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     public Binding createBoundComboBox(String formProperty, String selectableItemsProperty, String renderedItemProperty) {
-        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, getFormModel().getDisplayValueModel(
-                selectableItemsProperty));
+        return createBoundComboBox(formProperty, getFormModel().getDisplayValueModel(selectableItemsProperty),
+                renderedItemProperty);
+    }
+
+    public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder,
+            String renderedItemProperty) {
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedItemProperty));
         context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedItemProperty));
         return createBinding(JComboBox.class, formProperty, context);

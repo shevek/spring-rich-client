@@ -27,6 +27,8 @@ import junit.framework.TestCase;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.PropertyComparator;
 import org.springframework.binding.support.TestBean;
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
@@ -89,24 +91,37 @@ public class SwingBindingFactoryTests extends TestCase {
     }
 
     public void testCreateBoundComboBoxStringStringString() {
-        TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", "listProperty", "displayPropety");
+        TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", "listProperty", "displayProperty");
         assertBindingProperties(b, JComboBox.class, null, "name");
-        assertEquals(b.getContext().size(), 3);        
-        assertEquals(b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY), sbf.getFormModel()
-                .getValueModel("listProperty"));
+        assertEquals(b.getContext().size(), 3);
+        assertEquals(b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY), sbf.getFormModel().getValueModel(
+                "listProperty"));
         assertEquals(
                 ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName(),
-                "displayPropety");
-        assertEquals(
-                ((PropertyComparator)b.getContext().get(ComboBoxBinder.COMPARATOR_KEY)).getProperty(),
-                "displayPropety");
-        
+                "displayProperty");
+        assertEquals(((PropertyComparator)b.getContext().get(ComboBoxBinder.COMPARATOR_KEY)).getProperty(),
+                "displayProperty");
+
         try {
-            b = (TestableBinding)sbf.createBoundComboBox("name", "someUnknownProperty", "displayPropety");
+            b = (TestableBinding)sbf.createBoundComboBox("name", "someUnknownProperty", "displayProperty");
             fail("cant use an unknown property to provide the selectable items");
-        } catch(InvalidPropertyException e) {
+        }
+        catch (InvalidPropertyException e) {
             // expected
         }
+    }
+
+    public void testCreateBoundComboBoxStringValueModelString() {
+        ValueModel selectableItemsHolder = new ValueHolder(new Object());
+        TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", selectableItemsHolder, "displayProperty");
+        assertBindingProperties(b, JComboBox.class, null, "name");
+        assertEquals(b.getContext().size(), 3);
+        assertEquals(b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY), selectableItemsHolder);
+        assertEquals(
+                ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName(),
+                "displayProperty");
+        assertEquals(((PropertyComparator)b.getContext().get(ComboBoxBinder.COMPARATOR_KEY)).getProperty(),
+                "displayProperty");
     }
 
     private void assertBindingProperties(TestableBinding b, Class controlType, JComponent control, String property) {
