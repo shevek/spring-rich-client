@@ -9,6 +9,7 @@
 			<list>
 				<value>saveAsCommand</value>
 				<value>propertiesCommand</value>
+				<value>renameCommand</value>                
 				<value>undoCommand</value>
 				<value>redoCommand</value>
 				<value>cutCommand</value>

@@ -29,9 +29,11 @@
  */
 package org.springframework.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JToggleButton;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -63,7 +65,7 @@ public final class RadioButtonAdapter extends JToggleButton.ToggleButtonModel {
      */
     private final Object choice;
 
-    private ValueChangeListener valueChangeHandler;
+    private PropertyChangeListener valueChangeHandler;
 
     public RadioButtonAdapter(ValueModel valueModel, Object choice) {
         Assert.notNull(valueModel, "The subject must not be null.");
@@ -74,8 +76,8 @@ public final class RadioButtonAdapter extends JToggleButton.ToggleButtonModel {
     }
 
     // Handles changes in the subject's value.
-    private class ValueChangeHandler implements ValueChangeListener {
-        public void valueChanged() {
+    private class ValueChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             setSelected(isSelected());
         }
     }

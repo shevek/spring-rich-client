@@ -22,7 +22,7 @@ import org.springframework.richclient.forms.AbstractForm;
 import org.springframework.richclient.forms.BeanFormBuilder;
 import org.springframework.richclient.forms.Form;
 import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.preference.FormBackedPreferencePage;
 
 import com.jgoodies.forms.layout.FormLayout;
@@ -40,7 +40,7 @@ public class AppearancePreferencePage extends FormBackedPreferencePage {
         appearance.load(getPreferenceStore());
 
         // create formmodel and form
-        FormModel formModel = SwingFormModel.createFormModel(appearance);
+        FormModel formModel = FormModelHelper.createFormModel(appearance);
         AppearancePreferenceForm form = new AppearancePreferenceForm(formModel);
         return form;
     }
@@ -71,7 +71,7 @@ public class AppearancePreferencePage extends FormBackedPreferencePage {
 
         protected JComponent createFormControl() {
             FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-            BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getFormModel(), layout);
+            BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getBindingFactory(), layout);
             formBuilder.add("dialogPageType");
             return formBuilder.getForm();
         }

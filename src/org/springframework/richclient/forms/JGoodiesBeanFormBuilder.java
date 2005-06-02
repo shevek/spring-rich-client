@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.builder.AbstractFormBuilder;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -32,12 +33,12 @@ public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements Bean
 
     private JGoodiesFormBuilder formBuilder;
 
-    public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout) {
-        this(formModel, formLayout, Application.services().getComponentFactory());
+    public JGoodiesBeanFormBuilder(BindingFactory bindingFactory, FormLayout formLayout) {
+        this(bindingFactory, formLayout, Application.services().getComponentFactory());
     }
 
-    public JGoodiesBeanFormBuilder(SwingFormModel formModel, FormLayout formLayout, ComponentFactory componentFactory) {
-        super(formModel);
+    public JGoodiesBeanFormBuilder(BindingFactory bindingFactory, FormLayout formLayout, ComponentFactory componentFactory) {
+        super(bindingFactory);
         this.formBuilder = new JGoodiesFormBuilder(formLayout, componentFactory);
         setComponentFactory(componentFactory);
     }

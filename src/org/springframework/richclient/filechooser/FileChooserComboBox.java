@@ -29,9 +29,10 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -55,7 +56,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
 
     private File startDirectory;
 
-    private SwingFormModel formModel;
+    private ConfigurableFormModel formModel;
 
     private String formProperty;
 
@@ -63,7 +64,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
 
     }
 
-    public FileChooserComboBox(SwingFormModel formModel, String formProperty) {
+    public FileChooserComboBox(ConfigurableFormModel formModel, String formProperty) {
         this.formModel = formModel;
         this.formProperty = formProperty;
     }
@@ -103,7 +104,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     protected JComponent createControl() {
-        this.fileNameField = formModel.createBoundTextField(formProperty);
+        this.fileNameField = (JTextField) new SwingBindingFactory(formModel).createBinding(JTextField.class, formProperty).getControl();
         JLabel fileToProcess = getComponentFactory().createLabelFor(fileChooserLabel, fileNameField);
         this.browseButton = getComponentFactory().createButton("button.browse");
         browseButton.addActionListener(new ActionListener() {

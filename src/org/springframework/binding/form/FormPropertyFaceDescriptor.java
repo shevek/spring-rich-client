@@ -15,8 +15,6 @@
  */
 package org.springframework.binding.form;
 
-import java.awt.Image;
-
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
@@ -51,8 +49,6 @@ public interface FormPropertyFaceDescriptor extends DescribedElement, Visualized
      * The text, mnemonic and mnemonicIndex for any labels created for the property.
      */
     LabelInfo getLabelInfo();
-
-    Image getImage();
 
     /**
      * The icon that is used for any labels created for this property.

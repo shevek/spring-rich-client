@@ -15,11 +15,12 @@
  */
 package org.springframework.richclient.list;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -27,7 +28,7 @@ import org.springframework.binding.value.ValueModel;
  * 
  * @author Keith Donald
  */
-public class DynamicListModel extends ListListModel implements ValueChangeListener {
+public class DynamicListModel extends ListListModel implements PropertyChangeListener {
     private static final Log logger = LogFactory.getLog(DynamicListModel.class);
 
     private ValueModel listItemsValueModel;
@@ -51,7 +52,7 @@ public class DynamicListModel extends ListListModel implements ValueChangeListen
         }
     }
 
-    public void valueChanged() {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Backing collection of items changed; refreshing list model.");
         }

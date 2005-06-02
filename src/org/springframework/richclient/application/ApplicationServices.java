@@ -47,6 +47,8 @@ import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.DefaultCommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
+import org.springframework.richclient.form.binding.BinderSelectionStrategy;
+import org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.image.AwtImageResource;
@@ -84,6 +86,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public static final String FORM_INTERCEPTOR_FACTORY_BEAN_ID = "formComponentInterceptorFactory";
 
     private static final String FORM_PROPERTY_FACE_DESCRIPTOR_SOURCE_BEAN_ID = "formPropertyFaceDescriptorSource";
+    
+    private static final String BINDER_SELECTION_STRATEGY_BEAN_ID = "binderSelectionStrategy";
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -112,6 +116,10 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private MessageSourceAccessor messageSourceAccessor;
 
     private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
+
+    private BinderSelectionStrategy binderSelectionStrategy;
+
+    
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -335,6 +343,29 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
         this.propertyEditorRegistry = preReg;
     }
+    
+    public BinderSelectionStrategy getBinderSelectionStrategy() {
+        if (binderSelectionStrategy == null) {
+            initBinderSelectionStrategy();
+        }
+        return binderSelectionStrategy;
+    }
+    
+    private void initBinderSelectionStrategy() {
+        try {
+            this.binderSelectionStrategy = (BinderSelectionStrategy)getApplicationContext().getBean(
+                    BINDER_SELECTION_STRATEGY_BEAN_ID, BinderSelectionStrategy.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + BINDER_SELECTION_STRATEGY_BEAN_ID
+                    + " found; configuring defaults.");
+            this.binderSelectionStrategy = new SwingBinderSelectionStrategy();
+        }
+    }
+    
+    public void setBinderSelectionStrategy(BinderSelectionStrategy binderSelectionStrategy) {
+        this.binderSelectionStrategy = binderSelectionStrategy;
+    }
 
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
         return getFormComponentInterceptorFactory().getInterceptor(formModel);
@@ -455,4 +486,6 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public AbstractCommand configure(AbstractCommand command) {
         return getCommandConfigurer().configure(command);
     }
+
+
 }

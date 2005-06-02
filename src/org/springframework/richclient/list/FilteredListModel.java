@@ -21,14 +21,12 @@ import java.util.Observer;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
-import org.springframework.binding.value.ValueChangeListener;
-import org.springframework.binding.value.ValueChangePublisher;
 import org.springframework.core.closure.Constraint;
 
 /**
  * @author Keith Donald
  */
-public class FilteredListModel extends AbstractFilteredListModel implements Observer, ValueChangeListener {
+public class FilteredListModel extends AbstractFilteredListModel implements Observer {
 
     private Constraint constraint;
 
@@ -42,19 +40,12 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
         if (this.constraint instanceof Observable) {
             ((Observable)this.constraint).addObserver(this);
         }
-        else if (this.constraint instanceof ValueChangePublisher) {
-            ((ValueChangePublisher)this.constraint).addValueChangeListener(this);
-        }
         reallocateIndexes();
     }
 
     protected void reallocateIndexes() {
         this.indexes = new int[getFilteredModel().getSize()];
         applyConstraint();
-    }
-
-    public void valueChanged() {
-        update(null, null);
     }
 
     public void update(Observable changed, Object arg) {

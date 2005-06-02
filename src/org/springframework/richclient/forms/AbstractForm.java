@@ -24,16 +24,18 @@ import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.NestingFormModel;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.value.IndexAdapter;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.AbstractControlFactory;
+import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.list.ObservableList;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -45,7 +47,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractForm extends AbstractControlFactory implements Form, CommitListener {
     private String formId;
 
-    private SwingFormModel formModel;
+    private ConfigurableFormModel formModel;
 
     private NestingFormModel parentFormModel;
 
@@ -69,7 +71,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     private ValueModel editingFormObjectIndexHolder;
 
-    private ValueChangeListener editingFormObjectSetter;
+    private PropertyChangeListener editingFormObjectSetter;
 
     protected AbstractForm() {
         init();
@@ -81,7 +83,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected AbstractForm(Object formObject) {
-        this(SwingFormModel.createFormModel(formObject));
+        this(FormModelHelper.createFormModel(formObject));
     }
 
     protected AbstractForm(FormModel pageFormModel) {
@@ -92,10 +94,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         setId(formId);
         if (formModel instanceof NestingFormModel) {
             this.parentFormModel = (NestingFormModel)formModel;
-            setFormModel(SwingFormModel.createChildPageFormModel(this.parentFormModel, formId));
+            setFormModel(FormModelHelper.createChildPageFormModel(this.parentFormModel, formId));
         }
-        else if (formModel instanceof SwingFormModel) {
-            setFormModel((SwingFormModel)formModel);
+        else if (formModel instanceof ConfigurableFormModel) {
+            setFormModel((ConfigurableFormModel)formModel);
         }
         else {
             throw new IllegalArgumentException("Unsupported form model implementation " + formModel);
@@ -104,20 +106,20 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(SwingFormModel.createChildPageFormModel(parentFormModel, formId), formId);
+        this(FormModelHelper.createChildPageFormModel(parentFormModel, formId), formId);
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId, String childFormObjectPropertyPath) {
         setId(formId);
         this.parentFormModel = parentFormModel;
-        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectPropertyPath));
+        setFormModel(FormModelHelper.createChildPageFormModel(parentFormModel, formId, childFormObjectPropertyPath));
         init();
     }
 
     protected AbstractForm(NestingFormModel parentFormModel, String formId, ValueModel childFormObjectHolder) {
         setId(formId);
         this.parentFormModel = parentFormModel;
-        setFormModel(SwingFormModel.createChildPageFormModel(parentFormModel, formId, childFormObjectHolder));
+        setFormModel(FormModelHelper.createChildPageFormModel(parentFormModel, formId, childFormObjectHolder));
         init();
     }
 
@@ -133,11 +135,15 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         this.formId = formId;
     }
 
-    public SwingFormModel getFormModel() {
+    public ConfigurableFormModel getFormModel() {
         return formModel;
     }
+    
+    public BindingFactory getBindingFactory() {
+        return new SwingBindingFactory(formModel);
+    }
 
-    protected void setFormModel(SwingFormModel formModel) {
+    protected void setFormModel(ConfigurableFormModel formModel) {
         Assert.notNull(formModel);
         if (this.formModel != null && isControlCreated()) {
             throw new UnsupportedOperationException("Cannot reset form model once form control has been created");
@@ -167,8 +173,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         return editingNewFormObject;
     }
 
-    private class EditingFormObjectSetter implements ValueChangeListener {
-        public void valueChanged() {
+    private class EditingFormObjectSetter implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             int selectionIndex = getEditingFormObjectIndex();
             if (selectionIndex == -1) {
                 reset();
@@ -179,7 +185,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                     setFormObject(getEditableFormObject(selectionIndex));
                     setEnabled(true);
                 }
-            }
+            }            
         }
     }
 
@@ -248,12 +254,12 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     protected abstract JComponent createFormControl();
 
-    private class FormObjectChangeHandler implements ValueChangeListener {
+    private class FormObjectChangeHandler implements PropertyChangeListener {
         public FormObjectChangeHandler() {
-            valueChanged();
+            propertyChange(null);
         }
 
-        public void valueChanged() {
+        public void propertyChange(PropertyChangeEvent evt) {
             setFormModelDefaultEnabledState();
         }
 
@@ -481,22 +487,22 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
-        return getFormModel().createSingleLineResultsReporter(guarded, messageReceiver);
+        return new SimpleValidationResultsReporter(formModel, guarded, messageReceiver);
     }
 
-    public void addFormObjectChangeListener(ValueChangeListener listener) {
+    public void addFormObjectChangeListener(PropertyChangeListener listener) {
         formModel.addFormObjectChangeListener(listener);
     }
 
-    public void removeFormObjectChangeListener(ValueChangeListener listener) {
+    public void removeFormObjectChangeListener(PropertyChangeListener listener) {
         formModel.addFormObjectChangeListener(listener);
     }
 
-    public void addFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+    public void addFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
         getFormModel().addFormValueChangeListener(formPropertyPath, listener);
     }
 
-    public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+    public void removeFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
         getFormModel().removeFormValueChangeListener(formPropertyPath, listener);
     }
     
@@ -519,5 +525,4 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     public void reset() {
         formModel.reset();
     }
-
 }

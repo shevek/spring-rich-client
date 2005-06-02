@@ -29,9 +29,11 @@
  */
 package org.springframework.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JToggleButton;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
 
@@ -65,7 +67,7 @@ public final class ToggleButtonAdapter extends JToggleButton.ToggleButtonModel {
      */
     private final Object deselectedValue;
 
-    private final ValueChangeListener valueChangeHandler;
+    private final PropertyChangeListener valueChangeHandler;
 
     /**
      * Constructs a <code>ToggleButtonAdapter</code> on the given subject.
@@ -102,8 +104,8 @@ public final class ToggleButtonAdapter extends JToggleButton.ToggleButtonModel {
     }
 
     // Handles changes in the subject's value.
-    private class ValueChangeHandler implements ValueChangeListener {
-        public void valueChanged() {
+    private class ValueChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             setSelected(isSelected(), false);
         }
     }
@@ -128,8 +130,6 @@ public final class ToggleButtonAdapter extends JToggleButton.ToggleButtonModel {
 
     private void updateValueModelSilently(boolean selected) {
         Object newValue = selected ? selectedValue : deselectedValue;
-        valueModel.removeValueChangeListener(valueChangeHandler);
-        valueModel.setValue(newValue);
-        valueModel.addValueChangeListener(valueChangeHandler);
+        valueModel.setValueSilently(newValue, valueChangeHandler);
     }
 }

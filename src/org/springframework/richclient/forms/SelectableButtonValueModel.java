@@ -15,21 +15,23 @@
  */
 package org.springframework.richclient.forms;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.DefaultButtonModel;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
-public class SelectableButtonValueModel extends DefaultButtonModel implements ValueChangeListener {
+public class SelectableButtonValueModel extends DefaultButtonModel implements PropertyChangeListener {
     private ValueModel valueModel;
 
     public SelectableButtonValueModel(ValueModel valueModel) {
         this.valueModel = valueModel;
         this.valueModel.addValueChangeListener(this);
-        valueChanged();
+        propertyChange(null);
     }
 
-    public void valueChanged() {
+    public void propertyChange(PropertyChangeEvent e) {
         Boolean selected = (Boolean)valueModel.getValue();      
         setSelected(selected == null ? false : selected.booleanValue());
     }

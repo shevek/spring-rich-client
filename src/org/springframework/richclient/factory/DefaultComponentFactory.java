@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.factory;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,7 +37,6 @@ import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
@@ -153,7 +154,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 		return new LabelTextRefresher(labelKey, argumentValueHolders).getLabel();
 	}
 
-	private class LabelTextRefresher implements ValueChangeListener {
+	private class LabelTextRefresher implements PropertyChangeListener {
 
 		private String labelKey;
 
@@ -180,9 +181,9 @@ public class DefaultComponentFactory implements ComponentFactory {
 			return label;
 		}
 
-		public void valueChanged() {
-			updateLabel();
-		}
+        public void propertyChange(PropertyChangeEvent evt) {
+            updateLabel();            
+        }
 
 		private void updateLabel() {
 			Object[] argValues = new Object[argumentHolders.length];
@@ -283,9 +284,9 @@ public class DefaultComponentFactory implements ComponentFactory {
 		return new JComboBox();
 	}
 
-	public JComboBox createComboBox(Class enumClass) {
+	public JComboBox createComboBox(Class enumType) {
 		JComboBox comboBox = createComboBox();
-		configureForEnum(comboBox, enumClass);
+		configureForEnum(comboBox, enumType);
 		return comboBox;
 	}
 
@@ -294,10 +295,10 @@ public class DefaultComponentFactory implements ComponentFactory {
 		return null;
 	}
 
-	public void configureForEnum(JComboBox comboBox, Class enumClass) {
-		Collection enumValues = enumResolver.getLabeledEnumCollection(enumClass);
+	public void configureForEnum(JComboBox comboBox, Class enumType) {
+		Collection enumValues = enumResolver.getLabeledEnumCollection(enumType);
 		if (logger.isDebugEnabled()) {
-			logger.debug("Populating combo box model with enums of type '" + enumClass.getName() + "'; enums are [" + enumValues
+			logger.debug("Populating combo box model with enums of type '" + enumType.getName() + "'; enums are [" + enumValues
 					+ "]");
 		}
 		CompoundComparator comparator = new CompoundComparator();

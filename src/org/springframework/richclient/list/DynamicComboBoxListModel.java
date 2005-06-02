@@ -15,12 +15,13 @@
  */
 package org.springframework.richclient.list;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
@@ -29,7 +30,7 @@ import org.springframework.binding.value.support.ValueHolder;
  * 
  * @author Keith Donald
  */
-public class DynamicComboBoxListModel extends ComboBoxListModel implements ValueChangeListener {
+public class DynamicComboBoxListModel extends ComboBoxListModel implements PropertyChangeListener {
     private static final Log logger = LogFactory.getLog(DynamicComboBoxListModel.class);
 
     private ValueModel selectedItemHolder;
@@ -48,8 +49,8 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Value
         super();
         this.selectedItemHolder = selectedItemHolder;
         if (selectedItemHolder != null) {
-            selectedItemHolder.addValueChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
+            selectedItemHolder.addValueChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Notifying combo box view selected value changed; new value is '"
                                 + selectedItemHolder.getValue() + "'");
@@ -119,7 +120,7 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Value
         }
     }
 
-    public void valueChanged() {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Backing collection of selectable items changed; "
                     + "refreshing combo box with contents of new collection.");

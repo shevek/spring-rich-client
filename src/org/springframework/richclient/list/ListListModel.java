@@ -111,7 +111,7 @@ public class ListListModel extends AbstractListModel implements ObservableList {
             Object oldValue = items.set(getIndex(), value);
             if (hasChanged(oldValue, value)) {
                 fireContentsChanged(getIndex());
-                fireValueChanged(oldValue, value);
+                fireValueChange(oldValue, value);
             }
         }
 

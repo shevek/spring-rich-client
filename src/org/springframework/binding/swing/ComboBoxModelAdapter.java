@@ -29,6 +29,8 @@
  */
 package org.springframework.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -37,7 +39,6 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -61,9 +62,9 @@ public class ComboBoxModelAdapter extends AbstractListModel implements ComboBoxM
 
     private ValueModel selectionHolder;
 
-    private ValueChangeListener selectableItemsValueChangeHandler;
+    private PropertyChangeListener selectableItemsValueChangeHandler;
 
-    private ValueChangeListener selectionChangeHandler;
+    private PropertyChangeListener selectionChangeHandler;
 
     /**
      * Constructs a <code>ComboBoxAdapter</code> for the specified List of
@@ -155,8 +156,8 @@ public class ComboBoxModelAdapter extends AbstractListModel implements ComboBoxM
     /*
      * Listens to selectionInList changes and fires a contents change event.
      */
-    private class SelectableItemsValueChangeHandler implements ValueChangeListener {
-        public void valueChanged() {
+    private class SelectableItemsValueChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             updateSelectionHolderSilently(selectableItems.getValue());
             fireContentsChanged(ComboBoxModelAdapter.this, -1, -1);
         }
@@ -174,8 +175,8 @@ public class ComboBoxModelAdapter extends AbstractListModel implements ComboBoxM
     /*
      * Listens to selectionHolder changes and fires a contents change event.
      */
-    private class SelectionHolderValueChangeHandler implements ValueChangeListener {
-        public void valueChanged() {
+    private class SelectionHolderValueChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             updateSelectionInListSilently(selectionHolder.getValue());
             fireContentsChanged(ComboBoxModelAdapter.this, -1, -1);
         }

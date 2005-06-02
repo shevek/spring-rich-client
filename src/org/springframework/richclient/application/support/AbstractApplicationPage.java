@@ -72,10 +72,12 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
     }
 
     protected void fireOpened(PageComponent component) {
+        component.componentOpened();
         pageComponentListeners.fire("componentOpened", component);
     }
 
     protected void fireFocusGained(PageComponent component) {
+        component.componentFocusGained();
         pageComponentListeners.fire("componentFocusGained", component);
     }
 
@@ -103,12 +105,14 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
     }
 
     protected void fireFocusLost(PageComponent component) {
+        component.componentFocusLost();
         pageComponentListeners.fire("componentFocusLost", component);
     }
 
     protected abstract boolean giveFocusTo(PageComponent pageComponent);
 
     protected void fireClosed(PageComponent component) {
+        component.componentClosed();
         pageComponentListeners.fire("componentClosed", component);
     }
 

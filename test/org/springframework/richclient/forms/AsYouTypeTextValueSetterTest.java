@@ -29,7 +29,7 @@ public class AsYouTypeTextValueSetterTest extends TestCase {
 
     private ValueModel valueModel;
 
-    private TestableValueChangeListener valueListener;
+    private TestablePropertyChangeListener valueListener;
 
     private TestableJTextComponent comp;
 
@@ -38,7 +38,7 @@ public class AsYouTypeTextValueSetterTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         valueModel = new ValueHolder("originalValue");
-        valueListener = new TestableValueChangeListener();
+        valueListener = new TestablePropertyChangeListener();
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
         valueSetter = new AsYouTypeTextValueSetter(comp, valueModel);

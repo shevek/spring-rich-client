@@ -34,7 +34,7 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.FormView;
 import javax.swing.text.html.HTML;
 
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.text.HtmlPane;
 import org.springframework.richclient.text.SynchronousHTMLEditorKit;
 
@@ -51,8 +51,8 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
 
     protected boolean inLink;
 
-    public HtmlFormBuilder(SwingFormModel formModel, String html) {
-        super(formModel);
+    public HtmlFormBuilder(BindingFactory bindingFactory, String html) {
+        super(bindingFactory);
         formViewMap = new HashMap();
         panel = new JPanel(new BorderLayout());
         htmlPane = new HtmlPane();
@@ -86,14 +86,14 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
             if (propertyName != null) {
                 JComponent comp = (JComponent)view.getComponent();
                 if (comp instanceof JTextComponent) {
-                    getFormModel().bind((JTextComponent)comp, propertyName);
+                    getBindingFactory().bindControl((JTextComponent)comp, propertyName);
                 }
                 else if (comp instanceof JComboBox) {
-                    getFormModel().bind((JComboBox)comp, propertyName);
+                    getBindingFactory().bindControl((JComboBox)comp, propertyName);
                 }
                 else if (comp instanceof JCheckBox) {
                     ((JCheckBox)comp).setOpaque(false);
-                    getFormModel().bind((JCheckBox)comp, propertyName);
+                    getBindingFactory().bindControl((JCheckBox)comp, propertyName);
                 }
                 else {
                     System.out.println("Don't know how to bind " + comp);

@@ -23,12 +23,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.forms.FormBuilder;
+import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.forms.JGoodiesFormBuilder;
 import org.springframework.richclient.forms.SimpleValidationResultsReporter;
-import org.springframework.richclient.forms.SwingFormModel;
 import org.springframework.util.Assert;
 
 import com.jgoodies.forms.layout.FormLayout;
@@ -51,20 +53,20 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     private DefaultMessageAreaPane reporter;
 
-    private SwingFormModel formModel;
+    private ConfigurableFormModel formModel;
 
     public InputApplicationDialog(Object bean, String propertyName) {
         this(bean, propertyName, true);
     }
 
     public InputApplicationDialog(Object bean, String propertyName, boolean bufferChanges) {
-        this(SwingFormModel.createFormModel(bean, bufferChanges), propertyName);
+        this(FormModelHelper.createFormModel(bean, bufferChanges), propertyName);
     }
 
-    public InputApplicationDialog(SwingFormModel formModel, String propertyName) {
+    public InputApplicationDialog(ConfigurableFormModel formModel, String propertyName) {
         this();
         this.formModel = formModel;
-        setInputField(formModel.createBoundControl(propertyName));
+        setInputField(new SwingBindingFactory(formModel).createBinding(propertyName).getControl());
     }
 
     public InputApplicationDialog() {
@@ -116,7 +118,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         if (this.inputField == null) {
             this.inputField = new JTextField(25);
         }
-        // workaround for bug in jformatted text field for selectAll
+        // work around for bug in JFormattedTextField text field for selectAll
         if (inputField instanceof JFormattedTextField) {
             inputField.addFocusListener(new java.awt.event.FocusAdapter() {
                 public void focusGained(java.awt.event.FocusEvent evt) {
@@ -177,7 +179,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         }
     }
 
-    public SwingFormModel getFormModel() {
+    public ConfigurableFormModel getFormModel() {
         return formModel;
     }
     

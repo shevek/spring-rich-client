@@ -68,12 +68,14 @@ public class DefaultViewContext implements ViewContext {
     }
 
     public void register(String commandId, ActionCommandExecutor executor) {
-        Assert.notNull(commandId, "The command id is required");
-        Assert.notNull(executor, "The command's executor is required: if you're setting to null, delete the statement");
+        Assert.notNull(commandId, "The command id is required");        
         if (this.sharedCommandExecutors == null) {
             this.sharedCommandExecutors = new HashMap();
         }
-        this.sharedCommandExecutors.put(commandId, executor);
+        if (executor == null) {
+            this.sharedCommandExecutors.remove(commandId);
+        } else {
+            this.sharedCommandExecutors.put(commandId, executor);
+        }
     }
-
 }

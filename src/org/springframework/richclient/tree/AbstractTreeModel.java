@@ -15,12 +15,14 @@
  */
 package org.springframework.richclient.tree;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -42,8 +44,8 @@ public abstract class AbstractTreeModel implements TreeModel {
     protected AbstractTreeModel(ValueModel rootHolder) {
         this.rootHolder = rootHolder;
         this.root = rootHolder.getValue();
-        this.rootHolder.addValueChangeListener(new ValueChangeListener() {
-            public void valueChanged() {
+        this.rootHolder.addValueChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
                 fireRootTreeStructureChanged(root);
                 root = AbstractTreeModel.this.rootHolder.getValue();
             }

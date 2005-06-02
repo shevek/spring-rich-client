@@ -15,11 +15,13 @@
  */
 package org.springframework.richclient.list;
 
-import org.springframework.binding.value.ValueChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 
-public class SingleListSelectionGuard implements ValueChangeListener {
+public class SingleListSelectionGuard implements PropertyChangeListener {
     private ValueModel selectionIndexHolder;
 
     private Guarded guarded;
@@ -28,10 +30,10 @@ public class SingleListSelectionGuard implements ValueChangeListener {
         this.selectionIndexHolder = selectionIndexHolder;
         this.selectionIndexHolder.addValueChangeListener(this);
         this.guarded = guarded;
-        valueChanged();
+        propertyChange(null);
     }
 
-    public void valueChanged() {
+    public void propertyChange(PropertyChangeEvent evt) {
         Integer value = (Integer)selectionIndexHolder.getValue();
         if (value == null || value.intValue() == -1) {
             guarded.setEnabled(false);

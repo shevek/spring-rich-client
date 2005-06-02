@@ -31,7 +31,7 @@ public class OwnerGeneralForm extends AbstractForm {
     }
 
     protected JComponent createFormControl() {
-        TableFormBuilder formBuilder = new TableFormBuilder(getFormModel());
+        TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
         this.firstNameField = formBuilder.add("firstName")[1];
         formBuilder.row();
         formBuilder.add("lastName");

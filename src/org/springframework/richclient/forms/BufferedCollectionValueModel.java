@@ -45,22 +45,21 @@ import org.springframework.util.ObjectUtils;
  * <code>ListListModel</code>. The list model acts as a buffer for changes to
  * and a representation of the state of the underlying collection.
  * <p>
- * On commit the following steps occur: <br>
- * 1) a new instance of the backing collection type is created <br>
- * 2) the contents of the list model is inserted into this new collection <br>
- * 3) the new collection is saved into the underlying collection's value model
- * <br>
- * 4) the structure of the list model is compared to the structure of the <br>
+ * On commit the following steps occur: 
+ * <ol>
+ * <li>a new instance of the backing collection type is created</li>
+ * <li>the contents of the list model is inserted into this new collection</li>
+ * <li>the new collection is saved into the underlying collection's value model</li>
+ * <li>the structure of the list model is compared to the structure of the 
  * new underlying collection and if they differ the list model is updated to
- * reflect the new structure.
- * </p>
+ * reflect the new structure.</li>
+ * </ol>
  * <p>
  * NOTE: Between calls to commit the list model adheres to the contract defined
  * in <code>java.util.List</code> NOT the contract of the underlying
  * collection's type. This can result in the list model representing a state
- * that is not possible for the underlying collection. e.g. Duplicates in a Set or
- * an order which does not conform to the underlying collection ordering. 
- * </p>
+ * that is not possible for the underlying collection. 
+ * 
  * 
  * @author oliverh
  */
@@ -86,26 +85,39 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         Assert.notNull(wrappedType);
         this.wrappedType = wrappedType;
         this.wrappedConcreteType = getConcreteCollectionType(wrappedType);
-        updateListModel();
+        updateListModel(getWrappedValue());
     }
 
-    public Object getValue() {
-        if (!hasChangeBuffered()) {
-            super.setValue(listListModel);
+    public void setValue(Object value) {
+        if (value != listListModel) {
+            if (!hasSameStructure()) {
+                updateListModel(value);
+            }
         }
-        return super.getValue();
     }
 
-    protected void doBufferedValueCommit(Object bufferedValue) {
-        if (hasSameStructure()) {
-            return;
+    protected Object getValueToCommit() {
+        Object wrappedValue = getWrappedValue();
+        // If the wrappedValue is null and the buffer is empty 
+        // just return null rather than an empty collection
+        if (wrappedValue == null && listListModel.size() == 0) {
+            return null;
         }
-        getWrappedModel().setValue(createCollection());
-        if (hasSameStructure()) {
-            return;
+        else {
+            return createCollection(wrappedValue);
         }
-        updateListModel();
     }
+
+    //    protected void doBufferedValueCommit(Object bufferedValue) {
+    //        if (hasSameStructure()) {
+    //            return;
+    //        }
+    //        getWrappedValueModel().setValue(createCollection());
+    //        if (hasSameStructure()) {
+    //            return;
+    //        }
+    //        updateListModel(getWrappedValue());
+    //    }
 
     protected Class getConcreteCollectionType(Class wrappedType) {
         Class class2Create;
@@ -174,8 +186,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         return true;
     }
 
-    private Object createCollection() {
-        return populateFromListModel(createNewCollection(getWrappedValue()));
+    private Object createCollection(Object wrappedCollection) {
+        return populateFromListModel(createNewCollection(wrappedCollection));
     }
 
     private Object createNewCollection(Object wrappedCollection) {
@@ -187,9 +199,9 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             if (SortedSet.class.isAssignableFrom(wrappedConcreteType) && wrappedCollection instanceof SortedSet
                     && ((SortedSet)wrappedCollection).comparator() != null) {
                 try {
-                    Constructor con = wrappedConcreteType.getConstructor(new Class[] { Comparator.class });
-                    newCollection = BeanUtils.instantiateClass(con, new Object[] { ((SortedSet)wrappedCollection)
-                            .comparator() });
+                    Constructor con = wrappedConcreteType.getConstructor(new Class[] {Comparator.class});
+                    newCollection = BeanUtils.instantiateClass(con,
+                            new Object[] {((SortedSet)wrappedCollection).comparator()});
                 }
                 catch (NoSuchMethodException e) {
                     throw new FatalBeanException("Could not instantiate SortedSet class ["
@@ -218,17 +230,13 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         return collection;
     }
 
-    protected void onWrappedValueChanged() {
-        updateListModel();
-    }
-
     /**
      * Gets the list value associated with this value model, creating a list
      * model buffer containing its contents, suitable for manipulation.
      * 
      * @return The list model buffer
      */
-    private Object updateListModel() {
+    private Object updateListModel(final Object wrappedCollection) {
         if (listListModel == null) {
             listListModel = new ListListModel();
             listListModel.addListDataListener(new ListDataListener() {
@@ -245,10 +253,10 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 }
             });
         }
-        final Object wrappedCollection = getWrappedValue();
         if (wrappedCollection == null) {
             listListModel.clear();
-        } else {
+        }
+        else {
             if (wrappedType.isAssignableFrom(wrappedCollection.getClass())) {
                 Collection buffer = null;
                 if (wrappedCollection instanceof Object[]) {
@@ -263,24 +271,26 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             else {
                 throw new IllegalArgumentException("wrappedCollection must be assignable from " + wrappedType.getName());
             }
-                
-        } 
+
+        }
         return listListModel;
     }
 
+    private Object getWrappedValue() {
+        return getWrappedValueModel().getValue();
+    }
+
     protected void fireListModelChanged() {
-        if (hasChangeBuffered()) {
-            super.fireValueChanged();
+        if (isBuffering()) {
+            super.fireValueChange(listListModel, listListModel);
         }
         else {
             super.setValue(listListModel);
         }
     }
-    
-    protected void fireValueChanged() {
-        if (!hasChangeBuffered()) {
-            updateListModel();
-        }
-        super.fireValueChanged();
+
+    protected boolean hasValueChanged(Object oldValue, Object newValue) {
+        return (oldValue == listListModel && newValue == listListModel) 
+            || super.hasValueChanged(oldValue, newValue);
     }
 }

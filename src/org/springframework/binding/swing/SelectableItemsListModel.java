@@ -40,8 +40,6 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.springframework.binding.value.BoundValueModel;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModel;
 import org.springframework.binding.value.support.ValueHolder;
@@ -189,7 +187,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     /**
      * Holds the selection, an instance of <code>Object</code>.
      */
-    private BoundValueModel selectionHolder;
+    private ValueModel selectionHolder;
 
     /**
      * Holds the selection index, an <code>Integer</code>.
@@ -199,7 +197,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     /**
      * Handles changes of the list.
      */
-    private final ValueChangeListener selectableItemsChangeHandler;
+    private final PropertyChangeListener selectableItemsChangeHandler;
 
     /**
      * The <code>PropertyChangeListener</code> used to handle changes of the
@@ -211,7 +209,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
      * The <code>PropertyChangeListener</code> used to handle changes of the
      * selection index.
      */
-    private final ValueChangeListener selectionIndexChangeHandler;
+    private final PropertyChangeListener selectionIndexChangeHandler;
 
     /**
      * Handles structural and content changes of the list model.
@@ -334,7 +332,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     public SelectableItemsListModel(ValueModel selectableItemsHolder, ValueModel selectionHolder,
             ValueModel selectionIndexHolder) {
         this.selectableItemsHolder = selectableItemsHolder;
-        this.selectionHolder = (BoundValueModel) selectionHolder;
+        this.selectionHolder = selectionHolder;
         this.selectionIndexHolder = selectionIndexHolder;
         initSelectionIndex();
 
@@ -344,7 +342,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
         listDataChangeHandler = new ListDataChangeHandler();
 
         this.selectableItemsHolder.addValueChangeListener(selectableItemsChangeHandler);
-        this.selectionHolder.addPropertyChangeListener(selectionChangeHandler);
+        this.selectionHolder.addValueChangeListener(selectionChangeHandler);
         this.selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
 
         // If the ValueModel holds a ListModel observe list data changes too.
@@ -662,9 +660,9 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
     /*
      * Handles changes of the list model.
      */
-    private class SelectableItemsChangeHandler implements ValueChangeListener {
+    private class SelectableItemsChangeHandler implements PropertyChangeListener {
 
-        public void valueChanged() {
+        public void propertyChange(PropertyChangeEvent evt) {
             Object oldList = list;
             updateList(oldList, selectableItemsHolder.getValue());
         }
@@ -730,14 +728,14 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             firePropertyChange(SELECTION_EMPTY_PROPERTY, theOldSelectionIndex == EMPTY_SELECTION_INDEX,
                     newSelectionIndex == EMPTY_SELECTION_INDEX);
             firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection);
-            fireValueChanged();
+            fireValueChangeWhenStillEqual();
         }
     }
 
     /*
      * Listens to changes of the selection index.
      */
-    private class SelectionIndexChangeHandler implements ValueChangeListener {
+    private class SelectionIndexChangeHandler implements PropertyChangeListener {
 
         /*
          * public void valueChanged() { int newSelectionIndex =
@@ -753,7 +751,7 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
          * updateSelectionHolderSilently(newSelection);
          * firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection); }
          */
-        public void valueChanged() {
+        public void propertyChange(PropertyChangeEvent evt) {
             int newSelectionIndex = getSelectionIndex();
             Object oldSelection = getElementAtSafely(oldSelectionIndex);
             Object newSelection = getElementAtSafely(newSelectionIndex);
@@ -766,13 +764,11 @@ public final class SelectableItemsListModel extends AbstractValueModel implement
             firePropertyChange(SELECTION_EMPTY_PROPERTY, theOldSelectionIndex == EMPTY_SELECTION_INDEX,
                     newSelectionIndex == EMPTY_SELECTION_INDEX);
             firePropertyChange(SELECTION_PROPERTY, oldSelection, newSelection);
-            fireValueChanged();
+            fireValueChangeWhenStillEqual();
         }
 
         private void updateSelectionHolderSilently(Object newSelection) {
-            selectionHolder.removePropertyChangeListener(selectionChangeHandler);
-            selectionHolder.setValue(newSelection);
-            selectionHolder.addPropertyChangeListener(selectionChangeHandler);
+            selectionHolder.setValueSilently(newSelection, selectionChangeHandler);
         }
     }
 

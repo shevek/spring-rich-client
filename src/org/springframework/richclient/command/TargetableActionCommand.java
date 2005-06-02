@@ -15,7 +15,9 @@
  */
 package org.springframework.richclient.command;
 
-import org.springframework.binding.value.ValueChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -24,7 +26,7 @@ import org.springframework.util.ObjectUtils;
 public class TargetableActionCommand extends ActionCommand {
     private ActionCommandExecutor commandExecutor;
 
-    private ValueChangeListener guardRelay;
+    private PropertyChangeListener guardRelay;
 
     public TargetableActionCommand() {
         this(null);
@@ -71,8 +73,8 @@ public class TargetableActionCommand extends ActionCommand {
     }
 
     private void subscribeToGuardedCommandDelegate() {
-        this.guardRelay = new ValueChangeListener() {
-            public void valueChanged() {
+        this.guardRelay = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
                 setEnabled(((GuardedActionCommandExecutor)commandExecutor).isEnabled());
             }
         };

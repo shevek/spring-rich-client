@@ -19,8 +19,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -42,17 +44,17 @@ import org.springframework.core.closure.support.Block;
 import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.AbstractView;
-import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.CompositeDialogPage;
 import org.springframework.richclient.dialog.ConfirmationDialog;
+import org.springframework.richclient.dialog.FormBackedDialogPage;
 import org.springframework.richclient.dialog.InputApplicationDialog;
 import org.springframework.richclient.dialog.TabbedDialogPage;
 import org.springframework.richclient.dialog.TitledPageApplicationDialog;
 import org.springframework.richclient.dialog.TreeCompositeDialogPage;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.preference.PreferenceStore;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
 import org.springframework.richclient.samples.petclinic.ui.preference.CompositeDialogPageType;
@@ -61,6 +63,7 @@ import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
+import org.springframework.samples.petclinic.Pet;
 import org.springframework.util.Assert;
 
 public class OwnerManagerView extends AbstractView implements ApplicationListener {
@@ -73,11 +76,19 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     private DefaultTreeModel ownersTreeModel;
 
-    private RenameCommand renameCommand = new RenameCommand();
+    private RenameExecutor renameExecutor = new RenameExecutor();
 
-    private DeleteCommandExecutor deleteExecutor = new DeleteCommandExecutor();
+    private DeleteExecutor deleteExecutor = new DeleteExecutor();
 
-    private PropertiesCommandExecutor propertiesExecutor = new PropertiesCommandExecutor();
+    private PropertiesExecutor propertiesExecutor = new PropertiesExecutor();
+
+    private RenameOwnerExecutor renameOwnerExecutor = new RenameOwnerExecutor();
+
+    private RenamePetExecutor renamePetExecutor = new RenamePetExecutor();
+
+    private OwnerPropertiesExecutor ownerPropertiesExecutor = new OwnerPropertiesExecutor();
+
+    private PetPropertiesExecutor petPropertiesExecutor = new PetPropertiesExecutor();
 
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic, "The clinic property is required");
@@ -89,6 +100,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     protected void registerLocalCommandExecutors(PageComponentContext context) {
+        context.register("renameCommand", renameExecutor);
         context.register(GlobalCommandIds.DELETE, deleteExecutor);
         context.register(GlobalCommandIds.PROPERTIES, propertiesExecutor);
     }
@@ -105,7 +117,12 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Owners");
         Collection owners = clinic.findOwners(ownerLastName);
         for (Iterator i = owners.iterator(); i.hasNext();) {
-            rootNode.add(new DefaultMutableTreeNode(i.next()));
+            Owner owner = (Owner)i.next();
+            DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(owner);
+            for (Iterator j = owner.getPets().iterator(); j.hasNext();) {
+                ownerNode.add(new DefaultMutableTreeNode(j.next()));
+            }
+            rootNode.add(ownerNode);
         }
         this.ownersTreeModel = new DefaultTreeModel(rootNode);
         this.ownersTree = new JTree(ownersTreeModel);
@@ -160,20 +177,40 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         }
     }
 
+    private Pet getSelectedPet() {
+        DefaultMutableTreeNode node = getSelectedPetNode();
+        if (node != null) {
+            return (Pet)node.getUserObject();
+        }
+        else {
+            return null;
+        }
+    }
+
+    private DefaultMutableTreeNode getSelectedPetNode() {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree.getLastSelectedPathComponent();
+        if (node == null || !(node.getUserObject() instanceof Pet)) {
+            return null;
+        }
+        else {
+            return node;
+        }
+    }
+
     private void updateCommands() {
         int treeSelectionCount = ownersTree.getSelectionCount();
         if (treeSelectionCount == 0 || (treeSelectionCount == 1 && ownersTree.isRowSelected(0))) {
-            renameCommand.setEnabled(false);
+            renameExecutor.setEnabled(false);
             deleteExecutor.setEnabled(false);
             propertiesExecutor.setEnabled(false);
         }
         else if (treeSelectionCount == 1) {
-            renameCommand.setEnabled(true);
+            renameExecutor.setEnabled(true);
             deleteExecutor.setEnabled(true);
             propertiesExecutor.setEnabled(true);
         }
         else if (treeSelectionCount > 1) {
-            renameCommand.setEnabled(false);
+            renameExecutor.setEnabled(false);
             deleteExecutor.setEnabled(true);
             propertiesExecutor.setEnabled(false);
         }
@@ -189,9 +226,17 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                 this.setIcon(getIconSource().getIcon("folder.icon"));
             }
             else {
-                Owner o = (Owner)node.getUserObject();
-                this.setText(o.getFirstName() + " " + o.getLastName());
-                this.setIcon(getIconSource().getIcon("owner.bullet"));
+                Object userObject = node.getUserObject();
+                if (userObject instanceof Owner) {
+                    Owner o = (Owner)userObject;
+                    this.setText(o.getFirstName() + " " + o.getLastName());
+                    this.setIcon(getIconSource().getIcon("owner.bullet"));
+                }
+                else if (userObject instanceof Pet) {
+                    Pet p = (Pet)userObject;
+                    this.setText("<html>" + p.getName() + " <i>(" + p.getType().getName() + ")");
+                    this.setIcon(getIconSource().getIcon("pet.bullet"));
+                }
             }
             return this;
         }
@@ -203,8 +248,8 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     private JPopupMenu createPopupContextMenu() {
         // rename, separator, delete, properties
-        CommandGroup group = getWindowCommandManager().createCommandGroup("ownerCommandGroup",
-                new Object[] {renameCommand, "separator", "deleteCommand", "separator", "propertiesCommand"});
+        CommandGroup group = getWindowCommandManager().createCommandGroup("ownerViewTableCommandGroup",
+                new Object[] {"renameCommand", "separator", "deleteCommand", "separator", "propertiesCommand"});
         return group.createPopupMenu();
     }
 
@@ -221,16 +266,85 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         }
     }
 
-    private class RenameCommand extends ActionCommand {
-        public RenameCommand() {
-            super("renameCommand");
+    private class RenameExecutor extends AbstractActionCommandExecutor {
+        public void execute() {
+            if (getSelectedOwner() != null) {
+                renameOwnerExecutor.execute();
+            }
+            else {
+                renamePetExecutor.execute();
+            }
         }
+    }
 
-        protected void doExecuteCommand() {
+    private class PropertiesExecutor extends AbstractActionCommandExecutor {
+        public void execute() {
+            if (getSelectedOwner() != null) {
+                ownerPropertiesExecutor.execute();
+            }
+            else {
+                petPropertiesExecutor.execute();
+            }
+        }
+    }
+
+    private class DeleteExecutor extends AbstractActionCommandExecutor {
+        public void execute() {
+            int ownerCount = 0;
+            int petCount = 0;
+            final List nodesToDelete = new ArrayList();
+            TreePath[] paths = ownersTree.getSelectionPaths();
+            for (int i = 0; i < paths.length; i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[i].getLastPathComponent();
+                if (node.isRoot()) {
+                    continue;
+                }
+                if (node.getUserObject() instanceof Owner) {
+                    ownerCount++;
+                }
+                else {
+                    petCount++;
+                }
+                nodesToDelete.add(node);
+            }
+
+            ConfirmationDialog dialog = new ConfirmationDialog() {
+                protected void onConfirm() {
+                    for (Iterator i = nodesToDelete.iterator(); i.hasNext();) {
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)i.next();
+                        ownersTreeModel.removeNodeFromParent(node);
+                        if (node.getUserObject() instanceof Owner) {
+                            // clinic.deleteOwner((Owner) node.getUserObject());
+                        }
+                        else {
+                            // clinic.deletePet((Pet) node.getUserObject());
+                        }
+                    }
+                }
+            };
+            if (ownerCount > 0 && petCount > 0) {
+                dialog.setTitle(getMessage("confirmDeleteOwnerAndPetDialog.title"));
+                dialog.setConfirmationMessage(getMessage("confirmDeleteOwnerAndPetDialog.label"));
+            }
+            else if (ownerCount > 0) {
+                dialog.setTitle(getMessage("confirmDeleteOwnerDialog.title"));
+                dialog.setConfirmationMessage(getMessage("confirmDeleteOwnerDialog.label"));
+            }
+            else {
+                dialog.setTitle(getMessage("confirmDeletePetDialog.title"));
+                dialog.setConfirmationMessage(getMessage("confirmDeletePetDialog.label"));
+            }
+
+            dialog.showDialog();
+        }
+    }
+
+    private class RenameOwnerExecutor extends AbstractActionCommandExecutor {
+        public void execute() {
             final Owner owner = getSelectedOwner();
             InputApplicationDialog renameDialog = new InputApplicationDialog(owner, "firstName");
             renameDialog.setTitle(getMessage("renameOwnerDialog.title"));
-            renameDialog.setInputLabelMessage("renameDialog.label");
+            renameDialog.setInputLabelMessage("renameOwnerDialog.label");
             renameDialog.setParent(getWindowControl());
             renameDialog.setFinishAction(new Block() {
 
@@ -244,34 +358,26 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         }
     }
 
-    private Owner reloadSelectedOwner() {
-        int ownerId = getSelectedOwner().getId().intValue();
-        return clinic.loadOwner(ownerId);
-    }
-
-    private class DeleteCommandExecutor extends AbstractActionCommandExecutor {
+    private class RenamePetExecutor extends AbstractActionCommandExecutor {
         public void execute() {
-            ConfirmationDialog dialog = new ConfirmationDialog() {
-                protected void onConfirm() {
-                    TreePath[] paths = ownersTree.getSelectionPaths();
-                    for (int i = 0; i < paths.length; i++) {
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[i].getLastPathComponent();
-                        if (node.isRoot()) {
-                            continue;
-                        }
-                        Owner owner = (Owner)node.getUserObject();
-                        // clinic.deleteOwner(owner);
-                        ownersTreeModel.removeNodeFromParent(node);
-                    }
+            final Pet pet = getSelectedPet();
+            InputApplicationDialog renameDialog = new InputApplicationDialog(pet, "name");
+            renameDialog.setTitle(getMessage("renamePetDialog.title"));
+            renameDialog.setInputLabelMessage("renamePetDialog.label");
+            renameDialog.setParent(getWindowControl());
+            renameDialog.setFinishAction(new Block() {
+
+                public void handle(Object o) {
+                    clinic.storePet(pet);
+                    getSelectedPetNode().setUserObject(pet);
+                    ownersTreeModel.nodeChanged(getSelectedPetNode());
                 }
-            };
-            dialog.setTitle("Delete Owner(s)");
-            dialog.setConfirmationMessage(getMessage("confirmDeleteOwnerDialog.label"));
-            dialog.showDialog();
+            });
+            renameDialog.showDialog();
         }
     }
 
-    private class PropertiesCommandExecutor extends AbstractActionCommandExecutor {
+    private class OwnerPropertiesExecutor extends AbstractActionCommandExecutor {
 
         private NestingFormModel ownerFormModel;
 
@@ -281,7 +387,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
         public void execute() {
             final Owner owner = getSelectedOwner();
-            ownerFormModel = SwingFormModel.createCompoundFormModel(owner);
+            ownerFormModel = FormModelHelper.createCompoundFormModel(owner);
             ownerGeneralForm = new OwnerGeneralForm(ownerFormModel);
 
             PreferenceStore ps = (PreferenceStore)getApplicationContext().getBean("preferenceStore");
@@ -305,6 +411,30 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                     ownerFormModel.commit();
                     clinic.storeOwner(owner);
                     ownersTreeModel.nodeChanged(getSelectedOwnerNode());
+                    return true;
+                }
+            };
+            dialog.showDialog();
+        }
+    }
+
+    private class PetPropertiesExecutor extends AbstractActionCommandExecutor {
+
+        public void execute() {
+            final Pet pet = getSelectedPet();            
+            final PetForm petForm = new PetForm(FormModelHelper.createFormModel(pet));
+            final FormBackedDialogPage dialogPage = new FormBackedDialogPage(petForm);
+
+            TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(dialogPage, getWindowControl()) {
+                protected void onAboutToShow() {
+                    petForm.requestFocusInWindow();
+                    setEnabled(dialogPage.isPageComplete());
+                }
+
+                protected boolean onFinish() {
+                    petForm.commit();
+                    clinic.storePet(pet);
+                    ownersTreeModel.nodeChanged(getSelectedPetNode());
                     return true;
                 }
             };

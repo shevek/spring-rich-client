@@ -15,14 +15,15 @@
  */
 package org.springframework.richclient.command;
 
-import org.springframework.binding.value.ValueChangeListener;
+import java.beans.PropertyChangeListener;
+
 import org.springframework.richclient.core.Guarded;
 
 /**
  * @author Keith Donald
  */
 public interface GuardedActionCommandExecutor extends Guarded, ActionCommandExecutor {
-    public void addEnabledListener(ValueChangeListener listener);
+    public void addEnabledListener(PropertyChangeListener listener);
 
-    public void removeEnabledListener(ValueChangeListener listener);
+    public void removeEnabledListener(PropertyChangeListener listener);
 }

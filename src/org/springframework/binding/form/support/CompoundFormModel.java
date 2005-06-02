@@ -31,7 +31,6 @@ import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
-import org.springframework.binding.value.support.PropertyAdapter;
 import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.core.closure.support.Algorithms;
 import org.springframework.core.closure.support.Block;
@@ -83,7 +82,7 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
 
     private FormModel createChildInternal(AbstractFormModel childFormModel, String childFormModelName,
             String childFormObjectPath) {
-        ValueModel valueHolder = new PropertyAdapter(getPropertyAccessStrategy(), childFormObjectPath);
+        ValueModel valueHolder = getPropertyAccessStrategy().getPropertyValueModel(childFormObjectPath);
         if (getBufferChangesDefault()) {
             valueHolder = new BufferedValueModel(valueHolder);
         }

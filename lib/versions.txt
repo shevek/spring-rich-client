@@ -21,10 +21,12 @@ j2ee/servlet.jar:
 jakarta-commons/commons-codec.jar: 
 jakarta-commons/commons-logging.jar:
 javahelp/jh.jar: 2.0
-jdnc/jdnc.jar: .6
+jdnc/jdnc*.jar: 0.7
+jdnc/jlfgr*.jar: 0.1
 jgoodies/forms.jar: 1.0.5
 jgoodies/looks.jar: 1.2.2
 junit/junit.jar: 3.8.1
 log4j/log4j.jar: 1.2.8
 spin/spin.jar: 1.3
-spring/spring-*.jar: 1.2.1
+spring/spring.jar: 1.2.1
+spring/spring-sandbox.jar: 1.2.1 (with classes that have been moved into Spring Rich removed)

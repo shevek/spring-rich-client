@@ -15,16 +15,22 @@
  */
 package org.springframework.richclient.form.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.springframework.binding.form.FormModel;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 
@@ -33,13 +39,13 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractFormBuilder {
 
-    private final SwingFormModel formModel;
+    private final BindingFactory bindingFactory;
 
     private ComponentFactory componentFactory;
 
-    protected AbstractFormBuilder(SwingFormModel formModel) {
-        Assert.notNull(formModel);
-        this.formModel = formModel;
+    protected AbstractFormBuilder(BindingFactory bindingFactory) {
+        Assert.notNull(bindingFactory);
+        this.bindingFactory = bindingFactory;
 
     }
 
@@ -54,36 +60,39 @@ public abstract class AbstractFormBuilder {
         this.componentFactory = componentFactory;
     }
 
-    protected SwingFormModel getFormModel() {
-        return formModel;
+    protected BindingFactory getBindingFactory() {
+        return bindingFactory;
+    }
+
+    protected FormModel getFormModel() {
+        return bindingFactory.getFormModel();
     }
 
     protected JComponent getDefaultComponent(String propertyName) {
-        return getFormModel().createBoundControl(propertyName);
+        return getBindingFactory().createBinding(propertyName).getControl();
     }
 
     protected JComponent getSelector(String propertyName, Constraint filter) {
-        JComponent propertyEditor = null;
-        if (getFormModel().getMetadataAccessStrategy().isEnumeration(propertyName)) {
-            propertyEditor = getFormModel().createBoundEnumComboBox(propertyName, filter);
-        }
-        Assert.notNull(propertyEditor, "Unsupported filterable property " + propertyName);
-        return propertyEditor;
+        Map context = new HashMap();
+        context.put(ComboBoxBinder.FILTER_KEY, filter);
+        return getBindingFactory().createBinding(JComboBox.class, propertyName).getControl();
     }
 
     protected JPasswordField getPasswordField(String propertyName) {
-        JPasswordField field = (JPasswordField)getFormModel().bind(new JPasswordField(8), propertyName);
+        JPasswordField field = (JPasswordField)getBindingFactory().bindControl(new JPasswordField(8), propertyName)
+                .getControl();
         return field;
     }
 
     protected JComponent getTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-        JComponent component = new JScrollPane(getFormModel().bind(textArea, propertyName));
+        JComponent component = new JScrollPane(getBindingFactory().bindControl(textArea, propertyName).getControl());
         return component;
     }
 
     protected JLabel getLabelFor(String propertyName, JComponent component) {
-        JLabel label = formModel.createLabel(propertyName);
+        JLabel label = getComponentFactory().createLabel("");
+        getFormModel().getFormPropertyFaceDescriptor(propertyName).configure(label);
         label.setLabelFor(component);
         return label;
     }

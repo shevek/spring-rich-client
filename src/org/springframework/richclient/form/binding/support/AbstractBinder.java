@@ -1,0 +1,94 @@
+/*
+ * Copyright 2002-2004 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.richclient.form.binding.support;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JComponent;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.PropertyMetadataAccessStrategy;
+import org.springframework.binding.form.ConfigurableFormModel;
+import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.form.binding.Binder;
+import org.springframework.richclient.form.binding.Binding;
+
+/**
+ * @author Oliver Hutchison
+ */
+public abstract class AbstractBinder implements Binder {
+
+    protected final Log log = LogFactory.getLog(getClass());
+
+    private final Set supportedContextKeys;
+
+    protected AbstractBinder() {
+        this.supportedContextKeys = Collections.EMPTY_SET;
+    }
+
+    protected AbstractBinder(String[] supportedContextKeys) {
+        this.supportedContextKeys = new HashSet(Arrays.asList(supportedContextKeys));
+    }
+
+    protected void validateContextKeys(Map context) {
+        Set unkownKeys = new HashSet(context.keySet());
+        unkownKeys.removeAll(supportedContextKeys);
+        for (Iterator i = unkownKeys.iterator(); i.hasNext();) {
+            final Object key = i.next();
+            context.remove(key);
+            if (log.isWarnEnabled()) {
+                log.warn("Context key '" + key + "' not supported.");
+            }
+        }
+    }
+
+    public Binding bind(FormModel formModel, String formPropertyPath, Map context) {
+        JComponent control = createControl(context);
+        if (control == null) {
+            throw new UnsupportedOperationException("This binder does not support creating a default control.");
+        }
+        return doBind(control, formModel, formPropertyPath, context);
+    }
+
+    protected abstract JComponent createControl(Map context);
+
+    public Binding bind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
+        validateContextKeys(context);
+        return doBind(control, formModel, formPropertyPath, context);
+    }
+
+    protected abstract Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context);
+
+    protected ComponentFactory getComponentFactory() {
+        return Application.services().getComponentFactory();
+    }
+
+    protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
+        return getPropertyMetadataAccessStrategy(formModel).getPropertyType(formPropertyPath);
+    }
+
+    protected PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy(FormModel formModel) {
+        return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
+    }
+}

@@ -63,7 +63,7 @@ public class BufferedCollectionValueModelTest extends TestCase {
         }
         try {
             getBufferedCollectionValueModel(null, int[].class);
-            fail("wrappedType can not be a primative array");
+            fail("wrappedType can not be a primitive array");
         }
         catch (IllegalArgumentException e) {
             // expected
@@ -91,10 +91,10 @@ public class BufferedCollectionValueModelTest extends TestCase {
         assertHasSameStructure((ListListModel)vm.getValue(), backingArray);
 
         backingArray = getArray(2);
-        vm.getWrappedModel().setValue(backingArray);
+        vm.getWrappedValueModel().setValue(backingArray);
         assertHasSameStructure((ListListModel)vm.getValue(), backingArray);
 
-        vm.getWrappedModel().setValue(null);
+        vm.getWrappedValueModel().setValue(null);
         assertEquals("ListListModel must have no elements when backing collection is NULL", ((ListListModel)vm
                 .getValue()).size(), 0);
 
@@ -104,10 +104,10 @@ public class BufferedCollectionValueModelTest extends TestCase {
             assertHasSameStructure((ListListModel)vm.getValue(), backingCollection);
 
             backingCollection = getCollection(supportedClasses[i], i + 1);
-            vm.getWrappedModel().setValue(backingCollection);
+            vm.getWrappedValueModel().setValue(backingCollection);
             assertHasSameStructure((ListListModel)vm.getValue(), backingCollection);
 
-            vm.getWrappedModel().setValue(null);
+            vm.getWrappedValueModel().setValue(null);
             assertEquals("ListListModel must have no elements when backing collection is NULL", ((ListListModel)vm
                     .getValue()).size(), 0);
         }
@@ -119,37 +119,37 @@ public class BufferedCollectionValueModelTest extends TestCase {
         ListListModel llm = (ListListModel)vm.getValue();
         llm.clear();
         assertEquals("changes to ListListModel should be not be made to backing array unless commit is called", vm
-                .getWrappedModel().getValue(), backingArray);
+                .getWrappedValueModel().getValue(), backingArray);
 
         backingArray = getArray(101);
-        vm.getWrappedModel().setValue(backingArray);
+        vm.getWrappedValueModel().setValue(backingArray);
         Object newValue = new Double(1);
         llm.set(1, newValue);
         vm.commit();
-        Object[] newBackingArray = (Object[])vm.getWrappedModel().getValue();
-        assertNotSame("change should not have been commited back to original array", newBackingArray, backingArray);
+        Object[] newBackingArray = (Object[])vm.getWrappedValueModel().getValue();
+        assertNotSame("change should not have been committed back to original array", newBackingArray, backingArray);
 
         llm.add(newValue);
         vm.commit();
-        newBackingArray = (Object[])vm.getWrappedModel().getValue();
-        assertNotSame("change should not have been commited back to original array", newBackingArray, backingArray);
+        newBackingArray = (Object[])vm.getWrappedValueModel().getValue();
+        assertNotSame("change should not have been committed back to original array", newBackingArray, backingArray);
         assertTrue(newBackingArray.length == backingArray.length + 1);
         assertEquals(newBackingArray[newBackingArray.length - 1], newValue);
 
         llm.clear();
         vm.commit();
-        newBackingArray = (Object[])vm.getWrappedModel().getValue();
+        newBackingArray = (Object[])vm.getWrappedValueModel().getValue();
         assertEquals(newBackingArray.length, 0);
 
-        vm.getWrappedModel().setValue(null);
+        vm.getWrappedValueModel().setValue(null);
         llm.clear();
         vm.commit();
         assertEquals("if backingCollection is NULL then a commit of an empty LLM should also be NULL", vm
-                .getWrappedModel().getValue(), null);
+                .getWrappedValueModel().getValue(), null);
 
         llm.add(newValue);
         vm.commit();
-        newBackingArray = (Object[])vm.getWrappedModel().getValue();
+        newBackingArray = (Object[])vm.getWrappedValueModel().getValue();
         assertEquals(newBackingArray.length, 1);
         assertEquals(newBackingArray[0], newValue);
     }
@@ -161,17 +161,17 @@ public class BufferedCollectionValueModelTest extends TestCase {
             ListListModel llm = (ListListModel)vm.getValue();
             llm.clear();
             assertEquals("changes to LLM should be not be made to backing collection unless commit is called", vm
-                    .getWrappedModel().getValue(), backingCollection);
+                    .getWrappedValueModel().getValue(), backingCollection);
 
             backingCollection = getCollection(supportedClasses[i], 201 + i);
-            vm.getWrappedModel().setValue(backingCollection);
+            vm.getWrappedValueModel().setValue(backingCollection);
             Object newValue = new Integer(-1);
             backingCollection.remove(newValue);
             int orgSize = backingCollection.size();
             llm.set(1, newValue);
             vm.commit();
-            Collection newBackingCollection = (Collection)vm.getWrappedModel().getValue();
-            assertTrue("change should not have been commited back to original array", !backingCollection
+            Collection newBackingCollection = (Collection)vm.getWrappedValueModel().getValue();
+            assertTrue("change should not have been committed back to original array", !backingCollection
                     .contains(newValue));
             assertTrue(newBackingCollection.contains(newValue));
             assertTrue(orgSize == newBackingCollection.size());
@@ -181,25 +181,25 @@ public class BufferedCollectionValueModelTest extends TestCase {
             orgSize = backingCollection.size();
             llm.add(newValue);
             vm.commit();
-            newBackingCollection = (Collection)vm.getWrappedModel().getValue();
+            newBackingCollection = (Collection)vm.getWrappedValueModel().getValue();
 
             assertTrue(newBackingCollection.contains(newValue));
             assertTrue(newBackingCollection.size() == orgSize + 1);
 
             llm.clear();
             vm.commit();
-            assertEquals(((Collection)vm.getWrappedModel().getValue()).size(), 0);
+            assertEquals(((Collection)vm.getWrappedValueModel().getValue()).size(), 0);
 
-            vm.getWrappedModel().setValue(null);
+            vm.getWrappedValueModel().setValue(null);
             llm.clear();
             vm.commit();
-            newBackingCollection = (Collection)vm.getWrappedModel().getValue();
+            newBackingCollection = (Collection)vm.getWrappedValueModel().getValue();
             assertEquals("if backingCollection is NULL then a commit of an empty LLM should also be NULL",
                     newBackingCollection, null);
 
             llm.add(newValue);
             vm.commit();
-            newBackingCollection = (Collection)vm.getWrappedModel().getValue();
+            newBackingCollection = (Collection)vm.getWrappedValueModel().getValue();
             assertTrue(supportedClasses[i].isAssignableFrom(newBackingCollection.getClass()));
             assertEquals(newBackingCollection.size(), 1);
             assertEquals(newBackingCollection.iterator().next(), newValue);
@@ -265,7 +265,7 @@ public class BufferedCollectionValueModelTest extends TestCase {
     public void testValueChangeNotification() {
         Object[] backingArray = getArray(100);
         BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingArray);
-        TestableValueChangeListener vl = new TestableValueChangeListener();
+        TestablePropertyChangeListener vl = new TestablePropertyChangeListener();
         vm.addValueChangeListener(vl);
 
         ListListModel llm = (ListListModel)vm.getValue();

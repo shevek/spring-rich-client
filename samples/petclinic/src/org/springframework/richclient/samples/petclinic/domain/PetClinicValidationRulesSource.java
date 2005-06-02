@@ -15,10 +15,13 @@
  */
 package org.springframework.richclient.samples.petclinic.domain;
 
+import java.util.Date;
+
 import org.springframework.core.closure.Constraint;
 import org.springframework.rules.Rules;
 import org.springframework.rules.support.DefaultRulesSource;
 import org.springframework.samples.petclinic.Owner;
+import org.springframework.samples.petclinic.jdbc.JdbcPet;
 
 /**
  * @author Keith Donald
@@ -28,6 +31,7 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
     public PetClinicValidationRulesSource() {
         super();
         addRules(createOwnerRules());
+        addRules(createPetRules());
     }
 
     private Rules createOwnerRules() {
@@ -38,12 +42,19 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
                 add(not(eqProperty("firstName", "lastName")));
                 add("address", required());
             }
-
-            private Constraint getNameValueConstraint() {
-                return all(new Constraint[] { required(), maxLength(25), regexp("[a-zA-Z]*", "alphabetic") });
-            }
-
         };
     }
 
+    private Rules createPetRules() {
+        return new Rules(JdbcPet.class) {
+            protected void initRules() {
+                add("name", getNameValueConstraint());
+                add("birthDate", lt(new Date()));
+            }
+        };
+    }
+
+    private Constraint getNameValueConstraint() {
+        return all(new Constraint[] {required(), maxLength(25), regexp("[a-zA-Z]*", "alphabetic")});
+    }
 }

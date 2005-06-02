@@ -15,12 +15,14 @@
  */
 package org.springframework.richclient.text;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.support.CommitTrigger;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
@@ -74,8 +76,8 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
                     resetTrigger.commit();
                 }
             });
-            formModel.addFormObjectChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
+            formModel.addFormObjectChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
                     resetTrigger.commit();
                 }
             });

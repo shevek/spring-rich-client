@@ -15,24 +15,28 @@
  */
 package org.springframework.richclient.forms;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueModelWrapper;
 
 /**
- * @author oliverh
+ * @author Oliver Hutchison
  */
-public abstract class AbstractValueSetter implements ValueChangeListener {
+public abstract class AbstractValueSetter {
     protected static final Log logger = LogFactory.getLog(AbstractValueSetter.class);
+
+    private final ValueModelChangeHandler valueModelChangeHandler = new ValueModelChangeHandler();
 
     private ValueModel displayValueModel;
 
     public AbstractValueSetter(ValueModel displayValueModel) {
         this.displayValueModel = displayValueModel;
         if (this.displayValueModel != null) {
-            this.displayValueModel.addValueChangeListener(this);
+            this.displayValueModel.addValueChangeListener(valueModelChangeHandler);
         }
     }
 
@@ -42,27 +46,24 @@ public abstract class AbstractValueSetter implements ValueChangeListener {
 
     protected void componentValueChanged(Object newValue) {
         if (displayValueModel != null) {
-            try {
-                displayValueModel.removeValueChangeListener(this);
-                displayValueModel.setValue(newValue);
-            } finally {
-                displayValueModel.addValueChangeListener(this);
-            }
+            displayValueModel.setValueSilently(newValue, valueModelChangeHandler);
         }
-    }
-
-    public void valueChanged() {
-        setControlValue(displayValueModel.getValue());
     }
 
     protected abstract void setControlValue(Object value);
 
     protected Object getInnerMostValue() {
         if (getValueModel() instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)getValueModel()).getInnerMostValue();
+            return ((ValueModelWrapper)getValueModel()).getInnerMostWrappedValueModel().getValue();
         }
         else {
             return getValueModel().getValue();
+        }
+    }
+
+    private class ValueModelChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            setControlValue(displayValueModel.getValue());
         }
     }
 

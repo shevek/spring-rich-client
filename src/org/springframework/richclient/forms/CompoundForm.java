@@ -16,6 +16,7 @@
 package org.springframework.richclient.forms;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.NestingFormModel;
 
 /**
@@ -36,8 +37,8 @@ public class CompoundForm {
         setFormObject(formObject);
     }
 
-    public SwingFormModel newPageFormModel(String formName) {
-        return SwingFormModel.createChildPageFormModel(getFormModel(), formName);
+    public ConfigurableFormModel newPageFormModel(String formName) {
+        return FormModelHelper.createChildPageFormModel(getFormModel(), formName);
     }
 
     public NestingFormModel getFormModel() {
@@ -56,7 +57,7 @@ public class CompoundForm {
     }
 
     protected NestingFormModel createCompoundFormModel(Object formObject) {
-        return SwingFormModel.createCompoundFormModel(formObject);
+        return FormModelHelper.createCompoundFormModel(formObject);
     }
 
     public void commit() {

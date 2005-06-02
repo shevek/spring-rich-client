@@ -29,6 +29,9 @@
  */
 package org.springframework.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditListener;
@@ -40,7 +43,6 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.Position;
 import javax.swing.text.Segment;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
 
@@ -86,7 +88,7 @@ import org.springframework.util.Assert;
  * @see Document
  * @see PlainDocument
  */
-public final class DocumentAdapter implements Document, ValueChangeListener, DocumentListener {
+public final class DocumentAdapter implements Document, PropertyChangeListener, DocumentListener {
 
     /**
      * Holds the underlying ValueModel that is used to read values, to update
@@ -170,9 +172,7 @@ public final class DocumentAdapter implements Document, ValueChangeListener, Doc
      *            the text to be set in the value model
      */
     private void setValueSilently(String newText) {
-        valueModel.removeValueChangeListener(this);
-        valueModel.setValue(newText);
-        valueModel.addValueChangeListener(this);
+        valueModel.setValueSilently(newText, this);
     }
 
     /**
@@ -206,7 +206,7 @@ public final class DocumentAdapter implements Document, ValueChangeListener, Doc
     /**
      * The subject value has changed; update the document.
      */
-    public void valueChanged() {
+    public void propertyChange(PropertyChangeEvent evt) {
         updateDocumentText();
     }
 

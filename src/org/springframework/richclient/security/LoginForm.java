@@ -22,7 +22,7 @@ import net.sf.acegisecurity.AuthenticationManager;
 
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.forms.AbstractForm;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.forms.FormModelHelper;
 
 public class LoginForm extends AbstractForm {
     private SessionDetails sessionDetails;
@@ -32,7 +32,7 @@ public class LoginForm extends AbstractForm {
     public LoginForm(AuthenticationManager manager) {
         super("general");
         this.sessionDetails = createSessionDetails();
-        setFormModel(SwingFormModel.createFormModel(this.sessionDetails));
+        setFormModel(FormModelHelper.createFormModel(this.sessionDetails));
         setAuthenticationManager(manager);
     }
 
@@ -45,7 +45,7 @@ public class LoginForm extends AbstractForm {
     }
 
     protected JComponent createFormControl() {
-        TableFormBuilder formBuilder = new TableFormBuilder(getFormModel());
+        TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
         this.usernameField = formBuilder.add(SessionDetails.PROPERTY_USERNAME)[1];
         formBuilder.row();
         formBuilder.addPasswordField(SessionDetails.PROPERTY_PASSWORD);

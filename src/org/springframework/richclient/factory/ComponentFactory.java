@@ -212,7 +212,7 @@ public interface ComponentFactory {
      * 
      * @return The new combo box.
      */
-    public JComboBox createComboBox(Class enumClass);
+    public JComboBox createComboBox(Class enumType);
 
     /**
      * Configure a combo box to be populated with all enums of the specified
@@ -222,7 +222,7 @@ public interface ComponentFactory {
      * @param enumType
      *            The enumeration type.
      */
-    public void configureForEnum(JComboBox comboBox, Class enumClass);
+    public void configureForEnum(JComboBox comboBox, Class enumType);
 
     /**
      * Create a configured menu item.

@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
-import org.springframework.binding.value.BoundValueModel;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 
 /**
@@ -36,7 +36,7 @@ public class PropertyEditorValueSetterTests extends TestCase {
         MyObject firstModel = new MyObject(new Date());
 
         BeanPropertyAccessStrategy propsAccessor = new BeanPropertyAccessStrategy(firstModel);
-        BoundValueModel domainObjectHolder = propsAccessor.getDomainObjectHolder();
+        ValueModel domainObjectHolder = propsAccessor.getDomainObjectHolder();
         BufferedValueModel buffer = new BufferedValueModel(propsAccessor.getPropertyValueModel("someDate"));
 
         MyPropertyEditor editor = new MyPropertyEditor();
@@ -47,7 +47,7 @@ public class PropertyEditorValueSetterTests extends TestCase {
         buffer.setValue(new Date(2));
         assertTrue("editor not updated!", editor.isChangedByEvent());
         editor.setValue(new Date(3));
-        assertTrue("value not updated", buffer.isDirty());
+        assertTrue("value not updated", buffer.isBuffering());
 
         //1. now we test setting through the editor, and verify that it didn't
         // get an event back
@@ -62,7 +62,7 @@ public class PropertyEditorValueSetterTests extends TestCase {
         domainObjectHolder.setValue(secondModel);
         assertFalse("buffer should not become dirty by setting wrappedModel\n"
                 + "-- issue originally reported as bug rpc-65 \n"
-                + "-- [http://opensource.atlassian.com/projects/spring/browse/RCP-65] ", buffer.isDirty());
+                + "-- [http://opensource.atlassian.com/projects/spring/browse/RCP-65] ", buffer.isBuffering());
     }
 
     static class MyObject {

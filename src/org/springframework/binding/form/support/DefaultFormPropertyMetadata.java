@@ -44,7 +44,7 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
 
     private boolean oldEnabled;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
     /**
      * Constructs a new instance of DefaultFormPropertyMetadata. 

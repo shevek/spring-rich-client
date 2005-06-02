@@ -20,19 +20,11 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JComponent;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.binding.form.FormModel;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
-import org.springframework.richclient.forms.SwingFormModel;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * If a form property has an entry "caption.propertyName" in the
@@ -42,79 +34,26 @@ import org.springframework.util.StringUtils;
  * 
  * @author Peter De Bruycker
  */
-public class FocusIndicatorInterceptorFactory implements FormComponentInterceptorFactory, InitializingBean {
-
-    private MessageSourceAccessor messages;
+public class FocusIndicatorInterceptorFactory implements FormComponentInterceptorFactory {
 
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        return new FocusIndicatorInterceptor(formModel, messages);
-    }
-
-    public void setMessageSource(MessageSource messageSource) {
-        Assert.notNull(messageSource, "messageSource cannot be null");
-        this.messages = new MessageSourceAccessor(messageSource);
+        return new FocusIndicatorInterceptor(formModel);
     }
 
     private class FocusIndicatorInterceptor extends AbstractFormComponentInterceptor {
 
         private FormModel formModel;
 
-        private MessageSourceAccessor messages;
-
-        public FocusIndicatorInterceptor(FormModel formModel, MessageSourceAccessor messages) {
+        public FocusIndicatorInterceptor(FormModel formModel) {
             this.formModel = formModel;
-            this.messages = messages;
-        }
-
-        protected String[] getMessageKeys(String formProperty) {
-            String id = null;
-            if (formModel instanceof SwingFormModel) {
-                id = ((SwingFormModel) formModel).getId();
-            }
-
-            boolean hasFormId = StringUtils.hasText(id);
-            String[] keys = new String[hasFormId ? 5 : 3];
-            int i = 0;
-            if (hasFormId) {
-                keys[i++] = id + ".caption." + formProperty;
-            }
-            keys[i++] = "caption." + formProperty;
-
-            if (hasFormId) {
-                keys[i++] = id + ".label." + formProperty;
-            }
-            keys[i++] = "label." + formProperty;
-            keys[i] = formProperty;
-
-            return keys;
         }
 
         private String getCaption(String propertyName) {
-            final String[] messageKeys = getMessageKeys(propertyName);
-            MessageSourceResolvable resolvable = new MessageSourceResolvable() {
-
-                public String[] getCodes() {
-                    return messageKeys;
-                }
-
-                public Object[] getArguments() {
-                    return null;
-                }
-
-                public String getDefaultMessage() {
-                    if (messageKeys.length > 0) {
-                        return messageKeys[0];
-                    }
-                    return null;
-                }
-            };
-            return LabelInfoFactory.createLabelInfo(messages.getMessage(resolvable)).getText();
+            return formModel.getFormPropertyFaceDescriptor(propertyName).getCaption();
         }
 
         public void processComponent(final String propertyName, final JComponent component) {
-
             component.addFocusListener(new FocusListener() {
-
                 public void focusGained(FocusEvent e) {
                     if (Application.instance().getActiveWindow() != null) {
                         String caption = getCaption(propertyName);
@@ -131,14 +70,5 @@ public class FocusIndicatorInterceptorFactory implements FormComponentIntercepto
                 }
             });
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
-    public void afterPropertiesSet() throws Exception {
-        Assert.state(messages != null, "messageSource must be set");
     }
 }

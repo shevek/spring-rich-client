@@ -19,7 +19,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.springframework.richclient.factory.ComponentFactory;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
 import org.springframework.richclient.layout.LabelOrientation;
 import org.springframework.richclient.layout.LayoutBuilder;
@@ -31,8 +32,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
 
     private final GridBagLayoutBuilder builder;
 
-    public GridBagLayoutFormBuilder(SwingFormModel swingFormModel) {
-        super(swingFormModel);
+    public GridBagLayoutFormBuilder(BindingFactory bindingFactory) {
+        super(bindingFactory);
         this.builder = new GridBagLayoutBuilder();
     }
 
@@ -64,8 +65,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
-     * @see SwingFormModel#createBoundControl(String)
+     * @see FormModelHelper#createLabel(String)
+     * @see FormModelHelper#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName) {
         return appendLabeledField(propertyName, LabelOrientation.LEFT);
@@ -85,8 +86,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
-     * @see SwingFormModel#createBoundControl(String)
+     * @see FormModelHelper#createLabel(String)
+     * @see FormModelHelper#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, int colSpan) {
         return appendLabeledField(propertyName, LabelOrientation.LEFT, colSpan);
@@ -105,8 +106,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
-     * @see SwingFormModel#createBoundControl(String)
+     * @see FormModelHelper#createLabel(String)
+     * @see FormModelHelper#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, LabelOrientation labelOrientation) {
         return appendLabeledField(propertyName, labelOrientation, 1);
@@ -126,8 +127,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
-     * @see SwingFormModel#createBoundControl(String)
+     * @see FormModelHelper#createLabel(String)
+     * @see FormModelHelper#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, LabelOrientation labelOrientation,
             int colSpan) {
@@ -149,8 +150,8 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
-     * @see SwingFormModel#createBoundControl(String)
+     * @see FormModelHelper#createLabel(String)
+     * @see FormModelHelper#createBoundControl(String)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, final JComponent field,
             LabelOrientation labelOrientation) {
@@ -171,7 +172,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
+     * @see FormModelHelper#createLabel(String)
      * @see FormComponentInterceptor#processLabel(String, JComponent)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, final JComponent field,
@@ -193,7 +194,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      *
      * @return "this" to make it easier to string together append calls
      *
-     * @see SwingFormModel#createLabel(String)
+     * @see FormModelHelper#createLabel(String)
      * @see FormComponentInterceptor#processLabel(String, JComponent)
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, final JComponent field,

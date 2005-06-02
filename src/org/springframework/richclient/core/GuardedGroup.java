@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +24,6 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.support.Algorithms;
 import org.springframework.core.closure.support.Block;
@@ -78,8 +79,8 @@ public class GuardedGroup implements Guarded {
         public GuardedValueModel(GuardedGroup guardedGroup, ValueModel valueModel) {
             this.guardedGroup = guardedGroup;
             this.guardedHolder = valueModel;
-            this.guardedHolder.addValueChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
+            this.guardedHolder.addValueChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
                     Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
                     if (groupEnabled != null) {
                         setEnabled(groupEnabled.booleanValue());

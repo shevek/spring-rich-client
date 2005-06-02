@@ -1,18 +1,18 @@
 /*
  * Copyright 2002-2004 the original author or authors.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */ 
 package org.springframework.binding.form;
 
 import java.beans.PropertyEditor;
@@ -22,34 +22,35 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import junit.framework.TestCase;
 
 import org.springframework.binding.form.support.CompoundFormModel;
-import org.springframework.binding.form.support.ValidatingFormModel;
 import org.springframework.binding.value.PropertyEditorProvider;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.core.ToStringCreator;
 import org.springframework.core.closure.Closure;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
+import org.springframework.richclient.forms.FormModelHelper;
 
 /**
  * @author Keith Donald
  */
 public class FormModelTest extends TestCase {
 
-    static {
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor());        
-        Application.instance().setApplicationContext(new StaticApplicationContext());
-        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());        
+    public void setUp() {
+        Application.load(null);
+        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
+        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
+        Application.services().setApplicationContext(new StaticApplicationContext());
     }
 
     public static class Employee implements PropertyEditorProvider {
@@ -113,9 +114,6 @@ public class FormModelTest extends TestCase {
             return (PropertyEditor)editors.get(domainProperty);
         }
 
-        public String toString() {
-            return new ToStringCreator(this).toString();
-        }
     }
 
     public static class Address {
@@ -178,10 +176,6 @@ public class FormModelTest extends TestCase {
         public void setCountry(Country country) {
             this.country = country;
         }
-
-        public String toString() {
-            return new ToStringCreator(this).toString();
-        }
     }
 
     private static class Country {
@@ -232,14 +226,14 @@ public class FormModelTest extends TestCase {
     public void testCompoundFormModel() {
         CompoundFormModel formModel = new CompoundFormModel(new Employee());
         ConfigurableFormModel supervisorModel = formModel.createChild("supervisorPage", "supervisor");
-        SwingFormModel supervisorPage = new SwingFormModel(supervisorModel);
-        JTextField field = (JTextField)supervisorPage.createBoundControl("name");
+        
+        JTextField field = (JTextField)createBoundControl(supervisorModel, "name");
         assertTrue(field.getText().equals(""));
         field.setText("Don");
-        ValueModel name = supervisorPage.getValueModel("name");
+        ValueModel name = supervisorModel.getDisplayValueModel("name");
         assertTrue(name.getValue().equals("Don"));
-        supervisorPage.setEnabled(true);
-        supervisorPage.commit();
+        supervisorModel.setEnabled(true);
+        supervisorModel.commit();
         Employee emp = (Employee)formModel.getFormObject();
         assertTrue(emp.getSupervisor().getName().equals("Don"));
     }
@@ -247,11 +241,11 @@ public class FormModelTest extends TestCase {
     public void testNestedCompoundFormModel() {
         CompoundFormModel formModel = new CompoundFormModel(new Employee());
         NestingFormModel address = formModel.createCompoundChild("AddressForm", "address");
-        SwingFormModel countryPage = new SwingFormModel(address.createChild("CountryForm", "country"));
-        JTextField field = (JTextField)countryPage.createBoundControl("name");
+        ConfigurableFormModel countryPage = address.createChild("CountryForm", "country");
+        JTextField field = (JTextField)createBoundControl(countryPage, "name");
         assertTrue(field.getText().equals(""));
         field.setText("USA");
-        ValueModel name = countryPage.getValueModel("name");
+        ValueModel name = countryPage.getDisplayValueModel("name");
         assertTrue(name.getValue().equals("USA"));
         countryPage.setEnabled(true);
         countryPage.commit();
@@ -261,54 +255,63 @@ public class FormModelTest extends TestCase {
     }
 
     public void testPageFormModel() {
-        SwingFormModel employeePage = SwingFormModel.createFormModel(new Employee());
-        JTextField field = (JTextField)employeePage.createBoundControl("address.streetAddress1");
+        ConfigurableFormModel employeePage = FormModelHelper.createFormModel(new Employee());
+        JTextField field = (JTextField)createBoundControl(employeePage, "address.streetAddress1");
         field.setText("12345 Some Lane");
         employeePage.commit();
         Employee emp = (Employee)employeePage.getFormObject();
         assertTrue(emp.getAddress().getStreetAddress1().equals("12345 Some Lane"));
     }
 
-//    // this fails right now - we can't exactly instantiate supervisor employee
-//    // abitrarily by default on all employees - stack overflow!
+//    // TODO: this fails right now - we can't exactly instantiate supervisor employee
+//    // arbitrarily by default on all employees - stack overflow!
 //    public void testOptionalPageFormModel() {
-//        fail("this fails right now - we can't exactly instantiate supervisor employee abitrarily by default on all employees - stack overflow!");
+//        fail("this fails right now - we can't exactly instantiate supervisor employee arbitrarily by default on all employees - stack overflow!");
 //
-//        SwingFormModel employeePage = SwingFormModel.createFormModel(new Employee());
-//        JTextField field = (JTextField)employeePage.createBoundControl("supervisor.name");
+//        ConfigurableFormModel employeePage = FormModelHelper.createFormModel(new Employee());
+//        JTextField field = (JTextField)createBoundControl(employeePage, "supervisor.name");
 //        field.setText("Don");
 //        employeePage.commit();
 //        Employee emp = (Employee)employeePage.getFormObject();
 //        assertTrue(emp.getSupervisor().getName().equals("Don"));
 //    }
 
-    public void testCustomPropertyEditorRegistration() {
-        DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application.services()
-                .getPropertyEditorRegistry();
-        Employee employee = new Employee();
-        ValidatingFormModel fm = new ValidatingFormModel(employee);
-        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class);
-
-        per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);
-        fm = new ValidatingFormModel(employee);
-        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class);
-
-        PropertyEditor pe1 = new PropertyEditorA();
-        fm = new ValidatingFormModel(employee);
-        fm.getPropertyAccessStrategy().registerCustomEditor(int.class, pe1);
-        assertTrue(getPropertyEditor(fm.add("age")) == pe1);
-
-        PropertyEditor pe2 = new PropertyEditorA();
-        fm = new ValidatingFormModel(employee);
-        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe2);
-        assertTrue(getPropertyEditor(fm.add("age")) == pe2);
-
-        PropertyEditor pe3 = new PropertyEditorA();
-        employee.setPropertyEditor("age", pe3);
-        fm = new ValidatingFormModel(employee);
-        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe3);
-        assertTrue(getPropertyEditor(fm.add("age")) == pe3);
+    private JComponent createBoundControl(ConfigurableFormModel formModel, String property) {
+        return new SwingBindingFactory(formModel).createBinding(property).getControl();
     }
+
+//    public void testCustomPropertyEditorRegistration() {
+//        DefaultPropertyEditorRegistry per = (DefaultPropertyEditorRegistry)Application.services()
+//                .getPropertyEditorRegistry();
+//        Employee employee = new Employee();
+//        ValidatingFormModel fm = new ValidatingFormModel(employee);
+////        ValueModel vm = fm.add("age");
+////        assertHasNoPropertyEditor(vm);
+//
+//        per.setPropertyEditor(int.class, PropertyEditorA.class);
+//        fm = new ValidatingFormModel(employee);
+//        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorA.class);
+//
+//        per.setPropertyEditor(Employee.class, "age", PropertyEditorB.class);
+//        fm = new ValidatingFormModel(employee);
+//        assertTrue(getPropertyEditor(fm.add("age")).getClass() == PropertyEditorB.class);
+//
+//        PropertyEditor pe1 = new PropertyEditorA();
+//        fm = new ValidatingFormModel(employee);
+//        fm.getPropertyAccessStrategy().registerCustomEditor(int.class, pe1);
+//        assertTrue(getPropertyEditor(fm.add("age")) == pe1);
+//
+//        PropertyEditor pe2 = new PropertyEditorA();
+//        fm = new ValidatingFormModel(employee);
+//        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe2);
+//        assertTrue(getPropertyEditor(fm.add("age")) == pe2);
+//
+//        PropertyEditor pe3 = new PropertyEditorA();
+//        employee.setPropertyEditor("age", pe3);
+//        fm = new ValidatingFormModel(employee);
+//        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe3);
+//        assertTrue(getPropertyEditor(fm.add("age")) == pe3);
+//    }
 
     private void assertHasNoPropertyEditor(ValueModel vm) {
         ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");

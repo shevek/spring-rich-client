@@ -31,7 +31,7 @@ public class OwnerAddressForm extends AbstractForm {
     }
 
     protected JComponent createFormControl() {
-        TableFormBuilder formBuilder = new TableFormBuilder(getFormModel());
+        TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
         this.address = formBuilder.add("address")[1];
         formBuilder.row();
         formBuilder.add("city");

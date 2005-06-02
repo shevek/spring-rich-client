@@ -29,6 +29,8 @@
  */
 package org.springframework.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
 import javax.swing.BoundedRangeModel;
@@ -36,7 +38,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.ToStringCreator;
 import org.springframework.rules.constraint.Range;
@@ -86,7 +87,7 @@ public final class BoundedRangeModelAdapter implements BoundedRangeModel, Serial
 
     private boolean isAdjusting;
 
-    private ValueChangeListener currentValueChangeHandler;
+    private PropertyChangeListener currentValueChangeHandler;
 
     /**
      * Constructs a <code>BoundedRangeModelAdapter</code> on the given subject
@@ -121,9 +122,9 @@ public final class BoundedRangeModelAdapter implements BoundedRangeModel, Serial
     }
 
     // Handles changes in the value model's value.
-    private class CurrentValueChangeHandler implements ValueChangeListener {
-        public void valueChanged() {
-            fireStateChanged();
+    private class CurrentValueChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            fireStateChanged();            
         }
     }
 
@@ -236,9 +237,7 @@ public final class BoundedRangeModelAdapter implements BoundedRangeModel, Serial
     }
 
     private void updateValueModelSilently(int newValue) {
-        valueModel.removeValueChangeListener(currentValueChangeHandler);
-        valueModel.setValue(new Integer(newValue));
-        valueModel.addValueChangeListener(currentValueChangeHandler);
+        valueModel.setValueSilently(new Integer(newValue), currentValueChangeHandler);
     }
 
     public String toString() {

@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.forms.SwingFormModel;
+import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 
 /**
@@ -34,8 +34,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     private String labelAttributes = DEFAULT_LABEL_ATTRIBUTES;
 
-    public TableFormBuilder(SwingFormModel formModel) {
-        super(formModel);
+    public TableFormBuilder(BindingFactory bindingFactory) {
+        super(bindingFactory);
         this.builder = new TableLayoutBuilder(new JPanel());
     }
 
@@ -96,7 +96,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent getForm() {
-        getFormModel().revert();
+        getBindingFactory().getFormModel().revert();
         return builder.getPanel();
     }
 

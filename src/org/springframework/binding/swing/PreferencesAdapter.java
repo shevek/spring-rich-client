@@ -224,7 +224,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setBoolean(boolean newValue) {
         boolean oldValue = getBoolean();
         prefs.putBoolean(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
     /**
@@ -237,7 +237,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setDouble(double newValue) {
         double oldValue = getDouble();
         prefs.putDouble(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
     /**
@@ -250,7 +250,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setFloat(float newValue) {
         float oldValue = getFloat();
         prefs.putFloat(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
     /**
@@ -263,7 +263,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setInt(int newValue) {
         int oldValue = getInt();
         prefs.putInt(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
     /**
@@ -276,7 +276,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setLong(long newValue) {
         long oldValue = getLong();
         prefs.putLong(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
     /**
@@ -289,7 +289,7 @@ public final class PreferencesAdapter extends AbstractValueModel {
     public void setString(String newValue) {
         String oldValue = getString();
         prefs.put(key, newValue);
-        fireValueChanged(oldValue, newValue);
+        fireValueChange(oldValue, newValue);
     }
 
 }

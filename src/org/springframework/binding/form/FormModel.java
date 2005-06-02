@@ -19,7 +19,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 import org.springframework.binding.value.PropertyChangePublisher;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -77,17 +76,13 @@ public interface FormModel extends PropertyChangePublisher {
 
     public void reset();
 
-    public void addFormObjectChangeListener(ValueChangeListener listener);
+    public void addFormObjectChangeListener(PropertyChangeListener listener);
 
-    public void removeFormObjectChangeListener(ValueChangeListener listener);
+    public void removeFormObjectChangeListener(PropertyChangeListener listener);
 
-    public void addFormValueChangeListener(String formPropertyPath, ValueChangeListener listener);
+    public void addFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener);
 
-    public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener);
-
-    public void addFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener);
-
-    public void removeFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener);
+    public void removeFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener);
 
     public void addValidationListener(ValidationListener listener);
 

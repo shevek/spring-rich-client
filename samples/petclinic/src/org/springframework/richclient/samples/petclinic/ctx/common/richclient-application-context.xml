@@ -59,6 +59,9 @@
 			<ref bean="messageSource"/>
 		</property>
 	</bean>
+    
+    <bean id="binderSelectionStrategy" 
+		class="org.springframework.richclient.samples.petclinic.ui.binder.PetClinicBinderSelectionStrategy"/>
 	
 	<bean id="lookAndFeelConfigurer" 
 		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">

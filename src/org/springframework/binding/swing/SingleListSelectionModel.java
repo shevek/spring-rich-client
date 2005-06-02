@@ -37,7 +37,6 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.springframework.binding.value.BoundValueModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
@@ -69,7 +68,7 @@ public final class SingleListSelectionModel implements ListSelectionModel {
     /**
      * Refers to the selection index holder.
      */
-    private final BoundValueModel selectionIndexHolder;
+    private final ValueModel selectionIndexHolder;
 
     /**
      * Indicates if the selection is undergoing a series of changes.
@@ -98,10 +97,10 @@ public final class SingleListSelectionModel implements ListSelectionModel {
      * @param selectionIndexHolder
      *            holds the selection index
      */
-    public SingleListSelectionModel(BoundValueModel selectionIndexHolder) {
+    public SingleListSelectionModel(ValueModel selectionIndexHolder) {
         this.selectionIndexHolder = selectionIndexHolder;
         this.selectionIndexChangeHandler = new SelectionIndexChangeHandler();
-        this.selectionIndexHolder.addPropertyChangeListener(selectionIndexChangeHandler);
+        this.selectionIndexHolder.addValueChangeListener(selectionIndexChangeHandler);
     }
 
     /*
@@ -117,7 +116,7 @@ public final class SingleListSelectionModel implements ListSelectionModel {
         }
     }
 
-    public BoundValueModel getSelectionIndexHolder() {
+    public ValueModel getSelectionIndexHolder() {
         return selectionIndexHolder;
     }
 
@@ -141,9 +140,7 @@ public final class SingleListSelectionModel implements ListSelectionModel {
     }
 
     private void updateSelectionIndexHolderSilently(int newSelectionIndex) {
-        selectionIndexHolder.removePropertyChangeListener(selectionIndexChangeHandler);
-        selectionIndexHolder.setValue(new Integer(newSelectionIndex));
-        selectionIndexHolder.addPropertyChangeListener(selectionIndexChangeHandler);
+        selectionIndexHolder.setValueSilently(new Integer(newSelectionIndex), selectionIndexChangeHandler);
     }
 
     public void addSelectionInterval(int index0, int index1) {

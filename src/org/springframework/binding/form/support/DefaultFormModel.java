@@ -23,6 +23,7 @@ import java.util.Map;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.format.Formatter;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
@@ -37,7 +38,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     private CommitTrigger commitTrigger = new CommitTrigger();
 
     private Map displayValueModels = new HashMap();
-
+    
     public DefaultFormModel() {
     }
 
@@ -141,7 +142,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     public ValueModel getValueModel(String formPropertyPath) {
-        return unwrap(getDisplayValueModel(formPropertyPath));
+        return getDisplayValueModel(formPropertyPath);
     }
 
     public ValueModel getDisplayValueModel(String formPropertyPath) {
@@ -152,10 +153,20 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
         ValueModel valueModel = (ValueModel)displayValueModels.get(formPropertyPath);
         if (valueModel == null) {
             if (getParent() != null && queryParent) {
-                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);
+                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);                
             }
         }
+        if (valueModel == null) {
+            valueModel = add(formPropertyPath);
+        }
         return valueModel;
+    }
+    
+    public ValueModel getFormatedValueModel(String formPropertyPath, Formatter formatter) {
+        return new FormatedValueModel(getValueModel(formPropertyPath), formatter);
+    }
+    
+    public void validate() {
     }
 
     public boolean getHasErrors() {
@@ -176,7 +187,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
                 ValueModel model = unwrap((ValueModel)it.next());
                 if (model instanceof BufferedValueModel) {
                     BufferedValueModel bufferable = (BufferedValueModel)model;
-                    if (bufferable.isDirty()) {
+                    if (bufferable.isBuffering()) {
                         return true;
                     }
                 }
@@ -197,7 +208,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
         }
         if (!isEnabled()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Form is not enabled; commiting null value.");
+                logger.debug("Form is not enabled; committing null value.");
             }
             setFormObject(null);
             if (getFormObjectHolder() instanceof BufferedValueModel) {

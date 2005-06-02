@@ -31,8 +31,6 @@ import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
 import org.springframework.binding.form.FormPropertyState;
 import org.springframework.binding.form.NestableFormModel;
 import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.value.BoundValueModel;
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.binding.value.support.ValueModelWrapper;
@@ -164,7 +162,6 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public FormPropertyState getFormPropertyState(String formPropertyPath) {
-        assertValueModelNotNull(getDisplayValueModel(formPropertyPath), formPropertyPath);
         FormPropertyState propertyState = (FormPropertyState)propertyStates.get(formPropertyPath);
         if (propertyState == null) {
             propertyState = new DefaultFormPropertyMetadata(this, formPropertyPath,
@@ -200,30 +197,20 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         return getFormPropertyFaceDescriptorSource().getFormPropertyFaceDescriptor(this, formPropertyPath);
     }
 
-    public void addFormObjectChangeListener(ValueChangeListener listener) {
+    public void addFormObjectChangeListener(PropertyChangeListener listener) {
         getFormObjectHolder().addValueChangeListener(listener);
     }
 
-    public void removeFormObjectChangeListener(ValueChangeListener listener) {
+    public void removeFormObjectChangeListener(PropertyChangeListener listener) {
         getFormObjectHolder().removeValueChangeListener(listener);
     }
 
-    public void addFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+    public void addFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
         getRequiredValueModel(formPropertyPath).addValueChangeListener(listener);
     }
 
-    public void removeFormValueChangeListener(String formPropertyPath, ValueChangeListener listener) {
+    public void removeFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
         getRequiredValueModel(formPropertyPath).removeValueChangeListener(listener);
-    }
-
-    public void addFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener) {
-        BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
-        valueModel.addPropertyChangeListener(BoundValueModel.VALUE_PROPERTY, listener);
-    }
-
-    public void removeFormPropertyChangeListener(String formPropertyPath, PropertyChangeListener listener) {
-        BoundValueModel valueModel = (BoundValueModel)getRequiredValueModel(formPropertyPath);
-        valueModel.removePropertyChangeListener(BoundValueModel.VALUE_PROPERTY, listener);
     }
 
     protected ValueModel getRequiredValueModel(String formPropertyPath) {
@@ -234,7 +221,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     protected ValueModel unwrap(ValueModel valueModel) {
         if (valueModel instanceof ValueModelWrapper) {
-            return ((ValueModelWrapper)valueModel).getInnerMostValueModel();
+            return ((ValueModelWrapper)valueModel).getInnerMostWrappedValueModel();
         }
         else {
             return valueModel;

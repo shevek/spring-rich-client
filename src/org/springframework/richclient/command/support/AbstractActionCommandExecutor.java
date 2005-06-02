@@ -15,9 +15,9 @@
  */
 package org.springframework.richclient.command.support;
 
+import java.beans.PropertyChangeListener;
 import java.util.Map;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
@@ -39,11 +39,11 @@ public class AbstractActionCommandExecutor implements ParameterizableActionComma
         this.enabled.setValue(Boolean.valueOf(enabled));
     }
 
-    public void addEnabledListener(ValueChangeListener listener) {
+    public void addEnabledListener(PropertyChangeListener listener) {
         enabled.addValueChangeListener(listener);
     }
 
-    public void removeEnabledListener(ValueChangeListener listener) {
+    public void removeEnabledListener(PropertyChangeListener listener) {
         enabled.removeValueChangeListener(listener);
     }
 

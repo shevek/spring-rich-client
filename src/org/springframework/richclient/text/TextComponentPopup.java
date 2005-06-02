@@ -31,8 +31,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.Keymap;
 import javax.swing.undo.UndoManager;
 
-import org.springframework.binding.value.ValueChangeListener;
 import org.springframework.binding.value.support.CommitTrigger;
+import org.springframework.binding.value.support.CommitTriggerListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.ActionCommand;
@@ -47,7 +47,7 @@ import org.springframework.richclient.command.support.GlobalCommandIds;
  * Helper class that decorates a <code>JTextComponent</code> with a standard
  * popup menu. Support for undo/redo is also provided.
  * 
- * @author oliverh
+ * @author Oliver Hutchison 
  */
 public class TextComponentPopup extends MouseAdapter implements FocusListener, CaretListener, UndoableEditListener {
 
@@ -95,12 +95,13 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         textComponent.addCaretListener(this);
         textComponent.getDocument().addUndoableEditListener(this);
         if (resetUndoHistoryTrigger != null) {
-            resetUndoHistoryTrigger.addValueChangeListener(new ValueChangeListener() {
-                public void valueChanged() {
-                    if (resetUndoHistoryTrigger.isCommit()) {
-                        undoManager.discardAllEdits();
-                        updateUndoRedoState();
-                    }
+            resetUndoHistoryTrigger.addCommitTriggerListener(new CommitTriggerListener() {
+                public void commit() {
+                    undoManager.discardAllEdits();
+                    updateUndoRedoState();                    
+                }
+
+                public void revert() {                    
                 }
             });
         }
@@ -136,10 +137,16 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         }
     }
 
+    /**
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
     public void mousePressed(MouseEvent evt) {
         maybeShowPopup(evt);
     }
 
+    /**
+     * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+     */
     public void mouseReleased(MouseEvent evt) {
         maybeShowPopup(evt);
     }
