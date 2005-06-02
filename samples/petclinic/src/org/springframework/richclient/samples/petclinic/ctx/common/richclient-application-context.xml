@@ -61,7 +61,31 @@
 	</bean>
     
     <bean id="binderSelectionStrategy" 
-		class="org.springframework.richclient.samples.petclinic.ui.binder.PetClinicBinderSelectionStrategy"/>
+        class="org.springframework.richclient.samples.petclinic.ui.binder.PetClinicBinderSelectionStrategy">
+        <property name="bindersForPropertyTypes">
+            <map>
+                <entry>
+                    <key>
+                        <value type="java.lang.Class">java.util.Date</value>
+                    </key>
+                    <bean 
+                        class="org.springframework.richclient.samples.petclinic.ui.binder.CustomDatePickerBinder"/>
+                </entry>
+                <entry>
+                    <key>
+                        <value type="java.lang.Class"> 
+                            org.springframework.samples.petclinic.PetType</value>
+                    </key>
+                    <bean 
+                        class="org.springframework.richclient.samples.petclinic.ui.binder.PetTypeBinder">
+                        <property name="clinic">
+                            <ref bean="clinic"/>
+                        </property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
 	
 	<bean id="lookAndFeelConfigurer" 
 		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">

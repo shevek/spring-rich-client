@@ -31,6 +31,8 @@ import org.springframework.util.Assert;
  * Default implementation of <code>BinderSelectionStrategy</code>. Provides for 
  * registering of binders by control type, property type and property name.  
  * 
+ * TODO: allow this to be configured using an application context.
+ * 
  * @author Oliver Hutchison
  * @author Jim Moore
  */

@@ -15,13 +15,21 @@
  */
 package org.springframework.richclient.samples.petclinic.ui.binder;
 
-import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
+import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy;
 
+/** 
+ * @author Oliver Hutchison
+ */
 public class PetClinicBinderSelectionStrategy extends SwingBinderSelectionStrategy {
-    protected void registerDefaultBinders() {   
-        super.registerDefaultBinders();
-        registerBinderForPropertyType(Date.class, new CustomDatePickerBinder());
+    
+    public void setBindersForPropertyTypes(Map binders) {
+        for (Iterator i = binders.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            registerBinderForPropertyType((Class)entry.getKey(), (Binder)entry.getValue());
+        }
     }
 }

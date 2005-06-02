@@ -15,6 +15,7 @@
  */
 package org.springframework.binding.value.support;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.text.ParseException;
 
@@ -22,7 +23,6 @@ import javax.swing.JFormattedTextField;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
-
 
 /**
  * @author Keith Donald
@@ -32,15 +32,13 @@ public class TypeConverter extends AbstractValueModelWrapper {
 
     private Closure convertTo;
 
-    public TypeConverter(ValueModel wrappedModel, Closure convertTo,
-            Closure convertFrom) {
+    public TypeConverter(ValueModel wrappedModel, Closure convertTo, Closure convertFrom) {
         super(wrappedModel);
         this.convertFrom = convertTo;
         this.convertTo = convertFrom;
     }
 
-    public TypeConverter(ValueModel wrappedModel,
-            final PropertyEditor propertyEditor) {
+    public TypeConverter(ValueModel wrappedModel, final PropertyEditor propertyEditor) {
         super(wrappedModel);
         this.convertFrom = new Closure() {
             public Object call(Object o) {
@@ -61,8 +59,7 @@ public class TypeConverter extends AbstractValueModelWrapper {
         };
     }
 
-    public TypeConverter(ValueModel wrappedModel,
-            final JFormattedTextField textField) {
+    public TypeConverter(ValueModel wrappedModel, final JFormattedTextField textField) {
         super(wrappedModel);
         this.convertFrom = new Closure() {
             public Object call(Object o) {
@@ -95,4 +92,7 @@ public class TypeConverter extends AbstractValueModelWrapper {
         super.setValue(convertTo.call(value));
     }
 
+    public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) throws IllegalArgumentException {
+        super.setValueSilently(convertTo.call(value), listenerToSkip);
+    }
 }

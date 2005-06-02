@@ -59,6 +59,7 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
         model.setComparator(getComparator());
         model.sort();
         comboBox.setModel(model);
+        comboBox.setSelectedItem(getDisplayValue());
         return comboBox;
     }
 

@@ -26,14 +26,14 @@ public class PetForm extends AbstractForm {
 
     private JComponent nameField;
 
-    public PetForm(FormModel formModel) {
+    public PetForm(FormModel formModel, boolean canEditType) {
         super(formModel, PET_FORM_PAGE);
+        getFormModel().getFormPropertyState("type").setReadOnly(!canEditType);
     }
 
     protected JComponent createFormControl() {
         TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
-        formBuilder.add("type.name");
-        getFormModel().getFormPropertyState("type.name").setReadOnly(true);
+        formBuilder.add("type");
         formBuilder.row();
         this.nameField = formBuilder.add("name")[1];
         formBuilder.row();

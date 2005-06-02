@@ -422,7 +422,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
         public void execute() {
             final Pet pet = getSelectedPet();            
-            final PetForm petForm = new PetForm(FormModelHelper.createFormModel(pet));
+            final PetForm petForm = new PetForm(FormModelHelper.createFormModel(pet), false);
             final FormBackedDialogPage dialogPage = new FormBackedDialogPage(petForm);
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(dialogPage, getWindowControl()) {

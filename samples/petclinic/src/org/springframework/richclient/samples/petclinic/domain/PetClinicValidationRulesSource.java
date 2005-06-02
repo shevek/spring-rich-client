@@ -48,7 +48,9 @@ public class PetClinicValidationRulesSource extends DefaultRulesSource {
     private Rules createPetRules() {
         return new Rules(JdbcPet.class) {
             protected void initRules() {
+                add("type", required());
                 add("name", getNameValueConstraint());
+                add("birthDate", required());
                 add("birthDate", lt(new Date()));
             }
         };
