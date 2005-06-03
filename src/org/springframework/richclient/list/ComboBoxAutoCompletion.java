@@ -290,6 +290,6 @@ public class ComboBoxAutoCompletion extends PlainDocument {
 
     // checks if str1 starts with str2 - ignores case
     private boolean startsWithIgnoreCase(String str1, String str2) {
-        return str1.toUpperCase().startsWith(str2.toUpperCase());
+        return str1 != null && str2 != null && str1.toUpperCase().startsWith(str2.toUpperCase());
     }
 }
