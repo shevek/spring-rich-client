@@ -17,7 +17,10 @@
   </security>
   <resources>
     <j2se version="1.4+"/>
-    <jar href="petclinic-clientserver.jar"/>
+    <jar href="petclinic-standalone.jar"/>
+    <jar href="lib/spring-richclient.jar"/>
+    <jar href="lib/spring-richclient-sandbox.jar"/>
+    <jar href="lib/spring-richclient-resources.jar"/>
     <jar href="lib/acegi-security.jar"/>
     <jar href="lib/aopalliance.jar"/>
     <jar href="lib/burlap.jar"/>
@@ -29,15 +32,11 @@
     <jar href="lib/hsqldb.jar"/>
     <jar href="lib/javahelp.jar"/>
     <jar href="lib/looks.jar"/>
-    <jar href="lib/spring-core.jar"/>
-    <jar href="lib/spring-context.jar"/>
-    <jar href="lib/spring-aop.jar"/>
-    <jar href="lib/spring-dao.jar"/>
-    <jar href="lib/spring-orm.jar"/>
+    <jar href="lib/jdnc.jar"/>
+    <jar href="lib/jlfgr-1_0.jar"/>
+    <jar href="lib/spring.jar"/>
     <jar href="lib/spring-sandbox.jar"/>
     <jar href="lib/spring-petclinic.jar"/>
-    <jar href="lib/spring-richclient.jar"/>
-    <jar href="lib/spring-richclient-resources.jar"/>
   </resources>
   <application-desc main-class="org.springframework.richclient.samples.petclinic.PetClinicClientServer"/>
 </jnlp>
