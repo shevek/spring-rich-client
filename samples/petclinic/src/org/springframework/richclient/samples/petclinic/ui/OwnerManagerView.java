@@ -44,6 +44,7 @@ import org.springframework.core.closure.support.Block;
 import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.AbstractView;
+import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.GlobalCommandIds;
@@ -64,6 +65,7 @@ import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.samples.petclinic.Pet;
+import org.springframework.samples.petclinic.jdbc.JdbcPet;
 import org.springframework.util.Assert;
 
 public class OwnerManagerView extends AbstractView implements ApplicationListener {
@@ -89,6 +91,8 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     private OwnerPropertiesExecutor ownerPropertiesExecutor = new OwnerPropertiesExecutor();
 
     private PetPropertiesExecutor petPropertiesExecutor = new PetPropertiesExecutor();
+
+    private NewPetAction newPetCommand = new NewPetAction();
 
     public void setClinic(Clinic clinic) {
         Assert.notNull(clinic, "The clinic property is required");
@@ -128,7 +132,6 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         this.ownersTree = new JTree(ownersTreeModel);
         ownersTree.setShowsRootHandles(true);
         ownersTree.addTreeSelectionListener(new TreeStatusBarUpdater(getStatusBar()) {
-
             public String getSelectedObjectName() {
                 Owner selectedOwner = getSelectedOwner();
                 if (selectedOwner != null) {
@@ -140,12 +143,19 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             }
         });
         ownersTree.addTreeSelectionListener(new TreeSelectionListener() {
-
             public void valueChanged(TreeSelectionEvent e) {
                 updateCommands();
             }
         });
-        ownersTree.addMouseListener(new PopupMenuMouseListener(createPopupContextMenu()));
+        ownersTree.addMouseListener(new PopupMenuMouseListener() {
+            protected boolean onAboutToShow(MouseEvent e) {
+                return !isRootOrNothingSelected();
+            }
+
+            protected JPopupMenu getPopupMenu() {
+                return getSelectedOwner() != null ? createOwnerPopupContextMenu() : createPetPopupContextMenu();
+            }
+        });
         ownersTree.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1 && propertiesExecutor.isEnabled()) {
@@ -199,7 +209,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     private void updateCommands() {
         int treeSelectionCount = ownersTree.getSelectionCount();
-        if (treeSelectionCount == 0 || (treeSelectionCount == 1 && ownersTree.isRowSelected(0))) {
+        if (isRootOrNothingSelected()) {
             renameExecutor.setEnabled(false);
             deleteExecutor.setEnabled(false);
             propertiesExecutor.setEnabled(false);
@@ -214,6 +224,12 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             deleteExecutor.setEnabled(true);
             propertiesExecutor.setEnabled(false);
         }
+        newPetCommand.setEnabled(getSelectedOwner() != null);
+    }
+
+    private boolean isRootOrNothingSelected() {
+        return ownersTree.getSelectionCount() == 0
+                || (ownersTree.getSelectionCount() == 1 && ownersTree.isRowSelected(0));
     }
 
     private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
@@ -246,9 +262,18 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         return treeCellRenderer;
     }
 
-    private JPopupMenu createPopupContextMenu() {
-        // rename, separator, delete, properties
-        CommandGroup group = getWindowCommandManager().createCommandGroup("ownerViewTableCommandGroup",
+    private JPopupMenu createOwnerPopupContextMenu() {
+        // rename, separator, delete, addPet separator, properties
+        CommandGroup group = getWindowCommandManager().createCommandGroup(
+                "ownerViewTableOwnerCommandGroup",
+                new Object[] {"renameCommand", "separator", "deleteCommand", "separator", newPetCommand, "separator",
+                        "propertiesCommand"});
+        return group.createPopupMenu();
+    }
+
+    private JPopupMenu createPetPopupContextMenu() {
+        // rename, separator, delete, separator, properties
+        CommandGroup group = getWindowCommandManager().createCommandGroup("ownerViewTablePetCommandGroup",
                 new Object[] {"renameCommand", "separator", "deleteCommand", "separator", "propertiesCommand"});
         return group.createPopupMenu();
     }
@@ -421,7 +446,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     private class PetPropertiesExecutor extends AbstractActionCommandExecutor {
 
         public void execute() {
-            final Pet pet = getSelectedPet();            
+            final Pet pet = getSelectedPet();
             final PetForm petForm = new PetForm(FormModelHelper.createFormModel(pet), false);
             final FormBackedDialogPage dialogPage = new FormBackedDialogPage(petForm);
 
@@ -439,6 +464,38 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                 }
             };
             dialog.showDialog();
+        }
+    }
+
+    private class NewPetAction extends ActionCommand {
+
+        public NewPetAction() {
+            super("newPetCommand");
+        }
+
+        protected void doExecuteCommand() {
+            final Pet newPet = new JdbcPet();
+            final PetForm petForm = new PetForm(FormModelHelper.createFormModel(newPet), true);
+            final FormBackedDialogPage dialogPage = new FormBackedDialogPage(petForm);
+
+            TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(dialogPage, getWindowControl()) {
+                protected void onAboutToShow() {
+                    petForm.requestFocusInWindow();
+                    setEnabled(dialogPage.isPageComplete());
+                }
+
+                protected boolean onFinish() {
+                    petForm.commit();
+                    getSelectedOwner().addPet(newPet);
+                    clinic.storePet(newPet);
+                    DefaultMutableTreeNode ownerNode = getSelectedOwnerNode();
+                    ownerNode.add(new DefaultMutableTreeNode(newPet));
+                    ownersTreeModel.nodeStructureChanged(ownerNode);
+                    return true;
+                }
+            };
+            dialog.showDialog();
+
         }
     }
 

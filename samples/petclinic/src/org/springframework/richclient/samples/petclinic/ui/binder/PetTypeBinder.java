@@ -78,12 +78,12 @@ public class PetTypeBinder extends AbstractBinder implements InitializingBean {
     private class PetTypeAdapter extends TypeConverter {
         private PetTypeAdapter(ValueModel valueModel, final Map petTypes) {
             super(valueModel, new Closure() {
-                public Object call(Object argument) {
-                    return ((PetType)argument).getName();
+                public Object call(Object petType) {                    
+                    return petType != null ? ((PetType)petType).getName() : "";
                 }
             }, new Closure() {
-                public Object call(Object argument) {
-                    return petTypes.get(argument);
+                public Object call(Object petTypeName) {
+                    return petTypes.get(petTypeName);
                 }
             });            
         }
