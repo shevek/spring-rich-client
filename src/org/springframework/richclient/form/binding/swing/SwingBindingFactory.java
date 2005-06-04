@@ -85,6 +85,11 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         return createBinding(JComboBox.class, formProperty, context);
     }
 
+    public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder) {
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        return createBinding(JComboBox.class, formProperty, context);
+    }
+
     public Binding createBoundComboBox(String formProperty, String selectableItemsProperty, String renderedItemProperty) {
         return createBoundComboBox(formProperty, getFormModel().getDisplayValueModel(selectableItemsProperty),
                 renderedItemProperty);

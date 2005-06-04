@@ -16,6 +16,7 @@
 package org.springframework.richclient.list;
 
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.util.Assert;
 
 /**
  * Renders objects in a list, using a propertyName for rendering.
@@ -35,6 +36,7 @@ public class BeanPropertyValueListRenderer extends TextValueListRenderer {
      *            the property name to use for rendering
      */
     public BeanPropertyValueListRenderer(String propertyName) {
+        Assert.notNull(propertyName, "propertyName can not be null.");
         this.propertyName = propertyName;
     }
 
