@@ -133,7 +133,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         model = comboBox.getModel();
         model.addListDataListener(new ModelChangeHandler());
 
-        editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+        editor = (JTextComponent)comboBox.getEditor().getEditorComponent();
         editor.setDocument(this);
         editor.addFocusListener(new FocusHandler());
         editor.addKeyListener(new KeyHandler());
@@ -149,10 +149,10 @@ public class ComboBoxAutoCompletion extends PlainDocument {
 
     private void fillItem2StringMap() {
         editor.setDocument(new PlainDocument());
-        
+
         item2string.clear();
 
-        JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+        JTextComponent editor = (JTextComponent)comboBox.getEditor().getEditorComponent();
 
         // get current item of editor
         Object currentItem = comboBox.getEditor().getItem();
@@ -168,7 +168,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
     }
 
     private String getStringFor(Object item) {
-        return (String) item2string.get(item);
+        return (String)item2string.get(item);
     }
 
     private void highlightCompletedText(int start) {
@@ -198,7 +198,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         Object item = lookupItem(futureText);
         if (item != null) {
             comboBox.setSelectedItem(item);
-        } else {
+        }
+        else {
             // keep old item selected if there is no match
             item = comboBox.getSelectedItem();
             // imitate no insert (later on offs will be incremented by
@@ -218,13 +219,17 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         // if the user selects an item via mouse the the whole string will be
         // inserted.
         // highlight the entire text if this happens.
-        if (itemString.equals(str) && offs == 0) {
-            highlightCompletedText(0);
-        } else {
-            highlightCompletedText(offs + str.length());
-            // show popup when the user types
-            if (comboBox.isDisplayable())
-                comboBox.setPopupVisible(true);
+        if (itemString != null) {
+            if (itemString.equals(str) && offs == 0) {
+                highlightCompletedText(0);
+            }
+            else {
+                highlightCompletedText(offs + str.length());
+                // show popup when the user types
+                if (comboBox.isDisplayable()) {
+                    comboBox.setPopupVisible(true);
+                }
+            }
         }
     }
 
@@ -266,7 +271,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             if (offs > 0) {
                 if (hitBackspaceOnSelection)
                     offs--;
-            } else {
+            }
+            else {
                 // User hit backspace with the cursor positioned on the start =>
                 // beep
                 comboBox.getToolkit().beep();
@@ -277,7 +283,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             // show popup when the user types
             if (comboBox.isDisplayable())
                 comboBox.setPopupVisible(true);
-        } else {
+        }
+        else {
             super.remove(offs, length);
         }
     }
