@@ -15,7 +15,9 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -26,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.PropertyComparator;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
@@ -35,6 +38,7 @@ import org.springframework.richclient.application.config.DefaultApplicationLifec
 import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.list.ObservableList;
 
 /**
  * @author Oliver Hutchison
@@ -90,6 +94,14 @@ public class SwingBindingFactoryTests extends TestCase {
         assertEquals(b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY), items);
     }
 
+    public void testCreateBoundComboBoxStringValueModel() {
+        ValueModel valueHolder = new ValueHolder();
+        TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", valueHolder);
+        assertBindingProperties(b, JComboBox.class, null, "name");
+        assertEquals(b.getContext().size(), 1);
+        assertEquals(b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY), valueHolder);
+    }
+
     public void testCreateBoundComboBoxStringStringString() {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", "listProperty", "displayProperty");
         assertBindingProperties(b, JComboBox.class, null, "name");
@@ -122,6 +134,21 @@ public class SwingBindingFactoryTests extends TestCase {
                 "displayProperty");
         assertEquals(((PropertyComparator)b.getContext().get(ComboBoxBinder.COMPARATOR_KEY)).getProperty(),
                 "displayProperty");
+    }
+    
+    public void testCreateBoundListModel() {
+        ValueModel vm = ((ConfigurableFormModel)sbf.getFormModel()).getPropertyAccessStrategy().getPropertyValueModel(
+                "listProperty");
+        ObservableList observableList = sbf.createBoundListModel("listProperty");
+        
+        ArrayList list = new ArrayList();
+        list.add(new Integer(1));
+        vm.setValue(list);
+        assertEquals(observableList.get(0), new Integer(1));        
+        observableList.add(new Integer(2));
+        assertEquals(((List)vm.getValue()).size(), 1);        
+        sbf.getFormModel().commit();
+        assertEquals(((List)vm.getValue()).get(1), new Integer(2));
     }
 
     private void assertBindingProperties(TestableBinding b, Class controlType, JComponent control, String property) {

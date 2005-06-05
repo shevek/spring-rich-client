@@ -38,7 +38,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     private CommitTrigger commitTrigger = new CommitTrigger();
 
     private Map displayValueModels = new HashMap();
-    
+
     public DefaultFormModel() {
     }
 
@@ -118,16 +118,19 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     public ValueModel add(String formPropertyPath, ValueModel formValueModel) {
-        ValueModel unwrapped = unwrap(formValueModel);
-        if (unwrapped instanceof BufferedValueModel) {
-            ((BufferedValueModel)unwrapped).setCommitTrigger(commitTrigger);
+        if (formValueModel instanceof BufferedValueModel) {
+            ((BufferedValueModel)formValueModel).setCommitTrigger(commitTrigger);
+        }
+        else {
+            ValueModel unwrapped = unwrap(formValueModel);
+            if (unwrapped instanceof BufferedValueModel) {
+                ((BufferedValueModel)unwrapped).setCommitTrigger(commitTrigger);
+            }
         }
         formValueModel = preProcessNewFormValueModel(formPropertyPath, formValueModel);
         displayValueModels.put(formPropertyPath, formValueModel);
         if (logger.isDebugEnabled()) {
-            logger
-                    .debug("Registering '" + formPropertyPath + "' form property, property value model="
-                            + formValueModel);
+            logger.debug("Registering '" + formPropertyPath + "' form property, property value model=" + formValueModel);
         }
         postProcessNewFormValueModel(formPropertyPath, formValueModel);
         return formValueModel;
@@ -153,7 +156,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
         ValueModel valueModel = (ValueModel)displayValueModels.get(formPropertyPath);
         if (valueModel == null) {
             if (getParent() != null && queryParent) {
-                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);                
+                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);
             }
         }
         if (valueModel == null) {
@@ -161,11 +164,11 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
         }
         return valueModel;
     }
-    
+
     public ValueModel getFormatedValueModel(String formPropertyPath, Formatter formatter) {
         return new FormatedValueModel(getValueModel(formPropertyPath), formatter);
     }
-    
+
     public void validate() {
     }
 

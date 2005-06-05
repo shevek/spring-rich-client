@@ -42,9 +42,9 @@ import org.springframework.richclient.list.ListListModel;
  */
 public class BufferedCollectionValueModelTest extends TestCase {
 
-    private Class[] supportedIterfaces = new Class[] { Collection.class, List.class, Set.class, SortedSet.class, };
+    private Class[] supportedIterfaces = new Class[] {Collection.class, List.class, Set.class, SortedSet.class,};
 
-    private Class[] supportedClasses = new Class[] { ArrayList.class, HashSet.class, TreeSet.class, };
+    private Class[] supportedClasses = new Class[] {ArrayList.class, HashSet.class, TreeSet.class,};
 
     public void testCreating() {
         try {
@@ -95,8 +95,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
         assertHasSameStructure((ListListModel)vm.getValue(), backingArray);
 
         vm.getWrappedValueModel().setValue(null);
-        assertEquals("ListListModel must have no elements when backing collection is NULL", ((ListListModel)vm
-                .getValue()).size(), 0);
+        assertEquals("ListListModel must have no elements when backing collection is NULL",
+                ((ListListModel)vm.getValue()).size(), 0);
 
         for (int i = 0; i < supportedClasses.length; i++) {
             Collection backingCollection = getCollection(supportedClasses[i], i);
@@ -108,9 +108,27 @@ public class BufferedCollectionValueModelTest extends TestCase {
             assertHasSameStructure((ListListModel)vm.getValue(), backingCollection);
 
             vm.getWrappedValueModel().setValue(null);
-            assertEquals("ListListModel must have no elements when backing collection is NULL", ((ListListModel)vm
-                    .getValue()).size(), 0);
+            assertEquals("ListListModel must have no elements when backing collection is NULL",
+                    ((ListListModel)vm.getValue()).size(), 0);
         }
+    }
+
+    public void testCreateWithEmptyCollection() {
+        BufferedCollectionValueModel vm = new BufferedCollectionValueModel(new ValueHolder(null), Collection.class);
+        assertTrue(vm.getValue() instanceof ListListModel);
+        assertEquals(0, ((ListListModel)vm.getValue()).size());
+
+        vm = new BufferedCollectionValueModel(new ValueHolder(new ArrayList()), Collection.class);
+        assertTrue(vm.getValue() instanceof ListListModel);
+        assertEquals(0, ((ListListModel)vm.getValue()).size());
+
+        vm = new BufferedCollectionValueModel(new ValueHolder(null), Object[].class);
+        assertTrue(vm.getValue() instanceof ListListModel);
+        assertEquals(0, ((ListListModel)vm.getValue()).size());
+
+        vm = new BufferedCollectionValueModel(new ValueHolder(new Object[0]), Object[].class);
+        assertTrue(vm.getValue() instanceof ListListModel);
+        assertEquals(0, ((ListListModel)vm.getValue()).size());
     }
 
     public void testChangesToListListModelWithBackingArray() {
@@ -118,8 +136,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
         BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingArray);
         ListListModel llm = (ListListModel)vm.getValue();
         llm.clear();
-        assertEquals("changes to ListListModel should be not be made to backing array unless commit is called", vm
-                .getWrappedValueModel().getValue(), backingArray);
+        assertEquals("changes to ListListModel should be not be made to backing array unless commit is called",
+                vm.getWrappedValueModel().getValue(), backingArray);
 
         backingArray = getArray(101);
         vm.getWrappedValueModel().setValue(backingArray);
@@ -144,8 +162,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
         vm.getWrappedValueModel().setValue(null);
         llm.clear();
         vm.commit();
-        assertEquals("if backingCollection is NULL then a commit of an empty LLM should also be NULL", vm
-                .getWrappedValueModel().getValue(), null);
+        assertEquals("if backingCollection is NULL then a commit of an empty LLM should also be NULL",
+                vm.getWrappedValueModel().getValue(), null);
 
         llm.add(newValue);
         vm.commit();
@@ -160,8 +178,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
             BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingCollection);
             ListListModel llm = (ListListModel)vm.getValue();
             llm.clear();
-            assertEquals("changes to LLM should be not be made to backing collection unless commit is called", vm
-                    .getWrappedValueModel().getValue(), backingCollection);
+            assertEquals("changes to LLM should be not be made to backing collection unless commit is called",
+                    vm.getWrappedValueModel().getValue(), backingCollection);
 
             backingCollection = getCollection(supportedClasses[i], 201 + i);
             vm.getWrappedValueModel().setValue(backingCollection);
@@ -171,8 +189,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
             llm.set(1, newValue);
             vm.commit();
             Collection newBackingCollection = (Collection)vm.getWrappedValueModel().getValue();
-            assertTrue("change should not have been committed back to original array", !backingCollection
-                    .contains(newValue));
+            assertTrue("change should not have been committed back to original array",
+                    !backingCollection.contains(newValue));
             assertTrue(newBackingCollection.contains(newValue));
             assertTrue(orgSize == newBackingCollection.size());
 
@@ -223,8 +241,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
         Collections.reverse(llm);
         assertTrue(((Comparable)llm.get(0)).compareTo(llm.get(1)) > 0);
         vm.commit();
-        assertTrue("LLM should be sorted the same way as backingCollection", ((Comparable)llm.get(0)).compareTo(llm
-                .get(1)) < 0);
+        assertTrue("LLM should be sorted the same way as backingCollection",
+                ((Comparable)llm.get(0)).compareTo(llm.get(1)) < 0);
         assertHasSameStructure(llm, backingCollection);
 
         backingCollection = new TreeSet(new Comparator() {
@@ -240,8 +258,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
         Collections.reverse(llm);
         assertTrue(((Comparable)llm.get(0)).compareTo(llm.get(1)) < 0);
         vm.commit();
-        assertTrue("LLM should be sorted the same way as backingCollection", ((Comparable)llm.get(0)).compareTo(llm
-                .get(1)) > 0);
+        assertTrue("LLM should be sorted the same way as backingCollection",
+                ((Comparable)llm.get(0)).compareTo(llm.get(1)) > 0);
         assertHasSameStructure(llm, backingCollection);
     }
 
@@ -326,8 +344,8 @@ public class BufferedCollectionValueModelTest extends TestCase {
 
     private Object[] getArray(long randomSeed) {
         Random random = new Random(randomSeed);
-        return new Number[] { new Integer(random.nextInt()), new Integer(random.nextInt()),
-                new Integer(random.nextInt()) };
+        return new Number[] {new Integer(random.nextInt()), new Integer(random.nextInt()),
+                new Integer(random.nextInt())};
     }
 
     private Collection getCollection(Class collectionClass, long randomSeed) {

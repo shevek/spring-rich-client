@@ -30,7 +30,9 @@ import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
+import org.springframework.richclient.forms.BufferedCollectionValueModel;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.list.ObservableList;
 
 /**
  * A convenient implementation of <code>BindingFactory</code>. Provides a set
@@ -102,4 +104,24 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedItemProperty));
         return createBinding(JComboBox.class, formProperty, context);
     }
+
+    /**
+     * This method will most likely move over to FormModel
+     * 
+     * @deprecated
+     */
+    public ObservableList createBoundListModel(String formProperty) {
+        final ConfigurableFormModel formModel = ((ConfigurableFormModel)getFormModel());
+        ValueModel valueModel = formModel.getValueModel(formProperty );
+        if (! (valueModel instanceof BufferedCollectionValueModel)) {            
+            valueModel = new BufferedCollectionValueModel(
+                    formModel.getPropertyAccessStrategy().getPropertyValueModel(
+                            formProperty), formModel.getPropertyAccessStrategy()
+                            .getMetadataAccessStrategy()
+                            .getPropertyType(formProperty));
+            formModel.add(formProperty, valueModel);
+        }
+        return (ObservableList)valueModel.getValue();
+    }
+
 }

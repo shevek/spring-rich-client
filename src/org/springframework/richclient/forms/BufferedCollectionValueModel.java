@@ -86,6 +86,9 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         this.wrappedType = wrappedType;
         this.wrappedConcreteType = getConcreteCollectionType(wrappedType);
         updateListModel(getWrappedValue());
+        if (getValue() != listListModel) {
+            super.setValue(listListModel);
+        }
     }
 
     public void setValue(Object value) {
@@ -95,7 +98,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             }
         }
     }
-
+    
     protected Object getValueToCommit() {
         Object wrappedValue = getWrappedValue();
         // If the wrappedValue is null and the buffer is empty 
@@ -251,7 +254,8 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 public void intervalRemoved(ListDataEvent e) {
                     fireListModelChanged();
                 }
-            });
+            });            
+            setValue(listListModel);
         }
         if (wrappedCollection == null) {
             listListModel.clear();
