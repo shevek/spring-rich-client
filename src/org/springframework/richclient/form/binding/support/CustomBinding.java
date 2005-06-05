@@ -27,12 +27,12 @@ import org.springframework.binding.form.FormModel;
  */
 public abstract class CustomBinding extends AbstractBinding {
 
-    private final ValueModelChangeHandler valueModleChangeHandler;
+    private final ValueModelChangeHandler valueModelChangeHandler;
 
     protected CustomBinding(FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath);
-        valueModleChangeHandler = new ValueModelChangeHandler();
-        getDisplayValueModel().addValueChangeListener(valueModleChangeHandler);
+        valueModelChangeHandler = new ValueModelChangeHandler();
+        getDisplayValueModel().addValueChangeListener(valueModelChangeHandler);
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class CustomBinding extends AbstractBinding {
      * Should be called when the bound component's value changes. 
      */
     protected final void controlValueChanged(Object newValue) {
-        getDisplayValueModel().setValueSilently(newValue, valueModleChangeHandler);
+        getDisplayValueModel().setValueSilently(newValue, valueModelChangeHandler);
     }
 
     private class ValueModelChangeHandler implements PropertyChangeListener {
