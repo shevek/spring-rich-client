@@ -165,8 +165,8 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
         return valueModel;
     }
 
-    public ValueModel getFormatedValueModel(String formPropertyPath, Formatter formatter) {
-        return new FormatedValueModel(getValueModel(formPropertyPath), formatter);
+    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter) {
+        return new FormattedValueModel(getValueModel(formPropertyPath), formatter);
     }
 
     public void validate() {

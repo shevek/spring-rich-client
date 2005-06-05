@@ -202,8 +202,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
     }
 
-    public ValueModel getFormatedValueModel(String formPropertyPath, Formatter formatter) {
-        return new ValidatingFormatedValueModel(formPropertyPath, getValueModel(formPropertyPath), formatter);
+    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter) {
+        return new ValidatingFormattedValueModel(formPropertyPath, getValueModel(formPropertyPath), formatter);
     }
 
     protected PropertyConstraint getValidationRule(String domainObjectProperty) {
@@ -227,16 +227,16 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         return constraint;
     }
 
-    private class ValidatingFormatedValueModel extends FormatedValueModel {
+    private class ValidatingFormattedValueModel extends FormattedValueModel {
 
         private final String propertyName;
 
-        private final ValidatingFormatedValueModelConstraint validationConstraint;
+        private final ValidatingFormattedValueModelConstraint validationConstraint;
 
-        public ValidatingFormatedValueModel(String propertyName, ValueModel valueModel, Formatter formatter) {
+        public ValidatingFormattedValueModel(String propertyName, ValueModel valueModel, Formatter formatter) {
             super(valueModel, formatter);
             this.propertyName = propertyName;
-            validationConstraint = new ValidatingFormatedValueModelConstraint(propertyName);
+            validationConstraint = new ValidatingFormattedValueModelConstraint(propertyName);
         }
 
         public void setValue(Object value) {
@@ -265,12 +265,12 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
     }
 
-    private static class ValidatingFormatedValueModelConstraint implements PropertyConstraint, TypeResolvable {
+    private static class ValidatingFormattedValueModelConstraint implements PropertyConstraint, TypeResolvable {
         private final String propertyName;
 
         private String type;
 
-        public ValidatingFormatedValueModelConstraint(String propertyName) {
+        public ValidatingFormattedValueModelConstraint(String propertyName) {
             this.propertyName = propertyName;
         }
 

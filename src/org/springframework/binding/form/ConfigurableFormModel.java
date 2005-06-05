@@ -36,7 +36,7 @@ public interface ConfigurableFormModel extends NestableFormModel {
 
     public ValueModel add(String formPropertyPath, ValueModel valueModel);
     
-    public ValueModel getFormatedValueModel(String formPropertyPath, Formatter formatter);
+    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter);
 
     public void validate();
 }
