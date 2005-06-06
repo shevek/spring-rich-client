@@ -440,9 +440,7 @@ public class CommandGroup extends AbstractCommand {
         JToolBar toolBar = new JToolBar(text);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
-        toolBar.putClientProperty(Options.HEADER_STYLE_KEY, HeaderStyle.BOTH);
         return toolBar;
-
     }
 
     /**
