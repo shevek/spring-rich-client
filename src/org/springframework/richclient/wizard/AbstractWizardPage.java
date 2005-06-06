@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.Styler;
+import org.springframework.core.ToStringCreator;
 import org.springframework.richclient.dialog.AbstractDialogPage;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements WizardPage {
@@ -162,6 +162,6 @@ public abstract class AbstractWizardPage extends AbstractDialogPage implements W
     }
 
     public String toString() {
-        return Styler.call(this);
+        return new ToStringCreator(this).append("id", getId()).toString();
     }
 }
