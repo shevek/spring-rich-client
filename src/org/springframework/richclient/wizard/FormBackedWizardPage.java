@@ -26,22 +26,22 @@ import org.springframework.richclient.forms.Form;
  * @author oliverh
  */
 public class FormBackedWizardPage extends AbstractWizardPage {
-    Form backingFormPage;
+    private Form backingForm;
 
     /**
      * Createa a new FormBackedWizardPage
      * 
-     * @param backingFormPage
+     * @param backingForm
      *            the named form page which will provide the control for this
      *            wizard page.
      */
-    public FormBackedWizardPage(Form backingFormPage) {
-        this(backingFormPage, true);
+    public FormBackedWizardPage(Form backingForm) {
+        this(backingForm, true);
     }
 
-    public FormBackedWizardPage(Form backingFormPage, boolean autoConfigure) {
-        super(backingFormPage.getId(), autoConfigure);
-        this.backingFormPage = backingFormPage;
+    public FormBackedWizardPage(Form backingForm, boolean autoConfigure) {
+        super(backingForm.getId(), autoConfigure);
+        this.backingForm = backingForm;
     }
 
     /**
@@ -50,32 +50,32 @@ public class FormBackedWizardPage extends AbstractWizardPage {
      * @param parentPageId
      *            the id of a containing parent page. This will be used to
      *            configure page titles/description
-     * @param backingFormPage
+     * @param backingForm
      *            the names form page which will provide the control for this
      *            wizard page.
      */
-    public FormBackedWizardPage(String parentPageId, Form backingFormPage) {
-        super(parentPageId + (backingFormPage.getId() != null ? "." + backingFormPage.getId() : ""));
-        this.backingFormPage = backingFormPage;
+    public FormBackedWizardPage(String parentPageId, Form backingForm) {
+        super(parentPageId + (backingForm.getId() != null ? "." + backingForm.getId() : ""));
+        this.backingForm = backingForm;
     }
 
-    protected Form getBackingFormPage() {
-        return backingFormPage;
+    protected Form getBackingForm() {
+        return backingForm;
     }
 
     public void onAboutToShow() {
-        setEnabled(!backingFormPage.hasErrors());
+        setEnabled(!backingForm.hasErrors());
     }
 
     protected JComponent createControl() {
-        JComponent formControl = backingFormPage.getControl();
+        JComponent formControl = backingForm.getControl();
         initPageValidationReporter();
-        backingFormPage.getFormModel().validate();
+        backingForm.getFormModel().validate();
         return formControl;
     }
 
     protected void initPageValidationReporter() {
-        backingFormPage.newSingleLineResultsReporter(this, this);
+        backingForm.newSingleLineResultsReporter(this, this);
     }
 
     public void setEnabled(boolean enabled) {

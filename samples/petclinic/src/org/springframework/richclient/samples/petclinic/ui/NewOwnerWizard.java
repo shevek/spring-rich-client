@@ -42,34 +42,8 @@ public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecu
     }
 
     public void addPages() {
-        addPage(new OwnerGeneralWizardPage());
-        addPage(new OwnerAddressWizardPage());
-    }
-
-    public class OwnerGeneralWizardPage extends FormBackedWizardPage {
-        public OwnerGeneralWizardPage() {
-            super(new OwnerGeneralForm(wizardForm.getFormModel()), false);
-        }
-
-        public void setVisible(boolean bool) {
-            super.setVisible(bool);
-            if (bool) {
-                ((OwnerGeneralForm)getBackingFormPage()).requestFocusInWindow();
-            }
-        }
-    }
-
-    public class OwnerAddressWizardPage extends FormBackedWizardPage {
-        public OwnerAddressWizardPage() {
-            super(new OwnerAddressForm(wizardForm.getFormModel()), false);
-        }
-
-        public void setVisible(boolean bool) {
-            super.setVisible(bool);
-            if (bool) {
-                ((OwnerAddressForm)getBackingFormPage()).requestFocusInWindow();
-            }
-        }
+        addPage(new FormBackedWizardPage(new OwnerGeneralForm(wizardForm.getFormModel())));
+        addPage(new FormBackedWizardPage(new OwnerAddressForm(wizardForm.getFormModel())));
     }
 
     public void execute() {
