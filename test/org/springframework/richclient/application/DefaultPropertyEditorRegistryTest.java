@@ -30,7 +30,7 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
     public void testRegisteringClass() throws Exception {
         PropertyEditor pe;
 
-        PropertyEditorRegistry registry = new DefaultPropertyEditorRegistry();
+        DefaultPropertyEditorRegistry registry = new DefaultPropertyEditorRegistry();
 
         registry.setPropertyEditor(D.class, ClassEditor.class);
         pe = registry.getPropertyEditor(E.class);
@@ -53,7 +53,7 @@ public class DefaultPropertyEditorRegistryTest extends TestCase {
     public void testRegisteringProperty() throws Exception {
         PropertyEditor pe;
 
-        PropertyEditorRegistry registry = new DefaultPropertyEditorRegistry();
+        DefaultPropertyEditorRegistry registry = new DefaultPropertyEditorRegistry();
 
         registry.setPropertyEditor(A.class, "something", ClassEditor.class);
 

@@ -23,22 +23,6 @@ import org.springframework.binding.value.ValueModel;
 public interface NestingFormModel extends FormModel {
 
     /**
-     * Called by a nestable form model contained by this form model, where the
-     * calling child form model is searching for a value model associated with
-     * the provided form property path. The nesting form model will then query
-     * the other form models it nests in an effort to find the value model. If
-     * no value model exists for the <code>formPropertyPath</code> after
-     * searching all nested models, <code>null</code> is returned.
-     * 
-     * @param delegatingChild
-     *            The delegating nestable form model.
-     * @param formPropertyPath
-     *            The form property path to search for.
-     * @return The value model if one exists at the provided formPropertyPath
-     */
-    public ValueModel findDisplayValueModelFor(FormModel delegatingChild, String formPropertyPath);
-
-    /**
      * Returns the names of all current children that this FormModel is nesting.
      *
      * @return the names of the child forms; never null
@@ -109,5 +93,8 @@ public interface NestingFormModel extends FormModel {
      * @return the child form model, or <code>null</code> if none found.
      */
     public FormModel getChildFormModel(String childModelName);
+
+    
+    public ValueModel findValueModel(String formPropertyPath, Class targetClass);
 
 }

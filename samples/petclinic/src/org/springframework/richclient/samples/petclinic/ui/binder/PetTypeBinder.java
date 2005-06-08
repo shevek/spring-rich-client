@@ -42,7 +42,7 @@ public class PetTypeBinder extends AbstractBinder implements InitializingBean {
     private Map petTypes;
 
     public PetTypeBinder() {
-        super(new String[] {});
+        super(PetType.class, new String[] {});
     }
 
     public void setClinic(Clinic clinic) {
@@ -65,8 +65,8 @@ public class PetTypeBinder extends AbstractBinder implements InitializingBean {
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
         Assert.isTrue(control instanceof JComboBox, formPropertyPath);
         ComboBoxBinding binding = new ComboBoxBinding((JComboBox)control, formModel, formPropertyPath) {
-            protected ValueModel getDisplayValueModel() {
-                return new PetTypeAdapter(super.getDisplayValueModel(), petTypes);
+            protected ValueModel getValueModel() {
+                return new PetTypeAdapter(super.getValueModel(), petTypes);
             }
         };
         binding.setSelectableItemsHolder(new ValueHolder(petTypes.keySet()));

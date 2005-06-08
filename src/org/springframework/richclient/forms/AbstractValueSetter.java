@@ -31,22 +31,22 @@ public abstract class AbstractValueSetter {
 
     private final ValueModelChangeHandler valueModelChangeHandler = new ValueModelChangeHandler();
 
-    private ValueModel displayValueModel;
+    private ValueModel valueModel;
 
-    public AbstractValueSetter(ValueModel displayValueModel) {
-        this.displayValueModel = displayValueModel;
-        if (this.displayValueModel != null) {
-            this.displayValueModel.addValueChangeListener(valueModelChangeHandler);
+    public AbstractValueSetter(ValueModel valueModel) {
+        this.valueModel = valueModel;
+        if (this.valueModel != null) {
+            this.valueModel.addValueChangeListener(valueModelChangeHandler);
         }
     }
 
     protected ValueModel getValueModel() {
-        return displayValueModel;
+        return valueModel;
     }
 
     protected void componentValueChanged(Object newValue) {
-        if (displayValueModel != null) {
-            displayValueModel.setValueSilently(newValue, valueModelChangeHandler);
+        if (valueModel != null) {
+            valueModel.setValueSilently(newValue, valueModelChangeHandler);
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractValueSetter {
 
     private class ValueModelChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            setControlValue(displayValueModel.getValue());
+            setControlValue(valueModel.getValue());
         }
     }
 

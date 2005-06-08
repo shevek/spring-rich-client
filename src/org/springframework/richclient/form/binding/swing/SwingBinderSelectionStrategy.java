@@ -19,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.core.enums.LabeledEnum;
@@ -30,6 +31,7 @@ import org.springframework.richclient.form.binding.support.AbstractBinderSelecti
 public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrategy {
 
     public SwingBinderSelectionStrategy() {
+        super(JTextField.class);
     }
 
     protected void registerDefaultBinders() {        
@@ -38,7 +40,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
         registerBinderForPropertyType(Boolean.class, new CheckBoxBinder());
         registerBinderForPropertyType(LabeledEnum.class, new EnumComboBoxBinder());
         registerBinderForControlType(JTextComponent.class, new TextComponentBinder());
-        registerBinderForControlType(JFormattedTextField.class, new FormattedTextFieldBinder());
+        registerBinderForControlType(JFormattedTextField.class, new FormattedTextFieldBinder(null));
         registerBinderForControlType(JTextArea.class, new TextAreaBinder());
         registerBinderForControlType(JCheckBox.class, new CheckBoxBinder());
         registerBinderForControlType(JComboBox.class, new ComboBoxBinder());

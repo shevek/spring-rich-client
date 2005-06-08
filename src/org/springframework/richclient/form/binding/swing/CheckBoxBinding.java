@@ -31,12 +31,12 @@ public class CheckBoxBinding extends AbstractBinding {
     private final JCheckBox checkBox;    
     
     public CheckBoxBinding(JCheckBox checkBox, FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
+        super(formModel, formPropertyPath, Boolean.class);
         this.checkBox = checkBox;
     }
     
     protected JComponent doBindControl() {
-        final ValueModel valueModel = getDisplayValueModel();
+        final ValueModel valueModel = getValueModel();
         checkBox.setText(getFormPropertyFaceDescriptor().getDescription());
         checkBox.setModel(new SelectableButtonValueModel(valueModel));
         return checkBox;

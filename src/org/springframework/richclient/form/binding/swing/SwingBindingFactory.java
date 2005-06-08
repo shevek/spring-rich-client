@@ -93,7 +93,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     public Binding createBoundComboBox(String formProperty, String selectableItemsProperty, String renderedItemProperty) {
-        return createBoundComboBox(formProperty, getFormModel().getDisplayValueModel(selectableItemsProperty),
+        return createBoundComboBox(formProperty, getFormModel().getValueModel(selectableItemsProperty),
                 renderedItemProperty);
     }
 

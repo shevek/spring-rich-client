@@ -35,7 +35,7 @@ public class TextAreaBinder extends AbstractBinder {
     public static final String COLUMNS_KEY = "columns";
 
     public TextAreaBinder() {
-        super(new String[] {ROWS_KEY, COLUMNS_KEY});
+        super(String.class, new String[] {ROWS_KEY, COLUMNS_KEY});
     }
 
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {

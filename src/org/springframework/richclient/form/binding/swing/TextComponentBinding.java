@@ -31,12 +31,12 @@ public class TextComponentBinding extends AbstractBinding  {
     private final JTextComponent textComponent;
     
     public TextComponentBinding(JTextComponent textComponent, FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
+        super(formModel, formPropertyPath, String.class);
         this.textComponent = textComponent; 
     }
 
     protected JComponent doBindControl() {
-        final ValueModel valueModel = getDisplayValueModel();
+        final ValueModel valueModel = getValueModel();
         try {
             textComponent.setText((String) valueModel.getValue());
         }

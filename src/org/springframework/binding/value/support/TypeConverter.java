@@ -16,10 +16,6 @@
 package org.springframework.binding.value.support;
 
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-import java.text.ParseException;
-
-import javax.swing.JFormattedTextField;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
@@ -28,60 +24,15 @@ import org.springframework.core.closure.Closure;
  * @author Keith Donald
  */
 public class TypeConverter extends AbstractValueModelWrapper {
-    private Closure convertFrom;
 
-    private Closure convertTo;
+    private final Closure convertTo;
+
+    private final Closure convertFrom;
 
     public TypeConverter(ValueModel wrappedModel, Closure convertTo, Closure convertFrom) {
         super(wrappedModel);
-        this.convertFrom = convertTo;
         this.convertTo = convertFrom;
-    }
-
-    public TypeConverter(ValueModel wrappedModel, final PropertyEditor propertyEditor) {
-        super(wrappedModel);
-        this.convertFrom = new Closure() {
-            public Object call(Object o) {
-                propertyEditor.setValue(o);
-                return propertyEditor.getAsText();
-            }
-        };
-        this.convertTo = new Closure() {
-            public Object call(Object o) {
-                if (o instanceof String) {
-                    propertyEditor.setAsText((String)o);
-                    return propertyEditor.getValue();
-                }
-                else {
-                    return o;
-                }
-            }
-        };
-    }
-
-    public TypeConverter(ValueModel wrappedModel, final JFormattedTextField textField) {
-        super(wrappedModel);
-        this.convertFrom = new Closure() {
-            public Object call(Object o) {
-                try {
-                    return textField.getFormatter().valueToString(o);
-                }
-                catch (ParseException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-        };
-        this.convertTo = new Closure() {
-            public Object call(Object o) {
-                try {
-                    textField.commitEdit();
-                    return textField.getValue();
-                }
-                catch (ParseException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-        };
+        this.convertFrom = convertTo;
     }
 
     public Object getValue() throws IllegalArgumentException {

@@ -17,7 +17,6 @@ package org.springframework.binding.form;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
-import org.springframework.binding.format.Formatter;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -36,7 +35,5 @@ public interface ConfigurableFormModel extends NestableFormModel {
 
     public ValueModel add(String formPropertyPath, ValueModel valueModel);
     
-    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter);
-
     public void validate();
 }

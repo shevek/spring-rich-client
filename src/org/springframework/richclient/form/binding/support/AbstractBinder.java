@@ -41,13 +41,17 @@ public abstract class AbstractBinder implements Binder {
 
     protected final Log log = LogFactory.getLog(getClass());
 
+    private final Class requiredSourceClass;
+
     private final Set supportedContextKeys;
 
-    protected AbstractBinder() {
+    protected AbstractBinder(Class requiredSourceClass) {
+        this.requiredSourceClass = requiredSourceClass;
         this.supportedContextKeys = Collections.EMPTY_SET;
     }
 
-    protected AbstractBinder(String[] supportedContextKeys) {
+    protected AbstractBinder(Class requiredSourceClass, String[] supportedContextKeys) {
+        this.requiredSourceClass = requiredSourceClass;
         this.supportedContextKeys = new HashSet(Arrays.asList(supportedContextKeys));
     }
 
@@ -61,6 +65,10 @@ public abstract class AbstractBinder implements Binder {
                 log.warn("Context key '" + key + "' not supported.");
             }
         }
+    }
+    
+    public Class getRequiredSourceClass() {
+        return requiredSourceClass;
     }
 
     public Binding bind(FormModel formModel, String formPropertyPath, Map context) {
@@ -91,4 +99,6 @@ public abstract class AbstractBinder implements Binder {
     protected PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy(FormModel formModel) {
         return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
     }
+
+
 }

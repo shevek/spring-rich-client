@@ -33,13 +33,13 @@ public class FormattedTextFieldBinding extends AbstractBinding {
     private final JFormattedTextField formattedTextField;
 
     public FormattedTextFieldBinding(JFormattedTextField formattedTextField, FormModel formModel,
-            String formPropertyPath) {
-        super(formModel, formPropertyPath);
+            String formPropertyPath, Class requiredSourceClass) {
+        super(formModel, formPropertyPath, requiredSourceClass);
         this.formattedTextField = formattedTextField;
     }
 
     protected JComponent doBindControl() {
-        final ValueModel valueModel = getDisplayValueModel();
+        final ValueModel valueModel = getValueModel();
         try {
             formattedTextField.setText((String)valueModel.getValue());
         }

@@ -31,6 +31,7 @@ import org.springframework.util.Assert;
 public class CheckBoxBinder extends AbstractBinder  {
 
     public CheckBoxBinder() {
+        super(null);
     }
 
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {

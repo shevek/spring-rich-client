@@ -39,7 +39,7 @@ public class TextComponentBindingTests extends TestCase {
         fm = new DefaultFormModel(new TestBean());
         b = new TextComponentBinding(new JTextField(), fm, "simpleProperty");
         tc = (JTextField)b.getControl();
-        vm = fm.getDisplayValueModel("simpleProperty");
+        vm = fm.getValueModel("simpleProperty");
     }
 
     public void testComponentTracksEnabledChanges() {

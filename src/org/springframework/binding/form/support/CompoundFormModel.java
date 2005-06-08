@@ -41,10 +41,9 @@ import org.springframework.util.Assert;
  */
 public class CompoundFormModel extends AbstractFormModel implements NestingFormModel {
 
-    private Map childFormModels = new LinkedHashMap(9);
+    private Map childFormModels = new LinkedHashMap();
 
     public CompoundFormModel() {
-
     }
 
     public CompoundFormModel(Object domainObject) {
@@ -90,8 +89,7 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
         Class valueClass = getMetadataAccessStrategy().getPropertyType(childFormObjectPath);
         if (valueHolder.getValue() == null) {
             if (logger.isDebugEnabled()) {
-                logger
-                        .debug("Backing form object set to null; instantiating fresh instance to prevent null pointer exceptions");
+                logger.debug("Backing form object set to null; instantiating fresh instance to prevent null pointer exceptions");
             }
             valueHolder.setValue(BeanUtils.instantiateClass(valueClass));
         }
@@ -120,8 +118,8 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
 
     private FormModel createChildInternal(AbstractFormModel childModel, String childFormModelName,
             ValueModel childFormObjectHolder, boolean enabled) {
-        MutablePropertyAccessStrategy childObjectAccessStrategy = getPropertyAccessStrategy()
-                .newPropertyAccessStrategy(childFormObjectHolder);
+        MutablePropertyAccessStrategy childObjectAccessStrategy = getPropertyAccessStrategy().newPropertyAccessStrategy(
+                childFormObjectHolder);
         childModel.setId(childFormModelName);
         childModel.setPropertyAccessStrategy(childObjectAccessStrategy);
         childModel.setEnabled(enabled);
@@ -174,32 +172,19 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
         });
     }
 
-    public ValueModel getDisplayValueModel(String formPropertyPath) {
-        return getDisplayValueModel(formPropertyPath, true);
-    }
-
     public ValueModel getValueModel(String formPropertyPath) {
-        return unwrap(getDisplayValueModel(formPropertyPath, true));
+        return getValueModel(formPropertyPath, null);
     }
 
-    public ValueModel getDisplayValueModel(String formPropertyPath, boolean queryParent) {
-        ValueModel valueModel = findDisplayValueModelFor(null, formPropertyPath);
-        if (valueModel == null) {
-            if (getParent() != null && queryParent) {
-                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);
-            }
-        }
-        return valueModel;
+    public ValueModel getValueModel(String formPropertyPath, Class targetClass) {
+        return findValueModel(formPropertyPath, targetClass);
     }
 
-    public ValueModel findDisplayValueModelFor(FormModel delegatingChild, String formPropertyPath) {
+    public ValueModel findValueModel(String formPropertyPath, Class targetClass) {
         Iterator it = childFormModels.values().iterator();
         while (it.hasNext()) {
             NestableFormModel formModel = (NestableFormModel)it.next();
-            if (delegatingChild != null && formModel == delegatingChild) {
-                continue;
-            }
-            ValueModel valueModel = formModel.getDisplayValueModel(formPropertyPath, false);
+            ValueModel valueModel = formModel.findValueModel(formPropertyPath, targetClass);
             if (valueModel != null) {
                 return valueModel;
             }
@@ -278,4 +263,5 @@ public class CompoundFormModel extends AbstractFormModel implements NestingFormM
             }
         }.forEach(childFormModels.values());
     }
+
 }

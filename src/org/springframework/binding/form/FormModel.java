@@ -40,11 +40,9 @@ public interface FormModel extends PropertyChangePublisher {
 
     public ValueModel getFormObjectHolder();
 
-    public ValueModel getDisplayValueModel(String formPropertyPath);
-
     public ValueModel getValueModel(String formPropertyPath);
-
-    public String getDisplayValue(String formPropertyPath);
+        
+    public ValueModel getValueModel(String formPropertyPath, Class targetClass);
 
     public Object getValue(String formPropertyPath);
 

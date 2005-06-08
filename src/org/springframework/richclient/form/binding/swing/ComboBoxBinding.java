@@ -44,22 +44,22 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     private Comparator comparator;
 
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
+        super(formModel, formPropertyPath, null);
         this.comboBox = createComboBox();
     }
 
     public ComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
+        super(formModel, formPropertyPath, null);
         this.comboBox = comboBox;
     }
 
     protected JComponent doBindControl() {
-        final ValueModel valueModel = getDisplayValueModel();
+        final ValueModel valueModel = getValueModel();
         DynamicComboBoxListModel model = new DynamicComboBoxListModel(valueModel, getSelectableItemsHolder());
         model.setComparator(getComparator());
         model.sort();
         comboBox.setModel(model);
-        comboBox.setSelectedItem(getDisplayValue());
+        comboBox.setSelectedItem(getValue());
         return comboBox;
     }
 

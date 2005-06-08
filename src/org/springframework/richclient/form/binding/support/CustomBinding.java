@@ -29,10 +29,10 @@ public abstract class CustomBinding extends AbstractBinding {
 
     private final ValueModelChangeHandler valueModelChangeHandler;
 
-    protected CustomBinding(FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
+    protected CustomBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass) {
+        super(formModel, formPropertyPath, requiredSourceClass);
         valueModelChangeHandler = new ValueModelChangeHandler();
-        getDisplayValueModel().addValueChangeListener(valueModelChangeHandler);
+        getValueModel().addValueChangeListener(valueModelChangeHandler);
     }
 
     /**
@@ -44,12 +44,12 @@ public abstract class CustomBinding extends AbstractBinding {
      * Should be called when the bound component's value changes. 
      */
     protected final void controlValueChanged(Object newValue) {
-        getDisplayValueModel().setValueSilently(newValue, valueModelChangeHandler);
+        getValueModel().setValueSilently(newValue, valueModelChangeHandler);
     }
 
     private class ValueModelChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            valueModelChanged(getDisplayValue());
+            valueModelChanged(getValue());
         }
     }  
 }

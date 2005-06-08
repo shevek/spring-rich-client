@@ -21,13 +21,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.convert.ConversionExecutor;
+import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.format.Formatter;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.CommitTrigger;
+import org.springframework.binding.value.support.TypeConverter;
+import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
@@ -37,7 +40,9 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
 
     private CommitTrigger commitTrigger = new CommitTrigger();
 
-    private Map displayValueModels = new HashMap();
+    private Map valueModels = new HashMap();
+
+    private Map convertingValueModels = new HashMap();
 
     public DefaultFormModel() {
     }
@@ -60,7 +65,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     public void setFormProperties(String[] formPropertyPaths) {
-        displayValueModels.clear();
+        valueModels.clear();
         for (int i = 0; i < formPropertyPaths.length; i++) {
             add(formPropertyPaths[i]);
         }
@@ -82,7 +87,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     protected Iterator valueModelIterator() {
-        return this.displayValueModels.values().iterator();
+        return this.valueModels.values().iterator();
     }
 
     public void addValidationListener(ValidationListener listener) {
@@ -102,7 +107,6 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
             logger.debug("Adding new form value model for property '" + formPropertyPath + "'");
         }
         ValueModel formValueModel = getPropertyAccessStrategy().getPropertyValueModel(formPropertyPath);
-
         if (bufferChanges) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Creating form value buffer for property '" + formPropertyPath + "'");
@@ -128,7 +132,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
             }
         }
         formValueModel = preProcessNewFormValueModel(formPropertyPath, formValueModel);
-        displayValueModels.put(formPropertyPath, formValueModel);
+        valueModels.put(formPropertyPath, formValueModel);
         if (logger.isDebugEnabled()) {
             logger.debug("Registering '" + formPropertyPath + "' form property, property value model=" + formValueModel);
         }
@@ -145,28 +149,53 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     public ValueModel getValueModel(String formPropertyPath) {
-        return getDisplayValueModel(formPropertyPath);
+        return getValueModel(formPropertyPath, null);
     }
 
-    public ValueModel getDisplayValueModel(String formPropertyPath) {
-        return getDisplayValueModel(formPropertyPath, true);
+    protected ValueModel preProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel,
+            Class targetClass) {
+        return formValueModel;
     }
 
-    public ValueModel getDisplayValueModel(String formPropertyPath, boolean queryParent) {
-        ValueModel valueModel = (ValueModel)displayValueModels.get(formPropertyPath);
+    protected void postProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel, Class targetClass) {
+    }
+
+    public ValueModel getValueModel(String formPropertyPath, Class targetClass) {
+        final ConvertingValueModelKey key = new ConvertingValueModelKey(formPropertyPath, targetClass);
+        ValueModel valueModel = (ValueModel)convertingValueModels.get(key);
         if (valueModel == null) {
-            if (getParent() != null && queryParent) {
-                valueModel = getParent().findDisplayValueModelFor(this, formPropertyPath);
+            valueModel = getParent() != null ? getParent().findValueModel(formPropertyPath, targetClass) : null;
+            if (valueModel != null) {
+                valueModel = preProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
+                postProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
+                convertingValueModels.put(key, valueModel);
+                return valueModel;
+            }
+            else {
+                valueModel = createConvertingValueModel(formPropertyPath, targetClass);
+                valueModel = preProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
+                postProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
+                convertingValueModels.put(key, valueModel);
+                return valueModel;
             }
         }
-        if (valueModel == null) {
-            valueModel = add(formPropertyPath);
+        else {
+            return valueModel;
         }
-        return valueModel;
     }
 
-    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter) {
-        return new FormattedValueModel(getValueModel(formPropertyPath), formatter);
+    private ValueModel createConvertingValueModel(String propertyName, Class targetClass) {
+        final Class sourceClass = getPropertyAccessStrategy().getMetadataAccessStrategy().getPropertyType(propertyName);
+        if (targetClass == null) {
+            return add(propertyName);
+        }
+        else if (sourceClass == targetClass) {
+            return getValueModel(propertyName);
+        }
+        final ConversionService conversionService = getConversionService();
+        ConversionExecutor convertTo = conversionService.getConversionExecutor(sourceClass, targetClass);
+        ConversionExecutor convertFrom = conversionService.getConversionExecutor(targetClass, sourceClass);
+        return new TypeConverter(getValueModel(propertyName), convertTo, convertFrom);
     }
 
     public void validate() {
@@ -185,7 +214,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
             return ((FormObject)getFormObject()).isDirty();
         }
         else if (getBufferChangesDefault()) {
-            Iterator it = displayValueModels.values().iterator();
+            Iterator it = valueModels.values().iterator();
             while (it.hasNext()) {
                 ValueModel model = unwrap((ValueModel)it.next());
                 if (model instanceof BufferedValueModel) {
@@ -238,4 +267,52 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
             commitTrigger.revert();
         }
     }
+
+    private static class ConvertingValueModelKey {
+
+        private final String propertyName;
+
+        private final Class targetClass;
+
+        public ConvertingValueModelKey(String propertyName, Class targetClass) {
+            Assert.notNull(propertyName, "propertyName must not be null.");
+            //            Assert.notNull(targetClass, "targetClass must not be null.");
+            this.propertyName = propertyName;
+            this.targetClass = targetClass;
+        }
+
+        public String getPropertyName() {
+            return propertyName;
+        }
+
+        public Class getTargetClass() {
+            return targetClass;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ConvertingValueModelKey)) {
+                return false;
+            }
+            final ConvertingValueModelKey key = (ConvertingValueModelKey)o;
+            return propertyName.equals(key.propertyName)
+                    && (targetClass == key.targetClass || (targetClass != null && targetClass.equals(key.targetClass)));
+        }
+
+        public int hashCode() {
+            return (propertyName.hashCode() * 29) + (targetClass == null ? 7 : targetClass.hashCode());
+        }
+    }
+
+    public ValueModel findValueModel(String propertyPath, Class targetType) {
+        if (targetType == null) {
+            return (ValueModel)valueModels.get(propertyPath);
+        }
+        else {
+            return (ValueModel)convertingValueModels.get(new ConvertingValueModelKey(propertyPath, null));
+        }
+    }
+
 }

@@ -30,7 +30,8 @@ import org.springframework.util.Assert;
  */
 public class TextComponentBinder extends AbstractBinder {
     
-    public TextComponentBinder() {        
+    public TextComponentBinder() {    
+        super(String.class);
     }
 
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {

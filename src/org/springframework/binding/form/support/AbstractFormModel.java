@@ -25,6 +25,7 @@ import java.util.Set;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
+import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormPropertyFaceDescriptor;
 import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
@@ -60,6 +61,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     private Set commitListeners;
 
     private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
+    
+    private ConversionService conversionService;
 
     protected AbstractFormModel() {
     }
@@ -145,16 +148,6 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     protected void handleEnabledChange() {
-    }
-
-    public String getDisplayValue(String formPropertyPath) {
-        ValueModel valueModel = getDisplayValueModel(formPropertyPath);
-        assertValueModelNotNull(valueModel, formPropertyPath);
-        Object o = valueModel.getValue();
-        if (o == null) {
-            return "";
-        }
-        return String.valueOf(o);
     }
 
     public Object getValue(String formPropertyPath) {
@@ -287,5 +280,16 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     public void reset() {
         getFormObjectHolder().setValue(BeanUtils.instantiateClass(getFormObjectClass()));
+    }
+
+    public ConversionService getConversionService() {
+        if (conversionService == null) {
+            conversionService = Application.services().getConversionService();
+        }
+        return conversionService;
+    }
+
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 }

@@ -41,13 +41,16 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
     protected final FormModel formModel;
 
     protected final String formPropertyPath;
-    
+
     protected final FormPropertyState formPropertyState;
 
-    protected AbstractBinding(FormModel formModel, String formPropertyPath) {
-        this.formModel = formModel;        
+    private final Class requiredSourceClass;
+
+    protected AbstractBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass) {
+        this.formModel = formModel;
         this.formPropertyPath = formPropertyPath;
-        this.formPropertyState = this.formModel.getFormPropertyState(formPropertyPath);        
+        this.formPropertyState = this.formModel.getFormPropertyState(formPropertyPath);
+        this.requiredSourceClass = requiredSourceClass;
         FormPropertyValueModelListener listener = new FormPropertyValueModelListener();
         this.formPropertyState.addPropertyChangeListener(FormPropertyState.ENABLED_PROPERTY, listener);
         this.formPropertyState.addPropertyChangeListener(FormPropertyState.READ_ONLY_PROPERTY, listener);
@@ -60,15 +63,15 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
     public FormModel getFormModel() {
         return formModel;
     }
-    
+
     protected FormPropertyFaceDescriptor getFormPropertyFaceDescriptor() {
         return formModel.getFormPropertyFaceDescriptor(formPropertyPath);
     }
-    
+
     protected Class getPropertyType() {
         return getPropertyMetadataAccessStrategy().getPropertyType(formPropertyPath);
     }
-    
+
     protected JComponent createControl() {
         JComponent control = doBindControl();
         control.setName(getProperty());
@@ -76,7 +79,7 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
         enabledChanged();
         return control;
     }
-    
+
     protected abstract JComponent doBindControl();
 
     /**
@@ -84,13 +87,13 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
      * @see FormPropertyState
      */
     protected abstract void readOnlyChanged();
-    
+
     /**
      * Called when the enabled state of the bound property changes.
      * @see FormPropertyState
      */
     protected abstract void enabledChanged();
-    
+
     /**
      * Is the bound property in the read only state.
      * @see FormPropertyState
@@ -106,28 +109,30 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
     protected boolean isEnabled() {
         return formPropertyState.isEnabled();
     }
-    
-    protected ValueModel getDisplayValueModel() {
-        ValueModel valueModel = formModel.getDisplayValueModel(formPropertyPath);
+
+    protected ValueModel getValueModel() {
+        ValueModel valueModel = (requiredSourceClass == null) ? formModel.getValueModel(formPropertyPath)
+                : formModel.getValueModel(formPropertyPath, requiredSourceClass);
         Assert.notNull(valueModel, "Unable to locate value model for property '" + formPropertyPath + "'.");
         return valueModel;
     }
-    
-    protected Object getDisplayValue() {
-        return getDisplayValueModel().getValue();
-    }  
+
+    protected Object getValue() {
+        return getValueModel().getValue();
+    }
 
     private PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy() {
         return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
     }
-    
+
     private class FormPropertyValueModelListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
             if (FormPropertyState.ENABLED_PROPERTY.equals(evt.getPropertyName())) {
                 enabledChanged();
-            } else if (FormPropertyState.READ_ONLY_PROPERTY.equals(evt.getPropertyName())) {
+            }
+            else if (FormPropertyState.READ_ONLY_PROPERTY.equals(evt.getPropertyName())) {
                 readOnlyChanged();
             }
-        }        
+        }
     }
 }

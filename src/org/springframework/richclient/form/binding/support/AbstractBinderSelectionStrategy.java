@@ -38,20 +38,29 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractBinderSelectionStrategy implements BinderSelectionStrategy {
 
+    private final Class defaultControlType;
+
     private final Map controlTypeBinders = new HashMap();
 
     private final Map propertyTypeBinders = new HashMap();
 
     private final Map propertyNameBinders = new HashMap();
 
-    public AbstractBinderSelectionStrategy() {        
+    public AbstractBinderSelectionStrategy(Class defaultControlType) {
+        this.defaultControlType = defaultControlType;
         registerDefaultBinders();
     }
 
     public Binder selectBinder(FormModel formModel, String propertyName) {
+        // first try and find a binder for the specific property name
         Binder binder = findBinderByPropertyName(formModel.getFormObject().getClass(), propertyName);
         if (binder == null) {
+            // next try and find a binder for the specific property type
             binder = findBinderByPropertyType(getPropertyType(formModel, propertyName));
+        }
+        if (binder == null) {
+            // just find a binder for the default control type
+            binder = selectBinder(defaultControlType, formModel, propertyName);
         }
         if (binder != null) {
             return binder;
@@ -131,11 +140,11 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
     protected void registerBinderForPropertyName(Class parentObjectType, String propertyName, Binder binder) {
         propertyNameBinders.put(new PropertyNameKey(parentObjectType, propertyName), binder);
     }
-    
+
     protected void registerBinderForPropertyType(Class propertyType, Binder binder) {
         propertyTypeBinders.put(propertyType, binder);
     }
-    
+
     protected void registerBinderForControlType(Class controlType, Binder binder) {
         controlTypeBinders.put(controlType, binder);
     }

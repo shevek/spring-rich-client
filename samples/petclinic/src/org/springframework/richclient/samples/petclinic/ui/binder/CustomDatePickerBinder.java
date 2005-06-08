@@ -31,16 +31,20 @@ import org.springframework.richclient.form.binding.support.CustomBinding;
 
 public class CustomDatePickerBinder extends AbstractBinder implements Binder {
 
+    protected CustomDatePickerBinder() {
+        super(Date.class);
+    }
+
     protected JComponent createControl(Map context) {
         return new JXDatePicker();
     }
 
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
         final JXDatePicker datePicker = (JXDatePicker)control;
-        return new CustomBinding(formModel, formPropertyPath) {
+        return new CustomBinding(formModel, formPropertyPath, Date.class) {
 
             protected JComponent doBindControl() {
-                datePicker.setDate((Date)getDisplayValue());
+                datePicker.setDate((Date)getValue());
                 datePicker.getEditor().addPropertyChangeListener("value", new PropertyChangeListener() {
 
                     public void propertyChange(PropertyChangeEvent evt) {

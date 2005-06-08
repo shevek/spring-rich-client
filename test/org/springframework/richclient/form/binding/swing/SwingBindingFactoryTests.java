@@ -35,7 +35,6 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
-import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ObservableList;
@@ -47,7 +46,6 @@ public class SwingBindingFactoryTests extends TestCase {
 
     static {
         Application application = new Application(new DefaultApplicationLifecycleAdvisor());
-        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
         Application.services().setApplicationContext(new StaticApplicationContext());
     }
 

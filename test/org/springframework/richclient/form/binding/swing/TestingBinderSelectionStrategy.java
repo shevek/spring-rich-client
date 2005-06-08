@@ -50,6 +50,11 @@ public class TestingBinderSelectionStrategy implements BinderSelectionStrategy {
 
         public Binding bind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
             return new TestableBinding(controlType, control, formModel,formPropertyPath, context);
+        }
+
+        public Class getRequiredSourceClass() {
+            // TODO Auto-generated method stub
+            return null;
         }        
     }
 }

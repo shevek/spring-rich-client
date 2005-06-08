@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
 import org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource;
@@ -41,7 +42,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer;
 import org.springframework.richclient.application.support.BeanFactoryViewDescriptorRegistry;
-import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.DefaultCommandConfigurer;
@@ -75,7 +75,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
 
     public static final String RULES_SOURCE_BEAN_ID = "rulesSource";
 
-    public static final String PROPERTY_EDITOR_REGISTRY_BEAN_ID = "propertyEditorRegistry";
+    public static final String CONVERSION_SERVICE_REGISTRY_BEAN_ID = "conversionService";
 
     public static final String OBJECT_CONFIGURER_BEAN_ID = "applicationObjectConfigurer";
 
@@ -107,7 +107,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
 
     private RulesSource rulesSource;
 
-    private PropertyEditorRegistry propertyEditorRegistry;
+    private ConversionService conversionService;
 
     private boolean lazyInit = true;
 
@@ -320,28 +320,28 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public void setRulesSource(RulesSource rulesSource) {
         this.rulesSource = rulesSource;
     }
-
-    public PropertyEditorRegistry getPropertyEditorRegistry() {
-        if (propertyEditorRegistry == null) {
-            initPropertyEditorRegistry();
+    
+    public ConversionService getConversionService() {        
+        if (conversionService == null) {
+            initConversionService();
         }
-        return propertyEditorRegistry;
+        return conversionService;
     }
 
-    private void initPropertyEditorRegistry() {
+    private void initConversionService() {
         try {
-            this.propertyEditorRegistry = (PropertyEditorRegistry)getApplicationContext().getBean(
-                    PROPERTY_EDITOR_REGISTRY_BEAN_ID, PropertyEditorRegistry.class);
+            this.conversionService = (ConversionService)getApplicationContext().getBean(
+                    CONVERSION_SERVICE_REGISTRY_BEAN_ID, ConversionService.class);
         }
         catch (NoSuchBeanDefinitionException e) {
-            logger.info("No rule source found in context under name '" + PROPERTY_EDITOR_REGISTRY_BEAN_ID
+            logger.info("No rule source found in context under name '" + CONVERSION_SERVICE_REGISTRY_BEAN_ID
                     + "'; configuring defaults.");
-            this.propertyEditorRegistry = new DefaultPropertyEditorRegistry();
+            this.conversionService = new DefaultConversionService();
         }
     }
 
-    public void setPropertyEditorRegistry(PropertyEditorRegistry preReg) {
-        this.propertyEditorRegistry = preReg;
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
     
     public BinderSelectionStrategy getBinderSelectionStrategy() {
@@ -409,7 +409,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         getIconSource();
         getViewDescriptorRegistry();
         getRulesSource();
-        getPropertyEditorRegistry();
+        getConversionService();
     }
 
     public void initLookAndFeelConfigurer() {
@@ -486,6 +486,4 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public AbstractCommand configure(AbstractCommand command) {
         return getCommandConfigurer().configure(command);
     }
-
-
 }

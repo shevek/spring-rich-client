@@ -33,7 +33,6 @@ import org.springframework.beans.propertyeditors.ClassEditor;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
-import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 
@@ -42,7 +41,9 @@ import org.springframework.util.Assert;
  * 
  * @author Jim Moore
  */
-public class DefaultPropertyEditorRegistry implements PropertyEditorRegistry {
+public class DefaultPropertyEditorRegistry 
+//implements PropertyEditorRegistry 
+{
     private static final Log logger = LogFactory.getLog(
         DefaultPropertyEditorRegistry.class);
     

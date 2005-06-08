@@ -44,12 +44,12 @@ public class ComboBoxBinder extends AbstractBinder  {
     public static final String FILTER_KEY = "filter";
     
     public ComboBoxBinder() {
-        super(new String[] {SELECTABLE_ITEMS_HOLDER_KEY,
+        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY,
             SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, FILTER_KEY});
     }
     
     public ComboBoxBinder(String[] supportedContextKeys) {
-        super(supportedContextKeys);        
+        super(null, supportedContextKeys);        
     }
     
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {

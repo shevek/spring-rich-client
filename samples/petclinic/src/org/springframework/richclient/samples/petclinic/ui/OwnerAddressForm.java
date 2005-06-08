@@ -34,12 +34,11 @@ public class OwnerAddressForm extends AbstractForm {
         TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
         this.address = formBuilder.add("address")[1];
         formBuilder.row();
-        formBuilder.add("city");
+        formBuilder.add("city");        
         return formBuilder.getForm();
     }
 
     public boolean requestFocusInWindow() {
         return address.requestFocusInWindow();
     }
-
 }

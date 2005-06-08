@@ -15,7 +15,6 @@
  */ 
 package org.springframework.binding.form;
 
-import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -28,16 +27,12 @@ import javax.swing.JTextField;
 import junit.framework.TestCase;
 
 import org.springframework.binding.form.support.CompoundFormModel;
-import org.springframework.binding.value.PropertyEditorProvider;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
-import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.core.closure.Closure;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
-import org.springframework.richclient.application.support.DefaultPropertyEditorRegistry;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.forms.FormModelHelper;
 
@@ -49,11 +44,10 @@ public class FormModelTest extends TestCase {
     public void setUp() {
         Application.load(null);
         Application application = new Application(new DefaultApplicationLifecycleAdvisor());
-        Application.services().setPropertyEditorRegistry(new DefaultPropertyEditorRegistry());
         Application.services().setApplicationContext(new StaticApplicationContext());
     }
 
-    public static class Employee implements PropertyEditorProvider {
+    public static class Employee {
         private String name;
 
         private Employee supervisor;
@@ -105,15 +99,6 @@ public class FormModelTest extends TestCase {
         public void setAddress(Address address) {
             this.address = address;
         }
-
-        private void setPropertyEditor(String domainProperty, PropertyEditor propertyEditor) {
-            editors.put(domainProperty, propertyEditor);
-        }
-
-        public PropertyEditor getPropertyEditor(String domainProperty) {
-            return (PropertyEditor)editors.get(domainProperty);
-        }
-
     }
 
     public static class Address {
@@ -230,7 +215,7 @@ public class FormModelTest extends TestCase {
         JTextField field = (JTextField)createBoundControl(supervisorModel, "name");
         assertTrue(field.getText().equals(""));
         field.setText("Don");
-        ValueModel name = supervisorModel.getDisplayValueModel("name");
+        ValueModel name = supervisorModel.getValueModel("name");
         assertTrue(name.getValue().equals("Don"));
         supervisorModel.setEnabled(true);
         supervisorModel.commit();
@@ -245,7 +230,7 @@ public class FormModelTest extends TestCase {
         JTextField field = (JTextField)createBoundControl(countryPage, "name");
         assertTrue(field.getText().equals(""));
         field.setText("USA");
-        ValueModel name = countryPage.getDisplayValueModel("name");
+        ValueModel name = countryPage.getValueModel("name");
         assertTrue(name.getValue().equals("USA"));
         countryPage.setEnabled(true);
         countryPage.commit();
@@ -318,13 +303,13 @@ public class FormModelTest extends TestCase {
         assertTrue(wrappedModel instanceof BufferedValueModel);
     }
 
-    private PropertyEditor getPropertyEditor(ValueModel vm) {
-        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
-        assertTrue(wrappedModel instanceof TypeConverter);
-        Closure c = (Closure)getFieldValue(wrappedModel, "convertFrom");
-        PropertyEditor pe = (PropertyEditor)getFieldValue(c, "val$propertyEditor");
-        return pe;
-    }
+//    private PropertyEditor getPropertyEditor(ValueModel vm) {
+//        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
+//        assertTrue(wrappedModel instanceof TypeConverter);
+//        Closure c = (Closure)getFieldValue(wrappedModel, "convertFrom");
+//        PropertyEditor pe = (PropertyEditor)getFieldValue(c, "val$propertyEditor");
+//        return pe;
+//    }
 
     private Object getFieldValue(Object object, String fieldName) {
         Class clazz = object.getClass();

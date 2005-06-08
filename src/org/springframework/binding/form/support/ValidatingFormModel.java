@@ -17,12 +17,9 @@ package org.springframework.binding.form.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.TypeMismatchException;
@@ -30,15 +27,11 @@ import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.format.Formatter;
 import org.springframework.binding.format.InvalidFormatException;
-import org.springframework.binding.value.PropertyEditorProvider;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
-import org.springframework.binding.value.support.TypeConverter;
+import org.springframework.core.EventListenerListHelper;
 import org.springframework.core.Styler;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.PropertyEditorRegistry;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
@@ -53,7 +46,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
 
     private Map validationErrors = new HashMap();
 
-    private List validationListeners = new ArrayList();
+    private EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
 
     private String validationContextId;
 
@@ -131,68 +124,18 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     }
 
     public void addValidationListener(ValidationListener validationListener) {
-        if (validationListener != null) {
             validationListeners.add(validationListener);
-        }
+
     }
 
     public void removeValidationListener(ValidationListener validationListener) {
-        if (validationListener != null) {
             validationListeners.remove(validationListener);
-        }
+
     }
 
     protected ValueModel preProcessNewFormValueModel(String domainObjectProperty, ValueModel formValueModel) {
-        if (!(formValueModel instanceof TypeConverter)) {
-//            formValueModel = installTypeConverter(formValueModel, domainObjectProperty,
-//                    findCustomEditor(domainObjectProperty));
-        }
         return new ValidatingFormValueModel(domainObjectProperty, formValueModel,
                 getValidationRule(domainObjectProperty));
-    }
-
-    protected PropertyEditor findCustomEditor(String domainObjectProperty) {
-        PropertyEditor editor = null;
-        if (getFormObject() instanceof PropertyEditorProvider) {
-            PropertyEditorProvider provider = (PropertyEditorProvider)getFormObject();
-            editor = provider.getPropertyEditor(domainObjectProperty);
-        }
-        if (editor == null || editor.supportsCustomEditor()) {
-            editor = getPropertyAccessStrategy().findCustomEditor(domainObjectProperty);
-            if ((editor == null || editor.supportsCustomEditor()) && getPropertyEditorRegistry() != null) {
-                editor = getPropertyEditorRegistry().getPropertyEditor(getFormObjectClass(), domainObjectProperty);
-                if (editor == null || editor.supportsCustomEditor()) {
-                    editor = getPropertyEditorRegistry().getPropertyEditor(
-                            getMetadataAccessStrategy().getPropertyType(domainObjectProperty));
-                    if (editor != null && editor.supportsCustomEditor()) {
-                        editor = null;
-                    }
-                }
-            }
-        }
-        return editor;
-    }
-
-    protected PropertyEditorRegistry getPropertyEditorRegistry() {
-        return Application.services().getPropertyEditorRegistry();
-    }
-
-    private ValueModel installTypeConverter(ValueModel formValueModel, String domainObjectProperty,
-            PropertyEditor editor) {
-        if (editor != null) {
-            TypeConverter converter = new TypeConverter(formValueModel, editor);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Installed type converter '" + converter + "' with editor '" + editor + "' for property '"
-                        + domainObjectProperty + "'");
-            }
-            return converter;
-        }
-        else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No type converter found to install; returning value model as is");
-            }
-            return formValueModel;
-        }
     }
 
     protected void postProcessNewFormValueModel(String domainObjectProperty, ValueModel valueModel) {
@@ -202,8 +145,21 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
     }
 
-    public ValueModel getFormattedValueModel(String formPropertyPath, Formatter formatter) {
-        return new ValidatingFormattedValueModel(formPropertyPath, getValueModel(formPropertyPath), formatter);
+    protected ValueModel preProcessNewFormValueModel(String domainObjectProperty, ValueModel formValueModel,
+            Class targetClass) {
+        if (formValueModel instanceof ValidatingFormValueModel) {
+            return formValueModel;
+        }
+        else {
+            return new ValidatingFormValueModel(domainObjectProperty, formValueModel, null);
+        }
+    }
+
+    protected void postProcessNewFormValueModel(String domainObjectProperty, ValueModel valueModel, Class targetClass) {
+        // trigger validation to catch initial form errors
+        if (valueModel instanceof ValidatingFormValueModel && isEnabled()) {
+            // ((ValidatingFormValueModel)valueModel).validate();
+        }
     }
 
     protected PropertyConstraint getValidationRule(String domainObjectProperty) {
@@ -227,103 +183,33 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         return constraint;
     }
 
-    private class ValidatingFormattedValueModel extends FormattedValueModel {
+    protected class ValidatingFormValueModel extends AbstractValueModelWrapper {
+        private final ValueSetterConstraint setterConstraint;
 
-        private final String propertyName;
+        private final PropertyConstraint validationRule;
 
-        private final ValidatingFormattedValueModelConstraint validationConstraint;
+        private final String property;
 
-        public ValidatingFormattedValueModel(String propertyName, ValueModel valueModel, Formatter formatter) {
-            super(valueModel, formatter);
-            this.propertyName = propertyName;
-            validationConstraint = new ValidatingFormattedValueModelConstraint(propertyName);
-        }
+        private final ValueChangeHandler valueChangeHander;
 
-        public void setValue(Object value) {
-            try {
-                super.setValue(getFormatter().parseValue((String)value));
-            }
-            catch (Exception e) {
-                if (e instanceof NullPointerException) {
-                    logger.warn("Null pointer exception occurred setting value", e);
-                    validationConstraint.setType("nullPointer");
-                }
-                else if (e instanceof InvalidFormatException || e instanceof TypeMismatchException
-                        || e instanceof IllegalArgumentException) {
-                    logger.warn("Type mismatch exception occurred setting value", e);
-                    validationConstraint.setType("typeMismatch");
-                }
-                else {
-                    logger.warn("Exception occurred setting value", e);
-                    validationConstraint.setType("unknown");
-                }
-                PropertyResults results = new PropertyResults(propertyName, value, validationConstraint);
-                constraintViolated(validationConstraint, results);
-                return;
-            }
-            constraintSatisfied(validationConstraint);
-        }
-    }
-
-    private static class ValidatingFormattedValueModelConstraint implements PropertyConstraint, TypeResolvable {
-        private final String propertyName;
-
-        private String type;
-
-        public ValidatingFormattedValueModelConstraint(String propertyName) {
-            this.propertyName = propertyName;
-        }
-
-        public String getPropertyName() {
-            return propertyName;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public boolean isDependentOn(String propertyName) {
-            return false;
-        }
-
-        public boolean isCompoundRule() {
-            return false;
-        }
-
-        public boolean test(Object argument) {
-            throw new UnsupportedOperationException("This method is not implemented.");
-        }
-    }
-
-    private class ValidatingFormValueModel extends AbstractValueModelWrapper {
-        private PropertyConstraint setterConstraint;
-
-        private PropertyConstraint validationRule;
-
-        private String domainObjectProperty;
-
-        public ValidatingFormValueModel(String domainObjectProperty, ValueModel model, PropertyConstraint validationRule) {
+        public ValidatingFormValueModel(String property, ValueModel model, PropertyConstraint validationRule) {
             super(model);
-            this.setterConstraint = new ValueSetterConstraint(getWrappedValueModel(), domainObjectProperty,
-                    new ValueChangeValidator());
+            this.setterConstraint = new ValueSetterConstraint(property);
             this.validationRule = validationRule;
-            this.domainObjectProperty = domainObjectProperty;
+            this.property = property;
+            this.valueChangeHander = new ValueChangeHandler();
         }
 
-        public class ValueChangeValidator implements PropertyChangeListener {
+        public class ValueChangeHandler implements PropertyChangeListener {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isEnabled()) {
                     validate();
-                }                
+                }
             }
         }
 
         public String getProperty() {
-            return domainObjectProperty;
+            return property;
         }
 
         public PropertyConstraint getPropertyConstraint() {
@@ -331,27 +217,43 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
 
         public boolean isCompoundRule() {
-            if (validationRule == null) {
-                return false;
-            }
-            return validationRule.isCompoundRule();
+            return validationRule != null && validationRule.isCompoundRule();
         }
 
         public boolean tests(String propertyName) {
-            return validationRule.isDependentOn(propertyName);
+            return validationRule != null && validationRule.isDependentOn(propertyName);
         }
 
         public void setValue(Object value) {
-            if (!setterConstraint.test(value)) {
-                if (isEnabled()) {
-                    PropertyResults results = new PropertyResults(getProperty(), value, setterConstraint);
-                    constraintViolated(setterConstraint, results);
+            setValueSilently(value, null);
+        }
+
+        public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
+            // @TODO this error handling needs work - message source resolvable?
+            try {
+                if (logger.isDebugEnabled()) {
+                    Class valueClass = (value != null ? value.getClass() : null);
+                    logger.debug("Setting '" + property + "' value to convert/validate '" + value + "', class="
+                            + valueClass);
                 }
-            }
-            else {
+                removeValueChangeListener(valueChangeHander);
+                try {
+                    super.setValueSilently(value, listenerToSkip);
+                }
+                finally {
+                    addValueChangeListener(valueChangeHander);
+                }
                 if (isEnabled()) {
                     constraintSatisfied(setterConstraint);
                     validate();
+                }
+            }
+            catch (Exception e) {
+                logger.debug("Exception occurred setting value", e);
+                if (isEnabled()) {
+                    setterConstraint.setType(e);
+                    PropertyResults results = new PropertyResults(getProperty(), value, setterConstraint);
+                    constraintViolated(setterConstraint, results);
                 }
             }
         }
@@ -386,23 +288,37 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     }
 
     private class ValueSetterConstraint implements PropertyConstraint, TypeResolvable {
-        private PropertyChangeListener valueChangeValidator;
-
-        private ValueModel valueModel;
-
         private String property;
 
         private String type = "typeMismatch";
 
-        public ValueSetterConstraint(ValueModel valueModel, String property, PropertyChangeListener validator) {
-            this.valueModel = valueModel;
+        public ValueSetterConstraint(String property) {
             this.property = property;
-            this.valueChangeValidator = validator;
-            valueModel.addValueChangeListener(validator);
         }
 
         public String getType() {
             return type;
+        }
+
+        public void setType(Exception e) {
+            if (e instanceof NullPointerException) {
+                type = "required";
+            }
+            else if (e instanceof TypeMismatchException) {
+                type = "typeMismatch";
+            }
+            else if (e instanceof InvalidFormatException) {
+                type = "typeMismatch";
+            }
+            else if (e instanceof IllegalArgumentException) {
+                type = "typeMismatch";
+            }
+            else if (e.getCause() instanceof Exception) {
+                setType((Exception)e.getCause());
+            }
+            else {
+                type = "unknown";
+            }
         }
 
         public String getPropertyName() {
@@ -418,35 +334,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
 
         public boolean test(Object value) {
-            // @TODO this error handling needs work - message source resolvable?
-            try {
-                if (logger.isDebugEnabled()) {
-                    Class valueClass = (value != null ? value.getClass() : null);
-                    logger.debug("Setting '" + property + "' value to convert/validate '" + value + "', class="
-                            + valueClass);
-                }
-                valueModel.setValueSilently(value, valueChangeValidator);
-                return true;
-            }
-            catch (NullPointerException e) {
-                logger.warn("Null pointer exception occurred setting value", e);
-                type = "required";
-                return false;
-            }
-            catch (TypeMismatchException e) {
-                type = "typeMismatch";
-                return false;
-            }
-            catch (IllegalArgumentException e) {
-                logger.info("Illegal argument exception occurred setting value", e);
-                type = "typeMismatch";
-                return false;
-            }
-            catch (Exception e) {
-                logger.warn("Exception occurred setting value", e);
-                type = "unknown";
-                return false;
-            }
+            return true;
         }
     }
 
@@ -468,10 +356,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     }
 
     private void fireConstraintSatisfied(PropertyConstraint constraint) {
-        Iterator it = validationListeners.iterator();
-        while (it.hasNext()) {
-            ((ValidationListener)it.next()).constraintSatisfied(new ValidationEvent(this, constraint));
-        }
+        validationListeners.fire("constraintSatisfied", new ValidationEvent(this, constraint));
     }
 
     protected void constraintViolated(PropertyConstraint exp, PropertyResults results) {
@@ -493,10 +378,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     }
 
     private void fireConstraintViolated(PropertyConstraint constraint, PropertyResults results) {
-        Iterator it = validationListeners.iterator();
-        while (it.hasNext()) {
-            ((ValidationListener)it.next()).constraintViolated(new ValidationEvent(this, constraint, results));
-        }
+        validationListeners.fire("constraintViolated", new ValidationEvent(this, constraint, results));
     }
 
     public void validate() {
@@ -504,6 +386,15 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         while (it.hasNext()) {
             ValidatingFormValueModel vm = (ValidatingFormValueModel)it.next();
             vm.validatePropertyConstraint();
+        }
+    }
+    
+    public ValueModel findValueModel(String propertyPath, Class targetType) {
+        ValueModel vm = super.findValueModel(propertyPath, targetType);
+        if (vm instanceof ValidatingFormValueModel) {
+            return ((ValidatingFormValueModel) vm).getWrappedValueModel();
+        } else {
+            return vm;
         }
     }
 
