@@ -17,29 +17,18 @@ package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JTextField;
 
-import junit.framework.TestCase;
-
-import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyState;
-import org.springframework.binding.form.support.DefaultFormModel;
-import org.springframework.binding.support.TestBean;
-import org.springframework.binding.value.ValueModel;
 
-public class TextComponentBindingTests extends TestCase {
+public class TextComponentBindingTests extends AbstractBindingTests {
 
     private JTextField tc;
 
     private TextComponentBinding b;
 
-    private FormModel fm;
-
-    private ValueModel vm;
-
-    public void setUp() {
-        fm = new DefaultFormModel(new TestBean());
+    protected String setUpBinding() {        
         b = new TextComponentBinding(new JTextField(), fm, "simpleProperty");
         tc = (JTextField)b.getControl();
-        vm = fm.getValueModel("simpleProperty");
+        return "simpleProperty";
     }
 
     public void testComponentTracksEnabledChanges() {

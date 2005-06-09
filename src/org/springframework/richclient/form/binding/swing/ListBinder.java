@@ -18,9 +18,10 @@ package org.springframework.richclient.form.binding.swing;
 import java.util.Comparator;
 import java.util.Map;
 
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
@@ -31,34 +32,44 @@ import org.springframework.util.Assert;
 /**
  * @author Oliver Hutchison
  */
-public class ComboBoxBinder extends AbstractBinder  {
+public class ListBinder extends AbstractBinder {
     public static final String SELECTABLE_ITEMS_HOLDER_KEY = "selectableItemsHolder";
+
+    public static final String SELECTED_ITEM_HOLDER_KEY = "selectedItemHolder";
+
+    public static final String MODEL_KEY = "model";
 
     public static final String COMPARATOR_KEY = "comparator";
 
     public static final String RENDERER_KEY = "renderer";
 
     public static final String FILTER_KEY = "filter";
-    
-    public ComboBoxBinder() {
-        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY,
-            COMPARATOR_KEY, RENDERER_KEY, FILTER_KEY});
+
+    public ListBinder() {
+        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY, SELECTED_ITEM_HOLDER_KEY, MODEL_KEY, COMPARATOR_KEY,
+                RENDERER_KEY, FILTER_KEY});
     }
-    
-    public ComboBoxBinder(String[] supportedContextKeys) {
-        super(null, supportedContextKeys);        
+
+    public ListBinder(String[] supportedContextKeys) {
+        super(null, supportedContextKeys);
     }
-    
+
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        Assert.isTrue(control instanceof JComboBox, formPropertyPath);
-        ComboBoxBinding binding = new ComboBoxBinding((JComboBox)control, formModel, formPropertyPath);
+        Assert.isTrue(control instanceof JList, formPropertyPath);
+        ListBinding binding = new ListBinding((JList)control, formModel, formPropertyPath);
         applyContext(binding, context);
         return binding;
     }
 
-    protected void applyContext(ComboBoxBinding binding, Map context) {
+    protected void applyContext(ListBinding binding, Map context) {
+        if (context.containsKey(MODEL_KEY)) {
+            binding.setModel((ListModel)context.get(MODEL_KEY));
+        }
         if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
             binding.setSelectableItemsHolder((ValueModel)context.get(SELECTABLE_ITEMS_HOLDER_KEY));
+        }
+        if (context.containsKey(SELECTED_ITEM_HOLDER_KEY)) {
+            binding.setSelectedItemHolder((ValueModel)context.get(SELECTED_ITEM_HOLDER_KEY));
         }
         if (context.containsKey(RENDERER_KEY)) {
             binding.setRenderer((ListCellRenderer)context.get(RENDERER_KEY));

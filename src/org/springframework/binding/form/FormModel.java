@@ -42,6 +42,13 @@ public interface FormModel extends PropertyChangePublisher {
 
     public ValueModel getValueModel(String formPropertyPath);
         
+    /**
+     * Returns a type converting value model for the given form property path. The 
+     * type of the value returned from the provided value model is guaranteed to 
+     * be of class targetClass.
+     * @throws IllegalArgumentException if no suitable converter for the targetClass
+     * can be found
+     */
     public ValueModel getValueModel(String formPropertyPath, Class targetClass);
 
     public Object getValue(String formPropertyPath);
