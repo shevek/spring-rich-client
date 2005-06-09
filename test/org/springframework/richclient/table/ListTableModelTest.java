@@ -25,6 +25,7 @@ public class ListTableModelTest extends TestCase {
                     return new String[] { "column" };
                 }
             };
+            model.createColumnInfo();
             model.getColumnCount();
         }
         catch (NullPointerException e) {
@@ -41,6 +42,7 @@ public class ListTableModelTest extends TestCase {
                     return new String[] { "col0" };
                 }
             };
+            model.createColumnInfo();
             model.getColumnCount();
         }
         catch (NullPointerException e) {

@@ -41,7 +41,6 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
 
     public BaseTableModel(List rows) {
         setRows(rows);
-        createColumnInfo();
     }
 
     public void setRows(List rows) {
