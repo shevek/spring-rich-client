@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -223,6 +224,27 @@ public class ClassUtils {
 			return null;
 		}
 	}
+        
+    private static final Map primativeToWrapperMap = new HashMap();
+    static {
+        primativeToWrapperMap.put(boolean.class, Boolean.class);
+        primativeToWrapperMap.put(char.class, Character.class);
+        primativeToWrapperMap.put(byte.class, Byte.class);
+        primativeToWrapperMap.put(short.class, Short.class);
+        primativeToWrapperMap.put(int.class, Integer.class);
+        primativeToWrapperMap.put(long.class, Long.class);
+        primativeToWrapperMap.put(float.class, Float.class);
+        primativeToWrapperMap.put(double.class, Double.class);
+    }
+
+    public static Class convertPrimitiveToWrapper(Class clazz) {
+        if (!clazz.isPrimitive()) {
+            return clazz;
+        }
+        else {
+            return (Class)primativeToWrapperMap.get(clazz);
+        }
+    }
 
 	/**
 	 * Given a {@link Map}where the keys are {@link Class}es, search the map

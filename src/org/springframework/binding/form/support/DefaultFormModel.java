@@ -30,6 +30,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.CommitTrigger;
 import org.springframework.binding.value.support.TypeConverter;
+import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -185,7 +186,7 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
     }
 
     private ValueModel createConvertingValueModel(String propertyName, Class targetClass) {
-        final Class sourceClass = getPropertyAccessStrategy().getMetadataAccessStrategy().getPropertyType(propertyName);
+        final Class sourceClass = ClassUtils.convertPrimitiveToWrapper(getPropertyAccessStrategy().getMetadataAccessStrategy().getPropertyType(propertyName));
         if (targetClass == null) {
             return add(propertyName);
         }
@@ -314,5 +315,4 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
             return (ValueModel)convertingValueModels.get(new ConvertingValueModelKey(propertyPath, null));
         }
     }
-
 }
