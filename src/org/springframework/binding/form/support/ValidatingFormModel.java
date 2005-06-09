@@ -198,6 +198,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             this.validationRule = validationRule;
             this.property = property;
             this.valueChangeHander = new ValueChangeHandler();
+            addValueChangeListener(valueChangeHander);
         }
 
         public class ValueChangeHandler implements PropertyChangeListener {
