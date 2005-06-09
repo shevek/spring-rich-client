@@ -84,6 +84,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public void setFormObject(Object formObject) {
+        revert();
         if (formObject == null) {
             handleSetNullFormObject();
         }
