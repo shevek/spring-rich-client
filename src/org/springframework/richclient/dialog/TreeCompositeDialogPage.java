@@ -249,7 +249,9 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
 
     protected void updatePageComplete(DialogPage page) {
         super.updatePageComplete(page);
-        pageTreeModel.nodeChanged(getNode(page));
+        if (pageTreeModel != null) {
+            pageTreeModel.nodeChanged(getNode(page));
+        }
     }
 
     private DefaultMutableTreeNode getNode(DialogPage page) {
