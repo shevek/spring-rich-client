@@ -26,7 +26,7 @@ public class ListBinderTests extends AbstractBindingTests {
     private JList c;
 
     protected String setUpBinding() {
-        b = new ListBinding(fm, "listProperty");
+        b = new ListBinding(new JList(), fm, "listProperty");
         c = (JList)b.getControl();
         return "listProperty";
     }
