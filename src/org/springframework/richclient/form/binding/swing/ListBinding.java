@@ -23,7 +23,6 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -46,11 +45,6 @@ public class ListBinding extends AbstractBinding {
     private ListCellRenderer renderer;
 
     private Comparator comparator;
-
-    public ListBinding(FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath, null);
-        this.list = createList();
-    }
 
     public ListBinding(JList list, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -110,12 +104,6 @@ public class ListBinding extends AbstractBinding {
 
     protected void enabledChanged() {
         list.setEnabled(isEnabled() && !isReadOnly());
-    }
-
-    protected JList createList() {
-        JList list = getComponentFactory().createList();
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        return list;
     }
 
     private class ListSelectedValueMediator implements ListSelectionListener {

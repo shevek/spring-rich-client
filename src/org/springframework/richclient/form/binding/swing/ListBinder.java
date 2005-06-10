@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
@@ -80,6 +81,8 @@ public class ListBinder extends AbstractBinder {
     }
 
     protected JComponent createControl(Map context) {
-        return getComponentFactory().createComboBox();
+        JList list = getComponentFactory().createList();
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return list;
     }
 }
