@@ -59,13 +59,13 @@ public class FormModelAwareMessageTranslator implements Visitor {
 
     protected static final Log logger = LogFactory.getLog(DefaultMessageTranslator.class);
 
-    private ReflectiveVisitorSupport visitorSupport = new ReflectiveVisitorSupport();
+    private final ReflectiveVisitorSupport visitorSupport = new ReflectiveVisitorSupport();
 
     private boolean appendValue = false;
 
     PropertyResults results;
 
-    private List args = new ArrayList();
+    private final List args = new ArrayList();
 
     private MessageSource messages;
 
@@ -83,6 +83,7 @@ public class FormModelAwareMessageTranslator implements Visitor {
 
     public String getMessage(PropertyResults results) {
         Assert.notNull(results, "No property results specified");
+        args.clear();
         return buildMessage(results.getPropertyName(), results.getRejectedValue(), results.getViolatedConstraint(),
                 Locale.getDefault());
     }

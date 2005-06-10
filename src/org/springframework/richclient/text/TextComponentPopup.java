@@ -16,6 +16,8 @@
 package org.springframework.richclient.text;
 
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -23,6 +25,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
+import javax.swing.Timer;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.UndoableEditEvent;
@@ -51,8 +54,14 @@ import org.springframework.richclient.command.support.GlobalCommandIds;
  */
 public class TextComponentPopup extends MouseAdapter implements FocusListener, CaretListener, UndoableEditListener {
 
-    private static final String[] COMMANDS = new String[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
-            GlobalCommandIds.COPY, GlobalCommandIds.CUT, GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL };
+    /**
+     * Delay in ms between updates of the paste commands status. We only update the paste
+     * command's status occasionally as this is a quite expensive operation.
+     */
+    private static final int PAST_REFRESH_TIMER_DELAY = 100;
+
+    private static final String[] COMMANDS = new String[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
+            GlobalCommandIds.COPY, GlobalCommandIds.CUT, GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL};
 
     public static void attachPopup(JTextComponent textComponent, CommitTrigger resetUndoHistoryTrigger) {
         new TextComponentPopup(textComponent, resetUndoHistoryTrigger);
@@ -62,11 +71,13 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         new TextComponentPopup(textComponent, null);
     }
 
-    private JTextComponent textComponent;
+    private final JTextComponent textComponent;
 
-    private UndoManager undoManager = new UndoManager();
+    private final Timer updatePasteStatusTimer;
 
-    private CommitTrigger resetUndoHistoryTrigger;
+    private final UndoManager undoManager = new UndoManager();
+
+    private final CommitTrigger resetUndoHistoryTrigger;
 
     private static CommandManager localCommandManager;
 
@@ -85,6 +96,14 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     protected TextComponentPopup(JTextComponent textComponent, CommitTrigger resetUndoHistoryTrigger) {
         this.textComponent = textComponent;
         this.resetUndoHistoryTrigger = resetUndoHistoryTrigger;
+        this.updatePasteStatusTimer = new Timer(PAST_REFRESH_TIMER_DELAY, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updatePasteStatus();
+            }
+        });
+        updatePasteStatusTimer.setCoalesce(true);
+        updatePasteStatusTimer.setRepeats(false);
+        updatePasteStatusTimer.setInitialDelay(PAST_REFRESH_TIMER_DELAY);
         registerListeners();
         registerAccelerators();
     }
@@ -98,10 +117,10 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
             resetUndoHistoryTrigger.addCommitTriggerListener(new CommitTriggerListener() {
                 public void commit() {
                     undoManager.discardAllEdits();
-                    updateUndoRedoState();                    
+                    updateUndoRedoState();
                 }
 
-                public void revert() {                    
+                public void revert() {
                 }
             });
         }
@@ -130,7 +149,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     public void registerAccelerators() {
         CommandManager commandManager = getCommandManager();
         Keymap keymap = textComponent.getKeymap();
-        String[] commandIds = new String[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO, };
+        String[] commandIds = new String[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO,};
         for (int i = 0; i < COMMANDS.length; i++) {
             ActionCommand command = commandManager.getActionCommand(COMMANDS[i]);
             keymap.addActionForKeyStroke(command.getAccelerator(), command.getActionAdapter());
@@ -153,6 +172,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
 
     private void maybeShowPopup(MouseEvent evt) {
         if (evt.isPopupTrigger()) {
+            updatePasteStatusNow();
             createPopup().show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
@@ -197,18 +217,46 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         selectAll.setEnabled(textComponent.getDocument().getLength() > 0);
         boolean isEditable = isEditable();
         cut.setEnabled(hasSelection && isEditable);
-        boolean canPaste = isEditable
-                && textComponent.getTransferHandler().canImport(
-                        textComponent,
-                        Toolkit.getDefaultToolkit().getSystemClipboard().getContents(textComponent)
-                                .getTransferDataFlavors());
-        paste.setEnabled(canPaste);
+        if (isEditable) {
+            scheduleUpdatePasteStatus();
+        }
+        else {
+            paste.setEnabled(false);
+        }
         updateUndoRedoState();
     }
 
     private void updateUndoRedoState() {
         undo.setEnabled(undoManager.canUndo());
         redo.setEnabled(undoManager.canRedo());
+    }
+
+    private void scheduleUpdatePasteStatus() {
+        // we do this using a timer as the method canPasteFromClipboard() 
+        // can be a schedule significant bottle neck when there's lots of typing
+        // going on
+        if (!updatePasteStatusTimer.isRunning()) {
+            updatePasteStatusTimer.restart();
+        }
+    }
+
+    private void updatePasteStatusNow() {
+        if (updatePasteStatusTimer.isRunning()) {
+            updatePasteStatusTimer.stop();
+        }
+        updatePasteStatus();
+    }
+
+    private void updatePasteStatus() {
+        paste.setEnabled(isEditable() && canPasteFromClipboard());
+    }
+
+    /**
+     * Try not to call this method to much as SystemClipboard#getContents() relatively slow.
+     */
+    private boolean canPasteFromClipboard() {
+        return textComponent.getTransferHandler().canImport(textComponent,
+                Toolkit.getDefaultToolkit().getSystemClipboard().getContents(textComponent).getTransferDataFlavors());
     }
 
     private boolean isEditable() {
@@ -220,8 +268,8 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         if (editGroup == null) {
             editGroup = getCommandManager().createCommandGroup(
                     "textEditMenu",
-                    new Object[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO, "separator", GlobalCommandIds.CUT,
-                            GlobalCommandIds.COPY, GlobalCommandIds.PASTE, "separator", GlobalCommandIds.SELECT_ALL });
+                    new Object[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO, "separator", GlobalCommandIds.CUT,
+                            GlobalCommandIds.COPY, GlobalCommandIds.PASTE, "separator", GlobalCommandIds.SELECT_ALL});
         }
         return editGroup;
     }
@@ -230,7 +278,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         CommandGroup passwordGroup = getCommandManager().getCommandGroup("passwordTextEditMenu");
         if (passwordGroup == null) {
             passwordGroup = getCommandManager().createCommandGroup("passwordTextEditMenu",
-                    new Object[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO });
+                    new Object[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO});
         }
         return passwordGroup;
     }
@@ -239,7 +287,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         CommandGroup readOnlyGroup = getCommandManager().getCommandGroup("readOnlyTextEditMenu");
         if (readOnlyGroup == null) {
             readOnlyGroup = getCommandManager().createCommandGroup("readOnlyTextEditMenu",
-                    new Object[] { GlobalCommandIds.COPY, "separator", GlobalCommandIds.SELECT_ALL });
+                    new Object[] {GlobalCommandIds.COPY, "separator", GlobalCommandIds.SELECT_ALL});
         }
         return readOnlyGroup;
     }

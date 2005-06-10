@@ -47,6 +47,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     private Map validationErrors = new HashMap();
 
     private EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
+    
+    private BeanValidationResultsCollector validationResultsCollector = new BeanValidationResultsCollector(this);
 
     private String validationContextId;
 
@@ -276,9 +278,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("[Validating domain object property '" + getProperty() + "']");
-            }
-            BeanValidationResultsCollector collector = new BeanValidationResultsCollector(ValidatingFormModel.this);
-            PropertyResults results = (PropertyResults)collector.collectPropertyResults(validationRule);
+            }            
+            PropertyResults results = (PropertyResults)validationResultsCollector.collectPropertyResults(validationRule);
             if (results == null) {
                 constraintSatisfied(validationRule);
             }
@@ -288,6 +289,8 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
     }
 
+    
+    
     private class ValueSetterConstraint implements PropertyConstraint, TypeResolvable {
         private String property;
 

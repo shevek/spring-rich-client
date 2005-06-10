@@ -16,6 +16,7 @@
 package org.springframework.richclient.form.builder.support;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -59,6 +60,9 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         private Map propertyGuarded = new HashMap();
 
         private Map propertyMessage = new HashMap();
+
+        private final FormModelAwareMessageTranslator messageTranslator = new FormModelAwareMessageTranslator(
+                getFormModel(), Application.services());
 
         public SimplePropertyValidationResultsReporter() {
             getFormModel().addValidationListener(this);
@@ -109,8 +113,8 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         }
 
         private String getPropertyNameFrom(ValidationEvent event) {
-            return event.getConstraint() instanceof PropertyConstraint ? ((PropertyConstraint)event.getConstraint())
-                    .getPropertyName() : null;
+            return event.getConstraint() instanceof PropertyConstraint ? ((PropertyConstraint)event.getConstraint()).getPropertyName()
+                    : null;
         }
 
         private void remove(String propertyName, ValidationEvent event) {
@@ -139,29 +143,32 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         }
 
         private void update(String propertyName) {
-            Stack messages = getMessages(propertyName);
-
-            Severity severity;
-            String message;
-            boolean enabled;
+            final Stack messages = getMessages(propertyName);
+            final Severity severity;
+            final String messageText;
+            final boolean enabled;
 
             if (messages.size() > 0) {
                 ValidationEvent error = (ValidationEvent)messages.peek();
                 severity = error.getResults().getSeverity();
-                message = translate(error.getResults());
+                messageText = translate(error.getResults());
                 enabled = false;
             }
             else {
                 severity = null;
-                message = "";
+                messageText = "";
                 enabled = true;
             }
-            getMessageReceivers(propertyName).fire("setMessage", new Message(message, severity));
-            getGuards(propertyName).fire("setEnabled", Boolean.valueOf(enabled));
+            final Message message = new Message(messageText, severity);
+            for (Iterator i = getMessageReceivers(propertyName).iterator(); i.hasNext();) {
+                ((Messagable)i.next()).setMessage(message);
+            }
+            for (Iterator i = getGuards(propertyName).iterator(); i.hasNext();) {
+                ((Guarded)i.next()).setEnabled(enabled);
+            }
         }
 
         private String translate(ValidationResults results) {
-            FormModelAwareMessageTranslator messageTranslator = new FormModelAwareMessageTranslator(getFormModel(), Application.services());
             return messageTranslator.getMessage((PropertyResults)results);
         }
     }
