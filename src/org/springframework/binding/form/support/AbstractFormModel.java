@@ -68,7 +68,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
-        this.domainObjectAccessStrategy = domainObjectAccessStrategy;
+        setPropertyAccessStrategy(domainObjectAccessStrategy);
     }
 
     public String getId() {

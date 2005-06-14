@@ -74,14 +74,11 @@ public class DefaultFormModel extends AbstractFormModel implements ConfigurableF
 
     protected void handleEnabledChange() {
         if (isEnabled()) {
-            doValidate();
+            validate();
         }
         else {
             doClearErrors();
         }
-    }
-
-    protected void doValidate() {
     }
 
     protected void doClearErrors() {
