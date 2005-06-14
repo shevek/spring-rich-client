@@ -18,6 +18,7 @@ package org.springframework.richclient.form.binding.swing;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -46,5 +47,6 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
         registerBinderForControlType(JCheckBox.class, new CheckBoxBinder());
         registerBinderForControlType(JComboBox.class, new ComboBoxBinder());
         registerBinderForControlType(JList.class, new ListBinder());
+        registerBinderForControlType(JLabel.class, new LabelBinder());
     }
 }

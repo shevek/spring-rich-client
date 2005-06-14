@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -74,6 +75,10 @@ public class SwingBindingFactory extends AbstractBindingFactory {
 
     public Binding createBoundSpinner(String formProperty) {
         return createBinding(JSpinner.class, formProperty);
+    }
+    
+    public Binding createBoundLabel(String formProperty) {
+        return createBinding(JLabel.class, formProperty);
     }
 
     public Binding createBoundCheckBox(String formProperty) {

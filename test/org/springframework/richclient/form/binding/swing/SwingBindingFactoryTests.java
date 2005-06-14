@@ -22,6 +22,7 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
@@ -77,6 +78,12 @@ public class SwingBindingFactoryTests extends TestCase {
     public void testCreateBoundCheckBox() {
         TestableBinding b = (TestableBinding)sbf.createBoundCheckBox("name");
         assertBindingProperties(b, JCheckBox.class, null, "name");
+        assertEquals(Collections.EMPTY_MAP, b.getContext());
+    }
+    
+    public void testCreateBoundLabel() {
+        TestableBinding b = (TestableBinding)sbf.createBoundLabel("name");
+        assertBindingProperties(b, JLabel.class, null, "name");
         assertEquals(Collections.EMPTY_MAP, b.getContext());
     }
 
