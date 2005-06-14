@@ -39,10 +39,6 @@ public class TypeConverter extends AbstractValueModelWrapper {
         return convertFrom.call(super.getValue());
     }
 
-    public void setValue(Object value) throws IllegalArgumentException {
-        super.setValue(convertTo.call(value));
-    }
-
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) throws IllegalArgumentException {
         super.setValueSilently(convertTo.call(value), listenerToSkip);
     }

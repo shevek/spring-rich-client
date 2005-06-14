@@ -33,8 +33,8 @@ public class AbstractValueModelWrapper implements ValueModel, ValueModelWrapper 
         return wrappedModel.getValue();
     }
 
-    public void setValue(Object value) {
-        wrappedModel.setValue(value);
+    public final void setValue(Object value) {
+        setValueSilently(value, null);
     }
     
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {

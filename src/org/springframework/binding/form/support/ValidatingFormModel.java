@@ -47,7 +47,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     private Map validationErrors = new HashMap();
 
     private EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
-    
+
     private BeanValidationResultsCollector validationResultsCollector = new BeanValidationResultsCollector(this);
 
     private String validationContextId;
@@ -126,12 +126,12 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
     }
 
     public void addValidationListener(ValidationListener validationListener) {
-            validationListeners.add(validationListener);
+        validationListeners.add(validationListener);
 
     }
 
     public void removeValidationListener(ValidationListener validationListener) {
-            validationListeners.remove(validationListener);
+        validationListeners.remove(validationListener);
 
     }
 
@@ -227,10 +227,6 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             return validationRule != null && validationRule.isDependentOn(propertyName);
         }
 
-        public void setValue(Object value) {
-            setValueSilently(value, null);
-        }
-
         public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
             // @TODO this error handling needs work - message source resolvable?
             try {
@@ -266,7 +262,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             Iterator it = valueModelIterator();
             while (it.hasNext()) {
                 ValidatingFormValueModel vm = (ValidatingFormValueModel)it.next();
-                if (vm.isCompoundRule() && vm.tests(getProperty())) {
+                if (vm != ValidatingFormValueModel.this && vm.isCompoundRule() && vm.tests(getProperty())) {
                     vm.validatePropertyConstraint();
                 }
             }
@@ -278,7 +274,7 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("[Validating domain object property '" + getProperty() + "']");
-            }            
+            }
             PropertyResults results = (PropertyResults)validationResultsCollector.collectPropertyResults(validationRule);
             if (results == null) {
                 constraintSatisfied(validationRule);
@@ -289,8 +285,6 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         }
     }
 
-    
-    
     private class ValueSetterConstraint implements PropertyConstraint, TypeResolvable {
         private String property;
 
@@ -367,14 +361,10 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
         if (logger.isDebugEnabled()) {
             logger.debug("Value constraint '" + exp + "' [rejected], results='" + results + "']");
         }
-        // @TODO should change publisher should only publish on results changes
-        // this means results needs business identity...
         boolean hadErrorsBefore = getHasErrors();
         validationErrors.put(exp, results);
         fireConstraintViolated(exp, results);
-        if (!hadErrorsBefore) {
-            firePropertyChange(HAS_ERRORS_PROPERTY, false, true);
-        }
+        firePropertyChange(HAS_ERRORS_PROPERTY, hadErrorsBefore, true);            
         if (logger.isDebugEnabled()) {
             logger.debug("Number of errors on form is now " + validationErrors.size() + "; errors="
                     + Styler.call(validationErrors));
@@ -392,12 +382,13 @@ public class ValidatingFormModel extends DefaultFormModel implements PropertyAcc
             vm.validatePropertyConstraint();
         }
     }
-    
+
     public ValueModel findValueModel(String propertyPath, Class targetType) {
         ValueModel vm = super.findValueModel(propertyPath, targetType);
         if (vm instanceof ValidatingFormValueModel) {
-            return ((ValidatingFormValueModel) vm).getWrappedValueModel();
-        } else {
+            return ((ValidatingFormValueModel)vm).getWrappedValueModel();
+        }
+        else {
             return vm;
         }
     }

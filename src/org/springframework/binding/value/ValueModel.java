@@ -20,8 +20,9 @@ import java.beans.PropertyChangeListener;
 /**
  * Describes models with a generic access to a single value that allow
  * to observe value changes. The value can be accessed using the 
- * <code>#getValue()</code>/<code>#setValue(Object)</code> methods.
- * Observers can register instances of <code>PropertyChangeListener</code> 
+ * <code>#getValue()</code>/<code>#setValue(Object)</code>/ 
+ * <code>#setValueSilently(Object, PropertyChangeListener)</code>
+ * methods. Observers can register instances of <code>PropertyChangeListener</code> 
  * to be notified if the value changes.
  * 
  * <p>The listeners registered with this ValueModel using #addValueChangeListener
@@ -69,7 +70,7 @@ public interface ValueModel {
      * 
      * @param newValue  the value to be set
      * @param listenerToSkip the <code>PropertyChangeListener</code> that should
-     * not be notified of this change 
+     * not be notified of this change (may be <code>null</code>). 
      */
     void setValueSilently(Object newValue, PropertyChangeListener listenerToSkip);
 
