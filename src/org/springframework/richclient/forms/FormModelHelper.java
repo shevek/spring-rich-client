@@ -32,6 +32,29 @@ import org.springframework.richclient.dialog.Messagable;
 public class FormModelHelper {
 
 
+    public static ValidatingFormModel createFormModel(Object formObject, String formId) {
+        return createFormModel(formObject, true, formId);
+    }
+
+    public static ValidatingFormModel createUnbufferedFormModel(Object formObject, String formId) {
+        return createFormModel(formObject, false, formId);
+    }
+
+    public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, String formId) {
+        ValidatingFormModel formModel = new ValidatingFormModel(formObject);
+        formModel.setId(formId);
+        formModel.setRulesSource(Application.services().getRulesSource());
+        formModel.setBufferChangesDefault(bufferChanges);        
+        return formModel;
+    }
+
+    public static NestingFormModel createCompoundFormModel(Object formObject, String formId) {
+        CompoundFormModel model = new CompoundFormModel(formObject);
+        model.setId(formId);
+        model.setRulesSource(Application.services().getRulesSource());
+        return model;
+    }
+    
     public static ValidatingFormModel createFormModel(Object formObject) {
         return createFormModel(formObject, true);
     }
@@ -41,16 +64,11 @@ public class FormModelHelper {
     }
 
     public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges) {
-        ValidatingFormModel formModel = new ValidatingFormModel(formObject);
-        formModel.setRulesSource(Application.services().getRulesSource());
-        formModel.setBufferChangesDefault(bufferChanges);
-        return formModel;
+        return createFormModel(formObject, bufferChanges, null);
     }
 
     public static NestingFormModel createCompoundFormModel(Object formObject) {
-        CompoundFormModel model = new CompoundFormModel(formObject);
-        model.setRulesSource(Application.services().getRulesSource());
-        return model;
+        return createCompoundFormModel(formObject, null);
     }
 
     public static ConfigurableFormModel createChildPageFormModel(NestingFormModel groupingModel, String pageName) {
