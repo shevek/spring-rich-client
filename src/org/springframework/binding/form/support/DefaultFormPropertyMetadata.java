@@ -56,6 +56,7 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
      */
     public DefaultFormPropertyMetadata(NestableFormModel formModel, String property, boolean forceReadOnly) {
         this.formModel = formModel;
+        this.forceReadOnly = forceReadOnly;
         if (formModel.getParent() == null) {
             this.parent = NULL_FORM_PROPERTY_META_DATA;
         }
