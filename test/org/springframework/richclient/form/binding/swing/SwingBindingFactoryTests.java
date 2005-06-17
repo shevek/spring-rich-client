@@ -169,13 +169,15 @@ public class SwingBindingFactoryTests extends TestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundList("listProperty", selectableItems, "displayProperty");
         assertBindingProperties(b, JList.class, null, "listProperty");
 
-        assertEquals(4, b.getContext().size());
+        assertEquals(5, b.getContext().size());
         assertEquals(selectableItems,
                 ((ValueModel)b.getContext().get(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY)).getValue());
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ListBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty",
                 ((PropertyComparator)b.getContext().get(ListBinder.COMPARATOR_KEY)).getProperty());
+        assertEquals(List.class, b.getContext().get(ListBinder.SELECTED_ITEM_TYPE_KEY));
+        assertFalse(b.getContext().containsKey(ListBinder.SELECTION_MODE_KEY));
     }
 
     public void testCreateBoundListStringValueModelString() {
@@ -183,12 +185,13 @@ public class SwingBindingFactoryTests extends TestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundList("listProperty", selectableItemsHolder, "displayProperty");
         assertBindingProperties(b, JList.class, null, "listProperty");
 
-        assertEquals(4, b.getContext().size());
+        assertEquals(5, b.getContext().size());
         assertEquals(selectableItemsHolder, b.getContext().get(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ListBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty",
                 ((PropertyComparator)b.getContext().get(ListBinder.COMPARATOR_KEY)).getProperty());
+        assertFalse(b.getContext().containsKey(ListBinder.SELECTION_MODE_KEY));
     }
 
     private void assertBindingProperties(TestableBinding b, Class controlType, JComponent control, String property) {

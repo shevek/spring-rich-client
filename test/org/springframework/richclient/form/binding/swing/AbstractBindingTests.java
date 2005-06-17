@@ -17,14 +17,14 @@ package org.springframework.richclient.form.binding.swing;
 
 import junit.framework.TestCase;
 
-import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
 
 public abstract class AbstractBindingTests extends TestCase {
     
-    protected FormModel fm;
+    protected ConfigurableFormModel fm;
 
     protected ValueModel vm;
 

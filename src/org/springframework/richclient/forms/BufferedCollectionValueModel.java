@@ -122,7 +122,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     //        updateListModel(getWrappedValue());
     //    }
 
-    protected Class getConcreteCollectionType(Class wrappedType) {
+    public static Class getConcreteCollectionType(Class wrappedType) {
         Class class2Create;
         if (wrappedType.isArray()) {
             if (BeanUtils.isPrimitiveArray(wrappedType)) {

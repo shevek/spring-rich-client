@@ -28,6 +28,7 @@ public class TestBean {
     private Map mapProperty;
 
     private List listProperty;
+    private Object singleSelectListProperty;
 
     private TestBean nestedProperty;
 
@@ -57,6 +58,14 @@ public class TestBean {
 
     public void setListProperty(List listProperty) {
         this.listProperty = listProperty;
+    }
+
+    public Object getSingleSelectListProperty() {
+        return singleSelectListProperty;
+    }
+  
+    public void setSingleSelectListProperty(final Object singleSelectListProperty) {
+        this.singleSelectListProperty = singleSelectListProperty;
     }
 
     public TestBean getNestedProperty() {
