@@ -23,6 +23,8 @@ import org.springframework.binding.value.ValueModel;
  * @author Keith Donald
  */
 public interface ConfigurableFormModel extends NestableFormModel {
+    public void setId(String id);
+  
     public void setFormProperties(String[] formPropertyPaths);
 
     public MutablePropertyAccessStrategy getPropertyAccessStrategy();
