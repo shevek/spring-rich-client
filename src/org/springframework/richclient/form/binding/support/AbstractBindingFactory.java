@@ -23,7 +23,6 @@ import javax.swing.JComponent;
 
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
@@ -96,17 +95,7 @@ public abstract class AbstractBindingFactory implements BindingFactory {
     public FormModel getFormModel() {
         return formModel;
     }
-    
-    protected ValueModel getRequiedValueModel(String propertyPath) {
-        ValueModel vm = formModel.getValueModel(propertyPath);
-        if (vm == null) {
-            formModel.add(propertyPath);
-            vm = formModel.getValueModel(propertyPath);
-        }
-        Assert.notNull(vm, "Unable to locate required value model for property path '" + propertyPath + "'");
-        return vm;
-    }
-    
+        
     protected BinderSelectionStrategy getBinderSelectionStrategy() {
         if (binderSelectionStrategy == null) {
             binderSelectionStrategy = Application.services().getBinderSelectionStrategy();
