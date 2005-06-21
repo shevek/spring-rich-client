@@ -21,7 +21,11 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 
 /**
+ * A value model wrapper that supports converting the wrapped value to and from another type 
+ * using the supplied conversion Closures.
+ * 
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
 public class TypeConverter extends AbstractValueModelWrapper {
 
@@ -40,6 +44,9 @@ public class TypeConverter extends AbstractValueModelWrapper {
     }
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) throws IllegalArgumentException {
-        super.setValueSilently(convertTo.call(value), listenerToSkip);
+        // only set the convertTo value if the convertFrom value has changed 
+        if (ValueChangeHelper.hasValueChanged(getValue(), value)) {
+            super.setValueSilently(convertTo.call(value), listenerToSkip);
+        }
     }
 }

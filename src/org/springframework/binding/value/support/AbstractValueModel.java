@@ -17,11 +17,6 @@ package org.springframework.binding.value.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -146,31 +141,11 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
         }
     }
 
-    /*
-     * All the classes that are known to have a safe implementation of equals.
-     */
-    private static final Set classesWithSafeEquals = new HashSet(Arrays.asList(new Class[] {Boolean.class, Byte.class,
-            Short.class, Integer.class, Long.class, Float.class, Double.class, String.class, Character.class,
-            BigDecimal.class, BigInteger.class}));
-
     /**
-     * Determines if there has been a change in value between the provided arguments. 
-     * As many objects do not implement #equals in a manner that is strict enough for
-     * the requirements of this class, difference is determined using <code>!=</code>, 
-     * however, to improve accuracy #equals will be used when this is definitely 
-     * safe e.g. for Strings, Booleans, Numbers. 
-     * 
-     * @param oldValue the value before the change
-     * @param newValue the value after the change
-     * @return true if the values have changed
+     * Delegates to <code>ValueChangeHelper</code>
      */
     protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        if (oldValue != null && classesWithSafeEquals.contains(oldValue.getClass())) {
-            return !oldValue.equals(newValue);
-        }
-        else {
-            return oldValue != newValue;
-        }
+        return ValueChangeHelper.hasValueChanged(oldValue, newValue);
     }
 
     /**
