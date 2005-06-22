@@ -56,7 +56,7 @@ public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements Bean
     }
 
     public JComponent[] add(String formPropertyPath) {
-        JComponent component = getDefaultComponent(formPropertyPath);
+        JComponent component = getDefaultBinding(formPropertyPath).getControl();
         return formBuilder.add(getLabelFor(formPropertyPath, component), component);
     }
 

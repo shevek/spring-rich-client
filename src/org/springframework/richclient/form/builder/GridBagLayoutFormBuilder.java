@@ -132,7 +132,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, LabelOrientation labelOrientation,
             int colSpan) {
-        final JComponent field = getDefaultComponent(propertyName);
+        final JComponent field = getDefaultBinding(propertyName).getControl();
 
         return appendLabeledField(propertyName, field, labelOrientation, colSpan);
     }
@@ -204,7 +204,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
     }
 
     /**
-     * Appends a seperator (usually a horizonal line). Has an implicit
+     * Appends a separator (usually a horizontal line). Has an implicit
      * {@link #nextLine()}before and after it.
      *
      * @return "this" to make it easier to string together append calls
@@ -214,10 +214,10 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
     }
 
     /**
-     * Appends a seperator (usually a horizonal line) using the provided string
+     * Appends a separator (usually a horizontal line) using the provided string
      * as the key to look in the
      * {@link #setComponentFactory(ComponentFactory) ComponentFactory's}message
-     * bundle for the text to put along with the seperator. Has an implicit
+     * bundle for the text to put along with the separator. Has an implicit
      * {@link #nextLine()}before and after it.
      *
      * @return "this" to make it easier to string together append calls

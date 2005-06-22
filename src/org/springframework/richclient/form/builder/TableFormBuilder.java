@@ -20,8 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.layout.TableLayoutBuilder;
+import org.springframework.util.Assert;
 
 /**
  * @author oliverh
@@ -47,8 +49,18 @@ public class TableFormBuilder extends AbstractFormBuilder {
         return add(propertyName, "");
     }
 
+    public JComponent[] add(Binding binding) {
+        return add(binding, "");
+    }
+
     public JComponent[] add(String propertyName, String attributes) {
-        return addComponents(getDefaultComponent(propertyName), attributes, propertyName, getLabelAttributes());
+        return addBinding(getDefaultBinding(propertyName), attributes, getLabelAttributes());
+    }
+
+    public JComponent[] add(Binding binding, String attributes) {
+        Assert.isTrue(getFormModel() == binding.getFormModel(),
+                "Binding's form model must match FormBuilder's form model");
+        return addBinding(binding, attributes, getLabelAttributes());
     }
 
     public JComponent[] add(String propertyName, JComponent component) {
@@ -56,7 +68,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] add(String propertyName, JComponent component, String attributes) {
-        return addComponents(component, attributes, propertyName, getLabelAttributes());
+        return addBinding(getBinding(propertyName, component), attributes, getLabelAttributes());
     }
 
     public JComponent[] addSelector(String propertyName, Constraint filter) {
@@ -64,7 +76,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] addSelector(String propertyName, Constraint filter, String attributes) {
-        return addComponents(getSelector(propertyName, filter), attributes, propertyName, getLabelAttributes());
+        return addBinding(getBinding(propertyName, getSelector(propertyName, filter)), attributes, getLabelAttributes());
     }
 
     public JComponent[] addPasswordField(String propertyName) {
@@ -72,7 +84,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] addPasswordField(String propertyName, String attributes) {
-        return addComponents(getPasswordField(propertyName), attributes, propertyName, getLabelAttributes());
+        return addBinding(getBinding(propertyName, getPasswordField(propertyName)), attributes, getLabelAttributes());
     }
 
     public JComponent[] addTextArea(String propertyName) {
@@ -80,7 +92,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] addTextArea(String propertyName, String attributes) {
-        return addComponents(getTextArea(propertyName), attributes, propertyName, getLabelAttributes() + " valign=top");
+        return addBinding(getBinding(propertyName, getTextArea(propertyName)), attributes, getLabelAttributes()
+                + " valign=top");
     }
 
     public void addSeparator(String text) {
@@ -108,16 +121,16 @@ public class TableFormBuilder extends AbstractFormBuilder {
         this.labelAttributes = labelAttributes;
     }
 
-    private JComponent[] addComponents(JComponent component, String attributes, String propertyName,
-            String labelAttributes) {
-        JLabel label = getLabelFor(propertyName, component);
+    private JComponent[] addBinding(Binding binding, String attributes, String labelAttributes) {
+        final JComponent control = binding.getControl();
+        final JLabel label = getLabelFor(binding.getProperty(), control);
 
         if (!builder.hasGapToLeft()) {
             builder.gapCol();
         }
         builder.cell(label, labelAttributes);
         builder.labelGapCol();
-        builder.cell(component, attributes);
-        return new JComponent[] { label, component };
+        builder.cell(control, attributes);
+        return new JComponent[] {label, control};
     }
 }

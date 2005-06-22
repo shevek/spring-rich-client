@@ -29,6 +29,7 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
 import org.springframework.richclient.util.GuiStandardUtils;
@@ -68,8 +69,12 @@ public abstract class AbstractFormBuilder {
         return bindingFactory.getFormModel();
     }
 
-    protected JComponent getDefaultComponent(String propertyName) {
-        return getBindingFactory().createBinding(propertyName).getControl();
+    protected Binding getDefaultBinding(String propertyName) {
+        return getBindingFactory().createBinding(propertyName);
+    }
+    
+    protected Binding getBinding(String propertyName, JComponent component) {
+        return getBindingFactory().bindControl(component, propertyName);
     }
 
     protected JComponent getSelector(String propertyName, Constraint filter) {
