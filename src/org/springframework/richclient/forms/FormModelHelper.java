@@ -25,12 +25,12 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
+import org.springframework.rules.RulesSource;
 
 /**
  * @author Keith Donald
  */
 public class FormModelHelper {
-
 
     public static ValidatingFormModel createFormModel(Object formObject, String formId) {
         return createFormModel(formObject, true, formId);
@@ -41,10 +41,15 @@ public class FormModelHelper {
     }
 
     public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, String formId) {
+        return createFormModel(formObject, Application.services().getRulesSource(), bufferChanges, formId);
+    }
+
+    public static ValidatingFormModel createFormModel(Object formObject, RulesSource rulesSource,
+            boolean bufferChanges, String formId) {
         ValidatingFormModel formModel = new ValidatingFormModel(formObject);
         formModel.setId(formId);
-        formModel.setRulesSource(Application.services().getRulesSource());
-        formModel.setBufferChangesDefault(bufferChanges);        
+        formModel.setRulesSource(rulesSource);
+        formModel.setBufferChangesDefault(bufferChanges);
         return formModel;
     }
 
@@ -54,7 +59,7 @@ public class FormModelHelper {
         model.setRulesSource(Application.services().getRulesSource());
         return model;
     }
-    
+
     public static ValidatingFormModel createFormModel(Object formObject) {
         return createFormModel(formObject, true);
     }
@@ -75,18 +80,18 @@ public class FormModelHelper {
         return groupingModel.createChild(pageName);
     }
 
-	/**
-	 * Create a child form model nested by this form model identified by the
-	 * provided name. The form object associated with the created child model is
-	 * the value model at the specified parent property path.
-	 * 
-	 * @param groupingModel the model to create the FormModelHelper in
-	 * @param childPageName the name to associate the created FormModelHelper
-	 *        with in the groupingModel
-	 * @param childFormObjectPropertyPath the path into the groupingModel that
-	 *        the FormModelHelper is for
-	 * @return The child form model
-	 */
+    /**
+     * Create a child form model nested by this form model identified by the
+     * provided name. The form object associated with the created child model is
+     * the value model at the specified parent property path.
+     * 
+     * @param groupingModel the model to create the FormModelHelper in
+     * @param childPageName the name to associate the created FormModelHelper
+     *        with in the groupingModel
+     * @param childFormObjectPropertyPath the path into the groupingModel that
+     *        the FormModelHelper is for
+     * @return The child form model
+     */
     public static ConfigurableFormModel createChildPageFormModel(NestingFormModel groupingModel, String childPageName,
             String childFormObjectPropertyPath) {
         return groupingModel.createChild(childPageName, childFormObjectPropertyPath);
