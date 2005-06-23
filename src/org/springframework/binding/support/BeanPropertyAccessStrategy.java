@@ -17,22 +17,13 @@ package org.springframework.binding.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.NotWritablePropertyException;
 import org.springframework.beans.NullValueInNestedPathException;
-import org.springframework.beans.PropertyAccessException;
-import org.springframework.beans.PropertyAccessExceptionsException;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.PropertyValues;
+import org.springframework.beans.PropertyAccessor;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
@@ -44,9 +35,10 @@ import org.springframework.util.CachingMapTemplate;
 
 /**
  * An implementation of <code>MutablePropertyAccessStrategy</code> that provides access 
- * to the properties of a JavaBean.<p> 
+ * to the properties of a JavaBean.
  * 
- * This class supports <b>nested properties</b> enabling the setting/getting
+ * <p>As this class delegates to a <code>BeanWrapper</code> for property access, there is 
+ * full support for <b>nested properties</b>, enabling the setting/getting
  * of properties on subproperties to an unlimited depth.
  *   
  * @author Oliver Hutchison
@@ -131,7 +123,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
             return propertyPath;
         }
         else {
-            if (propertyPath.charAt(lastSeparator) == NESTED_PROPERTY_SEPARATOR_CHAR) {
+            if (propertyPath.charAt(lastSeparator) == PropertyAccessor.NESTED_PROPERTY_SEPARATOR_CHAR) {
                 return propertyPath.substring(lastSeparator + 1);
             }
             else {
@@ -157,12 +149,12 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
         boolean inKey = false;
         for (int i = propertyPath.length() - 1; i >= 0; i--) {
             switch (propertyPath.charAt(i)) {
-            case PROPERTY_KEY_SUFFIX_CHAR:
+            case PropertyAccessor.PROPERTY_KEY_SUFFIX_CHAR:
                 inKey = true;
                 break;
-            case PROPERTY_KEY_PREFIX_CHAR:
+            case PropertyAccessor.PROPERTY_KEY_PREFIX_CHAR:
                 return i;
-            case NESTED_PROPERTY_SEPARATOR_CHAR:
+            case PropertyAccessor.NESTED_PROPERTY_SEPARATOR_CHAR:
                 if (!inKey) {
                     return i;
                 }
@@ -184,86 +176,12 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
         return domainObjectHolder.getValue();
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        throw new UnsupportedOperationException("This method is not implemented.");
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        throw new UnsupportedOperationException("This method is not implemented.");
-    }
-
-    public void addPropertyChangeListener(String propertyPath, PropertyChangeListener listener) {
-        getPropertyValueModel(propertyPath).addValueChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(String propertyPath, PropertyChangeListener listener) {
-        getPropertyValueModel(propertyPath).addValueChangeListener(listener);
-    }
-
     public PropertyMetadataAccessStrategy getMetadataAccessStrategy() {
         return metaAspectAccessor;
     }
 
-    public void registerCustomEditor(Class propertyType, PropertyEditor propertyEditor) {
-        beanWrapper.registerCustomEditor(propertyType, propertyEditor);
-    }
-
-    public void registerCustomEditor(String propertyPath, PropertyEditor propertyEditor) {
-        beanWrapper.registerCustomEditor(getMetadataAccessStrategy().getPropertyType(propertyPath),
-                getFullPropertyPath(propertyPath), propertyEditor);
-    }
-
-    public PropertyEditor findCustomEditor(String propertyPath) {
-        return beanWrapper.findCustomEditor(getMetadataAccessStrategy().getPropertyType(propertyPath),
-                getFullPropertyPath(propertyPath));
-    }
-
     public Object getPropertyValue(String propertyPath) throws BeansException {
         return getPropertyValueModel(propertyPath).getValue();
-    }
-
-    public void setPropertyValue(String propertyPath, Object value) throws BeansException {
-        getPropertyValueModel(propertyPath).setValue(value);
-    }
-
-    public void setPropertyValue(PropertyValue pv) throws BeansException {
-        setPropertyValue(pv.getName(), pv.getValue());
-    }
-
-    public void setPropertyValues(Map map) throws BeansException {
-        setPropertyValues(new MutablePropertyValues(map));
-    }
-
-    public void setPropertyValues(PropertyValues pvs) throws BeansException {
-        setPropertyValues(pvs, false);
-    }
-
-    public void setPropertyValues(PropertyValues propertyValues, boolean ignoreUnknown) throws BeansException {
-        List propertyAccessExceptions = new ArrayList();
-        PropertyValue[] pvs = propertyValues.getPropertyValues();
-        for (int i = 0; i < pvs.length; i++) {
-            try {
-                // This method may throw any BeansException, which won't be caught
-                // here, if there is a critical failure such as no matching field.
-                // We can attempt to deal only with less serious exceptions.
-                setPropertyValue(pvs[i]);
-            }
-            catch (NotWritablePropertyException ex) {
-                if (!ignoreUnknown) {
-                    throw ex;
-                }
-                // otherwise, just ignore it and continue...
-            }
-            catch (PropertyAccessException ex) {
-                propertyAccessExceptions.add(ex);
-            }
-        }
-
-        // If we encountered individual exceptions, throw the composite exception.
-        if (!propertyAccessExceptions.isEmpty()) {
-            Object[] paeArray = propertyAccessExceptions.toArray(new PropertyAccessException[propertyAccessExceptions.size()]);
-            throw new PropertyAccessExceptionsException(beanWrapper, (PropertyAccessException[])paeArray);
-        }
     }
 
     /**

@@ -15,11 +15,7 @@
  */
 package org.springframework.binding;
 
-import java.beans.PropertyEditor;
-
 import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
 
 /**
@@ -36,15 +32,7 @@ import org.springframework.binding.value.ValueModel;
  * EXPERIMENTAL - not yet fit for general use
  * @author Keith Donald
  */
-public interface MutablePropertyAccessStrategy extends PropertyAccessStrategy,
-        PropertyAccessor, PropertyChangePublisher {
-    public void registerCustomEditor(Class propertyType,
-            PropertyEditor propertyEditor);
-
-    public void registerCustomEditor(String propertyName,
-            PropertyEditor propertyEditor);
-
-    public PropertyEditor findCustomEditor(String propertyName);
+public interface MutablePropertyAccessStrategy extends PropertyAccessStrategy {
 
     public ValueModel getDomainObjectHolder();
 
@@ -54,7 +42,6 @@ public interface MutablePropertyAccessStrategy extends PropertyAccessStrategy,
     public MutablePropertyAccessStrategy getPropertyAccessStrategyForPath(
             String propertyPath) throws BeansException;
 
-    public MutablePropertyAccessStrategy newPropertyAccessStrategy(
-            ValueModel domainObjectHolder);
+    public MutablePropertyAccessStrategy newPropertyAccessStrategy(ValueModel domainObjectHolder);
 
 }
