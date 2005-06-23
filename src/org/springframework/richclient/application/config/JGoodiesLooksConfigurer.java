@@ -20,10 +20,10 @@ import java.awt.Dimension;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import com.jgoodies.plaf.FontSizeHints;
-import com.jgoodies.plaf.Options;
-import com.jgoodies.plaf.plastic.PlasticLookAndFeel;
-import com.jgoodies.plaf.plastic.PlasticTheme;
+import com.jgoodies.looks.FontSizeHints;
+import com.jgoodies.looks.Options;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticTheme;
 
 public class JGoodiesLooksConfigurer implements InitializingBean {
     private UIManagerConfigurer configurer;
@@ -62,6 +62,6 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
     }
 
     public void afterPropertiesSet() throws Exception {
-        configurer.setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+        configurer.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
     }
 }

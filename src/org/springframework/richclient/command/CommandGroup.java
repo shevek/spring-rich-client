@@ -47,8 +47,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.jgoodies.forms.layout.Size;
-import com.jgoodies.plaf.HeaderStyle;
-import com.jgoodies.plaf.Options;
 
 /**
  * @author Keith Donald

@@ -90,7 +90,7 @@
 	<bean id="lookAndFeelConfigurer" 
 		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
 		<property name="theme">
-			<bean class="com.jgoodies.plaf.plastic.theme.ExperienceBlue"/>
+			<bean class="com.jgoodies.looks.plastic.theme.ExperienceBlue"/>
 		</property>
 	</bean>
 	
