@@ -25,9 +25,9 @@ import org.springframework.util.Assert;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.gui.WritableTableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
-import ca.odell.glazedlists.swing.TableFormat;
-import ca.odell.glazedlists.swing.WritableTableFormat;
 
 /**
  * <code>TableModel</code> that accepts a <code>EventList</code>.
@@ -38,16 +38,16 @@ public class GlazedTableModel extends EventTableModel {
 
     private static final EventList EMPTY_LIST = new BasicEventList();
 
-    private BeanWrapper beanWrapper = new BeanWrapperImpl();
+    private final BeanWrapper beanWrapper = new BeanWrapperImpl();
 
     private String columnLabels[];
 
     private MessageSourceAccessor messages;
 
-    private String columnPropertyNames[];
+    private final String columnPropertyNames[];
 
     public GlazedTableModel(String[] columnPropertyNames) {
-        this((MessageSource) null, columnPropertyNames);
+        this((MessageSource)null, columnPropertyNames);
     }
 
     public GlazedTableModel(Class beanClass, EventList rows, String[] columnPropertyNames) {
@@ -69,7 +69,8 @@ public class GlazedTableModel extends EventTableModel {
     public void setMessageSource(MessageSource messages) {
         if (messages != null) {
             this.messages = new MessageSourceAccessor(messages);
-        } else {
+        }
+        else {
             this.messages = null;
         }
     }
@@ -101,14 +102,12 @@ public class GlazedTableModel extends EventTableModel {
         return row;
     }
 
-    private String[] createColumnNames(String[] propertyColumnNames) {
+    protected String[] createColumnNames(String[] propertyColumnNames) {
         String[] columnNames = new String[propertyColumnNames.length];
         Assert.notNull(this.messages);
         for (int i = 0; i < propertyColumnNames.length; i++) {
-            String columnPropertyName = propertyColumnNames[i];
-
-            final String[] keys = { "label." + columnPropertyName, columnPropertyName };
-
+            final String columnPropertyName = propertyColumnNames[i];
+            final String[] keys = {columnPropertyName + ".label", columnPropertyName};
             MessageSourceResolvable resolvable = new MessageSourceResolvable() {
 
                 public String[] getCodes() {
@@ -120,10 +119,7 @@ public class GlazedTableModel extends EventTableModel {
                 }
 
                 public String getDefaultMessage() {
-                    if (keys.length > 0) {
-                        return keys[0];
-                    }
-                    return "";
+                    return columnPropertyName;
                 }
             };
 
