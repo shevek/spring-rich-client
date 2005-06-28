@@ -22,7 +22,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.springframework.binding.form.FormModel;
@@ -84,15 +83,12 @@ public abstract class AbstractFormBuilder {
     }
 
     protected JPasswordField getPasswordField(String propertyName) {
-        JPasswordField field = (JPasswordField)getBindingFactory().bindControl(new JPasswordField(8), propertyName)
-                .getControl();
-        return field;
+        return new JPasswordField(8);
     }
 
     protected JComponent getTextArea(String propertyName) {
         JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-        JComponent component = new JScrollPane(getBindingFactory().bindControl(textArea, propertyName).getControl());
-        return component;
+        return textArea;
     }
 
     protected JLabel getLabelFor(String propertyName, JComponent component) {

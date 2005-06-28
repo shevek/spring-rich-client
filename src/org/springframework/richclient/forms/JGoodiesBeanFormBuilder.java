@@ -16,6 +16,7 @@
 package org.springframework.richclient.forms;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
@@ -72,6 +73,6 @@ public class JGoodiesBeanFormBuilder extends AbstractFormBuilder implements Bean
 
     public JComponent[] addTextArea(String formPropertyPath) {
         JComponent component = getTextArea(formPropertyPath);
-        return formBuilder.add(getLabelFor(formPropertyPath, component), "left,top", component);
+        return formBuilder.add(getLabelFor(formPropertyPath, component), "left,top", new JScrollPane(component));
     }
 }

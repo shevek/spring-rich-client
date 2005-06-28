@@ -18,6 +18,7 @@ package org.springframework.richclient.form.builder;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
@@ -92,7 +93,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     public JComponent[] addTextArea(String propertyName, String attributes) {
-        return addBinding(getBinding(propertyName, getTextArea(propertyName)), attributes, getLabelAttributes()
+        JComponent textArea = getTextArea(propertyName);
+        return addBinding(getBinding(propertyName, textArea), new JScrollPane(textArea), attributes, getLabelAttributes()
                 + " valign=top");
     }
 
@@ -122,15 +124,17 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     private JComponent[] addBinding(Binding binding, String attributes, String labelAttributes) {
-        final JComponent control = binding.getControl();
-        final JLabel label = getLabelFor(binding.getProperty(), control);
+        return addBinding(binding, binding.getControl(), attributes, labelAttributes);
+    }
 
+    private JComponent[] addBinding(Binding binding, JComponent wrappedControl, String attributes, String labelAttributes) {
+        final JLabel label = getLabelFor(binding.getProperty(), binding.getControl());
         if (!builder.hasGapToLeft()) {
             builder.gapCol();
         }
         builder.cell(label, labelAttributes);
         builder.labelGapCol();
-        builder.cell(control, attributes);
-        return new JComponent[] {label, control};
+        builder.cell(wrappedControl, attributes);
+        return new JComponent[] {label, wrappedControl};
     }
 }
