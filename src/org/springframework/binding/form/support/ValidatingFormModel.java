@@ -39,6 +39,7 @@ import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
 import org.springframework.rules.reporting.PropertyResults;
 import org.springframework.rules.reporting.TypeResolvable;
+import org.springframework.rules.reporting.TypeResolvableSupport;
 
 /**
  * @author Keith Donald
@@ -92,7 +93,7 @@ public class ValidatingFormModel extends DefaultFormModel {
     public Map getErrors() {
         return Collections.unmodifiableMap(validationErrors);
     }
-    
+
     public boolean isValidationEnabled() {
         return validationEnabled;
     }
@@ -140,7 +141,7 @@ public class ValidatingFormModel extends DefaultFormModel {
         }
         return totalErrors;
     }
-    
+
     public ValueModel findValueModel(String propertyPath, Class targetType) {
         ValueModel vm = super.findValueModel(propertyPath, targetType);
         if (vm instanceof ValidatingFormValueModel) {
@@ -204,7 +205,7 @@ public class ValidatingFormModel extends DefaultFormModel {
         }
         return constraint;
     }
-    
+
     protected void constraintSatisfied(PropertyConstraint exp) {
         if (logger.isDebugEnabled()) {
             logger.debug("Value constraint '" + exp + "' [satisfied] for value model '" + exp.getPropertyName() + "']");
@@ -363,37 +364,32 @@ public class ValidatingFormModel extends DefaultFormModel {
         }
     }
 
-    private class ValueSetterConstraint implements PropertyConstraint, TypeResolvable {
+    private class ValueSetterConstraint extends TypeResolvableSupport implements PropertyConstraint, TypeResolvable {
         private String property;
-
-        private String type = "typeMismatch";
 
         public ValueSetterConstraint(String property) {
             this.property = property;
         }
 
-        public String getType() {
-            return type;
-        }
-
         public void setType(Exception e) {
+            String type = "typeMismatch";
             if (e instanceof NullPointerException) {
-                type = "required";
+                setType("required");
             }
             else if (e instanceof TypeMismatchException) {
-                type = "typeMismatch";
+                setType("typeMismatch");
             }
             else if (e instanceof InvalidFormatException) {
-                type = "typeMismatch";
+                setType("typeMismatch");
             }
             else if (e instanceof IllegalArgumentException) {
-                type = "typeMismatch";
+                setType("typeMismatch");
             }
             else if (e.getCause() instanceof Exception) {
                 setType((Exception)e.getCause());
             }
             else {
-                type = "unknown";
+                setType("unknown");
             }
         }
 

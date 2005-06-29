@@ -17,7 +17,7 @@ package org.springframework.richclient.dialog;
 
 import javax.swing.JComponent;
 
-import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.form.Form;
 
 /**
  * An implementation of DialogPage that delegates to a FormPage for its control,

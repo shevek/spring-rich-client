@@ -13,20 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
-
-import javax.swing.JComponent;
+package org.springframework.richclient.form;
 
 import org.springframework.core.closure.Constraint;
+import org.springframework.rules.reporting.ValidationResults;
 
-public interface BeanFormBuilder {
-    public JComponent[] add(String formPropertyPath);
+public interface ValidationResultsReporter {
+    public void valid(Constraint constraint);
 
-    public JComponent[] addSelector(String formPropertyPath, Constraint filter);
-
-    public JComponent[] addPasswordField(String formPropertyPath);
-
-    public JComponent[] addTextArea(String formPropertyPath);
-
-    public JComponent getForm();
+    public void invalid(Constraint constraint, ValidationResults results);
 }

@@ -20,8 +20,8 @@ import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.swing.SelectableButtonModelAdapter;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
-import org.springframework.richclient.forms.SelectableButtonValueModel;
 
 /**
  * @author Oliver Hutchison
@@ -38,7 +38,7 @@ public class CheckBoxBinding extends AbstractBinding {
     protected JComponent doBindControl() {
         final ValueModel valueModel = getValueModel();
         checkBox.setText(getFormPropertyFaceDescriptor().getDescription());
-        checkBox.setModel(new SelectableButtonValueModel(valueModel));
+        checkBox.setModel(new SelectableButtonModelAdapter(valueModel));
         return checkBox;
     }
     

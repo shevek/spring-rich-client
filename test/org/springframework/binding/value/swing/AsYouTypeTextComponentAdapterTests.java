@@ -13,80 +13,70 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import junit.framework.TestCase;
 
+import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
 /**
- * Test cases for {@link AsYouTypeTextValueSetter}
+ * Test cases for {@link AsYouTypeTextComponentAdapter}
  * 
- * @author oliverh
+ * @author Oliver Hutchison
  */
-public class AsYouTypeTextValueSetterTest extends TestCase {
+public class AsYouTypeTextComponentAdapterTests extends TestCase {
 
     private ValueModel valueModel;
 
-    private TestablePropertyChangeListener valueListener;
+    private TestPropertyChangeListener valueListener;
 
     private TestableJTextComponent comp;
 
-    private AsYouTypeTextValueSetter valueSetter;
+    private AsYouTypeTextComponentAdapter valueSetter;
 
     public void setUp() throws Exception {
         super.setUp();
-        valueModel = new ValueHolder("originalValue");
-        valueListener = new TestablePropertyChangeListener();
+        valueModel = new ValueHolder("");
+        valueListener = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
-        valueSetter = new AsYouTypeTextValueSetter(comp, valueModel);
-    }
-
-    public void testContructor() {
-        try {
-            new AsYouTypeTextValueSetter(null);
-            fail("null component not allowed");
-        }
-        catch (IllegalArgumentException e) {
-            // expected
-        }
+        valueSetter = new AsYouTypeTextComponentAdapter(comp, valueModel);
     }
 
     public void testComponentChangeUpdatesValueModel() {
         comp.setText("newValue");
-        assertEquals(valueModel.getValue(), "newValue");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertEquals("newValue", valueModel.getValue());
+        assertEquals(1, valueListener.eventCount());
     }
 
     public void testValueModelChangeUpdatesComponent() {
-        comp.setText("originalValue");
         valueModel.setValue("newValue");
-        assertEquals(comp.getText(), "newValue");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertEquals("newValue", comp.getText());
+        assertEquals(1, valueListener.eventCount());
     }
 
     public void testTypingUpdatesValueModel() {
         comp.typeText("a");
-        assertEquals(valueModel.getValue(), "a");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertEquals("a", valueModel.getValue());
+        assertEquals(1, valueListener.eventCount());
 
         valueListener.reset();
         comp.typeText("bc");
-        assertEquals(valueModel.getValue(), "abc");
-        assertEquals(valueListener.getEventCount(), 2);
+        assertEquals("abc", valueModel.getValue());
+        assertEquals(2, valueListener.eventCount());
 
         valueListener.reset();
         comp.setCaretPosition(1);
         comp.typeText("d");
-        assertEquals(valueModel.getValue(), "adbc");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertEquals("adbc", valueModel.getValue());
+        assertEquals(1, valueListener.eventCount());
 
         valueListener.reset();
         comp.setCaretPosition(1);
         comp.typeBackSpace();
-        assertEquals(valueModel.getValue(), "dbc");
-        assertEquals(valueListener.getEventCount(), 1);
+        assertEquals("dbc", valueModel.getValue());
+        assertEquals(1, valueListener.eventCount());
     }
 }

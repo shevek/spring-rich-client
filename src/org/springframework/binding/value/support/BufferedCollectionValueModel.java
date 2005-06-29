@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.support;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -34,7 +34,6 @@ import javax.swing.event.ListDataListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.richclient.list.ListListModel;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;

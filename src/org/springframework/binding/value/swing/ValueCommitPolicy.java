@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.DefaultFormatter;

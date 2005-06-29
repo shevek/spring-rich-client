@@ -19,8 +19,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.binding.BindingFactory;
-import org.springframework.richclient.forms.FormModelHelper;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
 import org.springframework.richclient.layout.LabelOrientation;
 import org.springframework.richclient.layout.LayoutBuilder;

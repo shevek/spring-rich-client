@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.springframework.richclient.forms;
+package org.springframework.richclient.form;
 
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.ValidationListener;

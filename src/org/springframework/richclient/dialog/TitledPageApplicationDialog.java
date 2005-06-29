@@ -22,7 +22,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.core.Message;
-import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.form.Form;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

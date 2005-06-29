@@ -13,38 +13,45 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.AbstractValueModelAdapter;
 
-public class SpinnerValueSetter extends AbstractValueSetter implements ChangeListener {
-    private JSpinner spinner;
+/**
+ * Adapts a value model to a JSpinner control.
+ * 
+ * @author Oliver Hutchison
+ */
+public class SpinnerAdapter extends AbstractValueModelAdapter {
+    
+    private final SpinnerChangeListener listener = new SpinnerChangeListener();
+        
+    private final JSpinner spinner;
 
-    public SpinnerValueSetter(JSpinner spinner, ValueModel valueModel) {
+    public SpinnerAdapter(JSpinner spinner, ValueModel valueModel) {
         super(valueModel);
         this.spinner = spinner;
-        valueChanged();
-        this.spinner.addChangeListener(this);
+        this.spinner.addChangeListener(listener);
+        initalizeAdaptedValue();
     }
 
-    public void stateChanged(ChangeEvent e) {
-        componentValueChanged(spinner.getValue());
-    }
-
-    public void valueChanged() {
-        setControlValue(getInnerMostValue());
-    }
-
-    protected void setControlValue(Object value) {
-        if (value == null) {
+    protected void valueModelValueChanged(Object newValue) {
+        if (newValue == null) {
             spinner.setValue(new Integer(0));
         }
         else {
-            spinner.setValue(value);
+            spinner.setValue(newValue);
+        }
+    }
+    
+    private class SpinnerChangeListener implements ChangeListener {
+        public void stateChanged(ChangeEvent e) {
+            adaptedValueChanged(spinner.getValue());
         }
     }
 }

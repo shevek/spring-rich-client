@@ -31,11 +31,9 @@ import org.springframework.util.Assert;
  */
 public class TableFormBuilder extends AbstractFormBuilder {
 
-    private static final String DEFAULT_LABEL_ATTRIBUTES = "colGrId=label colSpec=left:pref";
-
     private TableLayoutBuilder builder;
 
-    private String labelAttributes = DEFAULT_LABEL_ATTRIBUTES;
+    private String labelAttributes = TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES;
 
     public TableFormBuilder(BindingFactory bindingFactory) {
         super(bindingFactory);

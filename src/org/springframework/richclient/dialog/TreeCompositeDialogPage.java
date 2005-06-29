@@ -34,7 +34,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.form.Form;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.tree.TreeUtils;

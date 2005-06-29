@@ -20,9 +20,9 @@ import javax.swing.JComponent;
 import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
 
+import org.springframework.richclient.form.AbstractForm;
+import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.builder.TableFormBuilder;
-import org.springframework.richclient.forms.AbstractForm;
-import org.springframework.richclient.forms.FormModelHelper;
 
 public class LoginForm extends AbstractForm {
     private SessionDetails sessionDetails;

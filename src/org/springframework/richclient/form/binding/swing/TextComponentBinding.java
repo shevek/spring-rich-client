@@ -20,8 +20,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.swing.AsYouTypeTextComponentAdapter;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
-import org.springframework.richclient.forms.AsYouTypeTextValueSetter;
 
 /**
  * @author Oliver Hutchison
@@ -47,7 +47,7 @@ public class TextComponentBinding extends AbstractBinding  {
             throw ex;
         }
         // TODO: implement ValueCommitPolicies
-        new AsYouTypeTextValueSetter(textComponent, valueModel);
+        new AsYouTypeTextComponentAdapter(textComponent, valueModel);
         return textComponent;
     }
 

@@ -13,30 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.AbstractValueModelAdapter;
 import org.springframework.util.Assert;
 
-public class AsYouTypeTextValueSetter extends AbstractValueSetter implements DocumentListener {
+public class AsYouTypeTextComponentAdapter extends AbstractValueModelAdapter implements DocumentListener {
 
-    private JTextComponent control;
+    private final JTextComponent control;
 
     private boolean settingText;
 
-    protected AsYouTypeTextValueSetter(JTextComponent control) {
-        this(control, null);
-    }
-
-    public AsYouTypeTextValueSetter(JTextComponent control, ValueModel valueModel) {
+    public AsYouTypeTextComponentAdapter(JTextComponent control, ValueModel valueModel) {
         super(valueModel);
         Assert.notNull(control);
         this.control = control;
         this.control.getDocument().addDocumentListener(this);
+        initalizeAdaptedValue();
     }
 
     public void removeUpdate(DocumentEvent e) {
@@ -53,11 +51,11 @@ public class AsYouTypeTextValueSetter extends AbstractValueSetter implements Doc
 
     private void controlTextValueChanged() {
         if (!settingText) {
-            componentValueChanged(control.getText());
+            adaptedValueChanged(control.getText());
         }
     }
 
-    protected void setControlValue(Object value) {
+    protected void valueModelValueChanged(Object value) {
         // this try block will coalesce the 2 DocumentEvents that
         // JTextComponent.setText() fires into 1 call to
         // componentValueChanged()

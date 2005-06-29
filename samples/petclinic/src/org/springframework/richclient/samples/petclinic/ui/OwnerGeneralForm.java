@@ -18,8 +18,8 @@ package org.springframework.richclient.samples.petclinic.ui;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.builder.TableFormBuilder;
-import org.springframework.richclient.forms.AbstractForm;
 
 public class OwnerGeneralForm extends AbstractForm {
     public static final String GENERAL_FORM_PAGE = "generalPage";

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +30,9 @@ import java.util.TreeSet;
 import junit.framework.TestCase;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.binding.value.support.CommitTrigger;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.list.ListListModel;
@@ -283,37 +285,37 @@ public class BufferedCollectionValueModelTest extends TestCase {
     public void testValueChangeNotification() {
         Object[] backingArray = getArray(100);
         BufferedCollectionValueModel vm = getBufferedCollectionValueModel(backingArray);
-        TestablePropertyChangeListener vl = new TestablePropertyChangeListener();
+        TestPropertyChangeListener vl = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         vm.addValueChangeListener(vl);
 
         ListListModel llm = (ListListModel)vm.getValue();
-        assertEquals(0, vl.getEventCount());
+        assertEquals(0, vl.eventCount());
 
         vl.reset();
         llm.add(new Integer(100));
-        assertEquals(1, vl.getEventCount());
+        assertEquals(1, vl.eventCount());
         llm.add(1, new Integer(102));
-        assertEquals(2, vl.getEventCount());
+        assertEquals(2, vl.eventCount());
 
         vl.reset();
         llm.addAll(getCollection(ArrayList.class, 101));
-        assertEquals(1, vl.getEventCount());
+        assertEquals(1, vl.eventCount());
         llm.addAll(1, getCollection(ArrayList.class, 101));
-        assertEquals(2, vl.getEventCount());
+        assertEquals(2, vl.eventCount());
 
         vl.reset();
         llm.remove(1);
-        assertEquals(1, vl.getEventCount());
+        assertEquals(1, vl.eventCount());
         llm.removeAll(getCollection(ArrayList.class, 101));
-        assertEquals(2, vl.getEventCount());
+        assertEquals(2, vl.eventCount());
 
         vl.reset();
         llm.set(1, llm.get(1));
-        assertEquals(0, vl.getEventCount());
+        assertEquals(0, vl.eventCount());
 
         vl.reset();
         llm.clear();
-        assertEquals(1, vl.getEventCount());
+        assertEquals(1, vl.eventCount());
     }
 
     public void testRevert() {

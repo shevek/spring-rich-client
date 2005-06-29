@@ -18,14 +18,11 @@ package org.springframework.richclient.samples.petclinic.ui.preference;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.forms.AbstractForm;
-import org.springframework.richclient.forms.BeanFormBuilder;
-import org.springframework.richclient.forms.Form;
-import org.springframework.richclient.forms.JGoodiesBeanFormBuilder;
-import org.springframework.richclient.forms.FormModelHelper;
+import org.springframework.richclient.form.AbstractForm;
+import org.springframework.richclient.form.Form;
+import org.springframework.richclient.form.FormModelHelper;
+import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.preference.FormBackedPreferencePage;
-
-import com.jgoodies.forms.layout.FormLayout;
 
 public class AppearancePreferencePage extends FormBackedPreferencePage {
 
@@ -70,8 +67,7 @@ public class AppearancePreferencePage extends FormBackedPreferencePage {
         }
 
         protected JComponent createFormControl() {
-            FormLayout layout = new FormLayout("left:pref, 5dlu, pref:grow");
-            BeanFormBuilder formBuilder = new JGoodiesBeanFormBuilder(getBindingFactory(), layout);
+            TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
             formBuilder.add("dialogPageType");
             return formBuilder.getForm();
         }

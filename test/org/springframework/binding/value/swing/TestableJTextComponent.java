@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -28,7 +28,7 @@ import javax.swing.text.Document;
 /**
  * A JFormattedTextField that has methods to simulate user interaction
  * 
- * @author oliverh
+ * @author Oliver Hutchison
  */
 public class TestableJTextComponent extends JFormattedTextField {
 

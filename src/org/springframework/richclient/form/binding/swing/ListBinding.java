@@ -31,10 +31,10 @@ import javax.swing.event.ListSelectionListener;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
 import org.springframework.richclient.list.DynamicListModel;
 import org.springframework.richclient.list.ListListModel;
-import org.springframework.richclient.forms.BufferedCollectionValueModel;
 
 public class ListBinding extends AbstractBinding {
 

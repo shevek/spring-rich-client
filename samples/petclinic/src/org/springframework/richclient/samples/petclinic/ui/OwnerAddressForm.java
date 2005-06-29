@@ -18,8 +18,8 @@ package org.springframework.richclient.samples.petclinic.ui;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.builder.TableFormBuilder;
-import org.springframework.richclient.forms.AbstractForm;
 
 public class OwnerAddressForm extends AbstractForm {
     public static final String ADDRESS_FORM_PAGE = "addressPage";

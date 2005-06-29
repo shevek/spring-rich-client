@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -21,31 +21,28 @@ import java.awt.event.FocusListener;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.AbstractValueModelAdapter;
 import org.springframework.util.Assert;
 
-public class FocusLostTextValueSetter extends AbstractValueSetter implements FocusListener {
-    private JTextComponent control;
+public class FocusLostTextComponentAdapter extends AbstractValueModelAdapter implements FocusListener {
+    private final JTextComponent control;
 
-    public FocusLostTextValueSetter(JTextComponent component) {
-        this(component, null);
-    }
-
-    public FocusLostTextValueSetter(JTextComponent component, ValueModel valueModel) {
+    public FocusLostTextComponentAdapter(JTextComponent component, ValueModel valueModel) {
         super(valueModel);
         Assert.notNull(component);
         this.control = component;
         this.control.addFocusListener(this);
+        initalizeAdaptedValue();
     }
 
-    protected void setControlValue(Object value) {
+    protected void valueModelValueChanged(Object value) {
         control.setText((String)value);
     }
 
     public void focusLost(FocusEvent e) {
-        componentValueChanged(control.getText());
+        adaptedValueChanged(control.getText());
     }
 
     public void focusGained(FocusEvent e) {
-
     }
 }

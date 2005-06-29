@@ -19,21 +19,18 @@ import java.awt.Window;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.form.FormModelHelper;
+import org.springframework.richclient.form.SimpleValidationResultsReporter;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
-import org.springframework.richclient.forms.FormBuilder;
-import org.springframework.richclient.forms.FormModelHelper;
-import org.springframework.richclient.forms.JGoodiesFormBuilder;
-import org.springframework.richclient.forms.SimpleValidationResultsReporter;
+import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;
-
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Simple input application dialog consisting of a label and a text field for
@@ -112,11 +109,10 @@ public class InputApplicationDialog extends ApplicationDialog {
     }
 
     protected JComponent createDialogContentPane() {
-        FormLayout layout = new FormLayout("left:pref, 6dlu, pref:grow");
-        FormBuilder formBuilder = new JGoodiesFormBuilder(layout);
+        TableLayoutBuilder layoutBuilder = new TableLayoutBuilder();
 
         if (this.inputField == null) {
-            this.inputField = new JTextField(25);
+            this.inputField = getComponentFactory().createTextField();
         }
         // work around for bug in JFormattedTextField text field for selectAll
         if (inputField instanceof JFormattedTextField) {
@@ -130,17 +126,24 @@ public class InputApplicationDialog extends ApplicationDialog {
                 }
             });
         }
-        formBuilder.add(getInputLabelMessage(), inputField);
-        formBuilder.addGapRow();
-        formBuilder.addRow(getValidationReporter());
-        formBuilder.addSeparator();
-        return formBuilder.getForm();
+        
+        layoutBuilder.cell(getInputLabel(), TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES);
+        layoutBuilder.labelGapCol();
+        layoutBuilder.cell(inputField);
+        
+        layoutBuilder.unrelatedGapRow();
+        layoutBuilder.cell(getValidationReporter().getControl());
+        
+        layoutBuilder.relatedGapRow();
+        layoutBuilder.separator("");
+        return layoutBuilder.getPanel();
     }
 
-    private String getInputLabelMessage() {
-        return inputLabelMessage;
+    protected JComponent getInputLabel() {
+        JLabel label = getComponentFactory().createLabelFor(inputLabelMessage, getInputField());
+        return label;
     }
-
+    
     protected boolean onFinish() {
         if (checkInputConstraint()) {
             onFinish(getInputValue());
@@ -182,8 +185,7 @@ public class InputApplicationDialog extends ApplicationDialog {
     public ConfigurableFormModel getFormModel() {
         return formModel;
     }
-    
-    
+        
     /**
      * @return Returns the inputField.
      */

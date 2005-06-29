@@ -17,7 +17,7 @@ package org.springframework.richclient.samples.petclinic.ui;
 
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommandExecutor;
-import org.springframework.richclient.forms.CompoundForm;
+import org.springframework.richclient.form.CompoundForm;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.FormBackedWizardPage;
 import org.springframework.richclient.wizard.WizardDialog;

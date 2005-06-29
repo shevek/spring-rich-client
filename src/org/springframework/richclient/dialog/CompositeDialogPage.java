@@ -25,7 +25,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.springframework.richclient.core.UIConstants;
-import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.form.Form;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 

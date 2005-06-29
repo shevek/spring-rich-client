@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.richclient.form;
 
 import java.util.Date;
 
@@ -26,6 +26,7 @@ import javax.swing.text.NumberFormatter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.value.swing.ValueCommitPolicy;
 import org.springframework.util.Assert;
 
 /**

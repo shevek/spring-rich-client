@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.forms;
+package org.springframework.binding.value.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -22,10 +22,15 @@ import javax.swing.DefaultButtonModel;
 
 import org.springframework.binding.value.ValueModel;
 
-public class SelectableButtonValueModel extends DefaultButtonModel implements PropertyChangeListener {
-    private ValueModel valueModel;
+/**
+ * Adapts a value model to a ButtonModel 
+ * 
+ * @author Oliver Hutchison
+ */
+public class SelectableButtonModelAdapter extends DefaultButtonModel implements PropertyChangeListener {
+    private final ValueModel valueModel;
 
-    public SelectableButtonValueModel(ValueModel valueModel) {
+    public SelectableButtonModelAdapter(ValueModel valueModel) {
         this.valueModel = valueModel;
         this.valueModel.addValueChangeListener(this);
         propertyChange(null);

@@ -79,6 +79,8 @@ import com.jgoodies.forms.layout.RowSpec;
  * @author oliverh
  */
 public class TableLayoutBuilder implements LayoutBuilder {
+    
+    public static final String DEFAULT_LABEL_ATTRIBUTES = "colGrId=label colSpec=left:pref";
 
     public static final String ALIGN = "align";
 

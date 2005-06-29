@@ -23,7 +23,7 @@ import java.util.List;
 import org.springframework.core.EventListenerListHelper;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.forms.Form;
+import org.springframework.richclient.form.Form;
 
 /**
  * Helper implementation of the wizard interface.

@@ -30,10 +30,10 @@ import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import org.springframework.beans.PropertyComparator;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
-import org.springframework.richclient.forms.BufferedCollectionValueModel;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.ObservableList;
 

@@ -20,8 +20,9 @@ import javax.swing.JFormattedTextField;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.swing.FormattedTextFieldAdapter;
+import org.springframework.binding.value.swing.ValueCommitPolicy;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
-import org.springframework.richclient.forms.FocusLostTextValueSetter;
 
 /**
  * TODO: this is probably very broken. Need to do extensive testing.
@@ -50,7 +51,7 @@ public class FormattedTextFieldBinding extends AbstractBinding {
             throw ex;
         }
         // TODO: implement ValueCommitPolicies
-        new FocusLostTextValueSetter(formattedTextField, valueModel);
+        new FormattedTextFieldAdapter(formattedTextField, valueModel, ValueCommitPolicy.AS_YOU_TYPE);
         return formattedTextField;
     }
 
