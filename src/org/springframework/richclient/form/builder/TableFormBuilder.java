@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.support.ScrollPaneDecoratedBinding;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;
 
@@ -94,6 +95,22 @@ public class TableFormBuilder extends AbstractFormBuilder {
         JComponent textArea = getTextArea(propertyName);
         return addBinding(getBinding(propertyName, textArea), new JScrollPane(textArea), attributes, getLabelAttributes()
                 + " valign=top");
+    }
+  
+    public JComponent[] addInScrollPane(String propertyName) {
+        return addInScrollPane(propertyName, "");
+    }
+  
+    public JComponent[] addInScrollPane(String propertyName, String attributes) {
+        return addInScrollPane(getDefaultBinding(propertyName), attributes);
+    }
+  
+    public JComponent[] addInScrollPane(Binding binding) {
+        return addInScrollPane(binding, "");
+    }
+  
+    public JComponent[] addInScrollPane(Binding binding, String attributes) {
+        return add(new ScrollPaneDecoratedBinding(binding), attributes);
     }
 
     public void addSeparator(String text) {

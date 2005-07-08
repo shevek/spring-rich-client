@@ -19,6 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -33,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JScrollPane;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.apache.commons.logging.Log;
@@ -346,8 +348,20 @@ public class DefaultComponentFactory implements ComponentFactory {
 		tabbedPane.setIconAt(tabIndex, getIcon(labelKey));
 		tabbedPane.setToolTipTextAt(tabIndex, getCaption(labelKey));
 	}
+  
+  public JScrollPane createScrollPane() {
+    return new JScrollPane();
+  }
 
-	private String getCaption(String labelKey) {
+  public JScrollPane createScrollPane(Component view) {
+    return new JScrollPane(view);
+  }
+
+  public JScrollPane createScrollPane(Component view, int vsbPolicy, int hsbPolicy) {
+    return new JScrollPane(view, vsbPolicy, hsbPolicy);
+  }
+
+  private String getCaption(String labelKey) {
 		return getOptionalMessage(labelKey + ".caption");
 	}
 

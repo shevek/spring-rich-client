@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.factory;
 
+import java.awt.Component;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -26,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JScrollPane;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.binding.value.ValueModel;
@@ -310,4 +313,35 @@ public interface ComponentFactory {
      * @param tabComponent
      */
     public void addConfiguredTab(JTabbedPane tabbedPane, String labelKey, JComponent tabComponent);
+
+    /**
+     * Create a scroll pane using this component factory.
+     *
+     * @return empty scroll pane.
+     * @see javax.swing.JScrollPane#JScrollPane()  
+     */
+    public JScrollPane createScrollPane();
+
+    /**
+     * Create a scroll pane using this component factory, with the specified
+     * component as the viewport view.
+     *
+     * @param view the component to display in the scrollpane's viewport
+     * @return scroll pane with specified view
+     * @see JScrollPane#JScrollPane(java.awt.Component)
+     */
+    public JScrollPane createScrollPane(Component view);
+
+    /**
+     * Create a scroll pane using this component factory, with the specified
+     * component as the viewport view and with the specified vertical and
+     * horizontal scrollbar policies.
+     *  
+     * @param view the component to display in the scrollpane's viewport
+     * @param vsbPolicy 
+     * @param hsbPolicy
+     * @return scroll pane with specified view and scrolling policies
+     * @see JScrollPane#JScrollPane(java.awt.Component, int, int)
+     */
+    public JScrollPane createScrollPane(Component view, int vsbPolicy, int hsbPolicy);
 }
