@@ -27,7 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
-import org.springframework.beans.PropertyComparator;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
@@ -76,7 +76,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     public Binding createBoundSpinner(String formProperty) {
         return createBinding(JSpinner.class, formProperty);
     }
-    
+
     public Binding createBoundLabel(String formProperty) {
         return createBinding(JLabel.class, formProperty);
     }
@@ -112,7 +112,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder, String renderedProperty) {
         Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
-        context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty));
+        context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
         return createBinding(JComboBox.class, formProperty, context);
     }
 
@@ -180,7 +180,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      */
     public Binding createBoundList(String selectionFormProperty, ValueModel selectableItemsHolder,
             String renderedProperty) {
-      return createBoundList(selectionFormProperty, selectableItemsHolder, renderedProperty, null);
+        return createBoundList(selectionFormProperty, selectableItemsHolder, renderedProperty, null);
     }
 
     /**
@@ -226,21 +226,22 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      * @return
      */
     public Binding createBoundList(String selectionFormProperty, ValueModel selectableItemsHolder,
-                                   String renderedProperty, Integer forceSelectMode) {
-      final ConfigurableFormModel formModel = (ConfigurableFormModel)getFormModel();
-        
-      final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
-      final Map context = createContext(ListBinder.SELECTED_ITEM_HOLDER_KEY, selectionValueModel);
-      final Class selectionPropertyType = formModel.getMetadataAccessStrategy().getPropertyType(selectionFormProperty);
-      if(selectionPropertyType != null) {
-        context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
-      }
-      if(forceSelectMode != null) {
-        context.put(ListBinder.SELECTION_MODE_KEY, forceSelectMode);
-      }
-      context.put(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
-      context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
-      context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty));
-      return createBinding(JList.class, selectionFormProperty, context);
+            String renderedProperty, Integer forceSelectMode) {
+        final ConfigurableFormModel formModel = (ConfigurableFormModel)getFormModel();
+
+        final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
+        final Map context = createContext(ListBinder.SELECTED_ITEM_HOLDER_KEY, selectionValueModel);
+        final Class selectionPropertyType = formModel.getMetadataAccessStrategy()
+                .getPropertyType(selectionFormProperty);
+        if (selectionPropertyType != null) {
+            context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
+        }
+        if (forceSelectMode != null) {
+            context.put(ListBinder.SELECTION_MODE_KEY, forceSelectMode);
+        }
+        context.put(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
+        context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
+        return createBinding(JList.class, selectionFormProperty, context);
     }
 }

@@ -30,7 +30,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
@@ -42,7 +42,7 @@ import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
-import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
 
 public abstract class AbstractCommand extends AbstractPropertyChangePublisher implements InitializingBean,
@@ -380,7 +380,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     private CommandFaceButtonManager getButtonManager(String faceDescriptorId) {
         if (this.faceButtonManagers == null) {
-            this.faceButtonManagers = new CachingMapTemplate() {
+            this.faceButtonManagers = new CachingMapDecorator() {
                 protected Object create(Object key) {
                     return new CommandFaceButtonManager(AbstractCommand.this, (String)key);
                 }

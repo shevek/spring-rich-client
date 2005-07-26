@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.samples.petclinic.ui.preference;
 
-import org.springframework.core.enums.support.StringCodedLabeledEnum;
+import org.springframework.core.enums.StringCodedLabeledEnum;
 
 public class CompositeDialogPageType extends StringCodedLabeledEnum {
 
@@ -24,6 +24,6 @@ public class CompositeDialogPageType extends StringCodedLabeledEnum {
 	public static final CompositeDialogPageType TREE = new CompositeDialogPageType("tree");
 
 	private CompositeDialogPageType(String name) {
-		super(name);
+		super(name, null);
 	}
 }

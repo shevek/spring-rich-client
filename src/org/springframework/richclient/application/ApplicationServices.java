@@ -37,6 +37,8 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.core.enums.LabeledEnumResolver;
+import org.springframework.core.enums.StaticLabeledEnumResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
@@ -119,7 +121,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
 
     private BinderSelectionStrategy binderSelectionStrategy;
 
-    
+    private LabeledEnumResolver labeledEnumResolver = new StaticLabeledEnumResolver();
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -486,4 +488,9 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     public AbstractCommand configure(AbstractCommand command) {
         return getCommandConfigurer().configure(command);
     }
+
+    public LabeledEnumResolver getLabeledEnumResolver() {
+        return labeledEnumResolver;
+    }
+
 }

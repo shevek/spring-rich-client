@@ -21,7 +21,7 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JMenuItem;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;

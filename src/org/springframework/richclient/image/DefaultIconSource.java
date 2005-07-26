@@ -22,7 +22,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.CachingMapDecorator;
 
 /**
  * The default implementation of ImageIconRegistry. This implementation caches
@@ -41,7 +41,7 @@ public class DefaultIconSource implements IconSource {
      * 
      * @author Keith Donald
      */
-    protected static class IconCache extends CachingMapTemplate {
+    protected static class IconCache extends CachingMapDecorator {
         private ImageSource images;
 
         public IconCache(ImageSource images) {

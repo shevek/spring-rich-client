@@ -18,7 +18,7 @@ package org.springframework.richclient.application.support;
 import java.awt.Dimension;
 import java.awt.Image;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.util.Assert;

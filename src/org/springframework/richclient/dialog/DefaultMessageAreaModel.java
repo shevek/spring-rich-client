@@ -20,16 +20,16 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.richclient.core.Message;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A concrete implementation of the Messageable interface. Primarily
- * intended to be used as a delegate for the MessageReceiver functionality of
+ * A concrete implementation of the <code>Messagable</code> interface. Primarily
+ * intended to be used as a delegate for the messagable functionality of
  * more complex classes.
  * 
- * @author oliverh
+ * @author Oliver Hutchison
  * @see DefaultMessagePane
  */
 public class DefaultMessageAreaModel implements Messagable {

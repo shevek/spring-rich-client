@@ -24,7 +24,7 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.form.support.FormModelAwareMessageTranslator;
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;

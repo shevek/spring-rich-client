@@ -26,9 +26,6 @@
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-collections.jar"/>
 	<classpathentry kind="lib" path="lib/javahelp/javahelp.jar"/>
 	<classpathentry sourcepath="lib/src/glazedlists-source.zip" kind="lib" path="lib/glazedlists/glazedlists.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
-	<classpathentry sourcepath="lib/src/spring-sandbox-src.zip" kind="lib" path="lib/spring/spring-sandbox.jar"/>
-	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/jdnc/jdnc.jar">
 		<attributes>
 			<attribute value="http://javadesktop.org/jdnc/docs/" name="javadoc_location"/>
@@ -36,5 +33,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jdnc/jdnc-runner.jar"/>
 	<classpathentry kind="lib" path="lib/jdnc/jlfgr-1_0.jar"/>
+	<classpathentry sourcepath="lib/src/spring-binding-src.zip" kind="lib" path="lib/spring/spring-binding.jar"/>
+	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

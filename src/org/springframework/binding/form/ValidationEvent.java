@@ -15,8 +15,8 @@
  */
 package org.springframework.binding.form;
 
-import org.springframework.core.ToStringCreator;
 import org.springframework.core.closure.Constraint;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.util.Assert;
 

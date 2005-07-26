@@ -32,9 +32,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
     protected Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
 
-    protected Color background = UIManager.getColor("Table.focusCellForeground");
+    protected Color background = UIManager.getColor("Table.focusCellBackground");
 
-    protected Color foreground = UIManager.getColor("Table.focusCellBackground");
+    protected Color foreground = UIManager.getColor("Table.focusCellForeground");
 
     protected Color editableForeground;
 

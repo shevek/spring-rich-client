@@ -17,13 +17,11 @@ package org.springframework.richclient.form.builder;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
-import org.springframework.richclient.form.binding.support.ScrollPaneDecoratedBinding;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;
 
@@ -38,7 +36,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     public TableFormBuilder(BindingFactory bindingFactory) {
         super(bindingFactory);
-        this.builder = new TableLayoutBuilder(new JPanel());
+        this.builder = new TableLayoutBuilder(getComponentFactory().createPanel());
     }
 
     public void row() {
@@ -93,24 +91,26 @@ public class TableFormBuilder extends AbstractFormBuilder {
 
     public JComponent[] addTextArea(String propertyName, String attributes) {
         JComponent textArea = getTextArea(propertyName);
-        return addBinding(getBinding(propertyName, textArea), new JScrollPane(textArea), attributes, getLabelAttributes()
-                + " valign=top");
+        return addBinding(getBinding(propertyName, textArea), new JScrollPane(textArea), attributes,
+                getLabelAttributes() + " valign=top");
     }
-  
+
     public JComponent[] addInScrollPane(String propertyName) {
         return addInScrollPane(propertyName, "");
     }
-  
+
     public JComponent[] addInScrollPane(String propertyName, String attributes) {
         return addInScrollPane(getDefaultBinding(propertyName), attributes);
     }
-  
+
     public JComponent[] addInScrollPane(Binding binding) {
         return addInScrollPane(binding, "");
     }
-  
+
     public JComponent[] addInScrollPane(Binding binding, String attributes) {
-        return add(new ScrollPaneDecoratedBinding(binding), attributes);
+        Assert.isTrue(getFormModel() == binding.getFormModel(),
+        "Binding's form model must match FormBuilder's form model");
+        return add(binding.getProperty(), getComponentFactory().createScrollPane(binding.getControl()), attributes);
     }
 
     public void addSeparator(String text) {
@@ -142,7 +142,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
         return addBinding(binding, binding.getControl(), attributes, labelAttributes);
     }
 
-    private JComponent[] addBinding(Binding binding, JComponent wrappedControl, String attributes, String labelAttributes) {
+    private JComponent[] addBinding(Binding binding, JComponent wrappedControl, String attributes,
+            String labelAttributes) {
         final JLabel label = getLabelFor(binding.getProperty(), binding.getControl());
         if (!builder.hasGapToLeft()) {
             builder.gapCol();

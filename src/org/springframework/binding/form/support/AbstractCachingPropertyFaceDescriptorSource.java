@@ -22,7 +22,7 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptor;
 import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
 import org.springframework.util.Assert;
-import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.CachingMapDecorator;
 
 /**
  * A convenience superclass for FormPropertyFaceDescriptorSource's that require caching 
@@ -40,7 +40,7 @@ public abstract class AbstractCachingPropertyFaceDescriptorSource implements For
      * values. The keys are held with week references so this class will not prevent 
      * GC of FormModels.
      */
-    private CachingMapTemplate formModelPropertyFaceDescriptors = new CachingMapTemplate(true) {
+    private CachingMapDecorator formModelPropertyFaceDescriptors = new CachingMapDecorator(true) {
         public Object create(Object key) {
             return new HashMap();
         }

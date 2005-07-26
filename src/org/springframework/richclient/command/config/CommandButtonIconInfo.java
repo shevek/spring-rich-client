@@ -23,7 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.util.Assert;

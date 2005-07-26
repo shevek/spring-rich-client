@@ -15,7 +15,7 @@
  */
 package org.springframework.binding.value.support;
 
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.core.closure.Closure;
 
 /**

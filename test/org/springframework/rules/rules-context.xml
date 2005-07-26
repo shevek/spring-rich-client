@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- The xml here is *not* the best format to define rules...it's too fine grained and as a result 
+	      way to verbose!!! -->
+	<!-- direct java / groovy / beanshell / jython or some other scripting solution is better
+	     Using the Constraints factory and builders is preferred -->
+
+	<bean  id="messageSource" 
+  	    class="org.springframework.context.support.ResourceBundleMessageSource">
+  	  <property name="basenames">
+  	  	<list>
+  	  		<value>org.springframework.rules.messages</value>
+  	  	</list>
+  	  </property>
+  	</bean>
+	     
+  	<bean id="rulesSource" class="org.springframework.rules.support.DefaultRulesSource">
+  		<property name="rules">
+  			<list>
+				<bean class="org.springframework.rules.Rules">
+					<property name="domainObjectType">
+						<value>org.springframework.rules.Person</value>
+					</property>
+	  				<property name="propertiesConstraints">
+	  		 			<map>
+	  		 				<entry key="firstName">
+	  							<ref bean="required"/>
+	  		 				</entry>
+	  		 				<entry key="lastName">
+	  		 					<list>
+		  							<ref bean="required"/>
+		  							<bean class="org.springframework.rules.constraint.StringLengthConstraint">
+		  								<constructor-arg index="0">
+		  									<value>10</value>
+		  								</constructor-arg>
+		  							</bean>
+		  							<bean class="org.springframework.rules.constraint.Not">
+		  								<constructor-arg index="0">
+		  									<bean class="org.springframework.rules.constraint.ParameterizedBinaryConstraint">
+		  										<constructor-arg index="0">
+		  											<ref bean="equals"/>
+		  										</constructor-arg>
+		  										<constructor-arg index="1">
+		  											<value>Keith</value>
+		  										</constructor-arg>
+		  									</bean>
+		  								</constructor-arg>
+		  							</bean>
+		  						</list>
+	  		 				</entry>
+	  					</map>
+	  				</property>
+				</bean>
+			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="equals" class="org.springframework.rules.constraint.EqualTo"/>
+  	<bean id="required" class="org.springframework.rules.constraint.Required"/>
+</beans>

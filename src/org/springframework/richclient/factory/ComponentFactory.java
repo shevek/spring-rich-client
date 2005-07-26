@@ -16,6 +16,7 @@
 package org.springframework.richclient.factory;
 
 import java.awt.Component;
+import java.awt.LayoutManager;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -25,6 +26,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -344,4 +346,21 @@ public interface ComponentFactory {
      * @see JScrollPane#JScrollPane(java.awt.Component, int, int)
      */
     public JScrollPane createScrollPane(Component view, int vsbPolicy, int hsbPolicy);
+
+    /**
+     * Creates a panel using this component factory.
+     * 
+     * @return a panel
+     * @see JPanel
+     */
+    public JPanel createPanel();
+
+    /**
+     * Creates a panel with the supplied LayoutManager using this component factory.
+     * 
+     * @param layoutManager the LayoutManager that will be used by the returned panel
+     * @return a panel
+     * @see JPanel#JPanel(java.awt.LayoutManager)
+     */
+    public JPanel createPanel(LayoutManager layoutManager);
 }

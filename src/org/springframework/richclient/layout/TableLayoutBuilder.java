@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.springframework.binding.support.Assert;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.CustomizableFocusTraversalPolicy;
@@ -136,14 +137,20 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * Creates a new TableLayoutBuilder.
      */
     public TableLayoutBuilder() {
-        this(new JPanel());
+        // this will cause the panel to be lazily
+        // created in the getPanel method
+        this.panel = null;
     }
 
     /**
-     * Creates a new TableLayoutBuilder which will build in the supplied JPanel
+     * Creates a new TableLayoutBuilder which will perform it's layout
+     * in the supplied JPanel. Note that any components that are already 
+     * contained by the panel will be removed.
      */
     public TableLayoutBuilder(JPanel panel) {
+        Assert.notNull(panel, "panel is required");        
         this.panel = panel;
+        panel.removeAll();
     }
 
     /**
@@ -285,14 +292,14 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     /**
-     * Inserts a label componet gap column.
+     * Inserts a label component gap column.
      */
     public TableLayoutBuilder labelGapCol() {
         return gapCol(FormFactory.LABEL_COMPONENT_GAP_COLSPEC);
     }
 
     /**
-     * Inserts a unrelated componet gap column.
+     * Inserts a unrelated component gap column.
      */
     public TableLayoutBuilder unrelatedGapCol() {
         return gapCol(FormFactory.UNRELATED_GAP_COLSPEC);
@@ -337,6 +344,9 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * @return a new JPanel with the components laid-out in it
      */
     public JPanel getPanel() {
+        if (panel == null) {
+            panel = getComponentFactory().createPanel();
+        }
         insertMissingSpecs();
         fixColSpans();
         fillInGaps();
@@ -431,9 +441,11 @@ public class TableLayoutBuilder implements LayoutBuilder {
             lastCC.endCol = lastCC.startCol;
             lastCC = null;
         }
+        // make sure that the first row has been created
         if (currentRow == -1) {
             row();
         }
+        // now find the first unoccupied column
         do {
             ++currentCol;
         }
@@ -687,7 +699,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
         return attributeMap;
     }
 
-    private class Cell {
+    private static class Cell {
         private JComponent component;
 
         private int startCol;

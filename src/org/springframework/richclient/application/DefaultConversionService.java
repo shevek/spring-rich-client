@@ -19,16 +19,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.springframework.binding.convert.Converter;
 import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.format.FormatterLocator;
+import org.springframework.binding.format.support.SimpleFormatterLocator;
 import org.springframework.util.StringUtils;
 
 public class DefaultConversionService extends org.springframework.binding.convert.support.DefaultConversionService {
 
     public DefaultConversionService() {
-        super(new Converter[] {});
+        super(false);
+        addDefaultConverters();
     }
 
     protected void addDefaultConverters() {
@@ -38,6 +39,10 @@ public class DefaultConversionService extends org.springframework.binding.conver
         addConverter(new NumberToText(getFormatterLocator(), true));
         addConverter(new BooleanToText());
         addConverter(new TextToBoolean());
+    }
+
+    private FormatterLocator getFormatterLocator() {
+        return new SimpleFormatterLocator();
     }
 
     public static final class TextToDate extends AbstractFormattingConverter {
@@ -59,7 +64,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
             return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterLocator().getDateTimeFormatter()
-                    .parseValue((String)source) : null;
+                    .parseValue((String)source, Date.class) : null;
         }
     }
 
@@ -106,7 +111,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
             return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterLocator().getNumberFormatter(
-                    targetClass).parseValue((String)source) : null;
+                    targetClass).parseValue((String)source, targetClass) : null;
         }
     }
 

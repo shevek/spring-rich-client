@@ -26,10 +26,9 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.core.ReflectiveVisitorSupport;
-import org.springframework.core.Styler;
-import org.springframework.core.Visitor;
+import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.core.closure.Constraint;
+import org.springframework.core.style.StylerUtils;
 import org.springframework.rules.constraint.And;
 import org.springframework.rules.constraint.ClosureResultConstraint;
 import org.springframework.rules.constraint.Not;
@@ -55,11 +54,11 @@ import org.springframework.util.ClassUtils;
  * would just be able to extend that class but I can't modify DefaultMessageTranslator
  * as it's part of Spring. OH. 
  */
-public class FormModelAwareMessageTranslator implements Visitor {
+public class FormModelAwareMessageTranslator {
 
     protected static final Log logger = LogFactory.getLog(DefaultMessageTranslator.class);
 
-    private final ReflectiveVisitorSupport visitorSupport = new ReflectiveVisitorSupport();
+    private final ReflectiveVisitorHelper visitorSupport = new ReflectiveVisitorHelper();
 
     private boolean appendValue = false;
 
@@ -92,7 +91,7 @@ public class FormModelAwareMessageTranslator implements Visitor {
         StringBuffer buf = new StringBuffer(255);
         MessageSourceResolvable[] args = resolveArguments(constraint);
         if (logger.isDebugEnabled()) {
-            logger.debug(Styler.call(args));
+            logger.debug(StylerUtils.style(args));
         }
         if (propertyName != null) {
             buf.append(getDisplayName(propertyName));

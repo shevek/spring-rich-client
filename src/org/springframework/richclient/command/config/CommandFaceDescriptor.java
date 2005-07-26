@@ -24,7 +24,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.DescriptionConfigurable;

@@ -24,12 +24,11 @@ import javax.swing.JComponent;
 
 import org.jdesktop.swing.JXDatePicker;
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.richclient.form.binding.support.CustomBinding;
 
-public class CustomDatePickerBinder extends AbstractBinder implements Binder {
+public class CustomDatePickerBinder extends AbstractBinder {
 
     protected CustomDatePickerBinder() {
         super(Date.class);

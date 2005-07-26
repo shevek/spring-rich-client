@@ -15,8 +15,8 @@
  */
 package org.springframework.binding.value.support;
 
-import org.springframework.core.Styler;
 import org.springframework.core.closure.Closure;
+import org.springframework.core.style.StylerUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -49,7 +49,7 @@ public class RefreshableValueHolder extends ValueHolder {
 
 	public void refresh() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Refreshing held value '" + Styler.call(super.getValue()) + "'");
+			logger.debug("Refreshing held value '" + StylerUtils.style(super.getValue()) + "'");
 		}
 		setValue(refreshFunction.call(null));
 	}

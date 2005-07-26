@@ -23,7 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.util.LabelUtils;

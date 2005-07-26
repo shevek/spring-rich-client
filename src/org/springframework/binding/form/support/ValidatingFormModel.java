@@ -30,10 +30,10 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
 import org.springframework.binding.format.InvalidFormatException;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
-import org.springframework.core.EventListenerListHelper;
-import org.springframework.core.Styler;
+import org.springframework.core.style.StylerUtils;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
@@ -219,7 +219,7 @@ public class ValidatingFormModel extends DefaultFormModel {
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Number of errors on form is now " + validationErrors.size() + "; errors="
-                    + Styler.call(validationErrors));
+                    + StylerUtils.style(validationErrors));
         }
     }
 
@@ -237,7 +237,7 @@ public class ValidatingFormModel extends DefaultFormModel {
         firePropertyChange(HAS_ERRORS_PROPERTY, hadErrorsBefore, true);
         if (logger.isDebugEnabled()) {
             logger.debug("Number of errors on form is now " + validationErrors.size() + "; errors="
-                    + Styler.call(validationErrors));
+                    + StylerUtils.style(validationErrors));
         }
     }
 

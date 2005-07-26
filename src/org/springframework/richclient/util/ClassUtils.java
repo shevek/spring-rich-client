@@ -32,8 +32,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.Styler;
 import org.springframework.core.enums.LabeledEnum;
+import org.springframework.core.style.StylerUtils;
 
 /**
  * Misc static utility functions for java classes.
@@ -211,7 +211,7 @@ public class ClassUtils {
 	public static Method getStaticMethod(String name, Class locatorClass, Class[] args) {
 		try {
 			logger.debug("Attempting to get method '" + name + "' on class " + locatorClass + " with arguments '"
-					+ Styler.call(args) + "'");
+					+ StylerUtils.style(args) + "'");
 			Method method = locatorClass.getDeclaredMethod(name, args);
 			if ((method.getModifiers() & Modifier.STATIC) != 0) {
 				return method;

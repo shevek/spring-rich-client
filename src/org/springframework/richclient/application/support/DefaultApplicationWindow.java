@@ -31,7 +31,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServices;

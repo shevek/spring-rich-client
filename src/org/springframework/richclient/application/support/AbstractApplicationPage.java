@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;

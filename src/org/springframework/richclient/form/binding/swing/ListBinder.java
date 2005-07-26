@@ -37,7 +37,7 @@ public class ListBinder extends AbstractBinder {
     public static final String SELECTABLE_ITEMS_HOLDER_KEY = "selectableItemsHolder";
 
     public static final String SELECTED_ITEM_HOLDER_KEY = "selectedItemHolder";
-  
+
     public static final String SELECTED_ITEM_TYPE_KEY = "selectedItemType";
 
     public static final String MODEL_KEY = "model";
@@ -51,8 +51,8 @@ public class ListBinder extends AbstractBinder {
     public static final String SELECTION_MODE_KEY = "selectionMode";
 
     public ListBinder() {
-        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY, SELECTED_ITEM_HOLDER_KEY, MODEL_KEY, COMPARATOR_KEY,
-                RENDERER_KEY, FILTER_KEY});
+        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY, SELECTED_ITEM_HOLDER_KEY, SELECTED_ITEM_TYPE_KEY, MODEL_KEY, COMPARATOR_KEY,
+                RENDERER_KEY, FILTER_KEY, SELECTION_MODE_KEY});
     }
 
     public ListBinder(String[] supportedContextKeys) {
@@ -86,21 +86,27 @@ public class ListBinder extends AbstractBinder {
             binding.setSelectedItemType((Class)context.get(SELECTED_ITEM_TYPE_KEY));
         }
         if (context.containsKey(SELECTION_MODE_KEY)) {
-          if(context.get(SELECTION_MODE_KEY) instanceof Integer) {
-            binding.setSelectionMode((Integer)context.get(SELECTION_MODE_KEY));
-          } else {
-            try {
-              binding.setSelectionMode((Integer)ListSelectionModel.class.getField((String)context.get(SELECTION_MODE_KEY)).get(null));
-            } catch (IllegalAccessException e) {
-              final IllegalArgumentException iae = new IllegalArgumentException("Unable to access selection mode field in ListSelectionModel");
-              iae.initCause(e);
-              throw iae;
-            } catch (NoSuchFieldException e) {
-              final IllegalArgumentException iae = new IllegalArgumentException("Unknown selection mode '" + context.get(SELECTION_MODE_KEY) + "'");
-              iae.initCause(e);
-              throw iae;
+            if (context.get(SELECTION_MODE_KEY) instanceof Integer) {
+                binding.setSelectionMode((Integer)context.get(SELECTION_MODE_KEY));
             }
-          }
+            else {
+                try {
+                    binding.setSelectionMode((Integer)ListSelectionModel.class.getField(
+                            (String)context.get(SELECTION_MODE_KEY)).get(null));
+                }
+                catch (IllegalAccessException e) {
+                    final IllegalArgumentException iae = new IllegalArgumentException(
+                            "Unable to access selection mode field in ListSelectionModel");
+                    iae.initCause(e);
+                    throw iae;
+                }
+                catch (NoSuchFieldException e) {
+                    final IllegalArgumentException iae = new IllegalArgumentException("Unknown selection mode '"
+                            + context.get(SELECTION_MODE_KEY) + "'");
+                    iae.initCause(e);
+                    throw iae;
+                }
+            }
         }
     }
 

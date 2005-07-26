@@ -18,13 +18,13 @@ package org.springframework.binding.value.swing;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.DefaultFormatter;
 
-import org.springframework.core.enums.support.ShortCodedLabeledEnum;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
 
 /**
  * @author Keith Donald
  */
 public abstract class ValueCommitPolicy extends ShortCodedLabeledEnum {
-	public static final ValueCommitPolicy AS_YOU_TYPE = new ValueCommitPolicy(0) {
+	public static final ValueCommitPolicy AS_YOU_TYPE = new ValueCommitPolicy(0, "as_you_type") {
 		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
 			textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			formatter.setOverwriteMode(false);
@@ -33,7 +33,7 @@ public abstract class ValueCommitPolicy extends ShortCodedLabeledEnum {
 		}
 	};
 
-	public static final ValueCommitPolicy FOCUS_LOST = new ValueCommitPolicy(1) {
+	public static final ValueCommitPolicy FOCUS_LOST = new ValueCommitPolicy(1, "focus_lost") {
 		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
 			textField.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			formatter.setOverwriteMode(false);
@@ -42,7 +42,7 @@ public abstract class ValueCommitPolicy extends ShortCodedLabeledEnum {
 		}
 	};
 
-	public static final ValueCommitPolicy ON_SUBMIT = new ValueCommitPolicy(2) {
+	public static final ValueCommitPolicy ON_SUBMIT = new ValueCommitPolicy(2, "on_submit") {
 		public void configure(JFormattedTextField textField, DefaultFormatter formatter) {
 			textField.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			formatter.setOverwriteMode(false);
@@ -51,8 +51,8 @@ public abstract class ValueCommitPolicy extends ShortCodedLabeledEnum {
 		}
 	};
 
-	private ValueCommitPolicy(int value) {
-		super(value);
+	private ValueCommitPolicy(int code, String label) {
+		super(code, label); 
 	}
 
 	public abstract void configure(JFormattedTextField textField, DefaultFormatter formatter);

@@ -20,7 +20,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.factory.ButtonConfigurer;
 import org.springframework.richclient.factory.LabelInfo;
 import org.springframework.util.Assert;

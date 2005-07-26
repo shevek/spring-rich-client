@@ -2,7 +2,7 @@ package org.springframework.richclient.layout;
 
 import javax.swing.SwingConstants;
 
-import org.springframework.core.enums.support.ShortCodedLabeledEnum;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
 
 public final class LabelOrientation extends ShortCodedLabeledEnum {
 	public static final LabelOrientation TOP = new LabelOrientation(SwingConstants.TOP, "Top");

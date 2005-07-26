@@ -28,9 +28,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import org.springframework.core.enums.support.LetterCodedLabeledEnum;
-import org.springframework.core.enums.support.ShortCodedLabeledEnum;
-import org.springframework.core.enums.support.StringCodedLabeledEnum;
+import org.springframework.core.enums.LetterCodedLabeledEnum;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
+import org.springframework.core.enums.StringCodedLabeledEnum;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.table.renderer.BeanTableCellRenderer;
 import org.springframework.richclient.table.renderer.BooleanTableCellRenderer;

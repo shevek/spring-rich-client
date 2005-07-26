@@ -17,7 +17,7 @@ package org.springframework.richclient.util;
 
 import javax.swing.SwingConstants;
 
-import org.springframework.core.enums.support.ShortCodedLabeledEnum;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
 
 /**
  * 

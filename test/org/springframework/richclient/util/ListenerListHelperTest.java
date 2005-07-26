@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.springframework.core.EventListenerListHelper;
+import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.core.closure.Closure;
 
 /**

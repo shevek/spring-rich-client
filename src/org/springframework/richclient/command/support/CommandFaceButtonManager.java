@@ -25,7 +25,7 @@ import java.util.Set;
 
 import javax.swing.AbstractButton;
 
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;

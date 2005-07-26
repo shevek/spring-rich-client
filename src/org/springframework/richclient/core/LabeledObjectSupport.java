@@ -26,7 +26,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.ToStringCreator;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;

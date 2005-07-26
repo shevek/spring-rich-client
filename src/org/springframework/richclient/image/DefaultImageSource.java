@@ -22,11 +22,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.Styler;
-import org.springframework.core.ToStringCreator;
 import org.springframework.core.io.Resource;
+import org.springframework.core.style.StylerUtils;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;
-import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.CachingMapDecorator;
 
 /**
  * A collection of image resources, each indexed by a common key alias.
@@ -83,7 +83,7 @@ public class DefaultImageSource implements ImageSource {
 
 	private void debugPrintResources() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Initialing image source with resources: " + Styler.call(this.imageResources));
+			logger.debug("Initialing image source with resources: " + StylerUtils.style(this.imageResources));
 		}
 	}
 
@@ -160,7 +160,7 @@ public class DefaultImageSource implements ImageSource {
 		return new ToStringCreator(this).append("imageResources", imageResources).toString();
 	}
 
-	private static class ImageCache extends CachingMapTemplate {
+	private static class ImageCache extends CachingMapDecorator {
 		public ImageCache() {
 			super(true);
 		}

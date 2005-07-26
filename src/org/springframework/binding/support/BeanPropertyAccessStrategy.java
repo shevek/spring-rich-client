@@ -31,7 +31,7 @@ import org.springframework.binding.value.support.AbstractValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.enums.LabeledEnum;
 import org.springframework.util.Assert;
-import org.springframework.util.CachingMapTemplate;
+import org.springframework.util.CachingMapDecorator;
 
 /**
  * An implementation of <code>MutablePropertyAccessStrategy</code> that provides access 
@@ -78,7 +78,8 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
         this.domainObjectHolder = domainObjectHolder;
         this.domainObjectHolder.addValueChangeListener(new BeanWrapperUpdater());
         this.basePropertyPath = "";
-        this.beanWrapper = new BeanWrapperImpl(domainObjectHolder.getValue());
+        this.beanWrapper = new BeanWrapperImpl(false);
+        this.beanWrapper.setWrappedInstance(domainObjectHolder.getValue());
         this.valueModelCache = new ValueModelCache();
         this.metaAspectAccessor = new BeanPropertyMetaAspectAccessor();
     }
@@ -199,7 +200,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
     /**
      * A cache of value models generated for specific property paths. 
      */
-    private class ValueModelCache extends CachingMapTemplate {
+    private class ValueModelCache extends CachingMapDecorator {
 
         protected Object create(Object propertyPath) {
             String fullPropertyPath = getFullPropertyPath((String)propertyPath);

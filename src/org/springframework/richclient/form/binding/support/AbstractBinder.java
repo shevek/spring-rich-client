@@ -33,11 +33,20 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.Binding;
+import org.springframework.util.Assert;
 
 /**
  * @author Oliver Hutchison
  */
 public abstract class AbstractBinder implements Binder {
+
+    /**
+     * The client property key that is used to save a copy of a binding in its bound 
+     * component's client property set. This can be used to locate the binding 
+     * that has bound a given component.
+     * @see JComponent#getClientProperty(java.lang.Object)
+     */
+    public static final String BINDING_CLIENT_PROPERTY_KEY = "binding";
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -73,17 +82,17 @@ public abstract class AbstractBinder implements Binder {
 
     public Binding bind(FormModel formModel, String formPropertyPath, Map context) {
         JComponent control = createControl(context);
-        if (control == null) {
-            throw new UnsupportedOperationException("This binder does not support creating a default control.");
-        }
-        return doBind(control, formModel, formPropertyPath, context);
+        Assert.notNull(control, "This binder does not support creating a default control.");
+        return bind(control, formModel, formPropertyPath, context);
     }
 
     protected abstract JComponent createControl(Map context);
 
     public Binding bind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
         validateContextKeys(context);
-        return doBind(control, formModel, formPropertyPath, context);
+        Binding binding = doBind(control, formModel, formPropertyPath, context);
+        control.putClientProperty(BINDING_CLIENT_PROPERTY_KEY, binding);
+        return binding;
     }
 
     protected abstract Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context);
@@ -99,6 +108,4 @@ public abstract class AbstractBinder implements Binder {
     protected PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy(FormModel formModel) {
         return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
     }
-
-
 }
