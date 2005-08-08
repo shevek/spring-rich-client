@@ -69,6 +69,7 @@
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/forms.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/looks.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-binding.jar" />
         <copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-petclinic.jar" />      
         <copy todir="${dist.dir}/lib" file="${lib.dir}/jdnc/jdnc.jar" />               
         <copy todir="${dist.dir}/lib" file="${lib.dir}/jdnc/jlfgr-1_0.jar" />                           
@@ -90,7 +91,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
-				<attribute name="Class-Path" value="lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/jdnc.jar lib/jlfgr-1_0.jar lib/spring.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Class-Path" value="lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/jdnc.jar lib/jlfgr-1_0.jar lib/spring.jar lib/spring-binding.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -111,7 +112,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
-				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-binding.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
