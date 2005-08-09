@@ -26,6 +26,7 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 
 public class JGoodiesLooksConfigurer implements InitializingBean {
+
     private UIManagerConfigurer configurer;
 
     public JGoodiesLooksConfigurer() {
@@ -36,13 +37,29 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
         Assert.notNull(configurer);
         this.configurer = configurer;
     }
-    
-    public void setDefaultIconSize(Dimension size) { 
+
+    public void setDefaultIconSize(Dimension size) {
         Options.setDefaultIconSize(size);
     }
 
-    public void setTheme(PlasticTheme theme) {        
+    public void setTheme(PlasticTheme theme) {
         PlasticLookAndFeel.setMyCurrentTheme(theme);
+    }
+
+    public void setPopupDropShadowEnabled(boolean enabled) {
+        Options.setPopupDropShadowEnabled(enabled);
+    }
+
+    public void setTabIconsEnabled(boolean enabled) {
+        Options.setTabIconsEnabled(enabled);
+    }
+
+    public void setUseNarrowButtons(boolean enabled) {
+        Options.setUseNarrowButtons(enabled);
+    }
+
+    public void setUseSystemFonts(boolean enabled) {
+        Options.setUseSystemFonts(enabled);
     }
 
     public void setFontSizeHints(FontSizeHints fontSize) {
@@ -54,7 +71,8 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
     }
 
     public void setHighContrastFocusColorsEnabled(boolean highContrastEnabled) {
-        PlasticLookAndFeel.setHighContrastFocusColorsEnabled(highContrastEnabled);
+        PlasticLookAndFeel
+                .setHighContrastFocusColorsEnabled(highContrastEnabled);
     }
 
     public void setTabStyle(String tabStyle) {
@@ -62,6 +80,7 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
     }
 
     public void afterPropertiesSet() throws Exception {
-        configurer.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+        configurer
+                .setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
     }
 }
