@@ -134,6 +134,12 @@
 				<include name="org/springframework/**"/>
 			</fileset>
 		</zip>
+		<delete file="${dist.dir}/spring-richclient-sandbox-src.zip"/>
+		<zip zipfile="${dist.dir}/spring-richclient-sandbox-src.zip">
+			<fileset dir="${sandbox.src.dir}">
+				<include name="org/springframework/**"/>
+			</fileset>
+		</zip>
 	</target>
 
 	<target name="alljars" depends="modulejars,fulljar,sandboxjar,srczip" description="Create all JAR files"/>
