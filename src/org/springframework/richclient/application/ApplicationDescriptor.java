@@ -15,37 +15,18 @@
  */
 package org.springframework.richclient.application;
 
-import org.springframework.richclient.core.LabeledObjectSupport;
+import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.VisualizedElement;
 
-/**
- * Metadata about a application.
- * 
- * @author Keith Donald
- */
-public class ApplicationDescriptor extends LabeledObjectSupport {
-    /** The version of the application */
-    private String version;
+public interface ApplicationDescriptor extends DescribedElement, VisualizedElement {
 
-    /** The build identifier associated with this build of the application */
-    private String buildId;
+    /**
+     *  Returns an string used to idetify the build number of the applicaiton.
+     */
+    String getBuildId();
 
-    public ApplicationDescriptor() {
-    }
-
-    public String getBuildId() {
-        return buildId;
-    }
-
-    public void setBuildId(String buildId) {
-        this.buildId = buildId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
+    /**
+     * Returns an string used to idetify the version of the applicaiton.
+     */
+    String getVersion();
 }

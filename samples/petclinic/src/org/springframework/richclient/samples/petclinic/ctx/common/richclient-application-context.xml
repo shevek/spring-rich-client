@@ -25,7 +25,7 @@
 	</bean>
 	
 	<bean id="applicationDescriptor" 
-		class="org.springframework.richclient.application.ApplicationDescriptor">
+		class="org.springframework.richclient.application.DefaultApplicationDescriptor">
 		<property name="version">
 			<value>1.0</value>
 		</property>
