@@ -18,27 +18,26 @@ package org.springframework.richclient.form;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidationEvent;
 import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.richclient.core.Guarded;
 
 /**
+ * 
  * @author Keith Donald
  */
 public class FormGuard implements ValidationListener, PropertyChangeListener {
 
-    private static final Log logger = LogFactory.getLog(FormGuard.class);
+    private final FormModel formModel;
 
-    private FormModel formModel;
-
-    private Guarded guarded;
+    private final Guarded guarded;
 
     public FormGuard(FormModel formModel, Guarded guarded) {
         this.formModel = formModel;
         this.formModel.addPropertyChangeListener(FormModel.ENABLED_PROPERTY, this);
+        this.formModel.addPropertyChangeListener(DefaultFormModel.HAS_ERRORS_PROPERTY, this);        
         this.guarded = guarded;
         update(formModel);
     }
@@ -52,18 +51,10 @@ public class FormGuard implements ValidationListener, PropertyChangeListener {
     }
 
     protected void update(FormModel formModel) {
-        if (formModel.getHasErrors()) {
-            guarded.setEnabled(false);
-        }
-        else {
-            if (formModel.isEnabled()) {
-                guarded.setEnabled(true);
-            }
-        }
+        guarded.setEnabled((!formModel.getHasErrors()) && formModel.isEnabled());
     }
 
     public void propertyChange(PropertyChangeEvent e) {
         update(formModel);
     }
-
 }
