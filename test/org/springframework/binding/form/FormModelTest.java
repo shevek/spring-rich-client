@@ -16,7 +16,6 @@
 package org.springframework.binding.form;
 
 import java.beans.PropertyEditorSupport;
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +42,7 @@ public class FormModelTest extends TestCase {
 
     public void setUp() {
         Application.load(null);
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
+        new Application(new DefaultApplicationLifecycleAdvisor());
         Application.services().setApplicationContext(new StaticApplicationContext());
     }
 
@@ -239,6 +238,15 @@ public class FormModelTest extends TestCase {
         assertTrue(emp.getAddress().getCountry().getName().equals("USA"));
     }
 
+    public void testChildModelControlsEditabled() {
+        final NestingFormModel formModel = FormModelHelper.createCompoundFormModel(new Employee(), "EmployeeForm");
+        final ConfigurableFormModel addressFormModel = formModel.createChild("AddressPage", "address");
+        
+        final JTextField cityField = (JTextField)createBoundControl(addressFormModel, "city");
+        assertFalse(addressFormModel.getFormPropertyState("city").isReadOnly());
+        assertTrue(cityField.isEditable());
+    }
+    
     public void testPageFormModel() {
         ConfigurableFormModel employeePage = FormModelHelper.createFormModel(new Employee());
         JTextField field = (JTextField)createBoundControl(employeePage, "address.streetAddress1");
@@ -297,12 +305,12 @@ public class FormModelTest extends TestCase {
 //        fm.getPropertyAccessStrategy().registerCustomEditor("age", pe3);
 //        assertTrue(getPropertyEditor(fm.add("age")) == pe3);
 //    }
-
-    private void assertHasNoPropertyEditor(ValueModel vm) {
-        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
-        assertTrue(wrappedModel instanceof BufferedValueModel);
-    }
-
+//
+//    private void assertHasNoPropertyEditor(ValueModel vm) {
+//        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
+//        assertTrue(wrappedModel instanceof BufferedValueModel);
+//    }
+//
 //    private PropertyEditor getPropertyEditor(ValueModel vm) {
 //        ValueModel wrappedModel = (ValueModel)getFieldValue(vm, "wrappedModel");
 //        assertTrue(wrappedModel instanceof TypeConverter);
@@ -310,29 +318,29 @@ public class FormModelTest extends TestCase {
 //        PropertyEditor pe = (PropertyEditor)getFieldValue(c, "val$propertyEditor");
 //        return pe;
 //    }
-
-    private Object getFieldValue(Object object, String fieldName) {
-        Class clazz = object.getClass();
-        Field field = null;
-        do {
-            try {
-                field = clazz.getDeclaredField(fieldName);
-            }
-            catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass();
-            }
-        }
-        while (field == null && clazz != null);
-        assertNotNull("unable to find field", field);
-        try {
-            field.setAccessible(true);
-            return field.get(object);
-        }
-        catch (Exception e) {
-            fail("unable to access field [" + fieldName + "]. " + e.getMessage());
-            return null;
-        }
-    }
+//
+//    private Object getFieldValue(Object object, String fieldName) {
+//        Class clazz = object.getClass();
+//        Field field = null;
+//        do {
+//            try {
+//                field = clazz.getDeclaredField(fieldName);
+//            }
+//            catch (NoSuchFieldException e) {
+//                clazz = clazz.getSuperclass();
+//            }
+//        }
+//        while (field == null && clazz != null);
+//        assertNotNull("unable to find field", field);
+//        try {
+//            field.setAccessible(true);
+//            return field.get(object);
+//        }
+//        catch (Exception e) {
+//            fail("unable to access field [" + fieldName + "]. " + e.getMessage());
+//            return null;
+//        }
+//    }
 
     public static class PropertyEditorA extends PropertyEditorSupport {
     }

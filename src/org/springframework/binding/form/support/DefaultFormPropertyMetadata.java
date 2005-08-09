@@ -30,11 +30,7 @@ import org.springframework.binding.value.support.AbstractPropertyChangePublisher
  */
 public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher implements FormPropertyState {
 
-    private static final FormPropertyState NULL_FORM_PROPERTY_META_DATA = new NullFormPropertyMetadata();
-
     private final FormModel formModel;
-
-    private final FormPropertyState parent;
 
     private boolean forceReadOnly;
 
@@ -57,16 +53,8 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
     public DefaultFormPropertyMetadata(NestableFormModel formModel, String property, boolean forceReadOnly) {
         this.formModel = formModel;
         this.forceReadOnly = forceReadOnly;
-        if (formModel.getParent() == null) {
-            this.parent = NULL_FORM_PROPERTY_META_DATA;
-        }
-        else {
-            this.parent = formModel.getParent().getFormPropertyState(property);
-        }
         final PropertyChangeListener listener = new FormModelAndParentChangeListener();
         this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, listener);
-        this.parent.addPropertyChangeListener(READ_ONLY_PROPERTY, listener);
-        this.parent.addPropertyChangeListener(ENABLED_PROPERTY, listener);
         this.oldReadOnly = isReadOnly();
         this.oldEnabled = isEnabled();
     }
@@ -78,7 +66,7 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
     }
 
     public boolean isReadOnly() {
-        return forceReadOnly || readOnly || parent.isReadOnly();
+        return forceReadOnly || readOnly;
     }
 
     public void setEnabled(boolean enabled) {
@@ -88,7 +76,7 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
     }
 
     public boolean isEnabled() {
-        return enabled && formModel.isEnabled() && parent.isEnabled();
+        return enabled && formModel.isEnabled();
     }
 
     /**
@@ -108,35 +96,35 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
         }
     }
 
-    /**
-     * A NULL implementation of FormPropertyState. Property is always enabled 
-     * and never read only.
-     */
-    private static final class NullFormPropertyMetadata implements FormPropertyState {
-        public void setReadOnly(boolean readOnly) {
-        }
-
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        public void setEnabled(boolean enabled) {
-        }
-
-        public boolean isEnabled() {
-            return true;
-        }
-
-        public void addPropertyChangeListener(PropertyChangeListener listener) {
-        }
-
-        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        }
-
-        public void removePropertyChangeListener(PropertyChangeListener listener) {
-        }
-
-        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        }
-    }
+//    /**
+//     * A NULL implementation of FormPropertyState. Property is always enabled 
+//     * and never read only.
+//     */
+//    private static final class NullFormPropertyMetadata implements FormPropertyState {
+//        public void setReadOnly(boolean readOnly) {
+//        }
+//
+//        public boolean isReadOnly() {
+//            return false;
+//        }
+//
+//        public void setEnabled(boolean enabled) {
+//        }
+//
+//        public boolean isEnabled() {
+//            return true;
+//        }
+//
+//        public void addPropertyChangeListener(PropertyChangeListener listener) {
+//        }
+//
+//        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+//        }
+//
+//        public void removePropertyChangeListener(PropertyChangeListener listener) {
+//        }
+//
+//        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+//        }
+//    }
 }
