@@ -21,12 +21,12 @@ import org.springframework.richclient.core.VisualizedElement;
 public interface ApplicationDescriptor extends DescribedElement, VisualizedElement {
 
     /**
-     *  Returns an string used to idetify the build number of the applicaiton.
+     *  Returns a string used to idetify the build number of the applicaiton.
      */
     String getBuildId();
 
     /**
-     * Returns an string used to idetify the version of the applicaiton.
+     * Returns a string used to idetify the version of the applicaiton.
      */
     String getVersion();
 }
