@@ -19,11 +19,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
@@ -33,7 +38,8 @@ import org.springframework.richclient.command.CommandGroup;
 /**
  * @author Keith Donald
  */
-public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvisor {
+public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvisor
+        implements ApplicationListener {
     private String windowCommandManagerBeanName = "windowCommandManager";
 
     private String toolBarBeanName = "toolBar";
@@ -43,6 +49,8 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
     private Resource windowCommandBarDefinitions;
 
     private XmlBeanFactory openingWindowCommandBarFactory;
+
+    private ApplicationEventMulticaster eventMulticaster;
 
     public void setWindowCommandBarDefinitions(Resource commandBarDefinitionLocation) {
         this.windowCommandBarDefinitions = commandBarDefinitionLocation;
@@ -60,6 +68,10 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         this.toolBarBeanName = toolbarBeanName;
     }
 
+    public void setEventMulticaster(ApplicationEventMulticaster eventMulticaster) {
+        this.eventMulticaster = eventMulticaster;
+    }
+
     public ApplicationWindowCommandManager createWindowCommandManager() {
         initNewWindowCommandBarFactory();
         return (ApplicationWindowCommandManager)getCommandBarFactory().getBean(windowCommandManagerBeanName,
@@ -72,6 +84,7 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         this.openingWindowCommandBarFactory.addBeanPostProcessor(new ApplicationWindowSetter(getOpeningWindow()));
         this.openingWindowCommandBarFactory.addBeanPostProcessor(newObjectConfigurer());
         registerBeanPostProcessors();
+        installApplicationEventBridge();
     }
 
     protected ConfigurableListableBeanFactory getCommandBarFactory() {
@@ -104,6 +117,20 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         }
     }
 
+    // Establish a bridge for ApplicationEvents between
+    // the main ApplicationContext and command's BeanFactory
+    // for participating in the global notification mechanism
+    private void installApplicationEventBridge() {
+        ConfigurableListableBeanFactory factory = getCommandBarFactory();
+
+        Map beans = factory.getBeansOfType(ApplicationListener.class,true,false);
+        for (Iterator iterator = beans.values().iterator(); iterator.hasNext();) {
+            ApplicationListener applicationListener =
+                    (ApplicationListener) iterator.next();
+            eventMulticaster.addApplicationListener(applicationListener);
+        }
+    }
+
     public CommandGroup getMenuBarCommandGroup() {
         CommandGroup menuBarCommandGroup = getCommandGroup(menuBarBeanName);
         return menuBarCommandGroup != null ? menuBarCommandGroup : super.getMenuBarCommandGroup();
@@ -121,4 +148,17 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         return (CommandGroup)getCommandBarFactory().getBean(name);
     }
 
+    /** {@inheritDoc} */
+    public void onApplicationEvent(ApplicationEvent event) {
+        // Dispatch to child listeners.
+        eventMulticaster.multicastEvent(event);
+    }
+
+    // initialize event multicaster if not set.
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+        if (eventMulticaster == null) {
+            eventMulticaster = new SimpleApplicationEventMulticaster();
+        }
+    }
 }

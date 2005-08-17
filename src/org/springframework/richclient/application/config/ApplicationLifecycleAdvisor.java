@@ -76,9 +76,8 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
         if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
             systemProperties.put(EXCEPTION_HANDLER_KEY, getEventExceptionHandler().getName());
         }
-        Assert
-                .state(startingPageId != null,
-                        "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
+        Assert.state(startingPageId != null,
+                "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
     }
 
     public String getStartingPageId() {
