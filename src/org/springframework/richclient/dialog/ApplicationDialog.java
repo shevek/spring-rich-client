@@ -18,6 +18,7 @@ package org.springframework.richclient.dialog;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -98,6 +99,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private boolean resizable = true;
 
     private Dimension preferredSize;
+    
+    private Point location;
 
     private ActionCommand finishCommand;
 
@@ -198,6 +201,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     public void setResizable(boolean resizable) {
         this.resizable = resizable;
     }
+    
+    public void setLocation(Point location) {
+       this.location = location;
+    }
 
     public void setPreferredSize(Dimension preferredSize) {
         this.preferredSize = preferredSize;
@@ -258,7 +265,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             createDialog();
             dialog.pack();
             onAboutToShow();
-            dialog.setLocationRelativeTo(parent);
+            if (getLocation() != null)
+               dialog.setLocation(getLocation());
+            else
+               dialog.setLocationRelativeTo(parent);
             dialog.setVisible(true);
         } else {
             if (!isShowing()) {
@@ -474,6 +484,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         }
         getDialogContentPane().add(dialogContentPane);
         getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
+    }
+
+    protected Point getLocation() {
+       return location;
     }
 
     protected Dimension getPreferredSize() {
