@@ -138,6 +138,40 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         return createBinding(JList.class, formProperty, context);
     }
 
+    /**
+     * Binds the values specified in the collection contained within
+     * <code>selectableItems</code> to a {@link JList}, with any
+     * user selection being placed in the form property referred to by
+     * <code>selectionFormProperty</code>.  Each item in the list will be
+     * rendered as a String.  Note that the selection in the
+     * bound list will track any changes to the
+     * <code>selectionFormProperty</code>.  This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code>
+     * is not empty when the list is bound, then its content will be used
+     * for the initial selection.  This method uses default behavior to
+     * determine the selection mode of the resulting <code>JList</code>:
+     * if <code>selectionFormProperty</code> refers to a
+     * {@link java.util.Collection} type property, then
+     * {@link javax.swing.ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} will
+     * be used, otherwise
+     * {@link javax.swing.ListSelectionModel#SINGLE_SELECTION} will be used.
+     * 
+     * @param selectionFormProperty form property to hold user's selection.
+     *                              This property must either be compatible
+     *                              with the item objects contained in
+     *                              <code>selectableItemsHolder</code> (in
+     *                              which case only single selection makes
+     *                              sense), or must be a
+     *                              <code>Collection</code> type, which allows
+     *                              for multiple selection.
+     * @param selectableItems 		a Collection or array containing the items 
+     *                              with which to populate the list.              
+     * @return
+     */
+    public Binding createBoundList(String selectionFormProperty, Object selectableItems) {
+        return createBoundList(selectionFormProperty, new ValueHolder(selectableItems));
+    }
+
     public Binding createBoundList(String selectionFormProperty, Object selectableItems, String renderedProperty) {
         return createBoundList(selectionFormProperty, new ValueHolder(selectableItems), renderedProperty);
     }
@@ -188,6 +222,41 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      * <code>selectableItemsHolder</code> to a {@link JList}, with any
      * user selection being placed in the form property referred to by
      * <code>selectionFormProperty</code>.  Each item in the list will be
+     * rendered as a String.  Note that the selection in the
+     * bound list will track any changes to the
+     * <code>selectionFormProperty</code>.  This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code>
+     * is not empty when the list is bound, then its content will be used
+     * for the initial selection.  This method uses default behavior to
+     * determine the selection mode of the resulting <code>JList</code>:
+     * if <code>selectionFormProperty</code> refers to a
+     * {@link java.util.Collection} type property, then
+     * {@link javax.swing.ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} will
+     * be used, otherwise
+     * {@link javax.swing.ListSelectionModel#SINGLE_SELECTION} will be used.
+     * 
+     * @param selectionFormProperty form property to hold user's selection.
+     *                              This property must either be compatible
+     *                              with the item objects contained in
+     *                              <code>selectableItemsHolder</code> (in
+     *                              which case only single selection makes
+     *                              sense), or must be a
+     *                              <code>Collection</code> type, which allows
+     *                              for multiple selection.
+     * @param selectableItemsHolder <code>ValueModel</code> containing the
+     *                              items with which to populate the list. 
+     *                              
+     * @return
+     */
+    public Binding createBoundList(String selectionFormProperty, ValueModel selectableItemsHolder) {
+        return createBoundList(selectionFormProperty, selectableItemsHolder, null, null);
+    }
+
+    /**
+     * Binds the values specified in the collection contained within
+     * <code>selectableItemsHolder</code> to a {@link JList}, with any
+     * user selection being placed in the form property referred to by
+     * <code>selectionFormProperty</code>.  Each item in the list will be
      * rendered by looking up a property on the item by the name contained
      * in <code>renderedProperty</code>, retrieving the value of the property,
      * and rendering that value in the UI.  Note that the selection in the
@@ -209,7 +278,9 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      *                              items with which to populate the list. 
      * @param renderedProperty      the property to be queried for each item
      *                              in the list, the result of which will be
-     *                              used to render that item in the UI
+     *                              used to render that item in the UI.
+     *                              May be null, in which case the selectable
+     *                              items will be rendered as strings.
      * @param forceSelectMode       forces the list selection mode.  Must be
      *                              one of the constants defined in
      *                              {@link javax.swing.ListSelectionModel} or
@@ -240,8 +311,10 @@ public class SwingBindingFactory extends AbstractBindingFactory {
             context.put(ListBinder.SELECTION_MODE_KEY, forceSelectMode);
         }
         context.put(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
-        context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
-        context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
+        if (renderedProperty != null) {
+            context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
+            context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
+        }
         return createBinding(JList.class, selectionFormProperty, context);
     }
 }
