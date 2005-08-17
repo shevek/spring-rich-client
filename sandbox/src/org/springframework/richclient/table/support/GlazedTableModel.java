@@ -20,6 +20,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 
@@ -68,11 +69,22 @@ public class GlazedTableModel extends EventTableModel {
 
     public void setMessageSource(MessageSource messages) {
         if (messages != null) {
-            this.messages = new MessageSourceAccessor(messages);
+            this.setMessages(new MessageSourceAccessor(messages));
         }
         else {
-            this.messages = null;
+            this.setMessages(null);
         }
+    }
+    
+    protected void setMessages(MessageSourceAccessor messages) {
+        this.messages = messages;
+    }
+
+    protected MessageSourceAccessor getMessages() {
+        if (messages == null) {
+            messages = Application.services().getMessages();
+        }
+        return messages;
     }
 
     protected Object getColumnValue(Object row, int column) {
@@ -91,7 +103,6 @@ public class GlazedTableModel extends EventTableModel {
      */
     protected boolean isEditable(Object row, int column) {
         beanWrapper.setWrappedInstance(row);
-
         return beanWrapper.isWritableProperty(columnPropertyNames[column]);
     }
 
@@ -104,7 +115,7 @@ public class GlazedTableModel extends EventTableModel {
 
     protected String[] createColumnNames(String[] propertyColumnNames) {
         String[] columnNames = new String[propertyColumnNames.length];
-        Assert.notNull(this.messages);
+        Assert.notNull(getMessages());
         for (int i = 0; i < propertyColumnNames.length; i++) {
             final String columnPropertyName = propertyColumnNames[i];
             final String[] keys = {columnPropertyName + ".label", columnPropertyName};
@@ -123,7 +134,7 @@ public class GlazedTableModel extends EventTableModel {
                 }
             };
 
-            columnNames[i] = LabelInfoFactory.createLabelInfo(messages.getMessage(resolvable)).getText();
+            columnNames[i] = LabelInfoFactory.createLabelInfo(getMessages().getMessage(resolvable)).getText();
         }
 
         return columnNames;
