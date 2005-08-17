@@ -85,6 +85,9 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
         }
         int prefWidth = messageLabel.getPreferredSize().width;
         int prefHeight = Sizes.dialogUnitYAsPixel(linesToDisplay * ONE_LINE_IN_DLU, messageLabel);
+        if (prefHeight < getDefaultIcon().getIconHeight()) {
+            prefHeight = getDefaultIcon().getIconHeight();
+        }
         messageLabel.setPreferredSize(new Dimension(prefWidth, prefHeight));
         messageLabel.setOpaque(false);
         messageLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -100,7 +103,7 @@ public class DefaultMessageAreaPane extends AbstractControlFactory implements Me
     public Message getMessage() {
         return messageAreaModel.getMessage();
     }
-    
+
     public void setMessage(Message message) {
         messageAreaModel.setMessage(message);
         if (messageLabel != null) {
