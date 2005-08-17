@@ -34,7 +34,12 @@ import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
-
+/**
+ * Tests for ListBinder and ListBinding
+ * 
+ * @author  Oliver Hutchison
+ * @author  Andy DePue 
+ */
 public class ListBinderTests extends AbstractBindingTests {
     private ListBinder lb;
 
@@ -123,9 +128,9 @@ public class ListBinderTests extends AbstractBindingTests {
         multipleSelectionBinding();
         FormPropertyState state = fm.getFormPropertyState("listProperty");
         assertEquals(true, c.isEnabled());
-        fm.setEnabled(false);
+        state.setReadOnly(true);
         assertEquals(false, c.isEnabled());
-        fm.setEnabled(true);
+        state.setReadOnly(false);
         assertEquals(true, c.isEnabled());
     }
 

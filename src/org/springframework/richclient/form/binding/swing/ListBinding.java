@@ -212,7 +212,7 @@ public class ListBinding extends AbstractBinding {
                 ret[i] = indexOf(iter.next());
             }
         }
-        else if (itemSet.getClass().isArray()) {
+        else if (itemSet != null && itemSet.getClass().isArray()) {
             Object[] items = (Object[])itemSet;
             ret = new int[items.length];
             for (int i = 0; i < items.length; i++) {
