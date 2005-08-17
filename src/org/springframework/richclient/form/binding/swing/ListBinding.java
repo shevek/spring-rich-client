@@ -17,6 +17,8 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,7 +56,7 @@ public class ListBinding extends AbstractBinding {
 
     private Class selectedItemType;
 
-    private Class concreteCollectionType;
+    private Class concreteSelectedType;
 
     public ListBinding(JList list, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -95,7 +97,29 @@ public class ListBinding extends AbstractBinding {
                 setSelectedItemType(this.selectedItemHolder.getValue().getClass());
             }
         }
+
         return this.selectedItemType;
+    }
+
+    /**
+     * Determine if the selected item type can be multi-valued (is a collection
+     * or an array.
+     * @return boolean <code>true</code> if the <code>selectedItemType</code> is a
+     * Collection or an Array.
+     */
+    protected boolean isSelectedItemMultiValued() {
+        return isSelectedItemACollection() || isSelectedItemAnArray();
+    }
+
+    /**
+     * Determine if the selected item type can be multi-valued (is a collection
+     * or an array.
+     * @return boolean <code>true</code> if the <code>selectedItemType</code> is a
+     * Collection or an Array.
+     */
+    protected boolean isSelectedItemAnArray() {
+        Class itemType = getSelectedItemType();
+        return itemType != null && itemType.isArray();
     }
 
     protected boolean isSelectedItemACollection() {
@@ -103,14 +127,19 @@ public class ListBinding extends AbstractBinding {
     }
 
     protected boolean isTrulyMultipleSelect() {
-        return list.getSelectionMode() != ListSelectionModel.SINGLE_SELECTION && isSelectedItemACollection();
+        return list.getSelectionMode() != ListSelectionModel.SINGLE_SELECTION && isSelectedItemMultiValued();
     }
 
-    protected Class getConcreteCollectionType() {
-        if (this.concreteCollectionType == null && isSelectedItemACollection()) {
-            this.concreteCollectionType = BufferedCollectionValueModel.getConcreteCollectionType(getSelectedItemType());
+    protected Class getConcreteSelectedType() {
+        if (concreteSelectedType == null) {
+            if (isSelectedItemACollection()) {
+                concreteSelectedType = BufferedCollectionValueModel.getConcreteCollectionType(getSelectedItemType());
+            }
+            else if (isSelectedItemAnArray()) {
+                concreteSelectedType = getSelectedItemType().getComponentType();
+            }
         }
-        return this.concreteCollectionType;
+        return concreteSelectedType;
     }
 
     protected JComponent doBindControl() {
@@ -119,7 +148,7 @@ public class ListBinding extends AbstractBinding {
             if (this.selectionMode != null) {
                 list.setSelectionMode(this.selectionMode.intValue());
             }
-            else if (isSelectedItemACollection()) {
+            else if (isSelectedItemMultiValued()) {
                 list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             }
             setSelectedValue(null);
@@ -127,13 +156,13 @@ public class ListBinding extends AbstractBinding {
         }
         if (renderer != null) {
             list.setCellRenderer(renderer);
-        }
+        }        
         return list;
     }
 
     protected void setSelectedValue(final PropertyChangeListener silentValueChangeHandler) {
-        if (isSelectedItemACollection()) {
-            final int[] indices = indicesOf((Collection)selectedItemHolder.getValue());
+        if (isSelectedItemMultiValued()) {
+            final int[] indices = indicesOf(selectedItemHolder.getValue());
             if (indices.length < 1) {
                 list.clearSelection();
             }
@@ -166,26 +195,50 @@ public class ListBinding extends AbstractBinding {
         }
     }
 
-    protected int[] indicesOf(final Collection collection) {
-        if (collection != null) {
-            final int[] ret = new int[collection.size()];
+    /**
+     * Return an array of indices in the selectableItems for each element in the provided set.  The set can
+     * be either a Collection or an Array.
+     * @param itemSet Either an array or a Collection of items
+     * @return array of indices of the elements in itemSet within the selectableItems
+     */
+    protected int[] indicesOf(final Object itemSet) {
+        int[] ret = null;
+
+        if (itemSet instanceof Collection) {
+            Collection collection = (Collection)itemSet;
+            ret = new int[collection.size()];
             int i = 0;
             for (Iterator iter = collection.iterator(); iter.hasNext(); i++) {
                 ret[i] = indexOf(iter.next());
             }
-
-            return ret;
+        }
+        else if (itemSet.getClass().isArray()) {
+            Object[] items = (Object[])itemSet;
+            ret = new int[items.length];
+            for (int i = 0; i < items.length; i++) {
+                ret[i] = indexOf(items[i]);
+            }
+        }
+        else if (itemSet == null) {
+            ret = new int[0];
         }
         else {
-            return new int[0];
+            throw new IllegalArgumentException("itemSet must be an array or a Collection");
         }
+
+        return ret;
     }
 
     protected int indexOf(final Object o) {
         final ListModel listModel = list.getModel();
         final int size = listModel.getSize();
         for (int i = 0; i < size; i++) {
-            if (o.equals(listModel.getElementAt(i))) {
+            if (comparator == null) {
+                if (o.equals(listModel.getElementAt(i))) {
+                    return i;
+                }
+            }
+            else if (comparator.compare(o, listModel.getElementAt(i)) == 0) {
                 return i;
             }
         }
@@ -219,12 +272,13 @@ public class ListBinding extends AbstractBinding {
     }
 
     protected void updateSelectionHolderFromList(final PropertyChangeListener silentValueChangeHandler) {
+        final Object[] selected = list.getSelectedValues();
+
         if (isSelectedItemACollection()) {
             try {
                 // In order to properly handle buffered forms, we will
                 // create a new collection to hold the new selection.
-                final Collection newSelection = (Collection)getConcreteCollectionType().newInstance();
-                final Object[] selected = list.getSelectedValues();
+                final Collection newSelection = (Collection)getConcreteSelectedType().newInstance();
                 if (selected != null && selected.length > 0) {
                     for (int i = 0; i < selected.length; i++) {
                         newSelection.add(selected[i]);
@@ -249,6 +303,26 @@ public class ListBinding extends AbstractBinding {
             }
             catch (IllegalAccessException e1) {
                 throw new RuntimeException(e1);
+            }
+        }
+        else if (isSelectedItemAnArray()) {
+
+            final Object[] newSelection = (Object[])Array.newInstance(getConcreteSelectedType(), selected.length);
+            for (int i = 0; i < selected.length; i++) {
+                newSelection[i] = selected[i];
+            }
+
+            // Only modify the selectedItemHolder if the selection is actually
+            // changed.
+            final Object[] oldSelection = (Object[])selectedItemHolder.getValue();
+            if (oldSelection == null || oldSelection.length != newSelection.length
+                    || !Arrays.equals(oldSelection, newSelection)) {
+                if (silentValueChangeHandler != null) {
+                    selectedItemHolder.setValueSilently(newSelection, silentValueChangeHandler);
+                }
+                else {
+                    selectedItemHolder.setValue(newSelection);
+                }
             }
         }
         else {
