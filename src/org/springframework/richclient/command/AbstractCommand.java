@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -18,6 +18,7 @@ package org.springframework.richclient.command;
 import java.awt.Container;
 import java.util.Iterator;
 import java.util.Map;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -30,6 +31,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
@@ -38,7 +41,6 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.richclient.command.support.CommandFaceButtonManager;
 import org.springframework.richclient.command.support.DefaultCommandServices;
-import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
@@ -46,7 +48,7 @@ import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
 
 public abstract class AbstractCommand extends AbstractPropertyChangePublisher implements InitializingBean,
-        BeanNameAware, Guarded {
+        BeanNameAware, GuardedActionCommandExecutor {
 
     public static final String ENABLED_PROPERTY_NAME = "enabled";
 
@@ -58,7 +60,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     private String defaultFaceDescriptorId = DEFAULT_FACE_DESCRIPTOR_ID;
 
-    private boolean enabled = true;
+    private ValueModel enabled = new ValueHolder(Boolean.TRUE);
 
     private boolean visible = true;
 
@@ -242,12 +244,14 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     }
 
     public boolean isEnabled() {
-        return this.enabled;
+        return ((Boolean)enabled.getValue()).booleanValue();
     }
 
     public void setEnabled(boolean enabled) {
-        if (hasChanged(this.enabled, enabled)) {
-            this.enabled = enabled;
+        if (hasChanged(isEnabled(), enabled)) {
+            this.enabled.setValue(Boolean.valueOf(enabled));
+
+            // the rest of this seems redundant now... -JJM
             Iterator it = buttonIterator();
             while (it.hasNext()) {
                 AbstractButton button = (AbstractButton)it.next();
@@ -258,6 +262,14 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
             }
             firePropertyChange(ENABLED_PROPERTY_NAME, !enabled, enabled);
         }
+    }
+
+    public void addEnabledListener(PropertyChangeListener listener) {
+        enabled.addValueChangeListener(listener);
+    }
+
+    public void removeEnabledListener(PropertyChangeListener listener) {
+        enabled.removeValueChangeListener(listener);
     }
 
     protected final Iterator buttonIterator() {

@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -86,7 +86,7 @@ public class CommandGroup extends AbstractCommand {
 
     /**
      * Creates a command group with a single command member.
-     * 
+     *
      * @param member the command to put in the CommandGroup
      *
      * @return never null
@@ -125,7 +125,7 @@ public class CommandGroup extends AbstractCommand {
      * service (pulling visual configuration properties from an external
      * source). This method will also auto-configure contained Command members
      * that have not yet been configured.
-     * 
+     *
      * @param groupId
      * @param members
      * @return
@@ -299,7 +299,7 @@ public class CommandGroup extends AbstractCommand {
      * specified path. Nested paths should be deliniated by the "/" character;
      * for example, "fileGroup/newGroup/simpleFileCommand". The returned command
      * may be a group or an action command.
-     * 
+     *
      * @param memberPath
      *            the path of the command, with nested levels deliniated by the
      *            "/" path separator.
@@ -344,6 +344,17 @@ public class CommandGroup extends AbstractCommand {
         logger.warn("No command with id '" + commandId + "' is nested within this group (" + getId()
                 + "); returning null");
         return null;
+    }
+
+    /**
+     * Executes all the members of this group.
+     */
+    public void execute() {
+        Iterator it = memberList.iterator();
+        while (it.hasNext()) {
+            GroupMember member = (GroupMember)it.next();
+            member.getCommand().execute();
+        }
     }
 
     public int getMemberCount() {
