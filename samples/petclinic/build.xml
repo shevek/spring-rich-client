@@ -62,6 +62,7 @@
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/burlap.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/concurrent/concurrent.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/caucho/hessian.jar" />
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/glazedlists/glazedlists.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/hsqldb/hsqldb.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-codec.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jakarta-commons/commons-logging.jar" />
@@ -69,8 +70,8 @@
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/forms.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/jgoodies/looks.jar" />
 		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring.jar" />
-		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-binding.jar" />
         <copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-petclinic.jar" />      
+		<copy todir="${dist.dir}/lib" file="${lib.dir}/spring/spring-binding.jar" />
         <copy todir="${dist.dir}/lib" file="${lib.dir}/jdnc/jdnc.jar" />               
         <copy todir="${dist.dir}/lib" file="${lib.dir}/jdnc/jlfgr-1_0.jar" />                           
 	</target>
@@ -91,7 +92,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicStandalone" />
-				<attribute name="Class-Path" value="lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/jdnc.jar lib/jlfgr-1_0.jar lib/spring.jar lib/spring-binding.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Class-Path" value="lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/jdnc.jar lib/jlfgr-1_0.jar lib/spring.jar lib/spring-petclinic.jar lib/spring-sandbox.jar lib/spring-richclient.jar lib/spring-richclient-sandbox.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -112,7 +113,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.springframework.richclient.samples.petclinic.PetClinicClientServer" />
-				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring.jar lib/spring-binding.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
+				<attribute name="Class-Path" value="lib/acegi-security.jar lib/aopalliance.jar lib/burlap.jar lib/commons-codec.jar lib/commons-logging.jar lib/concurrent.jar lib/forms.jar lib/hessian.jar lib/hsqldb.jar lib/javahelp.jar lib/looks.jar lib/spring-core.jar lib/spring-context.jar lib/spring-dao.jar lib/spring-orm.jar lib/spring-aop.jar lib/spring-sandbox.jar lib/spring-petclinic.jar lib/spring-richclient.jar lib/spring-richclient-resources.jar" />
 			</manifest>
 		</jar>
 
@@ -140,8 +141,19 @@
 			</fileset>
 		</jar>
 
+		<!-- Remove signature from JNDC -->
+		<delete dir="${tmp.dir}" />
+		<mkdir dir="${tmp.dir}" />
+		<unjar src="${dist.dir}/lib/jdnc.jar" dest="${tmp.dir}" />
+		<jar update="false" jarfile="${dist.dir}/lib/jdnc.jar">
+			<fileset dir="${tmp.dir}">
+				<include name="**/*" />
+				<exclude name="META-INF/*" />
+			</fileset>
+		</jar>
+
 		<!-- Will not re-sign already signed JARs due to lazy=true (causes JWS issues if >1 signature) -->
-		<signjar lazy="true" alias="${signature.alias}" storepass="${signature.storepass}" keystore="${signature.keystore}">
+		<signjar lazy="true" alias="${signature.alias}" storepass="${signature.storepass}" keystore="${signature.keystore}" verbose="true">
 			<fileset dir="${dist.dir}">
 				<include name="**/**.jar" />
 			</fileset>
@@ -153,7 +165,7 @@
 
 	<target name="build" depends="build-standalone" description="Build default standalone version"/>
 	
-	<target name="warfile" depends="build-clientserver" description="Build the web application archives">
+	<target name="warfile" depends="build-standalone,build-clientserver" description="Build the web application archives">
 		<mkdir dir="${dist.dir}" />
 		<delete file="${dist.dir}/petclinic-server.war" />
 

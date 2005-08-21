@@ -18,7 +18,7 @@ package org.springframework.richclient.security;
 import javax.swing.JOptionPane;
 
 import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.context.ContextHolder;
+
 
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 

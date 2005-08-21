@@ -35,7 +35,8 @@
     <jar href="lib/jdnc.jar"/>
     <jar href="lib/looks.jar"/>
     <jar href="lib/jlfgr-1_0.jar"/>
-    <jar href="lib/spring-sandbox.jar"/>
+    <jar href="lib/spring.jar"/>
+    <jar href="lib/spring-binding.jar"/>
     <jar href="lib/spring-petclinic.jar"/>
   </resources>
   <application-desc main-class="org.springframework.richclient.samples.petclinic.PetClinicStandalone"/>

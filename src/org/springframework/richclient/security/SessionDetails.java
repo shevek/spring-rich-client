@@ -5,9 +5,7 @@ import java.io.Serializable;
 import net.sf.acegisecurity.Authentication;
 import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
-import net.sf.acegisecurity.context.ContextHolder;
-import net.sf.acegisecurity.context.SecureContext;
-import net.sf.acegisecurity.context.SecureContextImpl;
+import net.sf.acegisecurity.context.SecurityContextHolder;
 import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
 import org.springframework.context.ApplicationContext;
@@ -41,13 +39,10 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
     public SessionDetails() {
         // Retrieve any existing login information from the
         // ContextHolder
-        if (ContextHolder.getContext() instanceof SecureContext) {
-            SecureContext sc = (SecureContext)ContextHolder.getContext();
-            if (sc.getAuthentication() != null) {
-                setUsername(sc.getAuthentication().getPrincipal().toString());
-                setPassword(sc.getAuthentication().getCredentials().toString());
-            }
-        }
+    	if (SecurityContextHolder.getContext().getAuthentication() != null) {
+    		setUsername(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+            setPassword(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+    	}
         initRules();
     }
 
@@ -93,10 +88,6 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         this.authenticationManager = manager;
     }
 
-    protected Class getSecureContextClass() {
-        return SecureContextImpl.class;
-    }
-
     public void login() throws AuthenticationException {
         // Attempt login
         UsernamePasswordAuthenticationToken request = new UsernamePasswordAuthenticationToken(getUsername(),
@@ -104,21 +95,9 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
 
         Authentication result = authenticationManager.authenticate(request);
 
-        // Setup a secure ContextHolder (if required)
-        if (ContextHolder.getContext() == null || !(ContextHolder.getContext() instanceof SecureContext)) {
-            try {
-                ContextHolder.setContext((SecureContext)getSecureContextClass().newInstance());
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         // Commit the successful Authentication object to the secure
         // ContextHolder
-        SecureContext sc = (SecureContext)ContextHolder.getContext();
-        sc.setAuthentication(result);
-        ContextHolder.setContext(sc);
+        SecurityContextHolder.getContext().setAuthentication(result);
 
         // Fire application event to advise of new login
         ApplicationContext appCtx = Application.services().getApplicationContext();
@@ -129,12 +108,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         Authentication existing = null;
 
         // Make the Authentication object null if a SecureContext exists
-        if (ContextHolder.getContext() != null && ContextHolder.getContext() instanceof SecureContext) {
-            SecureContext sc = (SecureContext)ContextHolder.getContext();
-            existing = sc.getAuthentication();
-            sc.setAuthentication(null);
-            ContextHolder.setContext(sc);
-        }
+        SecurityContextHolder.getContext().setAuthentication(null);
 
         // Create a non-null Authentication object if required (to meet
         // ApplicationEvent contract)

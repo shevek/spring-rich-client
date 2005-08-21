@@ -11,6 +11,7 @@ import net.sf.acegisecurity.Authentication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -74,16 +75,17 @@ public class RemotingSecurityConfigurer implements ApplicationListener {
     }
 
     private Object[] getExporters() {
+    	ListableBeanFactory bf = (ListableBeanFactory) Application.services().getBeanFactory();
         ApplicationContext appCtx = Application.services().getApplicationContext();
         List list = new Vector();
 
         {
-            Map map = appCtx.getBeansOfType(HessianProxyFactoryBean.class, false, true);
+            Map map = bf.getBeansOfType(HessianProxyFactoryBean.class, false, true);
             Iterator iter = map.keySet().iterator();
 
             while (iter.hasNext()) {
                 String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
+                Object factoryBean = bf.getBean("&" + beanName);
                 list.add(factoryBean);
             }
         }

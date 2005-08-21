@@ -17,7 +17,7 @@
   </security>
   <resources>
     <j2se version="1.4+"/>
-    <jar href="petclinic-standalone.jar"/>
+    <jar href="petclinic-clientserver.jar"/>
     <jar href="lib/spring-richclient.jar"/>
     <jar href="lib/spring-richclient-sandbox.jar"/>
     <jar href="lib/spring-richclient-resources.jar"/>
@@ -35,7 +35,7 @@
     <jar href="lib/jdnc.jar"/>
     <jar href="lib/jlfgr-1_0.jar"/>
     <jar href="lib/spring.jar"/>
-    <jar href="lib/spring-sandbox.jar"/>
+    <jar href="lib/spring-binding.jar"/>
     <jar href="lib/spring-petclinic.jar"/>
   </resources>
   <application-desc main-class="org.springframework.richclient.samples.petclinic.PetClinicClientServer"/>
