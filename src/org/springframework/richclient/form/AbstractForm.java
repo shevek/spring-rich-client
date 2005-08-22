@@ -173,6 +173,14 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         return editingNewFormObject;
     }
 
+    /**
+     * Set the "editing new ofrm object" state as indicated.
+     * @param editingNewFormOject
+     */
+    protected void setEditingNewFormObject(boolean editingNewFormOject) {
+        this.editingNewFormObject = editingNewFormOject;
+    }
+
     private class EditingFormObjectSetter implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
             int selectionIndex = getEditingFormObjectIndex();
@@ -367,7 +375,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
     }
 
-    private void setEditingFormObjectIndexSilently(int index) {
+    protected void setEditingFormObjectIndexSilently(int index) {
         editingFormObjectIndexHolder.removeValueChangeListener(editingFormObjectSetter);
         editingFormObjectIndexHolder.setValue(new Integer(index));
         editingFormObjectIndexHolder.addValueChangeListener(editingFormObjectSetter);
@@ -397,9 +405,13 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                 setEditingFormObjectIndexSilently(editableFormObjects.size() - 1);
             }
             else {
-                IndexAdapter adapter = editableFormObjects.getIndexAdapter(getEditingFormObjectIndex());
-                adapter.setValue(formObject);
-                adapter.fireIndexedObjectChanged();
+                int index = getEditingFormObjectIndex();
+                // Avoid updating unless we have actually selected an object for edit
+                if( index >= 0 ) {
+                    IndexAdapter adapter = editableFormObjects.getIndexAdapter(index);
+                    adapter.setValue(formObject);
+                    adapter.fireIndexedObjectChanged();
+                }
             }
         }
         if (clearFormOnCommit) {
