@@ -219,7 +219,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
 
     private JPanel createContentControl() {
         TableLayoutBuilder panelBuilder = new TableLayoutBuilder();
-        panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150");
+        panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150 rowSpec=fill:default:grow");
         panelBuilder.gapCol();
         panelBuilder.cell(pagePanel, "valign=top");
         return panelBuilder.getPanel();
