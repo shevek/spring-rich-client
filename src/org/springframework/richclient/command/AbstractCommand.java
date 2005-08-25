@@ -16,9 +16,11 @@
 package org.springframework.richclient.command;
 
 import java.awt.Container;
+import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.beans.PropertyChangeListener;
+import java.util.NoSuchElementException;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -26,13 +28,12 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
@@ -69,8 +70,6 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     private CommandServices commandServices;
 
     private CommandFaceDescriptorRegistry faceDescriptorRegistry;
-
-    private SwingPropertyChangeSupport pcs;
 
     protected AbstractCommand() {
     }
@@ -272,9 +271,73 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         enabled.removeValueChangeListener(listener);
     }
 
-    protected final Iterator buttonIterator() {
+    protected final Iterator defaultButtonIterator() {
         return getDefaultButtonManager().iterator();
     }
+    
+    protected final Iterator buttonIterator() {
+        
+        if (this.faceButtonManagers == null) 
+            return Collections.EMPTY_SET.iterator();
+        
+        return new NestedButtonIterator(this.faceButtonManagers.values().iterator());
+    }
+    
+    private static final class NestedButtonIterator implements Iterator
+    {
+        private final Iterator managerIterator;
+        private Iterator currentButtonIterator;
+        private AbstractButton nextButton;
+        
+        NestedButtonIterator(Iterator it)
+        {
+            this.managerIterator = it;
+            preFetchNextButton();
+        }
+        
+        public boolean hasNext()
+        {
+            return nextButton != null;
+        }
+
+        public Object next()
+        {
+            if (nextButton == null) {
+                throw new NoSuchElementException();
+            }
+            AbstractButton lastButton = nextButton;
+            preFetchNextButton();
+            return lastButton;
+        }
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException("Can't use a button-iterator on AbstractCommand to remove buttons.");   
+        }
+        
+        private void preFetchNextButton()
+        {
+            if (this.currentButtonIterator == null || !this.currentButtonIterator.hasNext())
+            {
+                if (this.managerIterator.hasNext()){
+                    CommandFaceButtonManager cfbm = (CommandFaceButtonManager)this.managerIterator.next();
+                    this.currentButtonIterator = cfbm.iterator();
+                }
+                else
+                {
+                    this.currentButtonIterator = null;
+                    this.nextButton = null;
+                    return;
+                }
+            }
+                
+            if (this.currentButtonIterator.hasNext())
+                nextButton = (AbstractButton)this.currentButtonIterator.next();
+            else
+                nextButton = null;            
+        }
+    }
+    
 
     public boolean isAnonymous() {
         return id == null;
