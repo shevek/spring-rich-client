@@ -413,6 +413,11 @@ public final class BufferedValueModelTests extends TestCase {
         assertEquals("After flushing.", 4, pcl.eventCount());
         buffer.getValue();
         assertEquals("Reading unbuffered value.", 4, pcl.eventCount());
+        
+        buffer.setValue("before real commit");
+        assertEquals("With new change to be committed", 5, pcl.eventCount());
+        commit();
+        assertEquals("With new change committed", 6, pcl.eventCount());
     }
         
     public void testSetValueSendsProperValueChangeEvents() {
