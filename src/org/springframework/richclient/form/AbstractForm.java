@@ -519,22 +519,22 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
     
     public boolean isDirty() {
-        return formModel.isDirty();
+        return getFormModel().isDirty();
     }
 
     public boolean hasErrors() {
-        return formModel.getHasErrors();
+        return getFormModel().getHasErrors();
     }
 
     public void commit() {
-        formModel.commit();
+        getFormModel().commit();
     }
 
     public void revert() {
-        formModel.revert();
+        getFormModel().revert();
     }
 
     public void reset() {
-        formModel.reset();
+        getFormModel().reset();
     }
 }
