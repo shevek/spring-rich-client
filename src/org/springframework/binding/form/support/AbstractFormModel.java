@@ -27,6 +27,7 @@ import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptor;
 import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
 import org.springframework.binding.form.FormPropertyState;
@@ -144,7 +145,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         if (hasChanged(this.enabled, enabled)) {
             this.enabled = enabled;
             handleEnabledChange();
-            firePropertyChange("enabled", !this.enabled, enabled);
+            firePropertyChange(FormModel.ENABLED_PROPERTY, !this.enabled, enabled);
         }
     }
 
