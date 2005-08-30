@@ -13,25 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.form.support;
-
-import org.springframework.binding.value.PropertyChangePublisher;
+package org.springframework.binding.value;
 
 /**
- * Interface to be implemented by backing form objects; e.g unbuffered,
- * domain-specific form models.
+ * Interface to be implemented by classes that listen for the commit and 
+ * revert events fired by a <code>CommitTriger</code>.
  * 
- * @author Keith Donald
+ * @author Oliver Hutchison
+ * @see CommitTrigger
  */
-public interface FormObject extends PropertyChangePublisher {
+public interface CommitTriggerListener {
 
     /**
-     * Does this form object have changes that have not yet been committed? This
-     * can be used to determine if a warning needs to be displayed when a user
-     * closes the GUI displaying the form without first committing their
-     * changes, for example.
-     * 
-     * @return the dirty status
+     * Called when a commit event is fired.
      */
-    public boolean isDirty();
+    void commit();
+    
+    /**
+     * Called when a revert event is fired.
+     */
+    void revert();
 }

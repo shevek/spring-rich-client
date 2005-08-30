@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
@@ -33,6 +32,7 @@ import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
+import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.Assert;
 
 /**
@@ -56,11 +56,11 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
     }
 
     protected PageComponent findPageComponent(final String viewDescriptorId) {
-        return (PageComponent) new AbstractConstraint() {
+        return (PageComponent)new AbstractConstraint() {
 
             public boolean test(Object arg) {
                 if (arg instanceof View) {
-                    return ((View) arg).getId().equals(viewDescriptorId);
+                    return ((View)arg).getId().equals(viewDescriptorId);
                 }
                 return false;
             }
@@ -83,7 +83,7 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 
     protected void setActiveComponent() {
         if (pageComponents.size() > 0) {
-            setActiveComponent((PageComponent) pageComponents.iterator().next());
+            setActiveComponent((PageComponent)pageComponents.iterator().next());
         }
     }
 
@@ -143,7 +143,7 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
         }
 
         for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
-            PageComponent component = (PageComponent) iter.next();
+            PageComponent component = (PageComponent)iter.next();
             close(component);
         }
         return true;

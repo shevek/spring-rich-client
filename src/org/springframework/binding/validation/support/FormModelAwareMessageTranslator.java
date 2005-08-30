@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.form.support;
+package org.springframework.binding.validation.support;
 
 import java.util.ArrayList;
 import java.util.Iterator;

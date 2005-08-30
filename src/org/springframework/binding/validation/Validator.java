@@ -13,18 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.form;
+package org.springframework.binding.validation;
 
-import org.springframework.binding.value.ValueModel;
 
 /**
- * 
- * @author Keith Donald
+ * Interface to be implemented by classes capable of validating domain objects. 
+ *  
+ * @author  Oliver Hutchison
  */
-public interface NestableFormModel extends FormModel {
-    public void setParent(NestingFormModel parent);
-    
-    public ValueModel findValueModel(String propertyPath, Class targetType);
-    
-    public NestingFormModel getParent();
+public interface Validator {    
+    /**
+     * Validates the provided object.
+     * 
+     * @param object the object to validate
+     * @return the results on the validation
+     */
+    ValidationResults validate(Object object);
 }

@@ -17,7 +17,6 @@ package org.springframework.binding.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Date;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -29,7 +28,6 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.core.enums.LabeledEnum;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
 
@@ -263,7 +261,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
             finally {
                 settingBeanProperty = false;
             }
-            fireValueChange(savedPropertyValue, getValue());
+            fireValueChange(savedPropertyValue, value);
         }
 
         /**
@@ -316,10 +314,6 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
                 savedParentObject = currentParentObject;
             }
         }
-
-        private void removeBeanPropertyChangeListener() {
-            
-        }
     }
 
     /**
@@ -330,19 +324,6 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
 
         public Class getPropertyType(String propertyPath) {
             return beanWrapper.getPropertyDescriptor(getFullPropertyPath(propertyPath)).getPropertyType();
-        }
-
-        public boolean isNumber(String propertyPath) {
-            Class propertyType = getPropertyType(propertyPath);
-            return Number.class.isAssignableFrom(propertyType) || propertyType.isPrimitive();
-        }
-
-        public boolean isDate(String propertyPath) {
-            return Date.class.isAssignableFrom(getPropertyType(propertyPath));
-        }
-
-        public boolean isEnumeration(String propertyPath) {
-            return LabeledEnum.class.isAssignableFrom(getPropertyType(propertyPath));
         }
 
         public boolean isReadable(String propertyPath) {

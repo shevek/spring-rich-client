@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2005 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,24 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.value.support;
+package org.springframework.binding.value;
 
 /**
- * Interface to be implemented by classes that listen for the commit and 
- * revert events fired by a <code>CommitTriger</code>.
+ * A value model that derives its value by applying some transformation to
+ * one or more source value models. 
  * 
+ * Typical usage would be a type converter or string formatter.
+ *  
  * @author Oliver Hutchison
- * @see CommitTrigger
  */
-public interface CommitTriggerListener {
+public interface DerivedValueModel extends ValueModel {
 
     /**
-     * Called when a commit event is fired.
+     * Returns an array of all values models that are used to derive 
+     * the value represented by this value model.
      */
-    void commit();
+    ValueModel[] getSourceValueModels();
     
     /**
-     * Called when a revert event is fired.
+     * Returns true if the implementation does not support calls setValue.
      */
-    void revert();
+    boolean isReadOnly();
 }

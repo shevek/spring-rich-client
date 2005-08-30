@@ -31,11 +31,8 @@ import junit.framework.TestCase;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.support.TestPropertyChangeListener;
+import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.BufferedCollectionValueModel;
-import org.springframework.binding.value.support.CommitTrigger;
-import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.list.ListListModel;
 
 /**
  * Test cases for {@link BufferedCollectionValueModel}

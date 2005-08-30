@@ -28,14 +28,17 @@ import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.ConfigurableFormModel;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
+import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
-import org.springframework.richclient.list.ObservableList;
 
 /**
  * A convenient implementation of <code>BindingFactory</code>. Provides a set
@@ -46,7 +49,7 @@ import org.springframework.richclient.list.ObservableList;
  */
 public class SwingBindingFactory extends AbstractBindingFactory {
 
-    public SwingBindingFactory(ConfigurableFormModel formModel) {
+    public SwingBindingFactory(FormModel formModel) {
         super(formModel);
     }
 
@@ -125,9 +128,9 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         final ConfigurableFormModel formModel = ((ConfigurableFormModel)getFormModel());
         ValueModel valueModel = formModel.getValueModel(formProperty);
         if (!(valueModel instanceof BufferedCollectionValueModel)) {
-            valueModel = new BufferedCollectionValueModel(formModel.getPropertyAccessStrategy().getPropertyValueModel(
-                    formProperty), formModel.getPropertyAccessStrategy().getMetadataAccessStrategy().getPropertyType(
-                    formProperty));
+            // XXX: HACK!
+            valueModel = new BufferedCollectionValueModel(((MutablePropertyAccessStrategy)((DefaultFormModel) formModel).getFormObjectPropertyAccessStrategy()).getPropertyValueModel(
+                    formProperty), formModel.getPropertyMetadata(formProperty).getPropertyType());
             formModel.add(formProperty, valueModel);
         }
         return (ObservableList)valueModel.getValue();
@@ -302,8 +305,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
 
         final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
         final Map context = createContext(ListBinder.SELECTED_ITEM_HOLDER_KEY, selectionValueModel);
-        final Class selectionPropertyType = formModel.getMetadataAccessStrategy()
-                .getPropertyType(selectionFormProperty);
+        final Class selectionPropertyType = formModel.getPropertyMetadata(selectionFormProperty).getPropertyType();
         if (selectionPropertyType != null) {
             context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
         }

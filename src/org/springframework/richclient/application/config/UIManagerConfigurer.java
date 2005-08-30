@@ -133,12 +133,11 @@ public class UIManagerConfigurer {
             }
             else {
                 LookAndFeelInfo[] feels = UIManager.getInstalledLookAndFeels();
-                boolean lookAndFeelSet = false;
                 for (int i = 0; i < feels.length; i++) {
                     LookAndFeelInfo feel = feels[i];
                     if (feel.getName().equalsIgnoreCase(lookAndFeelName)) {
                         UIManager.setLookAndFeel(feel.getClassName());
-                        lookAndFeelSet = true;
+                        break;
                     }
                 }
             }

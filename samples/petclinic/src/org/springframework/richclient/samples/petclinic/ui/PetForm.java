@@ -28,7 +28,7 @@ public class PetForm extends AbstractForm {
 
     public PetForm(FormModel formModel, boolean canEditType) {
         super(formModel, PET_FORM_PAGE);
-        getFormModel().getFormPropertyState("type").setReadOnly(!canEditType);
+        getFormModel().getPropertyMetadata("type").setReadOnly(!canEditType);
     }
 
     protected JComponent createFormControl() {

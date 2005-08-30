@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ListListModel;
 
 /**
  * A list whose contents are dynamically refreshable.

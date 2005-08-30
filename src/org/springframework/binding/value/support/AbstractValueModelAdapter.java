@@ -41,8 +41,8 @@ public abstract class AbstractValueModelAdapter {
     }
     
     /**
-     * Must be called to initialize the adapted value. Usually called as the
-     * last in the constructor. 
+     * Must be called to initialize the adapted value. Usually the
+     * last call in the constructor. 
      */
     protected void initalizeAdaptedValue() {
         valueModelValueChanged(valueModel.getValue());

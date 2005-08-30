@@ -23,11 +23,11 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.binding.validation.Severity;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.util.LabelUtils;
-import org.springframework.rules.reporting.Severity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -99,7 +99,7 @@ public class Message implements Serializable {
             return null;
         }
         try {
-            return Application.services().getIconSource().getIcon("severity." + severity.getCode());
+            return Application.services().getIconSource().getIcon("severity." + severity.getLabel());
         }
         catch (NoSuchImageResourceException e) {
             return null;

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.form.Form;
+import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
  * Helper implementation of the wizard interface.

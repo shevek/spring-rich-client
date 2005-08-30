@@ -26,11 +26,5 @@ public interface PropertyMetadataAccessStrategy {
 
     public boolean isWriteable(String propertyName);
 
-    public boolean isEnumeration(String propertyName);
-
-    public boolean isNumber(String propertyName);
-
-    public boolean isDate(String propertyName);
-
     public Class getPropertyType(String propertyName);
 }

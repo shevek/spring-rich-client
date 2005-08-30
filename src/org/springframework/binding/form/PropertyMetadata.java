@@ -18,12 +18,11 @@ package org.springframework.binding.form;
 import org.springframework.binding.value.PropertyChangePublisher;
 
 /**
- * FormPropertyState represents information about the "editability" of a single
- * property of a form model.
+ * Encapsulates the state of an indervidual property of a form model.
  *   
  * @author Oliver Hutchison
  */
-public interface FormPropertyState extends PropertyChangePublisher {
+public interface PropertyMetadata extends PropertyChangePublisher {
     
     /**
      * The name of the bound property <code>enabled</code>.
@@ -36,6 +35,21 @@ public interface FormPropertyState extends PropertyChangePublisher {
     public static final String READ_ONLY_PROPERTY = "readOnly";
     
     /**
+     * The name of the bound property <code>dirty</code>.
+     */
+    public static final String DIRTY_PROPERTY = "dirty";
+    
+    /**
+     * Return the type of this property.
+     */
+    Class getPropertyType();
+    
+    /**
+     * Returns custom metadata that may be associated with this property. 
+     */
+    Object getUserMetadata(String key);
+    
+    /**
      * Sets whether or not this property is read only.
      * <p>It's expected that controls bound to this form property will 
      * listen for changes to this value and if possible modify their
@@ -44,7 +58,7 @@ public interface FormPropertyState extends PropertyChangePublisher {
      * <p>This value will be propagated up to any descendants. 
      * @param readOnly should this property be read only 
      */
-    public void setReadOnly(boolean readOnly);
+    void setReadOnly(boolean readOnly);
     
     
     /**
@@ -57,7 +71,7 @@ public interface FormPropertyState extends PropertyChangePublisher {
      * of the form model which contains this property</li>
      * </ul>
      */
-    public boolean isReadOnly();
+    boolean isReadOnly();
     
     /**
      * Sets the enabled value for this property. 
@@ -67,7 +81,7 @@ public interface FormPropertyState extends PropertyChangePublisher {
      * <p>This value will be propagated up to any descendants. 
      * @param enabled should this property be enabled 
      */
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
     
     /**
      * Returns whether or not the property is enabled. 
@@ -79,5 +93,12 @@ public interface FormPropertyState extends PropertyChangePublisher {
      * metadata of any ancestor of the form model which contains this property</li>
      * </ul>
      */
-    public boolean isEnabled();
+    boolean isEnabled();
+    
+    /**
+     * Returns whether or not the property is dirty.  
+     */
+    boolean isDirty();       
+    
+
 }

@@ -13,30 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.form.support;
+package org.springframework.binding.validation;
 
-import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
 
-/**
- * @author Keith Donald
- */
-public class AbstractFormObject extends AbstractPropertyChangePublisher {
+public class Severity extends ShortCodedLabeledEnum {
 
-    private boolean dirty;
+	public static final Severity INFO = new Severity(0, "info");
 
-    protected void markDirty() {
-        markDirty(true);
-    }
+	public static final Severity WARNING = new Severity(50, "warning");
 
-    private void markDirty(boolean dirty) {
-        if (hasChanged(this.dirty, true)) {
-            markDirty();
-            firePropertyChange("dirty", !this.dirty, this.dirty);
-        }
-    }
+	public static final Severity ERROR = new Severity(100, "error");
 
-    public void clearDirty() {
-        markDirty(false);
-    }
-
+	protected Severity(int magnitude, String label) {
+		super(magnitude, label);
+	}
 }

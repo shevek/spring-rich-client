@@ -29,7 +29,7 @@ import org.springframework.samples.petclinic.jdbc.JdbcPet;
 public class PetClinicValidationRulesSource extends DefaultRulesSource {
 
     public PetClinicValidationRulesSource() {
-        super();
+        super(); 
         addRules(createOwnerRules());
         addRules(createPetRules());
     }

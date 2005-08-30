@@ -17,13 +17,13 @@ package org.springframework.richclient.form;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.HierarchicalFormModel;
 
 /**
  * @author Keith Donald
  */
 public class CompoundForm {
-    private NestingFormModel compoundFormModel;
+    private HierarchicalFormModel compoundFormModel;
 
     public CompoundForm() {
 
@@ -41,7 +41,7 @@ public class CompoundForm {
         return FormModelHelper.createChildPageFormModel(getFormModel(), formName);
     }
 
-    public NestingFormModel getFormModel() {
+    public HierarchicalFormModel getFormModel() {
         return compoundFormModel;
     }
 
@@ -53,10 +53,10 @@ public class CompoundForm {
         if (compoundFormModel == null) {
             this.compoundFormModel = createCompoundFormModel(formObject);
         }
-        this.compoundFormModel.setFormObject(formObject);
+        this.compoundFormModel.getFormObjectHolder().setValue(formObject);
     }
 
-    protected NestingFormModel createCompoundFormModel(Object formObject) {
+    protected HierarchicalFormModel createCompoundFormModel(Object formObject) {
         return FormModelHelper.createCompoundFormModel(formObject);
     }
 

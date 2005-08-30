@@ -19,7 +19,6 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.core.closure.Closure;
 
 /**
@@ -130,13 +129,6 @@ public class ListenerListHelperTest extends TestCase {
         catch (ArrayIndexOutOfBoundsException e) {
             // expected
         }
-    }
-
-    public void testForEach() {
-        llh.forEach(new TestClosure(new TestListener[] {}));
-        llh.add(l1);
-        llh.add(l3);
-        llh.forEach(new TestClosure(new TestListener[] { l1, l3 }));
     }
 
     public void testFire() {

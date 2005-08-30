@@ -15,86 +15,134 @@
  */
 package org.springframework.binding.form;
 
-import java.beans.PropertyChangeListener;
-import java.util.Map;
-
+import org.springframework.beans.InvalidPropertyException;
+import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
 
 /**
+ * A form model represents the state and behavior of a form independently from 
+ * the UI used to present the form.
+ * 
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
 public interface FormModel extends PropertyChangePublisher {
-    public static final String ENABLED_PROPERTY = "enabled";
 
-    public static final String DIRTY_PROPERTY = "dirty";
+    /**
+     * The name of the bound property <em>dirty</em>.
+     */
+    String DIRTY_PROPERTY = "dirty";
+
+    /**
+     * The name of the bound property <em>enabled</em>.       
+     */
+    String ENABLED_PROPERTY = "enabled";
     
     /**
-     * Returns the ID of this form model (may be empty or <code>null</code>).
+     * Returns the id that is used to identify this form model.
      */
-    public String getId();
+    String getId();
 
-    public Object getFormObject();
-
-    public void setFormObject(Object formObject);
-
-    public ValueModel getFormObjectHolder();
-
-    public ValueModel getValueModel(String formPropertyPath);
-        
     /**
-     * Returns a type converting value model for the given form property path. The 
-     * type of the value returned from the provided value model is guaranteed to 
+     * Returns the object currently backing this form. This object is held by the 
+     * FormObjectHolder. 
+     */
+    Object getFormObject();
+
+    /**
+     * Returns the value model which holds the object currently backing this 
+     * form.
+     */
+    ValueModel getFormObjectHolder();
+
+    /**
+     * Returns a value model that holds the value of the specified 
+     * form property.
+     * 
+     * @throws InvalidPropertyException if the form has no such property
+     */
+    ValueModel getValueModel(String formProperty);
+
+    /**
+     * Returns a type converting value model for the given form property. The 
+     * type of the value returned from the returned value model is guaranteed to
      * be of class targetClass.
-     * @throws IllegalArgumentException if no suitable converter for the targetClass
-     * can be found
+     * @throws InvalidPropertyException if the form has no such property
+     * @throws IllegalArgumentException if no suitable converter from the original 
+     * property class to the targetClass can be found 
      */
-    public ValueModel getValueModel(String formPropertyPath, Class targetClass);
-
-    public Object getValue(String formPropertyPath);
-
-    public Map getErrors();
+    ValueModel getValueModel(String formProperty, Class targetClass);
     
     /**
-     * Returns the FormPropertyState for the specified formPropertyPath.
+     * Returns the metadata for the given form property.
      */
-    public FormPropertyState getFormPropertyState(String formPropertyPath);
+    PropertyMetadata getPropertyMetadata(String formProperty);
     
     /**
-     * Returns the FormPropertyFaceDescriptor for the specified formPropertyPath.
+     * Returns true if the form has a value model for the provided property name.
      */
-    public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String formPropertyPath);
+    boolean hasProperty(String formProperty);
 
-    public boolean getHasErrors();
+    /**
+     * Commits any changes buffered by the form property value models into the
+     * current form backing object.
+     * 
+     * @throws IllegalStateException if the form model is disabled or is validation 
+     * and has validation errors.
+     */
+    void commit();
 
-    public boolean getBufferChangesDefault();
+    /**
+     * Reverts any dirty value models back to the original values that were loaded 
+     * from the current form backing object since last call to either commit or revert 
+     * or since the last change of the form backing object. 
+     */
+    void revert();
+    
+    /**
+     * Does this form model buffer changes.
+     */
+    boolean isBuffered();
 
-    public boolean isDirty();
+    /**
+     * Returns true if any of the value models holding properties of this form
+     * have been modified since the last call to either commit or revert or since 
+     * the last change of the form backing object. 
+     */
+    boolean isDirty();
 
-    public boolean isEnabled();
+    /**
+     * Returns true if this form is enabled (an enabled form is one which is able to be 
+     * modified).
+     */
+    boolean isEnabled();
+    
+    /**
+     * Adds the specified listener to the list if listeners notified when a commit 
+     * happens.
+     */
+    void addCommitListener(CommitListener listener);
 
-    public void setEnabled(boolean enabled);
+    /**
+     * Removes the specified listener to the list if listeners notified when a commit 
+     * happens.
+     */
+    void removeCommitListener(CommitListener listener);
 
-    public void commit();
-
-    public void revert();
-
-    public void reset();
-
-    public void addFormObjectChangeListener(PropertyChangeListener listener);
-
-    public void removeFormObjectChangeListener(PropertyChangeListener listener);
-
-    public void addFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener);
-
-    public void removeFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener);
-
-    public void addValidationListener(ValidationListener listener);
-
-    public void removeValidationListener(ValidationListener listener);
-
-    public void addCommitListener(CommitListener listener);
-
-    public void removeCommitListener(CommitListener listener);
-
+    /**
+     * FIXME: this should be on the PropertyMetadata class
+     */
+    FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String propertyName);
+    
+    /**
+     * Returns a PropertyAccessStrategy that allows for access to the properties of 
+     * this form. 
+     * <p>
+     * NOTE: this is not the same as the MutablePropertyAccessStrategy used to access
+     * properties on the backing form object.
+     * 
+     * FIXME: this needs to work some other way...
+     */
+    PropertyAccessStrategy getPropertyAccessStrategy();
 }

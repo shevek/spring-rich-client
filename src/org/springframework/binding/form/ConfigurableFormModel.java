@@ -15,27 +15,25 @@
  */
 package org.springframework.binding.form;
 
-import org.springframework.binding.MutablePropertyAccessStrategy;
-import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 
 /**
+ * Sub-interface implemented by form models that allow for configuration 
+ * of the form's value models, id etc.. 
+ * 
  * @author Keith Donald
+ * @author Oliver Hutchison
  */
-public interface ConfigurableFormModel extends NestableFormModel {
+public interface ConfigurableFormModel extends FormModel {
     public void setId(String id);
-  
-    public void setFormProperties(String[] formPropertyPaths);
-
-    public MutablePropertyAccessStrategy getPropertyAccessStrategy();
-
-    public PropertyMetadataAccessStrategy getMetadataAccessStrategy();
     
-    public ValueModel add(String formPropertyPath);
-
-    public ValueModel add(String formPropertyPath, boolean bufferChanges);
-
-    public ValueModel add(String formPropertyPath, ValueModel valueModel);
+    public void setEnabled(boolean enabled);
     
-    public void validate();
+    public ValueModel add(String propertyName);
+
+    public ValueModel add(String propertyName, ValueModel valueModel);
+    
+    public ValueModel addMethod(String propertyMethodName, String derivedFromProperty);
+    
+    public ValueModel addMethod(String propertyMethodName, String[] derivedFromProperties);   
 }

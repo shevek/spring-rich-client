@@ -29,8 +29,8 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationListener;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 
@@ -56,25 +56,24 @@ public class FileChooserComboBox extends AbstractControlFactory {
 
     private File startDirectory;
 
-    private ConfigurableFormModel formModel;
+    private ValidatingFormModel formModel;
 
     private String formProperty;
 
     public FileChooserComboBox() {
-
     }
 
-    public FileChooserComboBox(ConfigurableFormModel formModel, String formProperty) {
+    public FileChooserComboBox(ValidatingFormModel formModel, String formProperty) {
         this.formModel = formModel;
         this.formProperty = formProperty;
     }
 
     public void addValidationListener(ValidationListener listener) {
-        formModel.addValidationListener(listener);
+        formModel.getValidationResults().addValidationListener(listener);
     }
 
     public void removeValidationListener(ValidationListener listener) {
-        formModel.removeValidationListener(listener);
+        formModel.getValidationResults().removeValidationListener(listener);
     }
 
     public void setLabelMessageCode(String labelKey) {
@@ -95,7 +94,7 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     public File getSelectedFile() {
-        return (File)formModel.getValue(formProperty);
+        return (File)formModel.getValueModel(formProperty).getValue();
     }
 
     public void setEnabled(boolean enabled) {
@@ -104,7 +103,8 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     protected JComponent createControl() {
-        this.fileNameField = (JTextField) new SwingBindingFactory(formModel).createBinding(JTextField.class, formProperty).getControl();
+        this.fileNameField = (JTextField)new SwingBindingFactory(formModel).createBinding(JTextField.class,
+                formProperty).getControl();
         JLabel fileToProcess = getComponentFactory().createLabelFor(fileChooserLabel, fileNameField);
         this.browseButton = getComponentFactory().createButton("button.browse");
         browseButton.addActionListener(new ActionListener() {

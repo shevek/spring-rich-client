@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.ComboBoxModel;
 import javax.swing.MutableComboBoxModel;
 
+import org.springframework.binding.value.support.ListListModel;
 import org.springframework.util.ObjectUtils;
 
 /**

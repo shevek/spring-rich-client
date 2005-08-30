@@ -19,42 +19,56 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.FormPropertyState;
-import org.springframework.binding.form.NestableFormModel;
+import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+import org.springframework.binding.value.support.DirtyTrackingValueModel;
 
 /**
- * Default implementation of FormPropertyState.
+ * Default implementation of PropertyMetadata. 
+ * <p>
+ * NOTE: This is a framework internal class and should not be
+ * instantiated in user code. 
  * 
  * @author Oliver Hutchison
  */
-public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher implements FormPropertyState {
+public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implements PropertyMetadata {
 
     private final FormModel formModel;
 
-    private boolean forceReadOnly;
+    private final DirtyTrackingValueModel valueModel;
+
+    private final Class propertyType;
+
+    private final boolean forceReadOnly;
 
     private boolean oldReadOnly;
 
     private boolean readOnly;
 
-    private boolean oldEnabled;
-
     private boolean enabled = true;
+
+    private boolean oldEnabled = true;
+    
+    private final DirtyChangeHandler dirtyChangeHandler = new DirtyChangeHandler();
+
+    private final PropertyChangeListener formChangeHandler = new FormModelChangeHandler();
 
     /**
      * Constructs a new instance of DefaultFormPropertyMetadata. 
      * 
      * @param formModel the form model 
-     * @param property the property this metadata is for
+     * @param valueModel the value model for the property  
+     * @param propertyType the type of the property
      * @param forceReadOnly should readOnly be forced to true; this is required if the 
      * property can not be modified. e.g. at the PropertyAccessStrategy level.
      */
-    public DefaultFormPropertyMetadata(NestableFormModel formModel, String property, boolean forceReadOnly) {
+    public PropertyMetadataImpl(FormModel formModel, DirtyTrackingValueModel valueModel, Class propertyType, boolean forceReadOnly) {
         this.formModel = formModel;
+        this.valueModel = valueModel;
+        this.valueModel.addPropertyChangeListener(DirtyTrackingValueModel.DIRTY_PROPERTY, dirtyChangeHandler);
+        this.propertyType = propertyType;
         this.forceReadOnly = forceReadOnly;
-        final PropertyChangeListener listener = new FormModelAndParentChangeListener();
-        this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, listener);
+        this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, formChangeHandler);        
         this.oldReadOnly = isReadOnly();
         this.oldEnabled = isEnabled();
     }
@@ -79,52 +93,39 @@ public class DefaultFormPropertyMetadata extends AbstractPropertyChangePublisher
         return enabled && formModel.isEnabled();
     }
 
+    public boolean isDirty() {
+        return valueModel.isDirty();
+    }
+
+    public Class getPropertyType() {
+        return propertyType;
+    }
+
+    public Object getUserMetadata(String key) {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
     /**
-     * This class is responsible for listening for changes to the enabled and readOnly
-     * properties of the parent FormPropertyState and the FormModel
+     * Propogates dirty changes from the value model on to 
+     * the dirty change listeners attached to this class.
      */
-    private class FormModelAndParentChangeListener implements PropertyChangeListener {
+    private class DirtyChangeHandler extends CommitListenerAdapter implements PropertyChangeListener {
+
         public void propertyChange(PropertyChangeEvent evt) {
-            if (ENABLED_PROPERTY.equals(evt.getPropertyName())) {
-                firePropertyChange(ENABLED_PROPERTY, Boolean.valueOf(oldEnabled), Boolean.valueOf(isEnabled()));
-                oldEnabled = isEnabled();
-            }
-            else if (READ_ONLY_PROPERTY.equals(evt.getPropertyName())) {
-                firePropertyChange(READ_ONLY_PROPERTY, Boolean.valueOf(oldReadOnly), Boolean.valueOf(isReadOnly()));
-                oldReadOnly = isReadOnly();
-            }
+            firePropertyChange(DIRTY_PROPERTY, evt.getOldValue(), evt.getNewValue());
         }
     }
 
-//    /**
-//     * A NULL implementation of FormPropertyState. Property is always enabled 
-//     * and never read only.
-//     */
-//    private static final class NullFormPropertyMetadata implements FormPropertyState {
-//        public void setReadOnly(boolean readOnly) {
-//        }
-//
-//        public boolean isReadOnly() {
-//            return false;
-//        }
-//
-//        public void setEnabled(boolean enabled) {
-//        }
-//
-//        public boolean isEnabled() {
-//            return true;
-//        }
-//
-//        public void addPropertyChangeListener(PropertyChangeListener listener) {
-//        }
-//
-//        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-//        }
-//
-//        public void removePropertyChangeListener(PropertyChangeListener listener) {
-//        }
-//
-//        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-//        }
-//    }
+    /**
+     * Responsible for listening for changes to the enabled 
+     * property of the FormModel
+     */
+    private class FormModelChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (FormModel.ENABLED_PROPERTY.equals(evt.getPropertyName())) {
+                firePropertyChange(ENABLED_PROPERTY, Boolean.valueOf(oldEnabled), Boolean.valueOf(isEnabled()));
+                oldEnabled = isEnabled();
+            }
+        }
+    }
 }

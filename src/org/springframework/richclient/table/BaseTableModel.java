@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.springframework.richclient.list.ObservableList;
+import org.springframework.binding.value.support.ObservableList;
 
 /**
  * @author Keith Donald

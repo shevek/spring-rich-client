@@ -18,6 +18,7 @@ package org.springframework.binding.value.support;
 import java.beans.PropertyChangeListener;
 
 import org.springframework.binding.convert.ConversionExecutor;
+import org.springframework.binding.value.DerivedValueModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 
@@ -28,7 +29,7 @@ import org.springframework.core.closure.Closure;
  * @author Keith Donald
  * @author Oliver Hutchison
  */
-public class TypeConverter extends AbstractValueModelWrapper {
+public class TypeConverter extends AbstractValueModelWrapper implements DerivedValueModel {
 
     private final Closure convertTo;
 
@@ -53,6 +54,14 @@ public class TypeConverter extends AbstractValueModelWrapper {
         if (ValueChangeHelper.hasValueChanged(getValue(), value)) {
             super.setValueSilently(convertTo.call(value), listenerToSkip);
         }
+    }
+    
+    public ValueModel[] getSourceValueModels() {
+        return new ValueModel[] {getWrappedValueModel()};
+    }
+
+    public boolean isReadOnly() {
+        return false;
     }
     
     private static class ConversionExecutorClosure implements Closure {

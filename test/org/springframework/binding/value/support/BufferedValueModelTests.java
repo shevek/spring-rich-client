@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
+import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
 
 

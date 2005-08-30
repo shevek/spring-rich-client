@@ -37,7 +37,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 
-import org.springframework.binding.form.NestingFormModel;
+import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.closure.support.Block;
@@ -404,7 +404,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     private class OwnerPropertiesExecutor extends AbstractActionCommandExecutor {
 
-        private NestingFormModel ownerFormModel;
+        private HierarchicalFormModel ownerFormModel;
 
         private OwnerGeneralForm ownerGeneralForm;
 
@@ -413,7 +413,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         public void execute() {
             final Owner owner = getSelectedOwner();
             ownerFormModel = FormModelHelper.createCompoundFormModel(owner);
-            ownerGeneralForm = new OwnerGeneralForm(ownerFormModel);
+            ownerGeneralForm = new OwnerGeneralForm(FormModelHelper.createChildPageFormModel(ownerFormModel, null));
 
             PreferenceStore ps = (PreferenceStore)getApplicationContext().getBean("preferenceStore");
             CompositeDialogPageType type = (CompositeDialogPageType)ps.getLabeledEnum(PetClinicAppearance.DIALOG_PAGE_TYPE);
@@ -424,7 +424,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                 compositePage = new TreeCompositeDialogPage("ownerProperties");
             }
             compositePage.addForm(ownerGeneralForm);
-            compositePage.addForm(new OwnerAddressForm(ownerFormModel));
+            compositePage.addForm(new OwnerAddressForm(FormModelHelper.createChildPageFormModel(ownerFormModel, null)));
 
             TitledPageApplicationDialog dialog = new TitledPageApplicationDialog(compositePage, getWindowControl()) {
                 protected void onAboutToShow() {

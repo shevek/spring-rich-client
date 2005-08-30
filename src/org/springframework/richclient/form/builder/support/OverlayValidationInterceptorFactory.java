@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
@@ -33,7 +34,7 @@ import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.util.OverlayHelper;
-import org.springframework.rules.reporting.Severity;
+
 
 /**
  * Adds an "overlay" to a component that is triggered by a validation event. The

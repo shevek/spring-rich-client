@@ -40,11 +40,11 @@ public abstract class AbstractBindingFactory implements BindingFactory {
 
     private BinderSelectionStrategy binderSelectionStrategy;
     
-    private ConfigurableFormModel formModel;
+    private FormModel formModel;
     
     private FormComponentInterceptor interceptor;
     
-    protected AbstractBindingFactory(ConfigurableFormModel formModel) {
+    protected AbstractBindingFactory(FormModel formModel) {
         Assert.notNull(formModel, "formModel can not be null.");
         this.formModel = formModel;        
         this.interceptor = Application.services().getInterceptor(formModel);

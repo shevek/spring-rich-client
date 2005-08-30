@@ -114,6 +114,9 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 	}
 
 	public Iterator iterator() {
+        if (propertiesConstraints.isEmpty()) {
+            initRules();
+        }
 		return propertiesConstraints.values().iterator();
 	}
 

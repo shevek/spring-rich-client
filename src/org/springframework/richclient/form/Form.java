@@ -16,8 +16,8 @@
 
 package org.springframework.richclient.form;
 
-import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
@@ -29,7 +29,7 @@ import org.springframework.richclient.factory.ControlFactory;
 public interface Form extends ControlFactory {
     public String getId();
 
-    public ConfigurableFormModel getFormModel();
+    public ValidatingFormModel getFormModel();
 
     public Object getFormObject();
 

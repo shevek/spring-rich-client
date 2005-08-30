@@ -18,6 +18,8 @@ package org.springframework.binding.value.support;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.springframework.binding.value.CommitTrigger;
+import org.springframework.binding.value.CommitTriggerListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;

@@ -19,39 +19,31 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.ValidationEvent;
-import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.form.support.DefaultFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.richclient.core.Guarded;
 
 /**
  * 
  * @author Keith Donald
  */
-public class FormGuard implements ValidationListener, PropertyChangeListener {
+public class FormGuard implements PropertyChangeListener {
 
-    private final FormModel formModel;
+    private final ValidatingFormModel formModel;
 
     private final Guarded guarded;
 
-    public FormGuard(FormModel formModel, Guarded guarded) {
+    public FormGuard(ValidatingFormModel formModel, Guarded guarded) {
         this.formModel = formModel;
         this.formModel.addPropertyChangeListener(FormModel.ENABLED_PROPERTY, this);
-        this.formModel.addPropertyChangeListener(DefaultFormModel.HAS_ERRORS_PROPERTY, this);        
+        this.formModel.getValidationResults().addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY,
+                this);
         this.guarded = guarded;
         update(formModel);
     }
 
-    public void constraintSatisfied(ValidationEvent event) {
-        update(event.getFormModel());
-    }
-
-    public void constraintViolated(ValidationEvent event) {
-        update(event.getFormModel());
-    }
-
-    protected void update(FormModel formModel) {
-        guarded.setEnabled((!formModel.getHasErrors()) && formModel.isEnabled());
+    protected void update(ValidatingFormModel formModel) {
+        guarded.setEnabled((!formModel.getValidationResults().getHasErrors()) && formModel.isEnabled());
     }
 
     public void propertyChange(PropertyChangeEvent e) {

@@ -31,7 +31,6 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.binding.support.EventListenerListHelper;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServices;
@@ -45,6 +44,7 @@ import org.springframework.richclient.application.config.ApplicationWindowConfig
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.richclient.util.Memento;
 import org.springframework.util.Assert;
 
@@ -191,7 +191,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
         Assert.state(getServices().containsBean(pageDescriptorId),
                 "Do not know about page or view descriptor with name '" + pageDescriptorId
-                + "' - check your context config");
+                        + "' - check your context config");
         Object desc = getServices().getBean(pageDescriptorId);
         if (desc instanceof PageDescriptor) {
             return (PageDescriptor)desc;
@@ -221,8 +221,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         prepareWindowForView(windowControl, configurer);
     }
 
-    protected void applyStandardLayout(JFrame windowControl,
-                                       ApplicationWindowConfigurer configurer) {
+    protected void applyStandardLayout(JFrame windowControl, ApplicationWindowConfigurer configurer) {
         windowControl.setTitle(configurer.getTitle());
         windowControl.setIconImage(configurer.getImage());
         windowControl.setJMenuBar(createMenuBarControl());
@@ -235,8 +234,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         windowControl.getContentPane().add(this.currentPage.getControl());
     }
 
-    protected void prepareWindowForView(JFrame windowControl,
-                                        ApplicationWindowConfigurer configurer) {
+    protected void prepareWindowForView(JFrame windowControl, ApplicationWindowConfigurer configurer) {
         windowControl.pack();
         windowControl.setSize(configurer.getInitialSize());
 
@@ -247,8 +245,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
             // Note that if this is running on a JVM prior to 1.4, then an
             // exception will be thrown and we will fall back to
             // setLocationRelativeTo(...).
-            final Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                    .getMaximumWindowBounds();
+            final Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
             final Dimension windowSize = windowControl.getSize();
             final int x = screenBounds.x + ((screenBounds.width - windowSize.width) / 2);

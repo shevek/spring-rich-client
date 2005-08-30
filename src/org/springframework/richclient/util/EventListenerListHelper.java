@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.support;
+package org.springframework.richclient.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -23,10 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.core.NestedRuntimeException;
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.ElementGenerator;
-import org.springframework.core.closure.support.IteratorTemplate;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
@@ -166,18 +162,6 @@ public class EventListenerListHelper implements Serializable {
 		else {
 			return new ObjectArrayIterator(listeners);
 		}
-	}
-
-	public ElementGenerator iteratorTemplate() {
-		return new IteratorTemplate(iterator());
-	}
-
-	/**
-	 * Executes the provided closure on each of the listeners registered with
-	 * this list.
-	 */
-	public void forEach(Closure closure) {
-		iteratorTemplate().run(closure);
 	}
 
 	/**
@@ -323,22 +307,6 @@ public class EventListenerListHelper implements Serializable {
 				this.listeners = EMPTY_OBJECT_ARRAY;
 			}
 		}
-	}
-
-	public boolean isAdded(final Class listenerClass) {
-		return iteratorTemplate().anyTrue(new Constraint() {
-			public boolean test(Object o) {
-				return o.getClass().equals(listenerClass);
-			}
-		});
-	}
-
-	public boolean isAdded(final Object listener) {
-		return iteratorTemplate().anyTrue(new Constraint() {
-			public boolean test(Object o) {
-				return o == listener;
-			}
-		});
 	}
 
 	private void fireEventByReflection(String eventName, Object[] events) {

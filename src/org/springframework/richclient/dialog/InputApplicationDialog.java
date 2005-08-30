@@ -23,7 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.binding.form.ConfigurableFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.FormModelHelper;
@@ -50,7 +50,7 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     private DefaultMessageAreaPane reporter;
 
-    private ConfigurableFormModel formModel;
+    private ValidatingFormModel formModel;
 
     public InputApplicationDialog(Object bean, String propertyName) {
         this(bean, propertyName, true);
@@ -60,7 +60,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         this(FormModelHelper.createFormModel(bean, bufferChanges), propertyName);
     }
 
-    public InputApplicationDialog(ConfigurableFormModel formModel, String propertyName) {
+    public InputApplicationDialog(ValidatingFormModel formModel, String propertyName) {
         this();
         this.formModel = formModel;
         setInputField(new SwingBindingFactory(formModel).createBinding(propertyName).getControl());
@@ -101,7 +101,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         if (reporter == null) {
             this.reporter = new DefaultMessageAreaPane();
             if (this.formModel != null) {
-                new SimpleValidationResultsReporter(formModel, this, this.reporter);
+                new SimpleValidationResultsReporter(formModel.getValidationResults(), this, this.reporter);
                 formModel.validate();
             }
         }
@@ -182,7 +182,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         }
     }
 
-    public ConfigurableFormModel getFormModel() {
+    public ValidatingFormModel getFormModel() {
         return formModel;
     }
         

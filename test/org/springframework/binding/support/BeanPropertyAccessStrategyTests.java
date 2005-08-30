@@ -24,17 +24,18 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
 import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.support.Block;
+import org.springframework.jmx.export.naming.MetadataNamingStrategy;
 
 /**
  * Tests class {@link BeanPropertyAccessStrategy}.
- * 
- * TODO: Metadata tests
  * 
  * @author Oliver Hutchison
  */
@@ -205,23 +206,20 @@ public class BeanPropertyAccessStrategyTests extends TestCase {
             // expected
         }        
     }
-  
-//    
-// who the hell uses write only properties??? 
-//     
-//    public void testWriteOnlyProperty() {
-//        vm = pas.getPropertyValueModel("writeOnly");
-//        
-//        vm.setValue("2");
-//        assertEquals("2" , testBean.writeOnly);
-//        
-//        try {
-//            vm.getValue();
-//            fail("should have thrown NotReadablePropertyException");
-//        } catch(NotReadablePropertyException e) {
-//            // expected
-//        }        
-//    }
+     
+    public void testWriteOnlyProperty() {
+        vm = pas.getPropertyValueModel("writeOnly");
+        
+        vm.setValue("2");
+        assertEquals("2" , testBean.writeOnly);
+        
+        try {
+            vm.getValue();
+            fail("should have thrown NotReadablePropertyException");
+        } catch(NotReadablePropertyException e) {
+            // expected
+        }        
+    }
 
     public void testBeanThatImplementsPropertyChangePublisher() {
         TestBeanWithPCP testBeanPCP = new TestBeanWithPCP();
@@ -279,5 +277,37 @@ public class BeanPropertyAccessStrategyTests extends TestCase {
                 assertEquals(valueToTest, e.getNewValue());
             }
         }
+    }
+    
+    public void testMetaData() {
+        PropertyMetadataAccessStrategy mas = pas.getMetadataAccessStrategy();
+        
+        assertPropertyMetadata(mas, "simpleProperty", String.class, true, true);
+        assertPropertyMetadata(mas, "mapProperty", Map.class, true, true);
+        assertPropertyMetadata(mas, "listProperty", List.class, true, true);
+        assertPropertyMetadata(mas, "readOnly", Object.class, true, false);
+        assertPropertyMetadata(mas, "writeOnly", Object.class, false, true);        
+        
+        try {
+            assertPropertyMetadata(mas, "nestedProperty.simpleProperty", String.class, true, true);
+            fail("should have thrown NullValueInNestedPathException");
+        } catch(NullValueInNestedPathException e) {
+            // expected
+        }        
+        final TestBean nestedProperty = new TestBean();
+        testBean.setNestedProperty(nestedProperty);
+        assertPropertyMetadata(mas, "nestedProperty.simpleProperty", String.class, true, true);
+        
+//          FIXME: this test should pass.        
+//        final Map map = new HashMap();
+//        testBean.setMapProperty(map);
+//        map.put(".key", new Integer(1));        
+//        assertPropertyMetadata(mas, "mapProperty[.key]", String.class, true, true);
+    }
+
+    private void assertPropertyMetadata(PropertyMetadataAccessStrategy mas, String property, Class type, boolean isReadable, boolean isWriteable) {
+        assertEquals(type, mas.getPropertyType(property));        
+        assertEquals(isReadable, mas.isReadable(property));        
+        assertEquals(isWriteable, mas.isWriteable(property));
     }
 }

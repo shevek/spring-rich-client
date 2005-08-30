@@ -26,8 +26,6 @@ import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.PropertyMetadataAccessStrategy;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.ComponentFactory;
@@ -102,10 +100,6 @@ public abstract class AbstractBinder implements Binder {
     }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
-        return getPropertyMetadataAccessStrategy(formModel).getPropertyType(formPropertyPath);
-    }
-
-    protected PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy(FormModel formModel) {
-        return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
+        return formModel.getPropertyMetadata(formPropertyPath).getPropertyType();
     }
 }

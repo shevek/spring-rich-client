@@ -32,17 +32,17 @@ import junit.framework.TestCase;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.beans.support.SortDefinition;
-import org.springframework.binding.form.ConfigurableFormModel;
+import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ListListModel;
+import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
-import org.springframework.richclient.list.ListListModel;
-import org.springframework.richclient.list.ObservableList;
 
 /**
  * @author Oliver Hutchison
@@ -142,7 +142,7 @@ public class SwingBindingFactoryTests extends TestCase {
     }
 
     public void testCreateBoundListModel() {
-        ValueModel vm = ((ConfigurableFormModel)sbf.getFormModel()).getPropertyAccessStrategy().getPropertyValueModel(
+        ValueModel vm = ((DefaultFormModel)sbf.getFormModel()).getFormObjectPropertyAccessStrategy().getPropertyValueModel(
                 "listProperty");
         ObservableList observableList = sbf.createBoundListModel("listProperty");
 

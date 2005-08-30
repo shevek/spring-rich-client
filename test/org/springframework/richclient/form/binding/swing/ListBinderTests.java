@@ -27,7 +27,7 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import org.springframework.beans.support.PropertyComparator;
-import org.springframework.binding.form.FormPropertyState;
+import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.StaticApplicationContext;
@@ -78,7 +78,7 @@ public class ListBinderTests extends AbstractBindingTests {
     protected void setupBinding(final String formPropertyPath) {
         vm = fm.getValueModel(formPropertyPath);
         context.put(ListBinder.SELECTED_ITEM_HOLDER_KEY, vm);
-        final Class selectionPropertyType = fm.getMetadataAccessStrategy().getPropertyType(formPropertyPath);
+        final Class selectionPropertyType = fm.getPropertyMetadata(formPropertyPath).getPropertyType();
         if (selectionPropertyType != null) {
             context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
         }
@@ -126,7 +126,7 @@ public class ListBinderTests extends AbstractBindingTests {
 
     public void testComponentTracksReadOnlyChanges() {
         multipleSelectionBinding();
-        FormPropertyState state = fm.getFormPropertyState("listProperty");
+        PropertyMetadata state = fm.getPropertyMetadata("listProperty");
         assertEquals(true, c.isEnabled());
         state.setReadOnly(true);
         assertEquals(false, c.isEnabled());

@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ValueChangeHelper {
+public abstract class ValueChangeHelper {
     /*
      * All the classes that are known to have a safe implementation of equals.
      */
@@ -36,7 +36,7 @@ public class ValueChangeHelper {
      * As many objects do not implement #equals in a manner that is strict enough for
      * the requirements of this class, difference is determined using <code>!=</code>, 
      * however, to improve accuracy #equals will be used when this is definitely 
-     * safe e.g. for Strings, Booleans, Numbers. 
+     * safe e.g. for Strings, Booleans, Numbers, Dates. 
      * 
      * @param oldValue the value before the change
      * @param newValue the value after the change

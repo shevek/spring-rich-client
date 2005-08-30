@@ -23,7 +23,7 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.support.CommitTrigger;
+import org.springframework.binding.value.CommitTrigger;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
@@ -76,7 +76,7 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
                     resetTrigger.commit();
                 }
             });
-            formModel.addFormObjectChangeListener(new PropertyChangeListener() {
+            formModel.getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
                     resetTrigger.commit();
                 }

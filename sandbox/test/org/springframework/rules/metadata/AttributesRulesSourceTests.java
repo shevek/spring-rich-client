@@ -17,11 +17,6 @@ package org.springframework.rules.metadata;
 
 import junit.framework.TestCase;
 
-import org.springframework.core.closure.Constraint;
-import org.springframework.rules.constraint.CompoundConstraint;
-import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
-import org.springframework.rules.constraint.property.PropertyValueConstraint;
-
 /**
  * @author Oliver Hutchison
  */    
@@ -46,23 +41,23 @@ public class AttributesRulesSourceTests extends TestCase {
 //        assertNull(pc2);
     }
     
-    private void assertContains(CompoundPropertyConstraint cpc, Class constraintClass) {
-        CompoundConstraint cc = (CompoundConstraint) cpc.getPredicate();
-        for (int i = 0; i < cc.size(); i++) {
-            Constraint c = cc.get(i);
-            
-            if (c.getClass().equals(constraintClass)) {
-                return; 
-            }          
-            if (c instanceof PropertyValueConstraint) {                    
-                c = ((PropertyValueConstraint) c).getConstraint();
-                if (c.getClass().equals(constraintClass)) {
-                    return;
-                } 
-            }
-        }
-        fail("Could not find constraint with class [" + constraintClass + "]");
-    }
+//    private void assertContains(CompoundPropertyConstraint cpc, Class constraintClass) {
+//        CompoundConstraint cc = (CompoundConstraint) cpc.getPredicate();
+//        for (int i = 0; i < cc.size(); i++) {
+//            Constraint c = cc.get(i);
+//            
+//            if (c.getClass().equals(constraintClass)) {
+//                return; 
+//            }          
+//            if (c instanceof PropertyValueConstraint) {                    
+//                c = ((PropertyValueConstraint) c).getConstraint();
+//                if (c.getClass().equals(constraintClass)) {
+//                    return;
+//                } 
+//            }
+//        }
+//        fail("Could not find constraint with class [" + constraintClass + "]");
+//    }
 
     /**
      * @@Object()

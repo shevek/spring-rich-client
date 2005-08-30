@@ -34,7 +34,6 @@ import javax.swing.event.ListDataListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.list.ListListModel;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 

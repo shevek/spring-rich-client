@@ -20,11 +20,9 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
-import org.springframework.binding.PropertyMetadataAccessStrategy;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptor;
-import org.springframework.binding.form.FormPropertyState;
+import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.form.binding.Binding;
@@ -42,18 +40,18 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
 
     protected final String formPropertyPath;
 
-    protected final FormPropertyState formPropertyState;
+    protected final PropertyMetadata propertyMetadata;
 
     private final Class requiredSourceClass;
 
     protected AbstractBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass) {
         this.formModel = formModel;
         this.formPropertyPath = formPropertyPath;
-        this.formPropertyState = this.formModel.getFormPropertyState(formPropertyPath);
+        this.propertyMetadata = this.formModel.getPropertyMetadata(formPropertyPath);
         this.requiredSourceClass = requiredSourceClass;
-        FormPropertyValueModelListener listener = new FormPropertyValueModelListener();
-        this.formPropertyState.addPropertyChangeListener(FormPropertyState.ENABLED_PROPERTY, listener);
-        this.formPropertyState.addPropertyChangeListener(FormPropertyState.READ_ONLY_PROPERTY, listener);
+        PropertyMetadataHandler propertyMetadataHandler = new PropertyMetadataHandler();
+        this.propertyMetadata.addPropertyChangeListener(PropertyMetadata.ENABLED_PROPERTY, propertyMetadataHandler);
+        this.propertyMetadata.addPropertyChangeListener(PropertyMetadata.READ_ONLY_PROPERTY, propertyMetadataHandler);
     }
 
     public String getProperty() {
@@ -69,7 +67,7 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
     }
 
     protected Class getPropertyType() {
-        return getPropertyMetadataAccessStrategy().getPropertyType(formPropertyPath);
+        return propertyMetadata.getPropertyType();
     }
 
     protected JComponent createControl() {
@@ -99,7 +97,7 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
      * @see FormPropertyState
      */
     protected boolean isReadOnly() {
-        return formPropertyState.isReadOnly();
+        return propertyMetadata.isReadOnly();
     }
 
     /**
@@ -107,7 +105,7 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
      * @see FormPropertyState
      */
     protected boolean isEnabled() {
-        return formPropertyState.isEnabled();
+        return propertyMetadata.isEnabled();
     }
 
     protected ValueModel getValueModel() {
@@ -121,16 +119,13 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
         return getValueModel().getValue();
     }
 
-    private PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy() {
-        return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
-    }
 
-    private class FormPropertyValueModelListener implements PropertyChangeListener {
+    private class PropertyMetadataHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            if (FormPropertyState.ENABLED_PROPERTY.equals(evt.getPropertyName())) {
+            if (PropertyMetadata.ENABLED_PROPERTY.equals(evt.getPropertyName())) {
                 enabledChanged();
             }
-            else if (FormPropertyState.READ_ONLY_PROPERTY.equals(evt.getPropertyName())) {
+            else if (PropertyMetadata.READ_ONLY_PROPERTY.equals(evt.getPropertyName())) {
                 readOnlyChanged();
             }
         }

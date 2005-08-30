@@ -15,6 +15,9 @@
  */
 package org.springframework.binding.value.support;
 
+import org.springframework.binding.value.CommitTrigger;
+import org.springframework.binding.value.CommitTriggerListener;
+
 import junit.framework.TestCase;
 
 /**

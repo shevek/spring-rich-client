@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2005 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,301 +15,237 @@
  */
 package org.springframework.binding.form.support;
 
-import java.util.Collections;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
-import org.springframework.binding.convert.ConversionExecutor;
-import org.springframework.binding.convert.ConversionService;
-import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.support.BeanPropertyAccessStrategy;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.DefaultValidationMessage;
+import org.springframework.binding.validation.DefaultValidationResults;
+import org.springframework.binding.validation.DefaultValidationResultsModel;
+import org.springframework.binding.validation.RichValidator;
+import org.springframework.binding.validation.Severity;
+import org.springframework.binding.validation.ValidationMessage;
+import org.springframework.binding.validation.ValidationResultsModel;
+import org.springframework.binding.validation.Validator;
+import org.springframework.binding.validation.support.RulesValidator;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.BufferedValueModel;
-import org.springframework.binding.value.support.CommitTrigger;
-import org.springframework.binding.value.support.TypeConverter;
-import org.springframework.richclient.util.ClassUtils;
-import org.springframework.util.Assert;
+import org.springframework.binding.value.support.AbstractValueModelWrapper;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.util.Assert;
 
 /**
- * @author Keith Donald
+ * Default form model implementation. Is configurable, hierarchical and validating.
+ * 
+ * @author  Keith Donald
+ * @author  Oliver Hutchison 
  */
-public class DefaultFormModel extends AbstractFormModel implements ConfigurableFormModel {
-    public static final String HAS_ERRORS_PROPERTY = "hasErrors";
+public class DefaultFormModel extends AbstractFormModel implements ValidatingFormModel {
 
-    private CommitTrigger commitTrigger = new CommitTrigger();
+    private final DefaultValidationResultsModel validationResultsModel = new DefaultValidationResultsModel();
 
-    private Map valueModels = new HashMap();
+    private final Map bindingErrorMessages = new HashMap();
 
-    private Map convertingValueModels = new HashMap();
+    private boolean validating = true;
+
+    private boolean oldValidating = true;
+
+    private Validator validator;
 
     public DefaultFormModel() {
     }
 
     public DefaultFormModel(Object domainObject) {
-        this(new BeanPropertyAccessStrategy(domainObject));
+        super(domainObject);
+    }
+    
+    public DefaultFormModel(Object domainObject, boolean buffered) {
+        super(domainObject, buffered);
     }
 
     public DefaultFormModel(ValueModel domainObjectHolder) {
-        this(new BeanPropertyAccessStrategy(domainObjectHolder));
+        super(domainObjectHolder);
+    }
+    
+    public DefaultFormModel(ValueModel domainObjectHolder, boolean buffered) {
+        super(domainObjectHolder, buffered);
     }
 
     public DefaultFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
-        this(domainObjectAccessStrategy, true);
+        super(domainObjectAccessStrategy, true);
     }
 
     public DefaultFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy, boolean bufferChanges) {
-        super(domainObjectAccessStrategy);
-        setBufferChangesDefault(bufferChanges);
+        super(domainObjectAccessStrategy, bufferChanges);
     }
 
-    public void setFormProperties(String[] formPropertyPaths) {
-        valueModels.clear();
-        for (int i = 0; i < formPropertyPaths.length; i++) {
-            add(formPropertyPaths[i]);
-        }
+    public boolean isValidating() {
+        return validating;
     }
 
-    protected void handleEnabledChange() {
-        if (isEnabled()) {
-            validate();
-        }
-        else {
-            doClearErrors();
-        }
+    public void setValidating(boolean validating) {
+        this.validating = validating;
+        validatingUpdated();
     }
 
-    protected void doClearErrors() {
-    }
-
-    protected Iterator valueModelIterator() {
-        return this.valueModels.values().iterator();
-    }
-
-    public void addValidationListener(ValidationListener listener) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeValidationListener(ValidationListener listener) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ValueModel add(String formPropertyPath) {
-        return add(formPropertyPath, getBufferChangesDefault());
-    }
-
-    public ValueModel add(String formPropertyPath, boolean bufferChanges) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Adding new form value model for property '" + formPropertyPath + "'");
-        }
-        ValueModel formValueModel = getPropertyAccessStrategy().getPropertyValueModel(formPropertyPath);
-        if (bufferChanges) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Creating form value buffer for property '" + formPropertyPath + "'");
-            }
-            formValueModel = new BufferedValueModel(formValueModel, commitTrigger);
-        }
-        else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No buffer created; value model updates will commit directly to the domain layer");
-            }
-        }
-        return add(formPropertyPath, formValueModel);
-    }
-
-    public ValueModel add(String formPropertyPath, ValueModel formValueModel) {
-        if (formValueModel instanceof BufferedValueModel) {
-            ((BufferedValueModel)formValueModel).setCommitTrigger(commitTrigger);
-        }
-        else {
-            ValueModel unwrapped = unwrap(formValueModel);
-            if (unwrapped instanceof BufferedValueModel) {
-                ((BufferedValueModel)unwrapped).setCommitTrigger(commitTrigger);
-            }
-        }
-        formValueModel = preProcessNewFormValueModel(formPropertyPath, formValueModel);
-        valueModels.put(formPropertyPath, formValueModel);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Registering '" + formPropertyPath + "' form property, property value model=" + formValueModel);
-        }
-        postProcessNewFormValueModel(formPropertyPath, formValueModel);
-        return formValueModel;
-    }
-
-    protected ValueModel preProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel) {
-        return formValueModel;
-    }
-
-    protected void postProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel) {
-
-    }
-
-    public ValueModel getValueModel(String formPropertyPath) {
-        return getValueModel(formPropertyPath, null);
-    }
-
-    protected ValueModel preProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel,
-            Class targetClass) {
-        return formValueModel;
-    }
-
-    protected void postProcessNewFormValueModel(String formPropertyPath, ValueModel formValueModel, Class targetClass) {
-    }
-
-    public ValueModel getValueModel(String formPropertyPath, Class targetClass) {
-        final ConvertingValueModelKey key = new ConvertingValueModelKey(formPropertyPath, targetClass);
-        ValueModel valueModel = (ValueModel)convertingValueModels.get(key);
-        if (valueModel == null) {
-            valueModel = getParent() != null ? getParent().findValueModel(formPropertyPath, targetClass) : null;
-            if (valueModel != null) {
-                valueModel = preProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
-                postProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
-                convertingValueModels.put(key, valueModel);
-                return valueModel;
+    protected void validatingUpdated() {
+        boolean validating = isValidating();
+        if (hasChanged(oldValidating, validating)) {
+            if (validating) {
+                validate();
             }
             else {
-                valueModel = createConvertingValueModel(formPropertyPath, targetClass);
-                valueModel = preProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
-                postProcessNewFormValueModel(formPropertyPath, valueModel, targetClass);
-                convertingValueModels.put(key, valueModel);
-                return valueModel;
+                validationResultsModel.clearAllValidationResults();
             }
-        }
-        else {
-            return valueModel;
+            oldValidating = validating;
+            firePropertyChange(VALIDATING_PROPERTY, !validating, validating);
         }
     }
 
-    private ValueModel createConvertingValueModel(String propertyName, Class targetClass) {
-        final Class sourceClass = ClassUtils.convertPrimitiveToWrapper(getPropertyAccessStrategy().getMetadataAccessStrategy().getPropertyType(propertyName));
-        if (targetClass == null) {
-            return add(propertyName);
-        }
-        else if (sourceClass == targetClass) {
-            return getValueModel(propertyName);
-        }
-        final ConversionService conversionService = getConversionService();
-        ConversionExecutor convertTo = conversionService.getConversionExecutor(sourceClass, targetClass);
-        ConversionExecutor convertFrom = conversionService.getConversionExecutor(targetClass, sourceClass);
-        return new TypeConverter(getValueModel(propertyName), convertTo, convertFrom);
+    public ValidationResultsModel getValidationResults() {
+        return validationResultsModel;
     }
 
     public void validate() {
-    }
-
-    public boolean getHasErrors() {
-        return false;
-    }
-
-    public Map getErrors() {
-        return Collections.EMPTY_MAP;
-    }
-
-    public boolean isDirty() {
-        if (getFormObject() instanceof FormObject) {
-            return ((FormObject)getFormObject()).isDirty();
-        }
-        else if (getBufferChangesDefault()) {
-            Iterator it = valueModels.values().iterator();
-            while (it.hasNext()) {
-                ValueModel model = unwrap((ValueModel)it.next());
-                if (model instanceof BufferedValueModel) {
-                    BufferedValueModel bufferable = (BufferedValueModel)model;
-                    if (bufferable.isBuffering()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public void commit() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Commit requested for this form model " + this);
-        }
-        if (getFormObject() == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Form object is null; nothing to commit.");
-            }
-            return;
-        }
-        if (!isEnabled()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Form is not enabled; committing null value.");
-            }
-            setFormObject(null);
-            if (getFormObjectHolder() instanceof BufferedValueModel) {
-                ((BufferedValueModel)getFormObjectHolder()).commit();
-            }
-            return;
-        }
-        if (getBufferChangesDefault()) {
-            if (getHasErrors()) {
-                throw new IllegalStateException("Form has errors; submit not allowed.");
-            }
-            if (preEditCommit()) {
-                commitTrigger.commit();
-                if (getFormObjectHolder() instanceof BufferedValueModel) {
-                    ((BufferedValueModel)getFormObjectHolder()).commit();
-                }
-                postEditCommit();
-            }
+        if (validating) {
+            validateAfterPropertyChanged(null);
         }
     }
 
-    public void revert() {
-        if (getBufferChangesDefault()) {
-            commitTrigger.revert();
+    protected Validator getValidator() {
+        if (validator == null) {
+            validator = new RulesValidator(this);
         }
+        return validator;
     }
 
-    private static class ConvertingValueModelKey {
-
-        private final String propertyName;
-
-        private final Class targetClass;
-
-        public ConvertingValueModelKey(String propertyName, Class targetClass) {
-            Assert.notNull(propertyName, "propertyName must not be null.");
-            //            Assert.notNull(targetClass, "targetClass must not be null.");
-            this.propertyName = propertyName;
-            this.targetClass = targetClass;
-        }
-
-        public String getPropertyName() {
-            return propertyName;
-        }
-
-        public Class getTargetClass() {
-            return targetClass;
-        }
-
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof ConvertingValueModelKey)) {
-                return false;
-            }
-            final ConvertingValueModelKey key = (ConvertingValueModelKey)o;
-            return propertyName.equals(key.propertyName)
-                    && (targetClass == key.targetClass || (targetClass != null && targetClass.equals(key.targetClass)));
-        }
-
-        public int hashCode() {
-            return (propertyName.hashCode() * 29) + (targetClass == null ? 7 : targetClass.hashCode());
-        }
+    public void setValidator(Validator validator) {
+        Assert.required(validator, "validator");
+        this.validator = validator;
     }
 
-    public ValueModel findValueModel(String propertyPath, Class targetType) {
-        if (targetType == null) {
-            return (ValueModel)valueModels.get(propertyPath);
+    protected boolean preEditCommit() {
+        Assert.isTrue(!getValidationResults().getHasErrors(), "Form has errors; submit not allowed.");
+        return true;
+    }
+
+    protected ValueModel preProcessNewValueModel(String formProperty, ValueModel formValueModel) {
+        if (!(formValueModel instanceof ValidatingFormValueModel)) {
+            return new ValidatingFormValueModel(formProperty, formValueModel, true);
         }
         else {
-            return (ValueModel)convertingValueModels.get(new ConvertingValueModelKey(propertyPath, null));
+            return formValueModel;
+        }
+    }
+
+    protected void postProcessNewValueModel(String formProperty, ValueModel valueModel) {
+        validateAfterPropertyChanged(formProperty);
+    }
+
+    protected ValueModel preProcessNewConvertingValueModel(String formProperty, Class targetClass,
+            ValueModel formValueModel) {
+        return new ValidatingFormValueModel(formProperty, formValueModel, false);
+    }
+
+    protected void postProcessNewConvertingValueModel(String formProperty, Class targetClass, ValueModel valueModel) {
+    }
+
+    protected void formPropertyValueChanged(String formProperty) {
+        validateAfterPropertyChanged(formProperty);
+    }
+
+    /**
+     * 
+     * @param formProperty the name of the only property that has changed since the 
+     * last call to validateAfterPropertyChange or <code>null</code> if this is not
+     * known/availible.
+     */
+    protected void validateAfterPropertyChanged(String formProperty) {
+        if (validating) {
+            Validator validator = getValidator();
+            if (validator != null) {
+                DefaultValidationResults validationResults = new DefaultValidationResults(bindingErrorMessages.values());
+                if (formProperty != null && validator instanceof RichValidator) {
+                    validationResults.addAllMessages(((RichValidator)validator).validate(getFormObject(), formProperty));
+                }
+                else {
+                    validationResults.addAllMessages(validator.validate(getFormObject()));
+                }
+                validationResultsModel.updateValidationResults(validationResults);
+            }
+        }
+    }
+
+    private void clearBindingError(ValidatingFormValueModel valueModel) {
+        ValidationMessage validationMessage = (ValidationMessage)bindingErrorMessages.get(valueModel);
+        if (validationMessage != null) {
+            validationResultsModel.removeValidationMessage(validationMessage);
+        }
+    }
+
+    protected void raiseBindingError(ValidatingFormValueModel valueModel, Object badValue, Exception e) {
+        ValidationMessage oldValidationMessage = (ValidationMessage)bindingErrorMessages.get(valueModel);
+        ValidationMessage newValidationMessage = getBindingErrorMessage(valueModel.getFormProperty(), badValue, e);
+        bindingErrorMessages.put(valueModel, newValidationMessage);
+        if (validating) {
+            validationResultsModel.replaceMessage(oldValidationMessage, newValidationMessage);
+        }
+    }
+
+    protected ValidationMessage getBindingErrorMessage(String propertyName, Object badValue, Exception e) {
+        // FIXME: this needs a nice implementation!
+        return new DefaultValidationMessage(propertyName, Severity.ERROR, "Something bad has happend!");
+    }
+
+    public String toString() {
+        return new ToStringCreator(this).append("id", getId()).append("buffered", isBuffered()).append("enabled", isEnabled()).append(
+                "dirty", isDirty()).append("validating", isValidating()).append("validationResults",
+                getValidationResults()).toString();
+    }
+
+    protected class ValidatingFormValueModel extends AbstractValueModelWrapper {
+        private final String formProperty;
+
+        private final ValueChangeHandler valueChangeHander;
+
+        public ValidatingFormValueModel(String formProperty, ValueModel model, boolean validateOnChange) {
+            super(model);
+            this.formProperty = formProperty;
+            if (validateOnChange) {
+                this.valueChangeHander = new ValueChangeHandler();
+                addValueChangeListener(valueChangeHander);
+            }
+            else {
+                this.valueChangeHander = null;
+            }
+        }
+
+        public String getFormProperty() {
+            return formProperty;
+        }
+
+        public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
+            try {
+                if (logger.isDebugEnabled()) {
+                    Class valueClass = (value != null ? value.getClass() : null);
+                    logger.debug("Setting '" + formProperty + "' value to convert/validate '" + value + "', class="
+                            + valueClass);
+                }
+                super.setValueSilently(value, listenerToSkip);
+                clearBindingError(this);
+            }
+            catch (Exception e) {
+                logger.debug("Exception occurred setting value", e);
+                raiseBindingError(this, value, e);
+            }
+        }
+
+        public class ValueChangeHandler implements PropertyChangeListener {
+            public void propertyChange(PropertyChangeEvent evt) {
+                formPropertyValueChanged(formProperty);
+            }
         }
     }
 }

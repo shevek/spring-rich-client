@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.list;
+package org.springframework.binding.value.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +26,6 @@ import java.util.ListIterator;
 import javax.swing.AbstractListModel;
 
 import org.springframework.binding.value.IndexAdapter;
-import org.springframework.binding.value.support.AbstractIndexAdapter;
 import org.springframework.util.ObjectUtils;
 
 /**

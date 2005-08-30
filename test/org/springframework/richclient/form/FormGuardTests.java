@@ -17,7 +17,7 @@ package org.springframework.richclient.form;
 
 import junit.framework.TestCase;
 
-import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
@@ -108,11 +108,11 @@ public class FormGuardTests extends TestCase {
         assertTrue("guarded should still be enabled", guarded.isEnabled());
 
         formModel.getValueModel("field").setValue(null);
-        assertTrue(formModel.getHasErrors());
+        assertTrue(formModel.getValidationResults().getHasErrors());
         assertFalse("guarded should be disabled", guarded.isEnabled());
 
         formModel.getValueModel("field").setValue("test");
-        assertFalse(formModel.getHasErrors());
+        assertFalse(formModel.getValidationResults().getHasErrors());
         assertTrue("guarded should be enabled", guarded.isEnabled());
     }
 }

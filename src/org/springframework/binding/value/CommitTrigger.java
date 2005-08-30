@@ -13,10 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.value.support;
+package org.springframework.binding.value;
 
-import org.springframework.binding.support.EventListenerListHelper;
-import org.springframework.core.closure.Closure;
+import java.util.Iterator;
+
+import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
  * A class that can be used to trigger an event on a group of objects. Mainly 
@@ -28,20 +29,6 @@ import org.springframework.core.closure.Closure;
  */
 public class CommitTrigger {
     
-    private static final Closure commitClosure = new Closure() {
-        public Object call(Object listener) {
-            ((CommitTriggerListener)listener).commit();
-            return null;
-        }
-    };
-    
-    private static final Closure revertClosure = new Closure() {
-        public Object call(Object listener) {
-            ((CommitTriggerListener)listener).revert();
-            return null;
-        }
-    };
-
     private final EventListenerListHelper listeners = new EventListenerListHelper(CommitTriggerListener.class);
 
     /**
@@ -54,14 +41,18 @@ public class CommitTrigger {
      * Triggers a commit event.
      */
     public void commit() {
-        listeners.forEach(commitClosure);
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ((CommitTriggerListener)i.next()).commit();            
+        }
     }
 
     /**
      * Triggers a revert event.
      */
     public void revert() {
-        listeners.forEach(revertClosure);
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ((CommitTriggerListener)i.next()).revert();           
+        }
     }
     
     

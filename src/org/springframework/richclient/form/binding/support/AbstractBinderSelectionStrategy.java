@@ -19,9 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.springframework.binding.PropertyMetadataAccessStrategy;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
 import org.springframework.richclient.util.ClassUtils;
@@ -150,15 +149,11 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
     }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
-        return getPropertyMetadataAccessStrategy(formModel).getPropertyType(formPropertyPath);
+        return formModel.getPropertyMetadata(formPropertyPath).getPropertyType();
     }
 
     protected boolean isEnumeration(FormModel formModel, String formPropertyPath) {
-        return getPropertyMetadataAccessStrategy(formModel).isEnumeration(formPropertyPath);
-    }
-
-    protected PropertyMetadataAccessStrategy getPropertyMetadataAccessStrategy(FormModel formModel) {
-        return ((ConfigurableFormModel)formModel).getMetadataAccessStrategy();
+        return LabeledEnum.class.isAssignableFrom(getPropertyType(formModel, formPropertyPath));
     }
 
     private static class PropertyNameKey {

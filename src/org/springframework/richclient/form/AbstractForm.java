@@ -24,19 +24,19 @@ import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 import org.springframework.binding.form.CommitListener;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.ValidationListener;
+import org.springframework.binding.form.HierarchicalFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.IndexAdapter;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ObservableList;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
-import org.springframework.richclient.list.ObservableList;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -47,9 +47,9 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractForm extends AbstractControlFactory implements Form, CommitListener {
     private String formId;
 
-    private ConfigurableFormModel formModel;
+    private ValidatingFormModel formModel;
 
-    private NestingFormModel parentFormModel;
+    private HierarchicalFormModel parentFormModel;
 
     private Guarded formEnabledGuarded;
 
@@ -92,12 +92,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     protected AbstractForm(FormModel formModel, String formId) {
         setId(formId);
-        if (formModel instanceof NestingFormModel) {
-            this.parentFormModel = (NestingFormModel)formModel;
-            setFormModel(FormModelHelper.createChildPageFormModel(this.parentFormModel, formId));
-        }
-        else if (formModel instanceof ConfigurableFormModel) {
-            setFormModel((ConfigurableFormModel)formModel);
+        if (formModel instanceof ValidatingFormModel) {
+            setFormModel((ValidatingFormModel)formModel);
         }
         else {
             throw new IllegalArgumentException("Unsupported form model implementation " + formModel);
@@ -105,18 +101,14 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         init();
     }
 
-    protected AbstractForm(NestingFormModel parentFormModel, String formId) {
-        this(FormModelHelper.createChildPageFormModel(parentFormModel, formId), formId);
-    }
-
-    protected AbstractForm(NestingFormModel parentFormModel, String formId, String childFormObjectPropertyPath) {
+    protected AbstractForm(HierarchicalFormModel parentFormModel, String formId, String childFormObjectPropertyPath) {
         setId(formId);
         this.parentFormModel = parentFormModel;
         setFormModel(FormModelHelper.createChildPageFormModel(parentFormModel, formId, childFormObjectPropertyPath));
         init();
     }
 
-    protected AbstractForm(NestingFormModel parentFormModel, String formId, ValueModel childFormObjectHolder) {
+    protected AbstractForm(HierarchicalFormModel parentFormModel, String formId, ValueModel childFormObjectHolder) {
         setId(formId);
         this.parentFormModel = parentFormModel;
         setFormModel(FormModelHelper.createChildPageFormModel(parentFormModel, formId, childFormObjectHolder));
@@ -124,9 +116,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected void init() {
-        
+
     }
-    
+
     public String getId() {
         return formId;
     }
@@ -135,27 +127,27 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         this.formId = formId;
     }
 
-    public ConfigurableFormModel getFormModel() {
+    public ValidatingFormModel getFormModel() {
         return formModel;
     }
-    
+
     public BindingFactory getBindingFactory() {
         return new SwingBindingFactory(formModel);
     }
 
-    protected void setFormModel(ConfigurableFormModel formModel) {
+    protected void setFormModel(ValidatingFormModel formModel) {
         Assert.notNull(formModel);
         if (this.formModel != null && isControlCreated()) {
             throw new UnsupportedOperationException("Cannot reset form model once form control has been created");
         }
-        if (this.formModel != null) {            
+        if (this.formModel != null) {
             this.formModel.removeCommitListener(this);
         }
         this.formModel = formModel;
         this.formModel.addCommitListener(this);
     }
 
-    protected NestingFormModel getParent() {
+    protected HierarchicalFormModel getParent() {
         return this.parentFormModel;
     }
 
@@ -185,7 +177,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         public void propertyChange(PropertyChangeEvent evt) {
             int selectionIndex = getEditingFormObjectIndex();
             if (selectionIndex == -1) {
-                reset();
+                // FIXME: why do we need this                   
+                // getFormModel().reset();
                 setEnabled(false);
             }
             else {
@@ -193,7 +186,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                     setFormObject(getEditableFormObject(selectionIndex));
                     setEnabled(true);
                 }
-            }            
+            }
         }
     }
 
@@ -237,9 +230,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected final JComponent createControl() {
-        Assert
-                .state(getFormModel() != null,
-                        "This form's FormModel cannot be null once control creation is triggered!");
+        Assert.state(getFormModel() != null, "This form's FormModel cannot be null once control creation is triggered!");
         initStandardLocalFormCommands();
         JComponent formControl = createFormControl();
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
@@ -250,7 +241,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             attachFormErrorGuard(getCommitCommand());
             getFormModel().addCommitListener(this);
         }
-        getFormModel().validate();
         return formControl;
     }
 
@@ -354,7 +344,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
         ActionCommand newFormObjectCommand = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
-                getFormModel().reset();
+                // FIXME: why do we need this                   
+                // getFormModel().reset();
                 getFormModel().setEnabled(true);
                 editingNewFormObject = true;
                 if (isEditingFormObjectSelected()) {
@@ -407,7 +398,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             else {
                 int index = getEditingFormObjectIndex();
                 // Avoid updating unless we have actually selected an object for edit
-                if( index >= 0 ) {
+                if (index >= 0) {
                     IndexAdapter adapter = editableFormObjects.getIndexAdapter(index);
                     adapter.setValue(formObject);
                     adapter.fireIndexedObjectChanged();
@@ -445,8 +436,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     protected String getNewFormObjectCommandId() {
         return "new"
-                + StringUtils
-                        .capitalize(ClassUtils.getShortName(getFormModel().getFormObject().getClass() + "Command"));
+                + StringUtils.capitalize(ClassUtils.getShortName(getFormModel().getFormObject().getClass() + "Command"));
     }
 
     protected String getCommitCommandFaceDescriptorId() {
@@ -458,8 +448,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected void attachFormErrorGuard(Guarded guarded) {
-        FormGuard guard = new FormGuard(getFormModel(), guarded);
-        addValidationListener(guard);
+        new FormGuard(getFormModel(), guarded);        
     }
 
     public Object getFormObject() {
@@ -467,11 +456,11 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public void setFormObject(Object formObject) {
-        formModel.setFormObject(formObject);
+        formModel.getFormObjectHolder().setValue(formObject);
     }
 
     public Object getValue(String formProperty) {
-        return formModel.getValue(formProperty);
+        return formModel.getValueModel(formProperty).getValue();
     }
 
     public ValueModel getValueModel(String formProperty) {
@@ -491,50 +480,46 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public void addValidationListener(ValidationListener listener) {
-        formModel.addValidationListener(listener);
+        formModel.getValidationResults().addValidationListener(listener);
     }
 
     public void removeValidationListener(ValidationListener listener) {
-        formModel.removeValidationListener(listener);
+        formModel.getValidationResults().removeValidationListener(listener);
     }
 
     public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
-        return new SimpleValidationResultsReporter(formModel, guarded, messageReceiver);
+        return new SimpleValidationResultsReporter(formModel.getValidationResults(), guarded, messageReceiver);
     }
 
     public void addFormObjectChangeListener(PropertyChangeListener listener) {
-        formModel.addFormObjectChangeListener(listener);
+        formModel.getFormObjectHolder().addValueChangeListener(listener);
     }
 
     public void removeFormObjectChangeListener(PropertyChangeListener listener) {
-        formModel.addFormObjectChangeListener(listener);
+        formModel.getFormObjectHolder().removeValueChangeListener(listener);
     }
 
     public void addFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
-        getFormModel().addFormValueChangeListener(formPropertyPath, listener);
+        getFormModel().getValueModel(formPropertyPath).addValueChangeListener(listener);
     }
 
     public void removeFormValueChangeListener(String formPropertyPath, PropertyChangeListener listener) {
-        getFormModel().removeFormValueChangeListener(formPropertyPath, listener);
+        getFormModel().getValueModel(formPropertyPath).removeValueChangeListener(listener);
     }
-    
+
     public boolean isDirty() {
-        return getFormModel().isDirty();
+        return formModel.isDirty();
     }
 
     public boolean hasErrors() {
-        return getFormModel().getHasErrors();
+        return formModel.getValidationResults().getHasErrors();
     }
 
     public void commit() {
-        getFormModel().commit();
+        formModel.commit();
     }
 
     public void revert() {
-        getFormModel().revert();
-    }
-
-    public void reset() {
-        getFormModel().reset();
+        formModel.revert();
     }
 }

@@ -15,20 +15,15 @@
  */
 package org.springframework.richclient.form;
 
-import java.util.Stack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.ValidationEvent;
-import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.form.support.FormModelAwareMessageTranslator;
-import org.springframework.richclient.application.Application;
+import org.springframework.binding.validation.ValidationListener;
+import org.springframework.binding.validation.ValidationMessage;
+import org.springframework.binding.validation.ValidationResults;
+import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
-import org.springframework.rules.reporting.PropertyResults;
-import org.springframework.rules.reporting.ValidationResults;
 import org.springframework.util.Assert;
 
 /**
@@ -37,67 +32,40 @@ import org.springframework.util.Assert;
 public class SimpleValidationResultsReporter implements ValidationListener {
     private static final Log logger = LogFactory.getLog(SimpleValidationResultsReporter.class);
 
-    private FormModel formModel;
+    private ValidationResultsModel resultsModel;
 
     private Guarded guarded;
 
     private Messagable messageReceiver;
 
-    private Stack messages = new Stack();
-
-    public SimpleValidationResultsReporter(FormModel formModel, Guarded guarded, Messagable messageReceiver) {
-        Assert.notNull(formModel, "formModel is required");
+    public SimpleValidationResultsReporter(ValidationResultsModel resultsModel, Guarded guarded,
+            Messagable messageReceiver) {
+        Assert.notNull(resultsModel, "resultsModel is required");
         Assert.notNull(guarded, "guarded is required");
         Assert.notNull(messageReceiver, "messagePane is required");
-        this.formModel = formModel;
+        this.resultsModel = resultsModel;
         this.guarded = guarded;
         this.messageReceiver = messageReceiver;
         init();
     }
 
     private void init() {
-        if (formModel.getHasErrors()) {
+        if (resultsModel.getHasErrors()) {
             guarded.setEnabled(false);
         }
         else {
             guarded.setEnabled(true);
         }
-        formModel.addValidationListener(this);
-    }
-
-    public void constraintSatisfied(ValidationEvent event) {
-        remove(event);
-        update(event);
-    }
-
-    public void constraintViolated(ValidationEvent event) {
-        put(event);
-        update(event);
-    }
-
-    private void remove(ValidationEvent event) {
-        messages.remove(event);
-    }
-
-    private void put(ValidationEvent event) {
-        int index = messages.indexOf(event);
-        if (index == -1) {
-            messages.push(event);
-        }
-        else {
-            messages.remove(index);
-            messages.push(event);
-        }
+        resultsModel.addValidationListener(this);
     }
 
     public void clearErrors() {
-        messages.clear();
         messageReceiver.setMessage(null);
         guarded.setEnabled(true);
     }
 
-    private void update(ValidationEvent event) {
-        if (!event.getFormModel().getHasErrors()) {
+    public void validationResultsChanged(ValidationResults results) {
+        if (!results.getHasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Form has no errors; enabling guarded component and clearing error message.");
             }
@@ -109,20 +77,13 @@ public class SimpleValidationResultsReporter implements ValidationListener {
                 logger.debug("Form has errors; disabling guarded component and setting error message.");
             }
             guarded.setEnabled(false);
-            if (messages.size() > 0) {
-                ValidationEvent error = (ValidationEvent)messages.peek();
-                messageReceiver
-                        .setMessage(new Message(translate(error.getResults()), error.getResults().getSeverity()));
+            if (results.getMessageCount() > 0) {
+                ValidationMessage message = (ValidationMessage) results.getMessages().get(0);
+                messageReceiver.setMessage(new Message(message.getMessage(), message.getSeverity()));
             }
             else {
                 messageReceiver.setMessage(null);
             }
         }
     }
-
-    private String translate(ValidationResults results) {
-        FormModelAwareMessageTranslator messageTranslator = new FormModelAwareMessageTranslator(formModel, Application.services());
-        return messageTranslator.getMessage((PropertyResults)results);
-    }
-
 }

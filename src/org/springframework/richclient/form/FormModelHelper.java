@@ -15,17 +15,13 @@
  */
 package org.springframework.richclient.form;
 
-import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.NestingFormModel;
-import org.springframework.binding.form.ValidationListener;
-import org.springframework.binding.form.support.CompoundFormModel;
-import org.springframework.binding.form.support.ValidatingFormModel;
+import org.springframework.binding.form.HierarchicalFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.form.support.DefaultFormModel;
+import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
-import org.springframework.rules.RulesSource;
 
 /**
  * @author Keith Donald
@@ -41,22 +37,38 @@ public class FormModelHelper {
     }
 
     public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, String formId) {
-        return createFormModel(formObject, Application.services().getRulesSource(), bufferChanges, formId);
-    }
-
-    public static ValidatingFormModel createFormModel(Object formObject, RulesSource rulesSource,
-            boolean bufferChanges, String formId) {
-        ValidatingFormModel formModel = new ValidatingFormModel(formObject);
-        formModel.setId(formId);
-        formModel.setRulesSource(rulesSource);
-        formModel.setBufferChangesDefault(bufferChanges);
+        DefaultFormModel formModel = new DefaultFormModel(formObject, bufferChanges);
+        formModel.setId(formId);       
         return formModel;
     }
 
-    public static NestingFormModel createCompoundFormModel(Object formObject, String formId) {
-        CompoundFormModel model = new CompoundFormModel(formObject);
+    public static ValidatingFormModel createCompoundFormModel(Object formObject, String formId) {
+        DefaultFormModel model = new DefaultFormModel(formObject);
         model.setId(formId);
-        model.setRulesSource(Application.services().getRulesSource());
+        return model;
+    }
+    
+    public static ValidatingFormModel createFormModel(ValueModel formObjectHolder) {
+        return createFormModel(formObjectHolder, true, null);
+    }
+    
+    public static ValidatingFormModel createFormModel(ValueModel formObjectHolder, String formId) {
+        return createFormModel(formObjectHolder, true, formId);
+    }
+
+    public static ValidatingFormModel createUnbufferedFormModel(ValueModel formObjectHolder, String formId) {
+        return createFormModel(formObjectHolder, false, formId);
+    }
+
+    public static ValidatingFormModel createFormModel(ValueModel formObjectHolder, boolean bufferChanges, String formId) {
+        DefaultFormModel formModel = new DefaultFormModel(formObjectHolder, bufferChanges);
+        formModel.setId(formId);       
+        return formModel;
+    }
+
+    public static ValidatingFormModel createCompoundFormModel(ValueModel formObjectHolder, String formId) {
+        DefaultFormModel model = new DefaultFormModel(formObjectHolder);
+        model.setId(formId);
         return model;
     }
 
@@ -72,12 +84,15 @@ public class FormModelHelper {
         return createFormModel(formObject, bufferChanges, null);
     }
 
-    public static NestingFormModel createCompoundFormModel(Object formObject) {
+    public static HierarchicalFormModel createCompoundFormModel(Object formObject) {
         return createCompoundFormModel(formObject, null);
     }
 
-    public static ConfigurableFormModel createChildPageFormModel(NestingFormModel groupingModel, String pageName) {
-        return groupingModel.createChild(pageName);
+    public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName) {        
+        ValidatingFormModel child = createFormModel(parentModel.getFormObjectHolder());
+        child.setId(childPageName);
+        parentModel.addChild(child);
+        return child;
     }
 
     /**
@@ -92,24 +107,25 @@ public class FormModelHelper {
      *        the FormModelHelper is for
      * @return The child form model
      */
-    public static ConfigurableFormModel createChildPageFormModel(NestingFormModel groupingModel, String childPageName,
+    public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName,
             String childFormObjectPropertyPath) {
-        return groupingModel.createChild(childPageName, childFormObjectPropertyPath);
+        ValidatingFormModel child = createFormModel(parentModel.getValueModel(childFormObjectPropertyPath));
+        child.setId(childPageName);
+        parentModel.addChild(child);
+        return child;
     }
 
-    public static ConfigurableFormModel createChildPageFormModel(NestingFormModel groupingModel, String childPageName,
+    public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName,
             ValueModel childFormObjectHolder) {
-        return groupingModel.createChild(childPageName, childFormObjectHolder);
+        ValidatingFormModel child = createFormModel(childFormObjectHolder);
+        child.setId(childPageName);
+        parentModel.addChild(child);
+        return child;
     }
 
-    public static NestingFormModel createChildCompoundFormModel(NestingFormModel groupingModel, String childPageName,
-            String parentPropertyFormObjectPath) {
-        return groupingModel.createCompoundChild(childPageName, parentPropertyFormObjectPath);
-    }
-
-    public static ValidationListener createSingleLineResultsReporter(FormModel formModel, Guarded guardedComponent,
+    public static ValidationListener createSingleLineResultsReporter(ValidatingFormModel formModel, Guarded guardedComponent,
             Messagable messageReceiver) {
-        return new SimpleValidationResultsReporter(formModel, guardedComponent, messageReceiver);
+        return new SimpleValidationResultsReporter(formModel.getValidationResults(), guardedComponent, messageReceiver);
     }
 
 }

@@ -19,8 +19,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import javax.swing.JComponent;
@@ -34,9 +34,9 @@ import javax.swing.event.ListSelectionListener;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
+import org.springframework.binding.value.support.ListListModel;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
 import org.springframework.richclient.list.DynamicListModel;
-import org.springframework.richclient.list.ListListModel;
 
 public class ListBinding extends AbstractBinding {
 

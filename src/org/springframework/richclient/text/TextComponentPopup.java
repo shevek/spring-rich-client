@@ -34,8 +34,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.Keymap;
 import javax.swing.undo.UndoManager;
 
-import org.springframework.binding.value.support.CommitTrigger;
-import org.springframework.binding.value.support.CommitTriggerListener;
+import org.springframework.binding.value.CommitTrigger;
+import org.springframework.binding.value.CommitTriggerListener;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.command.ActionCommand;
