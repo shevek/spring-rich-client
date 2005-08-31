@@ -118,7 +118,7 @@ public class AbstractFormModelTests extends TestCase {
         assertTrue(fm.isDirty());
         assertEquals(3, pcl.eventCount());
 
-        fm.getFormObjectHolder().setValue(new TestBean());
+        fm.setFormObject(new TestBean());
         assertTrue(!fm.isDirty());
         assertEquals(4, pcl.eventCount());
 

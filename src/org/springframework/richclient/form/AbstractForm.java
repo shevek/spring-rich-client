@@ -456,7 +456,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public void setFormObject(Object formObject) {
-        formModel.getFormObjectHolder().setValue(formObject);
+        formModel.setFormObject(formObject);
     }
 
     public Object getValue(String formProperty) {

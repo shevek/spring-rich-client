@@ -53,7 +53,7 @@ public class CompoundForm {
         if (compoundFormModel == null) {
             this.compoundFormModel = createCompoundFormModel(formObject);
         }
-        this.compoundFormModel.getFormObjectHolder().setValue(formObject);
+        this.compoundFormModel.setFormObject(formObject);
     }
 
     protected HierarchicalFormModel createCompoundFormModel(Object formObject) {

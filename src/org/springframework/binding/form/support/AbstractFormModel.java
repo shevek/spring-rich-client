@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyAccessStrategy;
@@ -137,6 +138,28 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         return getFormObjectHolder().getValue();
     }
 
+    public void setFormObject(Object formObject) {
+        revert();
+        if (formObject == null) {
+            handleSetNullFormObject();
+        }
+        else {
+            getFormObjectHolder().setValue(formObject);
+        }
+    }
+
+    protected void handleSetNullFormObject() {
+        if (logger.isInfoEnabled()) {
+            logger.info("New form object value is null; resetting to a new fresh object instance and disabling form");
+        }
+        getFormObjectHolder().setValue(BeanUtils.instantiateClass(getFormObject().getClass()));
+        setEnabled(false);
+    }
+    
+    /**
+     * Returns the value model which holds the object currently backing this 
+     * form.
+     */
     public ValueModel getFormObjectHolder() {
         return formObjectHolder;
     }
@@ -239,7 +262,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         mediatingValueModels.put(formProperty, mediatingValueModel);
 
         // XXX: this is very broken as it assumes that the added value model was derived
-        // from the property access strategy when this is no always the case. 
+        // from the property access strategy when this is not always the case. 
         PropertyMetadataAccessStrategy metadataAccessStrategy = getFormObjectPropertyAccessStrategy().getMetadataAccessStrategy();
         PropertyMetadata metadata = new PropertyMetadataImpl(this, mediatingValueModel,
                 metadataAccessStrategy.getPropertyType(formProperty), !metadataAccessStrategy.isWriteable(formProperty));

@@ -51,6 +51,12 @@ public interface FormModel extends PropertyChangePublisher {
     Object getFormObject();
 
     /**
+     * Sets the object currently backing ths form.
+     */
+    void setFormObject(Object formObject);
+    
+
+    /**
      * Returns the value model which holds the object currently backing this 
      * form.
      */
