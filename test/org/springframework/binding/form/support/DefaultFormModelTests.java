@@ -105,9 +105,14 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(4, v.count);
         assertEquals(1, r.getMessageCount());
         assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        
+        fm.validate();
+        assertEquals(5, v.count);
+        assertEquals(1, r.getMessageCount());
+        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
     }
     
-    public void testRaiseClearValidaionMessage() {
+    public void testRaiseClearValidationMessage() {
         TestDefaultFormModel fm = (TestDefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
@@ -121,7 +126,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(1, r.getMessageCount());
         assertEquals("1", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
         
-        fm.clearValdationMessage(message1);
+        fm.clearValidationMessage(message1);
         assertEquals(0, r.getMessageCount());
         
         fm.raiseValidationMessage(message1);
@@ -179,7 +184,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         
         fm.setValidating(true);
         assertEquals(3, v.count);
-        assertEquals(3, r.getMessageCount());
+        assertEquals(2, r.getMessageCount());
     }
 
     protected DefaultValidationResults getValidationResults(String message) {
@@ -287,7 +292,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     
     private static class TestDefaultFormModel extends DefaultFormModel  {
         public TestDefaultFormModel(Object bean) {
-            super(bean);
+            super(bean, false);
             setValidator(new TestValidator());
         }
 
@@ -301,7 +306,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         }
         
         public void clearValdationMessage(ValidationMessage validationMessage) {
-            super.clearValdationMessage(validationMessage);
+            super.clearValidationMessage(validationMessage);
         }
     }
 }
