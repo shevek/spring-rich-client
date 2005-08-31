@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.form;
 
+import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
@@ -87,6 +88,10 @@ public class FormModelHelper {
     public static HierarchicalFormModel createCompoundFormModel(Object formObject) {
         return createCompoundFormModel(formObject, null);
     }
+    
+    public static FormModel createChildPageFormModel(HierarchicalFormModel parentModel) {
+        return createChildPageFormModel(parentModel, null);
+    }
 
     public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName) {        
         ValidatingFormModel child = createFormModel(parentModel.getFormObjectHolder());
@@ -127,5 +132,7 @@ public class FormModelHelper {
             Messagable messageReceiver) {
         return new SimpleValidationResultsReporter(formModel.getValidationResults(), guardedComponent, messageReceiver);
     }
+
+
 
 }

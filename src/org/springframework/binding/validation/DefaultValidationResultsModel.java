@@ -78,9 +78,20 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
         }
         fireChangedEvents(oldValidationResults);
     }
+    // TODO: test
+    public void addMessage(ValidationMessage validationMessage) {
+        if (!validationResults.getMessages().contains(validationMessage)) {
+            ValidationResults oldValidationResults = validationResults;
+            List newMessages = new ArrayList(oldValidationResults.getMessages());
+            newMessages.add(validationMessage);
+            validationResults = new DefaultValidationResults(newMessages);
+            fireValidationResultsChanged(validationMessage.getProperty());
+            fireChangedEvents(oldValidationResults);
+        }
+    }
 
-    // @TODO: test
-    public void removeValidationMessage(ValidationMessage validationMessage) {
+    // TODO: test
+    public void removeMessage(ValidationMessage validationMessage) {
         if (validationResults.getMessages().contains(validationMessage)) {
             ValidationResults oldValidationResults = validationResults;
             List newMessages = new ArrayList(oldValidationResults.getMessages());
@@ -91,7 +102,7 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
         }
     }
 
-    // @TODO: test
+    // TODO: test
     public void replaceMessage(ValidationMessage messageToReplace, ValidationMessage replacementMessage) {        
         ValidationResults oldValidationResults = validationResults;
         List newMessages = new ArrayList(oldValidationResults.getMessages());

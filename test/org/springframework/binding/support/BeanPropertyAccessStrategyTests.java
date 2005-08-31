@@ -32,7 +32,6 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.support.Block;
-import org.springframework.jmx.export.naming.MetadataNamingStrategy;
 
 /**
  * Tests class {@link BeanPropertyAccessStrategy}.

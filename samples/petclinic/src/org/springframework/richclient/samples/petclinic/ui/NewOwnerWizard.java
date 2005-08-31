@@ -18,6 +18,7 @@ package org.springframework.richclient.samples.petclinic.ui;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.form.CompoundForm;
+import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.wizard.AbstractWizard;
 import org.springframework.richclient.wizard.FormBackedWizardPage;
 import org.springframework.richclient.wizard.WizardDialog;
@@ -42,8 +43,8 @@ public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecu
     }
 
     public void addPages() {
-        addPage(new FormBackedWizardPage(new OwnerGeneralForm(wizardForm.getFormModel())));
-        addPage(new FormBackedWizardPage(new OwnerAddressForm(wizardForm.getFormModel())));
+        addPage(new FormBackedWizardPage(new OwnerGeneralForm(FormModelHelper.createChildPageFormModel(wizardForm.getFormModel()))));
+        addPage(new FormBackedWizardPage(new OwnerAddressForm(FormModelHelper.createChildPageFormModel(wizardForm.getFormModel()))));
     }
 
     public void execute() {

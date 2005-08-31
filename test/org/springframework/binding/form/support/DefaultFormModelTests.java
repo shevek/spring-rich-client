@@ -21,6 +21,7 @@ import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
+import org.springframework.binding.validation.DefaultValidationMessage;
 import org.springframework.binding.validation.DefaultValidationResults;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
@@ -37,11 +38,11 @@ import org.springframework.binding.value.ValueModel;
 public class DefaultFormModelTests extends AbstractFormModelTests {
 
     protected AbstractFormModel getFormModel(Object formObject) {
-        return new DefaultFormModel(formObject);
+        return new TestDefaultFormModel(formObject);
     }
 
     protected AbstractFormModel getFormModel(BeanPropertyAccessStrategy pas, boolean buffering) {
-        return new DefaultFormModel(pas, buffering);
+        return new TestDefaultFormModel(pas, buffering);
     }
     
     public void testPropertyChangeCausesValidation() {
@@ -72,7 +73,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
     
     public void testValidationMessages() {
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
+        TestDefaultFormModel fm = new TestDefaultFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -85,25 +86,58 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         vm.setValue("1");
         assertEquals(2, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message1", ((ValidationMessage)r.getMessages().get(0)).getMessage());
+        assertEquals("message1", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
         
         v.results = getValidationResults("message2");
         vm.setValue("2");
         assertEquals(3, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().get(0)).getMessage());
+        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
         
         // this will cause a binding exception
         vm.setValue(new Object());
         assertEquals(3, v.count);
         assertEquals(2, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().get(0)).getMessage());
+        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
         
         // this will clear the binding exception
         vm.setValue("3");
         assertEquals(4, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().get(0)).getMessage());        
+        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+    }
+    
+    public void testRaiseClearValidaionMessage() {
+        TestDefaultFormModel fm = (TestDefaultFormModel) getFormModel(new TestBean());
+        ValidationResultsModel r = fm.getValidationResults();
+        TestValidator v = new TestValidator();
+        fm.setValidator(v);        
+        ValueModel vm = fm.getValueModel("simpleProperty");
+        
+        final DefaultValidationMessage message1 = new DefaultValidationMessage("simpleProperty", Severity.ERROR, "1");
+        
+        fm.raiseValidationMessage(message1);
+        assertEquals(1, v.count);
+        assertEquals(1, r.getMessageCount());
+        assertEquals("1", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        
+        fm.clearValdationMessage(message1);
+        assertEquals(0, r.getMessageCount());
+        
+        fm.raiseValidationMessage(message1);
+        fm.setValidating(false);
+        assertEquals(0, r.getMessageCount());
+        
+        fm.setValidating(true);
+        assertEquals(1, r.getMessageCount());        
+        
+        v.results = getValidationResults("2");
+        vm.setValue("3");
+        assertEquals(3, v.count);
+        assertEquals(2, r.getMessageCount());
+        
+        fm.clearValdationMessage(message1);
+        assertEquals(1, r.getMessageCount());
     }
     
     public void testChangingValidatingClearsMessagesOrValidates() {
@@ -201,7 +235,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(2, pcl.eventCount());
     }
     
-    public class TestValidator implements Validator {
+    public static class TestValidator implements Validator {
         
         public ValidationResults results = new DefaultValidationResults();
         
@@ -248,6 +282,26 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
         public Class[] getTargetClasses() {
             return new Class[] { targetClass };
+        }
+    }
+    
+    private static class TestDefaultFormModel extends DefaultFormModel  {
+        public TestDefaultFormModel(Object bean) {
+            super(bean);
+            setValidator(new TestValidator());
+        }
+
+        public TestDefaultFormModel(BeanPropertyAccessStrategy pas, boolean buffering) {
+            super(pas, buffering);
+            setValidator(new TestValidator());
+        }
+
+        public void raiseValidationMessage(ValidationMessage validationMessage) {
+            super.raiseValidationMessage(validationMessage);
+        }
+        
+        public void clearValdationMessage(ValidationMessage validationMessage) {
+            super.clearValdationMessage(validationMessage);
         }
     }
 }

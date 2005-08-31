@@ -17,7 +17,16 @@ package org.springframework.binding.validation;
 
 public interface ValidationMessage {
     
+    /**
+     * The property name for messages that have a global scope i.e. do not
+     * apply to a specific property.
+     */
     public static final String GLOBAL_PROPERTY = null;
+    
+    /**
+     * The time that this validation message was created.
+     */
+    long getTimeStamp();
 
     /**
      * The property that this validation message applies to; or 

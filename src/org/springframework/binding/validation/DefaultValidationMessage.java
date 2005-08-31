@@ -18,24 +18,34 @@ package org.springframework.binding.validation;
 import java.io.Serializable;
 
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Default implementation of ValidationMessage
  * 
  * @author  Oliver Hutchison
  */
-
 public class DefaultValidationMessage implements ValidationMessage, Serializable {
-    private String property;
+    private final long timeStamp;
 
-    private Severity severity;
+    private final String property;
 
-    private String message;
+    private final Severity severity;
+
+    private final String message;
 
     public DefaultValidationMessage(String property, Severity severity, String message) {
+        Assert.required(severity, "severity");
+        Assert.required(message, "message");
+        this.timeStamp = System.currentTimeMillis();
         this.property = property;
         this.severity = severity;
         this.message = message;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
     public String getProperty() {
@@ -50,8 +60,24 @@ public class DefaultValidationMessage implements ValidationMessage, Serializable
         return message;
     }
 
+    public int hashCode() {
+        return (getProperty() != null ? (getProperty().hashCode() * 27) : 0) + (getSeverity().getShortCode() * 9)
+                + getMessage().hashCode();
+    }
+
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != this.getClass()) {
+            return false;
+        }
+        DefaultValidationMessage m2 = (DefaultValidationMessage)o;
+        return ObjectUtils.nullSafeEquals(getProperty(), m2.getProperty()) && getSeverity().equals(m2.getSeverity())
+                && getMessage().equals(m2.getMessage());
+    }
+
     public String toString() {
-        return new ToStringCreator(this).append("property", getProperty()).append("severity", getSeverity().getLabel()).append(
-                "message", getMessage()).toString();
+        return new ToStringCreator(this).append("property", getProperty())
+                .append("severity", getSeverity().getLabel())
+                .append("message", getMessage())
+                .toString();
     }
 }
