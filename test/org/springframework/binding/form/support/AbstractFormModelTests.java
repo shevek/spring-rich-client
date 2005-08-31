@@ -18,7 +18,6 @@ package org.springframework.binding.form.support;
 import junit.framework.TestCase;
 
 import org.springframework.beans.NotReadablePropertyException;
-import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.CommitListener;
@@ -337,40 +336,6 @@ public class AbstractFormModelTests extends TestCase {
 
         public void postEditCommitted(Object formObject) {
             postEditCalls++;
-        }
-    }
-
-    public static class TestAbstractFormModel extends AbstractFormModel {
-
-        int preProcessCalls;
-
-        int postProcessCalls;
-
-        public TestAbstractFormModel(Object formObject) {
-            super(formObject);
-        }
-
-        public TestAbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
-            super(propertyAccessStrategy, buffered);
-        }
-
-        protected ValueModel preProcessNewValueModel(String domainObjectProperty, ValueModel formValueModel) {
-            ++preProcessCalls;
-            return formValueModel;
-        }
-
-        protected void postProcessNewValueModel(String domainObjectProperty, ValueModel valueModel) {
-            ++postProcessCalls;
-        }
-
-        protected ValueModel preProcessNewConvertingValueModel(String formProperty, Class targetClass,
-                ValueModel formValueModel) {
-            ++preProcessCalls;
-            return formValueModel;
-        }
-
-        protected void postProcessNewConvertingValueModel(String formProperty, Class targetClass, ValueModel valueModel) {
-            ++postProcessCalls;
         }
     }
 

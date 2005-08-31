@@ -21,7 +21,6 @@ import java.util.Map;
 
 import javax.swing.JComponent;
 
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.form.binding.Binder;

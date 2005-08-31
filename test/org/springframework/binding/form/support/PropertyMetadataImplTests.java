@@ -15,12 +15,11 @@
  */
 package org.springframework.binding.form.support;
 
+import junit.framework.TestCase;
+
 import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.support.TestPropertyChangeListener;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-
-import junit.framework.TestCase;
 
 /**
  * 

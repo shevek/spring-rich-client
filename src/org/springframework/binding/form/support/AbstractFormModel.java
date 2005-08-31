@@ -118,6 +118,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     protected AbstractFormModel(ValueModel formObjectHolder, boolean buffered) {
         this.formObjectHolder = formObjectHolder;
         this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
+        this.buffered = buffered;
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {

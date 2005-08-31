@@ -21,6 +21,8 @@ import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 public abstract class AbstractBindingTests extends TestCase {
     
@@ -29,6 +31,8 @@ public abstract class AbstractBindingTests extends TestCase {
     protected ValueModel vm;
 
     public final void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor()); 
         fm = new DefaultFormModel(new TestBean());        
         String property = setUpBinding();
         vm = fm.getValueModel(property);
