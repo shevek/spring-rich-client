@@ -121,7 +121,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             Severity severity = message.getSeverity();
             if (severity != null) {
                 setIcon(Application.services().getIconSource().getIcon(
-                        "severity." + severity.getShortCode() + ".overlay"));
+                        "severity." + severity.getLabel() + ".overlay"));
             }
             else {
                 setIcon(null);

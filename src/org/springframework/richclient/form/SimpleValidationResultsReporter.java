@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.form;
 
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.validation.ValidationListener;
@@ -78,12 +80,23 @@ public class SimpleValidationResultsReporter implements ValidationListener {
             }
             guarded.setEnabled(false);
             if (results.getMessageCount() > 0) {
-                ValidationMessage message = (ValidationMessage) results.getMessages().get(0);
+                ValidationMessage message = getNewestMessage(results);
                 messageReceiver.setMessage(new Message(message.getMessage(), message.getSeverity()));
             }
             else {
                 messageReceiver.setMessage(null);
             }
         }
+    }
+    
+    protected ValidationMessage getNewestMessage(ValidationResults results) {
+        ValidationMessage newestMessage = null;
+        for (Iterator i =  results.getMessages().iterator(); i.hasNext();) {
+            ValidationMessage message =(ValidationMessage)i.next();
+            if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
+                newestMessage = message;
+            }
+        }
+        return newestMessage;
     }
 }

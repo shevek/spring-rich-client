@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.form.builder.support;
 
+import java.util.Iterator;
+
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationListener;
@@ -58,12 +60,23 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
 
         public void validationResultsChanged(ValidationResults results) {
             if (results.getMessageCount(propertyName) > 0) {
-                ValidationMessage message = (ValidationMessage) results.getMessages(propertyName).get(0);
+                ValidationMessage message = getNewestMessage(results);
                 messageReceiver.setMessage(new Message(message.getMessage(), message.getSeverity()));
             }
             else {
                 messageReceiver.setMessage(null);
             }
+        }
+
+        protected ValidationMessage getNewestMessage(ValidationResults results) {
+            ValidationMessage newestMessage = null;
+            for (Iterator i =  results.getMessages(propertyName).iterator(); i.hasNext();) {
+                ValidationMessage message =(ValidationMessage)i.next();
+                if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
+                    newestMessage = message;
+                }
+            }
+            return newestMessage;
         }
     }
 
