@@ -51,8 +51,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     private HierarchicalFormModel parentFormModel;
 
-    private Guarded formEnabledGuarded;
-
+    private FormGuard formGuard;
+    
     private JButton lastDefaultButton;
 
     private PropertyChangeListener formEnabledChangeHandler;
@@ -144,6 +144,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             this.formModel.removeCommitListener(this);
         }
         this.formModel = formModel;
+        this.formGuard = new FormGuard(formModel);
         this.formModel.addCommitListener(this);
     }
 
@@ -202,17 +203,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         this.clearFormOnCommit = clearFormOnCommit;
     }
 
-    protected void setFormEnabledGuarded(Guarded formEnabledGuarded) {
-        this.formEnabledGuarded = formEnabledGuarded;
-        updateFormEnabledGuarded();
-    }
-
-    private void updateFormEnabledGuarded() {
-        if (formEnabledGuarded != null) {
-            formEnabledGuarded.setEnabled(formModel.isEnabled());
-        }
-    }
-
     protected JButton getDefaultButton() {
         if (isControlCreated()) {
             return SwingUtilities.getRootPane(getControl()).getDefaultButton();
@@ -236,9 +226,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
         getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY, formEnabledChangeHandler);
         addFormObjectChangeListener(new FormObjectChangeHandler());
-        ActionCommand commitCommand = getCommitCommand();
         if (getCommitCommand() != null) {
-            attachFormErrorGuard(getCommitCommand());
             getFormModel().addCommitListener(this);
         }
         return formControl;
@@ -288,7 +276,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
 
         private void handleEnabledChange(boolean enabled) {
-            updateFormEnabledGuarded();
 
             if (enabled) {
                 if (getCommitCommand() != null) {
@@ -342,7 +329,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
-        ActionCommand newFormObjectCommand = new ActionCommand(commandId) {
+        ActionCommand newFormObjectCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 // FIXME: why do we need this                   
                 // getFormModel().reset();
@@ -353,7 +340,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                 }
             }
         };
-        return (ActionCommand)getCommandConfigurer().configure(newFormObjectCommand);
+        attachFormGuard(newFormObjectCmd, FormGuard.LIKE_NEWFORMOBJCOMMAND);
+        return (ActionCommand)getCommandConfigurer().configure(newFormObjectCmd);
     }
 
     private boolean isEditingFormObjectSelected() {
@@ -377,12 +365,13 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
-        ActionCommand commitCommand = new ActionCommand(commandId) {
+        ActionCommand commitCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().commit();
             }
         };
-        return (ActionCommand)getCommandConfigurer().configure(commitCommand);
+        attachFormGuard(commitCmd, FormGuard.LIKE_COMMITCOMMAND);
+        return (ActionCommand)getCommandConfigurer().configure(commitCmd);
     }
 
     public boolean preEditCommitted(Object formObject) {
@@ -416,12 +405,13 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         if (!StringUtils.hasText(commandId)) {
             return null;
         }
-        ActionCommand revertCommand = new ActionCommand(commandId) {
+        ActionCommand revertCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
                 getFormModel().revert();
             }
         };
-        return (ActionCommand)getCommandConfigurer().configure(revertCommand);
+        attachFormGuard(revertCmd, FormGuard.LIKE_REVERTCOMMAND);
+        return (ActionCommand)getCommandConfigurer().configure(revertCmd);
     }
 
     protected final JButton createNewFormObjectButton() {
@@ -448,7 +438,11 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected void attachFormErrorGuard(Guarded guarded) {
-        new FormGuard(getFormModel(), guarded);        
+        attachFormGuard(guarded, FormGuard.FORMERROR_GUARDED);
+    }
+
+    protected void attachFormGuard(Guarded guarded, int mask) {
+        this.formGuard.addGuarded(guarded, mask);
     }
 
     public Object getFormObject() {
