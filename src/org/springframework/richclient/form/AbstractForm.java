@@ -374,14 +374,13 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         return (ActionCommand)getCommandConfigurer().configure(commitCmd);
     }
 
-    public boolean preEditCommitted(Object formObject) {
-        return true;
+    public void preCommit(FormModel formModel) {
     }
 
-    public void postEditCommitted(Object formObject) {
+    public void postCommit(FormModel formModel) {
         if (editableFormObjects != null) {
             if (editingNewFormObject) {
-                editableFormObjects.add(formObject);
+                editableFormObjects.add(formModel.getFormObject());
                 setEditingFormObjectIndexSilently(editableFormObjects.size() - 1);
             }
             else {
@@ -389,7 +388,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                 // Avoid updating unless we have actually selected an object for edit
                 if (index >= 0) {
                     IndexAdapter adapter = editableFormObjects.getIndexAdapter(index);
-                    adapter.setValue(formObject);
+                    adapter.setValue(formModel.getFormObject());
                     adapter.fireIndexedObjectChanged();
                 }
             }

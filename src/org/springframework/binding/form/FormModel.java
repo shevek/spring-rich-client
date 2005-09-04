@@ -40,6 +40,11 @@ public interface FormModel extends PropertyChangePublisher {
     String ENABLED_PROPERTY = "enabled";
     
     /**
+     * The name of the bound property <em>committable</em>.       
+     */
+    String COMMITTABLE_PROPERTY = "committable";
+    
+    /**
      * Returns the id that is used to identify this form model.
      */
     String getId();
@@ -94,8 +99,8 @@ public interface FormModel extends PropertyChangePublisher {
      * Commits any changes buffered by the form property value models into the
      * current form backing object.
      * 
-     * @throws IllegalStateException if the form model is disabled or is validation 
-     * and has validation errors.
+     * @throws IllegalStateException if the form model is not committable
+     * @see #isCommittable()
      */
     void commit();
 
@@ -123,6 +128,11 @@ public interface FormModel extends PropertyChangePublisher {
      * modified).
      */
     boolean isEnabled();
+    
+    /**
+     * Returns true if the changes held by this form are able to be commited.
+     */
+    boolean isCommittable();
     
     /**
      * Adds the specified listener to the list if listeners notified when a commit 

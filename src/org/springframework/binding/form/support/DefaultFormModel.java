@@ -21,12 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.form.BindingErrorMessageProvider;
 import org.springframework.binding.form.ValidatingFormModel;
-import org.springframework.binding.validation.DefaultValidationMessage;
 import org.springframework.binding.validation.DefaultValidationResults;
 import org.springframework.binding.validation.DefaultValidationResultsModel;
 import org.springframework.binding.validation.RichValidator;
-import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.binding.validation.Validator;
@@ -55,6 +54,8 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     private boolean oldValidating = true;
 
     private Validator validator;
+
+    private BindingErrorMessageProvider bindingErrorMessageProvider = new DefaultBindingErrorMessageProvider();
 
     public DefaultFormModel() {
     }
@@ -128,9 +129,8 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         this.validator = validator;
     }
 
-    protected boolean preEditCommit() {
-        Assert.isTrue(!getValidationResults().getHasErrors(), "Form has errors; submit not allowed.");
-        return true;
+    public boolean isCommittable() {        
+        return super.isCommittable() && !getValidationResults().getHasErrors();
     }
 
     protected ValueModel preProcessNewValueModel(String formProperty, ValueModel formValueModel) {
@@ -181,9 +181,9 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         }
     }
 
-    protected void raiseBindingError(ValidatingFormValueModel valueModel, Object badValue, Exception e) {
+    protected void raiseBindingError(ValidatingFormValueModel valueModel, Object valueBeingSet, Exception e) {
         ValidationMessage oldValidationMessage = (ValidationMessage)bindingErrorMessages.get(valueModel);
-        ValidationMessage newValidationMessage = getBindingErrorMessage(valueModel.getFormProperty(), badValue, e);
+        ValidationMessage newValidationMessage = getBindingErrorMessage(valueModel.getFormProperty(), valueBeingSet, e);
         bindingErrorMessages.put(valueModel, newValidationMessage);
         if (validating) {
             validationResultsModel.replaceMessage(oldValidationMessage, newValidationMessage);
@@ -225,9 +225,13 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         }
     }
 
-    protected ValidationMessage getBindingErrorMessage(String propertyName, Object badValue, Exception e) {
-        // FIXME: this needs a nice implementation!
-        return new DefaultValidationMessage(propertyName, Severity.ERROR, "Something bad has happend!");
+    protected ValidationMessage getBindingErrorMessage(String propertyName, Object valueBeingSet, Exception e) {
+        return bindingErrorMessageProvider.getErrorMessage(this, propertyName, valueBeingSet, e);
+    }
+    
+    public void setBindingErrorMessageProvider(BindingErrorMessageProvider bindingErrorMessageProvider) {
+        Assert.required(bindingErrorMessageProvider, "bindingErrorMessageProvider");
+        this.bindingErrorMessageProvider = bindingErrorMessageProvider;
     }
 
     public String toString() {

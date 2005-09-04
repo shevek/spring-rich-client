@@ -16,13 +16,13 @@
 package org.springframework.binding.form.support;
 
 import org.springframework.binding.form.CommitListener;
+import org.springframework.binding.form.FormModel;
 
 public abstract class CommitListenerAdapter implements CommitListener {
-    public boolean preEditCommitted(Object formObject) {
-        return true;
+    public void preCommit(FormModel formModel) {
     }
 
-    public void postEditCommitted(Object formObject) {
+    public void postCommit(FormModel formModel) {
     }
 
 }

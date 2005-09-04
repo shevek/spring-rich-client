@@ -176,12 +176,6 @@ public class AbstractFormModelTests extends TestCase {
         fm.commit();
         assertEquals(1, cl.preEditCalls);
         assertEquals(1, cl.postEditCalls);
-
-        cl.allowCommit = false;
-        vm.setValue("2");
-        fm.commit();
-        assertEquals(2, cl.preEditCalls);
-        assertEquals(1, cl.postEditCalls);
     }
 
     public void testCommitWritesBufferingThrough() {
@@ -191,13 +185,8 @@ public class AbstractFormModelTests extends TestCase {
         AbstractFormModel fm = getFormModel(pas, true);
         fm.addCommitListener(cl);
         ValueModel vm = fm.getValueModel("simpleProperty");
-
+        
         vm.setValue("1");
-        fm.commit();
-        assertEquals("1", p.getSimpleProperty());
-
-        cl.allowCommit = false;
-        vm.setValue("2");
         fm.commit();
         assertEquals("1", p.getSimpleProperty());
     }
@@ -322,19 +311,15 @@ public class AbstractFormModelTests extends TestCase {
     }
 
     public static class TestCommitListener implements CommitListener {
-
-        boolean allowCommit = true;
-
         int preEditCalls;
 
         int postEditCalls;
 
-        public boolean preEditCommitted(Object formObject) {
+        public void preCommit(FormModel formModel) {
             preEditCalls++;
-            return allowCommit;
         }
 
-        public void postEditCommitted(Object formObject) {
+        public void postCommit(FormModel formModel) {
             postEditCalls++;
         }
     }

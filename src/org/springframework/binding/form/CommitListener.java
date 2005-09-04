@@ -1,5 +1,4 @@
-/*
- * Copyright 2002-2004 the original author or authors.
+/* * Copyright 2002-2004 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,8 +14,22 @@
  */
 package org.springframework.binding.form;
 
+/**
+ * Listener inteface for objects interested in intercepting before and after 
+ * a form model is commited.
+ * 
+ * @author  Keith Donald
+ * @author  Oliver Hutchison
+ */
 public interface CommitListener {
-    public boolean preEditCommitted(Object formObject);
+    
+    /**
+     * Called just before a form model is about to commit.
+     */
+    void preCommit(FormModel formModel);
 
-    public void postEditCommitted(Object formObject);
+    /**
+     * Called just after a form model is commited.
+     */
+    void postCommit(FormModel formModel);
 }

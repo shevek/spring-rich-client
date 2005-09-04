@@ -21,8 +21,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.support.CommitListenerAdapter;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
@@ -67,12 +67,9 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
 
         private void registerListeners() {
             FormModel formModel = getFormModel();
-            formModel.addCommitListener(new CommitListener() {
-                public boolean preEditCommitted(Object formObject) {
-                    return true;
-                }
+            formModel.addCommitListener(new CommitListenerAdapter() {
 
-                public void postEditCommitted(Object formObject) {
+                public void postCommit(FormModel formModel) {
                     resetTrigger.commit();
                 }
             });
