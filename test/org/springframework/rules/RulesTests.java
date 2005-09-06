@@ -16,6 +16,8 @@
 
 package org.springframework.rules;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -159,8 +161,13 @@ public class RulesTests extends TestCase {
 		Constraint req = Required.instance();
 		assertFalse(req.test(""));
 		assertFalse(req.test(null));
-		assertTrue(req.test(new Integer(25)));
+        assertFalse(req.test(new ArrayList()));
+        assertFalse(req.test(new Object[0]));
+
+        assertTrue(req.test(new Integer(25)));
 		assertTrue(req.test("25"));
+        assertTrue(req.test(new Object[1]));
+        assertTrue(req.test(Arrays.asList(new Object[1])));
 	}
 
 	public void testMaxLengthConstraint() {
