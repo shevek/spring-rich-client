@@ -42,6 +42,8 @@ public class Required implements Constraint {
                 }
             } else if (argument instanceof Collection) {
                 return ((Collection)argument).size() > 0;
+            } else if( argument.getClass().isArray() ) {
+                return ((Object[])argument).length > 0;
             } else {
                 return true;
             }
