@@ -156,33 +156,45 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
         Assert.notEmpty(getPages(), "Pages must have been added first");
         for (Iterator i = pages.iterator(); i.hasNext();) {
             DialogPage page = (DialogPage)i.next();
-            page.addPropertyChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e) {
-                    if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
-                        CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
-                    }
-                    else if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
-                        if (getActivePage() == e.getSource()) {
-                            updateMessage();
-                        }
-                    }
-                    else {
-                        CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
-                    }
-                }
-            });
-            JComponent c = page.getControl();
-            GuiStandardUtils.attachDialogBorder(c);
-            Dimension size = c.getPreferredSize();
-            if (size.width > largestPageWidth) {
-                largestPageWidth = size.width;
-            }
-            if (size.height > largestPageHeight) {
-                largestPageHeight = size.height;
-            }
+            prepareDialogPage(page);
         }
     }
 
+    /**
+     * Prepare a dialog page.  Add our property listeners and configure the controls look.
+     * @param page to process
+     */
+    protected void prepareDialogPage(DialogPage page) {
+        page.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+                    CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
+                }
+                else if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+                    if (getActivePage() == e.getSource()) {
+                        updateMessage();
+                    }
+                }
+                else {
+                    CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
+                }
+            }
+        });
+        JComponent c = page.getControl();
+        GuiStandardUtils.attachDialogBorder(c);
+        Dimension size = c.getPreferredSize();
+        if (size.width > largestPageWidth) {
+            largestPageWidth = size.width;
+        }
+        if (size.height > largestPageHeight) {
+            largestPageHeight = size.height;
+        }
+    }
+    
+    /**
+     * Get the size of the largest page added so far.
+     * @return Dimension of largest page
+     */
     public Dimension getLargestPageSize() {
         return new Dimension(largestPageWidth + UIConstants.ONE_SPACE, largestPageHeight + UIConstants.ONE_SPACE);
     }
