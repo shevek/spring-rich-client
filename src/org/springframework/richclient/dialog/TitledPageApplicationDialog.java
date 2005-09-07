@@ -36,6 +36,14 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
 
     private DialogPage dialogPage;
 
+    /**
+     * Default constructor.  Make sure to call {@link #setDialogPage(DialogPage)}
+     * prior to using this dialog.
+     */
+    public TitledPageApplicationDialog() {
+        super();
+    }
+
     public TitledPageApplicationDialog(DialogPage dialogPage) {
         super();
         setDialogPage(dialogPage);
@@ -55,7 +63,7 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
         setDialogPage(dialogPage);
     }
 
-    private void setDialogPage(DialogPage dialogPage) {
+    protected void setDialogPage(DialogPage dialogPage) {
         Assert.notNull(dialogPage, "The single dialog page to display is required");
         this.dialogPage = dialogPage;
     }

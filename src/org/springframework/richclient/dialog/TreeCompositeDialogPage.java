@@ -138,6 +138,16 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         parentNode.add(childNode);
         nodes.put(child, childNode);
         super.addPage(child);
+        
+        // If we've already been constructed, then update our model and cards
+        if( pageTreeModel != null ) {
+            pageTreeModel.nodeStructureChanged(parentNode);
+        }
+        if( pagePanel != null ) {
+            prepareDialogPage(child);
+            processDialogPage(child);
+            // TODO: should resize all pages if this new page is the largest
+        }
     }
 
     /**
@@ -211,21 +221,31 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         return createContentControl();
     }
 
-    private void processDialogPage(DialogPage page) {
+    protected void processDialogPage(DialogPage page) {
         JComponent control = page.getControl();
         control.setPreferredSize(getLargestPageSize());
         pagePanel.add(control, page.getId());
     }
 
-    private JPanel createContentControl() {
+    protected JPanel createContentControl() {
         TableLayoutBuilder panelBuilder = new TableLayoutBuilder();
-        panelBuilder.cell(new JScrollPane(pageTree), "colSpec=150 rowSpec=fill:default:grow");
+        String colSpec = "colSpec=" + getTreeControlWidth() + " rowSpec=fill:default:grow";
+        panelBuilder.cell(new JScrollPane(pageTree), colSpec);
         panelBuilder.gapCol();
         panelBuilder.cell(pagePanel, "valign=top");
         return panelBuilder.getPanel();
     }
 
-    private void createTreeControl() {
+    /**
+     * Get the width of the tree component to use in the final control construction.  This
+     * default implementation returns 150.
+     * @return width of tree control
+     */
+    protected int getTreeControlWidth() {
+        return 150;
+    }
+
+    protected void createTreeControl() {
         pageTree = new JTree();
         pageTree.setRootVisible(false);
         pageTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -253,11 +273,11 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         }
     }
 
-    private DefaultMutableTreeNode getNode(DialogPage page) {
+    protected DefaultMutableTreeNode getNode(DialogPage page) {
         return (DefaultMutableTreeNode)nodes.get(page);
     }
 
-    private class PageSelector implements TreeSelectionListener {
+    protected class PageSelector implements TreeSelectionListener {
         private TreePath currentSelection;
 
         public void valueChanged(TreeSelectionEvent e) {
@@ -275,5 +295,37 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
             cardLayout.show(pagePanel, activePage.getId());
             setActivePage(activePage);
         }
+    }
+    
+    /**
+     * Get the nodes map.
+     * @return nodes map.
+     */
+    protected Map getNodes() {
+        return nodes;
+    }
+    
+    /**
+     * Get the page tree.
+     * @return page tree component.
+     */
+    protected JTree getPageTree() {
+        return pageTree;
+    }
+
+    /**
+     * Get the page panel.
+     * @return page panel component.
+     */
+    protected JPanel getPagePanel() {
+        return pagePanel;
+    }
+    
+    /**
+     * Get the page tree model.
+     * @return page tree model.
+     */
+    protected DefaultTreeModel getPageTreeModel() {
+        return pageTreeModel;
     }
 }
