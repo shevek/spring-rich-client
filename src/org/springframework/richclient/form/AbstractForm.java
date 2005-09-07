@@ -72,6 +72,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private ValueModel editingFormObjectIndexHolder;
 
     private PropertyChangeListener editingFormObjectSetter;
+    
+    private BindingFactory bindingFactory;
 
     protected AbstractForm() {
         init();
@@ -132,7 +134,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public BindingFactory getBindingFactory() {
-        return new SwingBindingFactory(formModel);
+        if( bindingFactory == null ) {
+            bindingFactory = getApplicationServices().getBindingFactory(formModel);
+        }
+        return bindingFactory;
     }
 
     protected void setFormModel(ValidatingFormModel formModel) {
@@ -184,6 +189,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             }
             else {
                 if (selectionIndex < editableFormObjects.size()) {
+                    // If we were editing a "new" object, we need to clear
+                    // that flag since a new object has been selected
+                    setEditingNewFormObject(false);
                     setFormObject(getEditableFormObject(selectionIndex));
                     setEnabled(true);
                 }

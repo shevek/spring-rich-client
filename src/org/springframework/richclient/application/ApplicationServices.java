@@ -50,7 +50,10 @@ import org.springframework.richclient.command.config.DefaultCommandConfigurer;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
+import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.BindingFactoryProvider;
 import org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactoryProvider;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.image.AwtImageResource;
@@ -91,6 +94,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     
     private static final String BINDER_SELECTION_STRATEGY_BEAN_ID = "binderSelectionStrategy";
 
+    private static final String BINDING_FACTORY_PROVIDER_BEAN_ID = "bindingFactoryProvider";
+    
     private final Log logger = LogFactory.getLog(getClass());
 
     private ComponentFactory componentFactory;
@@ -122,6 +127,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private BinderSelectionStrategy binderSelectionStrategy;
 
     private LabeledEnumResolver labeledEnumResolver = new StaticLabeledEnumResolver();
+
+    private BindingFactoryProvider bindingFactoryProvider;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -396,6 +403,38 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         this.formPropertyFaceDescriptorSource = formPropertyFaceDescriptorSource;
     }
 
+    public BindingFactoryProvider getBindingFactoryProvider() {
+        if (bindingFactoryProvider == null) {
+            initBindingFactoryProvider();
+        }
+        return bindingFactoryProvider;
+    }
+
+    private void initBindingFactoryProvider() {
+        try {
+            this.bindingFactoryProvider = (BindingFactoryProvider)getApplicationContext().getBean(
+                    BINDING_FACTORY_PROVIDER_BEAN_ID, BindingFactoryProvider.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + BINDING_FACTORY_PROVIDER_BEAN_ID
+                    + " found; configuring defaults.");
+            this.bindingFactoryProvider = new SwingBindingFactoryProvider();
+        }
+    }
+    
+    public void setBindingFactoryProvider(BindingFactoryProvider bindingFactoryProvider) {
+        this.bindingFactoryProvider = bindingFactoryProvider;
+    }
+
+    /**
+     * Produce a BindingFactory using the provided form model.
+     * @param formModel Form model on which to construct the BindingFactory
+     * @return BindingFactory
+     */
+    public BindingFactory getBindingFactory(FormModel formModel) {
+        return getBindingFactoryProvider().getBindingFactory(formModel);
+    }
+
     protected void initApplicationContext() throws BeansException {
         if (!lazyInit) {
             initStandardServices();
@@ -412,6 +451,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         getViewDescriptorRegistry();
         getRulesSource();
         getConversionService();
+        getBindingFactoryProvider();
     }
 
     public void initLookAndFeelConfigurer() {
