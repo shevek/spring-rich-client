@@ -36,7 +36,7 @@ public interface DirtyTrackingValueModel extends ValueModel, PropertyChangePubli
     void clearDirty();
 
     /**
-     * Reverts the value held by this model to the orignail value at the last call
+     * Reverts the value held by this model to the original value at the last call
      * to reset or the last time a value came up from the inner model.
      */
     void revertToOriginal();
