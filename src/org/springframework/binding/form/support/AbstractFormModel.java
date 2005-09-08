@@ -123,12 +123,20 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         this.formObjectHolder = formObjectHolder;
         this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
         this.buffered = buffered;
+
+        if (formObjectHolder instanceof BufferedValueModel) {
+            ((BufferedValueModel)formObjectHolder).setCommitTrigger(commitTrigger);
+        }
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
         this.formObjectHolder = propertyAccessStrategy.getDomainObjectHolder();
         this.propertyAccessStrategy = propertyAccessStrategy;
         this.buffered = buffered;
+
+        if (formObjectHolder instanceof BufferedValueModel) {
+            ((BufferedValueModel)formObjectHolder).setCommitTrigger(commitTrigger);
+        }
     }
 
     public String getId() {
@@ -451,6 +459,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
             ((DirtyTrackingValueModel)i.next()).revertToOriginal();
         }
+    }
+
+    /**
+     * @see FormModel#reset()
+     */
+    public void reset() {
+        setFormObject(null);
     }
 
     public boolean isBuffered() {
