@@ -268,7 +268,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 else {
                     buffer = (Collection)wrappedCollection;
                 }
-                listListModel.replaceWith(buffer);
+                listListModel.replaceWith( prepareBackingCollection( buffer ) );
             }
             else {
                 throw new IllegalArgumentException("wrappedCollection must be assignable from " + wrappedType.getName());
@@ -276,6 +276,18 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
 
         }
         return listListModel;
+    }
+
+    /**
+     * Prepare the backing collection for installation into the listListModel.  The default
+     * implementation of this method simply returns it.  Subclasses can do whatever is needed
+     * to the elements of the colleciton (or the collection itself).  For example, the
+     * elements might be cloned or wrapped in a an adapter.
+     * @param col The collection of objects to process
+     * @return processed collection
+     */
+    protected Collection prepareBackingCollection(Collection col) {
+        return col;
     }
 
     private Object getWrappedValue() {
