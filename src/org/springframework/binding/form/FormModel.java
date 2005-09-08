@@ -112,6 +112,13 @@ public interface FormModel extends PropertyChangePublisher {
     void revert();
     
     /**
+     * Reset the form by replacing the form object with a newly instantiated object of the
+     * type of the current form object. Note that this may lead to NPE's if the newly
+     * created object has null sub-objects and this form references any of these objects.
+     */
+    void reset();
+
+    /**
      * Does this form model buffer changes.
      */
     boolean isBuffered();

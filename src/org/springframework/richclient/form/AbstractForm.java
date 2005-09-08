@@ -339,8 +339,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
         ActionCommand newFormObjectCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
-                // FIXME: why do we need this                   
-                // getFormModel().reset();
+                getFormModel().reset();
                 getFormModel().setEnabled(true);
                 editingNewFormObject = true;
                 if (isEditingFormObjectSelected()) {
@@ -522,5 +521,9 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     public void revert() {
         formModel.revert();
+    }
+
+    public void reset() {
+        getFormModel().reset();
     }
 }
