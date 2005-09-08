@@ -241,6 +241,15 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertTrue(fm.isValidating());
         assertEquals(2, pcl.eventCount());
     }
+    
+    public void testReadOnlyRevert()
+    {
+        FormModel fm = getFormModel(new TestBean());
+        fm.getValueModel("readOnly");
+        fm.revert();
+        
+        // no additional asserts, this test should just not throw an exception!
+    }
 
     public static class TestValidator implements Validator {
 

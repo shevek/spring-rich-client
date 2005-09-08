@@ -34,10 +34,17 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
 
     private boolean oldDirty;
 
+    private final boolean trackDirty;
+
     public FormModelMediatingValueModel(ValueModel propertyValueModel) {
+        this(propertyValueModel, true);
+    }
+
+    public FormModelMediatingValueModel(ValueModel propertyValueModel, boolean trackDirty) {
         super(propertyValueModel);
         propertyValueModel.addValueChangeListener(this);
         originalValue = getValue();
+        this.trackDirty = trackDirty;
     }
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
@@ -59,16 +66,20 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     }
 
     public boolean isDirty() {
-        return ValueChangeHelper.hasValueChanged(originalValue, getValue());
+        return this.trackDirty  && ValueChangeHelper.hasValueChanged(originalValue, getValue());
     }
 
     public void clearDirty() {
-        originalValue = getValue();
-        valueUpdated();
+        if (this.trackDirty) {
+            originalValue = getValue();
+            valueUpdated();
+        }
     }
     
     public void revertToOriginal() {
-        setValue(originalValue);        
+        if (this.trackDirty) {
+            setValue(originalValue);
+        }
     }
 
     protected void valueUpdated() {

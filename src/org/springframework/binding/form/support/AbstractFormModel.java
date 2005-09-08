@@ -264,12 +264,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
             ((BufferedValueModel)valueModel).setCommitTrigger(commitTrigger);
         }
 
-        FormModelMediatingValueModel mediatingValueModel = new FormModelMediatingValueModel(valueModel);
-        mediatingValueModels.put(formProperty, mediatingValueModel);
-
         // XXX: this is very broken as it assumes that the added value model was derived
         // from the property access strategy when this is not always the case. 
         PropertyMetadataAccessStrategy metadataAccessStrategy = getFormObjectPropertyAccessStrategy().getMetadataAccessStrategy();
+
+        FormModelMediatingValueModel mediatingValueModel = new FormModelMediatingValueModel(valueModel, metadataAccessStrategy.isWriteable(formProperty));
+        mediatingValueModels.put(formProperty, mediatingValueModel);
+
         PropertyMetadata metadata = new PropertyMetadataImpl(this, mediatingValueModel,
                 metadataAccessStrategy.getPropertyType(formProperty), !metadataAccessStrategy.isWriteable(formProperty));
         metadata.addPropertyChangeListener(PropertyMetadata.DIRTY_PROPERTY, dirtyChangeHandler);
