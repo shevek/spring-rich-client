@@ -148,32 +148,37 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
          */
         public void processComponent(String propertyName, JComponent component) {
             JComponent inner = getInnerComponent(component);
-            if (inner instanceof JComboBox && !((JComboBox) inner).isEditable()) {
+            if (inner instanceof JComboBox ) {
                 JComboBox comboBox = (JComboBox) inner;
-                // if combobox is showing CodedEnum's, install customer editor
-                if (comboBox.getRenderer() instanceof LabeledEnumListRenderer) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Registering CodedEnumComboBoxEditor on ComboBox for property[" + propertyName
-                                + "]");
-                    }
-                    comboBox.setEditor(new LabeledEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
+                if( comboBox.isEditable()) {
+                    // It's editable, so install autocompletion for editable comboboxes
+                    new EditableComboBoxAutoCompletion(comboBox);
                 } else {
-                    if (comboBox.getRenderer() instanceof BeanPropertyValueListRenderer) {
+                    // if combobox is showing CodedEnum's, install customer editor
+                    if (comboBox.getRenderer() instanceof LabeledEnumListRenderer) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Registering BeanPropertyValueComboBoxEditor on ComboBox for property["
-                                    + propertyName + "]");
+                            logger.debug("Registering CodedEnumComboBoxEditor on ComboBox for property[" + propertyName
+                                    + "]");
                         }
-                        BeanPropertyValueListRenderer renderer = (BeanPropertyValueListRenderer) comboBox.getRenderer();
-                        comboBox.setEditor(new BeanPropertyValueComboBoxEditor(comboBox.getEditor(), renderer
-                                .getPropertyName()));
+                        comboBox.setEditor(new LabeledEnumComboBoxEditor(messages, ((JComboBox) inner).getEditor()));
                     } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Unable to register ComboBoxEditor on ComboBox for property[" + propertyName
-                                    + "], set one yourself");
+                        if (comboBox.getRenderer() instanceof BeanPropertyValueListRenderer) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Registering BeanPropertyValueComboBoxEditor on ComboBox for property["
+                                        + propertyName + "]");
+                            }
+                            BeanPropertyValueListRenderer renderer = (BeanPropertyValueListRenderer) comboBox.getRenderer();
+                            comboBox.setEditor(new BeanPropertyValueComboBoxEditor(comboBox.getEditor(), renderer
+                                    .getPropertyName()));
+                        } else {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Unable to register ComboBoxEditor on ComboBox for property[" + propertyName
+                                        + "], set one yourself");
+                            }
                         }
                     }
+                    new ComboBoxAutoCompletion(comboBox);
                 }
-                new ComboBoxAutoCompletion(comboBox);
             }
         }
     }
