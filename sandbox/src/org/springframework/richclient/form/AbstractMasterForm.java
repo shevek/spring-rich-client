@@ -406,10 +406,9 @@ public abstract class AbstractMasterForm extends AbstractForm {
         final ActionCommand detailNewObjectCommand = _detailForm.getNewFormObjectCommand();
 
         if( getDetailForm().isDirty() ) {
-            System.out.println( "Form is dirty" );
-            ConfirmationDialog dlg = new ConfirmationDialog( "Unsaved Changes",
-                "Creating a new item will cause you to lose your unsaved changes.\nAre you sure you want to do this?" ) {
-
+            String title = getMessage( "masterForm.dirtyNew.title" );
+            String message = getMessage( "masterForm.dirtyNew.message" );
+            ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
                 protected void onConfirm() {
                     // Tell both forms that we are creating a new object
                     detailNewObjectCommand.execute(); // Do subform action first
@@ -480,10 +479,9 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 return;
             }
             if( getDetailForm().isDirty() ) {
-                System.out.println( "Form is dirty" );
-                ConfirmationDialog dlg = new ConfirmationDialog(
-                    "Unsaved Changes",
-                    "Selecting a different item will cause you to lose your unsaved changes.\nAre you sure you want to select a different item?" ) {
+                String title = getMessage( "masterForm.dirtyChange.title" );
+                String message = getMessage( "masterForm.dirtyChange.message" );
+                ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
 
                     protected void onConfirm() {
                         getDetailForm().setSelectedIndex( newIndex );
