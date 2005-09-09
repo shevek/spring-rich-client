@@ -26,8 +26,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.HierarchicalFormModel;
+import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ObservableEventList;
 import org.springframework.binding.value.support.ObservableList;
@@ -35,7 +36,9 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
+import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.ConfirmationDialog;
+import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.table.ListSelectionListenerSupport;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
@@ -93,6 +96,10 @@ public abstract class AbstractMasterForm extends AbstractForm {
         Object detailObject = BeanUtils.instantiateClass( detailType );
         ValueModel valueHolder = new ValueHolder( detailObject );
         _detailForm = createDetailForm( _formModel, valueHolder, _masterEventList );
+
+        // Start the form disabled and not validating until the form is actually in use.
+        _detailForm.setEnabled( false );
+        _detailForm.getFormModel().setValidating( false );
 
         // Wire up the monitor to track the selected index and edit state so we
         // can keep the delete and add button states up to date
@@ -367,15 +374,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * @return Returns the detailFormModel.
      */
-    protected ConfigurableFormModel getDetailFormModel() {
-        return _detailFormModel;
-    }
-
-    /**
-     * @param formModel The detailFormModel to set.
-     */
-    protected void setDetailFormModel(ConfigurableFormModel formModel) {
-        _detailFormModel = formModel;
+    protected ValidatingFormModel getDetailFormModel() {
+        return _detailForm.getFormModel();
     }
 
     /**
@@ -429,16 +429,30 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * Update our controls based on our state.
      */
     protected void updateControlsForState() {
-        boolean isCreating = getDetailForm().getEditState() == AbstractDetailForm.STATE_CREATE;
+        int state = getDetailForm().getEditState();
+        boolean isCreating = state == AbstractDetailForm.STATE_CREATE;
 
         _deleteCommand.setEnabled( getDetailForm().getEditingFormObjectIndex() >= 0 );
         _newFormObjectCommand.setEnabled( !isCreating );
+
+        // If we are in the CLEAR state, then we need to disable validations on the form
+        getDetailFormModel().setValidating( state != AbstractDetailForm.STATE_CLEAR );
+    }
+
+    /**
+     * When the results reporter is setup on the master form, we need to capture it and
+     * forward it on to the detail form as well.
+     */
+    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+        ValidationListener l = super.newSingleLineResultsReporter( guarded, messageReceiver );
+        new SimpleValidationResultsReporter( getDetailFormModel().getValidationResults(), guarded, messageReceiver );
+        getDetailFormModel().validate();
+        return l;
     }
 
     private EventList _rootEventList;
     private ObservableEventList _masterEventList;
     private HierarchicalFormModel _formModel;
-    private ConfigurableFormModel _detailFormModel;
     private AbstractDetailForm _detailForm;
     private Class _detailType;
     private ActionCommand _newFormObjectCommand;
