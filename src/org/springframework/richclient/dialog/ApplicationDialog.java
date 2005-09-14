@@ -466,11 +466,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected ActionMap getActionMap() {
-        return getDialog().getRootPane().getActionMap();
+        return getDialog().getLayeredPane().getActionMap();
     }
 
     protected InputMap getInputMap() {
-        return getDialog().getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        return getDialog().getLayeredPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     /**
@@ -504,10 +504,6 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected final void attachListeners() {
         dialog.addWindowFocusListener(new WindowFocusListener() {
 
-            public void windowActivated(WindowEvent e) {
-                ApplicationDialog.this.onWindowActivated();
-            }
-
             public void windowGainedFocus(WindowEvent e) {
                 ApplicationDialog.this.onWindowGainedFocus();
             }
@@ -517,6 +513,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             }
         });
         dialog.addWindowListener(new WindowAdapter() {
+
+            public void windowActivated(WindowEvent e) {
+                ApplicationDialog.this.onWindowActivated();
+            }
 
             public void windowClosing(WindowEvent e) {
                 getCancelCommand().execute();
