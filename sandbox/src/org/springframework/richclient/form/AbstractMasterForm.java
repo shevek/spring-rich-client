@@ -322,19 +322,71 @@ public abstract class AbstractMasterForm extends AbstractForm {
             return null;
         }
 
-        ActionCommand deleteCommand = new ActionCommand( commandId ) {
+        final ActionCommand deleteCommand = new ActionCommand( commandId ) {
             protected void doExecuteCommand() {
-                // Reset the detail form and remove the item from the list
-                _detailForm.reset();
-                int index = getSelectionModel().getMinSelectionIndex();
-                if( index >= 0 ) {
-                    getMasterEventList().remove( index );
-                }
+                maybeDeleteSelectedItems();
             }
         };
-        deleteCommand.setEnabled( false ); // Until it is specifically enabled
-        // by a selection
         return (ActionCommand) getCommandConfigurer().configure( deleteCommand );
+    }
+
+    /**
+     * Get the message to present to the user when confirming the delete of
+     * selected detail items.  This default implementation just obtains the
+     * message with key <code>masterForm.confirmDelete.message</code>.
+     * Subclasses can use the selected item(s) to construct a more
+     * meaningful message.
+     */
+    protected String getConfirmDeleteMessage() {
+        return getMessage( "masterForm.confirmDelete.message" );
+    }
+
+    /**
+     * Maybe delete the selected items. If we are configured to confirm the delete, then
+     * do so. If the user confirms, then delete the selected items.
+     */
+    protected void maybeDeleteSelectedItems() {
+
+        // If configured, have the user confirm the delete operation
+        if( isConfirmDelete() ) {
+            String title = getMessage( "masterForm.confirmDelete.title" );
+            String message = getConfirmDeleteMessage();
+            ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
+
+                protected void onConfirm() {
+                    deleteSelectedItems();
+                    getSelectionModel().clearSelection();
+                }
+            };
+            dlg.showDialog();
+        } else {
+            deleteSelectedItems();
+            getSelectionModel().clearSelection();
+        }
+    }
+
+    /**
+     * Delete the detail item at the specified index.
+     * @param index Index of item to delete
+     */
+    protected void deleteSelectedItems() {
+        ListSelectionModel sm = getSelectionModel();
+
+        if( sm.isSelectionEmpty() ) {
+            return;
+        }
+
+        _detailForm.reset();
+
+        int min = sm.getMinSelectionIndex();
+        int max = sm.getMaxSelectionIndex();
+
+        // Loop backwards and delete each selected item in the interval
+        for( int index = max; index >= min; index-- ) {
+            if( sm.isSelectedIndex( index ) ) {
+                getMasterEventList().remove( index );
+            }
+        }
     }
 
     /**
@@ -390,6 +442,23 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     protected void setDetailType(Class type) {
         _detailType = type;
+    }
+
+    /**
+     * Return confirm delete setting.
+     * @return confirm delete setting.
+     */
+    public boolean isConfirmDelete() {
+        return _confirmDelete;
+    }
+
+    /**
+     * Set confirm delete. If this is <code>true</code> then the master form will
+     * confirm with the user prior to deleting a detail item.
+     * @param confirmDelete
+     */
+    public void setConfirmDelete(boolean confirmDelete) {
+        _confirmDelete = confirmDelete;
     }
 
     /**
@@ -458,6 +527,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
     private ActionCommand _newFormObjectCommand;
     private ActionCommand _deleteCommand;
     private CommandGroup _commandGroup;
+    private boolean _confirmDelete = true;
 
     /**
      * Inner class to handle the list selection and installing the selection into the
