@@ -37,6 +37,7 @@ public class MessageDialog extends ApplicationDialog {
     private static final String OK_FACE_DESCRIPTOR_ID = "okCommand";
     private AlertMessageAreaPane messageAreaPane;
     private Message message;
+    private float dialogScaleFactor = 0.55f;
 
     /**
      * Constructs a new dialog.
@@ -164,11 +165,18 @@ public class MessageDialog extends ApplicationDialog {
     
     /**
      * Get the scale factor for the dialog size (as compared to the parent window). The
-     * default returned here is 55% (.55). Subclasses can override this to change the size
-     * as desired.
+     * default returned here is 55% (.55).
      * @return scale factor
      */
-    protected float getDialogScaleFactor() {
-        return 0.55f;
+    public float getDialogScaleFactor() {
+        return dialogScaleFactor;
+    }
+    
+    /**
+     * Set the scale factory for the dialog size.
+     * @param dialogScaleFactor New dialog scale factor
+     */
+    public void setDialogScaleFactor(float dialogScaleFactor) {
+        this.dialogScaleFactor = dialogScaleFactor;
     }
 }
