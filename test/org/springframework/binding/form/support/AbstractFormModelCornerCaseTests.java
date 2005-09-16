@@ -35,7 +35,7 @@ public class AbstractFormModelCornerCaseTests extends TestCase {
     }
 
     /**
-     * For a given hierarchy of form models or each posible property there should 
+     * For a given hierarchy of form models or each possible property there should 
      * only be one (Buffered)ValueModel that is shared between all members.
      */
     public void testTwoFormModelsInHierarchyShareSameFormObjectHolderBuffered() {
@@ -58,7 +58,7 @@ public class AbstractFormModelCornerCaseTests extends TestCase {
 
         fm1.getValueModel("simpleProperty").setValue("1");
 
-        assertEquals("update to simpleProperty in fm1 should have propogated to fm2", "1", fm2.getValueModel(
+        assertEquals("update to simpleProperty in fm1 should have propagated to fm2", "1", fm2.getValueModel(
                 "simpleProperty").getValue());
         assertEquals(1, pcl.eventCount());
         assertEquals(((ValueModelWrapper)fm1.getValueModel("simpleProperty")).getInnerMostWrappedValueModel(),
@@ -68,11 +68,11 @@ public class AbstractFormModelCornerCaseTests extends TestCase {
     /** 
      * When a form model commits it should make sure that it commits buffered values
      * in breadth first order from the root value model down the property/subproperty 
-     * chain. If there's a hierarchy this ordering would need to be done accross for all 
+     * chain. If there's a hierarchy this ordering would need to be done across for all 
      * buffered value model in all form models in one go not just on a form model by form
      * model basis.
-     * If this is not done then changes commited to child properties will be overwrittin 
-     * by changes to parent properties that commit after the chils.
+     * If this is not done then changes committed to child properties will be overwritten 
+     * by changes to parent properties that commit after the child.
      */
     public void testBufferingMustCommitParentPropertiesBeforeChildProperties() {
         // XXX: fails
@@ -89,7 +89,7 @@ public class AbstractFormModelCornerCaseTests extends TestCase {
 
         fm.commit();
 
-        assertEquals("change to nestedProperty was not commited before change to nestedProperty.simpleProperty", "2",
+        assertEquals("change to nestedProperty was not committed before change to nestedProperty.simpleProperty", "2",
                 t.getNestedProperty().getSimpleProperty());
     }
 }

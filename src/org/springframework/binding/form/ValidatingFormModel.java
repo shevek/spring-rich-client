@@ -18,7 +18,7 @@ package org.springframework.binding.form;
 import org.springframework.binding.validation.ValidationResultsModel;
 
 /**
- * Sub-interface implemented by form models that can validatate the forms 
+ * Sub-interface implemented by form models that can validatate the form's 
  * properties.
  * 
  * @author Keith Donald
@@ -43,14 +43,14 @@ public interface ValidatingFormModel extends ConfigurableFormModel, Hierarchical
     /**
      * Sets whether or not validation is currently enabled for this 
      * form model. If validatiuon is enabled the form model will 
-     * imediatly validate all form properties; if validation 
+     * immediately validate all form properties; if validation 
      * is disabled all validation messages held by the 
      * ValidationResultsModel will be cleared.
      */
     void setValidating(boolean validating);
 
     /**
-     * Forces the form model to validate its self. Is validation is dissabled 
+     * Forces the form model to validate its self. If validation is disabled 
      * does nothing.     
      */
     public void validate();

@@ -210,8 +210,18 @@ public class AbstractFormModelTests extends TestCase {
         vm.setValue("1");
         fm.revert();
 
-        assertEquals(vm.getValue(), null);
-        assertEquals(p.getSimpleProperty(), null);
+        assertEquals(null, vm.getValue());
+        assertEquals(null, p.getSimpleProperty());
+                
+        TestBean tb2 = new TestBean();
+        tb2.setSimpleProperty("tb2");        
+        fm.setFormObject(tb2);
+        
+        vm.setValue("1");
+        fm.revert();
+
+        assertEquals("tb2", vm.getValue());
+        assertEquals("tb2", tb2.getSimpleProperty());
     }
 
     public void testEnabledEvents() {
