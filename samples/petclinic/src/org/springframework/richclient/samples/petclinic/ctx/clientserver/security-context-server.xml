@@ -36,7 +36,7 @@
 		<property name="realmName"><value>Petclinic RCP Client-Server Realm</value></property>
 	</bean>
 
-	<bean id="autoIntegrationFilter" class="net.sf.acegisecurity.ui.AutoIntegrationFilter" />
+	<bean id="autoIntegrationFilter" class="net.sf.acegisecurity.adapters.HttpRequestIntegrationFilter" />
 
 	<!-- Automatically receives AuthenticationEvent messages from DaoAuthenticationProvider -->
 	<bean id="loggerListener" class="net.sf.acegisecurity.providers.dao.event.LoggerListener"/>
