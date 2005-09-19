@@ -37,6 +37,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.Matcher;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 
@@ -59,6 +60,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     private GlazedTableModel _masterTableModel;
     private JTable _masterTable;
     private Matcher _matcher;
+    private MatcherEditor _matcherEditor;
     private Comparator _comparator;
 
     /**
@@ -71,7 +73,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param detailType Type of entries in the formModel's domain object
      */
     public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
-        this( formModel, formId, detailType, null, null );
+        this( formModel, formId, detailType, null, (Matcher)null );
     }
 
     /**
@@ -88,6 +90,19 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     }
 
     /**
+     * Construct using the given form information and detail object type. The list of
+     * items to present in the table will be filtered using the given <code>matcher</code>.
+     * 
+     * @param formModel FormModel to use for this form
+     * @param formId Id of this form
+     * @param detailType Type of entries in the formModel's domain object
+     * @param matcher Matcher to use to filter elements in the table
+     */
+    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType, MatcherEditor matcherEditor) {
+        this( formModel, formId, detailType, null, matcherEditor );
+    }
+
+    /**
      * Construct using the given form information and detail object type. The table will
      * be sorted using the provided comparator.
      * 
@@ -98,7 +113,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
             Comparator comparator) {
-        this( formModel, formId, detailType, comparator, null );
+        this( formModel, formId, detailType, comparator, (Matcher)null );
     }
 
     /**
@@ -120,8 +135,27 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     }
 
     /**
+     * Construct using the given form information and detail object type. The master list
+     * will be sorted using the <code>comparator</code> and the list of items to present
+     * in the table will be filtered using the given <code>matcherEditor</code>.
+     * 
+     * @param formModel FormModel to use for this form
+     * @param formId Id of this form
+     * @param detailType Type of entries in the formModel's domain object
+     * @param comparator to use for sorting the table
+     * @param matcherEditor MatcherEditor to use to filter elements in the table
+     */
+    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
+            Comparator comparator, MatcherEditor matcherEditor) {
+        super( formModel, formId, detailType );
+        _comparator = comparator;
+        _matcherEditor = matcherEditor;
+    }
+
+    /**
      * Set the <code>Matcher</code> to be used in filtering the elements of the master
-     * set.
+     * set.  Note that only one of a Matcher or MatcherEditor may be used, not both.  If
+     * both are specified, then the Matcher will take precedence. 
      * 
      * @param matcher The Matcher to use to filter elements in the master set.
      */
@@ -137,6 +171,27 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     public Matcher getFilterMatcher() {
         return _matcher;
+    }
+
+    /**
+     * Set the <code>MatcherEditor</code> to be used in filtering the elements of the master
+     * set.  Note that only one of a Matcher or MatcherEditor may be used, not both.  If
+     * both are specified, then the Matcher will take precedence.
+     * 
+     * @param matcherEditor The MatcherEditor to use to filter elements in the master set.
+     */
+    public void setFilterMatcherEditor(MatcherEditor matcherEditor) {
+        _matcherEditor = matcherEditor;
+    }
+
+    /**
+     * Get the <code>MatcherEditor</code> to be used in filtering the elements of the master
+     * set.
+     * 
+     * @return matcherEditor
+     */
+    public MatcherEditor getFilterMatcherEditor() {
+        return _matcherEditor;
     }
 
     /**
@@ -179,6 +234,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         // Install the matcher if configured (this will filter the list)
         if( _matcher != null ) {
             _eventList = new FilterList( _eventList, _matcher );
+        } else if( _matcherEditor != null ) {
+            _eventList = new FilterList( _eventList, _matcherEditor );
         }
 
         // Install the sorter if configured
@@ -205,7 +262,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
             _masterTable.setSelectionModel( selectionModel );
         }
 
-        _masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        //_masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        _masterTable.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 
         // Setup our selection listener so that it controls the detail form
         installSelectionHandler();
