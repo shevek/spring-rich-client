@@ -26,6 +26,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -44,8 +45,25 @@ import ca.odell.glazedlists.swing.EventTableModel;
  * {@link AdvancedTableFormat} is provided for use.  It allows for the specification
  * of an object prototype (for determining column classes) and the ability to specify
  * comparators per column for sorting support.
- * 
+ * <p>
+ * This model can be given an Id, which is used in obtaining the text of the column
+ * headers.
+ * <p>
+ * Column header text is generated from the column property names in the method
+ * {@link createColumnNames}.  Using the message source configured, or the default
+ * application message source if none was configured, the property names are used as
+ * message keys using the following sequence:
+ * <ol>
+ * <li> <code>modelId.propertyName.label</code></li>
+ * <li> <code>modelId.propertyName</code></li>
+ * <li> <code>propertyName.label</code></li>
+ * <li> <code>propertyName</code>.</li>
+ * </ol>
+ * If none of these keys are found, then the property name itself is used as the
+ * column header text.
+ * <p>
  * @author Peter De Bruycker
+ * @author Larry Streepy
  */
 public class GlazedTableModel extends EventTableModel {
 
@@ -58,18 +76,47 @@ public class GlazedTableModel extends EventTableModel {
     private MessageSourceAccessor messages;
 
     private final String columnPropertyNames[];
+    
+    private String modelId;
 
     public GlazedTableModel(String[] columnPropertyNames) {
         this((MessageSource)null, columnPropertyNames);
     }
 
+    /**
+     * Constructor using the provided row data and column property names.  The model Id will
+     * be set from the class name of the given <code>beanClass</code>.
+     * @param beanClass
+     * @param rows
+     * @param columnPropertyNames
+     */
     public GlazedTableModel(Class beanClass, EventList rows, String[] columnPropertyNames) {
-        this(rows, null, columnPropertyNames);
+        this(rows, null, columnPropertyNames, ClassUtils.getShortName(beanClass));
     }
 
+    /**
+     * Constructor using the given model data and a null model Id.
+     * @param rows The data for the model
+     * @param messageSource For resolving message keys 
+     * @param columnPropertyNames Names of properties to show in the table columns
+     * @param modelId Id for this model, used to create column header message keys
+     */
     public GlazedTableModel(EventList rows, MessageSource messageSource, String[] columnPropertyNames) {
+        this(rows, messageSource, columnPropertyNames, null);
+    }
+
+    /**
+     * Fully specified Constructor.
+     * @param rows The data for the model
+     * @param messageSource For resolving message keys 
+     * @param columnPropertyNames Names of properties to show in the table columns
+     * @param modelId Id for this model, used to create column header message keys
+     */
+    public GlazedTableModel(EventList rows, MessageSource messageSource, String[] columnPropertyNames,
+            String modelId) {
         super(rows, null);
         Assert.notEmpty(columnPropertyNames, "ColumnPropertyNames parameter cannot be null.");
+        this.modelId = modelId;
         this.columnPropertyNames = columnPropertyNames;
         setMessageSource(messageSource);
         columnLabels = createColumnNames(columnPropertyNames);
@@ -114,6 +161,14 @@ public class GlazedTableModel extends EventTableModel {
     }
 
     /**
+     * Get the model Id.
+     * @return model Id
+     */
+    public String getModelId() {
+        return modelId;
+    }
+
+    /**
      * May be overridden to achieve control over editable columns.
      * 
      * @param row
@@ -134,16 +189,29 @@ public class GlazedTableModel extends EventTableModel {
         return row;
     }
 
+    /**
+     * Create the text for the column headers.  Use the model Id (if any) and the
+     * column property name to generate a series of message keys.  Resolve those
+     * keys using the configured message source.
+     * @param propertyColumnNames
+     * @return array of column header text
+     */
     protected String[] createColumnNames(String[] propertyColumnNames) {
         String[] columnNames = new String[propertyColumnNames.length];
         Assert.notNull(getMessages());
         for (int i = 0; i < propertyColumnNames.length; i++) {
             final String columnPropertyName = propertyColumnNames[i];
-            final String[] keys = {columnPropertyName + ".label", columnPropertyName};
+            String[] keys = {columnPropertyName + ".label", columnPropertyName};
+            if( modelId != null ) {
+                String[] newKeys = {modelId + "." + keys[0], modelId + "." + keys[1], keys[0], keys[1]};
+                keys = newKeys;
+            }
+            
+            final String[] messageKeys = keys;
             MessageSourceResolvable resolvable = new MessageSourceResolvable() {
 
                 public String[] getCodes() {
-                    return keys;
+                    return messageKeys;
                 }
 
                 public Object[] getArguments() {
@@ -161,6 +229,11 @@ public class GlazedTableModel extends EventTableModel {
         return columnNames;
     }
 
+    /**
+     * Construct the table format to use for this table model.  This base implementation
+     * returns an instance of {@link DefaultTableFormat}.
+     * @return
+     */
     protected TableFormat createTableFormat() {
         return new DefaultTableFormat();
     }
