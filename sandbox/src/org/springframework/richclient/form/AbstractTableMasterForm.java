@@ -73,7 +73,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param detailType Type of entries in the formModel's domain object
      */
     public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
-        this( formModel, formId, detailType, null, (Matcher)null );
+        this( formModel, formId, detailType, null, (Matcher) null );
     }
 
     /**
@@ -98,7 +98,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param detailType Type of entries in the formModel's domain object
      * @param matcher Matcher to use to filter elements in the table
      */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType, MatcherEditor matcherEditor) {
+    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
+            MatcherEditor matcherEditor) {
         this( formModel, formId, detailType, null, matcherEditor );
     }
 
@@ -113,7 +114,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
             Comparator comparator) {
-        this( formModel, formId, detailType, comparator, (Matcher)null );
+        this( formModel, formId, detailType, comparator, (Matcher) null );
     }
 
     /**
@@ -154,8 +155,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
     /**
      * Set the <code>Matcher</code> to be used in filtering the elements of the master
-     * set.  Note that only one of a Matcher or MatcherEditor may be used, not both.  If
-     * both are specified, then the Matcher will take precedence. 
+     * set. Note that only one of a Matcher or MatcherEditor may be used, not both. If
+     * both are specified, then the Matcher will take precedence.
      * 
      * @param matcher The Matcher to use to filter elements in the master set.
      */
@@ -174,9 +175,9 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     }
 
     /**
-     * Set the <code>MatcherEditor</code> to be used in filtering the elements of the master
-     * set.  Note that only one of a Matcher or MatcherEditor may be used, not both.  If
-     * both are specified, then the Matcher will take precedence.
+     * Set the <code>MatcherEditor</code> to be used in filtering the elements of the
+     * master set. Note that only one of a Matcher or MatcherEditor may be used, not both.
+     * If both are specified, then the Matcher will take precedence.
      * 
      * @param matcherEditor The MatcherEditor to use to filter elements in the master set.
      */
@@ -185,8 +186,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     }
 
     /**
-     * Get the <code>MatcherEditor</code> to be used in filtering the elements of the master
-     * set.
+     * Get the <code>MatcherEditor</code> to be used in filtering the elements of the
+     * master set.
      * 
      * @return matcherEditor
      */
@@ -247,7 +248,12 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         // Install this new event list configuration (sorting and filtering)
         installEventList( _eventList );
 
-        _masterTableModel = new GlazedTableModel( _eventList, getMessageSource(), getColumnPropertyNames() );
+        // Make this table model read-only
+        _masterTableModel = new GlazedTableModel( _eventList, getMessageSource(), getColumnPropertyNames() ) {
+            protected boolean isEditable(Object row, int column) {
+                return false;
+            }
+        };
 
         _masterTable = new JTable( _masterTableModel );
 
@@ -262,7 +268,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
             _masterTable.setSelectionModel( selectionModel );
         }
 
-        //_masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        // _masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         _masterTable.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 
         // Setup our selection listener so that it controls the detail form
