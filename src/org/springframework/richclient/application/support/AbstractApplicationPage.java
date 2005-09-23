@@ -40,19 +40,24 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractApplicationPage implements ApplicationPage {
 
+    private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
+            PageComponentListener.class);
+    
+    private final ViewDescriptorRegistry viewDescriptorRegistry = Application.services().getViewDescriptorRegistry();
+
+    private final Set pageComponents = new LinkedHashSet();
+
+    private PageComponent activeComponent;
+
+    private SharedCommandTargeter sharedCommandTargeter;
+
     private PageDescriptor descriptor;
 
     private ApplicationWindow window;
 
-    private EventListenerListHelper pageComponentListeners = new EventListenerListHelper(PageComponentListener.class);
-
     public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
         setApplicationWindow(window);
         setDescriptor(pageDescriptor);
-    }
-
-    public void addPageComponentListener(PageComponentListener listener) {
-        pageComponentListeners.add(listener);
     }
 
     protected PageComponent findPageComponent(final String viewDescriptorId) {
@@ -65,6 +70,10 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
                 return false;
             }
         }.findFirst(pageComponents);
+    }
+
+    public void addPageComponentListener(PageComponentListener listener) {
+        pageComponentListeners.add(listener);
     }
 
     public void removePageComponentListener(PageComponentListener listener) {
@@ -186,12 +195,6 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
         showView(getViewDescriptor(viewDescriptorId));
     }
 
-    private ViewDescriptorRegistry viewDescriptorRegistry = Application.services().getViewDescriptorRegistry();
-
-    private Set pageComponents = new LinkedHashSet();
-
-    private PageComponent activeComponent;
-
     public Set getPageComponents() {
         return Collections.unmodifiableSet(pageComponents);
     }
@@ -200,7 +203,8 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
         Assert.notNull(window, "The containing window is required");
         Assert.state(this.window == null, "Page window already set: it should only be set once, during initialization");
         this.window = window;
-        addPageComponentListener(new SharedCommandTargeter(this.window));
+        sharedCommandTargeter = new SharedCommandTargeter(window);
+        addPageComponentListener(sharedCommandTargeter);
     }
 
     public final void setDescriptor(PageDescriptor descriptor) {

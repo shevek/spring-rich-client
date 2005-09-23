@@ -55,6 +55,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected Log logger = LogFactory.getLog(getClass());
 
     private static final String DEFAULT_APPLICATION_PAGE_BEAN_ID = "defaultApplicationPagePrototype";
+    
+    private final EventListenerListHelper pageListeners = new EventListenerListHelper(PageListener.class);
 
     private int number;
 
@@ -73,8 +75,6 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     private ApplicationPage currentPage;
 
     private WindowManager windowManager;
-
-    private EventListenerListHelper pageListeners = new EventListenerListHelper(PageListener.class);
 
     public DefaultApplicationWindow() {
         this(Application.instance().getWindowManager().size());
@@ -260,11 +260,12 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected JFrame createNewWindowControl() {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
+        WindowAdapter windowCloseHandler = new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 close();
             }
-        });
+        };
+        frame.addWindowListener(windowCloseHandler);
         return frame;
     }
 

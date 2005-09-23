@@ -35,7 +35,6 @@ import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.util.OverlayHelper;
 
-
 /**
  * Adds an "overlay" to a component that is triggered by a validation event. The
  * overlaid image is retrieved by the image key
@@ -60,7 +59,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
-        
+
         public OverlayValidationInterceptor(FormModel formModel) {
             super(formModel);
         }
@@ -72,14 +71,15 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             registerMessageReceiver(propertyName, overlay);
 
             if (component.getParent() == null) {
-                component.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
+                PropertyChangeListener waitUntilHasParentListener = new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent e) {
                         if (component.getParent() != null) {
                             component.removePropertyChangeListener("ancestor", this);
                             attachOverlay(overlay, component);
                         }
                     }
-                });
+                };
+                component.addPropertyChangeListener("ancestor", waitUntilHasParentListener);
             }
             else {
                 attachOverlay(overlay, component);
@@ -120,8 +120,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             setToolTipText(message.getText());
             Severity severity = message.getSeverity();
             if (severity != null) {
-                setIcon(Application.services().getIconSource().getIcon(
-                        "severity." + severity.getLabel() + ".overlay"));
+                setIcon(Application.services().getIconSource().getIcon("severity." + severity.getLabel() + ".overlay"));
             }
             else {
                 setIcon(null);

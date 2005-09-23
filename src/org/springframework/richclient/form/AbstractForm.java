@@ -36,7 +36,6 @@ import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.form.binding.BindingFactory;
-import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -45,6 +44,9 @@ import org.springframework.util.StringUtils;
  * @author Keith Donald
  */
 public abstract class AbstractForm extends AbstractControlFactory implements Form, CommitListener {
+
+    private final FormObjectChangeHandler formObjectChangeHandler = new FormObjectChangeHandler();
+
     private String formId;
 
     private ValidatingFormModel formModel;
@@ -52,7 +54,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private HierarchicalFormModel parentFormModel;
 
     private FormGuard formGuard;
-    
+
     private JButton lastDefaultButton;
 
     private PropertyChangeListener formEnabledChangeHandler;
@@ -72,7 +74,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private ValueModel editingFormObjectIndexHolder;
 
     private PropertyChangeListener editingFormObjectSetter;
-    
+
     private BindingFactory bindingFactory;
 
     protected AbstractForm() {
@@ -95,7 +97,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     protected AbstractForm(FormModel formModel, String formId) {
         setId(formId);
         if (formModel instanceof ValidatingFormModel) {
-            setFormModel((ValidatingFormModel)formModel);
+            setFormModel((ValidatingFormModel)formModel);            
         }
         else {
             throw new IllegalArgumentException("Unsupported form model implementation " + formModel);
@@ -134,7 +136,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     public BindingFactory getBindingFactory() {
-        if( bindingFactory == null ) {
+        if (bindingFactory == null) {
             bindingFactory = getApplicationServices().getBindingFactory(formModel);
         }
         return bindingFactory;
@@ -151,6 +153,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         this.formModel = formModel;
         this.formGuard = new FormGuard(formModel);
         this.formModel.addCommitListener(this);
+        setFormModelDefaultEnabledState();
     }
 
     protected HierarchicalFormModel getParent() {
@@ -172,7 +175,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     /**
-     * Set the "editing new ofrm object" state as indicated.
+     * Set the "editing new form object" state as indicated.
      * @param editingNewFormOject
      */
     protected void setEditingNewFormObject(boolean editingNewFormOject) {
@@ -233,7 +236,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         JComponent formControl = createFormControl();
         this.formEnabledChangeHandler = new FormEnabledPropertyChangeHandler();
         getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY, formEnabledChangeHandler);
-        addFormObjectChangeListener(new FormObjectChangeHandler());
+        addFormObjectChangeListener(formObjectChangeHandler);
         if (getCommitCommand() != null) {
             getFormModel().addCommitListener(this);
         }
@@ -245,32 +248,29 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         getCommitCommand();
         getRevertCommand();
     }
+    
+    /**
+     * Set the form's enabled state based on a default policy--specifically,
+     * disable if the form object is null or the form object is guarded and
+     * is marked as disabled.
+     */
+    protected void setFormModelDefaultEnabledState() {
+        if (getFormObject() == null) {
+            getFormModel().setEnabled(false);
+        }
+        else {
+            if (getFormObject() instanceof Guarded) {
+                setEnabled(((Guarded)getFormObject()).isEnabled());
+            }
+        }
+    }
 
     protected abstract JComponent createFormControl();
 
     private class FormObjectChangeHandler implements PropertyChangeListener {
-        public FormObjectChangeHandler() {
-            propertyChange(null);
-        }
 
         public void propertyChange(PropertyChangeEvent evt) {
             setFormModelDefaultEnabledState();
-        }
-
-        /**
-         * Set the form's enabled state based on a default policy--specifically,
-         * disable if the form object is null or the form object is guarded and
-         * is marked as disabled.
-         */
-        protected void setFormModelDefaultEnabledState() {
-            if (getFormObject() == null) {
-                getFormModel().setEnabled(false);
-            }
-            else {
-                if (getFormObject() instanceof Guarded) {
-                    setEnabled(((Guarded)getFormObject()).isEnabled());
-                }
-            }
         }
     }
 

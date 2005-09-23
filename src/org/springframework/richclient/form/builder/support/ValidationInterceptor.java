@@ -39,13 +39,17 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
         validationResults = ((ValidatingFormModel)formModel).getValidationResults();
     }
 
-    protected void registerMessageReceiver(String propertyName, Messagable messageReceiver) {
-        validationResults.addValidationListener(propertyName, new MessagableValidationListener(propertyName,
-                messageReceiver));
+    protected ValidationListener registerMessageReceiver(String propertyName, Messagable messageReceiver) {
+        MessagableValidationListener messagableValidationListener = new MessagableValidationListener(propertyName,
+                messageReceiver);
+        validationResults.addValidationListener(propertyName, messagableValidationListener);
+        return messagableValidationListener;
     }
 
-    protected void registerGuarded(String propertyName, Guarded guarded) {
-        validationResults.addValidationListener(propertyName, new GuardedValidationListener(propertyName, guarded));
+    protected ValidationListener registerGuarded(String propertyName, Guarded guarded) {
+        GuardedValidationListener guardedValidationListener = new GuardedValidationListener(propertyName, guarded);
+        validationResults.addValidationListener(propertyName, guardedValidationListener);
+        return guardedValidationListener;
     }
 
     private static class MessagableValidationListener implements ValidationListener {
@@ -70,8 +74,8 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
 
         protected ValidationMessage getNewestMessage(ValidationResults results) {
             ValidationMessage newestMessage = null;
-            for (Iterator i =  results.getMessages(propertyName).iterator(); i.hasNext();) {
-                ValidationMessage message =(ValidationMessage)i.next();
+            for (Iterator i = results.getMessages(propertyName).iterator(); i.hasNext();) {
+                ValidationMessage message = (ValidationMessage)i.next();
                 if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
                     newestMessage = message;
                 }

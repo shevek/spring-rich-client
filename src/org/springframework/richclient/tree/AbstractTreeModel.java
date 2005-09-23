@@ -31,7 +31,9 @@ import org.springframework.binding.value.ValueModel;
  */
 public abstract class AbstractTreeModel implements TreeModel {
 
-    private EventListenerList listenerList = new EventListenerList();
+    private final RootHolderChangeHandler rootHolderChangeHandler = new RootHolderChangeHandler();
+
+    private final EventListenerList listenerList = new EventListenerList();
 
     private Object root;
 
@@ -44,12 +46,7 @@ public abstract class AbstractTreeModel implements TreeModel {
     protected AbstractTreeModel(ValueModel rootHolder) {
         this.rootHolder = rootHolder;
         this.root = rootHolder.getValue();
-        this.rootHolder.addValueChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                fireRootTreeStructureChanged(root);
-                root = AbstractTreeModel.this.rootHolder.getValue();
-            }
-        });
+        this.rootHolder.addValueChangeListener(rootHolderChangeHandler);
     }
 
     /*
@@ -241,7 +238,7 @@ public abstract class AbstractTreeModel implements TreeModel {
             if (listeners[i] == TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null) {
-                    e = new TreeModelEvent(this, new Object[] { previousRoot });
+                    e = new TreeModelEvent(this, new Object[] {previousRoot});
                 }
                 ((TreeModelListener)listeners[i + 1]).treeNodesChanged(e);
             }
@@ -262,7 +259,7 @@ public abstract class AbstractTreeModel implements TreeModel {
             if (listeners[i] == TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null) {
-                    e = new TreeModelEvent(this, new Object[] { previousRoot });
+                    e = new TreeModelEvent(this, new Object[] {previousRoot});
                 }
                 ((TreeModelListener)listeners[i + 1]).treeStructureChanged(e);
             }
@@ -270,15 +267,21 @@ public abstract class AbstractTreeModel implements TreeModel {
     }
 
     protected void fireTreeNodeInserted(Object[] path, int index, Object child) {
-        fireTreeNodesInserted(path, new int[] { index }, new Object[] { child });
+        fireTreeNodesInserted(path, new int[] {index}, new Object[] {child});
     }
 
     protected void fireTreeStructureChanged(Object[] path, int index, Object child) {
-        fireTreeStructureChanged(path, new int[] { index }, new Object[] { child });
+        fireTreeStructureChanged(path, new int[] {index}, new Object[] {child});
     }
 
     protected void fireTreeNodeChanged(Object[] path, int index, Object child) {
-        fireTreeNodesChanged(path, new int[] { index }, new Object[] { child });
+        fireTreeNodesChanged(path, new int[] {index}, new Object[] {child});
     }
 
+    private class RootHolderChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            fireRootTreeStructureChanged(root);
+            root = AbstractTreeModel.this.rootHolder.getValue();
+        }
+    }
 }

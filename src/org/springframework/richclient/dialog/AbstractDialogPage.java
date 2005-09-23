@@ -39,6 +39,8 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractDialogPage extends LabeledObjectSupport implements DialogPage, ControlFactory, Guarded {
 
+    private final MessageChangeHandler messageChangeHandler = new MessageChangeHandler();
+
     private String pageId;
 
     private boolean pageComplete = true;
@@ -78,13 +80,7 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
      */
     protected AbstractDialogPage(String pageId, boolean autoConfigure) {
         this.messageBuffer = new DefaultMessageAreaModel(this);
-        this.messageBuffer.addPropertyChangeListener(new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent evt) {
-                AbstractDialogPage.this.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
-            }
-
-        });
+        this.messageBuffer.addPropertyChangeListener(messageChangeHandler);
         setId(pageId, autoConfigure);
     }
 
@@ -164,11 +160,11 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
     public boolean hasErrorMessage() {
         return messageBuffer.hasErrorMessage();
     }
-    
+
     public boolean hasWarningMessage() {
         return messageBuffer.hasWarningMessage();
     }
-    
+
     public boolean hasInfoMessage() {
         return messageBuffer.hasInfoMessage();
     }
@@ -220,4 +216,9 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 
     protected abstract JComponent createControl();
 
+    private class MessageChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+        }
+    }
 }

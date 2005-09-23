@@ -31,9 +31,12 @@ import org.springframework.binding.value.support.ValueHolder;
  * @author Keith Donald
  */
 public class DynamicComboBoxListModel extends ComboBoxListModel implements PropertyChangeListener {
+    
     private static final Log logger = LogFactory.getLog(DynamicComboBoxListModel.class);
+    
+    private final SelectedItemChangeHandler selectedItemChangeHandler = new SelectedItemChangeHandler();
 
-    private ValueModel selectedItemHolder;
+    private final ValueModel selectedItemHolder;
 
     private ValueModel selectableItemsHolder;
 
@@ -45,39 +48,10 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Prope
         this(selectedItemHolder, new ValueHolder(items));
     }
 
-    public DynamicComboBoxListModel(final ValueModel selectedItemHolder, ValueModel selectableItemsHolder) {
-        super();
+    public DynamicComboBoxListModel(ValueModel selectedItemHolder, ValueModel selectableItemsHolder) {
         this.selectedItemHolder = selectedItemHolder;
         if (selectedItemHolder != null) {
-            selectedItemHolder.addValueChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Notifying combo box view selected value changed; new value is '"
-                                + selectedItemHolder.getValue() + "'");
-                    }
-                    /*
-                    if (selectedItemHolder.getValue() == null) {
-                        if (size() > 0 && get(0) != null) {
-                            if (logger.isDebugEnabled()) {
-                                logger
-                                        .debug("Backing value model is null; Pre-setting initial value to first combo-box element "
-                                                + get(0));
-                            }
-                            setSelectedItem(get(0));
-                        }
-                    }
-                    else {
-                    */
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Firing contents change event; selected item may have changed");
-                        }
-                        fireContentsChanged(this, -1, -1);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Fired contents change event!");
-                        }
-                    //}
-                }
-            });
+            selectedItemHolder.addValueChangeListener(selectedItemChangeHandler);
         }
         setSelectableItemsHolder(selectableItemsHolder);
     }
@@ -145,6 +119,37 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Prope
             }
         }
         sort();
+    }
+    
+    private class SelectedItemChangeHandler implements PropertyChangeListener {
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Notifying combo box view selected value changed; new value is '"
+                        + selectedItemHolder.getValue() + "'");
+            }
+            /*
+            if (selectedItemHolder.getValue() == null) {
+                if (size() > 0 && get(0) != null) {
+                    if (logger.isDebugEnabled()) {
+                        logger
+                                .debug("Backing value model is null; Pre-setting initial value to first combo-box element "
+                                        + get(0));
+                    }
+                    setSelectedItem(get(0));
+                }
+            }
+            else {
+            */
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Firing contents change event; selected item may have changed");
+                }
+                fireContentsChanged(this, -1, -1);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Fired contents change event!");
+                }
+            //}
+        }
     }
 
 }

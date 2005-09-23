@@ -71,7 +71,7 @@ public class GuardedGroup implements Guarded {
         this.groupEnabledState = Boolean.valueOf(enabled);
     }
 
-    private static class GuardedValueModel implements Guarded {
+    private static class GuardedValueModel implements Guarded, PropertyChangeListener {
         private GuardedGroup guardedGroup;
 
         private ValueModel guardedHolder;
@@ -79,14 +79,7 @@ public class GuardedGroup implements Guarded {
         public GuardedValueModel(GuardedGroup guardedGroup, ValueModel valueModel) {
             this.guardedGroup = guardedGroup;
             this.guardedHolder = valueModel;
-            this.guardedHolder.addValueChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
-                    if (groupEnabled != null) {
-                        setEnabled(groupEnabled.booleanValue());
-                    }
-                }
-            });
+            this.guardedHolder.addValueChangeListener(this);
         }
 
         public boolean isEnabled() {
@@ -103,6 +96,13 @@ public class GuardedGroup implements Guarded {
             Guarded g = (Guarded)guardedHolder.getValue();
             if (g != null) {
                 g.setEnabled(enabled);
+            }
+        }
+        
+        public void propertyChange(PropertyChangeEvent evt) {
+            Boolean groupEnabled = GuardedValueModel.this.guardedGroup.groupEnabledState;
+            if (groupEnabled != null) {
+                setEnabled(groupEnabled.booleanValue());
             }
         }
     }

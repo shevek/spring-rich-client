@@ -135,7 +135,7 @@ public class AboutBox {
      * 
      * @author Oliver Hutchison
      */
-    private static class HtmlScroller extends JViewport {
+    private static class HtmlScroller extends JViewport implements HyperlinkListener {
 
         private HtmlPane htmlPane;
 
@@ -168,16 +168,7 @@ public class AboutBox {
 
             htmlPane = new HtmlPane();
             htmlPane.setAntiAlias(antiAlias);
-            htmlPane.addHyperlinkListener(new HyperlinkListener() {
-                public void hyperlinkUpdate(HyperlinkEvent e) {
-                    if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
-                        enteredLink();
-                    }
-                    else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
-                        exitedLink();
-                    }
-                }
-            });
+            htmlPane.addHyperlinkListener(this);
             setView(htmlPane);
             timer = new Timer(1000 / fps, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -227,6 +218,15 @@ public class AboutBox {
 
         public void setViewPosition(Point p) {
             // ignore calls that are not internal
+        }
+        
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+            if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
+                enteredLink();
+            }
+            else if (e.getEventType().equals(HyperlinkEvent.EventType.EXITED)) {
+                exitedLink();
+            }
         }
 
         private void setViewPositionInternal(Point p) {

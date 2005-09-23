@@ -33,8 +33,11 @@ import javax.swing.JTextField;
  */
 public class EditableComboBoxAutoCompletion extends KeyAdapter {
 
-    protected JComboBox _comboBox;
-    protected JTextField _editor;
+    private final FocusHandler focusHandler = new FocusHandler();
+
+    private final JComboBox comboBox;
+
+    private final JTextField editor;
 
     /**
      * Adds autocompletion support to the given <code>combobox</code>.
@@ -42,10 +45,10 @@ public class EditableComboBoxAutoCompletion extends KeyAdapter {
      * @param comboBox the combobox to augment
      */
     public EditableComboBoxAutoCompletion(JComboBox comboBox) {
-        _comboBox = comboBox;
-        _editor = (JTextField) comboBox.getEditor().getEditorComponent();
-        _editor.addKeyListener( this );
-        _editor.addFocusListener( new FocusHandler() );
+        this.comboBox = comboBox;
+        editor = (JTextField)comboBox.getEditor().getEditorComponent();
+        editor.addKeyListener(this);
+        editor.addFocusListener(focusHandler);
     }
 
     /**
@@ -57,33 +60,33 @@ public class EditableComboBoxAutoCompletion extends KeyAdapter {
      */
     public void keyReleased(KeyEvent e) {
         char ch = e.getKeyChar();
-        if( ch == KeyEvent.CHAR_UNDEFINED || Character.isISOControl( ch ) )
+        if (ch == KeyEvent.CHAR_UNDEFINED || Character.isISOControl(ch))
             return;
-        int pos = _editor.getCaretPosition();
-        String str = _editor.getText();
-        if( str.length() == 0 )
+        int pos = editor.getCaretPosition();
+        String str = editor.getText();
+        if (str.length() == 0)
             return;
 
         boolean matchFound = false;
-        for( int k = 0; k < _comboBox.getItemCount(); k++ ) {
-            String item = _comboBox.getItemAt( k ).toString();
-            if( startsWithIgnoreCase( item, str ) ) {
-                _comboBox.setSelectedIndex( k );
-                _editor.setText( item );
-                _editor.setCaretPosition( item.length() );
-                _editor.moveCaretPosition( pos );
+        for (int k = 0; k < comboBox.getItemCount(); k++) {
+            String item = comboBox.getItemAt(k).toString();
+            if (startsWithIgnoreCase(item, str)) {
+                comboBox.setSelectedIndex(k);
+                editor.setText(item);
+                editor.setCaretPosition(item.length());
+                editor.moveCaretPosition(pos);
 
                 // show popup when the user types
-                if( _comboBox.isDisplayable() )
-                    _comboBox.setPopupVisible( true );
+                if (comboBox.isDisplayable())
+                    comboBox.setPopupVisible(true);
 
                 matchFound = true;
                 break;
             }
         }
-        if( !matchFound ) {
+        if (!matchFound) {
             // hide popup when there is no match
-            _comboBox.setPopupVisible( false );
+            comboBox.setPopupVisible(false);
         }
     }
 
@@ -95,7 +98,7 @@ public class EditableComboBoxAutoCompletion extends KeyAdapter {
      * @return true if str1 starts with str2, ingnoring case
      */
     private boolean startsWithIgnoreCase(String str1, String str2) {
-        return str1 != null && str2 != null && str1.toUpperCase().startsWith( str2.toUpperCase() );
+        return str1 != null && str2 != null && str1.toUpperCase().startsWith(str2.toUpperCase());
     }
 
     /**
@@ -104,8 +107,8 @@ public class EditableComboBoxAutoCompletion extends KeyAdapter {
      * @param start Starting location to highlight
      */
     private void highlightText(int start) {
-        _editor.setCaretPosition( _editor.getText().length() );
-        _editor.moveCaretPosition( start );
+        editor.setCaretPosition(editor.getText().length());
+        editor.moveCaretPosition(start);
     }
 
     /**
@@ -115,17 +118,17 @@ public class EditableComboBoxAutoCompletion extends KeyAdapter {
 
         // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when
         // tabbing out
-        private boolean hidePopupOnFocusLoss = System.getProperty( "java.version" ).startsWith( "1.5" );
+        private boolean hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
 
         public void focusGained(FocusEvent e) {
             // Highlight whole text when gaining focus
-            highlightText( 0 );
+            highlightText(0);
         }
 
         public void focusLost(FocusEvent e) {
             // Workaround for Bug 5100422 - Hide Popup on focus loss
-            if( hidePopupOnFocusLoss )
-                _comboBox.setPopupVisible( false );
+            if (hidePopupOnFocusLoss)
+                comboBox.setPopupVisible(false);
         }
     }
 }

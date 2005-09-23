@@ -62,11 +62,14 @@ import org.springframework.util.ObjectUtils;
  * @author oliverh
  */
 public class BufferedCollectionValueModel extends BufferedValueModel {
+
+    private final ListChangeHandler listChangeHandler = new ListChangeHandler();
+
+    private final Class wrappedType;
+
+    private final Class wrappedConcreteType;
+
     private ListListModel listListModel;
-
-    private Class wrappedType;
-
-    private Class wrappedConcreteType;
 
     /**
      * Constructs a new BufferedCollectionValueModel.
@@ -96,7 +99,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
             }
         }
     }
-    
+
     protected Object getValueToCommit() {
         Object wrappedValue = getWrappedValue();
         // If the wrappedValue is null and the buffer is empty 
@@ -240,19 +243,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     private Object updateListModel(final Object wrappedCollection) {
         if (listListModel == null) {
             listListModel = new ListListModel();
-            listListModel.addListDataListener(new ListDataListener() {
-                public void contentsChanged(ListDataEvent e) {
-                    fireListModelChanged();
-                }
-
-                public void intervalAdded(ListDataEvent e) {
-                    fireListModelChanged();
-                }
-
-                public void intervalRemoved(ListDataEvent e) {
-                    fireListModelChanged();
-                }
-            });            
+            listListModel.addListDataListener(listChangeHandler);
             setValue(listListModel);
         }
         if (wrappedCollection == null) {
@@ -268,7 +259,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 else {
                     buffer = (Collection)wrappedCollection;
                 }
-                listListModel.replaceWith( prepareBackingCollection( buffer ) );
+                listListModel.replaceWith(prepareBackingCollection(buffer));
             }
             else {
                 throw new IllegalArgumentException("wrappedCollection must be assignable from " + wrappedType.getName());
@@ -304,7 +295,20 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        return (oldValue == listListModel && newValue == listListModel) 
-            || super.hasValueChanged(oldValue, newValue);
+        return (oldValue == listListModel && newValue == listListModel) || super.hasValueChanged(oldValue, newValue);
+    }
+
+    private class ListChangeHandler implements ListDataListener {
+        public void contentsChanged(ListDataEvent e) {
+            fireListModelChanged();
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+            fireListModelChanged();
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+            fireListModelChanged();
+        }
     }
 }

@@ -46,6 +46,8 @@ public class TableSortIndicator {
     public static final ArrowIcon STANDARD_DOWN_ARROW = new ArrowIcon(ArrowIcon.Direction.DOWN, 4,
             SystemColor.controlDkShadow);
 
+    private final TableHeaderClickHandler tableHeaderClickHandler = new TableHeaderClickHandler();
+
     private JTable table;
 
     private Icon ascendingIcon;
@@ -67,7 +69,7 @@ public class TableSortIndicator {
         this.descendingIcon = descendingIcon;
         sortList = new ColumnSortList();
         initHeaderRenderers();
-        addHeaderMouseListener();
+        this.table.getTableHeader().addMouseListener(tableHeaderClickHandler);
     }
 
     public ColumnSortList getColumnSortList() {
@@ -80,6 +82,66 @@ public class TableSortIndicator {
             col.setHeaderRenderer(new HeaderRenderer(table.getTableHeader()));
             col.setPreferredWidth(TableUtils.calculatePreferredColumnWidth(table, col));
             col.setWidth(col.getPreferredWidth());
+        }
+    }
+
+    private class TableHeaderClickHandler extends MouseAdapter {
+        public void mouseClicked(MouseEvent e) {
+            if (e.isMetaDown()) {
+                return;
+            }
+            int columnView = table.getColumnModel().getColumnIndexAtX(e.getX());
+            if (columnView == -1) {
+                return;
+            }
+            // make sure mouseclick was not in resize area
+            Rectangle r = table.getTableHeader().getHeaderRect(columnView);
+            // working with a magic value of 3 here, as it is in TableHeaderUI
+            r.grow(-3, 0);
+            if (!r.contains(e.getPoint())) {
+                return;
+            }
+
+            int column = table.convertColumnIndexToModel(columnView);
+            int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
+            ColumnToSort columnToSort = sortList.getSortLevel(column);
+            if (columnToSort != null) {
+                if (shiftPressed == 1) {
+                    sortList.toggleSortOrder(column);
+                    displayRendererIcon(column, columnToSort.getSortOrder());
+                }
+                else {
+                    SortOrder order;
+                    if (sortList.size() > 1) {
+                        order = SortOrder.ASCENDING;
+                    }
+                    else {
+                        order = columnToSort.getSortOrder().flip();
+                    }
+                    sortList.setSingleSortLevel(column, order);
+                    removeRendererIcons();
+                    displayRendererIcon(columnView, order);
+                }
+            }
+            else {
+                if (shiftPressed == 1) {
+                    try {
+                        sortList.addSortLevel(column, SortOrder.ASCENDING);
+                        displayRendererIcon(columnView, SortOrder.ASCENDING);
+                    }
+                    catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(table.getTopLevelAncestor(),
+                                "Maximum number of sort levels reached.", "Table Sorter", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                }
+                else {
+                    sortList.setSingleSortLevel(column, SortOrder.ASCENDING);
+                    removeRendererIcons();
+                    displayRendererIcon(columnView, SortOrder.ASCENDING);
+                }
+            }
+            table.getTableHeader().resizeAndRepaint();
         }
     }
 
@@ -101,69 +163,6 @@ public class TableSortIndicator {
             setFont(tableHeader.getFont());
             return this;
         }
-    }
-
-    private void addHeaderMouseListener() {
-        this.table.getTableHeader().addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.isMetaDown()) {
-                    return;
-                }
-                int columnView = table.getColumnModel().getColumnIndexAtX(e.getX());
-                if (columnView == -1) {
-                    return;
-                }
-                // make sure mouseclick was not in resize area
-                Rectangle r = table.getTableHeader().getHeaderRect(columnView);
-                // working with a magic value of 3 here, as it is in TableHeaderUI
-                r.grow(-3, 0);
-                if(!r.contains(e.getPoint())) {
-                    return;
-                }
-
-                int column = table.convertColumnIndexToModel(columnView);
-                int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
-                ColumnToSort columnToSort = sortList.getSortLevel(column);
-                if (columnToSort != null) {
-                    if (shiftPressed == 1) {
-                        sortList.toggleSortOrder(column);
-                        displayRendererIcon(column, columnToSort.getSortOrder());
-                    }
-                    else {
-                        SortOrder order;
-                        if (sortList.size() > 1) {
-                            order = SortOrder.ASCENDING;
-                        }
-                        else {
-                            order = columnToSort.getSortOrder().flip();
-                        }
-                        sortList.setSingleSortLevel(column, order);
-                        removeRendererIcons();
-                        displayRendererIcon(columnView, order);
-                    }
-                }
-                else {
-                    if (shiftPressed == 1) {
-                        try {
-                            sortList.addSortLevel(column, SortOrder.ASCENDING);
-                            displayRendererIcon(columnView, SortOrder.ASCENDING);
-                        }
-                        catch (IllegalArgumentException ex) {
-                            JOptionPane.showMessageDialog(table.getTopLevelAncestor(),
-                                    "Maximum number of sort levels reached.", "Table Sorter",
-                                    JOptionPane.WARNING_MESSAGE);
-                            return;
-                        }
-                    }
-                    else {
-                        sortList.setSingleSortLevel(column, SortOrder.ASCENDING);
-                        removeRendererIcons();
-                        displayRendererIcon(columnView, SortOrder.ASCENDING);
-                    }
-                }
-                table.getTableHeader().resizeAndRepaint();
-            }
-        });
     }
 
     private void displayRendererIcon(int column, SortOrder order) {

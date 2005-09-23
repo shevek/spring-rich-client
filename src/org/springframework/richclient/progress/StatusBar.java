@@ -107,13 +107,14 @@ public class StatusBar extends JPanel implements ProgressMonitor {
         cancelButton = new JButton();
         cancelButton.setBorderPainted(false);
         cancelButton.setIcon(getDefaultCancelIcon());
-        cancelButton.addActionListener(new ActionListener() {
+        ActionListener cancelHandler = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 logger.info("Requesting task cancellation...");
                 setCanceled(true);
             }
-        });
+        };
+        cancelButton.addActionListener(cancelHandler);
         toolBar.add(cancelButton);
         toolBar.setVisible(false);
         progressBar = new JProgressBar();

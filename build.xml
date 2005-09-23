@@ -540,4 +540,14 @@
 		</jar>
 
 	</target>
+    
+    <target name="pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+        <pmd rulesetfiles="pmd-rules.xml">
+            <formatter type="html" toFile="pmd_report.html"/>
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
 </project>

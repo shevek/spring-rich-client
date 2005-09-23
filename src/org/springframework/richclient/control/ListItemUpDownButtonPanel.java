@@ -35,11 +35,18 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class ListItemUpDownButtonPanel extends AbstractControlFactory {
+
     private static final String DOWN_BUTTON_MESSAGE_CODE = "button.down";
 
     private static final String UP_BUTTON_MESSAGE_CODE = "button.up";
+    
+    private final ListSelectionListener listSelectionChangeHandler = new ListSelectionChangeHandler();
 
-    private JList list;
+    private final UpAction upAction = new UpAction();
+
+    private final DownAction downAction = new DownAction();
+
+    private final JList list;
 
     private JButton upButton;
 
@@ -64,18 +71,7 @@ public class ListItemUpDownButtonPanel extends AbstractControlFactory {
     }
 
     private void subscribe() {
-        this.list.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (list.isSelectionEmpty()) {
-                        onEmptySelection();
-                    }
-                    else {
-                        onSelection();
-                    }
-                }
-            }
-        });
+        this.list.addListSelectionListener(listSelectionChangeHandler);
     }
 
     protected void onEmptySelection() {
@@ -116,56 +112,74 @@ public class ListItemUpDownButtonPanel extends AbstractControlFactory {
     private JComponent createUpDownButtonPanel() {
         upButton = getComponentFactory().createButton(UP_BUTTON_MESSAGE_CODE);
         upButton.setEnabled(false);
-        upButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int[] indices = getList().getSelectedIndices();
-                Object[] array = new Object[indices.length];
-                Arrays.sort(indices);
-                if (indices[0] == 0) {
-                    return;
-                }
-                List model = getListModel();
-                for (int i = 0; i < indices.length; i++) {
-                    array[i] = model.get(indices[i] - i);
-                    model.remove(indices[i] - i);
-                }
-                int[] newIndices = new int[indices.length];
-                for (int i = 0; i < indices.length; i++) {
-                    int newIndex = indices[0] - 1 + i;
-                    model.add(newIndex, array[i]);
-                    newIndices[i] = newIndex;
-                }
-                getList().setSelectedIndices(newIndices);
-            }
-        });
+        upButton.addActionListener(upAction);
 
         downButton = getComponentFactory().createButton(DOWN_BUTTON_MESSAGE_CODE);
         downButton.setEnabled(false);
-        downButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int[] indices = getList().getSelectedIndices();
-                Object[] array = new Object[indices.length];
-                Arrays.sort(indices);
-                List model = getListModel();
-                if (indices[indices.length - 1] == model.size() - 1) {
-                    return;
-                }
-                for (int i = 0; i < indices.length; i++) {
-                    array[i] = model.get(indices[i] - i);
-                    model.remove(indices[i] - i);
-                }
-                int[] newIndices = new int[indices.length];
-                for (int i = 0; i < indices.length; i++) {
-                    int newIndex = indices[0] + 1 + i;
-                    model.add(newIndex, array[i]);
-                    newIndices[i] = newIndex;
-                }
-                getList().setSelectedIndices(newIndices);
-            }
-        });
+        downButton.addActionListener(downAction);
 
-        JComponent panel = GuiStandardUtils.createCommandButtonColumn(new JButton[] { upButton, downButton });
+        JComponent panel = GuiStandardUtils.createCommandButtonColumn(new JButton[] {upButton, downButton});
         panel.setBorder(GuiStandardUtils.createLeftAndRightBorder(UIConstants.ONE_SPACE));
         return panel;
+    }
+
+    private class ListSelectionChangeHandler implements ListSelectionListener {
+
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                if (list.isSelectionEmpty()) {
+                    onEmptySelection();
+                }
+                else {
+                    onSelection();
+                }
+            }
+        }
+    }
+
+    private class DownAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            int[] indices = getList().getSelectedIndices();
+            Object[] array = new Object[indices.length];
+            Arrays.sort(indices);
+            List model = getListModel();
+            if (indices[indices.length - 1] == model.size() - 1) {
+                return;
+            }
+            for (int i = 0; i < indices.length; i++) {
+                array[i] = model.get(indices[i] - i);
+                model.remove(indices[i] - i);
+            }
+            int[] newIndices = new int[indices.length];
+            for (int i = 0; i < indices.length; i++) {
+                int newIndex = indices[0] + 1 + i;
+                model.add(newIndex, array[i]);
+                newIndices[i] = newIndex;
+            }
+            getList().setSelectedIndices(newIndices);
+        }
+    }
+
+    private class UpAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            int[] indices = getList().getSelectedIndices();
+            Object[] array = new Object[indices.length];
+            Arrays.sort(indices);
+            if (indices[0] == 0) {
+                return;
+            }
+            List model = getListModel();
+            for (int i = 0; i < indices.length; i++) {
+                array[i] = model.get(indices[i] - i);
+                model.remove(indices[i] - i);
+            }
+            int[] newIndices = new int[indices.length];
+            for (int i = 0; i < indices.length; i++) {
+                int newIndex = indices[0] - 1 + i;
+                model.add(newIndex, array[i]);
+                newIndices[i] = newIndex;
+            }
+            getList().setSelectedIndices(newIndices);
+        }
     }
 }

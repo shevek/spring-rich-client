@@ -16,6 +16,8 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Window;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -116,24 +118,17 @@ public class InputApplicationDialog extends ApplicationDialog {
         }
         // work around for bug in JFormattedTextField text field for selectAll
         if (inputField instanceof JFormattedTextField) {
-            inputField.addFocusListener(new java.awt.event.FocusAdapter() {
-                public void focusGained(java.awt.event.FocusEvent evt) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            ((JFormattedTextField)inputField).selectAll();
-                        }
-                    });
-                }
-            });
+            SelectAllBugFixer selectAllBugFixer = new SelectAllBugFixer();
+            inputField.addFocusListener(selectAllBugFixer);
         }
-        
+
         layoutBuilder.cell(getInputLabel(), TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES);
         layoutBuilder.labelGapCol();
         layoutBuilder.cell(inputField);
-        
+
         layoutBuilder.unrelatedGapRow();
         layoutBuilder.cell(getValidationReporter().getControl());
-        
+
         layoutBuilder.relatedGapRow();
         layoutBuilder.separator("");
         return layoutBuilder.getPanel();
@@ -143,7 +138,7 @@ public class InputApplicationDialog extends ApplicationDialog {
         JLabel label = getComponentFactory().createLabelFor(inputLabelMessage, getInputField());
         return label;
     }
-    
+
     protected boolean onFinish() {
         if (checkInputConstraint()) {
             onFinish(getInputValue());
@@ -185,7 +180,7 @@ public class InputApplicationDialog extends ApplicationDialog {
     public ValidatingFormModel getFormModel() {
         return formModel;
     }
-        
+
     /**
      * @return Returns the inputField.
      */
@@ -193,4 +188,13 @@ public class InputApplicationDialog extends ApplicationDialog {
         return inputField;
     }
 
+    private static class SelectAllBugFixer extends FocusAdapter {
+        public void focusGained(final FocusEvent evt) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    ((JFormattedTextField)evt.getComponent()).selectAll();
+                }
+            });
+        }
+    }
 }

@@ -40,6 +40,8 @@ import org.springframework.richclient.list.DynamicListModel;
 
 public class ListBinding extends AbstractBinding {
 
+    private final SelectedItemChangeHandler selectedItemChangeHandler = new SelectedItemChangeHandler();
+
     private final JList list;
 
     private ListModel model;
@@ -151,16 +153,17 @@ public class ListBinding extends AbstractBinding {
             else if (isSelectedItemMultiValued()) {
                 list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             }
-            setSelectedValue(null);
-            list.addListSelectionListener(new ListSelectedValueMediator());
+            selectedValueChanged();
+            selectedItemHolder.addValueChangeListener(selectedItemChangeHandler);
+            list.addListSelectionListener(selectedItemChangeHandler);
         }
         if (renderer != null) {
             list.setCellRenderer(renderer);
-        }        
+        }
         return list;
     }
 
-    protected void setSelectedValue(final PropertyChangeListener silentValueChangeHandler) {
+    protected void selectedValueChanged() {
         if (isSelectedItemMultiValued()) {
             final int[] indices = indicesOf(selectedItemHolder.getValue());
             if (indices.length < 1) {
@@ -171,7 +174,7 @@ public class ListBinding extends AbstractBinding {
                 // The selection may now be different than what is reflected in
                 // collection property if this is SINGLE_INTERVAL_SELECTION, so
                 // modify if needed...
-                updateSelectionHolderFromList(silentValueChangeHandler);
+                updateSelectionHolderFromList();
             }
             else {
                 // If it is a collection value but multiple selection is not enabled
@@ -182,7 +185,7 @@ public class ListBinding extends AbstractBinding {
                 list.setSelectedIndex(indices[0]);
                 // The selection may now be different than what is reflected in
                 // collection property, so modify if needed...
-                updateSelectionHolderFromList(silentValueChangeHandler);
+                updateSelectionHolderFromList();
             }
         }
         else {
@@ -271,7 +274,7 @@ public class ListBinding extends AbstractBinding {
         list.setEnabled(isEnabled() && !isReadOnly());
     }
 
-    protected void updateSelectionHolderFromList(final PropertyChangeListener silentValueChangeHandler) {
+    protected void updateSelectionHolderFromList() {
         final Object[] selected = list.getSelectedValues();
 
         if (isSelectedItemACollection()) {
@@ -290,12 +293,7 @@ public class ListBinding extends AbstractBinding {
                 final Collection oldSelection = (Collection)selectedItemHolder.getValue();
                 if (oldSelection == null || !oldSelection.containsAll(newSelection)
                         || oldSelection.size() != newSelection.size()) {
-                    if (silentValueChangeHandler != null) {
-                        selectedItemHolder.setValueSilently(newSelection, silentValueChangeHandler);
-                    }
-                    else {
-                        selectedItemHolder.setValue(newSelection);
-                    }
+                    selectedItemHolder.setValueSilently(newSelection, selectedItemChangeHandler);
                 }
             }
             catch (InstantiationException e1) {
@@ -317,40 +315,22 @@ public class ListBinding extends AbstractBinding {
             final Object[] oldSelection = (Object[])selectedItemHolder.getValue();
             if (oldSelection == null || oldSelection.length != newSelection.length
                     || !Arrays.equals(oldSelection, newSelection)) {
-                if (silentValueChangeHandler != null) {
-                    selectedItemHolder.setValueSilently(newSelection, silentValueChangeHandler);
-                }
-                else {
-                    selectedItemHolder.setValue(newSelection);
-                }
+                selectedItemHolder.setValueSilently(newSelection, selectedItemChangeHandler);
             }
         }
         else {
-            if (silentValueChangeHandler != null) {
-                selectedItemHolder.setValueSilently(list.getSelectedValue(), silentValueChangeHandler);
-            }
-            else {
-                selectedItemHolder.setValue(list.getSelectedValue());
-            }
+            selectedItemHolder.setValueSilently(list.getSelectedValue(), selectedItemChangeHandler);
         }
     }
 
-    private class ListSelectedValueMediator implements ListSelectionListener {
-
-        private final PropertyChangeListener valueChangeHandler;
-
-        public ListSelectedValueMediator() {
-            valueChangeHandler = new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    setSelectedValue(valueChangeHandler);
-                }
-            };
-            selectedItemHolder.addValueChangeListener(valueChangeHandler);
+    private class SelectedItemChangeHandler implements PropertyChangeListener, ListSelectionListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            selectedValueChanged();
         }
 
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
-                updateSelectionHolderFromList(valueChangeHandler);
+                updateSelectionHolderFromList();
             }
         }
     }

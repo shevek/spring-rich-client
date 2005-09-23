@@ -28,15 +28,18 @@ import org.springframework.util.Assert;
  * Dialog for showing an message to the user. The severity of the message
  * is used to determine the icon.
  * <p>
- * If the messagetext contains linefeeds ('\n'), the message is split into different
+ * If the message text contains line feeds ('\n'), the message is split into different
  * parts, and the first part is rendered in bold. This is to mimic the guidelines in
  * http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGWindows/chapter_17_section_6.html#//apple_ref/doc/uid/20000957-20000961-BACFBACB
  */
 public class MessageDialog extends ApplicationDialog {
 
     private static final String OK_FACE_DESCRIPTOR_ID = "okCommand";
+
     private AlertMessageAreaPane messageAreaPane;
+
     private Message message;
+
     private float dialogScaleFactor = 0.55f;
 
     /**
@@ -52,7 +55,7 @@ public class MessageDialog extends ApplicationDialog {
      * Constructs a new dialog.
      * @param title the title
      * @param parent the parent window
-     * @param message the mesage
+     * @param message the message
      */
     public MessageDialog(String title, Window parent, Message message) {
         super(title, parent);
@@ -117,7 +120,7 @@ public class MessageDialog extends ApplicationDialog {
      * @see org.springframework.richclient.dialog.ApplicationDialog#getCommandGroupMembers()
      */
     protected Object[] getCommandGroupMembers() {
-        return new Object[] { getCancelCommand()};
+        return new Object[] {getCancelCommand()};
     }
 
     /**
@@ -142,27 +145,21 @@ public class MessageDialog extends ApplicationDialog {
      */
     protected void onAboutToShow() {
         int width = getDialog().getWidth();
-        float scale=getDialogScaleFactor();
+        float scale = getDialogScaleFactor();
         int parentWidth = getDialog().getParent().getWidth();
         if (width > parentWidth * scale) {
             final int messageAreaPaneHeight = messageAreaPane.getPreferredHeight();
             // adjust the width
-            getDialog().setSize((int) (parentWidth * scale), getDialog().getHeight());
+            getDialog().setSize((int)(parentWidth * scale), getDialog().getHeight());
 
             // dirty hack, because messageAreaPane.getPreferredHeight() doesn't respond
             // immediately to dialog resize when dialog is not visible
-            getDialog().addComponentListener(new ComponentAdapter() {
-                public void componentShown(ComponentEvent e) {
-                    // we must also change the height
-                    int newHeight =
-                        getDialog().getHeight() + messageAreaPane.getPreferredHeight() - messageAreaPaneHeight;
-                    getDialog().setSize(getDialog().getWidth(), newHeight);
-                }
-            });
+            DialogSizeUpdater dialogSizeUpdater = new DialogSizeUpdater(messageAreaPaneHeight);
+            getDialog().addComponentListener(dialogSizeUpdater);
         }
         getDialog().setResizable(false);
     }
-    
+
     /**
      * Get the scale factor for the dialog size (as compared to the parent window). The
      * default returned here is 55% (.55).
@@ -171,12 +168,27 @@ public class MessageDialog extends ApplicationDialog {
     public float getDialogScaleFactor() {
         return dialogScaleFactor;
     }
-    
+
     /**
      * Set the scale factory for the dialog size.
      * @param dialogScaleFactor New dialog scale factor
      */
     public void setDialogScaleFactor(float dialogScaleFactor) {
         this.dialogScaleFactor = dialogScaleFactor;
+    }
+
+    private class DialogSizeUpdater extends ComponentAdapter {
+        private final int height;
+
+        private DialogSizeUpdater(int height) {
+            super();
+            this.height = height;
+        }
+
+        public void componentShown(ComponentEvent e) {
+            // we must also change the height
+            int newHeight = getDialog().getHeight() + messageAreaPane.getPreferredHeight() - height;
+            getDialog().setSize(getDialog().getWidth(), newHeight);
+        }
     }
 }

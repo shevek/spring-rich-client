@@ -46,15 +46,19 @@ import org.springframework.util.Assert;
 public class OverlayHelper implements SwingConstants {
     private static final String LAYERED_PANE_PROPERTY = "overlayLayeredPane";
 
-    private JComponent overlay;
+    private final OverlayTargetChangeHandler overlayTargetChangeHandler = new OverlayTargetChangeHandler();
 
-    private JComponent overlayTarget;
+    private final OverlayChangeHandler overlayChangeHandler = new OverlayChangeHandler();
 
-    private int center;
+    private final JComponent overlay;
 
-    private int xOffset;
+    private final JComponent overlayTarget;
 
-    private int yOffset;
+    private final int center;
+
+    private final int xOffset;
+
+    private final int yOffset;
 
     private boolean isUpdating;
 
@@ -91,64 +95,67 @@ public class OverlayHelper implements SwingConstants {
         installListeners();
     }
 
+    private final class OverlayChangeHandler implements ComponentListener, PropertyChangeListener {
+        public void componentHidden(ComponentEvent e) {
+            hideOverlay();
+        }
+
+        public void componentMoved(ComponentEvent e) {
+            // ignore
+        }
+
+        public void componentResized(ComponentEvent e) {
+            // ignore
+        }
+
+        public void componentShown(ComponentEvent e) {
+            updateOverlay();
+        }
+
+        public void propertyChange(PropertyChangeEvent e) {
+            if ("ancestor".equals(e.getPropertyName()) || "layeredContainerLayer".equals(e.getPropertyName())) {
+                return;
+            }
+            updateOverlay();
+        }
+    }
+
+    private class OverlayTargetChangeHandler implements HierarchyListener, HierarchyBoundsListener, ComponentListener {
+        public void hierarchyChanged(HierarchyEvent e) {
+            updateOverlay();
+        }
+
+        public void ancestorMoved(HierarchyEvent e) {
+            updateOverlay();
+        }
+
+        public void ancestorResized(HierarchyEvent e) {
+            updateOverlay();
+        }
+
+        public void componentHidden(ComponentEvent e) {
+            hideOverlay();
+        }
+
+        public void componentMoved(ComponentEvent e) {
+            updateOverlay();
+        }
+
+        public void componentResized(ComponentEvent e) {
+            updateOverlay();
+        }
+
+        public void componentShown(ComponentEvent e) {
+            updateOverlay();
+        }
+    }
+
     private void installListeners() {
-        overlayTarget.addHierarchyListener(new HierarchyListener() {
-            public void hierarchyChanged(HierarchyEvent e) {
-                updateOverlay();
-            }
-        });
-        overlayTarget.addHierarchyBoundsListener(new HierarchyBoundsListener() {
-            public void ancestorMoved(HierarchyEvent e) {
-                updateOverlay();
-            }
-
-            public void ancestorResized(HierarchyEvent e) {
-                updateOverlay();
-            }
-        });
-        overlayTarget.addComponentListener(new ComponentListener() {
-            public void componentHidden(ComponentEvent e) {
-                hideOverlay();
-            }
-
-            public void componentMoved(ComponentEvent e) {
-                updateOverlay();
-            }
-
-            public void componentResized(ComponentEvent e) {
-                updateOverlay();
-            }
-
-            public void componentShown(ComponentEvent e) {
-                updateOverlay();
-            }
-        });
-        overlay.addComponentListener(new ComponentListener() {
-
-            public void componentHidden(ComponentEvent e) {
-                hideOverlay();
-            }
-
-            public void componentMoved(ComponentEvent e) {
-                // ignore
-            }
-
-            public void componentResized(ComponentEvent e) {
-                // ignore
-            }
-
-            public void componentShown(ComponentEvent e) {
-                updateOverlay();
-            }
-        });
-        overlay.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent e) {
-                if ("ancestor".equals(e.getPropertyName()) || "layeredContainerLayer".equals(e.getPropertyName())) {
-                    return;
-                }
-                updateOverlay();
-            }
-        });
+        overlayTarget.addHierarchyListener(overlayTargetChangeHandler);
+        overlayTarget.addHierarchyBoundsListener(overlayTargetChangeHandler);
+        overlayTarget.addComponentListener(overlayTargetChangeHandler);
+        overlay.addComponentListener(overlayChangeHandler);
+        overlay.addPropertyChangeListener(overlayChangeHandler);
     }
 
     private void updateOverlay() {

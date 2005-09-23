@@ -114,7 +114,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         textComponent.addCaretListener(this);
         textComponent.getDocument().addUndoableEditListener(this);
         if (resetUndoHistoryTrigger != null) {
-            resetUndoHistoryTrigger.addCommitTriggerListener(new CommitTriggerListener() {
+            CommitTriggerListener resetUndoHistoryHandler = new CommitTriggerListener() {
                 public void commit() {
                     undoManager.discardAllEdits();
                     updateUndoRedoState();
@@ -122,7 +122,8 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
 
                 public void revert() {
                 }
-            });
+            };
+            resetUndoHistoryTrigger.addCommitTriggerListener(resetUndoHistoryHandler);
         }
     }
 

@@ -17,15 +17,15 @@ package org.springframework.richclient.command.support;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-public class ToggleButtonPopupListener implements PopupMenuListener, ItemListener {
+public class ToggleButtonPopupListener implements PopupMenuListener, ItemListener, MouseListener {
     private JToggleButton button;
 
     private JPopupMenu menu;
@@ -43,15 +43,7 @@ public class ToggleButtonPopupListener implements PopupMenuListener, ItemListene
         this.menu = menu;
         button.addItemListener(this);
         menu.addPopupMenuListener(this);
-        button.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                buttonWasPressed = true;
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                buttonWasPressed = false;
-            }
-        });
+        button.addMouseListener(this);
     }
 
     public void itemStateChanged(ItemEvent e) {
@@ -71,5 +63,22 @@ public class ToggleButtonPopupListener implements PopupMenuListener, ItemListene
     }
 
     public void popupMenuCanceled(PopupMenuEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+        buttonWasPressed = true;
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        buttonWasPressed = false;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
     }
 }

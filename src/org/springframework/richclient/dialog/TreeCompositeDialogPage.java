@@ -29,7 +29,6 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -56,25 +55,12 @@ import org.springframework.util.Assert;
 public class TreeCompositeDialogPage extends CompositeDialogPage {
 
     private static final DialogPage ROOT_PAGE = null;
+    
+    private final PageSelector pageSelector = new PageSelector();
+    
+    private final PageTitleCellRenderer treeCellRenderer = new PageTitleCellRenderer();
 
     private CardLayout cardLayout;
-
-    private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-                boolean leaf, int row, boolean hasFocus) {
-            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-            if (node.getUserObject() instanceof DialogPage) {
-                DialogPage page = (DialogPage)node.getUserObject();
-
-                this.setText(decoratePageTitle(page));
-                this.setIcon(null);
-            }
-
-            return this;
-        }
-    };
 
     private DefaultTreeModel pageTreeModel;
 
@@ -83,6 +69,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
     private JTree pageTree;
 
     private Map nodes;
+
 
     /**
      * Constructs a new <code>TreeCompositeDialogPage</code> instance.
@@ -114,7 +101,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
      * @param parent
      *            the parent page in the tree hierarchy
      * @param formPage
-     *            the form page to be insterted
+     *            the form page to be inserted
      * @return the DialogPage that wraps form
      */
     public DialogPage addForm(DialogPage parent, Form form) {
@@ -249,7 +236,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         pageTree = new JTree();
         pageTree.setRootVisible(false);
         pageTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        pageTree.addTreeSelectionListener(new PageSelector());
+        pageTree.addTreeSelectionListener(pageSelector);
         pageTree.setCellRenderer(treeCellRenderer);
         pageTree.setShowsRootHandles(true);
     }
@@ -277,25 +264,6 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         return (DefaultMutableTreeNode)nodes.get(page);
     }
 
-    protected class PageSelector implements TreeSelectionListener {
-        private TreePath currentSelection;
-
-        public void valueChanged(TreeSelectionEvent e) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)pageTree.getLastSelectedPathComponent();
-
-            if (node == null) {
-                pageTree.setSelectionPath(currentSelection);
-
-                return;
-            }
-            currentSelection = e.getPath();
-
-            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
-            DialogPage activePage = (DialogPage)selectedNode.getUserObject();
-            cardLayout.show(pagePanel, activePage.getId());
-            setActivePage(activePage);
-        }
-    }
     
     /**
      * Get the nodes map.
@@ -328,4 +296,41 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
     protected DefaultTreeModel getPageTreeModel() {
         return pageTreeModel;
     }
+    
+    protected class PageTitleCellRenderer extends FocusableTreeCellRenderer {
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+        
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+            if (node.getUserObject() instanceof DialogPage) {
+                DialogPage page = (DialogPage)node.getUserObject();
+        
+                this.setText(decoratePageTitle(page));
+                this.setIcon(null);
+            }
+        
+            return this;
+        }
+    }
+
+    protected class PageSelector implements TreeSelectionListener {
+        private TreePath currentSelection;
+
+        public void valueChanged(TreeSelectionEvent e) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)pageTree.getLastSelectedPathComponent();
+
+            if (node == null) {
+                pageTree.setSelectionPath(currentSelection);
+
+                return;
+            }
+            currentSelection = e.getPath();
+
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
+            DialogPage activePage = (DialogPage)selectedNode.getUserObject();
+            cardLayout.show(pagePanel, activePage.getId());
+            setActivePage(activePage);
+        }
+    }    
 }

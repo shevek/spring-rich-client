@@ -21,8 +21,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
+import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.support.CommitListenerAdapter;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
@@ -40,7 +40,9 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
         return new TextComponentPopupInterceptor(formModel);
     }
 
-    private class TextComponentPopupInterceptor extends AbstractFormComponentInterceptor {
+    private class TextComponentPopupInterceptor extends AbstractFormComponentInterceptor implements
+            PropertyChangeListener, CommitListener {
+
         private CommitTrigger resetTrigger;
 
         protected TextComponentPopupInterceptor(FormModel formModel) {
@@ -67,17 +69,21 @@ public class TextComponentPopupInterceptorFactory implements FormComponentInterc
 
         private void registerListeners() {
             FormModel formModel = getFormModel();
-            formModel.addCommitListener(new CommitListenerAdapter() {
-
-                public void postCommit(FormModel formModel) {
-                    resetTrigger.commit();
-                }
-            });
-            formModel.getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    resetTrigger.commit();
-                }
-            });
+            formModel.addCommitListener(this);
+            formModel.getFormObjectHolder().addValueChangeListener(this);
         }
+
+        public void preCommit(FormModel formModel) {
+            // do nothing            
+        }
+
+        public void postCommit(FormModel formModel) {
+            resetTrigger.commit();
+        }
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            resetTrigger.commit();
+        }
+
     }
 }

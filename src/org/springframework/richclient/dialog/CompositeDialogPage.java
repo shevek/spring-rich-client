@@ -51,6 +51,9 @@ import org.springframework.util.Assert;
  * @see org.springframework.richclient.dialog.TabbedDialogPage
  */
 public abstract class CompositeDialogPage extends AbstractDialogPage {
+   
+    private final ChildChangeHandler childChangeHandler = new ChildChangeHandler();
+
     private List pages = new ArrayList();
 
     private int largestPageWidth;
@@ -161,25 +164,11 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
     }
 
     /**
-     * Prepare a dialog page.  Add our property listeners and configure the controls look.
+     * Prepare a dialog page - Add our property listeners and configure the control's look.
      * @param page to process
      */
     protected void prepareDialogPage(DialogPage page) {
-        page.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent e) {
-                if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
-                    CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
-                }
-                else if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
-                    if (getActivePage() == e.getSource()) {
-                        updateMessage();
-                    }
-                }
-                else {
-                    CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
-                }
-            }
-        });
+        page.addPropertyChangeListener(childChangeHandler);
         JComponent c = page.getControl();
         GuiStandardUtils.attachDialogBorder(c);
         Dimension size = c.getPreferredSize();
@@ -221,6 +210,22 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
         else {
             setDescription(null);
             setMessage(null);
+        }
+    }
+    
+    protected class ChildChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent e) {
+            if (DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName())) {
+                CompositeDialogPage.this.updatePageComplete((DialogPage)e.getSource());
+            }
+            else if (Messagable.MESSAGE_PROPERTY.equals(e.getPropertyName())) {
+                if (getActivePage() == e.getSource()) {
+                    updateMessage();
+                }
+            }
+            else {
+                CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
+            }
         }
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ruleset name="SpringRichRules">
+    <description>Checks for bad usage of anonymous inner classes</description>
+    <rule name="UsingAnonymousClassForListener" 
+        message="Never use an anonymous inner class to implement a listener" 
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            ValueModel vm = ...
+            vm.addValueChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    ...
+                };
+            });
+        ]]></example>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[ 
+//PrimaryExpression
+[
+(
+  	PrimaryPrefix/Name[(starts-with(@Image, 'add') or contains(@Image, '.add')) and ends-with(@Image, 'Listener')]  
+or
+	PrimarySuffix[(starts-with(@Image, 'add') or contains(@Image, '.add')) and ends-with(@Image, 'Listener')]  
+)	
+	and PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression
+]
+                ]]></value>
+            </property>
+        </properties>        
+    </rule>
+</ruleset>

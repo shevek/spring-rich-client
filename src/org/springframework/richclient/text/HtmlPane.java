@@ -38,8 +38,9 @@ import javax.swing.text.html.HTMLDocument;
  * @author Oliver Hutchison
  */
 public class HtmlPane extends JTextPane {
+
     private boolean antiAlias;
-    
+
     private Caret caret;
 
     private boolean allowSelection;
@@ -66,49 +67,54 @@ public class HtmlPane extends JTextPane {
         addMouseListener(bugFixer);
         addHyperlinkListener(bugFixer);
         if (installHyperlinkActivationHandler) {
-            addHyperlinkListener(new DefaultHyperlinkActivationHandler());
+            DefaultHyperlinkActivationHandler hyperlinkActivationHandler = new DefaultHyperlinkActivationHandler();
+            addHyperlinkListener(hyperlinkActivationHandler);
         }
     }
 
     /**
-     * Is the HTML rendered with antialiasing.
+     * Is the HTML rendered with anti-aliasing.
      */
     public boolean getAntiAlias() {
         return antiAlias;
     }
 
     /**
-     * Set whether the pane should render the HTML using antialiasing.
+     * Set whether the pane should render the HTML using anti-aliasing.
      */
     public void setAntiAlias(boolean antiAlias) {
-        if (this.antiAlias == antiAlias) { return; }
+        if (this.antiAlias == antiAlias) {
+            return;
+        }
         this.antiAlias = antiAlias;
         firePropertyChange("antiAlias", !antiAlias, antiAlias);
         repaint();
     }
-    
+
     /**
      * Is selection allowed in this pane.
      */
     public boolean getAllowSelection() {
         return allowSelection;
     }
-    
+
     /**
-     * Set wherer or not selection should be allowed in this pane.
+     * Set whether or not selection should be allowed in this pane.
      */
     public void setAllowSelection(boolean allowSelection) {
-        if (this.allowSelection == allowSelection) { return; }
+        if (this.allowSelection == allowSelection) {
+            return;
+        }
         this.allowSelection = allowSelection;
         setCaretInternal();
-        firePropertyChange("allowSelection", !allowSelection, allowSelection);        
+        firePropertyChange("allowSelection", !allowSelection, allowSelection);
     }
 
     public void setCaret(Caret caret) {
         this.caret = caret;
         setCaretInternal();
     }
-    
+
     public Caret getCaret() {
         return caret;
     }
@@ -116,11 +122,12 @@ public class HtmlPane extends JTextPane {
     private void setCaretInternal() {
         if (allowSelection) {
             super.setCaret(caret);
-        } else {
+        }
+        else {
             super.setCaret(new NoSelectionCaret());
-        }        
+        }
     }
-    
+
     /**
      * Applies the current LaF font setting to the document.
      */
@@ -144,7 +151,7 @@ public class HtmlPane extends JTextPane {
         }
         super.paintComponent(g);
     }
-    
+
     private static class NoSelectionCaret extends DefaultCaret {
         public void mouseDragged(MouseEvent e) {
         }

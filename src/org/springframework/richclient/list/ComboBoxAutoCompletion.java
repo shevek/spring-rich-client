@@ -45,67 +45,11 @@ import org.springframework.util.Assert;
  */
 public class ComboBoxAutoCompletion extends PlainDocument {
 
-    private final class FocusHandler implements FocusListener {
+    private final ChangeHandler changeHandler = new ChangeHandler();
 
-        // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when
-        // tabbing out
-        private boolean hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
+    private final JComboBox comboBox;
 
-        public void focusGained(FocusEvent e) {
-            // Highlight whole text when gaining focus
-            highlightCompletedText(0);
-        }
-
-        public void focusLost(FocusEvent e) {
-            // Workaround for Bug 5100422 - Hide Popup on focus loss
-            if (hidePopupOnFocusLoss)
-                ComboBoxAutoCompletion.this.comboBox.setPopupVisible(false);
-        }
-    }
-
-    private final class KeyHandler extends KeyAdapter {
-
-        // Highlight whole text when user hits enter
-        // Register when user hits backspace
-        public void keyPressed(KeyEvent e) {
-            hitBackspace = false;
-            switch (e.getKeyCode()) {
-            case KeyEvent.VK_ENTER:
-                highlightCompletedText(0);
-                break;
-            // determine if the pressed key is backspace (needed by the remove
-            // method)
-            case KeyEvent.VK_BACK_SPACE:
-                hitBackspace = true;
-                hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
-                break;
-            // ignore delete key
-            case KeyEvent.VK_DELETE:
-                e.consume();
-                ComboBoxAutoCompletion.this.comboBox.getToolkit().beep();
-                break;
-            }
-        }
-    }
-
-    private final class ModelChangeHandler implements ListDataListener {
-
-        public void contentsChanged(ListDataEvent e) {
-            fillItem2StringMap();
-        }
-
-        public void intervalAdded(ListDataEvent e) {
-            fillItem2StringMap();
-        }
-
-        public void intervalRemoved(ListDataEvent e) {
-            fillItem2StringMap();
-        }
-    }
-
-    private JComboBox comboBox;
-
-    private JTextComponent editor;
+    private final JTextComponent editor;
 
     boolean hitBackspace;
 
@@ -131,12 +75,12 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         comboBox.setEditable(true);
 
         model = comboBox.getModel();
-        model.addListDataListener(new ModelChangeHandler());
+        model.addListDataListener(changeHandler);
 
         editor = (JTextComponent)comboBox.getEditor().getEditorComponent();
         editor.setDocument(this);
-        editor.addFocusListener(new FocusHandler());
-        editor.addKeyListener(new KeyHandler());
+        editor.addFocusListener(changeHandler);
+        editor.addKeyListener(changeHandler);
 
         fillItem2StringMap();
 
@@ -298,5 +242,57 @@ public class ComboBoxAutoCompletion extends PlainDocument {
     // checks if str1 starts with str2 - ignores case
     private boolean startsWithIgnoreCase(String str1, String str2) {
         return str1 != null && str2 != null && str1.toUpperCase().startsWith(str2.toUpperCase());
+    }
+
+    private final class ChangeHandler extends KeyAdapter implements FocusListener, ListDataListener {
+
+        // Highlight whole text when user hits enter
+        // Register when user hits backspace
+        public void keyPressed(KeyEvent e) {
+            hitBackspace = false;
+            switch (e.getKeyCode()) {
+            case KeyEvent.VK_ENTER:
+                highlightCompletedText(0);
+                break;
+            // determine if the pressed key is backspace (needed by the remove
+            // method)
+            case KeyEvent.VK_BACK_SPACE:
+                hitBackspace = true;
+                hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
+                break;
+            // ignore delete key
+            case KeyEvent.VK_DELETE:
+                e.consume();
+                ComboBoxAutoCompletion.this.comboBox.getToolkit().beep();
+                break;
+            }
+        }
+
+        // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when
+        // tabbing out
+        private boolean hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
+
+        public void focusGained(FocusEvent e) {
+            // Highlight whole text when gaining focus
+            highlightCompletedText(0);
+        }
+
+        public void focusLost(FocusEvent e) {
+            // Workaround for Bug 5100422 - Hide Popup on focus loss
+            if (hidePopupOnFocusLoss)
+                ComboBoxAutoCompletion.this.comboBox.setPopupVisible(false);
+        }
+
+        public void contentsChanged(ListDataEvent e) {
+            fillItem2StringMap();
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+            fillItem2StringMap();
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+            fillItem2StringMap();
+        }
     }
 }

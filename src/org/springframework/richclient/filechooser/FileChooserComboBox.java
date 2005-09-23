@@ -44,6 +44,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Keith Donald
  */
 public class FileChooserComboBox extends AbstractControlFactory {
+
     private static final Log logger = LogFactory.getLog(FileChooserComboBox.class);
 
     private JFileChooser fileChooser;
@@ -107,27 +108,8 @@ public class FileChooserComboBox extends AbstractControlFactory {
                 formProperty).getControl();
         JLabel fileToProcess = getComponentFactory().createLabelFor(fileChooserLabel, fileNameField);
         this.browseButton = getComponentFactory().createButton("button.browse");
-        browseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                if (fileChooser == null) {
-                    fileChooser = new JFileChooser(getStartDirectory());
-                }
-                else {
-                    fileChooser.setCurrentDirectory(getStartDirectory());
-                }
-                int returnVal = fileChooser.showOpenDialog(SwingUtilities.getWindowAncestor(browseButton));
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    fileNameField.setText(selectedFile.getAbsolutePath());
-                    if (selectedFile.isDirectory()) {
-                        setStartDirectory(selectedFile);
-                    }
-                    else {
-                        setStartDirectory(selectedFile.getParentFile());
-                    }
-                }
-            }
-        });
+        BrowseActionHandler browseActionHandler = new BrowseActionHandler();
+        browseButton.addActionListener(browseActionHandler);
         FormLayout layout = new FormLayout("pref:grow, 6dlu:none, min", "pref, 3dlu, pref");
         JPanel panel = new JPanel(layout);
         CellConstraints cc = new CellConstraints();
@@ -136,5 +118,26 @@ public class FileChooserComboBox extends AbstractControlFactory {
         panel.add(browseButton, cc.xy(3, 3));
         return panel;
     }
-
+    
+    private class BrowseActionHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if (fileChooser == null) {
+                fileChooser = new JFileChooser(getStartDirectory());
+            }
+            else {
+                fileChooser.setCurrentDirectory(getStartDirectory());
+            }
+            int returnVal = fileChooser.showOpenDialog(SwingUtilities.getWindowAncestor(browseButton));
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                fileNameField.setText(selectedFile.getAbsolutePath());
+                if (selectedFile.isDirectory()) {
+                    setStartDirectory(selectedFile);
+                }
+                else {
+                    setStartDirectory(selectedFile.getParentFile());
+                }
+            }
+        }
+    }
 }
