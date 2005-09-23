@@ -61,7 +61,7 @@
 	</bean>
     
     <bean id="binderSelectionStrategy" 
-        class="org.springframework.richclient.samples.petclinic.ui.binder.PetClinicBinderSelectionStrategy">
+        class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
         <property name="bindersForPropertyTypes">
             <map>
 <!--                <entry>

@@ -42,7 +42,7 @@ public class PetTypeBinder extends AbstractBinder implements InitializingBean {
     private Map petTypes;
 
     public PetTypeBinder() {
-        super(PetType.class, new String[] {});
+        super(PetType.class, new String[] {});        
     }
 
     public void setClinic(Clinic clinic) {

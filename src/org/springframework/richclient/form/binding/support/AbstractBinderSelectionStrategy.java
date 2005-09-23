@@ -30,8 +30,6 @@ import org.springframework.util.Assert;
  * Default implementation of <code>BinderSelectionStrategy</code>. Provides for 
  * registering of binders by control type, property type and property name.  
  * 
- * TODO: allow this to be configured using an application context.
- * 
  * @author Oliver Hutchison
  * @author Jim Moore
  */
@@ -144,8 +142,42 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
         propertyTypeBinders.put(propertyType, binder);
     }
 
+    /**
+     * Registers property type binders by extracting the key and value from each entry 
+     * in the provided map using the key to specify the property type and the value 
+     * to specify the binder.
+     * 
+     * <p>Binders specified in the provided map will override any binders previously 
+     * registered for the same property type.
+     * @param binders the map containing the entries to register; keys must be of type 
+     * <code>Class</code> and values of type <code>Binder</code>.
+     */
+    public void setBindersForPropertyTypes(Map binders) {
+        for (Iterator i = binders.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            registerBinderForPropertyType((Class)entry.getKey(), (Binder)entry.getValue());
+        }
+    }
+
     protected void registerBinderForControlType(Class controlType, Binder binder) {
         controlTypeBinders.put(controlType, binder);
+    }
+
+    /**
+     * Registers control type binders by extracting the key and value from each entry 
+     * in the provided map using the key to specify the property type and the value 
+     * to specify the binder.
+     * 
+     * <p>Binders specified in the provided map will override any binders previously 
+     * registered for the same control type.
+     * @param binders the map containing the entries to register; keys must be of type 
+     * <code>Class</code> and values of type <code>Binder</code>.
+     */
+    public void setBindersForControlTypes(Map binders) {
+        for (Iterator i = binders.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            registerBinderForPropertyType((Class)entry.getKey(), (Binder)entry.getValue());
+        }
     }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
