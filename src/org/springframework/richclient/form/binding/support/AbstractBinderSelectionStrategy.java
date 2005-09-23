@@ -176,7 +176,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
     public void setBindersForControlTypes(Map binders) {
         for (Iterator i = binders.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry)i.next();
-            registerBinderForPropertyType((Class)entry.getKey(), (Binder)entry.getValue());
+            registerBinderForControlType((Class)entry.getKey(), (Binder)entry.getValue());
         }
     }
 
