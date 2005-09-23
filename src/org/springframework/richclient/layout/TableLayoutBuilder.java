@@ -58,29 +58,42 @@ import com.jgoodies.forms.layout.RowSpec;
  * keep track of row or column indexes for grouping. This also makes grouping
  * less fragile when the table layout changes</li>
  * </ul>
- * <strong>Example: </strong> <br>
- * 
+ * <strong>Example: </strong> <br> 
  * <pre>
  * TableLayoutBuilder table = new TableLayoutBuilder();
- * table.row().separator(&quot;General 1&quot;).row().cell(new JLabel(&quot;Company&quot;),
- *         &quot;colSpec=right:pref colGrId=labels&quot;).labelGapCol().cell(
- *         new JFormattedTextField()).row().cell(new JLabel(&quot;Contact&quot;)).cell(
- *         new JFormattedTextField()).unrelatedGapRow().separator(&quot;Propeller&quot;)
- *         .row().cell(new JLabel(&quot;PTI [kW]&quot;)).cell(new JFormattedTextField())
- *         .unrelatedGapCol().cell(new JLabel(&quot;Description&quot;),
- *                 &quot;colSpec=right:pref colGrId=labels&quot;).labelGapCol().cell(
- *                 new JScrollPane(new JTextArea()), &quot;rowspan=3&quot;).row().cell(
- *                 new JLabel(&quot;R [mm]&quot;)).cell(new JFormattedTextField()).cell()
- *         .row().cell(new JLabel(&quot;D [mm]&quot;)).cell(new JFormattedTextField())
- *         .cell();
- * 
+ * table
+ *  .row()
+ *      .separator(&quot;General 1&quot;)
+ *  .row()
+ *      .cell(new JLabel(&quot;Company&quot;), &quot;colSpec=right:pref colGrId=labels&quot;)
+ *      .labelGapCol()
+ *      .cell(new JFormattedTextField())
+ *  .row()
+ *      .cell(new JLabel(&quot;Contact&quot;))
+ *      .cell(new JFormattedTextField())
+ *      .unrelatedGapRow()
+ *      .separator(&quot;Propeller&quot;)
+ *  .row()
+ *      .cell(new JLabel(&quot;PTI [kW]&quot;)).cell(new JFormattedTextField())
+ *      .unrelatedGapCol()
+ *      .cell(new JLabel(&quot;Description&quot;), &quot;colSpec=right:pref colGrId=labels&quot;)
+ *      .labelGapCol()
+ *      .cell(new JScrollPane(new JTextArea()), &quot;rowspan=3&quot;)
+ *  .row()
+ *      .cell(new JLabel(&quot;R [mm]&quot;))
+ *      .cell(new JFormattedTextField())
+ *      .cell()
+ *  .row()
+ *      .cell(new JLabel(&quot;D [mm]&quot;))
+ *      .cell(new JFormattedTextField())
+ *      .cell(); 
  * table.getPanel();
  * </pre>
  * 
  * @author oliverh
  */
 public class TableLayoutBuilder implements LayoutBuilder {
-    
+
     public static final String DEFAULT_LABEL_ATTRIBUTES = "colGrId=label colSpec=left:pref";
 
     public static final String ALIGN = "align";
@@ -148,7 +161,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * contained by the panel will be removed.
      */
     public TableLayoutBuilder(JPanel panel) {
-        Assert.notNull(panel, "panel is required");        
+        Assert.notNull(panel, "panel is required");
         this.panel = panel;
         panel.removeAll();
     }
@@ -218,7 +231,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
         gapRows.put(new Integer(currentRow), gapRowSpec);
         return this;
     }
-    
+
     /**
      * Inserts a new row. A related component gap row will be inserted before
      * this row.
@@ -234,7 +247,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
     public TableLayoutBuilder unrelatedGapRow() {
         return row(FormFactory.UNRELATED_GAP_ROWSPEC);
     }
-    
+
     /**
      * Inserts an empty cell at the current row/column.
      */
@@ -322,14 +335,14 @@ public class TableLayoutBuilder implements LayoutBuilder {
         items.add(cc);
         return this;
     }
-    
+
     /**
      * Return true if there is a gap column to the left of the current cell
      */
     public boolean hasGapToLeft() {
         return currentCol == 0 || gapCols.get(new Integer(currentCol)) != null;
     }
-    
+
     /**
      * Return true if there is a gap row above of the current cell
      */
@@ -561,8 +574,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
             adjustedColGroupIndices[groupsCount] = new int[group.size()];
             int groupCount = 0;
             for (Iterator j = group.iterator(); j.hasNext();) {
-                adjustedColGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedCols.get(((Integer)j.next())
-                        .intValue() - 1)).intValue();
+                adjustedColGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedCols.get(((Integer)j.next()).intValue() - 1)).intValue();
             }
             groupsCount++;
         }
@@ -574,8 +586,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
             adjustedRowGroupIndices[groupsCount] = new int[group.size()];
             int groupCount = 0;
             for (Iterator j = group.iterator(); j.hasNext();) {
-                adjustedRowGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedRows.get(((Integer)j.next())
-                        .intValue() - 1)).intValue();
+                adjustedRowGroupIndices[groupsCount][groupCount++] = ((Integer)adjustedRows.get(((Integer)j.next()).intValue() - 1)).intValue();
             }
             groupsCount++;
         }

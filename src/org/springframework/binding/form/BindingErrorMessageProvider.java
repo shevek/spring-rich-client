@@ -20,7 +20,7 @@ import org.springframework.binding.validation.ValidationMessage;
 
 /**
  * A class that can generate ValidationMessages for exception that occur
- * during a form model's binding proccess.
+ * during a form model's binding process.
  * 
  * @author  Oliver Hutchison
  * @see DefaultBindingErrorMessageProvider
@@ -29,7 +29,7 @@ public interface BindingErrorMessageProvider {
     
     /**
      * Translates the provided exception details into a ValidationMessage that
-     * will be used to provide feedback to the end user. Generaly these 
+     * will be used to provide feedback to the end user. General these 
      * exceptions results from type conversion problems. 
      */
     ValidationMessage getErrorMessage(FormModel formModel, String propertyName, Object valueBeingSet, Exception e); 

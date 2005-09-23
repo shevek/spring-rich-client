@@ -36,12 +36,12 @@ public interface FormPropertyFaceDescriptor extends DescribedElement, Visualized
     String getDisplayName();
 
     /**
-     * A short caption describing the property.
+     * A short caption describing the property; typically used for tool tips.
      */
     String getCaption();
 
     /**
-     * A longer caption describing the property; typically used for tool tips.
+     * A longer caption describing the property.
      */
     String getDescription();
 
