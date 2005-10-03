@@ -30,6 +30,8 @@ import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.BufferedValueModel;
+import org.springframework.binding.value.support.DeepCopyBufferedCollectionValueModel;
 import org.springframework.binding.value.support.ObservableEventList;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
@@ -73,29 +75,89 @@ public abstract class AbstractMasterForm extends AbstractForm {
     public static final String IS_CREATING_PROPERTY = "isCreating";
 
     /**
+     * Construct a new AbstractMasterForm using the given parent form model and property
+     * path. The form model for this class will be constructed by getting the value model
+     * of the specified property from the parent form model and constructing a
+     * DeepCopyBufferedCollectionValueModel on top of it.
+     * 
+     * @param parentFormModel Parent form model to access for this form's data
+     * @param property containing this forms data (must be a collection or an array)
+     * @param formId Id of this form
+     * @param detailType Type of detail object managed by this master form
+     */
+    protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId, Class detailType) {
+        super( formId );
+        _detailType = detailType;
+
+        ValueModel propertyVM = parentFormModel.getValueModel( property );
+        ValueModel detailVM = new DeepCopyBufferedCollectionValueModel( propertyVM, propertyVM.getValue().getClass() );
+        ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId, detailVM );
+
+        setFormModel( formModel );
+
+        // Install a handler to detect when the parents form model changes
+        propertyVM.addValueChangeListener( _parentFormPropertyChangeHandler );
+
+        configure();
+    }
+
+    /**
      * Construct a new AbstractMasterForm using the given parent model, form Id, and
      * detail object type. This method will attempt to pull the master list data from the
      * provided form model. If it finds a usable model (ObservableList), then it will
      * install this as the master data.
+     * <p>
+     * <em>Warning:</em> This constructor makes the assumption that changes in the
+     * underlying form data can be detected by watching the wrapped value model of the
+     * provided form model's form object holder. If the form object holder is a buffered
+     * value model, then the wrapped value model will be obtained and a listener will be
+     * added to detect changes on that wrapped model. Specifically, the ValueModel to
+     * watch is obtained like this:
      * 
+     * <pre>
+     * ValueModel wrappedVM = ((BufferedValueModel) formModel.getFormObjectHolder()).getWrappedValueModel();
+     * </pre>
+     * 
+     * If this is not the case, then this form may not function properly when the parent
+     * form model is changed.
+     * <p>
+     * Use of this constructor (although not deprecated yet) is discouraged due to this
+     * requirement. You should use the following constructor:
+     * {@link #AbstractMasterForm(HierarchicalFormModel, String, String, Class)}
+     * <p>
      * @param formModel Parent form model
      * @param formId Id of this form
      * @param detailType Type of detail object managed by this master form
      */
     protected AbstractMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
         super( formModel, formId );
-        _formModel = formModel;
         _detailType = detailType;
 
+        // Install a handler to detect when the parents form model changes.
+        // Note that this makes a BIG assumption that our form model's wrapped value model
+        // is the ValueModel we need to watch.
+        ValueModel formObjectVM = formModel.getFormObjectHolder();
+        if( formObjectVM instanceof BufferedValueModel ) {
+            ValueModel wrappedVM = ((BufferedValueModel) formObjectVM).getWrappedValueModel();
+            wrappedVM.addValueChangeListener( _parentFormPropertyChangeHandler );
+        }
+
+        configure();
+    }
+
+    /**
+     * Configure this master form's data and prepare the detail form.
+     */
+    protected void configure() {
         // Just configure a basic event list to handle our data
         installEventList( getRootEventList() );
 
         // Now we need to construct a subform and value model to handle the
         // detail elements of this master table
 
-        Object detailObject = BeanUtils.instantiateClass( detailType );
+        Object detailObject = BeanUtils.instantiateClass( _detailType );
         ValueModel valueHolder = new ValueHolder( detailObject );
-        _detailForm = createDetailForm( _formModel, valueHolder, _masterEventList );
+        _detailForm = createDetailForm( getFormModel(), valueHolder, _masterEventList );
 
         // Start the form disabled and not validating until the form is actually in use.
         _detailForm.setEnabled( false );
@@ -148,28 +210,49 @@ public abstract class AbstractMasterForm extends AbstractForm {
             _rootEventList.addAll( getFormData() );
 
             // Install a listener so we can forward changes to the underlying form data
-            _rootEventList.addListEventListener( new ListEventListener() {
-
-                public void listChanged(ListEvent listChanges) {
-                    while( listChanges.next() ) {
-                        int changeIndex = listChanges.getIndex();
-                        switch( listChanges.getType() ) {
-                        case ListEvent.INSERT:
-                            getFormData().add( changeIndex, _rootEventList.get( changeIndex ) );
-                            break;
-                        case ListEvent.UPDATE:
-                            getFormData().set( changeIndex, _rootEventList.get( changeIndex ) );
-                            break;
-                        case ListEvent.DELETE:
-                            getFormData().remove( changeIndex );
-                            break;
-                        }
-                    }
-                }
-
-            } );
+            _rootEventList.addListEventListener( _proxyingListEventHandler );
         }
         return _rootEventList;
+    }
+
+    /**
+     * Rebuild the event list with data from the form object. This is normally invoked
+     * when the value model holding this forms source property has changed (which can
+     * occur when the parent form object is changed). This method is normally invoked from
+     * the parent form object listener.
+     * 
+     * @see #_parentFormPropertyChangeHandler
+     */
+    protected void rebuildRootEventList() {
+        if( _masterEventList != null ) {
+            // While we do this, we need to disable our normal list listener since it's
+            // too late to interact with the user due to unsaved changes (the underlying
+            // value model has already changed).
+            uninstallSelectionHandler();
+
+            // Also remove the proxying event handler so the refresh will not result in
+            // actual changes to the underlying form data (which has already been
+            // rebuilt).
+            _rootEventList.removeListEventListener( _proxyingListEventHandler );
+
+            // Simply clear the current (old) list data and replace it with the new data
+            _masterEventList.clear();
+            _masterEventList.addAll( getFormData() );
+
+            // Clean up the detail form
+            if( _detailForm != null ) {
+                _detailForm.reset();
+                _detailForm.setSelectedIndex( -1 );
+            }
+
+            if( isControlCreated() ) {
+                updateControlsForState(); // Ensure our controls are properly updated
+            }
+
+            // Reinstate the handlers
+            _rootEventList.addListEventListener( _proxyingListEventHandler );
+            installSelectionHandler();
+        }
     }
 
     /**
@@ -202,7 +285,20 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * Install our selection handler.
      */
     protected void installSelectionHandler() {
-        getSelectionModel().addListSelectionListener( getSelectionHandler() );
+        ListSelectionModel lsm = getSelectionModel();
+        if( lsm != null ) {
+            lsm.addListSelectionListener( getSelectionHandler() );
+        }
+    }
+
+    /**
+     * Uninstall our selection handler.
+     */
+    protected void uninstallSelectionHandler() {
+        ListSelectionModel lsm = getSelectionModel();
+        if( lsm != null ) {
+            lsm.removeListSelectionListener( getSelectionHandler() );
+        }
     }
 
     /**
@@ -219,7 +315,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return listener to handle master table selection events
      */
     protected ListSelectionListener getSelectionHandler() {
-        return new ListSelectionHandler();
+        return _selectionHandler;
     }
 
     /**
@@ -331,11 +427,10 @@ public abstract class AbstractMasterForm extends AbstractForm {
     }
 
     /**
-     * Get the message to present to the user when confirming the delete of
-     * selected detail items.  This default implementation just obtains the
-     * message with key <code>masterForm.confirmDelete.message</code>.
-     * Subclasses can use the selected item(s) to construct a more
-     * meaningful message.
+     * Get the message to present to the user when confirming the delete of selected
+     * detail items. This default implementation just obtains the message with key
+     * <code>masterForm.confirmDelete.message</code>. Subclasses can use the selected
+     * item(s) to construct a more meaningful message.
      */
     protected String getConfirmDeleteMessage() {
         return getMessage( "masterForm.confirmDelete.message" );
@@ -521,13 +616,15 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     private EventList _rootEventList;
     private ObservableEventList _masterEventList;
-    private HierarchicalFormModel _formModel;
     private AbstractDetailForm _detailForm;
     private Class _detailType;
     private ActionCommand _newFormObjectCommand;
     private ActionCommand _deleteCommand;
     private CommandGroup _commandGroup;
     private boolean _confirmDelete = true;
+    private ListSelectionHandler _selectionHandler = new ListSelectionHandler();
+    private ListEventListener _proxyingListEventHandler = new ProxyingListEventHandler();
+    private PropertyChangeListener _parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
 
     /**
      * Inner class to handle the list selection and installing the selection into the
@@ -610,5 +707,45 @@ public abstract class AbstractMasterForm extends AbstractForm {
         public void propertyChange(PropertyChangeEvent evt) {
             updateControlsForState();
         }
+    }
+
+    /**
+     * Inner class to monitor changes on the root event list and proxy them on to the
+     * underlying form object (collection).
+     */
+    private class ProxyingListEventHandler implements ListEventListener {
+
+        /**
+         * The list has changed, forward the changes on to the underlying form data
+         */
+        public void listChanged(ListEvent listChanges) {
+            while( listChanges.next() ) {
+                int changeIndex = listChanges.getIndex();
+                switch( listChanges.getType() ) {
+                case ListEvent.INSERT:
+                    getFormData().add( changeIndex, _rootEventList.get( changeIndex ) );
+                    break;
+                case ListEvent.UPDATE:
+                    getFormData().set( changeIndex, _rootEventList.get( changeIndex ) );
+                    break;
+                case ListEvent.DELETE:
+                    getFormData().remove( changeIndex );
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * This class handles changes in the property that this master form is editing. This
+     * can occur when the parent form's form object is changed. When that occurs, our
+     * collection data will change automatically and we then need to update our event list
+     * accordingly.
+     */
+    private class ParentFormPropertyChangeHandler implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            rebuildRootEventList();
+        }
+
     }
 }

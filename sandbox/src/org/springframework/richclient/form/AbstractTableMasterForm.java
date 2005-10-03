@@ -64,6 +64,25 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     private Comparator _comparator;
 
     /**
+     * Construct a new AbstractTableMasterForm using the given parent form model and
+     * property path. The form model for this class will be constructed by getting the
+     * value model of the specified property from the parent form model and constructing a
+     * DeepCopyBufferedCollectionValueModel on top of it. Unless
+     * {@link AbstractMasterForm#getListListModel()} has been overriden, the table will
+     * contain all the elements in the domain object referenced by <code>property</code>.
+     * 
+     * @param parentFormModel Parent form model to access for this form's data
+     * @param property Property containing this forms data (must be a collection or an
+     *            array)
+     * @param formId Id of this form
+     * @param detailType Type of detail object managed by this master form
+     */
+    public AbstractTableMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
+            Class detailType) {
+        super( parentFormModel, property, formId, detailType );
+    }
+
+    /**
      * Construct using the given form information and detail object type. Unless
      * {@link AbstractMasterForm#getListListModel()} has been overriden, the table will
      * contain all the elements in the domain object referenced in the formModel.
@@ -73,84 +92,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param detailType Type of entries in the formModel's domain object
      */
     public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
-        this( formModel, formId, detailType, null, (Matcher) null );
-    }
-
-    /**
-     * Construct using the given form information and detail object type. The list of
-     * items to present in the table will be filtered using the given <code>matcher</code>.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     * @param matcher Matcher to use to filter elements in the table
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType, Matcher matcher) {
-        this( formModel, formId, detailType, null, matcher );
-    }
-
-    /**
-     * Construct using the given form information and detail object type. The list of
-     * items to present in the table will be filtered using the given <code>matcher</code>.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     * @param matcher Matcher to use to filter elements in the table
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
-            MatcherEditor matcherEditor) {
-        this( formModel, formId, detailType, null, matcherEditor );
-    }
-
-    /**
-     * Construct using the given form information and detail object type. The table will
-     * be sorted using the provided comparator.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     * @param comparator to use for sorting the table
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
-            Comparator comparator) {
-        this( formModel, formId, detailType, comparator, (Matcher) null );
-    }
-
-    /**
-     * Construct using the given form information and detail object type. The master list
-     * will be sorted using the <code>comparator</code> and the list of items to present
-     * in the table will be filtered using the given <code>matcher</code>.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     * @param comparator to use for sorting the table
-     * @param matcher Matcher to use to filter elements in the table
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
-            Comparator comparator, Matcher matcher) {
         super( formModel, formId, detailType );
-        _comparator = comparator;
-        _matcher = matcher;
-    }
-
-    /**
-     * Construct using the given form information and detail object type. The master list
-     * will be sorted using the <code>comparator</code> and the list of items to present
-     * in the table will be filtered using the given <code>matcherEditor</code>.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     * @param comparator to use for sorting the table
-     * @param matcherEditor MatcherEditor to use to filter elements in the table
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType,
-            Comparator comparator, MatcherEditor matcherEditor) {
-        super( formModel, formId, detailType );
-        _comparator = comparator;
-        _matcherEditor = matcherEditor;
     }
 
     /**
@@ -299,6 +241,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         TableFormBuilder formBuilder = new TableFormBuilder( sbf );
         formBuilder.getLayoutBuilder().cell( splitter, "align=default,default rowSpec=fill:default:g" );
 
+        updateControlsForState();
+
         return formBuilder.getForm();
     }
 
@@ -317,10 +261,10 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     /**
      * Get the selection model for the master list representation.
      * 
-     * @return selection model
+     * @return selection model or null if master table has not been constructed yet
      */
     protected ListSelectionModel getSelectionModel() {
-        return _masterTable.getSelectionModel();
+        return _masterTable != null ? _masterTable.getSelectionModel() : null;
     }
 
     /**
