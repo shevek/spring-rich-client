@@ -30,6 +30,8 @@ import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
 import org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource;
+import org.springframework.binding.value.ValueChangeDetector;
+import org.springframework.binding.value.support.DefaultValueChangeDetector;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -96,6 +98,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
 
     private static final String BINDING_FACTORY_PROVIDER_BEAN_ID = "bindingFactoryProvider";
     
+    private static final String VALUE_CHANGE_DETECTOR_BEAN_ID = "valueChangeDetector";
+    
     private final Log logger = LogFactory.getLog(getClass());
 
     private ComponentFactory componentFactory;
@@ -129,6 +133,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private LabeledEnumResolver labeledEnumResolver = new StaticLabeledEnumResolver();
 
     private BindingFactoryProvider bindingFactoryProvider;
+    
+    private ValueChangeDetector valueChangeDetector;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -435,6 +441,47 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         return getBindingFactoryProvider().getBindingFactory(formModel);
     }
 
+    /**
+     * Get the configured value change detector.  Instances of this class are used
+     * to detect when a value model value has changed.  If no bean has been
+     * configured, then a default implementation will be returned.
+     * 
+     * @return configured bean instance
+     * @see DefaultValueChangeDetector
+     */
+    public ValueChangeDetector getValueChangeDetector() {
+        if (valueChangeDetector == null) {
+            initValueChangeDetector();
+        }
+        return valueChangeDetector;
+    }
+
+    /**
+     * Intialize the value change detector bean instance.  Extract the bean configured
+     * the application context.  If none is configured, then create an instance of
+     * the default implementation.
+     */
+    private void initValueChangeDetector() {
+        try {
+            valueChangeDetector = (ValueChangeDetector)getApplicationContext().getBean(
+                    VALUE_CHANGE_DETECTOR_BEAN_ID, ValueChangeDetector.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            logger.info("No bean named " + VALUE_CHANGE_DETECTOR_BEAN_ID
+                    + " found; configuring defaults.");
+            valueChangeDetector = new DefaultValueChangeDetector();
+        }
+    }
+
+    /**
+     * Set the value change detector instance.
+     * @param valueChangeDetector instance to use
+     */
+    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
+        this.valueChangeDetector = valueChangeDetector;
+    }
+
+    
     protected void initApplicationContext() throws BeansException {
         if (!lazyInit) {
             initStandardServices();
@@ -452,6 +499,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         getRulesSource();
         getConversionService();
         getBindingFactoryProvider();
+        initValueChangeDetector();
     }
 
     public void initLookAndFeelConfigurer() {

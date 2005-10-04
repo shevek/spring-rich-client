@@ -7,7 +7,7 @@ import java.util.Iterator;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
-import org.springframework.binding.value.support.ValueChangeHelper;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
@@ -66,7 +66,8 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     }
 
     public boolean isDirty() {
-        return this.trackDirty  && ValueChangeHelper.hasValueChanged(originalValue, getValue());
+        return this.trackDirty &&
+            Application.services().getValueChangeDetector().hasValueChanged(originalValue, getValue());
     }
 
     public void clearDirty() {

@@ -21,6 +21,7 @@ import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.value.DerivedValueModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
+import org.springframework.richclient.application.Application;
 
 /**
  * A value model wrapper that supports converting the wrapped value to and from another type 
@@ -51,7 +52,7 @@ public class TypeConverter extends AbstractValueModelWrapper implements DerivedV
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) throws IllegalArgumentException {
         // only set the convertTo value if the convertFrom value has changed 
-        if (ValueChangeHelper.hasValueChanged(getValue(), value)) {
+        if (Application.services().getValueChangeDetector().hasValueChanged(getValue(), value)) {
             super.setValueSilently(convertTo.call(value), listenerToSkip);
         }
     }

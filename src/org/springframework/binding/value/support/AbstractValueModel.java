@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
 
 /**
  * An abstract class that minimizes the effort required to implement
@@ -145,7 +146,7 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
      * Delegates to <code>ValueChangeHelper</code>
      */
     protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        return ValueChangeHelper.hasValueChanged(oldValue, newValue);
+        return Application.services().getValueChangeDetector().hasValueChanged(oldValue, newValue);
     }
 
     /**
