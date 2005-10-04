@@ -21,6 +21,7 @@ import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.CommitTrigger;
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
@@ -448,6 +449,19 @@ public final class BufferedValueModelTests extends TestCase {
         testValueChangeSendsProperEvents(obj1, obj2a,  true);
         testValueChangeSendsProperEvents(obj2a, obj2b, false); 
         testValueChangeSendsProperEvents(null, null,   false);
+        
+        // Now replace the default value change detector with one that
+        // only uses true equivalence.
+        ValueChangeDetector oldVCD = Application.services().getValueChangeDetector();
+        Application.services().setValueChangeDetector(new EquivalenceValueChangeDetector());
+        testValueChangeSendsProperEvents(null, obj1,   true);
+        testValueChangeSendsProperEvents(obj1, null,   true);
+        testValueChangeSendsProperEvents(obj1, obj1,   false);
+        testValueChangeSendsProperEvents(obj1, obj2a,  true);
+        testValueChangeSendsProperEvents(obj2a, obj2b, true); 
+        testValueChangeSendsProperEvents(null, null,   false);
+
+        Application.services().setValueChangeDetector(oldVCD);
     }
 
   
@@ -789,7 +803,14 @@ public final class BufferedValueModelTests extends TestCase {
         }
         
     }
-    
-    
+
+    /**
+     * This class is used to test alternate value change detection methods.
+     */
+    private static class EquivalenceValueChangeDetector implements ValueChangeDetector {
+        public boolean hasValueChanged(Object oldValue, Object newValue) {
+            return oldValue != newValue;
+        }
+    }
     
 }
