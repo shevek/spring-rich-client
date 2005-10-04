@@ -56,8 +56,6 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
         this.control.repaint();
         pane.requestFocusInWindow();
 
-        fireFocusGained(pageComponent);
-
         return true;
     }
 
