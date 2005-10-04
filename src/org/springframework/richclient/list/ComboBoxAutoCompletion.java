@@ -170,7 +170,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             else {
                 highlightCompletedText(offs + str.length());
                 // show popup when the user types
-                if (comboBox.isDisplayable()) {
+                if (comboBox.isShowing()) {
                     comboBox.setPopupVisible(true);
                 }
             }
@@ -202,6 +202,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
      * @see javax.swing.text.Document#remove(int, int)
      */
     public void remove(int offs, int length) throws BadLocationException {
+    	System.out.println("remove");
+    	
         // ignore no deletion
         if (length == 0)
             return;
@@ -225,7 +227,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             }
             highlightCompletedText(offs);
             // show popup when the user types
-            if (comboBox.isDisplayable())
+            if (comboBox.isShowing())
                 comboBox.setPopupVisible(true);
         }
         else {
