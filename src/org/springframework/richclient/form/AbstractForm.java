@@ -339,7 +339,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
         ActionCommand newFormObjectCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
-                getFormModel().reset();
+                getFormModel().setFormObject(createNewObject());
                 getFormModel().setEnabled(true);
                 editingNewFormObject = true;
                 if (isEditingFormObjectSelected()) {
@@ -349,6 +349,18 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         };
         attachFormGuard(newFormObjectCmd, FormGuard.LIKE_NEWFORMOBJCOMMAND);
         return (ActionCommand)getCommandConfigurer().configure(newFormObjectCmd);
+    }
+
+    /**
+     * Create a new object to install into the form.  By default, this simply returns
+     * null.  This will cause the form model to instantiate a new copy of the model object
+     * class.  Subclasses should override this method if they need more control over how
+     * new objects are constructed.
+     * 
+     * @return new object for editing
+     */
+    protected Object createNewObject() {
+        return null;
     }
 
     private boolean isEditingFormObjectSelected() {
