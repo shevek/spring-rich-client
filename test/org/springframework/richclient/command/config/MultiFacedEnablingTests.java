@@ -19,6 +19,8 @@ import javax.swing.AbstractButton;
 
 import junit.framework.TestCase;
 
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.command.ActionCommand;
 
 /**
@@ -29,6 +31,11 @@ public class MultiFacedEnablingTests extends TestCase
 {
     private static final String ALTERNATE_ID = "otherId";
     private static final String MAIN_ID = "someid";
+
+    public final void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
+    }
 
     /**
      * Big idea of the test:

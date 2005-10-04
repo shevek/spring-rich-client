@@ -17,6 +17,8 @@ package org.springframework.binding.value.support;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 import junit.framework.TestCase;
 
@@ -30,6 +32,11 @@ public class TypeConverterTests extends TestCase {
     private ValueModel vm = new ValueHolder("whatever!");
 
     private TypeConverter tc = new TypeConverter(vm, new UpperConverter(), new LowerConverter());
+
+    public final void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
+    }
 
     public void testConvertsTo() {
         vm.setValue("test");

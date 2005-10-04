@@ -20,12 +20,19 @@ import junit.framework.TestCase;
 import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * 
  * @author  Oliver Hutchison
  */
 public class PropertyMetadataImplTests extends TestCase {
+
+    public final void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
+    }
 
     public void testDirtyChangeTrackingOnValueChange() {
         FormModelMediatingValueModel vm = new FormModelMediatingValueModel(new ValueHolder("v1"));

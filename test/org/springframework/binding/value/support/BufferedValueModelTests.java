@@ -22,6 +22,8 @@ import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 
 /**
@@ -41,6 +43,8 @@ public final class BufferedValueModelTests extends TestCase {
         
     protected void setUp() throws Exception {
         super.setUp();
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
         wrapped = new ValueHolder(INITIAL_VALUE);
         commitTrigger = new CommitTrigger();
     }

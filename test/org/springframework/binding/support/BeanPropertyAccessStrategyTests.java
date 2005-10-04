@@ -32,6 +32,8 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.support.Block;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * Tests class {@link BeanPropertyAccessStrategy}.
@@ -49,6 +51,8 @@ public class BeanPropertyAccessStrategyTests extends TestCase {
     private TestPropertyChangeListener pcl;
 
     protected void setUp() throws Exception {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
         testBean = new TestBean();
         pas = new BeanPropertyAccessStrategy(testBean);
         pcl = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);

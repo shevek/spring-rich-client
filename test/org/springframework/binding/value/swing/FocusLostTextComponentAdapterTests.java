@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * Test cases for {@link FocusLostTextComponentAdapter}
@@ -38,6 +40,8 @@ public class FocusLostTextComponentAdapterTests extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
         valueModel = new ValueHolder("");
         valueListener = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         valueModel.addValueChangeListener(valueListener);
