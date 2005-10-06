@@ -54,12 +54,8 @@ import org.springframework.richclient.dialog.FormBackedDialogPage;
 import org.springframework.richclient.dialog.InputApplicationDialog;
 import org.springframework.richclient.dialog.TabbedDialogPage;
 import org.springframework.richclient.dialog.TitledPageApplicationDialog;
-import org.springframework.richclient.dialog.TreeCompositeDialogPage;
 import org.springframework.richclient.form.FormModelHelper;
-import org.springframework.richclient.preference.PreferenceStore;
 import org.springframework.richclient.progress.TreeStatusBarUpdater;
-import org.springframework.richclient.samples.petclinic.ui.preference.CompositeDialogPageType;
-import org.springframework.richclient.samples.petclinic.ui.preference.PetClinicAppearance;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.samples.petclinic.Clinic;
@@ -415,14 +411,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             ownerFormModel = FormModelHelper.createCompoundFormModel(owner);
             ownerGeneralForm = new OwnerGeneralForm(FormModelHelper.createChildPageFormModel(ownerFormModel, null));
 
-            PreferenceStore ps = (PreferenceStore)getApplicationContext().getBean("preferenceStore");
-            CompositeDialogPageType type = (CompositeDialogPageType)ps.getLabeledEnum(PetClinicAppearance.DIALOG_PAGE_TYPE);
-            if (type == null || type.equals(CompositeDialogPageType.TABBED)) {
-                compositePage = new TabbedDialogPage("ownerProperties");
-            }
-            else {
-                compositePage = new TreeCompositeDialogPage("ownerProperties");
-            }
+            compositePage = new TabbedDialogPage("ownerProperties");
             compositePage.addForm(ownerGeneralForm);
             compositePage.addForm(new OwnerAddressForm(FormModelHelper.createChildPageFormModel(ownerFormModel, null)));
 
@@ -497,6 +486,22 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             dialog.showDialog();
 
         }
+    }
+    
+    public void componentClosed() {
+    	System.out.println("closed");
+    }
+    
+    public void componentFocusGained() {
+    	System.out.println("gained");
+    }
+    
+    public void componentFocusLost() {
+    	System.out.println("lost");
+    }
+    
+    public void componentOpened() {
+    	System.out.println("opened");
     }
 
 }

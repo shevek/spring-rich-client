@@ -101,8 +101,6 @@
 				<bean class="org.springframework.richclient.command.support.NewWindowCommand"/>
 				<value>separator</value>
 				<bean class="org.springframework.richclient.command.support.ShowViewMenu"/>
-				<value>separator</value>
-				<ref bean="preferenceCommand"/>
 			</list>
 		</property>
 	</bean>
@@ -125,12 +123,6 @@
 		class="org.springframework.richclient.command.support.AboutCommand">
 		<property name="aboutTextPath">
 			<value>org/springframework/richclient/samples/petclinic/about.txt</value>
-		</property>
-	</bean>
-
-	<bean id="preferenceCommand" class="org.springframework.richclient.preference.PreferenceCommand">
-		<property name="preferenceManager">
-			<ref bean="preferenceManager"/>
 		</property>
 	</bean>
 		
