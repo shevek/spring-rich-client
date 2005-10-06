@@ -23,10 +23,11 @@ public class PreferenceCommand extends ActionCommand {
 
     public PreferenceCommand() {
         super("preferenceCommand");
+        setDisplaysInputDialog(true);
     }
 
     public void doExecuteCommand() {
-        preferenceManager.createDialog().showDialog();
+        preferenceManager.showDialog();
     }
 
     public void setPreferenceManager(PreferenceManager manager) {

@@ -22,65 +22,66 @@ import java.util.List;
 
 import org.springframework.richclient.dialog.TitledPageApplicationDialog;
 import org.springframework.richclient.dialog.TreeCompositeDialogPage;
+import org.springframework.richclient.settings.Settings;
 import org.springframework.util.Assert;
 
 public class PreferenceDialog extends TitledPageApplicationDialog {
 
-    private List preferencePages = new ArrayList();
+	private List preferencePages = new ArrayList();
 
-    private PreferenceStore preferenceStore;
+	private Settings settings;
 
-    public PreferenceDialog() {
-        super(new TreeCompositeDialogPage("preferenceDialog"));
-    }
+	public PreferenceDialog() {
+		super(new TreeCompositeDialogPage("preferenceDialog"));
+	}
 
-    private void addPage(PreferencePage page) {
-        Assert.isTrue(!isControlCreated(), "Add pages before control is created.");
-        preferencePages.add(page);
-        page.setPreferenceDialog(this);
-    }
+	private void addPage(PreferencePage page) {
+		Assert.isTrue(!isControlCreated(), "Add pages before control is created.");
+		preferencePages.add(page);
+		page.setPreferenceDialog(this);
+	}
 
-    public void addPreferencePage(PreferencePage page) {
-        addPage(page);
-        getPageContainer().addPage(page);
-    }
+	public void addPreferencePage(PreferencePage page) {
+		addPage(page);
+		getPageContainer().addPage(page);
+	}
 
-    public void addPreferencePage(PreferencePage parent, PreferencePage page) {
-        addPage(page);
-        getPageContainer().addPage(parent, page);
-    }
+	public void addPreferencePage(PreferencePage parent, PreferencePage page) {
+		addPage(page);
+		getPageContainer().addPage(parent, page);
+	}
 
-    private TreeCompositeDialogPage getPageContainer() {
-        return (TreeCompositeDialogPage) getDialogPage();
-    }
+	private TreeCompositeDialogPage getPageContainer() {
+		return (TreeCompositeDialogPage) getDialogPage();
+	}
 
-    public PreferenceStore getPreferenceStore() {
-        return preferenceStore;
-    }
+	public Settings getSettings() {
+		return settings;
+	}
 
-    public boolean onFinish() {
-        for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
-            PreferencePage page = (PreferencePage) iter.next();
-            // give page the chance to veto
-            if (!page.onFinish()) {
-                return false;
-            }
-        }
-        if (preferenceStore != null && preferenceStore.isDirty()) {
-            try {
-                preferenceStore.save();
-            } catch (IOException e) {
-                // TODO handle exception
-                e.printStackTrace();
-                return false;
-            }
-        }
+	public boolean onFinish() {
+		for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
+			PreferencePage page = (PreferencePage) iter.next();
+			// give page the chance to veto
+			if (!page.onFinish()) {
+				return false;
+			}
+		}
+		if (settings != null) {
+			try {
+				settings.save();
+			} catch (IOException e) {
+				// TODO handle exception
+				e.printStackTrace();
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    public void setPreferenceStore(PreferenceStore store) {
-        Assert.notNull(store, "PreferenceStore cannot be null.");
-        preferenceStore = store;
-    }
+	public void setSettings(Settings settings) {
+		Assert.notNull(settings, "Settings cannot be null.");
+		this.settings = settings;
+	}
 }

@@ -15,11 +15,11 @@
  */
 package org.springframework.richclient.preference;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.springframework.richclient.settings.SettingsFactory;
 
 /**
  * Manages the PreferenceStore and the PreferenceDialog.
@@ -28,49 +28,40 @@ import java.util.List;
  */
 public class PreferenceManager {
 
-    private PreferenceDialog dialog;
+	private PreferenceDialog dialog;
 
-    private List preferencePages = new ArrayList();
+	private List preferencePages = new ArrayList();
 
-    private PreferenceStore preferenceStore;
+	private SettingsFactory settingsFactory;
 
-    public PreferenceDialog createDialog() {
-        if (dialog == null) {
-            dialog = new PreferenceDialog();
+	public void showDialog() {
+		if (dialog == null) {
+			dialog = new PreferenceDialog();
 
-            for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
-                PreferencePage page = (PreferencePage) iter.next();
-                if (page.getParent() == null) {
-                    dialog.addPreferencePage(page);
-                } else {
-                    dialog.addPreferencePage(page.getParent(), page);
-                }
-            }
+			for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
+				PreferencePage page = (PreferencePage) iter.next();
+				if (page.getParent() == null) {
+					dialog.addPreferencePage(page);
+				} else {
+					dialog.addPreferencePage(page.getParent(), page);
+				}
+			}
 
-            dialog.setTitle("Preferences");
-            dialog.setPreferenceStore(preferenceStore);
-        }
-        return dialog;
-    }
+			dialog.setTitle("Preferences");
+			dialog.setSettings(settingsFactory.createUserSettings());
+		}
+		dialog.showDialog();
+	}
 
-    public PreferenceStore getPreferenceStore() {
-        return preferenceStore;
-    }
+	public SettingsFactory getSettingsFactory() {
+		return settingsFactory;
+	}
 
-    public void setPreferencePages(List pages) {
-        preferencePages = pages;
-    }
+	public void setPreferencePages(List pages) {
+		preferencePages = pages;
+	}
 
-    public void setPreferenceStore(PreferenceStore store) {
-        preferenceStore = store;
-        try {
-            preferenceStore.load();
-        }
-        catch (FileNotFoundException e) {
-            // ignore, program starts for the first time, without preference file
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public void setSettingsFactory(SettingsFactory factory) {
+		settingsFactory = factory;
+	}
 }

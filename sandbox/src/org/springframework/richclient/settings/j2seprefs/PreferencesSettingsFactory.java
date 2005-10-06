@@ -13,12 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.settings;
+package org.springframework.richclient.settings.j2seprefs;
 
 import java.io.IOException;
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
+import org.springframework.richclient.settings.Settings;
+import org.springframework.richclient.settings.SettingsFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -26,7 +28,7 @@ import org.springframework.util.Assert;
  * 
  * @author Peter De Bruycker
  */
-public class DefaultSettingsFactory implements SettingsFactory {
+public class PreferencesSettingsFactory implements SettingsFactory {
 
     private static final String INTERNAL = "internal";
 

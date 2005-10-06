@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.settings;
+package org.springframework.richclient.settings.j2seprefs;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import org.springframework.richclient.settings.AbstractSettings;
+import org.springframework.richclient.settings.Settings;
 
 /**
  * Settings implementation using the J2SE Preferences API. <br>

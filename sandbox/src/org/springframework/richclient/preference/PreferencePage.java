@@ -25,107 +25,108 @@ import javax.swing.JPanel;
 
 import org.springframework.richclient.dialog.AbstractDialogPage;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
+import org.springframework.richclient.settings.Settings;
 import org.springframework.util.Assert;
 
 public abstract class PreferencePage extends AbstractDialogPage {
 
-    private JButton applyButton;
+	private JButton applyButton;
 
-    private boolean createApplyAndDefaultButtons = true;
+	private boolean createApplyAndDefaultButtons = true;
 
-    private JButton defaultsButton;
+	private JButton defaultsButton;
 
-    private PreferencePage parent;
+	private PreferencePage parent;
 
-    private PreferenceDialog preferenceDialog;
+	private PreferenceDialog preferenceDialog;
 
-    public PreferencePage(String id) {
-        super(id);
-    }
+	public PreferencePage(String id) {
+		super(id);
+	}
 
-    private JComponent createButtons() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	private JComponent createButtons() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        defaultsButton = new JButton("Restore defaults");
-        defaultsButton.addActionListener(new ActionListener() {
+		defaultsButton = new JButton("Restore defaults");
+		defaultsButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                onDefaults();
-            }
-        });
+			public void actionPerformed(ActionEvent e) {
+				onDefaults();
+			}
+		});
 
-        applyButton = new JButton("Apply");
-        applyButton.addActionListener(new ActionListener() {
+		applyButton = new JButton("Apply");
+		applyButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                onApply();
-            }
-        });
+			public void actionPerformed(ActionEvent e) {
+				onApply();
+			}
+		});
 
-        panel.add(defaultsButton);
-        panel.add(applyButton);
+		panel.add(defaultsButton);
+		panel.add(applyButton);
 
-        return panel;
-    }
+		return panel;
+	}
 
-    protected abstract JComponent createContents();
+	protected abstract JComponent createContents();
 
-    protected final JComponent createControl() {
-        GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
+	protected final JComponent createControl() {
+		GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
 
-        //    JPanel panel = new JPanel(new BorderLayout());
+		// JPanel panel = new JPanel(new BorderLayout());
 
-        JComponent contents = createContents();
-        Assert.notNull(contents, "Contents cannot be null.");
-        //    panel.add(contents);
-        builder.append(contents, 1, 1, true, true);
+		JComponent contents = createContents();
+		Assert.notNull(contents, "Contents cannot be null.");
+		// panel.add(contents);
+		builder.append(contents, 1, 1, true, true);
 
-        if (createApplyAndDefaultButtons) {
-            builder.nextLine();
-            builder.append(createButtons());
-            //      panel.add(createButtons(), BorderLayout.SOUTH);
-        }
+		if (createApplyAndDefaultButtons) {
+			builder.nextLine();
+			builder.append(createButtons());
+			// panel.add(createButtons(), BorderLayout.SOUTH);
+		}
 
-        //    return panel;
-        return builder.getPanel();
-    }
+		// return panel;
+		return builder.getPanel();
+	}
 
-    public PreferencePage getParent() {
-        return parent;
-    }
+	public PreferencePage getParent() {
+		return parent;
+	}
 
-    protected PreferenceStore getPreferenceStore() {
-        return preferenceDialog.getPreferenceStore();
-    }
+	protected Settings getSettings() {
+		return preferenceDialog.getSettings();
+	}
 
-    /**
-     * Must store the preference values in the PreferenceStore. Does not save
-     * the PreferenceStore. Subclasses should override this method.
-     */
-    protected void onApply() {
-        onFinish();
-    }
+	/**
+	 * Must store the preference values in the PreferenceStore. Does not save
+	 * the PreferenceStore. Subclasses should override this method.
+	 */
+	protected void onApply() {
+		onFinish();
+	}
 
-    protected void onDefaults() {
-    }
+	protected void onDefaults() {
+	}
 
-    /**
-     * Notification that the user clicked the OK button on the PreferenceDialog.
-     */
-    protected boolean onFinish() {
-        return true;
-    }
+	/**
+	 * Notification that the user clicked the OK button on the PreferenceDialog.
+	 */
+	protected boolean onFinish() {
+		return true;
+	}
 
-    public void setCreateApplyAndDefaultButtons(boolean create) {
-        createApplyAndDefaultButtons = create;
-    }
+	public void setCreateApplyAndDefaultButtons(boolean create) {
+		createApplyAndDefaultButtons = create;
+	}
 
-    public void setParent(PreferencePage parent) {
-        this.parent = parent;
-    }
+	public void setParent(PreferencePage parent) {
+		this.parent = parent;
+	}
 
-    public void setPreferenceDialog(PreferenceDialog dialog) {
-        Assert.notNull(dialog);
-        preferenceDialog = dialog;
-    }
+	public void setPreferenceDialog(PreferenceDialog dialog) {
+		Assert.notNull(dialog);
+		preferenceDialog = dialog;
+	}
 }
