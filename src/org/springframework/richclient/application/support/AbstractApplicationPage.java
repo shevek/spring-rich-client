@@ -40,181 +40,182 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractApplicationPage implements ApplicationPage {
 
-    private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
-            PageComponentListener.class);
-    
-    private final ViewDescriptorRegistry viewDescriptorRegistry = Application.services().getViewDescriptorRegistry();
+	private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
+			PageComponentListener.class);
 
-    private final Set pageComponents = new LinkedHashSet();
+	private final ViewDescriptorRegistry viewDescriptorRegistry = Application.services().getViewDescriptorRegistry();
 
-    private PageComponent activeComponent;
+	private final Set pageComponents = new LinkedHashSet();
 
-    private SharedCommandTargeter sharedCommandTargeter;
+	private PageComponent activeComponent;
 
-    private PageDescriptor descriptor;
+	private SharedCommandTargeter sharedCommandTargeter;
 
-    private ApplicationWindow window;
+	private PageDescriptor descriptor;
 
-    public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
-        setApplicationWindow(window);
-        setDescriptor(pageDescriptor);
-    }
+	private ApplicationWindow window;
 
-    protected PageComponent findPageComponent(final String viewDescriptorId) {
-        return (PageComponent)new AbstractConstraint() {
+	public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
+		setApplicationWindow(window);
+		setDescriptor(pageDescriptor);
+	}
 
-            public boolean test(Object arg) {
-                if (arg instanceof View) {
-                    return ((View)arg).getId().equals(viewDescriptorId);
-                }
-                return false;
-            }
-        }.findFirst(pageComponents);
-    }
+	protected PageComponent findPageComponent(final String viewDescriptorId) {
+		return (PageComponent) new AbstractConstraint() {
 
-    public void addPageComponentListener(PageComponentListener listener) {
-        pageComponentListeners.add(listener);
-    }
+			public boolean test(Object arg) {
+				if (arg instanceof View) {
+					return ((View) arg).getId().equals(viewDescriptorId);
+				}
+				return false;
+			}
+		}.findFirst(pageComponents);
+	}
 
-    public void removePageComponentListener(PageComponentListener listener) {
-        pageComponentListeners.remove(listener);
-    }
+	public void addPageComponentListener(PageComponentListener listener) {
+		pageComponentListeners.add(listener);
+	}
 
-    protected void fireOpened(PageComponent component) {
-        component.componentOpened();
-        pageComponentListeners.fire("componentOpened", component);
-    }
+	public void removePageComponentListener(PageComponentListener listener) {
+		pageComponentListeners.remove(listener);
+	}
 
-    protected void fireFocusGained(PageComponent component) {
-        component.componentFocusGained();
-        pageComponentListeners.fire("componentFocusGained", component);
-    }
+	protected void fireOpened(PageComponent component) {
+		component.componentOpened();
+		pageComponentListeners.fire("componentOpened", component);
+	}
 
-    protected void setActiveComponent() {
-        if (pageComponents.size() > 0) {
-            setActiveComponent((PageComponent)pageComponents.iterator().next());
-        }
-    }
+	protected void fireFocusGained(PageComponent component) {
+		component.componentFocusGained();
+		pageComponentListeners.fire("componentFocusGained", component);
+	}
 
-    protected ViewDescriptor getViewDescriptor(String viewDescriptorId) {
-        return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
-    }
+	protected void setActiveComponent() {
+		if (pageComponents.size() > 0) {
+			setActiveComponent((PageComponent) pageComponents.iterator().next());
+		}
+	}
 
-    public PageComponent getActiveComponent() {
-        return activeComponent;
-    }
+	protected ViewDescriptor getViewDescriptor(String viewDescriptorId) {
+		return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
+	}
 
-    protected void setActiveComponent(PageComponent pageComponent) {
-        if (this.activeComponent != null) {
-            fireFocusLost(this.activeComponent);
-        }
-        giveFocusTo(pageComponent);
-        this.activeComponent = pageComponent;
-        fireFocusGained(this.activeComponent);
-    }
+	public PageComponent getActiveComponent() {
+		return activeComponent;
+	}
 
-    protected void fireFocusLost(PageComponent component) {
-        component.componentFocusLost();
-        pageComponentListeners.fire("componentFocusLost", component);
-    }
+	protected void setActiveComponent(PageComponent pageComponent) {
+		// if pageComponent is already active, don't do anything
+		if (this.activeComponent == pageComponent) {
+			return;
+		}
 
-    protected abstract boolean giveFocusTo(PageComponent pageComponent);
+		if (this.activeComponent != null) {
+			fireFocusLost(this.activeComponent);
+		}
+		giveFocusTo(pageComponent);
+		this.activeComponent = pageComponent;
+		fireFocusGained(this.activeComponent);
+	}
 
-    protected void fireClosed(PageComponent component) {
-        component.componentClosed();
-        pageComponentListeners.fire("componentClosed", component);
-    }
+	protected void fireFocusLost(PageComponent component) {
+		component.componentFocusLost();
+		pageComponentListeners.fire("componentFocusLost", component);
+	}
 
-    public String getId() {
-        return descriptor.getId();
-    }
+	protected abstract boolean giveFocusTo(PageComponent pageComponent);
 
-    public ApplicationWindow getWindow() {
-        return window;
-    }
+	protected void fireClosed(PageComponent component) {
+		component.componentClosed();
+		pageComponentListeners.fire("componentClosed", component);
+	}
 
-    protected void close(PageComponent pageComponent) {
-        if (pageComponent == activeComponent) {
-            fireFocusLost(pageComponent);
-            activeComponent = null;
-        }
-        pageComponents.remove(pageComponent);
-        pageComponent.dispose();
-        fireClosed(pageComponent);
-        if (activeComponent == null) {
-            setActiveComponent();
-        }
-    }
+	public String getId() {
+		return descriptor.getId();
+	}
 
-    public boolean close() {
-        if (activeComponent != null) {
-            fireFocusLost(activeComponent);
-        }
+	public ApplicationWindow getWindow() {
+		return window;
+	}
 
-        for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
-            PageComponent component = (PageComponent)iter.next();
-            close(component);
-        }
-        return true;
-    }
+	protected void close(PageComponent pageComponent) {
+		if (pageComponent == activeComponent) {
+			fireFocusLost(pageComponent);
+			activeComponent = null;
+		}
+		pageComponents.remove(pageComponent);
+		pageComponent.dispose();
+		fireClosed(pageComponent);
+		if (activeComponent == null) {
+			setActiveComponent();
+		}
+	}
+	
+	public boolean close() {
+		for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
+			PageComponent component = (PageComponent) iter.next();
+			close(component);
+		}
+		return true;
+	}
 
-    public void showView(ViewDescriptor viewDescriptor) {
-        PageComponent component = findPageComponent(viewDescriptor.getId());
-        if (component == null) {
-            component = createPageComponent(viewDescriptor);
+	public void showView(ViewDescriptor viewDescriptor) {
+		PageComponent component = findPageComponent(viewDescriptor.getId());
+		if (component == null) {
+			component = createPageComponent(viewDescriptor);
 
-            addPageComponent(component);
-        }
-        setActiveComponent(component);
-    }
+			addPageComponent(component);
+		}
+		setActiveComponent(component);
+	}
 
-    public void openEditor(Object editorInput) {
-        // todo
-    }
+	public void openEditor(Object editorInput) {
+		// todo
+	}
 
-    public boolean closeAllEditors() {
-        // todo
-        return true;
-    }
+	public boolean closeAllEditors() {
+		// todo
+		return true;
+	}
 
-    protected void addPageComponent(PageComponent pageComponent) {
-        pageComponents.add(pageComponent);
-        fireOpened(pageComponent);
-    }
+	protected void addPageComponent(PageComponent pageComponent) {
+		pageComponents.add(pageComponent);
+		fireOpened(pageComponent);
+	}
 
-    /**
-     * Creates a PageComponent for the given PageComponentDescriptor.
-     * 
-     * @param descriptor
-     *            the descriptor
-     * @return the created PageComponent
-     */
-    protected abstract PageComponent createPageComponent(PageComponentDescriptor descriptor);
+	/**
+	 * Creates a PageComponent for the given PageComponentDescriptor.
+	 * 
+	 * @param descriptor
+	 *            the descriptor
+	 * @return the created PageComponent
+	 */
+	protected abstract PageComponent createPageComponent(PageComponentDescriptor descriptor);
 
-    public void showView(String viewDescriptorId) {
-        showView(getViewDescriptor(viewDescriptorId));
-    }
+	public void showView(String viewDescriptorId) {
+		showView(getViewDescriptor(viewDescriptorId));
+	}
 
-    public Set getPageComponents() {
-        return Collections.unmodifiableSet(pageComponents);
-    }
+	public Set getPageComponents() {
+		return Collections.unmodifiableSet(pageComponents);
+	}
 
-    public final void setApplicationWindow(ApplicationWindow window) {
-        Assert.notNull(window, "The containing window is required");
-        Assert.state(this.window == null, "Page window already set: it should only be set once, during initialization");
-        this.window = window;
-        sharedCommandTargeter = new SharedCommandTargeter(window);
-        addPageComponentListener(sharedCommandTargeter);
-    }
+	public final void setApplicationWindow(ApplicationWindow window) {
+		Assert.notNull(window, "The containing window is required");
+		Assert.state(this.window == null, "Page window already set: it should only be set once, during initialization");
+		this.window = window;
+		sharedCommandTargeter = new SharedCommandTargeter(window);
+		addPageComponentListener(sharedCommandTargeter);
+	}
 
-    public final void setDescriptor(PageDescriptor descriptor) {
-        Assert.notNull(descriptor, "The page's descriptor is required");
-        Assert.state(this.descriptor == null,
-                "Page descriptor already set: it should only be set once, during initialization");
-        this.descriptor = descriptor;
-    }
+	public final void setDescriptor(PageDescriptor descriptor) {
+		Assert.notNull(descriptor, "The page's descriptor is required");
+		Assert.state(this.descriptor == null,
+				"Page descriptor already set: it should only be set once, during initialization");
+		this.descriptor = descriptor;
+	}
 
-    protected PageDescriptor getPageDescriptor() {
-        return descriptor;
-    }
+	protected PageDescriptor getPageDescriptor() {
+		return descriptor;
+	}
 }
