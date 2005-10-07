@@ -15,19 +15,32 @@
  */
 package org.springframework.richclient.settings;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 /**
- * Factory for creating <code>Settings</code> instances.
- * 
  * @author Peter De Bruycker
  */
-public interface SettingsFactory {
+public class TestablePropertyChangeListener implements PropertyChangeListener {
 
-	/**
-	 * Create a new <code>Settings</code> instance for the given key.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return a <code>Settings</code> instance
-	 */
-	Settings createSettings(String key) throws SettingsException;
+	private PropertyChangeEvent event;
+	private int count;
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		count++;
+		this.event = evt;
+	}
+	
+	public PropertyChangeEvent getEvent() {
+		return event;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+	
+	public void reset() {
+		count = 0;
+		event = null;
+	}
 }

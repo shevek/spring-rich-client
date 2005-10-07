@@ -31,6 +31,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * Abstract <code>Settings</code> implementation.
+ * 
  * @author Peter De Bruycker
  */
 public abstract class AbstractSettings implements Settings {
@@ -114,7 +116,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return "";
 		}
-		return (String)defaults.get(key);
+		return (String) defaults.get(key);
 
 	}
 
@@ -170,7 +172,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return 0;
 		}
-		return Integer.parseInt((String)defaults.get(key));
+		return Integer.parseInt((String) defaults.get(key));
 
 	}
 
@@ -197,7 +199,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return 0L;
 		}
-		return Long.parseLong((String)defaults.get(key));
+		return Long.parseLong((String) defaults.get(key));
 
 	}
 
@@ -253,7 +255,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return 0.0f;
 		}
-		return Float.parseFloat((String)defaults.get(key));
+		return Float.parseFloat((String) defaults.get(key));
 
 	}
 
@@ -309,7 +311,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return 0.0;
 		}
-		return Double.parseDouble((String)defaults.get(key));
+		return Double.parseDouble((String) defaults.get(key));
 
 	}
 
@@ -351,7 +353,12 @@ public abstract class AbstractSettings implements Settings {
 	public void setDefaultBoolean(String key, boolean value) {
 		Assert.notNull(key, "Key cannot be null");
 
-		defaults.put(key, String.valueOf(value));
+		if (value) {
+			defaults.put(key, String.valueOf(value));
+		} else {
+			defaults.remove(key);
+		}
+		removeIfDefault(key);
 	}
 
 	/*
@@ -365,7 +372,7 @@ public abstract class AbstractSettings implements Settings {
 		if (!defaults.containsKey(key)) {
 			return false;
 		}
-		return Boolean.valueOf((String)defaults.get(key)).booleanValue();
+		return Boolean.valueOf((String) defaults.get(key)).booleanValue();
 	}
 
 	/*
@@ -386,7 +393,7 @@ public abstract class AbstractSettings implements Settings {
 		if (s == null || s.trim().equals("")) {
 			return null;
 		}
-		return (LabeledEnum)ClassUtils.getFieldValue(s);
+		return (LabeledEnum) ClassUtils.getFieldValue(s);
 	}
 
 	private String enumToString(LabeledEnum e) {
@@ -427,7 +434,7 @@ public abstract class AbstractSettings implements Settings {
 	 */
 	public LabeledEnum getDefaultLabeledEnum(String key) {
 		Assert.notNull(key, "Key cannot be null");
-		return stringToEnum((String)defaults.get(key));
+		return stringToEnum((String) defaults.get(key));
 	}
 
 	public boolean isDefault(String key) {
@@ -449,7 +456,7 @@ public abstract class AbstractSettings implements Settings {
 	 * @see org.springframework.richclient.settings.Settings#getDefaultKeys()
 	 */
 	public String[] getDefaultKeys() {
-		return (String[])defaults.keySet().toArray(new String[0]);
+		return (String[]) defaults.keySet().toArray(new String[0]);
 	}
 
 	/*
@@ -462,7 +469,7 @@ public abstract class AbstractSettings implements Settings {
 		keys.addAll(Arrays.asList(getKeys()));
 		keys.addAll(defaults.keySet());
 
-		return (String[])keys.toArray(new String[0]);
+		return (String[]) keys.toArray(new String[0]);
 	}
 
 	/*

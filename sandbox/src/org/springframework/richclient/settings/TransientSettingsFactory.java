@@ -16,18 +16,14 @@
 package org.springframework.richclient.settings;
 
 /**
- * Factory for creating <code>Settings</code> instances.
+ * Factory for creation of <code>TransientFactory</code> instances.
  * 
  * @author Peter De Bruycker
+ * 
  */
-public interface SettingsFactory {
+public class TransientSettingsFactory implements SettingsFactory {
 
-	/**
-	 * Create a new <code>Settings</code> instance for the given key.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return a <code>Settings</code> instance
-	 */
-	Settings createSettings(String key) throws SettingsException;
+	public Settings createSettings(String key) {
+		return new TransientSettings();
+	}
 }

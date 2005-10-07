@@ -15,19 +15,18 @@
  */
 package org.springframework.richclient.settings;
 
+import org.springframework.core.enums.StringCodedLabeledEnum;
+
 /**
- * Factory for creating <code>Settings</code> instances.
- * 
  * @author Peter De Bruycker
  */
-public interface SettingsFactory {
+public class TestEnum extends StringCodedLabeledEnum {
 
-	/**
-	 * Create a new <code>Settings</code> instance for the given key.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return a <code>Settings</code> instance
-	 */
-	Settings createSettings(String key) throws SettingsException;
+	public static final TestEnum ENUM1 = new TestEnum("1", "enum1");
+
+	public static final TestEnum ENUM2 = new TestEnum("2", "enum2");
+
+	private TestEnum(String code, String label) {
+		super(code, label);
+	}
 }

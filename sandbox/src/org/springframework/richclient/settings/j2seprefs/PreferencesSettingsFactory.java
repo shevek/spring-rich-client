@@ -22,6 +22,7 @@ import java.util.prefs.PreferencesFactory;
 import org.springframework.richclient.settings.Settings;
 import org.springframework.richclient.settings.SettingsFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * Settings factory that uses J2SE Preferences.
@@ -29,75 +30,52 @@ import org.springframework.util.Assert;
  * @author Peter De Bruycker
  */
 public class PreferencesSettingsFactory implements SettingsFactory {
+	private PreferencesFactory preferencesFactory;
 
-    private static final String INTERNAL = "internal";
+	private String id;
 
-    private static final String USER = "user";
+	public String getId() {
+		return id;
+	}
 
-    private Settings userSettings;
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    private Settings internalSettings;
+	public PreferencesFactory getPreferencesFactory() {
+		return preferencesFactory;
+	}
 
-    private PreferencesFactory preferencesFactory;
+	public void setPreferencesFactory(PreferencesFactory preferencesFactory) {
+		this.preferencesFactory = preferencesFactory;
+	}
 
-    private String id;
+	private Preferences getForId(Preferences root, String id) {
+		Assert.notNull(root);
+		Preferences result = root;
+		String[] idParts = id.split("\\.");
+		for (int i = 0; i < idParts.length; i++) {
+			result = result.node(idParts[i]);
+		}
+		return result;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public Settings createSettings(String name) {
+		Assert.state(StringUtils.hasText(id), "An id must be assigned.");
+		Settings settings = null;
+		if (preferencesFactory == null) {
+			settings = new PreferencesSettings(getForId(Preferences.userRoot(), id).node(name));
+		} else {
+			settings = new PreferencesSettings(getForId(preferencesFactory.userRoot(), id).node(name));
+		}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+		try {
+			settings.load();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
-    public PreferencesFactory getPreferencesFactory() {
-        return preferencesFactory;
-    }
-
-    public void setPreferencesFactory(PreferencesFactory preferencesFactory) {
-        this.preferencesFactory = preferencesFactory;
-    }
-
-    public Settings createInternalSettings() {
-        if (internalSettings == null) {
-            internalSettings = createSettings(INTERNAL);
-        }
-        return internalSettings;
-    }
-
-    public Settings createUserSettings() {
-        if (userSettings == null) {
-            userSettings = createSettings(USER);
-        }
-        return userSettings;
-    }
-
-    private Preferences getForId(Preferences root, String id) {
-        Assert.notNull(root);
-        Preferences result = root;
-        String[] idParts = id.split("\\.");
-        for (int i = 0; i < idParts.length; i++) {
-            result = result.node(idParts[i]);
-        }
-        return result;
-    }
-
-    private Settings createSettings(String name) {
-        Assert.hasText(id, "An id must be assigned.");
-        Settings settings = null;
-        if (preferencesFactory == null) {
-            settings = new PreferencesSettings(getForId(Preferences.userRoot(), id).node(name));
-        } else {
-            settings = new PreferencesSettings(getForId(preferencesFactory.userRoot(), id).node(name));
-        }
-
-        try {
-            settings.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return settings;
-    }
+		return settings;
+	}
 
 }

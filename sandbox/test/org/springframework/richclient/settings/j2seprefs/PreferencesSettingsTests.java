@@ -13,21 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.settings;
+package org.springframework.richclient.settings.j2seprefs;
+
+import org.springframework.richclient.settings.Settings;
+import org.springframework.richclient.settings.SettingsTestCase;
 
 /**
- * Factory for creating <code>Settings</code> instances.
- * 
  * @author Peter De Bruycker
  */
-public interface SettingsFactory {
+public class PreferencesSettingsTests extends SettingsTestCase {
 
-	/**
-	 * Create a new <code>Settings</code> instance for the given key.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return a <code>Settings</code> instance
-	 */
-	Settings createSettings(String key) throws SettingsException;
+	protected Settings createSettings() {
+		return new PreferencesSettings(new TransientPreferences());
+	}
+
 }

@@ -19,7 +19,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.richclient.settings.SettingsFactory;
+import org.springframework.binding.validation.Severity;
+import org.springframework.richclient.core.Message;
+import org.springframework.richclient.dialog.MessageDialog;
+import org.springframework.richclient.settings.SettingsException;
+import org.springframework.richclient.settings.SettingsManager;
 
 /**
  * Manages the PreferenceStore and the PreferenceDialog.
@@ -32,7 +36,7 @@ public class PreferenceManager {
 
 	private List preferencePages = new ArrayList();
 
-	private SettingsFactory settingsFactory;
+	private SettingsManager settingsManager;
 
 	public void showDialog() {
 		if (dialog == null) {
@@ -48,20 +52,29 @@ public class PreferenceManager {
 			}
 
 			dialog.setTitle("Preferences");
-			dialog.setSettings(settingsFactory.createUserSettings());
+			try {
+				dialog.setSettings(settingsManager.getUserSettings());
+			} catch (SettingsException e) {
+				new MessageDialog("Error", new Message(e.getMessage(), Severity.ERROR)).showDialog();
+				e.printStackTrace();
+			}
 		}
-		dialog.showDialog();
-	}
 
-	public SettingsFactory getSettingsFactory() {
-		return settingsFactory;
+		// dialog creation can fail
+		if (dialog != null) {
+			dialog.showDialog();
+		}
 	}
 
 	public void setPreferencePages(List pages) {
 		preferencePages = pages;
 	}
 
-	public void setSettingsFactory(SettingsFactory factory) {
-		settingsFactory = factory;
+	public SettingsManager getSettingsManager() {
+		return settingsManager;
+	}
+
+	public void setSettingsManager(SettingsManager settingsManager) {
+		this.settingsManager = settingsManager;
 	}
 }

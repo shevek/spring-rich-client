@@ -13,21 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.settings;
+package org.springframework.richclient.settings.j2seprefs;
+
+import java.util.prefs.Preferences;
+import java.util.prefs.PreferencesFactory;
 
 /**
- * Factory for creating <code>Settings</code> instances.
+ * J2SE <code>PreferencesFactory</code> implementation for creating
+ * <code>TransientPreference</code> instances.
  * 
  * @author Peter De Bruycker
  */
-public interface SettingsFactory {
+public class TransientPreferencesFactory implements PreferencesFactory {
 
-	/**
-	 * Create a new <code>Settings</code> instance for the given key.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return a <code>Settings</code> instance
-	 */
-	Settings createSettings(String key) throws SettingsException;
+	public Preferences systemRoot() {
+		return new TransientPreferences();
+	}
+
+	public Preferences userRoot() {
+		return new TransientPreferences();
+	}
+
 }

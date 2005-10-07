@@ -19,89 +19,52 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Helper class, essential when testing with settings.
+ * Helper class, essential when testing with settings. Completely functional
+ * <code>Settings</code> implementation, but the settings values are not
+ * stored in any backing store.
+ * 
  * @author Peter De Bruycker
  */
 public class TransientSettings extends AbstractSettings {
 
-    private Map values = new HashMap();
+	private Map values = new HashMap();
 
-    public TransientSettings() {
-        this(null, "");
-    }
+	public TransientSettings() {
+		this(null, "");
+	}
 
-    public TransientSettings(TransientSettings parent, String name) {
-        super(parent, name);
-    }
+	public TransientSettings(TransientSettings parent, String name) {
+		super(parent, name);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#internalSet(java.lang.String,
-     *      java.lang.String)
-     */
-    protected void internalSet(String key, String value) {
-        values.put(key, value);
-    }
+	protected void internalSet(String key, String value) {
+		values.put(key, value);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#internalGet(java.lang.String)
-     */
-    protected String internalGet(String key) {
-        return (String) values.get(key);
-    }
+	protected String internalGet(String key) {
+		return (String) values.get(key);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#getKeys()
-     */
-    public String[] getKeys() {
-        return (String[]) values.keySet().toArray(new String[0]);
-    }
+	public String[] getKeys() {
+		return (String[]) values.keySet().toArray(new String[0]);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#save()
-     */
-    public void save() throws IOException {
-    }
+	public void save() throws IOException {
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#load()
-     */
-    public void load() throws IOException {
-    }
+	public void load() throws IOException {
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#getSettings(java.lang.String)
-     */
-    public Settings getSettings(String name) {
-        return new TransientSettings(this, name);
-    }
+	public Settings getSettings(String name) {
+		return new TransientSettings(this, name);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.settings.AbstractSettings#internalRemove(java.lang.String)
-     */
-    protected void internalRemove(String key) {
-        values.remove(key);
-    }
+	protected void internalRemove(String key) {
+		values.remove(key);
+	}
 
-    /* (non-Javadoc)
-     * @see org.springframework.richclient.settings.AbstractSettings#internalContains(java.lang.String)
-     */
-    protected boolean internalContains(String key) {
-        return values.containsKey(key);
-    }
+	protected boolean internalContains(String key) {
+		return values.containsKey(key);
+	}
 }

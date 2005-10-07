@@ -82,10 +82,22 @@ public interface Settings {
 
 	public boolean isDefault(String key);
 
+	/**
+	 * Returns the keys in this <code>Settings</code>.
+	 * @return the keys
+	 */
 	public String[] getKeys();
 
+	/**
+	 * Returns the registered default keys in this <code>Settings</code>.
+	 * @return the keys
+	 */
 	public String[] getDefaultKeys();
 
+	/**
+	 * Returns the "sum" of {link #getKeys()} and {link #getDefaultKeys()}.
+	 * @return all keys
+	 */
 	public String[] getAllKeys();
 
 	public void save() throws IOException;
