@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
@@ -35,6 +36,9 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     private boolean oldDirty;
 
     private final boolean trackDirty;
+    
+    private ValueChangeDetector valueChangeDetector;
+
 
     public FormModelMediatingValueModel(ValueModel propertyValueModel) {
         this(propertyValueModel, true);
@@ -67,7 +71,7 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
 
     public boolean isDirty() {
         return this.trackDirty &&
-            Application.services().getValueChangeDetector().hasValueChanged(originalValue, getValue());
+            getValueChangeDetector().hasValueChanged(originalValue, getValue());
     }
 
     public void clearDirty() {
@@ -89,6 +93,17 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
             oldDirty = dirty;
             firePropertyChange(DIRTY_PROPERTY, !dirty, dirty);
         }
+    }
+
+    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
+        this.valueChangeDetector = valueChangeDetector;
+    }
+
+    protected ValueChangeDetector getValueChangeDetector() {
+        if( valueChangeDetector == null ) {
+            valueChangeDetector = Application.services().getValueChangeDetector();
+        }
+        return valueChangeDetector;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

@@ -19,6 +19,7 @@ import java.beans.PropertyChangeListener;
 
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.value.DerivedValueModel;
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.richclient.application.Application;
@@ -36,6 +37,8 @@ public class TypeConverter extends AbstractValueModelWrapper implements DerivedV
 
     private final Closure convertFrom;
     
+    private ValueChangeDetector valueChangeDetector;
+    
     public TypeConverter(ValueModel wrappedModel, ConversionExecutor convertTo, ConversionExecutor convertFrom) {
         this(wrappedModel, new ConversionExecutorClosure(convertTo), new ConversionExecutorClosure(convertFrom));
     }
@@ -52,7 +55,7 @@ public class TypeConverter extends AbstractValueModelWrapper implements DerivedV
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) throws IllegalArgumentException {
         // only set the convertTo value if the convertFrom value has changed 
-        if (Application.services().getValueChangeDetector().hasValueChanged(getValue(), value)) {
+        if (getValueChangeDetector().hasValueChanged(getValue(), value)) {
             super.setValueSilently(convertTo.call(value), listenerToSkip);
         }
     }
@@ -65,6 +68,17 @@ public class TypeConverter extends AbstractValueModelWrapper implements DerivedV
         return false;
     }
     
+    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
+        this.valueChangeDetector = valueChangeDetector;
+    }
+
+    protected ValueChangeDetector getValueChangeDetector() {
+        if( valueChangeDetector == null ) {
+            valueChangeDetector = Application.services().getValueChangeDetector();
+        }
+        return valueChangeDetector;
+    }
+
     private static class ConversionExecutorClosure implements Closure {
 
         private final ConversionExecutor conversionExecutor;

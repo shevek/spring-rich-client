@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.application.Application;
 
@@ -41,6 +42,8 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
     protected final Log logger = LogFactory.getLog(getClass());
 
     private final ThreadLocal listenerToSkipHolder = new ThreadLocal();
+    
+    private ValueChangeDetector valueChangeDetector;
 
     public final void setValueSilently(Object newValue, PropertyChangeListener listenerToSkip) {
         // We need to keep track of listenerToSkip on a per thread basis as it's 
@@ -146,7 +149,7 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
      * Delegates to <code>ValueChangeHelper</code>
      */
     protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        return Application.services().getValueChangeDetector().hasValueChanged(oldValue, newValue);
+        return getValueChangeDetector().hasValueChanged(oldValue, newValue);
     }
 
     /**
@@ -171,4 +174,16 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
             }
         }
     }
+
+    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
+        this.valueChangeDetector = valueChangeDetector;
+    }
+
+    protected ValueChangeDetector getValueChangeDetector() {
+        if( valueChangeDetector == null ) {
+            valueChangeDetector = Application.services().getValueChangeDetector();
+        }
+        return valueChangeDetector;
+    }
+
 }
