@@ -28,11 +28,17 @@ public abstract class SettingsTestCase extends TestCase {
 	private TestablePropertyChangeListener propertyChangeListener;
 
 	protected final void setUp() throws Exception {
+		doSetUp();
+		
 		settings = createSettings();
 		propertyChangeListener = new TestablePropertyChangeListener();
 		settings.addPropertyChangeListener(propertyChangeListener);
 
 		assertNotNull("settings cannot be null", settings);
+	}
+	
+	protected void doSetUp() throws Exception{
+		
 	}
 
 	public final void testGetSettings() {

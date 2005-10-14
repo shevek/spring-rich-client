@@ -600,4 +600,8 @@ public abstract class AbstractSettings implements Settings {
 		}
 		return Long.parseLong(value);
 	}
+
+	public boolean isRoot() {
+		return getParent() == null;
+	}
 }
