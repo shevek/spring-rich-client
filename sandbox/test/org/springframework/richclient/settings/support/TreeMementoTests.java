@@ -27,18 +27,46 @@ import org.springframework.richclient.settings.TransientSettings;
 /**
  * @author Peter De Bruycker
  */
-public class TreeSettingsTests extends TestCase {
+public class TreeMementoTests extends TestCase {
 
     private JTree tree;
+	private TreeMemento memento;
 
+    public void testConstructor() {
+		try {
+			new WindowMemento(null);
+			fail("Should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// test passes
+		}
+
+		try {
+			tree.setName(null);
+			new TreeMemento(tree, "");
+			fail("Should throw IllegalArgumentException: tree has no name");
+		} catch (Exception e) {
+			// test passes
+		}
+
+		tree.setName("tree0");
+
+		TreeMemento memento = new TreeMemento(tree);
+		assertEquals(tree, memento.getTree());
+		assertEquals("tree0", memento.getKey());
+		
+		memento = new TreeMemento(tree, "key");
+		assertEquals(tree, memento.getTree());
+		assertEquals("key", memento.getKey());
+	}
+    
     public void testSaveSelectionState() {
         TransientSettings settings = new TransientSettings();
 
-        TreeSettings.saveSelectionState(settings, "tree", tree);
+        memento.saveSelectionState(settings);
         assertFalse(settings.contains("tree.selectedRows"));
 
         tree.setSelectionRows(new int[] { 0, 2, 3 });
-        TreeSettings.saveSelectionState(settings, "tree", tree);
+        memento.saveSelectionState(settings);
         assertTrue(settings.contains("tree.selectedRows"));
         assertEquals("0,2-3", settings.getString("tree.selectedRows"));
     }
@@ -47,7 +75,7 @@ public class TreeSettingsTests extends TestCase {
         Settings settings = new TransientSettings();
 
         settings.setString("tree.selectedRows", "0,2-3");
-        TreeSettings.restoreSelectionState(settings, "tree", tree);
+        memento.restoreSelectionState(settings);
 
         assertEquals(5, tree.getRowCount());
         assertTrue(tree.isRowSelected(0));
@@ -60,14 +88,14 @@ public class TreeSettingsTests extends TestCase {
     public void testSaveExpansionState() {
         Settings settings = new TransientSettings();
 
-        TreeSettings.saveExpansionState(settings, "tree", tree);
+        memento.saveExpansionState(settings);
         assertTrue(settings.contains("tree.expansionState"));
         assertEquals("1,0,0,0,0", settings.getString("tree.expansionState"));
 
         // expand child2
         tree.expandRow(2);
 
-        TreeSettings.saveExpansionState(settings, "tree", tree);
+        memento.saveExpansionState(settings);
         assertTrue(settings.contains("tree.expansionState"));
         assertEquals("1,0,1,0,0,0,0", settings.getString("tree.expansionState"));
     }
@@ -76,7 +104,7 @@ public class TreeSettingsTests extends TestCase {
         Settings settings = new TransientSettings();
         settings.setString("tree.expansionState", "1,0,1,0,0,0,0");
 
-        TreeSettings.restoreExpansionState(settings, "tree", tree);
+        memento.restoreExpansionState(settings);
 
         assertEquals(7, tree.getRowCount());
         assertTrue(tree.isExpanded(0));
@@ -92,7 +120,7 @@ public class TreeSettingsTests extends TestCase {
         Settings settings = new TransientSettings();
         settings.setString("key.expansionState", "invalidPref");
 
-        TreeSettings.restoreExpansionState(settings, "tree", tree);
+        memento.restoreExpansionState(settings);
 
         assertEquals(5, tree.getRowCount());
         assertTrue(tree.isExpanded(0));
@@ -118,5 +146,7 @@ public class TreeSettingsTests extends TestCase {
 
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
+        
+        memento = new TreeMemento(tree, "tree");
     }
 }
