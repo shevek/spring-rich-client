@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.util.Assert;
@@ -78,6 +79,7 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
         }
         fireChangedEvents(oldValidationResults);
     }
+    
     // TODO: test
     public void addMessage(ValidationMessage validationMessage) {
         if (!validationResults.getMessages().contains(validationMessage)) {
@@ -147,15 +149,15 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
         return validationResults.getMessageCount(propertyName);
     }
 
-    public List getMessages() {
+    public Set getMessages() {
         return validationResults.getMessages();
     }
 
-    public List getMessages(Severity severity) {
+    public Set getMessages(Severity severity) {
         return validationResults.getMessages(severity);
     }
 
-    public List getMessages(String propertyName) {
+    public Set getMessages(String propertyName) {
         return validationResults.getMessages(propertyName);
     }
 

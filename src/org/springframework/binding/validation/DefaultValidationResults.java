@@ -15,11 +15,11 @@
  */
 package org.springframework.binding.validation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.CachingMapDecorator;
@@ -27,22 +27,22 @@ import org.springframework.util.ObjectUtils;
 
 public class DefaultValidationResults implements ValidationResults {
 
-    private final List messages = new ArrayList();
+    private final Set messages = new HashSet();
 
-    private CachingMapDecorator messagesSubLists = new CachingMapDecorator() {
+    private CachingMapDecorator messagesSubSets = new CachingMapDecorator() {
 
         protected Object create(Object key) {
-            List messagesSubList = new ArrayList();
+            Set messagesSubSet = new HashSet();
             for (Iterator i = messages.iterator(); i.hasNext();) {
                 ValidationMessage message = (ValidationMessage)i.next();
                 if (key instanceof Severity && message.getSeverity().equals((Severity)key)) {
-                    messagesSubList.add(message);
+                    messagesSubSet.add(message);
                 }
                 else if (ObjectUtils.nullSafeEquals(message.getProperty(), key)) {
-                    messagesSubList.add(message);
+                    messagesSubSet.add(message);
                 }
             }
-            return Collections.unmodifiableList(messagesSubList);
+            return Collections.unmodifiableSet(messagesSubSet);
         }
 
     };
@@ -62,23 +62,25 @@ public class DefaultValidationResults implements ValidationResults {
         addAllMessages(validationResults.getMessages());
     }
 
-    public void addAllMessages(Collection validationMessages) {
-        messages.addAll(validationMessages);
-        messagesSubLists.clear();
+    public void addAllMessages(Collection validationMessages) {        
+        if (messages.addAll(validationMessages)) {
+            messagesSubSets.clear();
+        }
     }
 
     public void addMessage(ValidationMessage validationMessage) {
-        messages.add(validationMessage);
-        messagesSubLists.clear();
+        if (messages.add(validationMessage)) {            
+            messagesSubSets.clear();
+        }
     }
 
     public void addMessage(String field, Severity severity, String message) {
         addMessage(new DefaultValidationMessage(field, severity, message));
     }
-    
+
     public void removeMessage(ValidationMessage message) {
         messages.remove(message);
-        messagesSubLists.clear();        
+        messagesSubSets.clear();
     }
 
     public boolean getHasErrors() {
@@ -105,21 +107,20 @@ public class DefaultValidationResults implements ValidationResults {
         return getMessages(fieldName).size();
     }
 
-    public List getMessages() {
-        return Collections.unmodifiableList(messages);
+    public Set getMessages() {
+        return Collections.unmodifiableSet(messages);
     }
 
-    public List getMessages(Severity severity) {
-        return (List)messagesSubLists.get(severity);
+    public Set getMessages(Severity severity) {
+        return (Set)messagesSubSets.get(severity);
     }
 
-    public List getMessages(String fieldName) {
-        return (List)messagesSubLists.get(fieldName);
+    public Set getMessages(String fieldName) {
+        return (Set)messagesSubSets.get(fieldName);
     }
 
     public String toString() {
         return new ToStringCreator(this).append("messages", getMessages()).toString();
     }
-
 
 }

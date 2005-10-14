@@ -31,17 +31,17 @@ public class RulesValidator implements RichValidator {
 
     private static final Log logger = LogFactory.getLog(RulesValidator.class);
 
-    private final FormModel formModel;
-
-    private BeanValidationResultsCollector validationResultsCollector;
-
-    private RulesSource rulesSource;
-
     private final DefaultValidationResults results = new DefaultValidationResults();
 
     private final FormModelAwareMessageTranslator messageTranslator;
 
     private final Map validationErrors = new HashMap();
+
+    private final FormModel formModel;
+
+    private BeanValidationResultsCollector validationResultsCollector;
+
+    private RulesSource rulesSource;
 
     public RulesValidator(FormModel formModel) {
         this.formModel = formModel;
@@ -67,7 +67,6 @@ public class RulesValidator implements RichValidator {
                 if (rules != null) {
                     for (Iterator i = rules.iterator(); i.hasNext();) {
                         PropertyConstraint validationRule = (PropertyConstraint)i.next();
-
                         if (propertyName == null) {
                             if (formModel.hasProperty(validationRule.getPropertyName())) {
                                 checkRule(validationRule);

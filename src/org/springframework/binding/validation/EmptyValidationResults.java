@@ -16,7 +16,7 @@
 package org.springframework.binding.validation;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.core.style.ToStringCreator;
 
@@ -80,22 +80,22 @@ public class EmptyValidationResults implements ValidationResults {
     /**
      * Always returns an empty list.
      */
-    public List getMessages() {
-        return Collections.EMPTY_LIST;
+    public Set getMessages() {
+        return Collections.EMPTY_SET;
     }
 
     /**
      * Always returns an empty list.
      */
-    public List getMessages(Severity severity) {
-        return Collections.EMPTY_LIST;
+    public Set getMessages(Severity severity) {
+        return Collections.EMPTY_SET;
     }
 
     /**
      * Always returns an empty list.
      */
-    public List getMessages(String propertyName) {
-        return Collections.EMPTY_LIST;
+    public Set getMessages(String propertyName) {
+        return Collections.EMPTY_SET;
     }
     
     public String toString() {

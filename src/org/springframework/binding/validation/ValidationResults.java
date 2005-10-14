@@ -15,7 +15,7 @@
  */
 package org.springframework.binding.validation;
 
-import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -59,18 +59,18 @@ public interface ValidationResults {
     int getMessageCount(String propertyName);
     
     /** 
-     * Returns a list holding all of the validation messages.
+     * Returns a set holding all of the validation messages.
      */
-    List getMessages();
+    Set getMessages();
     
     /** 
-     * Returns a list holding all of the validation messages of the specified Severity.
+     * Returns a set holding all of the validation messages of the specified Severity.
      */
-    List getMessages(Severity severity);
+    Set getMessages(Severity severity);
     
     /** 
-     * Returns a list holding all of the validation messages that apply to the specified
+     * Returns a set holding all of the validation messages that apply to the specified
      * property name.
      */
-    List getMessages(String propertyName);
+    Set getMessages(String propertyName);
 }

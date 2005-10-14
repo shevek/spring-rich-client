@@ -162,7 +162,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
      * 
      * @param formProperty the name of the only property that has changed since the 
      * last call to validateAfterPropertyChange or <code>null</code> if this is not
-     * known/availible.
+     * known/available.
      */
     protected void validateAfterPropertyChanged(String formProperty) {
         if (validating) {
