@@ -17,8 +17,6 @@ package org.springframework.richclient.settings.j2seprefs;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -35,8 +33,6 @@ import org.springframework.richclient.settings.Settings;
 public class PreferencesSettings extends AbstractSettings {
 
     private Preferences prefs;
-
-    private Map children = new HashMap();
 
     /**
      * Create the root.
@@ -69,10 +65,6 @@ public class PreferencesSettings extends AbstractSettings {
         return prefs;
     }
 
-    public String getString(String key) {
-        return prefs.get(key, getDefaultString(key));
-    }
-
     public void save() throws IOException {
         try {
             prefs.flush();
@@ -100,13 +92,8 @@ public class PreferencesSettings extends AbstractSettings {
         return prefs.get(key, "");
     }
 
-    public Settings getSettings(String name) {
-        Settings result = (Settings) children.get(name);
-        if (result == null) {
-            result = new PreferencesSettings(this, name);
-            children.put(name, result);
-        }
-        return result;
+    protected Settings internalCreateChild(String key) {
+    	return new PreferencesSettings(this, key);
     }
 
     /*

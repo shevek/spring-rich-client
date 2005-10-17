@@ -126,4 +126,6 @@ public interface Settings {
 	void remove(String key);
 
 	boolean isRoot();
+	
+	String[] getChildSettings();
 }

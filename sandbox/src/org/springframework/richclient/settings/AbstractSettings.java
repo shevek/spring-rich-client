@@ -17,7 +17,6 @@ package org.springframework.richclient.settings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +39,7 @@ public abstract class AbstractSettings implements Settings {
 	private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
 	private Map defaults = new HashMap();
+	private Map children = new HashMap();
 
 	private String name;
 
@@ -71,7 +71,21 @@ public abstract class AbstractSettings implements Settings {
 
 	}
 
+	protected abstract Settings internalCreateChild(String key);
+	
+	public String[] getChildSettings() {
+		return (String[]) children.keySet().toArray(new String[children.size()]);
+	}
+	
+	public Settings getSettings(String name) {
+		if(!children.containsKey(name)) {
+			children.put(name, internalCreateChild(name));
+		}
+		return (Settings) children.get(name);
+	}
+	
 	protected abstract void internalSet(String key, String value);
+	
 
 	/**
 	 * Return null if no value found for key
@@ -446,13 +460,6 @@ public abstract class AbstractSettings implements Settings {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.springframework.richclient.settings.Settings#getKeys()
-	 */
-	public abstract String[] getKeys();
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.springframework.richclient.settings.Settings#getDefaultKeys()
 	 */
 	public String[] getDefaultKeys() {
@@ -471,27 +478,6 @@ public abstract class AbstractSettings implements Settings {
 
 		return (String[]) keys.toArray(new String[0]);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.richclient.settings.Settings#save()
-	 */
-	public abstract void save() throws IOException;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.richclient.settings.Settings#load()
-	 */
-	public abstract void load() throws IOException;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.richclient.settings.Settings#getSettings(java.lang.String)
-	 */
-	public abstract Settings getSettings(String name);
 
 	/*
 	 * (non-Javadoc)

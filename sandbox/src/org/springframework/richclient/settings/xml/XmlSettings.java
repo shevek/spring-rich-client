@@ -36,8 +36,6 @@ public class XmlSettings extends AbstractSettings {
 
 	private Map values = new HashMap();
 
-	private Map children = new HashMap();
-
 	public XmlSettings(Settings parent, Element element) {
 		super(parent, getName(element));
 		this.element = element;
@@ -57,6 +55,31 @@ public class XmlSettings extends AbstractSettings {
 		Assert.notNull(element, "element cannot be null");
 		Assert.isTrue(element.getNodeName().equals("settings"), "element must be settings");
 		Assert.isTrue(element.hasAttribute("name"), "element must have name attribute");
+	}
+
+	protected Settings internalCreateChild(String key) {
+		loadChildrenIfNecessary();
+
+		Element childElement = null;
+
+		NodeList childNodes = element.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node node = childNodes.item(i);
+			if (node instanceof Element) {
+				Element tmp = (Element) node;
+				if (tmp.getNodeName().equals("settings") && tmp.getAttribute("name").equals(key)) {
+					childElement = tmp;
+				}
+			}
+		}
+
+		if (childElement == null) {
+			childElement = element.getOwnerDocument().createElement("settings");
+			childElement.setAttribute("name", key);
+			element.appendChild(childElement);
+		}
+
+		return new XmlSettings(this, childElement);
 	}
 
 	protected boolean internalContains(String key) {
@@ -127,10 +150,6 @@ public class XmlSettings extends AbstractSettings {
 						// entry
 						values.put(el.getAttribute("key"), el.getAttribute("value"));
 					}
-					if (el.getNodeName().equals("settings")) {
-						// settings
-						children.put(el.getAttribute("name"), new XmlSettings(this, el));
-					}
 				}
 			}
 
@@ -142,18 +161,6 @@ public class XmlSettings extends AbstractSettings {
 		if (!childrenLoaded) {
 			childrenLoaded = true;
 		}
-	}
-
-	public Settings getSettings(String name) {
-		loadChildrenIfNecessary();
-		if (!children.containsKey(name)) {
-			Element el = element.getOwnerDocument().createElement("settings");
-			el.setAttribute("name", name);
-			children.put(name, new XmlSettings(this, el));
-			element.appendChild(el);
-		}
-
-		return (Settings) children.get(name);
 	}
 
 	protected void internalRemove(String key) {

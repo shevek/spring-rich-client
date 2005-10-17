@@ -56,8 +56,8 @@ public class TransientSettings extends AbstractSettings {
 	public void load() throws IOException {
 	}
 
-	public Settings getSettings(String name) {
-		return new TransientSettings(this, name);
+	protected Settings internalCreateChild(String key) {
+		return new TransientSettings(this, key);
 	}
 
 	protected void internalRemove(String key) {
