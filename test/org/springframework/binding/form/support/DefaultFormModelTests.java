@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.form.support;
 
+import java.util.Set;
+
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.form.BindingErrorMessageProvider;
@@ -94,31 +96,30 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         v.results = getValidationResults("message1");
         vm.setValue("1");
         assertEquals(2, v.count);
-        assertEquals(1, r.getMessageCount());
-        assertEquals("message1", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        assertEquals(1, r.getMessageCount());        
+        assertContainsMessage("message1", r.getMessages());
 
         v.results = getValidationResults("message2");
         vm.setValue("2");
         assertEquals(3, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
-
+        assertContainsMessage("message2", r.getMessages());
         // this will cause a binding exception
         vm.setValue(new Object());
         assertEquals(3, v.count);
         assertEquals(2, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        assertContainsMessage("message2", r.getMessages());
 
         // this will clear the binding exception
         vm.setValue("3");
         assertEquals(4, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        assertContainsMessage("message2", r.getMessages());
 
         fm.validate();
         assertEquals(5, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("message2", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        assertContainsMessage("message2", r.getMessages());
     }
 
     public void testRaiseClearValidationMessage() {
@@ -133,7 +134,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         fm.raiseValidationMessage(message1);
         assertEquals(1, v.count);
         assertEquals(1, r.getMessageCount());
-        assertEquals("1", ((ValidationMessage)r.getMessages().iterator().next()).getMessage());
+        assertContainsMessage("1", r.getMessages());
 
         fm.clearValidationMessage(message1);
         assertEquals(0, r.getMessageCount());
@@ -196,12 +197,6 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(2, r.getMessageCount());
     }
 
-    protected DefaultValidationResults getValidationResults(String message) {
-        DefaultValidationResults res = new DefaultValidationResults();
-        res.addMessage("simpleProperty", Severity.ERROR, message);
-        return res;
-    }
-
     public void testSetThrowsExceptionRaisesValidationMessage() {
         final ErrorBean errorBean = new ErrorBean();
         DefaultFormModel fm = (DefaultFormModel)getFormModel(errorBean);
@@ -248,14 +243,24 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertTrue(fm.isValidating());
         assertEquals(2, pcl.eventCount());
     }
-    
-    public void testReadOnlyRevert()
-    {
+
+    public void testReadOnlyRevert() {
         FormModel fm = getFormModel(new TestBean());
         fm.getValueModel("readOnly");
         fm.revert();
-        
+
         // no additional asserts, this test should just not throw an exception!
+    }
+
+    private DefaultValidationResults getValidationResults(String message) {
+        DefaultValidationResults res = new DefaultValidationResults();
+        res.addMessage("simpleProperty", Severity.ERROR, message);
+        return res;
+    }
+
+    private void assertContainsMessage(String message, Set messages) {
+        assertTrue("Set of messages does not contain expected message '" + message + "'",
+                messages.contains(new DefaultValidationMessage("simpleProperty", Severity.ERROR, message)));
     }
 
     public static class TestValidator implements Validator {

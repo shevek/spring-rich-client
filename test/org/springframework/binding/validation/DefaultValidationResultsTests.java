@@ -123,7 +123,7 @@ public class DefaultValidationResultsTests extends TestCase {
     }
 
     private void assertContainsMessage(ValidationMessage vm, Set messages) {
-        assertTrue("Set of messages does not contain expected message '" + vm + "'", !messages.contains(messages));
+        assertTrue("Set of messages does not contain expected message '" + vm + "'", messages.contains(vm));
     }
 
     public void testReturnedListsAreNotModifiable() {
