@@ -152,6 +152,9 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
             protected ActionCommand getCallingCommand() {
                 return LoginCommand.this;
             }
+            protected void onAboutToShow() {
+                loginForm.requestFocusInWindow();
+            }
         };
         dialog.setDisplayFinishSuccessMessage( displaySuccessMessage );
         dialog.showDialog();

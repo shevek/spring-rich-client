@@ -27,7 +27,7 @@ import org.springframework.richclient.form.builder.TableFormBuilder;
 /**
  * This class provides a simple form for capturing a username and password from the user.
  * It also generates an {@link Authentication} token from the entered values.
- *  
+ * 
  * @author Larry Streepy
  * @see #getAuthentication()
  */
@@ -37,6 +37,7 @@ public class LoginForm extends AbstractForm {
     private LoginDetails loginDetails;
 
     private JComponent usernameField;
+    private JComponent passwordField;
 
     /**
      * Constructor.
@@ -54,9 +55,9 @@ public class LoginForm extends AbstractForm {
      */
     public void setUserName(String userName) {
         if( isControlCreated() ) {
-            getValueModel(LoginDetails.PROPERTY_USERNAME).setValue(userName);
+            getValueModel( LoginDetails.PROPERTY_USERNAME ).setValue( userName );
         } else {
-            loginDetails.setUsername(userName);
+            loginDetails.setUsername( userName );
         }
     }
 
@@ -83,12 +84,15 @@ public class LoginForm extends AbstractForm {
         TableFormBuilder formBuilder = new TableFormBuilder( getBindingFactory() );
         usernameField = formBuilder.add( LoginDetails.PROPERTY_USERNAME )[1];
         formBuilder.row();
-        formBuilder.addPasswordField( LoginDetails.PROPERTY_PASSWORD );
+        passwordField = formBuilder.addPasswordField( LoginDetails.PROPERTY_PASSWORD )[1];
         return formBuilder.getForm();
     }
 
     public boolean requestFocusInWindow() {
-        return usernameField.requestFocusInWindow();
+        // Put the focus on the right field
+        String username = loginDetails.getUsername();
+        JComponent field = (username != null && username.length() > 0) ? passwordField : usernameField;
+        return field.requestFocusInWindow();
     }
 
 }
