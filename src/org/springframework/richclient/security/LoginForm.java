@@ -81,9 +81,9 @@ public class LoginForm extends AbstractForm {
      */
     protected JComponent createFormControl() {
         TableFormBuilder formBuilder = new TableFormBuilder( getBindingFactory() );
-        usernameField = formBuilder.add( SessionDetails.PROPERTY_USERNAME )[1];
+        usernameField = formBuilder.add( LoginDetails.PROPERTY_USERNAME )[1];
         formBuilder.row();
-        formBuilder.addPasswordField( SessionDetails.PROPERTY_PASSWORD );
+        formBuilder.addPasswordField( LoginDetails.PROPERTY_PASSWORD );
         return formBuilder.getForm();
     }
 
