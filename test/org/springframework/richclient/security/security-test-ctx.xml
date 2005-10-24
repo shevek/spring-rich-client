@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<bean id="applicationSecurityManager"
+	class="org.springframework.richclient.security.support.DefaultApplicationSecurityManager">
+	<property name="authenticationManager" ref="authenticationManager"/>
+</bean>
+
+<bean id="authenticationManager"
+	class="org.springframework.richclient.security.TestAuthenticationManager"/>
+
+<bean id="eventCounter"
+	class="org.springframework.richclient.security.DefaultApplicationSecurityManagerTests$EventCounter"/>
+
+</beans>

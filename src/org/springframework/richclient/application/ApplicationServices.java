@@ -63,6 +63,8 @@ import org.springframework.richclient.image.DefaultIconSource;
 import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
+import org.springframework.richclient.security.ApplicationSecurityManager;
+import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
@@ -100,6 +102,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     
     private static final String VALUE_CHANGE_DETECTOR_BEAN_ID = "valueChangeDetector";
     
+    private static final String APPLICATION_SECURITY_MANAGER_BEAN_ID = "applicationSecurityManager";
+    
     private final Log logger = LogFactory.getLog(getClass());
 
     private ComponentFactory componentFactory;
@@ -135,6 +139,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private BindingFactoryProvider bindingFactoryProvider;
     
     private ValueChangeDetector valueChangeDetector;
+    
+    private ApplicationSecurityManager applicationSecurityManager;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -481,6 +487,43 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         this.valueChangeDetector = valueChangeDetector;
     }
 
+    /**
+     * Get the configured security manager. If no bean has been configured, then a default
+     * implementation will be returned.
+     * 
+     * @return configured bean instance
+     * @see DefaultApplicationSecurityManager
+     */
+    public ApplicationSecurityManager getApplicationSecurityManager() {
+        if( applicationSecurityManager == null ) {
+            initApplicationSecurityManager();
+        }
+        return applicationSecurityManager;
+    }
+
+    /**
+     * Intialize the security manager bean instance. Extract the bean configured the
+     * application context. If none is configured, then create an instance of the default
+     * implementation.
+     */
+    private void initApplicationSecurityManager() {
+        try {
+            applicationSecurityManager = (ApplicationSecurityManager) getApplicationContext().getBean(
+                APPLICATION_SECURITY_MANAGER_BEAN_ID, ApplicationSecurityManager.class );
+        } catch( NoSuchBeanDefinitionException e ) {
+            logger.info( "No bean named " + APPLICATION_SECURITY_MANAGER_BEAN_ID + " found; configuring defaults." );
+            applicationSecurityManager = new DefaultApplicationSecurityManager(true);
+        }
+    }
+
+    /**
+     * Set the security manager instance.
+     * @param applicationSecurityManager instance to use
+     */
+    public void setApplicationSecurityManager(ApplicationSecurityManager applicationSecurityManager) {
+        this.applicationSecurityManager = applicationSecurityManager;
+    }
+
     
     protected void initApplicationContext() throws BeansException {
         if (!lazyInit) {
@@ -500,6 +543,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         getConversionService();
         getBindingFactoryProvider();
         initValueChangeDetector();
+        initApplicationSecurityManager();
     }
 
     public void initLookAndFeelConfigurer() {

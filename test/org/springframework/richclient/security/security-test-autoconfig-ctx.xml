@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<!--  No security manager is defined here, only an authentication manager.
+      The DefaultApplicationSecurityManager should auto-configure itself to
+      use the defined authentication manager
+-->
+ 
+<bean id="authenticationManager"
+	class="org.springframework.richclient.security.TestAuthenticationManager"/>
+
+<bean id="eventCounter"
+	class="org.springframework.richclient.security.DefaultApplicationSecurityManagerTests$EventCounter"/>
+
+</beans>

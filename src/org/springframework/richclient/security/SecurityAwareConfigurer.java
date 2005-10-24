@@ -1,0 +1,288 @@
+/*
+ * Copyright (c) 2002-2005 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.springframework.richclient.security;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.acegisecurity.Authentication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+
+/**
+ * This class performs two main functions:
+ * <ol>
+ * <li>It is a bean post-processor that will set the current authentication token on any
+ * newly created beans that implement {@link AuthenticationAware}.</li>
+ * <li>It listens for application {@link ClientSecurityEvent}s and updates all the beans
+ * in the context that implement either {@link AuthenticationAware} or {@link LoginAware}
+ * according to the event received.</li>
+ * </ol>
+ * In order for all this to take place, a singleton, non-lazy instance of this class must
+ * be defined in the Spring ApplicationContext. This would be done like this:
+ * 
+ * <pre>
+ *              &lt;bean id=&quot;securityAwareConfigurer&quot;
+ *                   class=&quot;org.springframework.richclient.security.SecurityAwareConfigurer&quot;
+ *                   lazy-init=&quot;false&quot;/&gt;
+ * </pre>
+ * 
+ * @author Larry Streepy
+ * @author Andy Depue
+ * @author Inspiration from Ben Alex
+ * 
+ * @see org.springframework.richclient.security.AuthenticationAware
+ * @see org.springframework.richclient.security.LoginAware
+ * @see org.springframework.richclient.security.ClientSecurityEvent
+ * 
+ */
+public class SecurityAwareConfigurer implements ApplicationListener, ApplicationContextAware, BeanPostProcessor {
+
+    private final Log _logger = LogFactory.getLog( getClass() );
+
+    private ApplicationContext _applicationContext;
+
+    private final List _nonSingletonListeners = Collections.synchronizedList( new ArrayList() );
+
+    private Authentication _currentAuthentication = null; // Until we know it
+
+    /**
+     * Get the installed application context.
+     * @return context
+     */
+    public ApplicationContext getApplicationContext() {
+        return _applicationContext;
+    }
+
+    /**
+     * Broadcast an authentication event to all the AuthenticationAware beans.
+     * @param authentication token
+     */
+    protected void broadcastAuthentication(Authentication authentication) {
+        if( _logger.isDebugEnabled() )
+            _logger.debug( "BROADCAST authentication: token=" + authentication );
+
+        // Save this for any new beans that we post-process
+        _currentAuthentication = authentication;
+
+        final Iterator iter = getBeansToUpdate( AuthenticationAware.class ).iterator();
+        while( iter.hasNext() ) {
+            ((AuthenticationAware) iter.next()).setAuthenticationToken( authentication );
+        }
+    }
+
+    /**
+     * Broadcast a Login event to all the LoginAware beans.
+     * @param authentication token
+     */
+    protected void broadcastLogin(Authentication authentication) {
+        if( _logger.isDebugEnabled() )
+            _logger.debug( "BROADCAST login: token=" + authentication );
+
+        final Iterator iter = getBeansToUpdate( LoginAware.class ).iterator();
+        while( iter.hasNext() ) {
+            ((LoginAware) iter.next()).userLogin( authentication );
+        }
+    }
+
+    /**
+     * Broadcast a Logout event to all the LoginAware beans.
+     * @param authentication token
+     */
+    protected void broadcastLogout(Authentication authentication) {
+        if( _logger.isDebugEnabled() )
+            _logger.debug( "BROADCAST logout: token=" + authentication );
+
+        final Iterator iter = getBeansToUpdate( LoginAware.class ).iterator();
+        while( iter.hasNext() ) {
+            ((LoginAware) iter.next()).userLogout( authentication );
+        }
+    }
+
+    /**
+     * Construct the list of all the beans we need to update.
+     * @param beanType Type of bean to locate
+     * @return List of all beans to udpate.
+     */
+    protected List getBeansToUpdate(Class beanType) {
+        final ApplicationContext ac = getApplicationContext();
+        final List listeners = new ArrayList();
+
+        if( ac != null ) {
+            if( _logger.isDebugEnabled() )
+                _logger.debug( "Constructing list of beans to notify; bean type=" + beanType.getName() );
+
+            final Map map = ac.getBeansOfType( beanType, false, true );
+
+            if( _logger.isDebugEnabled() )
+                _logger.debug( "bean map: " + map );
+
+            listeners.addAll( map.values() );
+            listeners.addAll( getNonSingletonListeners( beanType ) );
+        }
+
+        if( _logger.isDebugEnabled() )
+            _logger.debug( "List of beans to notify:" + listeners );
+
+        return listeners;
+    }
+
+    /**
+     * Get the list of non-singleton beans we have registered that still exist. Update our
+     * registration list if any have been GC'ed. Only return beans of the requested type.
+     * @param beanType Type of bean to locate
+     * @return list of extant non-singleton beans to notify
+     */
+    protected List getNonSingletonListeners(Class beanType) {
+
+        final List listeners = new ArrayList();
+
+        synchronized( _nonSingletonListeners ) {
+            for( Iterator iter = _nonSingletonListeners.iterator(); iter.hasNext(); ) {
+                final Object bean = ((WeakReference) iter.next()).get();
+                if( bean == null ) {
+                    if( _logger.isDebugEnabled() )
+                        _logger.debug( "REMOVED garbage collected AuthorizationAware non-singleton from list." );
+                    iter.remove();
+                } else if( beanType.isAssignableFrom( bean.getClass() ) ) {
+                    listeners.add( bean );
+                }
+            }
+        }
+        return listeners;
+    }
+
+    /**
+     * Add a non-singleton bean instance to our list for later notification.
+     * @param bean
+     */
+    protected void addToNonSingletonListeners(final Object bean) {
+        if( _logger.isDebugEnabled() )
+            _logger.debug( "Adding Authentication/LoginAware bean to list of non-singleton listeners: bean='" + bean );
+
+        _nonSingletonListeners.add( new WeakReference( bean ) );
+    }
+
+    //
+    // AplicationListener implementation
+    //
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
+     */
+    public void onApplicationEvent(ApplicationEvent event) {
+
+        // All events we care about are subtypes of ClientSecurityEvent
+        if( event instanceof ClientSecurityEvent ) {
+            Authentication authentication = (Authentication) event.getSource();
+
+            if( _logger.isDebugEnabled() ) {
+                _logger.debug( "RECEIVED ClientSecurityEvent: " + event );
+                _logger.debug( "Authentication token: " + authentication );
+            }
+
+            // Note that we need to inspect the new authentication token and see if it is
+            // NO_AUTHENTICATION. If so, then we need to use null instead. This little
+            // dance is required because the source of an event can't actually be null.
+
+            if( authentication == ClientSecurityEvent.NO_AUTHENTICATION ) {
+                if( _logger.isDebugEnabled() ) {
+                    _logger.debug( "Converted NO_AUTHENTICATION to null" );
+                }
+                authentication = null;
+            }
+
+            // And dispatch according to the event type.
+
+            if( event instanceof AuthenticationEvent ) {
+                broadcastAuthentication( authentication );
+            } else if( event instanceof LoginEvent ) {
+                broadcastLogin( authentication );
+            } else if( event instanceof LogoutEvent ) {
+                broadcastLogout( authentication );
+            } else {
+                if( _logger.isDebugEnabled() ) {
+                    _logger.debug( "Unsupported event not processed" );
+                }
+            }
+        }
+    }
+
+    //
+    // AplicationContextAware implementation
+    //
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+     */
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        _applicationContext = applicationContext;
+    }
+
+    //
+    // BeanPostProcessor implementation
+    //
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
+     *      java.lang.String)
+     */
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if( bean instanceof AuthenticationAware || bean instanceof LoginAware ) {
+
+            // If the bean isn't a singleton, then add it to our list
+            if( beanName == null || !getApplicationContext().containsBean( beanName )
+                    || !getApplicationContext().isSingleton( beanName ) ) {
+                addToNonSingletonListeners( bean );
+            }
+
+            // Install the last known authentication token
+            if( bean instanceof AuthenticationAware ) {
+                if( _logger.isDebugEnabled() )
+                    _logger.debug( "NOTIFY bean '" + bean + "' of new authorization for '" + _currentAuthentication
+                            + "'" );
+
+                AuthenticationAware aab = (AuthenticationAware) bean;
+                aab.setAuthenticationToken( _currentAuthentication );
+            }
+        }
+        return bean;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
+     *      java.lang.String)
+     */
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+}

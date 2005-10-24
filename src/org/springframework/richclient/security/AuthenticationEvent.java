@@ -18,17 +18,23 @@ package org.springframework.richclient.security;
 import net.sf.acegisecurity.Authentication;
 
 /**
- * Event fired when a user logs in.
- * <P>
+ * Event fired when the user's authentication token changes.
+ * <p>
  * The source of this event is the <code>Authentication</code> token returned by a
  * successful call to
  * {@link net.sf.acegisecurity.AuthenticationManager#authenticate(net.sf.acegisecurity.Authentication)}
+ * or {@link ClientSecurityEvent#NO_AUTHENTICATION} if no authentication is in place (such
+ * as after the user logs out).
  * 
- * @author Ben Alex
- * @see AuthenticationEvent
+ * @author Larry Streepy
  */
-public class LoginEvent extends ClientSecurityEvent {
-    public LoginEvent(Authentication authentication) {
-        super(authentication);
+public class AuthenticationEvent extends ClientSecurityEvent {
+
+    /**
+     * Constructor.
+     * @param new authentication token, may be null
+     */
+    public AuthenticationEvent(Authentication authentication) {
+        super( authentication );
     }
 }

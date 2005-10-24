@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<bean id="applicationSecurityManager"
+	class="org.springframework.richclient.security.support.DefaultApplicationSecurityManager">
+	<property name="authenticationManager" ref="authenticationManager"/>
+</bean>
+
+<bean id="securityConfigurer"
+	class="org.springframework.richclient.security.SecurityAwareConfigurer"
+	lazy-init="false"/>
+
+<bean id="authenticationManager"
+	class="org.springframework.richclient.security.TestAuthenticationManager"/>
+
+<bean id="authAwareBean"
+	class="org.springframework.richclient.security.SecurityAwareConfigurerTests$AuthAwareBean"/>
+
+<bean id="loginAwareBean"
+	class="org.springframework.richclient.security.SecurityAwareConfigurerTests$LoginAwareBean"/>
+
+</beans>

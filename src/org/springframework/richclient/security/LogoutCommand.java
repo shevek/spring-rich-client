@@ -20,21 +20,20 @@ import javax.swing.JOptionPane;
 import net.sf.acegisecurity.Authentication;
 
 
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 
 /**
- * Provides a logout interface to the user.
- * 
- * <P>
- * Upon successful logout, makes any {@link Authentication}object on the
- * {@link ContextHolder}null, and fires a {@link LogoutEvent}so other classes
- * can update toolbars, action status, views etc.
- * 
+ * Provides a command to log the current user out.
+ * <p>
+ * Logout handling is performed by calling {@link ApplicationSecurityManager#doLogout()}.
+ * See that class for details.
  * <P>
  * No server-side call will occur to indicate logout. If this is required, you
- * should extend this class and use the {@link #finaliseLogout}method.
+ * should extend this class and use the {@link #onLogout} method.
  * 
  * @author Ben Alex
+ * @author Larry Streepy
  */
 public class LogoutCommand extends ApplicationWindowAwareCommand {
     private static final String ID = "logoutCommand";
@@ -58,7 +57,7 @@ public class LogoutCommand extends ApplicationWindowAwareCommand {
     }
 
     protected void doExecuteCommand() {
-        onLogout(SessionDetails.logout());
+        onLogout(Application.services().getApplicationSecurityManager().doLogout());
 
         if (displaySuccess) {
             JOptionPane.showMessageDialog(getParentWindowControl(), "You have been logged out.", "Logout Successful",

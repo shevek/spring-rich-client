@@ -1,8 +1,28 @@
+/*
+ * Copyright (c) 2002-2005 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.AuthenticationManager;
+import javax.swing.JOptionPane;
 
+import net.sf.acegisecurity.AcegiSecurityException;
+import net.sf.acegisecurity.Authentication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
@@ -12,78 +32,199 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
 
 /**
  * Provides a login interface to the user.
- * 
  * <P>
- * Upon successful login, updates the {@link ContextHolder}with the new,
- * populated {@link Authentication}object, and fires a {@link LoginEvent}so
- * other classes can update toolbars, action status, views etc.
- * </p>
+ * Presents a dialog to the user to collect login credentials. It then invokes the
+ * {@link ApplicationSecurityManager#doLogin} method to validate the credentials. The
+ * ApplicationSecurityManager is responsible for updating the security context and firing
+ * appropriate security events.
+ * <p>
+ * The default user name can be specified as a configuration parameter. This is useful
+ * when combined with
+ * {@link org.springframework.beans.factory.config.PropertyPlaceholderConfigurer} to
+ * install the current (system) username.
+ * <p>
+ * If the login is unsuccesful, a message is presented to the user and they are offered
+ * another chance to login.
+ * <p>
+ * The <code>closeOnCancel</code> property controls what happens if the user cancels the
+ * login dialog. If closeOnCancel is true (the default), if there is no valid
+ * authentication in place (from a previous login) then the application is closed. If it
+ * is false or an authentication token is available, then no action is taken other than
+ * closing the dialog.
+ * <p>
+ * A typical configuration for this component might look like this:
  * 
- * <P>
- * If a login is unsuccessful, any existing <code>Authentication</code> object
- * on the <code>ContextHolder</code> is preserved and no event is fired.
- * </p>
+ * <pre>
+ *       &lt;bean id=&quot;placeholderConfigurer&quot; 
+ *            class=&quot;org.springframework.beans.factory.config.PropertiesPlaceholderConfigurer&quot;/&gt;
+ *     
+ *        &lt;bean id=&quot;loginCommand&quot;
+ *            class=&quot;org.springframework.richclient.security.LoginCommand&quot;&gt;
+ *            &lt;property name=&quot;displaySuccess&quot; value=&quot;false&quot;/&gt;
+ *            &lt;property name=&quot;defaultUserName&quot; value=&quot;${user.name}&quot;/&gt;
+ *        &lt;/bean&gt;
+ * </pre>
  * 
  * @author Ben Alex
+ * @author Larry Streepy
+ * 
+ * @see LoginForm
+ * @see LoginDetails
+ * @see ApplicationSecurityManager
  */
 public class LoginCommand extends ApplicationWindowAwareCommand {
     private static final String ID = "loginCommand";
 
-    private AuthenticationManager authenticationManager;
+    private final Log _logger = LogFactory.getLog( getClass() );
 
     private boolean displaySuccessMessage = true;
 
-    public LoginCommand() {
-        super(ID);
-    }
+    private boolean closeOnCancel = true;
+
+    private String defaultUserName = null;
+
+    private ApplicationDialog dialog = null;
 
     /**
-     * The command requires an authentication manager which can attempt to
-     * authenticate the user.
-     * 
-     * @param authenticationManager
-     *            the authentication manager to use to authenticate the user
+     * Constructor.
      */
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+    public LoginCommand() {
+        super( ID );
     }
 
     /**
-     * Indicates whether an information message is displayed to the user upon
-     * successful authentication. Defaults to true.
+     * Indicates whether an information message is displayed to the user upon successful
+     * authentication. Defaults to true.
      * 
-     * @param displaySuccess
-     *            displays an information message upon successful login if true,
-     *            otherwise false
+     * @param displaySuccess displays an information message upon successful login if
+     *            true, otherwise false
      */
     public void setDisplaySuccess(boolean displaySuccessMessage) {
         this.displaySuccessMessage = displaySuccessMessage;
     }
 
-    public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        if (this.authenticationManager == null) {
-            throw new IllegalArgumentException("authenticationManager must be defined");
-        }
-    }
-
+    /**
+     * Execute the login command.  Display the dialog and attempt authentication.
+     */
     protected void doExecuteCommand() {
-        CompositeDialogPage tabbedPage = new TabbedDialogPage("loginForm");
+        CompositeDialogPage tabbedPage = new TabbedDialogPage( "loginForm" );
 
-        final LoginForm loginForm = new LoginForm(authenticationManager);
-        tabbedPage.addForm(loginForm);
+        final LoginForm loginForm = createLoginForm();
 
-        ApplicationDialog dialog = new TitledPageApplicationDialog(tabbedPage) {
+        tabbedPage.addForm( loginForm );
+
+        if( getDefaultUserName() != null ) {
+            loginForm.setUserName( getDefaultUserName() );
+        }
+
+        dialog = new TitledPageApplicationDialog( tabbedPage ) {
             protected boolean onFinish() {
                 loginForm.commit();
+                Authentication authentication = loginForm.getAuthentication();
+
+                // Hand this token to the security manager to actually attempt the login
+                ApplicationSecurityManager sm = getApplicationServices().getApplicationSecurityManager();
+                try {
+                    sm.doLogin( authentication );
+                    postLogin();
+                } catch( AcegiSecurityException e ) {
+                    // Any exception here means that the authentication failed
+                    // Report it and return false
+                    return handleLoginFailure( authentication, e );
+                }
                 return true;
+            }
+
+            protected void onCancel() {
+                super.onCancel(); // Close the dialog
+
+                // Now exit if configured
+                if( isCloseOnCancel() ) {
+                    Authentication authentication = getApplicationServices().getApplicationSecurityManager()
+                        .getAuthentication();
+                    if( authentication == null ) {
+                        _logger.info( "User canceled login; close the application." );
+                        getApplication().close();
+                    }
+                }
             }
 
             protected ActionCommand getCallingCommand() {
                 return LoginCommand.this;
             }
         };
-        dialog.setDisplayFinishSuccessMessage(displaySuccessMessage);
+        dialog.setDisplayFinishSuccessMessage( displaySuccessMessage );
         dialog.showDialog();
+    }
+
+    /**
+     * Construct the Form to place in the login dialog.
+     * @return form to use
+     */
+    protected LoginForm createLoginForm() {
+        return new LoginForm();
+    }
+
+    /**
+     * Get the dialog in use, if available.
+     * @return dialog instance in use
+     */
+    protected ApplicationDialog getDialog() {
+        return dialog;
+    }
+
+    /**
+     * Called to give subclasses control after a successful login.
+     */
+    protected void postLogin() {
+    }
+
+    /**
+     * Report a login failure. Base implementation just displays a message dialog with the
+     * localized message from the security exception.
+     * @param authentication token that failed to authenticate
+     * @param exception The exception indicating the authentication failure
+     * @return true if the login dialog should be closed, base implementation always
+     *         returns false
+     */
+    protected boolean handleLoginFailure(Authentication authentication, AcegiSecurityException exception) {
+        String exceptionMessage = exception.getLocalizedMessage();
+        JOptionPane.showMessageDialog( getDialog().getDialog(), exceptionMessage, Application.instance().getName(),
+            JOptionPane.ERROR_MESSAGE );
+
+        return false;
+    }
+
+    /**
+     * Get the "close on cancel" setting.
+     * @return close on cancel
+     */
+    public boolean isCloseOnCancel() {
+        return closeOnCancel;
+    }
+
+    /**
+     * Indicates if the application should be closed if the user cancels the login
+     * operation. Default is true.
+     * @param closeOnCancel
+     */
+    public void setCloseOnCancel(boolean closeOnCancel) {
+        this.closeOnCancel = closeOnCancel;
+    }
+
+    /**
+     * Get the default user name.
+     * @return default user name.
+     */
+    public String getDefaultUserName() {
+        return defaultUserName;
+    }
+
+    /**
+     * Set the default user name.
+     * @param userName to use as default, null indicates no default
+     */
+    public void setDefaultUserName(String defaultUserName) {
+        this.defaultUserName = defaultUserName;
     }
 }

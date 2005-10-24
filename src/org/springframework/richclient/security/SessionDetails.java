@@ -2,12 +2,14 @@ package org.springframework.richclient.security;
 
 import java.io.Serializable;
 
+import net.sf.acegisecurity.AcegiSecurityException;
 import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.AuthenticationException;
 import net.sf.acegisecurity.AuthenticationManager;
 import net.sf.acegisecurity.context.SecurityContextHolder;
 import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
@@ -16,17 +18,30 @@ import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 
 /**
- * JavaBean suitable for use with form model.
+ * This class provides a bean suitable for use in a login form, providing properties for
+ * storing the user name and password.  It also provides
+ * event firing for application security lifecycle.  {@link LoginCommand} uses this
+ * object as its form object to collect the user name and password to use in an
+ * authentication request.
+ * <p>
+ * The actual authentication request is handled here, in the {@link #login()} method.  
  * 
  * <P>
  * Temporarily stores the username and password provided by the user.
  * 
+ * @deprecated by the creation of new {@link ApplicationSecurityManager}
+ * 
  * @author Ben Alex
+ * @see ClientSecurityEvent
+ * @see LoginCommand
+ * @see LogoutCommand
  */
 public class SessionDetails implements Serializable, PropertyConstraintProvider {
     public static final String PROPERTY_USERNAME = "username";
 
     public static final String PROPERTY_PASSWORD = "password";
+
+    private static final Log _logger = LogFactory.getLog( SessionDetails.class );
 
     private transient AuthenticationManager authenticationManager;
 
@@ -88,24 +103,43 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         this.authenticationManager = manager;
     }
 
-    public void login() throws AuthenticationException {
+    public void login() throws AcegiSecurityException {
+        final ApplicationContext appCtx = Application.services().getApplicationContext();
+        Application.services().getApplicationSecurityManager();
+
         // Attempt login
         UsernamePasswordAuthenticationToken request = new UsernamePasswordAuthenticationToken(getUsername(),
                 getPassword());
 
-        Authentication result = authenticationManager.authenticate(request);
+        Authentication result = null;
+
+        try {
+            result = authenticationManager.authenticate(request);
+        } catch( AcegiSecurityException e ) {
+            _logger.warn( "authentication failed", e);
+
+            // Fire application event to advise of failed login
+            appCtx.publishEvent( new AuthenticationFailedEvent(request, e));
+            
+            // And retrhow the exception to prevent the dialog from closing
+            throw e;
+        }
+
+        // Handle success or failure of the authentication attempt
+        if( _logger.isDebugEnabled()) {
+            _logger.debug("successful login - update context holder and fire event");
+        }
 
         // Commit the successful Authentication object to the secure
         // ContextHolder
         SecurityContextHolder.getContext().setAuthentication(result);
 
         // Fire application event to advise of new login
-        ApplicationContext appCtx = Application.services().getApplicationContext();
         appCtx.publishEvent(new LoginEvent(result));
     }
 
     public static Authentication logout() {
-        Authentication existing = null;
+        Authentication existing = SecurityContextHolder.getContext().getAuthentication();
 
         // Make the Authentication object null if a SecureContext exists
         SecurityContextHolder.getContext().setAuthentication(null);
