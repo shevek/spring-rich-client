@@ -31,15 +31,12 @@ public class PetClinicClientServer {
             String richclientApplicationContextPath = rootContextDirectoryClassPath
                     + "/common/richclient-application-context.xml";
 
-            String richclientPreferenceContextPath = rootContextDirectoryClassPath
-                    + "/common/richclient-preference-context.xml";
-
             String businessLayerClientContextPath = rootContextDirectoryClassPath + "/clientserver/client-context.xml";
 
             String securityContextPath = rootContextDirectoryClassPath + "/clientserver/security-context-client.xml";
 
             new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath,
-                    richclientPreferenceContextPath, businessLayerClientContextPath, securityContextPath });
+                    businessLayerClientContextPath, securityContextPath });
         } catch (Exception e) {
             System.exit(1);
         }
