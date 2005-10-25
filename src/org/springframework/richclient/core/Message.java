@@ -82,11 +82,11 @@ public class Message implements Serializable {
 
     public void renderMessage(JComponent component) {
         if (component instanceof JTextComponent) {
-            ((JTextComponent)component).setText(text);
+            ((JTextComponent)component).setText(getText());
         }
         else if (component instanceof JLabel) {
             JLabel label = (JLabel)component;
-            label.setText(LabelUtils.htmlBlock(text));
+            label.setText(LabelUtils.htmlBlock(getText()));
             label.setIcon(getIcon());
         }
         else {
