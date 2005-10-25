@@ -127,11 +127,7 @@
 	</bean>
 		
 	<bean id="loginCommand" 
-		class="org.springframework.richclient.security.LoginCommand">
-		<property name="authenticationManager">
-			<ref bean="authenticationManager"/>
-		</property>
-	</bean>
+		class="org.springframework.richclient.security.LoginCommand"/>
 	
 	<bean id="logoutCommand" 
 		class="org.springframework.richclient.security.LogoutCommand"/>
