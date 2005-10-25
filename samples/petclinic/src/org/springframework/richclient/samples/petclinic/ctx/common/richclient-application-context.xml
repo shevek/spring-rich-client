@@ -100,7 +100,6 @@
 		<property name="basenames">
 			<list>
 				<value>org.springframework.richclient.samples.petclinic.ui.messages</value>
-				<value>org.springframework.richclient.samples.petclinic.ui.preference.messages</value>
 				<value>org.springframework.richclient.application.messages</value>
 			</list>
 		</property>
