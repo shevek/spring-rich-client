@@ -61,7 +61,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
         Message message = new Message(description);
         if (!ObjectUtils.nullSafeEquals(old, message)) {
             this.description = message;
-            if (titlePane.getMessage().equals(old)) {
+            if (!titlePane.getMessage().equals(old)) {
                 titlePane.setMessage(this.description);
             }
         }
