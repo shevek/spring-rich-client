@@ -16,10 +16,12 @@
 package org.springframework.richclient.config;
 
 import junit.framework.TestCase;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
@@ -32,19 +34,23 @@ public class DefaultApplicationLifecycleAdvisorTests extends TestCase {
         TestAdvisor advisor = new TestAdvisor();
         advisor.afterPropertiesSet();
         Application.load(null);
-        Application application = new Application(advisor);
-        Application.load(application);
+        new Application(advisor);
+        StaticApplicationContext applicationContext = new StaticApplicationContext();
+        Application.services().setApplicationContext(applicationContext);
+        applicationContext.registerSingleton( "eventMulticaster", SimpleApplicationEventMulticaster.class );
+        applicationContext.refresh();
 
-        advisor.setWindowCommandBarDefinitions(new ClassPathResource(
-                "org/springframework/richclient/config/app-lifecycle-test-ctx.xml"));
+        advisor.setWindowCommandBarDefinitions(
+            "org/springframework/richclient/config/app-lifecycle-test-ctx.xml");
 
         // Fire up test.....
         advisor.testInit();
-        advisor.onApplicationEvent(new ApplicationEvent(this) {
-        });
 
         TestCommand cmd = (TestCommand)advisor.getBeanFactory().getBean("testCommand");
-        assertEquals("Command must be notified", 1, cmd.getCount());
+        assertEquals("Command must be notified of refresh", 1, cmd.getCount());
+
+        advisor.onApplicationEvent(new ApplicationEvent(this) {});
+        assertEquals("Command must be notified", 2, cmd.getCount());
     }
 
     // ===============================================================================

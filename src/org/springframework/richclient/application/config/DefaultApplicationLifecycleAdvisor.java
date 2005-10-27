@@ -16,21 +16,15 @@
 package org.springframework.richclient.application.config;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.core.OrderComparator;
-import org.springframework.core.io.Resource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
@@ -46,13 +40,16 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
 
     private String menuBarBeanName = "menuBar";
 
-    private Resource windowCommandBarDefinitions;
+    private String windowCommandBarDefinitions;
 
-    private XmlBeanFactory openingWindowCommandBarFactory;
+    private ConfigurableListableBeanFactory openingWindowCommandBarFactory;
 
-    private ApplicationEventMulticaster eventMulticaster;
-
-    public void setWindowCommandBarDefinitions(Resource commandBarDefinitionLocation) {
+    private CommandBarApplicationContext commandBarContext;
+    
+    /** Set of child command contexts created - used to bridge application events. */
+    private ArrayList childContexts = new ArrayList();
+    
+    public void setWindowCommandBarDefinitions(String commandBarDefinitionLocation) {
         this.windowCommandBarDefinitions = commandBarDefinitionLocation;
     }
 
@@ -68,10 +65,6 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         this.toolBarBeanName = toolbarBeanName;
     }
 
-    public void setEventMulticaster(ApplicationEventMulticaster eventMulticaster) {
-        this.eventMulticaster = eventMulticaster;
-    }
-
     public ApplicationWindowCommandManager createWindowCommandManager() {
         initNewWindowCommandBarFactory();
         return (ApplicationWindowCommandManager)getCommandBarFactory().getBean(windowCommandManagerBeanName,
@@ -79,56 +72,15 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
     }
 
     protected void initNewWindowCommandBarFactory() {
-        this.openingWindowCommandBarFactory = new XmlBeanFactory(windowCommandBarDefinitions, Application.services()
-                .getBeanFactory());
-        this.openingWindowCommandBarFactory.addBeanPostProcessor(new ApplicationWindowSetter(getOpeningWindow()));
-        this.openingWindowCommandBarFactory.addBeanPostProcessor(newObjectConfigurer());
-        registerBeanPostProcessors();
-        installApplicationEventBridge();
+        // Install our own application context so we can register needed post-processors
+        commandBarContext = new CommandBarApplicationContext( windowCommandBarDefinitions );
+        System.out.println("New Context: " + commandBarContext);
+        addChildCommandContext(commandBarContext);
+        this.openingWindowCommandBarFactory = commandBarContext.getBeanFactory();
     }
 
     protected ConfigurableListableBeanFactory getCommandBarFactory() {
         return openingWindowCommandBarFactory;
-    }
-
-    protected BeanPostProcessor newObjectConfigurer() {
-        return new BeanPostProcessor() {
-            public Object postProcessBeforeInitialization(Object bean, String beanName) {
-                return Application.services().configure(bean, beanName);
-            }
-
-            public Object postProcessAfterInitialization(Object bean, String beanName) {
-                return bean;
-            }
-        };
-    }
-
-    private void registerBeanPostProcessors() throws BeansException {
-        String[] beanNames = getCommandBarFactory().getBeanDefinitionNames(BeanPostProcessor.class);
-        if (beanNames.length > 0) {
-            List beanProcessors = new ArrayList();
-            for (int i = 0; i < beanNames.length; i++) {
-                beanProcessors.add(getCommandBarFactory().getBean(beanNames[i]));
-            }
-            Collections.sort(beanProcessors, new OrderComparator());
-            for (Iterator it = beanProcessors.iterator(); it.hasNext();) {
-                getCommandBarFactory().addBeanPostProcessor((BeanPostProcessor)it.next());
-            }
-        }
-    }
-
-    // Establish a bridge for ApplicationEvents between
-    // the main ApplicationContext and command's BeanFactory
-    // for participating in the global notification mechanism
-    private void installApplicationEventBridge() {
-        ConfigurableListableBeanFactory factory = getCommandBarFactory();
-
-        Map beans = factory.getBeansOfType(ApplicationListener.class,true,false);
-        for (Iterator iterator = beans.values().iterator(); iterator.hasNext();) {
-            ApplicationListener applicationListener =
-                    (ApplicationListener) iterator.next();
-            eventMulticaster.addApplicationListener(applicationListener);
-        }
     }
 
     public CommandGroup getMenuBarCommandGroup() {
@@ -148,17 +100,76 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         return (CommandGroup)getCommandBarFactory().getBean(name);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * We need to deliver all application events down to the child command
+     * contexts that have been created.
+     * @param event to deliver
+     */
     public void onApplicationEvent(ApplicationEvent event) {
-        // Dispatch to child listeners.
-        eventMulticaster.multicastEvent(event);
+        // Dispatch the event to all the child command contexts
+        for( Iterator iter = getChildCommandContexts().iterator(); iter.hasNext(); ) {
+            ApplicationContext ctx = (ApplicationContext) iter.next();
+            System.out.println("Dispatch event to: " + ctx );
+            ctx.publishEvent(event);
+        }
     }
 
-    // initialize event multicaster if not set.
-    public void afterPropertiesSet() throws Exception {
-        super.afterPropertiesSet();
-        if (eventMulticaster == null) {
-            eventMulticaster = new SimpleApplicationEventMulticaster();
+    /**
+     * Get all the child command contexts that have been created.
+     * <p>
+     * <em>Note, theactual collection is being returned - so be careful what you
+     * do to it.</em>
+     * 
+     * @return list of contexts
+     */
+    protected List getChildCommandContexts() {
+        return childContexts;
+    }
+
+    /**
+     * Add a new child command context.
+     * @param context
+     */
+    protected void addChildCommandContext( ApplicationContext context ) {
+        childContexts.add( context );
+    }
+
+    /**
+     * Simple extension to allow us to inject our special bean post-processors
+     * and control event publishing.
+     */
+    private class CommandBarApplicationContext extends ClassPathXmlApplicationContext {
+
+        /**
+         * Constructor. Load bean definitions from the specified location.
+         * @param location of bean definitions
+         */
+        public CommandBarApplicationContext(String location) {
+            super( new String[] { location }, false, Application.services().getApplicationContext() );
+            refresh();
+        }
+
+        /**
+         * Install our bean post-processors.
+         * @param beanFactory the bean factory used by the application context
+         * @throws org.springframework.beans.BeansException in case of errors
+         */
+        protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+            beanFactory.addBeanPostProcessor( new ApplicationWindowSetter( getOpeningWindow() ) );
+        }
+
+        /**
+         * Publish an event in to this context.  Since we are always getting
+         * notification from a parent context, this overriden implementation does
+         * not dispatch up to the parent context, thus avoiding an infinite loop.
+         */
+        public void publishEvent(ApplicationEvent event) {
+            // Temporarily disconnect our parent so the event publishing doesn't
+            // result in an infinite loop.
+            ApplicationContext parent = getParent();
+            setParent(null);
+            super.publishEvent(event);
+            setParent(parent);
         }
     }
 }
