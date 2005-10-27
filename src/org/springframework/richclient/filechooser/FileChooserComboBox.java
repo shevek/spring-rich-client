@@ -95,7 +95,8 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     public File getSelectedFile() {
-        return (File)formModel.getValueModel(formProperty).getValue();
+        String filePath = (String)formModel.getValueModel(formProperty).getValue();
+        return (filePath == null) ? null : new File( filePath );
     }
 
     public void setEnabled(boolean enabled) {
