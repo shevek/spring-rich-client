@@ -30,6 +30,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -134,6 +135,25 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
             prepareDialogPage(child);
             processDialogPage(child);
             // TODO: should resize all pages if this new page is the largest
+        }
+    }
+
+    /**
+     * Remove a page from the tree.
+     * @param page to remove
+     */
+    public void removePage( DialogPage page ) {
+        DefaultMutableTreeNode treeNode = getNode(page);
+        TreeNode parentNode = treeNode.getParent();
+        
+        treeNode.removeFromParent();
+        
+        // If we've already been constructed, then update our model and cards
+        JComponent control = page.getControl();
+        pagePanel.remove(control);
+
+        if( pageTreeModel != null ) {
+            pageTreeModel.nodeStructureChanged(parentNode);
         }
     }
 
