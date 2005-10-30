@@ -41,6 +41,9 @@ public class MessageDialog extends ApplicationDialog {
     private Message message;
 
     private float dialogScaleFactor = 0.55f;
+    
+    /** Minimum width for the dialog, in case the scale factor results in a tiny value. */
+    private int minimumWidth = 600;
 
     /**
      * Constructs a new dialog.
@@ -149,8 +152,13 @@ public class MessageDialog extends ApplicationDialog {
         int parentWidth = getDialog().getParent().getWidth();
         if (width > parentWidth * scale) {
             final int messageAreaPaneHeight = messageAreaPane.getPreferredHeight();
+            width = (int)(parentWidth * scale);
+            if( width < getMinimumWidth() ) {
+                width = getMinimumWidth();
+            }
+            
             // adjust the width
-            getDialog().setSize((int)(parentWidth * scale), getDialog().getHeight());
+            getDialog().setSize(width, getDialog().getHeight());
 
             // dirty hack, because messageAreaPane.getPreferredHeight() doesn't respond
             // immediately to dialog resize when dialog is not visible
@@ -177,6 +185,28 @@ public class MessageDialog extends ApplicationDialog {
         this.dialogScaleFactor = dialogScaleFactor;
     }
 
+    /**
+     * Get the minimum width for the dialog.  This overrides the value calculated
+     * by the scale factor.
+     * @return minimum width
+     * @see #setDialogScaleFactor
+     */
+    public int getMinimumWidth() {
+        return minimumWidth;
+    }
+    
+    /**
+     * Set the minimum width for the dialog.  This overrides the value calculated
+     * by the scale factor.
+     * @return minimum width
+     */
+    public void setMinimumWidth(int minimumWidth) {
+        this.minimumWidth = minimumWidth;
+    }
+
+    /**
+     * Inner class to handle setting the size of the dialog heigth when it is shown.
+     */
     private class DialogSizeUpdater extends ComponentAdapter {
         private final int height;
 
