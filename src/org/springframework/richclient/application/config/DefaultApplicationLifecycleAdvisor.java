@@ -74,7 +74,6 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
     protected void initNewWindowCommandBarFactory() {
         // Install our own application context so we can register needed post-processors
         commandBarContext = new CommandBarApplicationContext( windowCommandBarDefinitions );
-        System.out.println("New Context: " + commandBarContext);
         addChildCommandContext(commandBarContext);
         this.openingWindowCommandBarFactory = commandBarContext.getBeanFactory();
     }
@@ -109,7 +108,6 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
         // Dispatch the event to all the child command contexts
         for( Iterator iter = getChildCommandContexts().iterator(); iter.hasNext(); ) {
             ApplicationContext ctx = (ApplicationContext) iter.next();
-            System.out.println("Dispatch event to: " + ctx );
             ctx.publishEvent(event);
         }
     }
