@@ -58,7 +58,11 @@ public class FormBackedDialogPage extends AbstractDialogPage {
         this.backingFormPage = backingFormPage;
     }
 
-    protected Form getBackingFormPage() {
+    /**
+     * Get the Form backing this dialog page.
+     * @return form
+     */
+    public Form getBackingFormPage() {
         return backingFormPage;
     }
 
