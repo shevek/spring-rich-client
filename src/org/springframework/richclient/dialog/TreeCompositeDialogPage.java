@@ -149,8 +149,10 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         treeNode.removeFromParent();
         
         // If we've already been constructed, then update our model and cards
-        JComponent control = page.getControl();
-        pagePanel.remove(control);
+        if( pagePanel != null ) {
+            JComponent control = page.getControl();
+            pagePanel.remove(control);
+        }
 
         if( pageTreeModel != null ) {
             pageTreeModel.nodeStructureChanged(parentNode);
