@@ -187,6 +187,9 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      */
     public void postCommit(FormModel formModel) {
         super.postCommit( formModel );
+
+        // Now set the selected index back to -1 so that the forms properly reset
+        setSelectedIndex( -1 );
     }
 
     protected String getRevertCommandFaceDescriptorId() {
