@@ -62,11 +62,25 @@ public class LoginForm extends AbstractForm {
     }
 
     /**
+     * Set the password in the form.
+     * @param password to install
+     */
+    public void setPassword(String password) {
+        if( isControlCreated() ) {
+            getValueModel( LoginDetails.PROPERTY_PASSWORD ).setValue( password );
+        } else {
+            loginDetails.setPassword( password );
+        }
+    }
+
+    /**
      * Get an Authentication token that contains the current username and password.
      * @return authentication token
      */
     public Authentication getAuthentication() {
-        return new UsernamePasswordAuthenticationToken( loginDetails.getUsername(), loginDetails.getPassword() );
+        String username = loginDetails.getUsername().trim();
+        String password = loginDetails.getPassword().trim();
+        return new UsernamePasswordAuthenticationToken( username, password );
     }
 
     /**
