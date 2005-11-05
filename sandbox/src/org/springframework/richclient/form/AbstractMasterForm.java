@@ -609,7 +609,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
         ValidationListener l = super.newSingleLineResultsReporter( guarded, messageReceiver );
-        new SimpleValidationResultsReporter( getDetailFormModel().getValidationResults(), guarded, messageReceiver );
+        getDetailForm().newSingleLineResultsReporter( guarded, messageReceiver );
         getDetailFormModel().validate();
         return l;
     }
