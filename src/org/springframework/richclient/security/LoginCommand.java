@@ -52,17 +52,21 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
  * is false or an authentication token is available, then no action is taken other than
  * closing the dialog.
  * <p>
+ * The <code>clearPasswordOnFailure</code> controls the handling of the password field
+ * after a login failure. If clearPasswordOnFailure is <code>true</code> (the default),
+ * then the password field will be cleared after the failure is reported.
+ * <p>
  * A typical configuration for this component might look like this:
  * 
  * <pre>
- *       &lt;bean id=&quot;placeholderConfigurer&quot; 
- *            class=&quot;org.springframework.beans.factory.config.PropertiesPlaceholderConfigurer&quot;/&gt;
- *     
- *        &lt;bean id=&quot;loginCommand&quot;
- *            class=&quot;org.springframework.richclient.security.LoginCommand&quot;&gt;
- *            &lt;property name=&quot;displaySuccess&quot; value=&quot;false&quot;/&gt;
- *            &lt;property name=&quot;defaultUserName&quot; value=&quot;${user.name}&quot;/&gt;
- *        &lt;/bean&gt;
+ *        &lt;bean id=&quot;placeholderConfigurer&quot; 
+ *             class=&quot;org.springframework.beans.factory.config.PropertiesPlaceholderConfigurer&quot;/&gt;
+ *      
+ *         &lt;bean id=&quot;loginCommand&quot;
+ *             class=&quot;org.springframework.richclient.security.LoginCommand&quot;&gt;
+ *             &lt;property name=&quot;displaySuccess&quot; value=&quot;false&quot;/&gt;
+ *             &lt;property name=&quot;defaultUserName&quot; value=&quot;${user.name}&quot;/&gt;
+ *         &lt;/bean&gt;
  * </pre>
  * 
  * @author Ben Alex
@@ -80,6 +84,8 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
     private boolean displaySuccessMessage = true;
 
     private boolean closeOnCancel = true;
+
+    private boolean clearPasswordOnFailure = true;
 
     private String defaultUserName = null;
 
@@ -104,7 +110,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
     }
 
     /**
-     * Execute the login command.  Display the dialog and attempt authentication.
+     * Execute the login command. Display the dialog and attempt authentication.
      */
     protected void doExecuteCommand() {
         CompositeDialogPage tabbedPage = new TabbedDialogPage( "loginForm" );
@@ -130,7 +136,11 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 } catch( AcegiSecurityException e ) {
                     // Any exception here means that the authentication failed
                     // Report it and return false
-                    return handleLoginFailure( authentication, e );
+                    boolean rtn = handleLoginFailure( authentication, e );
+                    if( isClearPasswordOnFailure() ) {
+                        loginForm.setPassword( "" );
+                    }
+                    return rtn;
                 }
                 return true;
             }
@@ -152,6 +162,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
             protected ActionCommand getCallingCommand() {
                 return LoginCommand.this;
             }
+
             protected void onAboutToShow() {
                 loginForm.requestFocusInWindow();
             }
@@ -213,6 +224,23 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
      */
     public void setCloseOnCancel(boolean closeOnCancel) {
         this.closeOnCancel = closeOnCancel;
+    }
+
+    /**
+     * Get the "clear password on failure" setting.
+     * @return clear password
+     */
+    public boolean isClearPasswordOnFailure() {
+        return clearPasswordOnFailure;
+    }
+
+    /**
+     * Indicates if the password field should be cleared after a login failure. Default is
+     * true.
+     * @param clearPasswordOnFailure
+     */
+    public void setClearPasswordOnFailure(boolean clearPasswordOnFailure) {
+        this.clearPasswordOnFailure = clearPasswordOnFailure;
     }
 
     /**
