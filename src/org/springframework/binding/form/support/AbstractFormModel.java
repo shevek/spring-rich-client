@@ -32,6 +32,7 @@ import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.ConversionService;
+import org.springframework.binding.convert.Converter;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
@@ -49,9 +50,11 @@ import org.springframework.binding.value.support.MethodInvokingDerivedValueModel
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.DefaultConversionService;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.richclient.util.EventListenerListHelper;
+import org.springframework.util.CachingMapDecorator;
 
 /**
  * Base implementation of HierarchicalFormModel and ConfigurableFormModel subclasses need only
@@ -96,6 +99,15 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     private final Map propertyMetadata = new HashMap();
 
     private final Set dirtyValueAndFormModels = new HashSet();
+
+    private final Map propertyConversionServices = new CachingMapDecorator() {
+        public Object create(Object key) {
+            return new DefaultConversionService() {
+                protected void addDefaultConverters() {
+                }
+            };
+        }
+    };
 
     private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
 
@@ -248,16 +260,53 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         if (sourceClass == targetClass) {
             return sourceValueModel;
         }
+        
         final ConversionService conversionService = getConversionService();
-        ConversionExecutor convertTo = conversionService.getConversionExecutor(sourceClass, targetClass);
+        ConversionExecutor convertTo = null;
+        ConversionExecutor convertFrom = null;
+
+        // Check for locally registered property converters
+        if( propertyConversionServices.containsKey( formProperty ) ) {
+            final DefaultConversionService propertyConversionService =
+                (DefaultConversionService)propertyConversionServices.get( formProperty );
+            
+            if( propertyConversionService != null ) {
+                convertTo = propertyConversionService.getConversionExecutor(sourceClass, targetClass);
+                convertFrom = propertyConversionService.getConversionExecutor(targetClass, sourceClass);
+            }
+        }
+
+        // If we have nothing from the property level, then try the conversion service
+        if( convertTo == null ) {
+            convertTo = conversionService.getConversionExecutor(sourceClass, targetClass);
+        }
         Assert.notNull(convertTo, "conversionService returned null ConversionExecutor");
-        ConversionExecutor convertFrom = conversionService.getConversionExecutor(targetClass, sourceClass);
+        
+        
+        if( convertFrom == null ) {
+            convertFrom = conversionService.getConversionExecutor(targetClass, sourceClass);
+        }
         Assert.notNull(convertFrom, "conversionService returned null ConversionExecutor");
 
         ValueModel convertingValueModel = preProcessNewConvertingValueModel(formProperty, targetClass,
                 new TypeConverter(sourceValueModel, convertTo, convertFrom));
         preProcessNewConvertingValueModel(formProperty, targetClass, convertingValueModel);
         return convertingValueModel;
+    }
+
+    /**
+     * Register converters for a given property name.
+     * @param propertyName name of property on which to register converters
+     * @param toConverter Convert from source to target type
+     * @param fromConverter Convert from target to source type
+     */
+    public void registerPropertyConverter( String propertyName, Converter toConverter, Converter fromConverter ) {
+
+        DefaultConversionService propertyConversionService =
+            (DefaultConversionService)propertyConversionServices.get( propertyName );
+        
+        propertyConversionService.addConverter(toConverter);
+        propertyConversionService.addConverter(fromConverter);
     }
 
     public ValueModel add(String propertyName) {

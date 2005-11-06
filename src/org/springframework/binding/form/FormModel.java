@@ -17,6 +17,7 @@ package org.springframework.binding.form;
 
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.binding.PropertyAccessStrategy;
+import org.springframework.binding.convert.Converter;
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
 
@@ -90,6 +91,14 @@ public interface FormModel extends PropertyChangePublisher {
      */
     PropertyMetadata getPropertyMetadata(String formProperty);
     
+    /**
+     * Register converters for a given property name.
+     * @param propertyName name of property on which to register converters
+     * @param toConverter Convert from source to target type
+     * @param fromConverter Convert from target to source type
+     */
+    public void registerPropertyConverter( String propertyName, Converter toConverter, Converter fromConverter );
+
     /**
      * Returns true if the form has a value model for the provided property name.
      */
