@@ -55,6 +55,20 @@ public class RequiredIfTrue extends AbstractPropertyConstraint {
 		this.constraint = predicate;
 	}
 
+    /**
+     * Determine if this rule is dependent on the given property name. True if either the
+     * direct poperty (from the contstructor) is equal to the given name, or if the "if
+     * true" predicate is a PropertyConstraint and it is dependent on the given property.
+     * @return true if this rule is dependent on the given property
+     */
+    public boolean isDependentOn(String propertyName) {
+        boolean dependent = false;
+        if( getConstraint() instanceof PropertyConstraint ) {
+            dependent = ((PropertyConstraint) getConstraint()).isDependentOn( propertyName );
+        }
+        return super.isDependentOn( propertyName ) || dependent;
+    }
+
 	protected boolean test(PropertyAccessStrategy domainObjectAccessStrategy) {
 		if (constraint.test(domainObjectAccessStrategy)) {
 			return Required.instance().test(
