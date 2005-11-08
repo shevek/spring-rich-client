@@ -26,10 +26,7 @@ import org.springframework.util.Assert;
  * @author Seth Ladd
  * @author Keith Donald
  */
-public class RequiredIfTrue extends AbstractPropertyConstraint implements
-		Constraint {
-
-	private String propertyName;
+public class RequiredIfTrue extends AbstractPropertyConstraint {
 
 	private Constraint constraint;
 
