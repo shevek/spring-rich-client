@@ -26,9 +26,7 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 public class SwingActionAdapter extends AbstractAction implements PropertyChangeListener {
     private ActionCommand command;
 
-    private String faceId;
-
-    protected SwingActionAdapter(ActionCommand command) {
+    public SwingActionAdapter(ActionCommand command) {
         super();
         this.command = command;
         command.addPropertyChangeListener(this);
