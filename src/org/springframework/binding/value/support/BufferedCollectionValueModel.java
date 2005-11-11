@@ -235,6 +235,15 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     /**
+     * Create an empty ListListModel.  May be overridden to provide specialized
+     * implementations.
+     * @return ListListModel to use
+     */
+    protected ListListModel createListListModel() {
+        return new ListListModel();
+    }
+
+    /**
      * Gets the list value associated with this value model, creating a list
      * model buffer containing its contents, suitable for manipulation.
      * 
@@ -242,7 +251,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
      */
     private Object updateListModel(final Object wrappedCollection) {
         if (listListModel == null) {
-            listListModel = new ListListModel();
+            listListModel = createListListModel();
             listListModel.addListDataListener(listChangeHandler);
             setValue(listListModel);
         }
