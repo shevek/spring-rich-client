@@ -113,6 +113,10 @@ public class Application implements InitializingBean, ApplicationContextAware {
         this.descriptor = descriptor;
     }
 
+    public ApplicationDescriptor getDescriptor() {
+        return descriptor;
+    }
+
     public void setServices(ApplicationServices services) {
         this.services = services;
     }
