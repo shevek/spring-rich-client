@@ -35,9 +35,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
+import javax.swing.table.TableModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -81,6 +83,8 @@ public class DefaultComponentFactory implements ComponentFactory {
     private LabeledEnumResolver enumResolver = Application.services().getLabeledEnumResolver();
 
     private MessageSource messageSource;
+
+    private TableFactory tableFactory;
 
     public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -389,4 +393,37 @@ public class DefaultComponentFactory implements ComponentFactory {
         return iconSource;
     }
 
+    /**
+     * Construct a JTable with a default model
+     * It will delegate the creation to a TableFactory if it exists.
+     * 
+     * @param model the table model
+     * @return The new table.
+     */
+    public JTable createTable() {
+        return (tableFactory != null) ? tableFactory.createTable() : new JTable();
+    }
+
+    /**
+     * Construct a JTable with the specified table model.
+     * It will delegate the creation to a TableFactory if it exists.
+     * 
+     * @param model the table model
+     * @return The new table.
+     */
+    public JTable createTable(TableModel model) {
+        return (tableFactory != null) ? tableFactory.createTable(model) : new JTable(model);
+    }
+    
+    /**
+     * Allow confirguration via XML of a table factory.
+     * A simple interface for creating JTable object, this allows the developer to create
+     * an application specific table factory where, say, each tables have a set of 
+     * renderers installed, are sortable, etc.
+     * 
+     * @param tableFactory the table factory to use
+     */
+    public void setTableFactory(TableFactory tableFactory) {
+        this.tableFactory = tableFactory;
+    }
 }

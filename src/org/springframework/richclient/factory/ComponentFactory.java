@@ -28,10 +28,12 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
+import javax.swing.table.TableModel;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.util.Alignment;
@@ -363,4 +365,17 @@ public interface ComponentFactory {
      * @see JPanel#JPanel(java.awt.LayoutManager)
      */
     public JPanel createPanel(LayoutManager layoutManager);
+
+    /**
+     * Construct a JTable with a default model.
+     * @return new table instance
+     */
+    public JTable createTable();
+
+    /**
+     * Construct a JTable with the specified table model.
+     * @param model TableModel to install into the new table
+     * @return new table instance
+     */
+    public JTable createTable(TableModel model);
 }
