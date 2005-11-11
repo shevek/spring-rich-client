@@ -106,6 +106,14 @@ public class MessageDialog extends ApplicationDialog {
     }
 
     /**
+     * Get the message
+     * @return message
+     */
+    public Message getMessage() {
+        return message;
+    }
+
+    /**
      * @see org.springframework.richclient.dialog.ApplicationDialog#getCancelCommandId()
      */
     protected String getCancelCommandId() {
