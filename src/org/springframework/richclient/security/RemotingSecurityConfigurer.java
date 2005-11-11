@@ -11,7 +11,6 @@ import net.sf.acegisecurity.Authentication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -74,41 +73,30 @@ public class RemotingSecurityConfigurer implements ApplicationListener {
         }
     }
 
+    /**
+     * Get the list of proxy factory beans that need to be updated.
+     * @return Array of beans to update
+     */
     private Object[] getExporters() {
-    	ListableBeanFactory bf = (ListableBeanFactory) Application.services().getBeanFactory();
         ApplicationContext appCtx = Application.services().getApplicationContext();
         List list = new Vector();
 
-        {
-            Map map = bf.getBeansOfType(HessianProxyFactoryBean.class, false, true);
-            Iterator iter = map.keySet().iterator();
+        Class[] types = new Class[] {
+                HessianProxyFactoryBean.class,
+                BurlapProxyFactoryBean.class,
+                JaxRpcPortProxyFactoryBean.class
+        };
+        
+        for( int i = 0; i < types.length; i++ ) {
+            Map map = appCtx.getBeansOfType(types[i], false, true);
+            Iterator iter = map.entrySet().iterator();
 
             while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = bf.getBean("&" + beanName);
-                list.add(factoryBean);
-            }
-        }
-
-        {
-            Map map = appCtx.getBeansOfType(BurlapProxyFactoryBean.class, false, true);
-            Iterator iter = map.keySet().iterator();
-
-            while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
-                list.add(factoryBean);
-            }
-        }
-
-        {
-            Map map = appCtx.getBeansOfType(JaxRpcPortProxyFactoryBean.class, false, true);
-            Iterator iter = map.keySet().iterator();
-
-            while (iter.hasNext()) {
-                String beanName = (String)iter.next();
-                Object factoryBean = appCtx.getBean("&" + beanName);
-                list.add(factoryBean);
+                Map.Entry entry = (Map.Entry)iter.next();
+                String beanName = (String)entry.getKey();
+                if( beanName.startsWith("&") ) {
+                    list.add(entry.getValue());
+                }
             }
         }
 
