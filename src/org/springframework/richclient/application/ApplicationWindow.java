@@ -22,13 +22,12 @@ import javax.swing.JFrame;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
-import org.springframework.richclient.util.PersistableElement;
 
 /**
  * A main application window (or frame) consisting of a menu bar, tool bar,
  * single page (content pane), and status bar.
  */
-public interface ApplicationWindow extends PersistableElement {
+public interface ApplicationWindow {
     public int getNumber();
 
     public ApplicationPage getPage();

@@ -45,7 +45,6 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.EventListenerListHelper;
-import org.springframework.richclient.util.Memento;
 import org.springframework.util.Assert;
 
 /**
@@ -327,13 +326,5 @@ public class DefaultApplicationWindow implements ApplicationWindow {
             windowManager = null;
         }
         return canClose;
-    }
-
-    public void saveState(Memento memento) {
-        Rectangle bounds = this.control.getBounds();
-        memento.putInteger("x", bounds.x);
-        memento.putInteger("y", bounds.y);
-        memento.putInteger("width", bounds.width);
-        memento.putInteger("height", bounds.height);
     }
 }
