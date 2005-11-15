@@ -42,6 +42,7 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.richclient.command.support.CommandFaceButtonManager;
 import org.springframework.richclient.command.support.DefaultCommandServices;
+import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
@@ -49,7 +50,7 @@ import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
 
 public abstract class AbstractCommand extends AbstractPropertyChangePublisher implements InitializingBean,
-        BeanNameAware, GuardedActionCommandExecutor {
+        BeanNameAware, GuardedActionCommandExecutor, SecurityControllable {
 
     public static final String ENABLED_PROPERTY_NAME = "enabled";
 
@@ -64,6 +65,12 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     private ValueModel enabled = new ValueHolder(Boolean.TRUE);
 
     private boolean visible = true;
+    
+    private boolean authorized = true;
+    
+    private boolean maskedEnabledState = true;
+
+    private String securityControllerId = null;
 
     private Map faceButtonManagers;
 
@@ -242,11 +249,82 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         return this.commandServices;
     }
 
+    /**
+     * Set the Id of the security controller that should manage this object.
+     * @param controllerId Id (bean name) of the security controller
+     */
+    public void setSecurityControllerId(String controllerId) {
+        this.securityControllerId = controllerId;
+    }
+
+    /**
+     * Get the id (bean name) of the security controller that should manage this object.
+     * @return controller id
+     */
+    public String getSecurityControllerId() {
+        return securityControllerId;
+    }
+
+    /**
+     * Set the authorized state.  Setting authorized to false will override any call
+     * to {@link #setEnabled(boolean)}.  As long as this object is unauthorized,
+     * it can not be enabled.
+     * @param authorized Pass <code>true</code> if the object is to be authorized
+     */
+    public void setAuthorized( boolean authorized ) {
+        boolean wasAuthorized = isAuthorized();
+
+        if( hasChanged(isAuthorized(), authorized)) {
+            
+            this.authorized = authorized;
+
+            // We need to apply a change to our enabled state depending on our
+            // new authorized state.
+            if( authorized ) {
+                // install the last requested enabled state
+                setEnabled(maskedEnabledState);
+            } else {
+                // Record the current enabled state and then disable
+                maskedEnabledState = isEnabled();
+                internalSetEnabled(false);
+            }
+            
+            firePropertyChange(AUTHORIZED_PROPERTY, !wasAuthorized, authorized);
+        }
+    }
+    
+    /**
+     * Get the authorized state.
+     * @return authorized
+     */
+    public boolean isAuthorized() {
+        return authorized;
+    }
+
     public boolean isEnabled() {
         return ((Boolean)enabled.getValue()).booleanValue();
     }
 
+    /**
+     * Set the enabled state of this command.  Note that if we are currently not
+     * authorized, then the new value will just be recorded and no change in the
+     * current enabled state will be made.
+     * @param enabled state
+     */
     public void setEnabled(boolean enabled) {
+        maskedEnabledState = enabled;
+        if( isAuthorized() ) {
+            internalSetEnabled( enabled );
+        }
+    }
+
+    /**
+     * Internal method to set the enabled state.  This is needed so that calls
+     * made to the public setEnabled and this method can be handled differently.
+     * @param enabled state
+     * @see #setAuthorized(boolean)
+     */
+    protected void internalSetEnabled( boolean enabled ) {
         if (hasChanged(isEnabled(), enabled)) {
             this.enabled.setValue(Boolean.valueOf(enabled));
 

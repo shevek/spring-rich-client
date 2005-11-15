@@ -18,12 +18,13 @@ package org.springframework.richclient.command;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
  */
-public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
+public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, SecurityControllable {
     public static final String GLUE_MEMBER_CODE = "glue";
 
     public static final String SEPARATOR_MEMBER_CODE = "separator";
@@ -45,6 +46,8 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
     private boolean allowsEmptySelection;
 
     private CommandGroup commandGroup;
+
+    private String securityControllerId = null;
 
     public CommandGroupFactoryBean() {
 
@@ -115,6 +118,10 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
         else {
             group = new CommandGroup(groupId, commandRegistry);
         }
+        
+        // Apply our security controller id to the new group
+        group.setSecurityControllerId( getSecurityControllerId() );
+        
         initCommandGroupMembers(group);
         return group;
     }
@@ -210,4 +217,31 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.richclient.core.SecurityControllable#setSecurityControllerId(java.lang.String)
+     */
+    public void setSecurityControllerId(String controllerId) {
+        this.securityControllerId = controllerId;
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.richclient.core.SecurityControllable#getSecurityControllerId()
+     */
+    public String getSecurityControllerId() {
+        return securityControllerId;
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.richclient.core.Authorizable#setAuthorized(boolean)
+     */
+    public void setAuthorized(boolean authorized) {
+        // nothing to do on the factory
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.richclient.core.Authorizable#isAuthorized()
+     */
+    public boolean isAuthorized() {
+        return false;
+    }
 }
