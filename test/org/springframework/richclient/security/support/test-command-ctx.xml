@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="windowCommandManager" class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+    </bean>
+
+    <bean id="cmdAdmin" class="org.springframework.richclient.command.support.TestCommand">
+        <property name="securityControllerId" value="adminController"/>
+    </bean>
+
+    <bean id="cmdWrite" class="org.springframework.richclient.command.support.TestCommand">
+        <property name="securityControllerId" value="writeController"/>
+    </bean>
+
+    <bean id="cmdAdminAlias" class="org.springframework.richclient.command.support.TestCommand">
+        <property name="securityControllerId" value="adminAlias"/>
+    </bean>
+</beans>
