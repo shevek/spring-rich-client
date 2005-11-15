@@ -136,9 +136,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
         this.buffered = buffered;
 
-        if (formObjectHolder instanceof BufferedValueModel) {
-            ((BufferedValueModel)formObjectHolder).setCommitTrigger(commitTrigger);
-        }
+        prepareValueModel( this.formObjectHolder );
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
@@ -146,8 +144,22 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         this.propertyAccessStrategy = propertyAccessStrategy;
         this.buffered = buffered;
 
-        if (formObjectHolder instanceof BufferedValueModel) {
-            ((BufferedValueModel)formObjectHolder).setCommitTrigger(commitTrigger);
+        prepareValueModel( formObjectHolder );
+    }
+
+    /**
+     * Prepare the provided value model for use in this form model.
+     * @param valueModel to prepare
+     */
+    protected void prepareValueModel( ValueModel valueModel ) {
+        if (valueModel instanceof BufferedValueModel) {
+            ((BufferedValueModel)valueModel).setCommitTrigger(commitTrigger);
+        }
+        
+        // If the value model that we were built on is "dirty trackable" then we
+        // need to monitor it for changes in its dirty state
+        if( valueModel instanceof DirtyTrackingValueModel ) {
+            ((DirtyTrackingValueModel)valueModel).addPropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
         }
     }
 
@@ -592,8 +604,10 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      */
     protected class DirtyChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getSource() instanceof PropertyMetadata) {
-                PropertyMetadata metadata = (PropertyMetadata)evt.getSource();
+            Object source = evt.getSource();
+            
+            if (source instanceof PropertyMetadata) {
+                PropertyMetadata metadata = (PropertyMetadata)source;
                 if (metadata.isDirty()) {
                     dirtyValueAndFormModels.add(metadata);
                 }
@@ -601,13 +615,21 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                     dirtyValueAndFormModels.remove(metadata);
                 }
             }
-            else {
-                FormModel formModel = (FormModel)evt.getSource();
+            else if( source instanceof FormModel ) {
+                FormModel formModel = (FormModel)source;
                 if (formModel.isDirty()) {
                     dirtyValueAndFormModels.add(formModel);
                 }
                 else {
                     dirtyValueAndFormModels.remove(formModel);
+                }
+            } else {
+                DirtyTrackingValueModel valueModel = (DirtyTrackingValueModel)source;
+                if (valueModel.isDirty()) {
+                    dirtyValueAndFormModels.add(valueModel);
+                }
+                else {
+                    dirtyValueAndFormModels.remove(valueModel);
                 }
             }
             dirtyUpdated();
