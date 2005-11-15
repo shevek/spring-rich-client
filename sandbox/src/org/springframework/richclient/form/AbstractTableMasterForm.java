@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableModel;
 
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.HierarchicalFormModel;
@@ -57,7 +58,6 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
     private EventList _eventList;
-    private GlazedTableModel _masterTableModel;
     private JTable _masterTable;
     private Matcher _matcher;
     private MatcherEditor _matcherEditor;
@@ -80,19 +80,6 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     public AbstractTableMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
             Class detailType) {
         super( parentFormModel, property, formId, detailType );
-    }
-
-    /**
-     * Construct using the given form information and detail object type. Unless
-     * {@link AbstractMasterForm#getListListModel()} has been overriden, the table will
-     * contain all the elements in the domain object referenced in the formModel.
-     * 
-     * @param formModel FormModel to use for this form
-     * @param formId Id of this form
-     * @param detailType Type of entries in the formModel's domain object
-     */
-    public AbstractTableMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
-        super( formModel, formId, detailType );
     }
 
     /**
@@ -190,14 +177,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         // Install this new event list configuration (sorting and filtering)
         installEventList( _eventList );
 
-        // Make this table model read-only
-        _masterTableModel = new GlazedTableModel( _eventList, getMessageSource(), getColumnPropertyNames(), getId() ) {
-            protected boolean isEditable(Object row, int column) {
-                return false;
-            }
-        };
-
-        _masterTable = new JTable( _masterTableModel );
+        _masterTable = createTable( createTableModel() );
 
         // Finish the sorting installation
         if( _comparator != null ) {
@@ -244,6 +224,28 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         updateControlsForState();
 
         return formBuilder.getForm();
+    }
+
+    /**
+     * Create the master table.
+     * @param tableModel to use in the table
+     * @return table, default implementation uses the component factory to create the table
+     */
+    protected JTable createTable( TableModel tableModel ) {
+        return getComponentFactory().createTable(tableModel);
+    }
+
+    /**
+     * Create the table model for the master table.
+     * @return table model to install
+     */
+    protected TableModel createTableModel() {
+        // Make this table model read-only
+        return new GlazedTableModel( _eventList, getMessageSource(), getColumnPropertyNames(), getId() ) {
+            protected boolean isEditable(Object row, int column) {
+                return false;
+            }
+        };
     }
 
     /**
@@ -303,23 +305,10 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
     }
 
     /**
-     * @param table The masterTable to set.
-     */
-    protected void setMasterTable(JTable table) {
-        _masterTable = table;
-    }
-
-    /**
      * @return Returns the masterTableModel.
      */
-    protected GlazedTableModel getMasterTableModel() {
-        return _masterTableModel;
+    protected TableModel getMasterTableModel() {
+        return getMasterTable() != null ? getMasterTable().getModel() : null;
     }
 
-    /**
-     * @param tableModel The masterTableModel to set.
-     */
-    protected void setMasterTableModel(GlazedTableModel tableModel) {
-        _masterTableModel = tableModel;
-    }
 }
