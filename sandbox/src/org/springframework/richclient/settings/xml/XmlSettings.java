@@ -16,7 +16,9 @@
 package org.springframework.richclient.settings.xml;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.richclient.settings.AbstractSettings;
@@ -30,151 +32,168 @@ import org.w3c.dom.NodeList;
  * @author Peter De Bruycker
  */
 public class XmlSettings extends AbstractSettings {
-	private Element element;
+    private Element element;
 
-	private boolean childrenLoaded;
+    private boolean entriesLoaded;
 
-	private Map values = new HashMap();
+    private Map values = new HashMap();
 
-	public XmlSettings(Settings parent, Element element) {
-		super(parent, getName(element));
-		this.element = element;
-	}
+    public XmlSettings(Settings parent, Element element) {
+        super(parent, getName(element));
+        this.element = element;
+    }
 
-	public XmlSettings(Element element) {
-		this(null, element);
-	}
+    public XmlSettings(Element element) {
+        this(null, element);
+    }
 
-	private static String getName(Element element) {
-		verifyElement(element);
+    private static String getName(Element element) {
+        verifyElement(element);
 
-		return element.getAttribute("name");
-	}
+        return element.getAttribute("name");
+    }
 
-	private static void verifyElement(Element element) {
-		Assert.notNull(element, "element cannot be null");
-		Assert.isTrue(element.getNodeName().equals("settings"), "element must be settings");
-		Assert.isTrue(element.hasAttribute("name"), "element must have name attribute");
-	}
+    private static void verifyElement(Element element) {
+        Assert.notNull(element, "element cannot be null");
+        Assert.isTrue(element.getNodeName().equals("settings"), "element must be settings");
+        Assert.isTrue(element.hasAttribute("name"), "element must have name attribute");
+    }
 
-	protected Settings internalCreateChild(String key) {
-		loadChildrenIfNecessary();
+    protected Settings internalCreateChild(String key) {
+        loadChildrenIfNecessary();
 
-		Element childElement = null;
+        Element childElement = null;
 
-		NodeList childNodes = element.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node node = childNodes.item(i);
-			if (node instanceof Element) {
-				Element tmp = (Element) node;
-				if (tmp.getNodeName().equals("settings") && tmp.getAttribute("name").equals(key)) {
-					childElement = tmp;
-				}
-			}
-		}
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element) {
+                Element tmp = (Element) node;
+                if (tmp.getNodeName().equals("settings") && tmp.getAttribute("name").equals(key)) {
+                    childElement = tmp;
+                }
+            }
+        }
 
-		if (childElement == null) {
-			childElement = element.getOwnerDocument().createElement("settings");
-			childElement.setAttribute("name", key);
-			element.appendChild(childElement);
-		}
+        if (childElement == null) {
+            childElement = element.getOwnerDocument().createElement("settings");
+            childElement.setAttribute("name", key);
+            element.appendChild(childElement);
+        }
 
-		return new XmlSettings(this, childElement);
-	}
+        return new XmlSettings(this, childElement);
+    }
 
-	protected boolean internalContains(String key) {
-		loadChildrenIfNecessary();
+    protected boolean internalContains(String key) {
+        loadChildrenIfNecessary();
 
-		return values.containsKey(key);
-	}
+        return values.containsKey(key);
+    }
 
-	protected void internalSet(String key, String value) {
-		loadChildrenIfNecessary();
+    protected void internalSet(String key, String value) {
+        loadChildrenIfNecessary();
 
-		Element entry = findOrCreateEntry(key);
-		entry.setAttribute("value", value);
+        Element entry = findOrCreateEntry(key);
+        entry.setAttribute("value", value);
 
-		values.put(key, value);
-	}
+        values.put(key, value);
+    }
 
-	private Element findEntry(String key) {
-		NodeList childNodes = element.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node node = childNodes.item(i);
-			if (node instanceof Element && node.getNodeName().equals("entry")) {
-				Element tmp = (Element) node;
-				if (tmp.getAttribute("key").equals(key)) {
-					return tmp;
-				}
-			}
-		}
+    private Element findEntry(String key) {
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element && node.getNodeName().equals("entry")) {
+                Element tmp = (Element) node;
+                if (tmp.getAttribute("key").equals(key)) {
+                    return tmp;
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private Element findOrCreateEntry(String key) {
-		Element entry = findEntry(key);
-		if (entry == null) {
-			entry = element.getOwnerDocument().createElement("entry");
-			entry.setAttribute("key", key);
-			element.appendChild(entry);
-		}
+    private Element findOrCreateEntry(String key) {
+        Element entry = findEntry(key);
+        if (entry == null) {
+            entry = element.getOwnerDocument().createElement("entry");
+            entry.setAttribute("key", key);
+            element.appendChild(entry);
+        }
 
-		return entry;
-	}
+        return entry;
+    }
 
-	protected String internalGet(String key) {
-		loadChildrenIfNecessary();
+    protected String internalGet(String key) {
+        loadChildrenIfNecessary();
 
-		return (String) values.get(key);
-	}
+        return (String) values.get(key);
+    }
 
-	public String[] getKeys() {
-		loadChildrenIfNecessary();
+    public String[] getKeys() {
+        loadChildrenIfNecessary();
 
-		return (String[]) values.keySet().toArray(new String[values.size()]);
-	}
+        return (String[]) values.keySet().toArray(new String[values.size()]);
+    }
 
-	public void save() throws IOException {
-		getParent().save();
-	}
+    public void save() throws IOException {
+        getParent().save();
+    }
 
-	private void loadChildrenIfNecessary() {
-		if (!childrenLoaded) {
-			NodeList childNodes = element.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node node = childNodes.item(i);
-				if (node instanceof Element) {
-					Element el = (Element) node;
-					if (el.getNodeName().equals("entry")) {
-						// entry
-						values.put(el.getAttribute("key"), el.getAttribute("value"));
-					}
-				}
-			}
+    private void loadChildrenIfNecessary() {
+        if (!entriesLoaded) {
+            NodeList childNodes = element.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node node = childNodes.item(i);
+                if (node instanceof Element) {
+                    Element el = (Element) node;
+                    if (el.getNodeName().equals("entry")) {
+                        // entry
+                        values.put(el.getAttribute("key"), el.getAttribute("value"));
+                    }
+                }
+            }
 
-			childrenLoaded = true;
-		}
-	}
+            entriesLoaded = true;
+        }
+    }
 
-	public void load() throws IOException {
-		if (!childrenLoaded) {
-			childrenLoaded = true;
-		}
-	}
+    public void load() throws IOException {
+        loadChildrenIfNecessary();
+    }
 
-	protected void internalRemove(String key) {
-		loadChildrenIfNecessary();
+    protected void internalRemove(String key) {
+        loadChildrenIfNecessary();
 
-		Element entry = findEntry(key);
-		if (entry != null) {
-			element.removeChild(entry);
-		}
+        Element entry = findEntry(key);
+        if (entry != null) {
+            element.removeChild(entry);
+        }
 
-		values.remove(key);
-	}
+        values.remove(key);
+    }
 
-	public Element getElement() {
-		return element;
-	}
+    public Element getElement() {
+        return element;
+    }
+
+    protected String[] internalGetChildSettings() {
+        List childSettingsNames = new ArrayList();
+
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element) {
+                Element el = (Element) node;
+                if (el.getNodeName().equals("settings")) {
+                    childSettingsNames.add(el.getAttribute("name"));
+                }
+            }
+        }
+
+        entriesLoaded = true;
+
+        return (String[]) childSettingsNames.toArray(new String[childSettingsNames.size()]);
+    }
 }

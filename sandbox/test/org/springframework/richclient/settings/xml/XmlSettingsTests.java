@@ -143,6 +143,23 @@ public class XmlSettingsTests extends SettingsTestCase {
 
 		assertEquals(parentSettings, readerWriter.lastWritten);
 	}
+    
+    public void testChildSettings() throws ParserConfigurationException, FactoryConfigurationError, SAXException, IOException {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<?xml version=\"1.0\"?>");
+        sb.append("<settings name=\"test-settings\">");
+        sb.append("  <entry key=\"key-1\" value=\"value-1\" />");
+        sb.append("  <entry key=\"key-2\" value=\"false\" />");
+        sb.append("  <entry key=\"key-3\" value=\"1.5\" />");
+        sb.append("  <settings name=\"child-settings\">");
+        sb.append("    <entry key=\"child-key\" value=\"value\" />");
+        sb.append("  </settings>");
+        sb.append("</settings>");
+
+        XmlSettings settings = new XmlSettings(createElement(sb.toString()));
+        
+        assertEquals(Arrays.asList(new String[] {"child-settings"}), Arrays.asList(settings.getChildSettings()));
+    }
 
 	private static Element createElement(String xml) throws ParserConfigurationException, FactoryConfigurationError,
 			SAXException, IOException {

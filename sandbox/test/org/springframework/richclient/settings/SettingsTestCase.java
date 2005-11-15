@@ -47,7 +47,7 @@ public abstract class SettingsTestCase extends TestCase {
 		assertEquals("child", childSettings.getName());
 		assertEquals(settings, childSettings.getParent());
 	}
-
+    
 	public final void testRemove() {
 		settings.setString("key", "value");
 		assertTrue(settings.contains("key"));

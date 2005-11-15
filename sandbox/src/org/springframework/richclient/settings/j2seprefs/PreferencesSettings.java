@@ -48,7 +48,8 @@ public class PreferencesSettings extends AbstractSettings {
         super(parent, name);
         if (parent != null) {
             prefs = parent.getPreferences().node(name);
-        } else {
+        }
+        else {
             prefs = Preferences.userRoot().node(name);
         }
     }
@@ -68,7 +69,8 @@ public class PreferencesSettings extends AbstractSettings {
     public void save() throws IOException {
         try {
             prefs.flush();
-        } catch (BackingStoreException e) {
+        }
+        catch (BackingStoreException e) {
             IOException ioe = new IOException("Unable to save settings");
             ioe.initCause(e);
             throw ioe;
@@ -78,7 +80,8 @@ public class PreferencesSettings extends AbstractSettings {
     public void load() throws IOException {
         try {
             prefs.sync();
-        } catch (BackingStoreException e) {
+        }
+        catch (BackingStoreException e) {
             IOException ioe = new IOException("Unable to save settings");
             ioe.initCause(e);
             throw ioe;
@@ -93,7 +96,7 @@ public class PreferencesSettings extends AbstractSettings {
     }
 
     protected Settings internalCreateChild(String key) {
-    	return new PreferencesSettings(this, key);
+        return new PreferencesSettings(this, key);
     }
 
     /*
@@ -114,7 +117,8 @@ public class PreferencesSettings extends AbstractSettings {
     public String[] getKeys() {
         try {
             return prefs.keys();
-        } catch (BackingStoreException e) {
+        }
+        catch (BackingStoreException e) {
             throw new RuntimeException(e);
         }
     }
@@ -131,7 +135,17 @@ public class PreferencesSettings extends AbstractSettings {
     public boolean internalContains(String key) {
         try {
             return Arrays.asList(prefs.keys()).contains(key);
-        } catch (BackingStoreException e) {
+        }
+        catch (BackingStoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String[] internalGetChildSettings() {
+        try {
+            return prefs.childrenNames();
+        }
+        catch (BackingStoreException e) {
             throw new RuntimeException(e);
         }
     }

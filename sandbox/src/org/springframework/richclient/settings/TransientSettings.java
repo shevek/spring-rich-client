@@ -67,4 +67,8 @@ public class TransientSettings extends AbstractSettings {
 	protected boolean internalContains(String key) {
 		return values.containsKey(key);
 	}
+
+    protected String[] internalGetChildSettings() {
+        return new String[0];
+    }
 }
