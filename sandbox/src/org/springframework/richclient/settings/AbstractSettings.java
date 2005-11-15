@@ -59,6 +59,12 @@ public abstract class AbstractSettings implements Settings {
 
     protected abstract boolean internalContains(String key);
 
+    /**
+     * Should return the names of the child settings initially in this settings
+     * instance, i.e. the children that were stored in the backend.
+     * 
+     * @return the names of the child settings
+     */
     protected abstract String[] internalGetChildSettings();
 
     /*
