@@ -64,7 +64,9 @@ import org.springframework.richclient.image.DefaultImageSource;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.security.ApplicationSecurityManager;
+import org.springframework.richclient.security.SecurityControllerManager;
 import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
+import org.springframework.richclient.security.support.DefaultSecurityControllerManager;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
@@ -104,6 +106,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     
     private static final String APPLICATION_SECURITY_MANAGER_BEAN_ID = "applicationSecurityManager";
     
+    private static final String SECURITY_CONTROLLER_MANAGER_BEAN_ID = "securityControllerManager";
+    
     private final Log logger = LogFactory.getLog(getClass());
 
     private ComponentFactory componentFactory;
@@ -141,6 +145,8 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
     private ValueChangeDetector valueChangeDetector;
     
     private ApplicationSecurityManager applicationSecurityManager;
+
+    private SecurityControllerManager securityControllerManager;
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
@@ -524,6 +530,43 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         this.applicationSecurityManager = applicationSecurityManager;
     }
 
+    /**
+     * Get the configured security controller manager. If no bean has been configured,
+     * then a default implementation will be returned.
+     * 
+     * @return configured bean instance
+     * @see DefaultSecurityControllerManager
+     */
+    public SecurityControllerManager getSecurityControllerManager() {
+        if( securityControllerManager == null ) {
+            initSecurityControllerManager();
+        }
+        return securityControllerManager;
+    }
+
+    /**
+     * Intialize the security controller manager bean instance. Extract the bean
+     * configured the application context. If none is configured, then create an instance
+     * of the default implementation.
+     */
+    private void initSecurityControllerManager() {
+        try {
+            securityControllerManager = (SecurityControllerManager) getApplicationContext().getBean(
+                SECURITY_CONTROLLER_MANAGER_BEAN_ID, SecurityControllerManager.class );
+        } catch( NoSuchBeanDefinitionException e ) {
+            logger.info( "No bean named " + SECURITY_CONTROLLER_MANAGER_BEAN_ID + " found; configuring defaults." );
+            securityControllerManager = new DefaultSecurityControllerManager();
+        }
+    }
+
+    /**
+     * Set the security controller manager instance.
+     * @param securityControllerManager instance to use
+     */
+    public void setSecurityControllerManager(SecurityControllerManager securityControllerManager) {
+        this.securityControllerManager = securityControllerManager;
+    }
+
     
     protected void initApplicationContext() throws BeansException {
         if (!lazyInit) {
@@ -544,6 +587,7 @@ public class ApplicationServices implements ApplicationObjectConfigurer, Command
         getBindingFactoryProvider();
         initValueChangeDetector();
         initApplicationSecurityManager();
+        initSecurityControllerManager();
     }
 
     public void initLookAndFeelConfigurer() {
