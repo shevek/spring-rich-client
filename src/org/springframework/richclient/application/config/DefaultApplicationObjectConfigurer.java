@@ -26,11 +26,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.LabelConfigurable;
+import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.IconSource;
@@ -38,6 +40,8 @@ import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.image.config.IconConfigurable;
 import org.springframework.richclient.image.config.ImageConfigurable;
+import org.springframework.richclient.security.SecurityController;
+import org.springframework.richclient.security.SecurityControllerManager;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -108,6 +112,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         configureLabel(bean, beanName);
         configureDescription(bean, beanName);
         configureImageIcons(bean, beanName);
+        configureSecurityController(bean, beanName);
         return bean;
     }
 
@@ -162,6 +167,50 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
             else if (bean instanceof CommandIconConfigurable) {
                 setIconInfo((CommandIconConfigurable)bean, beanName);
                 setLargeIconInfo((CommandIconConfigurable)bean, beanName);
+            }
+        }
+    }
+
+    /**
+     * Associate an object with a security controller if it implements the
+     * {@link SecurityControllable} interface.
+     * @param bean to configure
+     * @param beanName Name (id) of bean
+     * @throws BeansException if a referenced security controller is not found or is of
+     *             the wrong type
+     */
+    private void configureSecurityController(Object bean, String beanName) throws BeansException {
+        if( bean instanceof SecurityControllable ) {
+            SecurityControllable controllable = (SecurityControllable) bean;
+            String controllerId = controllable.getSecurityControllerId();
+
+            if( controllerId != null ) {
+                // Find the referenced controller.
+                SecurityControllerManager manager = Application.services().getSecurityControllerManager();
+                SecurityController controller = manager.getSecurityController( controllerId );
+
+                if( logger.isDebugEnabled() ) {
+                    logger.debug( "Lookup SecurityController with id [" + controllerId + "]" );
+                }
+
+                // And add the bean to the controlled object set
+                if( controller != null ) {
+                    if( logger.isDebugEnabled() ) {
+                        logger.debug( "configuring SecurityControllable [" + beanName + "]; security controller id='"
+                                + controllerId + "'" );
+                    }
+                    controller.addControlledObject( controllable );
+                } else {
+                    if( logger.isDebugEnabled() ) {
+                        logger.debug( "configuring SecurityControllable [" + beanName + "]; no security controller for id='"
+                                + controllerId + "'" );
+                    }
+                }
+            } else {
+                if( logger.isDebugEnabled() ) {
+                    logger.debug( "configuring SecurityControllable [" + beanName
+                            + "]; no security controller Id specified" );
+                }
             }
         }
     }
