@@ -36,6 +36,10 @@ import org.springframework.util.StringUtils;
 /**
  * This is an abstract base implementation of the detail side of a Master/Detail form
  * pair. Derived types need only implement {@link AbstractForm#createFormControl()}.
+ * <p>
+ * The various form commands can be secured by specifying security controller id's for
+ * the command.  Use the {@link AbstractForm#getCommitSecurityControllerId()} and
+ * {@link AbstractForm#getNewFormObjectCommand()}.
  * 
  * @author Larry Streepy
  * 
@@ -202,6 +206,18 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
 
     protected String getCancelCommandFaceDescriptorId() {
         return "cancelNew";
+    }
+
+    /**
+     * Override to return null for the new object security controller id.  We do
+     * this because this command is not used directly, so it shouldn't be controlled.
+     * The {@link AbstractMasterForm} is responsible for the real (invocable)
+     * instance of this command.
+     * 
+     * @return null
+     */
+    protected String getNewFormObjectSecurityControllerId() {
+        return null;
     }
 
     /**

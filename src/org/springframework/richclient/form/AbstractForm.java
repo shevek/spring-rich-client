@@ -347,6 +347,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                 }
             }
         };
+        newFormObjectCmd.setSecurityControllerId(getNewFormObjectSecurityControllerId());
         attachFormGuard(newFormObjectCmd, FormGuard.LIKE_NEWFORMOBJCOMMAND);
         return (ActionCommand)getCommandConfigurer().configure(newFormObjectCmd);
     }
@@ -389,6 +390,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
                 getFormModel().commit();
             }
         };
+        commitCmd.setSecurityControllerId(getCommitSecurityControllerId());
         attachFormGuard(commitCmd, FormGuard.LIKE_COMMITCOMMAND);
         return (ActionCommand)getCommandConfigurer().configure(commitCmd);
     }
@@ -453,6 +455,59 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     protected String getRevertCommandFaceDescriptorId() {
         return null;
+    }
+
+    /**
+     * Subclasses may override to return a security controller id to be attached to the
+     * newFormObject command. The default is
+     * <code>[formModel.id] + "." + [getNewFormObjectCommandId()]</code>.
+     * <p>
+     * This id can be mapped to a specific security controller using the
+     * SecurityControllerManager service.
+     * 
+     * @return security controller id, may be null if the face id is null
+     * @see org.springframework.richclient.security.SecurityControllerManager
+     */
+    protected String getNewFormObjectSecurityControllerId() {
+        return constructSecurityControllerId(getNewFormObjectCommandId());
+    }
+
+    /**
+     * Subclasses may override to return a security controller id to be attached to the
+     * commit command. The default is The default is
+     * <code>[formModel.id] + "." + [getCommitCommandFaceDescriptorId()]</code>.
+     * <p>
+     * This id can be mapped to a specific security controller using the
+     * SecurityControllerManager service.
+     * 
+     * @return security controller id, may be null if the face id is null
+     * @see org.springframework.richclient.security.SecurityControllerManager
+     */
+    protected String getCommitSecurityControllerId() {
+        return constructSecurityControllerId(getCommitCommandFaceDescriptorId());
+    }
+
+    /**
+     * Construct a default security controller Id for a given command face id.
+     * The id will be a combination of the form model id, if any, and the face id.
+     * <p>
+     * <code>[formModel.id] + "." + [commandFaceId]</code> if the form model id is not
+     * null.
+     * <p>
+     * <code>[commandFaceId]</code> if the form model is null.
+     * <p>
+     * <code>null</code> if the commandFaceId is null.
+     * @param commandFaceId
+     * @return default security controller id
+     */
+    protected String constructSecurityControllerId( String commandFaceId ) {
+        String id = null;
+        String formModelId = getFormModel().getId();
+        
+        if( commandFaceId != null ) {
+            id = (formModelId != null) ? formModelId + "." + commandFaceId : commandFaceId;
+        }
+        return id;
     }
 
     protected void attachFormErrorGuard(Guarded guarded) {

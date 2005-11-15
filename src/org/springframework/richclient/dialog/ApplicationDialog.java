@@ -335,7 +335,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     private void initStandardCommands() {
-        this.finishCommand = new ActionCommand(getFinishCommandId()) {
+        finishCommand = new ActionCommand(getFinishCommandId()) {
 
             public void doExecuteCommand() {
                 try {
@@ -353,9 +353,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                 }
             }
         };
-        this.finishCommand.setEnabled(defaultEnabled);
+        finishCommand.setSecurityControllerId(getFinishSecurityControllerId());
+        finishCommand.setEnabled(defaultEnabled);
 
-        this.cancelCommand = new ActionCommand(getCancelCommandId()) {
+        cancelCommand = new ActionCommand(getCancelCommandId()) {
 
             public void doExecuteCommand() {
                 onCancel();
@@ -365,12 +366,21 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     /**
      * Subclasses may override to return a custom message key, default is
-     * "dialog.ok", corresponding to the "&OK" label.
+     * "okCommand", corresponding to the "&OK" label.
      * 
      * @return The message key to use for the finish ("ok") button
      */
     protected String getFinishCommandId() {
         return DEFAULT_FINISH_COMMAND_ID;
+    }
+
+    /**
+     * Subclasses may override to return a security controller id to be
+     * attached to the finish command.  The default is null, no controller.
+     * @return security controller id, or null if none
+     */
+    protected String getFinishSecurityControllerId() {
+        return null;
     }
 
     /**
