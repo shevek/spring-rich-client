@@ -30,8 +30,8 @@ import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.BufferedValueModel;
 import org.springframework.binding.value.support.DeepCopyBufferedCollectionValueModel;
+import org.springframework.binding.value.support.DirtyTrackingValueModel;
 import org.springframework.binding.value.support.ObservableEventList;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
@@ -90,57 +90,13 @@ public abstract class AbstractMasterForm extends AbstractForm {
         _detailType = detailType;
 
         ValueModel propertyVM = parentFormModel.getValueModel( property );
-        ValueModel detailVM = new DeepCopyBufferedCollectionValueModel( propertyVM, propertyVM.getValue().getClass() );
-        ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId, detailVM );
 
+        DirtyTrackingDCBCVM detailVM = new DirtyTrackingDCBCVM( propertyVM, propertyVM.getValue().getClass() );
+        ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId, detailVM );
         setFormModel( formModel );
 
         // Install a handler to detect when the parents form model changes
         propertyVM.addValueChangeListener( _parentFormPropertyChangeHandler );
-
-        configure();
-    }
-
-    /**
-     * Construct a new AbstractMasterForm using the given parent model, form Id, and
-     * detail object type. This method will attempt to pull the master list data from the
-     * provided form model. If it finds a usable model (ObservableList), then it will
-     * install this as the master data.
-     * <p>
-     * <em>Warning:</em> This constructor makes the assumption that changes in the
-     * underlying form data can be detected by watching the wrapped value model of the
-     * provided form model's form object holder. If the form object holder is a buffered
-     * value model, then the wrapped value model will be obtained and a listener will be
-     * added to detect changes on that wrapped model. Specifically, the ValueModel to
-     * watch is obtained like this:
-     * 
-     * <pre>
-     * ValueModel wrappedVM = ((BufferedValueModel) formModel.getFormObjectHolder()).getWrappedValueModel();
-     * </pre>
-     * 
-     * If this is not the case, then this form may not function properly when the parent
-     * form model is changed.
-     * <p>
-     * Use of this constructor (although not deprecated yet) is discouraged due to this
-     * requirement. You should use the following constructor:
-     * {@link #AbstractMasterForm(HierarchicalFormModel, String, String, Class)}
-     * <p>
-     * @param formModel Parent form model
-     * @param formId Id of this form
-     * @param detailType Type of detail object managed by this master form
-     */
-    protected AbstractMasterForm(HierarchicalFormModel formModel, String formId, Class detailType) {
-        super( formModel, formId );
-        _detailType = detailType;
-
-        // Install a handler to detect when the parents form model changes.
-        // Note that this makes a BIG assumption that our form model's wrapped value model
-        // is the ValueModel we need to watch.
-        ValueModel formObjectVM = formModel.getFormObjectHolder();
-        if( formObjectVM instanceof BufferedValueModel ) {
-            ValueModel wrappedVM = ((BufferedValueModel) formObjectVM).getWrappedValueModel();
-            wrappedVM.addValueChangeListener( _parentFormPropertyChangeHandler );
-        }
 
         configure();
     }
@@ -382,6 +338,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 maybeCreateNewObject(); // Avoid losing user edits
             }
         };
+        String scid = constructSecurityControllerId( commandId );
+        newDetailObjectCommand.setSecurityControllerId( scid );
         return (ActionCommand) getCommandConfigurer().configure( newDetailObjectCommand );
     }
 
@@ -423,6 +381,9 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 maybeDeleteSelectedItems();
             }
         };
+
+        String scid = constructSecurityControllerId( commandId );
+        deleteCommand.setSecurityControllerId( scid );
         return (ActionCommand) getCommandConfigurer().configure( deleteCommand );
     }
 
@@ -747,5 +708,79 @@ public abstract class AbstractMasterForm extends AbstractForm {
             rebuildRootEventList();
         }
 
+    }
+
+    /**
+     * Specialized DCBCVM to provide dirty tracking semantics. This will allow the form
+     * model built on this value model to properly track our dirty status.
+     */
+    private class DirtyTrackingDCBCVM extends DeepCopyBufferedCollectionValueModel implements DirtyTrackingValueModel {
+
+        private boolean dirty = false;
+        private boolean oldDirty = false;
+
+        /**
+         * Constructs a new DirtyTrackingDCBCVM.
+         * 
+         * @param wrappedModel the value model to wrap
+         * @param wrappedType the class of the value contained by wrappedModel; this must
+         *            be assignable to <code>java.util.Collection</code> or
+         *            <code>Object[]</code>.
+         */
+        public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType) {
+            super( wrappedModel, wrappedType );
+        }
+
+        /**
+         * Set the value. If this is our original value, then clear dirty.
+         * @param value New value
+         */
+        public void setValue(Object value) {
+            super.setValue( value );
+            if( value == getWrappedValueModel().getValue() ) {
+                // this is a revert
+                dirty = false;
+                valueUpdated();
+            }
+        }
+
+        /**
+         * Our underlying list has changed, we are now dirty.
+         */
+        protected void fireListModelChanged() {
+            super.fireListModelChanged();
+            dirty = true;
+            valueUpdated();
+        }
+
+        /**
+         * Return our dirty status.
+         * @return dirty
+         */
+        public boolean isDirty() {
+            return dirty;
+        }
+
+        /**
+         * Clear the dirty status
+         */
+        public void clearDirty() {
+            revert();
+        }
+
+        /**
+         * Revert to original value.
+         */
+        public void revertToOriginal() {
+            revert();
+        }
+
+        protected void valueUpdated() {
+            boolean dirty = isDirty();
+            if( oldDirty != dirty ) {
+                oldDirty = dirty;
+                firePropertyChange( DIRTY_PROPERTY, !dirty, dirty );
+            }
+        }
     }
 }
