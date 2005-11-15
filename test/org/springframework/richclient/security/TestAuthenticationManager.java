@@ -47,15 +47,23 @@ public class TestAuthenticationManager implements AuthenticationManager {
     /** Token to use to force a LOCKED authentication exception. */
     public static final Authentication LOCKED = new TestingAuthenticationToken( "LOCKED", "FOO", null );
 
+    /**
+     * Construct a token with the given id, password, and role
+     */
+    public static Authentication makeAuthentication( String user, String password, String role ) {
+        return new TestingAuthenticationToken( user, password,
+            new GrantedAuthority[] { new GrantedAuthorityImpl( role ) } );
+    }
+
+    /**
+     * Authenticate a token
+     */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        if( authentication == VALID_USER1 || authentication == VALID_USER2 ) {
-            return authentication;
-        } else if( authentication == BAD_CREDENTIALS ) {
+        if( authentication == BAD_CREDENTIALS ) {
             throw new BadCredentialsException( "Bad credentials" );
         } else if( authentication == LOCKED ) {
             throw new LockedException( "Account is locked" );
         }
-        return null;
+        return authentication;
     }
-
 }
