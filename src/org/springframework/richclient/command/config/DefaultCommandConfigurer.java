@@ -71,6 +71,11 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
                 objectName = StringUtils.uncapitalize(objectName.substring(lastDot + 1));
             }
         }
+
+        // Configure the command itself
+        configurer.configure( command, objectName );
+
+        // Configure the command face
         if (logger.isDebugEnabled()) {
             logger.debug("Configuring faces (aka visual appearance descriptors) for " + command);
         }
