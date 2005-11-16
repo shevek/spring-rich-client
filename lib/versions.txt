@@ -6,7 +6,7 @@ scripts, Eclipse classpath and sample application batch files.
 
 Each of the versions currently in use are provided below:
 
-acegisecurity/acegi-security.jar: 0.9.0-SNAPSHOT
+acegisecurity/acegi-security.jar: 0.9.0
 ant/ant-junit.jar: 1.6.2
 ant/ant-launcher.jar: 1.6.2
 ant/ant.jar: 1.62
