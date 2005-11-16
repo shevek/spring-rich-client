@@ -16,7 +16,10 @@
 package org.springframework.richclient.security.support;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,24 +30,40 @@ import net.sf.acegisecurity.ConfigAttributeDefinition;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.core.Authorizable;
 import org.springframework.richclient.security.SecurityController;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * Abstract implementation of a security controller. Derived classes are responsible for
  * providing the {@link ConfigAttributeDefinition} and any secured object that will be
  * used by the decision manager to make the decision to authorize the controlled objects.
  * <p>
- * This class uses weak references to track the the controlled objects, so they can be GCed
- * as needed.
+ * This class uses weak references to track the the controlled objects, so they can be
+ * GCed as needed.
+ * <p>
+ * If a subclass provides a new post-processor action, then it needs to call
+ * {@link #registerPostProcessorAction(String)} during construction and it must override
+ * {@link #doPostProcessorAction(String, Object, boolean)}. It is <b>critical</b> that
+ * the overridden doPostProcessorAction method call
+ * <code>super.doPostProcessorAction</code> for any action id it does not directly
+ * handle.
+ * <p>
+ * This base class provides the following post-processor actions:
+ * <p>
+ * <b>visibleTracksAuthorized</b> - if the controlled object has a
+ * <code>setVisible(boolean)</code> method then it is called with the authorized value.
+ * Thus, if the object is not authorized, it will have <code>setVisible(false)</code>
+ * called on it.
  * 
  * @author Larry Streepy
  * @see #getSecuredObject()
  * @see #getConfigAttributeDefinition(Object)
  * 
  */
-public abstract class AbstractSecurityController implements SecurityController {
+public abstract class AbstractSecurityController implements SecurityController, InitializingBean {
 
     private final Log _logger = LogFactory.getLog( getClass() );
 
@@ -54,13 +73,22 @@ public abstract class AbstractSecurityController implements SecurityController {
     /** The AccessDecisionManager used to make the "authorize" decision. */
     private AccessDecisionManager _accessDecisionManager;
 
-    /** Last know authentication token. */
+    /** Last known authentication token. */
     private Authentication _lastAuthentication = null;
+
+    /** All registered post-processor action ids. */
+    private HashSet _postProcessorActionIds = new HashSet();
+
+    /** Comma-separated list of post-processor actions to run. */
+    private String _postProcessorActionsToRun = "";
+
+    public static final String VISIBLE_TRACKS_AUTHORIZED_ACTION = "visibleTracksAuthorized";
 
     /**
      * Constructor.
      */
     protected AbstractSecurityController() {
+        registerPostProcessorAction( VISIBLE_TRACKS_AUTHORIZED_ACTION );
     }
 
     /**
@@ -80,13 +108,50 @@ public abstract class AbstractSecurityController implements SecurityController {
     protected abstract ConfigAttributeDefinition getConfigAttributeDefinition(Object securedObject);
 
     /**
+     * Set the list of post-processor actions to be run. This must be a comma-separated
+     * list of action names.
+     * @param Comma-separated list of post-processor action names
+     */
+    public void setPostProcessorActionsToRun(String actions) {
+        _postProcessorActionsToRun = actions;
+    }
+
+    /**
+     * Get the list of post-processor actions to run.
+     * @return Comma-separated list of post-processor action names
+     */
+    public String getPostProcessorActionsToRun() {
+        return _postProcessorActionsToRun;
+    }
+
+    /**
+     * Register a post-processor action. The action id specified must not conflict with
+     * any other action registered. Subclasses that provide additional post-processor
+     * actions MUST call this method to register them.
+     * @param actionId Id of post-processor action to register
+     */
+    protected void registerPostProcessorAction(String actionId) {
+        if( _postProcessorActionIds.contains( actionId ) ) {
+            throw new IllegalArgumentException( "Post-processor Action '" + actionId + "' is already registered" );
+        }
+        _postProcessorActionIds.add( actionId );
+    }
+
+    /**
      * The authentication token for the current user has changed. Update all our
      * controlled objects accordingly.
      * @param authentication now in effect, may be null
      */
     public void setAuthenticationToken(Authentication authentication) {
-        boolean authorize = shouldAuthorize(authentication);
-        _lastAuthentication = authentication;  // Keep for later
+        setLastAuthentication( authentication ); // Keep it for later
+        runAuthorization();
+    }
+
+    /**
+     * Update the authorization of all controlled objects.
+     */
+    protected void runAuthorization() {
+        boolean authorize = shouldAuthorize( getLastAuthentication() );
 
         // Install the decision
         for( Iterator iter = _controlledObjects.iterator(); iter.hasNext(); ) {
@@ -97,9 +162,71 @@ public abstract class AbstractSecurityController implements SecurityController {
                 // Has been GCed, remove from our list
                 iter.remove();
             } else {
-                _logger.debug( "setAuthorized( " + authorize + ") on: " + controlledObject );
-                controlledObject.setAuthorized( authorize );
+                updateControlledObject( controlledObject, authorize );
             }
+        }
+    }
+
+    /**
+     * Update a controlled object based on the given authorization state.
+     * @param controlledObject Object being controlled
+     * @param authorized state that has been installed on controlledObject
+     */
+    protected void updateControlledObject(Authorizable controlledObject, boolean authorized) {
+        if( _logger.isDebugEnabled() ) {
+            _logger.debug( "setAuthorized( " + authorized + ") on: " + controlledObject );
+        }
+        controlledObject.setAuthorized( authorized );
+        runPostProcessorActions( controlledObject, authorized );
+    }
+
+    /**
+     * Run all the requested post-processor actions.
+     * @param controlledObject Object being controlled
+     * @param authorized state that has been installed on controlledObject
+     */
+    protected void runPostProcessorActions(Object controlledObject, boolean authorized) {
+        String actions = getPostProcessorActionsToRun();
+        if( _logger.isDebugEnabled() ) {
+            _logger.debug( "Run post-processors actions: " + actions );
+        }
+
+        String[] actionIds = StringUtils.commaDelimitedListToStringArray( actions );
+        for( int i = 0; i < actionIds.length; i++ ) {
+            doPostProcessorAction( actionIds[i], controlledObject, authorized );
+        }
+    }
+
+    /**
+     * Post-process a controlled object after its authorization state has been updated.
+     * Subclasses that override this method MUST ensure that this method is called id they
+     * do not process the given action id.
+     * 
+     * @param actionId Id of the post-processor action to run
+     * @param controlledObject Object being controlled
+     * @param authorized state that has been installed on controlledObject
+     */
+    protected void doPostProcessorAction(String actionId, Object controlledObject, boolean authorized) {
+        if( VISIBLE_TRACKS_AUTHORIZED_ACTION.equals( actionId ) ) {
+            setVisibilityOnControlledObject( controlledObject, authorized );
+        }
+    }
+
+    /**
+     * Set the visible property on a controlled action according to the provided
+     * authorization.
+     */
+    private void setVisibilityOnControlledObject(Object controlledObject, boolean authorized) {
+        try {
+            Method method = controlledObject.getClass().getMethod( "setVisible", new Class[] { boolean.class } );
+            method.invoke( controlledObject, new Object[] { new Boolean( authorized ) } );
+        } catch( NoSuchMethodException ignored ) {
+            System.out.println( "NO setVisible method on object: " + controlledObject );
+            ; // No method to call, so nothing to do
+        } catch( IllegalAccessException ignored ) {
+            _logger.error( "Could not call setVisible", ignored );
+        } catch( InvocationTargetException ignored ) {
+            _logger.error( "Could not call setVisible", ignored );
         }
     }
 
@@ -109,8 +236,8 @@ public abstract class AbstractSecurityController implements SecurityController {
      * @param authentication token
      * @return true if should authorize
      */
-    protected boolean shouldAuthorize( Authentication authentication ) {
-        Assert.state(getAccessDecisionManager() != null, "The AccessDecisionManager can not be null!");
+    protected boolean shouldAuthorize(Authentication authentication) {
+        Assert.state( getAccessDecisionManager() != null, "The AccessDecisionManager can not be null!" );
         boolean authorize = false;
         try {
             if( authentication != null ) {
@@ -154,9 +281,10 @@ public abstract class AbstractSecurityController implements SecurityController {
 
             // Ensure that we got something we can control
             if( !(o instanceof Authorizable) ) {
-                throw new IllegalArgumentException( "Controlled object must implement Authorizable, got " + o.getClass() );
+                throw new IllegalArgumentException( "Controlled object must implement Authorizable, got "
+                        + o.getClass() );
             }
-            addAndPrepareControlledObject( (Authorizable)o );
+            addAndPrepareControlledObject( (Authorizable) o );
         }
     }
 
@@ -165,24 +293,21 @@ public abstract class AbstractSecurityController implements SecurityController {
      * @param object to control
      */
     public void addControlledObject(Authorizable object) {
-        addAndPrepareControlledObject(object);
+        addAndPrepareControlledObject( object );
     }
 
     /**
-     * Add a new object to the list of controlled objects.  Install our last known
-     * authorization decision so newly created objects will reflect the current
-     * security state.
-     * @param object to add
+     * Add a new object to the list of controlled objects. Install our last known
+     * authorization decision so newly created objects will reflect the current security
+     * state.
+     * @param controlledObject to add
      */
-    private void addAndPrepareControlledObject( Authorizable object ) {
-        _controlledObjects.add( new WeakReference( object ) );
+    private void addAndPrepareControlledObject(Authorizable controlledObject) {
+        _controlledObjects.add( new WeakReference( controlledObject ) );
 
-        boolean authorize = shouldAuthorize(_lastAuthentication);
-
-        if( _logger.isDebugEnabled() ) {
-            _logger.debug( "setAuthorized( " + authorize + ") on: " + object );
-        }
-        object.setAuthorized( authorize );
+        // Properly configure the new object
+        boolean authorize = shouldAuthorize( getLastAuthentication() );
+        updateControlledObject( controlledObject, authorize );
     }
 
     /**
@@ -206,5 +331,28 @@ public abstract class AbstractSecurityController implements SecurityController {
             }
         }
         return removed;
+    }
+
+    protected void setLastAuthentication(Authentication authentication) {
+        _lastAuthentication = authentication;
+    }
+
+    protected Authentication getLastAuthentication() {
+        return _lastAuthentication;
+    }
+
+    /**
+     * Validate our configuration.
+     * @throws Exception
+     */
+    public void afterPropertiesSet() throws Exception {
+        // Ensure that all post-processors requested are registered
+        String[] actions = StringUtils.commaDelimitedListToStringArray( getPostProcessorActionsToRun() );
+        for( int i = 0; i < actions.length; i++ ) {
+            if( !_postProcessorActionIds.contains( actions[i] ) ) {
+                throw new IllegalArgumentException( "Requested post-processor action '" + actions[i]
+                        + "' is not registered." );
+            }
+        }
     }
 }
