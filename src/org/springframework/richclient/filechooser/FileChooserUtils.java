@@ -37,6 +37,7 @@ public class FileChooserUtils {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
         }
+//        fileChooser.resetChoosableFileFilters();
         DefaultFileFilter filter = new DefaultFileFilter();
         filter.addExtension(defaultExtension);
         filter.setDescription(fileTypeDescription);
