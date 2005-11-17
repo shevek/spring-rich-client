@@ -16,22 +16,21 @@
 package org.springframework.richclient.filechooser;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import javax.swing.filechooser.FileFilter;
 
 /**
  * Basic implementation of a FileFilter that provides a list of valid file
- * extensions to JFileChooser.
- * <p>
- * Configurable descriptions for each file extension may also be configured.
+ * extensions and a description to the JFileChooser.
  * 
  * @see javax.swing.filechooser.FileFilter
  */
 public class DefaultFileFilter extends FileFilter {
-    private Map filters = new HashMap();
+    private List extensions = new ArrayList();
 
     private String description;
 
@@ -49,6 +48,9 @@ public class DefaultFileFilter extends FileFilter {
     /**
      * Creates a file filter that accepts files with the given extension.
      * Example: new DefaultFileFilter("jpg");
+     * <p>
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
      * 
      * @see #addExtension
      */
@@ -59,9 +61,9 @@ public class DefaultFileFilter extends FileFilter {
     /**
      * Creates a file filter that accepts the given file type. Example: new
      * DefaultFileFilter("jpg", "JPEG Image Images");
-     * 
-     * Note that the "." before the extension is not needed. If provided, it
-     * will be ignored.
+     * <p>
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
      * 
      * @see #addExtension
      */
@@ -77,8 +79,9 @@ public class DefaultFileFilter extends FileFilter {
     /**
      * Creates a file filter from the given string array. Example: new
      * DefaultFileFilter(String {"gif", "jpg"});
-     * 
-     * Note that the "." before the extension is not needed and will be ignored.
+     * <p>
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
      * 
      * @see #addExtension
      */
@@ -90,8 +93,9 @@ public class DefaultFileFilter extends FileFilter {
      * Creates a file filter from the given string array and description.
      * Example: new DefaultFileFilter(String {"gif", "jpg"}, "Gif and JPG
      * Images");
-     * 
-     * Note that the "." before the extension is not needed and will be ignored.
+     * <p>
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
      * 
      * @see #addExtension
      */
@@ -99,16 +103,13 @@ public class DefaultFileFilter extends FileFilter {
         for (int i = 0; i < extensions.length; i++) {
             addExtension(extensions[i]);
         }
-        if (description != null) {
-            setDescription(description);
-        }
+
+        setDescription(description);
     }
 
     /**
      * Return true if this file should be shown in the directory pane, false if
-     * it shouldn't.
-     * 
-     * Files that begin with "." are ignored.
+     * it shouldn't. Directories are always accepted.
      * 
      * @see FileFilter#accept
      */
@@ -118,7 +119,7 @@ public class DefaultFileFilter extends FileFilter {
                 return true;
             }
             String extension = getExtension(f);
-            if (extension != null && filters.get(extension) != null) {
+            if (extensions.contains(extension)) {
                 return true;
             }
         }
@@ -143,17 +144,61 @@ public class DefaultFileFilter extends FileFilter {
 
     /**
      * Adds a filetype "dot" extension to filter against.
-     * 
+     * <p>
      * For example: the following code will create a filter that filters out all
      * files except those that end in ".jpg" and ".tif":
      * 
+     * <pre>
      * DefaultFileFilter filter = new DefaultFileFilter();
-     * filter.addExtension("jpg"); filter.addExtension("tif");
+     * filter.addExtension(&quot;jpg&quot;);
+     * filter.addExtension(&quot;tif&quot;);
+     * </pre>
      * 
-     * Note that the "." before the extension is not needed and will be ignored.
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
      */
     public void addExtension(String extension) {
-        filters.put(extension.toLowerCase(), extension);
+        String ext = transformExtension(extension);
+        if (!extensions.contains(ext)) {
+            extensions.add(ext);
+        }
+    }
+
+    /**
+     * Removes the given extension.
+     * <p>
+     * Note that "." or "*." before the extension is not needed and will be
+     * removed.
+     * 
+     * @param extension
+     *            the extension
+     */
+    public void removeExtension(String extension) {
+        String ext = transformExtension(extension);
+        if (extensions.contains(ext)) {
+            extensions.remove(ext);
+        }
+    }
+
+    private String transformExtension(String extension) {
+        String result = extension.toLowerCase();
+        if (result.startsWith("*.")) {
+            result = result.substring(2);
+        }
+        if (result.startsWith(".")) {
+            result = result.substring(1);
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the registered extensions.
+     * 
+     * @return the extensions
+     */
+    public List getExtensions() {
+        return Collections.unmodifiableList(extensions);
     }
 
     /**
@@ -163,24 +208,33 @@ public class DefaultFileFilter extends FileFilter {
      * @return a description of the file extensions permitted by this filter.
      */
     public String getDescription() {
-        if (isExtensionListInDescription() && filters.size() > 0) {
-            StringBuffer extensions = new StringBuffer("(");
-            Iterator i = filters.keySet().iterator();
-            extensions.append(".").append((String)i.next());
-            while (i.hasNext()) {
-                extensions.append(", .").append((String)i.next());
-            }
-            extensions.append(")");
+        if (isExtensionListInDescription() && extensions.size() > 0) {
+            String extensionList = buildExtensionList().toString();
+
             if (description != null) {
-                return description + " " + extensions.toString();
+                return description + " " + extensionList;
             }
             else {
-                return extensions.toString();
+                return extensionList;
             }
         }
         else {
             return description;
         }
+    }
+
+    private String buildExtensionList() {
+        StringBuffer extensionList = new StringBuffer("(");
+        for (Iterator iter = extensions.iterator(); iter.hasNext();) {
+            String extension = (String) iter.next();
+            extensionList.append("*.").append(extension);
+            if (iter.hasNext()) {
+                extensionList.append(", ");
+            }
+        }
+        extensionList.append(")");
+
+        return extensionList.toString();
     }
 
     /**
@@ -195,26 +249,29 @@ public class DefaultFileFilter extends FileFilter {
     }
 
     /**
-     * Determines whether the extension list (.jpg, .gif, etc) should show up in
-     * the human readable description.
-     * 
+     * Determines whether the extension list (*.jpg, *.gif, ...) should show up
+     * in the human readable description.
+     * <p>
      * Only relevent if a description was provided in the constructor or using
      * setDescription();
+     * <p>
+     * Default is <code>true</code>.
      * 
      * @param b
      *            true or false
      */
     public void setExtensionListInDescription(boolean b) {
         useExtensionsInDescription = b;
-        description = null;
     }
 
     /**
-     * Returns whether the extension list (.jpg, .gif, etc) should show up in
+     * Returns whether the extension list (*.jpg, *.gif, ...) should show up in
      * the human readable description.
-     * 
+     * <p>
      * Only relevent if a description was provided in the constructor or using
      * setDescription();
+     * <p>
+     * Default is <code>true</code>.
      */
     public boolean isExtensionListInDescription() {
         return useExtensionsInDescription;
@@ -222,7 +279,7 @@ public class DefaultFileFilter extends FileFilter {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append("[DefaultFileFilter description=").append(description).append(", extensions=").append(filters);
+        buf.append("[DefaultFileFilter description=").append(description).append(", extensions=").append(extensions);
         return buf.toString();
     }
 }
