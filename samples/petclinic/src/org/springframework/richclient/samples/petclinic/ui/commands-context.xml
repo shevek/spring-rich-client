@@ -127,7 +127,9 @@
 	</bean>
 		
 	<bean id="loginCommand" 
-		class="org.springframework.richclient.security.LoginCommand"/>
+		class="org.springframework.richclient.security.LoginCommand">
+		<property name="closeOnCancel" value="false"/>
+	</bean>
 	
 	<bean id="logoutCommand" 
 		class="org.springframework.richclient.security.LogoutCommand"/>
