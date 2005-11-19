@@ -159,6 +159,8 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     protected JComponent createFormControl() {
 
+        configure();    // Configure all our sub-components
+
         _eventList = getRootEventList();
 
         // Install the matcher if configured (this will filter the list)

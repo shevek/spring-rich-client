@@ -59,6 +59,10 @@ import ca.odell.glazedlists.event.ListEventListener;
  * <dd>To construct the detail half of this master/detail pair</dd>
  * <dt>{@link #getSelectionModel()}</dt>
  * <dd>To return the selection model of the object rendering the list</dd>
+ * <p>
+ * <strong>Important note:</strong> Any subclass that implements {@link AbstractForm#createControl()}
+ * <strong>MUST</strong> call {@link #configure()} prior to its work in order to
+ * have the detail form properly prepared.
  * 
  * @author Larry Streepy
  * @see AbstractDetailForm
@@ -97,8 +101,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
         // Install a handler to detect when the parents form model changes
         propertyVM.addValueChangeListener( _parentFormPropertyChangeHandler );
-
-        configure();
     }
 
     /**
