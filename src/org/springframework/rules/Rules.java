@@ -15,6 +15,7 @@
  */
 package org.springframework.rules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,13 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 
 	private Class domainObjectType;
 
+    /** All constraints keyed by property name. */
 	private Map propertiesConstraints = new HashMap();
+    
+    /** Used to track the order in which rules are added so they can be evaluated
+     * in that same sequence.
+     */
+    private List orderedConstraints = new ArrayList();
 
 	public Rules() {
 
@@ -96,6 +103,12 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 		}
 	}
 
+    /**
+     * Put a constraint into the collection.  Store it in the map under the property
+     * name and add it to the ordered list.
+     * 
+     * @param constraint to add
+     */
 	private void putPropertyConstraint(PropertyConstraint constraint) {
 		And and = new And();
 		and.add(constraint);
@@ -103,7 +116,9 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 			logger.debug("Putting constraint for property '" + constraint.getPropertyName() + "', constraint -> ["
 					+ constraint + "]");
 		}
-		propertiesConstraints.put(constraint.getPropertyName(), new CompoundPropertyConstraint(and));
+        PropertyConstraint compoundConstraint = new CompoundPropertyConstraint(and);
+		propertiesConstraints.put(constraint.getPropertyName(), compoundConstraint);
+        orderedConstraints.add( compoundConstraint );
 	}
 
 	public PropertyConstraint getPropertyConstraint(String property) {
@@ -114,10 +129,10 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 	}
 
 	public Iterator iterator() {
-        if (propertiesConstraints.isEmpty()) {
+        if (orderedConstraints.isEmpty()) {
             initRules();
         }
-		return propertiesConstraints.values().iterator();
+		return orderedConstraints.iterator();
 	}
 
 	/**
@@ -195,7 +210,7 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 	}
 
 	public boolean test(Object bean) {
-		for (Iterator i = propertiesConstraints.values().iterator(); i.hasNext();) {
+		for (Iterator i = orderedConstraints.iterator(); i.hasNext();) {
 			PropertyConstraint propertyConstraint = (PropertyConstraint)i.next();
 			if (!propertyConstraint.test(bean)) {
 				return false;
