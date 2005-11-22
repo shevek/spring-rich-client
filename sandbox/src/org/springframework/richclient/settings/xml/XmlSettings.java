@@ -192,8 +192,6 @@ public class XmlSettings extends AbstractSettings {
             }
         }
 
-        entriesLoaded = true;
-
         return (String[]) childSettingsNames.toArray(new String[childSettingsNames.size()]);
     }
 }

@@ -60,6 +60,7 @@ public class FileSystemXmlSettingsReaderWriter implements XmlSettingsReaderWrite
 	public void write(RootXmlSettings settings) throws SettingsException {
 		try {
 			File file = createFile(settings.getName());
+            file.getParentFile().mkdirs();
 
 			TransformerFactory.newInstance().newTransformer().transform(new DOMSource(settings.getDocument()),
 					new StreamResult(new FileOutputStream(file)));
