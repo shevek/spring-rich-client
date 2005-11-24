@@ -50,7 +50,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
             JComponent control = page.getControl();
             control.setPreferredSize(getLargestPageSize());
             tabbedPane.add(control);
-            decorateTabTitle(page);
+            decorateTabTitle(tabbedPane, i, page);
         }
         tabbedPane.setModel(new DefaultSingleSelectionModel() {
             public void setSelectedIndex(int index) {
@@ -90,17 +90,19 @@ public class TabbedDialogPage extends CompositeDialogPage {
 
     protected void updatePageComplete(DialogPage page) {
         super.updatePageComplete(page);
-        decorateTabTitle(page);
+
+        if(tabbedPane != null) {
+            int pageIndex = getPages().indexOf(page);
+            Assert.isTrue(pageIndex != -1);
+
+            decorateTabTitle(tabbedPane, pageIndex, page);
+        }
     }
 
-    protected void decorateTabTitle(DialogPage page) {
-        if (tabbedPane == null) {
-            return;
-        }
-        int pageIndex = getPages().indexOf(page);
-        Assert.isTrue(pageIndex != -1);
+    protected void decorateTabTitle(JTabbedPane tabbedPane, int pageIndex, DialogPage page) {
         String title = LabelUtils.htmlBlock("<center>" + page.getTitle() + "<sup><font size=-3 color=red>"
                 + (page.isPageComplete() ? "" : "*"));
         tabbedPane.setTitleAt(pageIndex, title);
+        tabbedPane.setToolTipTextAt(pageIndex, page.getDescription());
     }
 }
