@@ -93,7 +93,7 @@ public abstract class AbstractTreeModel implements TreeModel {
      * @see #removeTreeModelListener
      */
     public TreeModelListener[] getTreeModelListeners() {
-        return (TreeModelListener[])listenerList.getListeners(TreeModelListener.class);
+        return (TreeModelListener[]) listenerList.getListeners(TreeModelListener.class);
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class AbstractTreeModel implements TreeModel {
                 if (e == null) {
                     e = new TreeModelEvent(this, path, childIndices, children);
                 }
-                ((TreeModelListener)listeners[i + 1]).treeNodesChanged(e);
+                ((TreeModelListener) listeners[i + 1]).treeNodesChanged(e);
             }
         }
     }
@@ -155,7 +155,7 @@ public abstract class AbstractTreeModel implements TreeModel {
                 if (e == null) {
                     e = new TreeModelEvent(this, path, childIndices, children);
                 }
-                ((TreeModelListener)listeners[i + 1]).treeNodesInserted(e);
+                ((TreeModelListener) listeners[i + 1]).treeNodesInserted(e);
             }
         }
     }
@@ -187,7 +187,7 @@ public abstract class AbstractTreeModel implements TreeModel {
                 if (e == null) {
                     e = new TreeModelEvent(this, path, childIndices, children);
                 }
-                ((TreeModelListener)listeners[i + 1]).treeNodesRemoved(e);
+                ((TreeModelListener) listeners[i + 1]).treeNodesRemoved(e);
             }
         }
     }
@@ -219,7 +219,7 @@ public abstract class AbstractTreeModel implements TreeModel {
                 if (e == null) {
                     e = new TreeModelEvent(this, path, childIndices, children);
                 }
-                ((TreeModelListener)listeners[i + 1]).treeStructureChanged(e);
+                ((TreeModelListener) listeners[i + 1]).treeStructureChanged(e);
             }
         }
     }
@@ -238,9 +238,9 @@ public abstract class AbstractTreeModel implements TreeModel {
             if (listeners[i] == TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null) {
-                    e = new TreeModelEvent(this, new Object[] {previousRoot});
+                    e = new TreeModelEvent(this, new Object[] { previousRoot });
                 }
-                ((TreeModelListener)listeners[i + 1]).treeNodesChanged(e);
+                ((TreeModelListener) listeners[i + 1]).treeNodesChanged(e);
             }
         }
     }
@@ -259,23 +259,27 @@ public abstract class AbstractTreeModel implements TreeModel {
             if (listeners[i] == TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null) {
-                    e = new TreeModelEvent(this, new Object[] {previousRoot});
+                    e = new TreeModelEvent(this, new Object[] { previousRoot });
                 }
-                ((TreeModelListener)listeners[i + 1]).treeStructureChanged(e);
+                ((TreeModelListener) listeners[i + 1]).treeStructureChanged(e);
             }
         }
     }
 
+    protected void fireTreeNodeRemoved(Object[] path, int index, Object child) {
+        fireTreeNodesRemoved(path, new int[] { index }, new Object[] { child });
+    }
+
     protected void fireTreeNodeInserted(Object[] path, int index, Object child) {
-        fireTreeNodesInserted(path, new int[] {index}, new Object[] {child});
+        fireTreeNodesInserted(path, new int[] { index }, new Object[] { child });
     }
 
     protected void fireTreeStructureChanged(Object[] path, int index, Object child) {
-        fireTreeStructureChanged(path, new int[] {index}, new Object[] {child});
+        fireTreeStructureChanged(path, new int[] { index }, new Object[] { child });
     }
 
     protected void fireTreeNodeChanged(Object[] path, int index, Object child) {
-        fireTreeNodesChanged(path, new int[] {index}, new Object[] {child});
+        fireTreeNodesChanged(path, new int[] { index }, new Object[] { child });
     }
 
     private class RootHolderChangeHandler implements PropertyChangeListener {
