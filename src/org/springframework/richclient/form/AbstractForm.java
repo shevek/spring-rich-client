@@ -17,6 +17,9 @@ package org.springframework.richclient.form;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -76,6 +79,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private PropertyChangeListener editingFormObjectSetter;
 
     private BindingFactory bindingFactory;
+
+    private Map childForms = new HashMap();
 
     protected AbstractForm() {
         init();
@@ -159,6 +164,40 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     protected HierarchicalFormModel getParent() {
         return this.parentFormModel;
     }
+
+    /**
+     * Add a child (or sub) form to this form. Child forms will be tied in to the same
+     * validation results reporter as this form and they will be configured to control the
+     * same guarded object as this form.
+     * <p>
+     * Validation listeners are unique to a form, so calling
+     * {@link #addValidationListener(ValidationListener)} will only add a listener to this
+     * form. If you want to listen to the child forms, you will need to add a validation
+     * listener on each child form of interest.
+     * <p>
+     * <em>Note:</em> It is very important that the child form provided be created using
+     * a form model that is a child model of this form's form model. If this is not done,
+     * then commit and revert operations will not be properly delegated to the child form
+     * models.
+     * 
+     * @param childForm to add
+     */
+    protected void addChildForm(Form childForm) {
+        if( isControlCreated() ) {
+            throw new IllegalStateException( "Cannot add child forms once the form control is created" );
+        }
+        childForms.put( childForm.getId(), childForm );
+    }
+
+    /**
+     * Return a child form of this form with the given form id.
+     * @param id of child form
+     * @return child form, null if no child form with the given id has been registered
+     */
+    protected Form getChildForm(String id) {
+        return (Form)childForms.get(id);
+    }
+
 
     protected void setEditableFormObjects(ObservableList editableFormObjects) {
         this.editableFormObjects = editableFormObjects;
@@ -554,8 +593,21 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         formModel.getValidationResults().removeValidationListener(listener);
     }
 
+    /**
+     * Construct the validation results reporter for this form and attach it to the
+     * provided Guarded object. An instance of {@link SimpleValidationResultsReporter}
+     * will be constructed and returned.  All registered child forms will be attached
+     * to the same <code>guarded</code> and <code>messageReceiver</code> as this form.
+     */
     public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
-        return new SimpleValidationResultsReporter(formModel.getValidationResults(), guarded, messageReceiver);
+        // Configure all our child forms with this same data
+        for( Iterator iter = childForms.values().iterator(); iter.hasNext(); ) {
+            Form childForm = (Form) iter.next();
+            childForm.newSingleLineResultsReporter( guarded, messageReceiver );
+            childForm.getFormModel().validate();    // Force an initial validation
+        }
+
+        return new SimpleValidationResultsReporter( formModel.getValidationResults(), guarded, messageReceiver );
     }
 
     public void addFormObjectChangeListener(PropertyChangeListener listener) {
