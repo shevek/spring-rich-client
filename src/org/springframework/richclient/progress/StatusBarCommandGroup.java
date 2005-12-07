@@ -72,4 +72,9 @@ public class StatusBarCommandGroup extends CommandGroup implements ControlFactor
     public void setErrorMessage(ImageIcon icon, String message) {
         getStatusBar().setErrorMessage(icon, message);
     }
+
+ public void setVisible(boolean visible) {
+ super.setVisible(visible);
+ statusBar.setVisible(visible);
+ }
 }
