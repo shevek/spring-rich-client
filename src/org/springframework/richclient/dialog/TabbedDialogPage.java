@@ -21,6 +21,7 @@ import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
+import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.Assert;
 
@@ -46,7 +47,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
         tabbedPane = new JTabbedPane();
         List pages = getPages();
         for (int i = 0; i < pages.size(); i++) {
-            final DialogPage page = (DialogPage)pages.get(i);
+            final DialogPage page = (DialogPage) pages.get(i);
             JComponent control = page.getControl();
             control.setPreferredSize(getLargestPageSize());
             tabbedPane.add(control);
@@ -60,7 +61,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
                 if (canChangeTabs()) {
                     super.setSelectedIndex(index);
                     if (index >= 0) {
-                        TabbedDialogPage.super.setActivePage((DialogPage)getPages().get(index));
+                        TabbedDialogPage.super.setActivePage((DialogPage) getPages().get(index));
                     }
                     else {
                         TabbedDialogPage.super.setActivePage(null);
@@ -68,7 +69,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
                 }
             }
         });
-        setActivePage((DialogPage)pages.get(0));
+        setActivePage((DialogPage) pages.get(0));
         return tabbedPane;
     }
 
@@ -91,7 +92,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
     protected void updatePageComplete(DialogPage page) {
         super.updatePageComplete(page);
 
-        if(tabbedPane != null) {
+        if (tabbedPane != null) {
             int pageIndex = getPages().indexOf(page);
             Assert.isTrue(pageIndex != -1);
 
@@ -104,5 +105,8 @@ public class TabbedDialogPage extends CompositeDialogPage {
                 + (page.isPageComplete() ? "" : "*"));
         tabbedPane.setTitleAt(pageIndex, title);
         tabbedPane.setToolTipTextAt(pageIndex, page.getDescription());
+        if (page instanceof LabeledObjectSupport) {
+            tabbedPane.setMnemonicAt(pageIndex, ((LabeledObjectSupport) page).getMnemonic());
+        }
     }
 }
