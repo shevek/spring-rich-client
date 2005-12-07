@@ -96,6 +96,9 @@ public class ApplicationLauncher {
     public ApplicationLauncher(String startupContextPath, String[] rootContextPath) {
         Assert.notEmpty(rootContextPath, "One or more root rich client application context paths must be provided");
         this.startupContext = loadStartupContext(startupContextPath);
+        if (startupContext != null) {
+            displaySplashScreen(startupContext);
+        }
         this.rootApplicationContext = loadRootApplicationContext(rootContextPath);
         launchMyRichClient();
     }
@@ -108,6 +111,9 @@ public class ApplicationLauncher {
      */
     public ApplicationLauncher(String startupContextPath, ApplicationContext rootApplicationContext) {
         this.startupContext = loadStartupContext(startupContextPath);
+        if (startupContext != null) {
+            displaySplashScreen(startupContext);
+        }
         setRootApplicationContext(rootApplicationContext);
         launchMyRichClient();
     }
@@ -165,10 +171,7 @@ public class ApplicationLauncher {
      * lifecycle begins.
      */
     private void launchMyRichClient() {
-        if (startupContext != null) {
-            displaySplashScreen(startupContext);
-        }
-        else {
+        if (startupContext == null) {
             displaySplashScreen(rootApplicationContext);
         }
 
