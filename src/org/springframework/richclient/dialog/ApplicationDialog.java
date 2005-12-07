@@ -31,18 +31,19 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.validation.Severity;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
@@ -396,8 +397,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected void showFinishSuccessMessageDialog() {
-        JOptionPane.showMessageDialog(getDialog(), getFinishSuccessMessage(), getFinishSuccessTitle(),
-                JOptionPane.INFORMATION_MESSAGE);
+		MessageDialog messageDialog = new MessageDialog(getFinishSuccessTitle(), getDialog(), getFinishSuccessMessage());
+		messageDialog.showDialog();
     }
 
     protected String getFinishSuccessMessage() {
@@ -449,7 +450,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             String defaultMessage = "Unable to finish; an application exception occurred.\nPlease contact your administrator.";
             exceptionMessage = getMessages().getMessage("applicationDialog.defaultFinishException", defaultMessage);
         }
-        JOptionPane.showMessageDialog(getDialog(), exceptionMessage, getApplicationName(), JOptionPane.ERROR_MESSAGE);
+	
+		Message message = new Message(exceptionMessage, Severity.ERROR);
+		MessageDialog messageDialog = new MessageDialog(getApplicationName(), getDialog(), message);
+		messageDialog.showDialog();
     }
 
     protected String getCancelCommandId() {
