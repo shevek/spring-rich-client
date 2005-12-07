@@ -24,8 +24,9 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.net.URL;
-import java.util.logging.Logger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -44,8 +45,9 @@ public class SplashScreen {
 
     private String imageResourcePath;
 
-    private static final Logger logger = Logger.getLogger(SplashScreen.class.getPackage().getName());
+    private static final Log logger = LogFactory.getLog(SplashScreen.class);
 
+    
     public SplashScreen() {
     }
 
@@ -92,7 +94,7 @@ public class SplashScreen {
             mediaTracker.waitForID(0);
         }
         catch (InterruptedException e) {
-            logger.warning("Interrupted while waiting for splash image to load.");
+            logger.warn("Interrupted while waiting for splash image to load.", e);
         }
         frame.setSize(image.getWidth(null), image.getHeight(null));
         center();
@@ -111,7 +113,7 @@ public class SplashScreen {
     private Image loadImage(String path) {
         URL url = this.getClass().getResource(path);
         if (url == null) {
-            logger.warning("Unable to locate splash screen in classpath at: " + path);
+            logger.warn("Unable to locate splash screen in classpath at: " + path);
             return null;
         }
         return Toolkit.getDefaultToolkit().createImage(url);
