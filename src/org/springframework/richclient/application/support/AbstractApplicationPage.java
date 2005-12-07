@@ -104,7 +104,7 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 		return activeComponent;
 	}
 
-	protected void setActiveComponent(PageComponent pageComponent) {
+	public void setActiveComponent(PageComponent pageComponent) {
 		// if pageComponent is already active, don't do anything
 		if (this.activeComponent == pageComponent) {
 			return;
@@ -138,7 +138,7 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 		return window;
 	}
 
-	protected void close(PageComponent pageComponent) {
+	public void close(PageComponent pageComponent) {
 		if (pageComponent == activeComponent) {
 			fireFocusLost(pageComponent);
 			activeComponent = null;
