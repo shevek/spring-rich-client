@@ -30,6 +30,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.VisualizedElement;
 import org.springframework.util.Assert;
 
 /**
@@ -87,12 +88,20 @@ public class BeanTreeCellRenderer extends FocusableTreeCellRenderer {
 
                     }
                 }
-                if (beanInfo != null) {
-                    Image icon = beanInfo.getIcon(BeanInfo.ICON_COLOR_16x16);
-                    if (icon != null) {
-                        setIcon(new ImageIcon(icon));
+
+                if (bean instanceof VisualizedElement) {
+                    VisualizedElement element = (VisualizedElement) bean;
+                    setIcon(element.getIcon());
+                }
+                else {
+                    if (beanInfo != null) {
+                        Image icon = beanInfo.getIcon(BeanInfo.ICON_COLOR_16x16);
+                        if (icon != null) {
+                            setIcon(new ImageIcon(icon));
+                        }
                     }
                 }
+                
             }
         }
         return this;
