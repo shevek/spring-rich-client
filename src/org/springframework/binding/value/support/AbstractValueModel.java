@@ -39,7 +39,7 @@ import org.springframework.richclient.application.Application;
  */
 public abstract class AbstractValueModel extends AbstractPropertyChangePublisher implements ValueModel {
 
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(AbstractValueModel.class);
 
     private final ThreadLocal listenerToSkipHolder = new ThreadLocal();
     
