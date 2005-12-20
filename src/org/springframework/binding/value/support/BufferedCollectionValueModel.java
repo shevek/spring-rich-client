@@ -38,30 +38,30 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A <code>BufferedValueModel</code> that wraps a value model containing a
- * <code>Collection</code> or <code>array</code> with a
- * <code>ListListModel</code>. The list model acts as a buffer for changes to
- * and a representation of the state of the underlying collection.
+ * A <code>BufferedValueModel</code> that uses an ObservableList as a buffer to hold
+ * chandes to a <code>Collection</code> or <code>array</code>. Internally this is
+ * called the "buffered list model."
  * <p>
- * On commit the following steps occur: 
+ * On commit the following steps occur:
  * <ol>
  * <li>a new instance of the backing collection type is created</li>
  * <li>the contents of the list model is inserted into this new collection</li>
  * <li>the new collection is saved into the underlying collection's value model</li>
- * <li>the structure of the list model is compared to the structure of the 
- * new underlying collection and if they differ the list model is updated to
- * reflect the new structure.</li>
+ * <li>the structure of the list model is compared to the structure of the new underlying
+ * collection and if they differ the list model is updated to reflect the new structure.</li>
  * </ol>
  * <p>
- * NOTE: Between calls to commit the list model adheres to the contract defined
- * in <code>java.util.List</code> NOT the contract of the underlying
- * collection's type. This can result in the list model representing a state
- * that is not possible for the underlying collection. 
+ * NOTE: Between calls to commit the list model adheres to the contract defined in
+ * <code>java.util.List</code> NOT the contract of the underlying collection's type.
+ * This can result in the list model representing a state that is not possible for the
+ * underlying collection.
  * 
  * 
  * @author oliverh
  */
 public class BufferedCollectionValueModel extends BufferedValueModel {
+
+    private boolean changeUsesEquivalence;
 
     private final ListChangeHandler listChangeHandler = new ListChangeHandler();
 
@@ -69,33 +69,49 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
 
     private final Class wrappedConcreteType;
 
-    private ListListModel listListModel;
+    private ObservableList bufferedListModel;
 
     /**
-     * Constructs a new BufferedCollectionValueModel.
+     * Constructs a new BufferedCollectionValueModel.  This model will use the collection elements
+     * <code>equals</code> method to detect changes.
      * 
-     * @param wrappedModel
-     *            the value model to wrap
-     * @param wrappedType
-     *            the class of the value contained by wrappedModel; this must be
+     * @param wrappedModel the value model to wrap
+     * @param wrappedType the class of the value contained by wrappedModel; this must be
      *            assignable to <code>java.util.Collection</code> or
      *            <code>Object[]</code>.
      */
     public BufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType) {
+        this( wrappedModel, wrappedType, false );
+    }
+
+    /**
+     * Constructs a new BufferedCollectionValueModel.
+     * 
+     * @param wrappedModel the value model to wrap
+     * @param wrappedType the class of the value contained by wrappedModel; this must be
+     *            assignable to <code>java.util.Collection</code> or
+     *            <code>Object[]</code>.
+     * @param changeUsesEquivalence Pass true to force the use of object equivalence to
+     *            detect a change instead of relying on an elements equals method.
+     */
+    public BufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
         super(wrappedModel);
         Assert.notNull(wrappedType);
         this.wrappedType = wrappedType;
         this.wrappedConcreteType = getConcreteCollectionType(wrappedType);
-        updateListModel(getWrappedValue());
-        if (getValue() != listListModel) {
-            super.setValue(listListModel);
+        this.changeUsesEquivalence = changeUsesEquivalence;
+
+        updateBufferedListModel(getWrappedValue());
+        if (getValue() != bufferedListModel) {
+            super.setValue(bufferedListModel);
         }
     }
 
     public void setValue(Object value) {
-        if (value != listListModel) {
+        if (value != bufferedListModel) {
             if (!hasSameStructure()) {
-                updateListModel(value);
+                updateBufferedListModel(value);
+                fireValueChange(bufferedListModel, bufferedListModel);
             }
         }
     }
@@ -104,7 +120,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         Object wrappedValue = getWrappedValue();
         // If the wrappedValue is null and the buffer is empty 
         // just return null rather than an empty collection
-        if (wrappedValue == null && listListModel.size() == 0) {
+        if (wrappedValue == null && bufferedListModel.size() == 0) {
             return null;
         }
         else {
@@ -156,38 +172,56 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         return class2Create;
     }
 
-    /*
-     * Checks if the structure of the ListListModel is the same as the wrapped
+    /**
+     * Determine if the given values represent a change.  This test is determined by the changeUsesEquivalence
+     * setting to determine how to test for change.
+     */
+    protected boolean hasChanged(Object currentValue, Object proposedValue) {
+        return changeUsesEquivalence || super.hasChanged( currentValue, proposedValue );
+    }
+
+    /**
+     * Checks if the structure of the buffered list model is the same as the wrapped
      * collection. "same structure" is defined as having the same elements in the
      * same order with the one exception that NULL == empty list.
      */
     private boolean hasSameStructure() {
         Object wrappedCollection = getWrappedValue();
         if (wrappedCollection == null) {
-            return listListModel.size() == 0;
+            return bufferedListModel.size() == 0;
         }
         else if (wrappedCollection instanceof Object[]) {
             Object[] wrappedArray = (Object[])wrappedCollection;
-            if (wrappedArray.length != listListModel.size()) {
+            if (wrappedArray.length != bufferedListModel.size()) {
                 return false;
             }
-            for (int i = 0; i < listListModel.size(); i++) {
-                if (!ObjectUtils.nullSafeEquals(wrappedArray[i], listListModel.get(i))) {
+            for (int i = 0; i < bufferedListModel.size(); i++) {
+                if( ! collectionElementsEqual(wrappedArray[i], bufferedListModel.get(i))) {
                     return false;
                 }
             }
         }
         else {
-            if (((Collection)wrappedCollection).size() != listListModel.size()) {
+            if (((Collection)wrappedCollection).size() != bufferedListModel.size()) {
                 return false;
             }
-            for (Iterator i = ((Collection)wrappedCollection).iterator(), j = listListModel.iterator(); i.hasNext();) {
-                if (!ObjectUtils.nullSafeEquals(i.next(), j.next())) {
+            for (Iterator i = ((Collection)wrappedCollection).iterator(), j = bufferedListModel.iterator(); i.hasNext();) {
+                if (!collectionElementsEqual(i.next(), j.next())) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * Determine if two collection elements are equal according to our change detection semantics.
+     * @param v1 First value to compare
+     * @param v2 Second value to compare
+     * @return boolean true if the objects compare equal
+     */
+    protected boolean collectionElementsEqual( Object v1, Object v2 ) {
+        return changeUsesEquivalence ? ( v1 == v2 ) : ObjectUtils.nullSafeEquals(v1, v2);
     }
 
     private Object createCollection(Object wrappedCollection) {
@@ -196,7 +230,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
 
     private Object createNewCollection(Object wrappedCollection) {
         if (wrappedConcreteType.isArray()) {
-            return Array.newInstance(wrappedConcreteType.getComponentType(), listListModel.size());
+            return Array.newInstance(wrappedConcreteType.getComponentType(), bufferedListModel.size());
         }
         else {
             Object newCollection;
@@ -222,24 +256,25 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     private Object populateFromListModel(Object collection) {
         if (collection instanceof Object[]) {
             Object[] wrappedArray = (Object[])collection;
-            for (int i = 0; i < listListModel.size(); i++) {
-                wrappedArray[i] = listListModel.get(i);
+            for (int i = 0; i < bufferedListModel.size(); i++) {
+                wrappedArray[i] = bufferedListModel.get(i);
             }
         }
         else {
             Collection wrappedCollection = ((Collection)collection);
             wrappedCollection.clear();
-            wrappedCollection.addAll(listListModel);
+            wrappedCollection.addAll(bufferedListModel);
         }
         return collection;
     }
 
     /**
-     * Create an empty ListListModel.  May be overridden to provide specialized
+     * Create an empty buffered list model. May be overridden to provide specialized
      * implementations.
-     * @return ListListModel to use
+     * @return ObservableList to use for buffered value. This default uses an instance of
+     *         ListListModel.
      */
-    protected ListListModel createListListModel() {
+    protected ObservableList createBufferedListModel() {
         return new ListListModel();
     }
 
@@ -249,14 +284,14 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
      * 
      * @return The list model buffer
      */
-    private Object updateListModel(final Object wrappedCollection) {
-        if (listListModel == null) {
-            listListModel = createListListModel();
-            listListModel.addListDataListener(listChangeHandler);
-            setValue(listListModel);
+    private Object updateBufferedListModel(final Object wrappedCollection) {
+        if (bufferedListModel == null) {
+            bufferedListModel = createBufferedListModel();
+            bufferedListModel.addListDataListener(listChangeHandler);
+            setValue(bufferedListModel);
         }
         if (wrappedCollection == null) {
-            listListModel.clear();
+            bufferedListModel.clear();
         }
         else {
             if (wrappedType.isAssignableFrom(wrappedCollection.getClass())) {
@@ -268,18 +303,19 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 else {
                     buffer = (Collection)wrappedCollection;
                 }
-                listListModel.replaceWith(prepareBackingCollection(buffer));
+                bufferedListModel.clear();
+                bufferedListModel.addAll(prepareBackingCollection(buffer));
             }
             else {
                 throw new IllegalArgumentException("wrappedCollection must be assignable from " + wrappedType.getName());
             }
 
         }
-        return listListModel;
+        return bufferedListModel;
     }
 
     /**
-     * Prepare the backing collection for installation into the listListModel.  The default
+     * Prepare the backing collection for installation into the buffered list model.  The default
      * implementation of this method simply returns it.  Subclasses can do whatever is needed
      * to the elements of the colleciton (or the collection itself).  For example, the
      * elements might be cloned or wrapped in a an adapter.
@@ -296,15 +332,15 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
 
     protected void fireListModelChanged() {
         if (isBuffering()) {
-            super.fireValueChange(listListModel, listListModel);
+            super.fireValueChange(bufferedListModel, bufferedListModel);
         }
         else {
-            super.setValue(listListModel);
+            super.setValue(bufferedListModel);
         }
     }
 
     protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        return (oldValue == listListModel && newValue == listListModel) || super.hasValueChanged(oldValue, newValue);
+        return (oldValue == bufferedListModel && newValue == bufferedListModel) || super.hasValueChanged(oldValue, newValue);
     }
 
     private class ListChangeHandler implements ListDataListener {
