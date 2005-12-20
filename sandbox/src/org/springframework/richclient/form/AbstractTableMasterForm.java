@@ -70,6 +70,9 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * DeepCopyBufferedCollectionValueModel on top of it. Unless
      * {@link AbstractMasterForm#getListListModel()} has been overriden, the table will
      * contain all the elements in the domain object referenced by <code>property</code>.
+     * <p>
+     * This constructor will rely on the <code>equals</code> method to detect differences in the
+     * collection elements.
      * 
      * @param parentFormModel Parent form model to access for this form's data
      * @param property Property containing this forms data (must be a collection or an
@@ -79,7 +82,35 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     public AbstractTableMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
             Class detailType) {
-        super( parentFormModel, property, formId, detailType );
+        this( parentFormModel, property, formId, detailType, false );
+    }
+
+    /**
+     * Construct a new AbstractTableMasterForm using the given parent form model and
+     * property path. The form model for this class will be constructed by getting the
+     * value model of the specified property from the parent form model and constructing a
+     * DeepCopyBufferedCollectionValueModel on top of it. Unless
+     * {@link AbstractMasterForm#getListListModel()} has been overriden, the table will
+     * contain all the elements in the domain object referenced by <code>property</code>.
+     * <p>
+     * The <code>changeUsesEquivalence</code> parameter controls how the constructued
+     * value model will detect changes in the buffered collection. If it is
+     * <code>false</code>, then the <code>equals</code> method will be used to detect
+     * changes/differences in the detail elements. If it is <code>true</code>, then the
+     * comparison will be forced to use object equivalence instead of <code>equals</code>.
+     * You would only need to use this setting if the detail objects have an equals method
+     * that can not detect changes that can be made by the detail form. If this is the
+     * case, then you should pass <code>true</code>.
+     * 
+     * @param parentFormModel Parent form model to access for this form's data
+     * @param property Property containing this forms data (must be a collection or an
+     *            array)
+     * @param formId Id of this form
+     * @param detailType Type of detail object managed by this master form
+     */
+    public AbstractTableMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
+            Class detailType, boolean changeUsesEquivalence) {
+        super( parentFormModel, property, formId, detailType, changeUsesEquivalence );
     }
 
     /**
