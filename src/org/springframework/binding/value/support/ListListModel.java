@@ -219,12 +219,33 @@ public class ListListModel extends AbstractListModel implements ObservableList {
         return items.retainAll(c);
     }
 
+    /**
+     * Set the value of a list element at the specified index.
+     * @param index of element to set
+     * @param element New element value
+     * @return old element value
+     */
     public Object set(int index, Object element) {
         Object oldObject = items.set(index, element);
-        if (!ObjectUtils.nullSafeEquals(oldObject, element)) {
+        if (hasChanged(oldObject, element)) {
             fireContentsChanged(index);
         }
         return oldObject;
+    }
+
+    /**
+     * Determine if the provided objects are different (have changed).  This method essentially
+     * embodies the "change semantics" for elements in this list.  If list elements have an
+     * altered "equals" implementation, it may not be sufficient to detect changes in a pair of
+     * objects.  In that case, you can override this method and implement whatever change detection
+     * mechanism is appropriate.
+     * 
+     * @param oldElement Old (original) value to compare
+     * @param newElement New (updated) value to compare
+     * @return true if objects are different (have changed)
+     */
+    protected boolean hasChanged(Object oldElement, Object newElement) {
+        return !ObjectUtils.nullSafeEquals( oldElement, newElement );
     }
 
     public int size() {
