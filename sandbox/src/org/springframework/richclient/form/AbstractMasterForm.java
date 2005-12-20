@@ -49,8 +49,6 @@ import org.springframework.util.StringUtils;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
 
 /**
  * Abstract base for the Master form of a Master/Detail pair. Derived types must implement
@@ -83,6 +81,9 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * path. The form model for this class will be constructed by getting the value model
      * of the specified property from the parent form model and constructing a
      * DeepCopyBufferedCollectionValueModel on top of it.
+     * <p>
+     * This constructor will rely on the <code>equals</code> method to detect differences in the
+     * detail elements.
      * 
      * @param parentFormModel Parent form model to access for this form's data
      * @param property containing this forms data (must be a collection or an array)
@@ -90,17 +91,63 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @param detailType Type of detail object managed by this master form
      */
     protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId, Class detailType) {
+        this( parentFormModel, property, formId, detailType, false );
+    }
+
+    /**
+     * Construct a new AbstractMasterForm using the given parent form model and property
+     * path. The form model for this class will be constructed by getting the value model
+     * of the specified property from the parent form model and constructing a
+     * DeepCopyBufferedCollectionValueModel on top of it.
+     * <p>
+     * The <code>changeUsesEquivalence</code> parameter controls how the constructued
+     * value model will detect changes in the buffered collection. If it is
+     * <code>false</code>, then the <code>equals</code> method will be used to detect
+     * changes/differences in the detail elements. If it is <code>true</code>, then the
+     * comparison will be forced to use object equivalence instead of <code>equals</code>.
+     * You would only need to use this setting if the detail objects have an equals method
+     * that can not detect changes that can be made by the detail form. If this is the
+     * case, then you should pass <code>true</code>.
+     * 
+     * @param parentFormModel Parent form model to access for this form's data
+     * @param property containing this forms data (must be a collection or an array)
+     * @param formId Id of this form
+     * @param detailType Type of detail object managed by this master form
+     * @param changeUsesEquivalence Pass true to force the use of object equivalence to
+     *            detect a change instead of relying on an elements equals method.
+     */
+    protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
+            Class detailType, boolean changeUsesEquivalence) {
         super( formId );
         _detailType = detailType;
 
         ValueModel propertyVM = parentFormModel.getValueModel( property );
+        Class collectionType = getMasterCollectionType( propertyVM );
 
-        DirtyTrackingDCBCVM detailVM = new DirtyTrackingDCBCVM( propertyVM, propertyVM.getValue().getClass() );
+        DirtyTrackingDCBCVM detailVM = new DirtyTrackingDCBCVM( propertyVM, collectionType, changeUsesEquivalence );
         ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId, detailVM );
         setFormModel( formModel );
 
         // Install a handler to detect when the parents form model changes
         propertyVM.addValueChangeListener( _parentFormPropertyChangeHandler );
+    }
+
+    /**
+     * Determine the type of the collection holding the detail items.  This will
+     * be used to create the value model for the collection.
+     * <p>
+     * <b>Note to Hibernate users:</b> You will most likely need to override this
+     * method in order to force the use of a simple <code>List</code> class instead
+     * of the default implementation that would return <code>PersistentList</code>.
+     * Creating a new instance of this type would result in a somewhat misleading
+     * error regarding lazy instantiation since the new PersistentList instance would
+     * not have been properly initialized by Hibernate.
+     * 
+     * @param collectionPropertyVM ValueModel holding the master collection
+     * @return Type of collection to use
+     */
+    protected Class getMasterCollectionType( ValueModel collectionPropertyVM ) {
+        return collectionPropertyVM.getValue().getClass();
     }
 
     /**
@@ -158,17 +205,13 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Get the root event list for this model. This event list will be constructed from
-     * the form objects value (assumed to be a collection). Any subclasses that are
+     * the form objects value (assumed to be an EventList). Any subclasses that are
      * installing additional transformed lists should use this method to obtain the
      * original event list on top of which all the other lists are constructed.
      */
     protected EventList getRootEventList() {
         if( _rootEventList == null ) {
-            _rootEventList = new BasicEventList();
-            _rootEventList.addAll( getFormData() );
-
-            // Install a listener so we can forward changes to the underlying form data
-            _rootEventList.addListEventListener( _proxyingListEventHandler );
+            _rootEventList = (EventList)getFormModel().getFormObjectHolder().getValue();
         }
         return _rootEventList;
     }
@@ -188,11 +231,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
             // value model has already changed).
             uninstallSelectionHandler();
 
-            // Also remove the proxying event handler so the refresh will not result in
-            // actual changes to the underlying form data (which has already been
-            // rebuilt).
-            _rootEventList.removeListEventListener( _proxyingListEventHandler );
-
             // Simply clear the current (old) list data and replace it with the new data
             _masterEventList.clear();
             _masterEventList.addAll( getFormData() );
@@ -207,9 +245,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 updateControlsForState(); // Ensure our controls are properly updated
             }
 
-            // Reinstate the handlers
-            _rootEventList.addListEventListener( _proxyingListEventHandler );
-            installSelectionHandler();
+            installSelectionHandler();  // Reinstate the handler
         }
     }
 
@@ -586,7 +622,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
     private CommandGroup _commandGroup;
     private boolean _confirmDelete = true;
     private ListSelectionHandler _selectionHandler = new ListSelectionHandler();
-    private ListEventListener _proxyingListEventHandler = new ProxyingListEventHandler();
     private PropertyChangeListener _parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
 
     /**
@@ -673,33 +708,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
     }
 
     /**
-     * Inner class to monitor changes on the root event list and proxy them on to the
-     * underlying form object (collection).
-     */
-    private class ProxyingListEventHandler implements ListEventListener {
-
-        /**
-         * The list has changed, forward the changes on to the underlying form data
-         */
-        public void listChanged(ListEvent listChanges) {
-            while( listChanges.next() ) {
-                int changeIndex = listChanges.getIndex();
-                switch( listChanges.getType() ) {
-                case ListEvent.INSERT:
-                    getFormData().add( changeIndex, _rootEventList.get( changeIndex ) );
-                    break;
-                case ListEvent.UPDATE:
-                    getFormData().set( changeIndex, _rootEventList.get( changeIndex ) );
-                    break;
-                case ListEvent.DELETE:
-                    getFormData().remove( changeIndex );
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * This class handles changes in the property that this master form is editing. This
      * can occur when the parent form's form object is changed. When that occurs, our
      * collection data will change automatically and we then need to update our event list
@@ -728,9 +736,22 @@ public abstract class AbstractMasterForm extends AbstractForm {
          * @param wrappedType the class of the value contained by wrappedModel; this must
          *            be assignable to <code>java.util.Collection</code> or
          *            <code>Object[]</code>.
+         * @param changeUsesEquivalence Pass true to force the use of object equivalence to
+         *            detect a change instead of relying on an elements equals method.
          */
-        public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType) {
-            super( wrappedModel, wrappedType );
+        public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
+            super( wrappedModel, wrappedType, changeUsesEquivalence );
+            // FIXME: make DCBCVM do dirty tracking on its own
+            dirty = false;      // We should never start life as dirty
+        }
+
+        /**
+         * Create the buffered list model.  We want to use an ObservableEventList
+         * so that it can be used as the root event list of the master form model.
+         * @return ObservableList to use
+         */
+        protected ObservableList createBufferedListModel() {
+            return new ObservableEventList( new BasicEventList() );
         }
 
         /**
@@ -767,7 +788,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
          * Clear the dirty status
          */
         public void clearDirty() {
-            revert();
+            dirty = false;
+            valueUpdated();
         }
 
         /**
