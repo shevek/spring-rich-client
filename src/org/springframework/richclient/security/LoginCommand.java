@@ -140,6 +140,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                     if( isClearPasswordOnFailure() ) {
                         loginForm.setPassword( "" );
                     }
+                    loginForm.requestFocusInWindow();
                     return rtn;
                 }
                 return true;
