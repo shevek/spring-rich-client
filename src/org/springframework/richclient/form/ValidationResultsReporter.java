@@ -15,11 +15,38 @@
  */
 package org.springframework.richclient.form;
 
-import org.springframework.core.closure.Constraint;
-import org.springframework.rules.reporting.ValidationResults;
+import org.springframework.binding.validation.ValidationListener;
 
-public interface ValidationResultsReporter {
-    public void valid(Constraint constraint);
+public interface ValidationResultsReporter extends ValidationListener {
 
-    public void invalid(Constraint constraint, ValidationResults results);
+    /**
+     * Return the "has errors" status of the validation results model(s).
+     * @return true if this model or any child model is marked as having errors
+     */
+    public boolean hasErrors();
+
+    /**
+     * Add a child validation results reporter. The error status of the child will feed
+     * into the determination of the error status for this reporter. If the child has
+     * errors, then this object's <code>hasErrors</code> will return true. If the child
+     * has no errors, then return value of this object's <code>hasErrors</code> will
+     * depend on it's direct validation results model and the <code>hasErrors</code>
+     * status of any other child reporter.
+     * 
+     * @param child to add
+     */
+    public void addChild(ValidationResultsReporter child);
+
+    /**
+     * Get the parent results reporter. If this reporter has not been added as a child to
+     * some other reporter, then this will return null.
+     * @return parent reporter or null
+     */
+    public ValidationResultsReporter getParent();
+
+    /**
+     * Set the parent reporter.
+     * @param parent New parent reporter
+     */
+    public void setParent(ValidationResultsReporter parent);
 }

@@ -28,7 +28,6 @@ import javax.swing.event.ListSelectionListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
-import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.DeepCopyBufferedCollectionValueModel;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
@@ -606,11 +605,12 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * When the results reporter is setup on the master form, we need to capture it and
      * forward it on to the detail form as well.
      */
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
-        ValidationListener l = super.newSingleLineResultsReporter( guarded, messageReceiver );
-        getDetailForm().newSingleLineResultsReporter( guarded, messageReceiver );
+    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+        ValidationResultsReporter reporter = super.newSingleLineResultsReporter( guarded, messageReceiver );
+        ValidationResultsReporter child = getDetailForm().newSingleLineResultsReporter( guarded, messageReceiver );
+        reporter.addChild( child );
         getDetailFormModel().validate();
-        return l;
+        return reporter;
     }
 
     private EventList _rootEventList;

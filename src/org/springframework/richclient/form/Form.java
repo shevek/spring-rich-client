@@ -43,7 +43,7 @@ public interface Form extends ControlFactory {
 
     public void removeValidationListener(ValidationListener listener);
 
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageAreaPane);
+    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageAreaPane);
 
     public boolean hasErrors();
 

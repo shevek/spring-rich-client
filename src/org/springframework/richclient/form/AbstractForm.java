@@ -599,15 +599,20 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
      * will be constructed and returned.  All registered child forms will be attached
      * to the same <code>guarded</code> and <code>messageReceiver</code> as this form.
      */
-    public ValidationListener newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+
+        SimpleValidationResultsReporter reporter =
+            new SimpleValidationResultsReporter( formModel.getValidationResults(), guarded, messageReceiver );
+
         // Configure all our child forms with this same data
         for( Iterator iter = childForms.values().iterator(); iter.hasNext(); ) {
             Form childForm = (Form) iter.next();
-            childForm.newSingleLineResultsReporter( guarded, messageReceiver );
+            ValidationResultsReporter child = childForm.newSingleLineResultsReporter( guarded, messageReceiver );
+            reporter.addChild( child );
             childForm.getFormModel().validate();    // Force an initial validation
         }
 
-        return new SimpleValidationResultsReporter( formModel.getValidationResults(), guarded, messageReceiver );
+        return reporter;
     }
 
     public void addFormObjectChangeListener(PropertyChangeListener listener) {
