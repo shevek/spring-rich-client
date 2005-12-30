@@ -453,7 +453,7 @@ public final class BufferedValueModelTests extends TestCase {
         // Now replace the default value change detector with one that
         // only uses true equivalence.
         ValueChangeDetector oldVCD = Application.services().getValueChangeDetector();
-        Application.services().setValueChangeDetector(new EquivalenceValueChangeDetector());
+        Application.services().setValueChangeDetector(new StrictEquivalenceValueChangeDetector());
         testValueChangeSendsProperEvents(null, obj1,   true);
         testValueChangeSendsProperEvents(obj1, null,   true);
         testValueChangeSendsProperEvents(obj1, obj1,   false);
@@ -807,7 +807,7 @@ public final class BufferedValueModelTests extends TestCase {
     /**
      * This class is used to test alternate value change detection methods.
      */
-    private static class EquivalenceValueChangeDetector implements ValueChangeDetector {
+    private static class StrictEquivalenceValueChangeDetector implements ValueChangeDetector {
         public boolean hasValueChanged(Object oldValue, Object newValue) {
             return oldValue != newValue;
         }
