@@ -18,7 +18,7 @@ package org.springframework.binding.value;
 /**
  * Defines the operations for determining if two values (an old and a new value) are
  * different enough to indicate a change in the value model. An implementation of this
- * interface can registered in the application context configuration. The configured
+ * interface can be registered in the application context configuration. The configured
  * instance is used in several classes to determine if two object values are sufficiently
  * different to trigger further logic, like firing a value changed event, updating
  * conversion values, etc.
@@ -26,6 +26,7 @@ package org.springframework.binding.value;
  * @author Larry Streepy
  * @see org.springframework.richclient.application.ApplicationServices
  * @see org.springframework.binding.value.support.DefaultValueChangeDetector
+ * @see org.springframework.binding.value.support.EquivalenceValueChangeDetector
  */
 public interface ValueChangeDetector {
 
