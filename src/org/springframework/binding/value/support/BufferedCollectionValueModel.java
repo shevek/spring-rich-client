@@ -339,10 +339,6 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         }
     }
 
-    protected boolean hasValueChanged(Object oldValue, Object newValue) {
-        return (oldValue == bufferedListModel && newValue == bufferedListModel) || super.hasValueChanged(oldValue, newValue);
-    }
-
     private class ListChangeHandler implements ListDataListener {
         public void contentsChanged(ListDataEvent e) {
             fireListModelChanged();
