@@ -57,9 +57,9 @@ import ca.odell.glazedlists.EventList;
  * <dt>{@link #getSelectionModel()}</dt>
  * <dd>To return the selection model of the object rendering the list</dd>
  * <p>
- * <strong>Important note:</strong> Any subclass that implements {@link AbstractForm#createControl()}
- * <strong>MUST</strong> call {@link #configure()} prior to its work in order to
- * have the detail form properly prepared.
+ * <strong>Important note:</strong> Any subclass that implements
+ * {@link AbstractForm#createControl()} <strong>MUST</strong> call {@link #configure()}
+ * prior to its work in order to have the detail form properly prepared.
  * 
  * @author Larry Streepy
  * @see AbstractDetailForm
@@ -75,14 +75,26 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     public static final String IS_CREATING_PROPERTY = "isCreating";
 
+    private DirtyTrackingDCBCVM _collectionVM;
+    private EventList _rootEventList;
+    private ObservableEventList _masterEventList;
+    private AbstractDetailForm _detailForm;
+    private Class _detailType;
+    private ActionCommand _newFormObjectCommand;
+    private ActionCommand _deleteCommand;
+    private CommandGroup _commandGroup;
+    private boolean _confirmDelete = true;
+    private ListSelectionHandler _selectionHandler = new ListSelectionHandler();
+    private PropertyChangeListener _parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
+
     /**
      * Construct a new AbstractMasterForm using the given parent form model and property
      * path. The form model for this class will be constructed by getting the value model
      * of the specified property from the parent form model and constructing a
      * DeepCopyBufferedCollectionValueModel on top of it.
      * <p>
-     * This constructor will rely on the <code>equals</code> method to detect differences in the
-     * detail elements.
+     * This constructor will rely on the <code>equals</code> method to detect
+     * differences in the detail elements.
      * 
      * @param parentFormModel Parent form model to access for this form's data
      * @param property containing this forms data (must be a collection or an array)
@@ -121,10 +133,13 @@ public abstract class AbstractMasterForm extends AbstractForm {
         _detailType = detailType;
 
         ValueModel propertyVM = parentFormModel.getValueModel( property );
+
+        // Now construct the dirty tracking model
         Class collectionType = getMasterCollectionType( propertyVM );
 
-        DirtyTrackingDCBCVM detailVM = new DirtyTrackingDCBCVM( propertyVM, collectionType, changeUsesEquivalence );
-        ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId, detailVM );
+        _collectionVM = new DirtyTrackingDCBCVM( propertyVM, collectionType, changeUsesEquivalence );
+        ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId,
+            _collectionVM );
         setFormModel( formModel );
 
         // Install a handler to detect when the parents form model changes
@@ -132,20 +147,34 @@ public abstract class AbstractMasterForm extends AbstractForm {
     }
 
     /**
-     * Determine the type of the collection holding the detail items.  This will
-     * be used to create the value model for the collection.
+     * Get the value model representing the collection we are managing. This value model
+     * can be used to register vlue change listeners and to update the collection
+     * contents.
      * <p>
-     * <b>Note to Hibernate users:</b> You will most likely need to override this
-     * method in order to force the use of a simple <code>List</code> class instead
-     * of the default implementation that would return <code>PersistentList</code>.
-     * Creating a new instance of this type would result in a somewhat misleading
-     * error regarding lazy instantiation since the new PersistentList instance would
-     * not have been properly initialized by Hibernate.
+     * You must use this method to get the value model since calling getValueModel on the
+     * parent form model will not get you what you want.
+     * 
+     * @return collection value model
+     */
+    public ValueModel getCollectionValueModel() {
+        return _collectionVM;
+    }
+
+    /**
+     * Determine the type of the collection holding the detail items. This will be used to
+     * create the value model for the collection.
+     * <p>
+     * <b>Note to Hibernate users:</b> You will most likely need to override this method
+     * in order to force the use of a simple <code>List</code> class instead of the
+     * default implementation that would return <code>PersistentList</code>. Creating a
+     * new instance of this type would result in a somewhat misleading error regarding
+     * lazy instantiation since the new PersistentList instance would not have been
+     * properly initialized by Hibernate.
      * 
      * @param collectionPropertyVM ValueModel holding the master collection
      * @return Type of collection to use
      */
-    protected Class getMasterCollectionType( ValueModel collectionPropertyVM ) {
+    protected Class getMasterCollectionType(ValueModel collectionPropertyVM) {
         return collectionPropertyVM.getValue().getClass();
     }
 
@@ -210,7 +239,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     protected EventList getRootEventList() {
         if( _rootEventList == null ) {
-            _rootEventList = (EventList)getFormModel().getFormObjectHolder().getValue();
+            _rootEventList = (EventList) getFormModel().getFormObjectHolder().getValue();
         }
         return _rootEventList;
     }
@@ -244,7 +273,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 updateControlsForState(); // Ensure our controls are properly updated
             }
 
-            installSelectionHandler();  // Reinstate the handler
+            installSelectionHandler(); // Reinstate the handler
         }
     }
 
@@ -613,17 +642,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
         return reporter;
     }
 
-    private EventList _rootEventList;
-    private ObservableEventList _masterEventList;
-    private AbstractDetailForm _detailForm;
-    private Class _detailType;
-    private ActionCommand _newFormObjectCommand;
-    private ActionCommand _deleteCommand;
-    private CommandGroup _commandGroup;
-    private boolean _confirmDelete = true;
-    private ListSelectionHandler _selectionHandler = new ListSelectionHandler();
-    private PropertyChangeListener _parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
-
     /**
      * Inner class to handle the list selection and installing the selection into the
      * detail form.
@@ -736,18 +754,18 @@ public abstract class AbstractMasterForm extends AbstractForm {
          * @param wrappedType the class of the value contained by wrappedModel; this must
          *            be assignable to <code>java.util.Collection</code> or
          *            <code>Object[]</code>.
-         * @param changeUsesEquivalence Pass true to force the use of object equivalence to
-         *            detect a change instead of relying on an elements equals method.
+         * @param changeUsesEquivalence Pass true to force the use of object equivalence
+         *            to detect a change instead of relying on an elements equals method.
          */
         public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
             super( wrappedModel, wrappedType, changeUsesEquivalence );
             // FIXME: make DCBCVM do dirty tracking on its own
-            dirty = false;      // We should never start life as dirty
+            dirty = false; // We should never start life as dirty
         }
 
         /**
-         * Create the buffered list model.  We want to use an ObservableEventList
-         * so that it can be used as the root event list of the master form model.
+         * Create the buffered list model. We want to use an ObservableEventList so that
+         * it can be used as the root event list of the master form model.
          * @return ObservableList to use
          */
         protected ObservableList createBufferedListModel() {
