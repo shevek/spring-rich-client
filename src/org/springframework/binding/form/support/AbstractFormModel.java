@@ -182,6 +182,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         }
         else {
             getFormObjectHolder().setValue(formObject);
+            setEnabled(true);
         }
     }
 
