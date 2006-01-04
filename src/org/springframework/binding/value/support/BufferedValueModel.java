@@ -218,7 +218,7 @@ public class BufferedValueModel extends AbstractValueModel implements ValueModel
      */
     private void updateBuffering() {
         boolean wasBuffering = isBuffering();
-        buffering = hasChanged(wrappedModel.getValue(), bufferedValue);
+        buffering = hasValueChanged(wrappedModel.getValue(), bufferedValue);
         firePropertyChange(BUFFERING_PROPERTY, wasBuffering, buffering);
     }
 
