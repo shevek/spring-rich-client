@@ -87,8 +87,13 @@ public abstract class AbstractBinder implements Binder {
     protected abstract JComponent createControl(Map context);
 
     public Binding bind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
+        // Ensure that this component has not already been bound
+        Binding binding = (Binding)control.getClientProperty(BINDING_CLIENT_PROPERTY_KEY);
+        if( binding != null ) {
+            throw new IllegalStateException( "Component is already bound to property: " + binding.getProperty());
+        }
         validateContextKeys(context);
-        Binding binding = doBind(control, formModel, formPropertyPath, context);
+        binding = doBind(control, formModel, formPropertyPath, context);
         control.putClientProperty(BINDING_CLIENT_PROPERTY_KEY, binding);
         return binding;
     }
