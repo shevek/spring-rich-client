@@ -129,36 +129,27 @@ public class AbstractValueModelTests extends TestCase {
         assertSame(equalsEverything, pcl.lastEvent().getNewValue());
         
         vm.fireValueChange(equalsEverything, o1);
-        assertEquals(5, pcl.eventCount());
+        assertEquals(6, pcl.eventCount());
+        assertSame(equalsEverything, pcl.lastEvent().getOldValue());
+        assertEquals(o1, pcl.lastEvent().getNewValue());
     }
 
     public void testHasValueChangedChecksIdentityForUnsafeClasses() {
-        // Install the equivalence (identity) VCD
-        vm.setValueChangeDetector( new EquivalenceValueChangeDetector() );
-
         Object equalsEverything = new EqualsEverything();
         Object o2 = new Object();
 
-        assertTrue(vm.hasChanged(equalsEverything, o2));
-        assertTrue(vm.hasChanged(null, o2));
-        assertTrue(vm.hasChanged(null, equalsEverything));
-        assertTrue(vm.hasChanged(equalsEverything, null));
+        assertTrue(vm.hasValueChanged(equalsEverything, o2));
+        assertTrue(vm.hasValueChanged(null, o2));
+        assertTrue(vm.hasValueChanged(null, equalsEverything));
+        assertTrue(vm.hasValueChanged(equalsEverything, null));
 
-        assertTrue(!vm.hasChanged(equalsEverything, equalsEverything));
-        assertTrue(!vm.hasChanged(null, null));
+        assertTrue(!vm.hasValueChanged(equalsEverything, equalsEverything));
+        assertTrue(!vm.hasValueChanged(null, null));
     }
 
     public void testHasValueChangedChecksEqualityForSafeClasses() {
-        // First with the default VCD
         vm.setValueChangeDetector( new DefaultValueChangeDetector() );
-        checkEqualityOfSafeClasses();
-        
-        // Then with the equivalence VCD
-        vm.setValueChangeDetector( new EquivalenceValueChangeDetector() );
-        checkEqualityOfSafeClasses();
-    }
 
-    private void checkEqualityOfSafeClasses() {
         testChecksEqualityForSafeClasses(new Boolean(true), new Boolean(false), new Boolean(true));        
         testChecksEqualityForSafeClasses(new Byte((byte)1), new Byte((byte)2), new Byte((byte)1));
         testChecksEqualityForSafeClasses(new Short((short)1), new Short((short)2), new Short((short)1));
@@ -179,15 +170,15 @@ public class AbstractValueModelTests extends TestCase {
         assertNotSame(o1, o3);
         assertEquals(o1, o3);
         
-        assertTrue(vm.hasChanged(o1, o2));
-        assertTrue(vm.hasChanged(null, o2));
-        assertTrue(vm.hasChanged(o1, null));
-        assertTrue(vm.hasChanged(o1, other));
+        assertTrue(vm.hasValueChanged(o1, o2));
+        assertTrue(vm.hasValueChanged(null, o2));
+        assertTrue(vm.hasValueChanged(o1, null));
+        assertTrue(vm.hasValueChanged(o1, other));
         
-        assertTrue(vm.hasChanged(other, o1));
-        assertTrue(!vm.hasChanged(o1, o1));
-        assertTrue(!vm.hasChanged(o1, o3));
-        assertTrue(!vm.hasChanged(o3, o1));
+        assertTrue(vm.hasValueChanged(other, o1));
+        assertTrue(!vm.hasValueChanged(o1, o1));
+        assertTrue(!vm.hasValueChanged(o1, o3));
+        assertTrue(!vm.hasValueChanged(o3, o1));
     }
 
     public class TestAbstractValueModel extends AbstractValueModel {
