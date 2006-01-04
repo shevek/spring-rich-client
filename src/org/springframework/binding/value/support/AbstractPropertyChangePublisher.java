@@ -9,8 +9,7 @@ import java.beans.VetoableChangeSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.PropertyChangePublisher;
-import org.springframework.binding.value.ValueChangeDetector;
-import org.springframework.richclient.application.Application;
+import org.springframework.util.ObjectUtils;
 
 public abstract class AbstractPropertyChangePublisher implements
         PropertyChangePublisher {
@@ -20,8 +19,6 @@ public abstract class AbstractPropertyChangePublisher implements
     private transient PropertyChangeSupport changeSupport;
 
     private transient VetoableChangeSupport vetoSupport;
-
-    private ValueChangeDetector valueChangeDetector;
 
     public final void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) { return; }
@@ -185,7 +182,7 @@ public abstract class AbstractPropertyChangePublisher implements
     }
 
     protected boolean hasChanged(Object currentValue, Object proposedValue) {
-        return getValueChangeDetector().hasValueChanged(currentValue, proposedValue);
+        return !ObjectUtils.nullSafeEquals(currentValue, proposedValue);
     }
 
     protected final boolean hasChanged(boolean currentValue, boolean proposedValue) {
@@ -208,22 +205,4 @@ public abstract class AbstractPropertyChangePublisher implements
         return currentValue != proposedValue;
     }
 
-    /**
-     * Set the object that will be used to detect changes between two objects.
-     * @param valueChangeDetector to use
-     */
-    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
-        this.valueChangeDetector = valueChangeDetector;
-    }
-
-    /**
-     * Get the value change detector to use for object comparisons.
-     * @return detector to use
-     */
-    protected ValueChangeDetector getValueChangeDetector() {
-        if( valueChangeDetector == null ) {
-            valueChangeDetector = Application.services().getValueChangeDetector();
-        }
-        return valueChangeDetector;
-    }
 }
