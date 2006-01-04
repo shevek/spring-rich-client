@@ -272,10 +272,14 @@ public class GlazedTableModel extends EventTableModel {
      * AdvancedTableFormat instead of the default WritableTableFormat created by
      * {@link GlazedTableModel#createTableFormat()}.
      * <p>
-     * If a prototype value is not provided (see {@link #setPrototypeValue(Object)}, then
-     * the default implementation of getColumnClass will return Object.class, which is not
-     * very usable. In that case, you should probably override
-     * {@link #getColumnClass(int)}.
+     * If a prototype value is provided (see {@link #setPrototypeValue(Object)}, then
+     * the default implementation of getColumnClass will inspect the prototype object to
+     * determine the Class of the object in that column (by looking at the type of the
+     * property in that column).  If no prototype is provided, then getColumnClass will
+     * inspect the current table data in order to determine the class of object in that
+     * column.  If there are no non-null values in the column, then getColumnClass will
+     * return Object.class, which is not very usable. In that case, you should probably
+     * override {@link #getColumnClass(int)}.
      * <p>
      * You can specify individual comparators for columns using
      * {@link #setComparator(int, Comparator)}. For any column that doesn't have a
@@ -304,19 +308,37 @@ public class GlazedTableModel extends EventTableModel {
          * table to set up a default renderer and editor for the column. If a prototype
          * object has been specified, then the class will be obtained using introspection
          * using the property name associated with the specified column. If no prorotype
-         * has been specified, then <code>Object.class</code> is returned.
+         * has been specified, then the current objects in the table will be inspected to
+         * determine the class of values in that column.  If no non-null column value is
+         * available, then <code>Object.class</code> is returned.
          * 
          * @param column The index of the column being edited.
+         * @return Class of the values in the column
          */
         public Class getColumnClass(int column) {
-            Class cls = Object.class;
-            Integer columnKey = new Integer(column);
-            if( _prototype != null ) {
-                cls = (Class)_columnClasses.get(columnKey);
-                if( cls == null ) {
+            Integer columnKey = new Integer( column );
+            Class cls = (Class) _columnClasses.get( columnKey );
+
+            if( cls == null ) {
+                if( _prototype != null ) {
                     cls = _beanWrapper.getPropertyType( getColumnPropertyNames()[column] );
-                    _columnClasses.put(columnKey, cls);
+                } else {
+                    // Since no prototype is available, inspect the table contents
+                    int rowCount = getRowCount();
+                    for( int row = 0; cls == null && row < rowCount; row++ ) {
+                        Object obj = getValueAt( row, column );
+                        if( obj != null ) {
+                            cls = obj.getClass();
+                        }
+                    }
                 }
+            }
+
+            // If we found something, then put it in the cache.  If not, return Object.
+            if( cls != null ) {
+                _columnClasses.put( columnKey, cls );
+            } else {
+                cls = Object.class;
             }
 
             return cls;
