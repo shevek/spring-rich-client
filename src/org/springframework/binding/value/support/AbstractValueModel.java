@@ -20,7 +20,9 @@ import java.beans.PropertyChangeListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
 
 /**
  * An abstract class that minimizes the effort required to implement
@@ -37,10 +39,12 @@ import org.springframework.binding.value.ValueModel;
  */
 public abstract class AbstractValueModel extends AbstractPropertyChangePublisher implements ValueModel {
 
-    protected final Log logger = LogFactory.getLog(AbstractValueModel.class);
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private final ThreadLocal listenerToSkipHolder = new ThreadLocal();
     
+    private ValueChangeDetector valueChangeDetector;
+
     public final void setValueSilently(Object newValue, PropertyChangeListener listenerToSkip) {
         // We need to keep track of listenerToSkip on a per thread basis as it's 
         // possible that this value model may be accessed from multiple threads.
@@ -136,9 +140,16 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
      * @param newValue the float value after the change
      */
     protected void fireValueChange(Object oldValue, Object newValue) {
-        if (hasChanged(oldValue, newValue)) {
+        if (hasValueChanged(oldValue, newValue)) {
             fireValueChangeEvent(oldValue, newValue);
         }
+    }
+
+    /**
+     * Delegates to configured <code>ValueChangeDetector</code>.
+     */
+    protected boolean hasValueChanged(Object oldValue, Object newValue) {
+        return getValueChangeDetector().hasValueChanged(oldValue, newValue);
     }
 
     /**
@@ -163,4 +174,25 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
             }
         }
     }
+
+    /**
+     * Set the object that will be used to detect changes between two values.
+     * @param valueChangeDetector to use
+     */
+    public void setValueChangeDetector(ValueChangeDetector valueChangeDetector) {
+        this.valueChangeDetector = valueChangeDetector;
+    }
+
+    /**
+     * Get the installed value change detector.  If none has been directly installed then
+     * get the one configured in the application context.
+     * @return value change detector to use
+     */
+    protected ValueChangeDetector getValueChangeDetector() {
+        if( valueChangeDetector == null ) {
+            valueChangeDetector = Application.services().getValueChangeDetector();
+        }
+        return valueChangeDetector;
+    }
+
 }
