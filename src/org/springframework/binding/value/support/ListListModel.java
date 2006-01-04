@@ -108,7 +108,7 @@ public class ListListModel extends AbstractListModel implements ObservableList {
                 throw new IllegalStateException("Attempt to set value at null index; operation not allowed");
             }
             Object oldValue = items.set(getIndex(), value);
-            if (hasChanged(oldValue, value)) {
+            if (hasValueChanged(oldValue, value)) {
                 fireContentsChanged(getIndex());
                 fireValueChange(oldValue, value);
             }

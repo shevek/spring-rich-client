@@ -50,7 +50,7 @@ public class ValueHolder extends AbstractValueModel {
     }
 
     public void setValue(Object value) {
-        if (hasChanged(this.value, value)) {
+        if (hasValueChanged(this.value, value)) {
             Object oldValue = this.value;
             if (logger.isDebugEnabled()) {
                 logger.debug("Setting held value from '" + oldValue + "' to '"
