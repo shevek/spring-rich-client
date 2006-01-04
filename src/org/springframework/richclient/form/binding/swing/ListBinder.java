@@ -67,13 +67,27 @@ public class ListBinder extends AbstractBinder {
     }
 
     protected void applyContext(ListBinding binding, Map context) {
-        if (context.containsKey(MODEL_KEY)) {
+        // Validate that we have enough context to function
+        boolean haveModel = context.containsKey(MODEL_KEY);
+        boolean haveSelectableItems = context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY);
+        boolean haveSelectedItem = context.containsKey(SELECTED_ITEM_HOLDER_KEY);
+
+        if( !(haveModel || haveSelectableItems) ) {
+            throw new IllegalArgumentException("Context must contain value for one of: "
+                + MODEL_KEY + " or " + SELECTABLE_ITEMS_HOLDER_KEY );
+        }
+
+        if( !haveSelectedItem ) {
+            throw new IllegalArgumentException("Context must contain a value for: " + SELECTED_ITEM_HOLDER_KEY);
+        }
+
+        if (haveModel) {
             binding.setModel((ListModel)context.get(MODEL_KEY));
         }
-        if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
+        if (haveSelectableItems) {
             binding.setSelectableItemsHolder((ValueModel)context.get(SELECTABLE_ITEMS_HOLDER_KEY));
         }
-        if (context.containsKey(SELECTED_ITEM_HOLDER_KEY)) {
+        if (haveSelectedItem) {
             binding.setSelectedItemHolder((ValueModel)context.get(SELECTED_ITEM_HOLDER_KEY));
         }
         if (context.containsKey(RENDERER_KEY)) {
