@@ -170,8 +170,10 @@ public class OverlayHelper implements SwingConstants {
             }
             else {
                 JLayeredPane layeredPane = getLayeredPane(overlayCapableParent);
-                putOverlay(layeredPane);
-                positionOverlay(layeredPane);
+                if( layeredPane.isVisible() && layeredPane.isShowing() ) {
+                    putOverlay(layeredPane);
+                    positionOverlay(layeredPane);
+                }
             }
         }
         finally {
