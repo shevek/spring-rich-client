@@ -15,13 +15,24 @@
  */
 package org.springframework.binding.value.support;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.binding.value.ValueChangeDetector;
 
 /**
- * An implementation of ValueChangeDetector that provides the same semantics as
- * {@link org.springframework.util.ObjectUtils#nullSafeEquals(java.lang.Object, java.lang.Object)}.
- * If the objects are not the same object, they are compared using the equals method of
- * the first object. Nulls are handled safely.
+ * Implementation of ValueChangeDetector that maintains a set of classes for which it is
+ * "safe" to use <code>equals()</code> for detecting a change in value (those classes
+ * that have immutable values). For all objects of a type in this set, the value
+ * comparison will be done using equals. For all other types, object equivalence (the ==
+ * operator) will be used.
  * <p>
  * This is the default value change detector handed out by the Application Services.
  * 
@@ -30,9 +41,19 @@ import org.springframework.binding.value.ValueChangeDetector;
  */
 public class DefaultValueChangeDetector implements ValueChangeDetector {
 
+    /*
+     * All the classes that are known to have a safe implementation of equals.
+     */
+    protected final Set classesWithSafeEquals = new HashSet( Arrays.asList( new Class[] { Boolean.class, Byte.class,
+            Short.class, Integer.class, Long.class, Float.class, Double.class, String.class, Character.class,
+            BigDecimal.class, BigInteger.class, Date.class, Calendar.class } ) );
+
     /**
-     * Determines if there has been a change in value between the provided arguments. The
-     * objects are compared using the <code>equals</code> method.
+     * Determines if there has been a change in value between the provided arguments. As
+     * many objects do not implement #equals in a manner that is strict enough for the
+     * requirements of this class, difference is determined using <code>!=</code>,
+     * however, to improve accuracy #equals will be used when this is definitely safe e.g.
+     * for Strings, Booleans, Numbers, Dates.
      * 
      * @param oldValue Original object value
      * @param newValue New object value
@@ -40,6 +61,30 @@ public class DefaultValueChangeDetector implements ValueChangeDetector {
      *         model
      */
     public boolean hasValueChanged(Object oldValue, Object newValue) {
-        return !(oldValue == newValue || (oldValue != null && oldValue.equals( newValue )));
+        if( oldValue != null && classesWithSafeEquals.contains( oldValue.getClass() ) ) {
+            return !oldValue.equals( newValue );
+        } else {
+            return oldValue != newValue;
+        }
+    }
+
+    /**
+     * Specify the set of classes that have an equals method that is safe to use for
+     * determining a value change.
+     * 
+     * @param classes with safe equals methods
+     */
+    public void setClassesWithSafeEquals(List classes) {
+        classesWithSafeEquals.clear();
+        classesWithSafeEquals.addAll( classes );
+    }
+
+    /**
+     * Get the set of classes that have an equals method that is safe to use for
+     * determining a value change.
+     * @return Collection of classes with safe equals methods
+     */
+    public Collection getClassesWithSafeEquals() {
+        return classesWithSafeEquals;
     }
 }
