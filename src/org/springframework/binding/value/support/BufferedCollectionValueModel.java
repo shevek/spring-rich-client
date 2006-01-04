@@ -35,7 +35,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 
 /**
  * A <code>BufferedValueModel</code> that uses an ObservableList as a buffer to hold
@@ -61,8 +60,6 @@ import org.springframework.util.ObjectUtils;
  */
 public class BufferedCollectionValueModel extends BufferedValueModel {
 
-    private boolean changeUsesEquivalence;
-
     private final ListChangeHandler listChangeHandler = new ListChangeHandler();
 
     private final Class wrappedType;
@@ -72,8 +69,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     private ObservableList bufferedListModel;
 
     /**
-     * Constructs a new BufferedCollectionValueModel.  This model will use the collection elements
-     * <code>equals</code> method to detect changes.
+     * Constructs a new BufferedCollectionValueModel.
      * 
      * @param wrappedModel the value model to wrap
      * @param wrappedType the class of the value contained by wrappedModel; this must be
@@ -81,25 +77,10 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
      *            <code>Object[]</code>.
      */
     public BufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType) {
-        this( wrappedModel, wrappedType, false );
-    }
-
-    /**
-     * Constructs a new BufferedCollectionValueModel.
-     * 
-     * @param wrappedModel the value model to wrap
-     * @param wrappedType the class of the value contained by wrappedModel; this must be
-     *            assignable to <code>java.util.Collection</code> or
-     *            <code>Object[]</code>.
-     * @param changeUsesEquivalence Pass true to force the use of object equivalence to
-     *            detect a change instead of relying on an elements equals method.
-     */
-    public BufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
         super(wrappedModel);
         Assert.notNull(wrappedType);
         this.wrappedType = wrappedType;
         this.wrappedConcreteType = getConcreteCollectionType(wrappedType);
-        this.changeUsesEquivalence = changeUsesEquivalence;
 
         updateBufferedListModel(getWrappedValue());
         if (getValue() != bufferedListModel) {
@@ -173,14 +154,6 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     /**
-     * Determine if the given values represent a change.  This test is determined by the changeUsesEquivalence
-     * setting to determine how to test for change.
-     */
-    protected boolean hasChanged(Object currentValue, Object proposedValue) {
-        return changeUsesEquivalence || super.hasChanged( currentValue, proposedValue );
-    }
-
-    /**
      * Checks if the structure of the buffered list model is the same as the wrapped
      * collection. "same structure" is defined as having the same elements in the
      * same order with the one exception that NULL == empty list.
@@ -196,7 +169,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 return false;
             }
             for (int i = 0; i < bufferedListModel.size(); i++) {
-                if( ! collectionElementsEqual(wrappedArray[i], bufferedListModel.get(i))) {
+                if( ! super.hasValueChanged(wrappedArray[i], bufferedListModel.get(i))) {
                     return false;
                 }
             }
@@ -206,22 +179,12 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 return false;
             }
             for (Iterator i = ((Collection)wrappedCollection).iterator(), j = bufferedListModel.iterator(); i.hasNext();) {
-                if (!collectionElementsEqual(i.next(), j.next())) {
+                if (!super.hasValueChanged(i.next(), j.next())) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    /**
-     * Determine if two collection elements are equal according to our change detection semantics.
-     * @param v1 First value to compare
-     * @param v2 Second value to compare
-     * @return boolean true if the objects compare equal
-     */
-    protected boolean collectionElementsEqual( Object v1, Object v2 ) {
-        return changeUsesEquivalence ? ( v1 == v2 ) : ObjectUtils.nullSafeEquals(v1, v2);
     }
 
     private Object createCollection(Object wrappedCollection) {
@@ -337,6 +300,10 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         else {
             super.setValue(bufferedListModel);
         }
+    }
+
+    protected boolean hasValueChanged(Object oldValue, Object newValue) {
+        return (oldValue == bufferedListModel && newValue == bufferedListModel) || super.hasValueChanged(oldValue, newValue);
     }
 
     private class ListChangeHandler implements ListDataListener {

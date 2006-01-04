@@ -42,11 +42,9 @@ public class DeepCopyBufferedCollectionValueModel extends BufferedCollectionValu
      * @param wrappedType the class of the value contained by wrappedModel; this must be
      *            assignable to <code>java.util.Collection</code> or
      *            <code>Object[]</code>.
-     * @param changeUsesEquivalence Pass true to force the use of object equivalence to
-     *            detect a change instead of relying on an elements equals method.
      */
-    public DeepCopyBufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
-        super( wrappedModel, wrappedType, changeUsesEquivalence );
+    public DeepCopyBufferedCollectionValueModel(ValueModel wrappedModel, Class wrappedType) {
+        super( wrappedModel, wrappedType );
     }
 
     /**

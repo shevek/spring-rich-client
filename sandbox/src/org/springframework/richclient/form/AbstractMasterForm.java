@@ -92,9 +92,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * path. The form model for this class will be constructed by getting the value model
      * of the specified property from the parent form model and constructing a
      * DeepCopyBufferedCollectionValueModel on top of it.
-     * <p>
-     * This constructor will rely on the <code>equals</code> method to detect
-     * differences in the detail elements.
      * 
      * @param parentFormModel Parent form model to access for this form's data
      * @param property containing this forms data (must be a collection or an array)
@@ -102,33 +99,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @param detailType Type of detail object managed by this master form
      */
     protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId, Class detailType) {
-        this( parentFormModel, property, formId, detailType, false );
-    }
-
-    /**
-     * Construct a new AbstractMasterForm using the given parent form model and property
-     * path. The form model for this class will be constructed by getting the value model
-     * of the specified property from the parent form model and constructing a
-     * DeepCopyBufferedCollectionValueModel on top of it.
-     * <p>
-     * The <code>changeUsesEquivalence</code> parameter controls how the constructued
-     * value model will detect changes in the buffered collection. If it is
-     * <code>false</code>, then the <code>equals</code> method will be used to detect
-     * changes/differences in the detail elements. If it is <code>true</code>, then the
-     * comparison will be forced to use object equivalence instead of <code>equals</code>.
-     * You would only need to use this setting if the detail objects have an equals method
-     * that can not detect changes that can be made by the detail form. If this is the
-     * case, then you should pass <code>true</code>.
-     * 
-     * @param parentFormModel Parent form model to access for this form's data
-     * @param property containing this forms data (must be a collection or an array)
-     * @param formId Id of this form
-     * @param detailType Type of detail object managed by this master form
-     * @param changeUsesEquivalence Pass true to force the use of object equivalence to
-     *            detect a change instead of relying on an elements equals method.
-     */
-    protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId,
-            Class detailType, boolean changeUsesEquivalence) {
         super( formId );
         _detailType = detailType;
 
@@ -137,7 +107,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
         // Now construct the dirty tracking model
         Class collectionType = getMasterCollectionType( propertyVM );
 
-        _collectionVM = new DirtyTrackingDCBCVM( propertyVM, collectionType, changeUsesEquivalence );
+        _collectionVM = new DirtyTrackingDCBCVM( propertyVM, collectionType );
         ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId,
             _collectionVM );
         setFormModel( formModel );
@@ -754,11 +724,9 @@ public abstract class AbstractMasterForm extends AbstractForm {
          * @param wrappedType the class of the value contained by wrappedModel; this must
          *            be assignable to <code>java.util.Collection</code> or
          *            <code>Object[]</code>.
-         * @param changeUsesEquivalence Pass true to force the use of object equivalence
-         *            to detect a change instead of relying on an elements equals method.
          */
-        public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType, boolean changeUsesEquivalence) {
-            super( wrappedModel, wrappedType, changeUsesEquivalence );
+        public DirtyTrackingDCBCVM(ValueModel wrappedModel, Class wrappedType) {
+            super( wrappedModel, wrappedType );
             // FIXME: make DCBCVM do dirty tracking on its own
             dirty = false; // We should never start life as dirty
         }
