@@ -37,5 +37,6 @@
 	<classpathentry sourcepath="lib/src/spring-src.zip" kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-petclinic.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-commons/commons-codec.jar"/>
+	<classpathentry kind="lib" path="lib/spring/springmodules-sandbox.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
