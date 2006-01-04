@@ -37,6 +37,16 @@ import org.springframework.richclient.util.Assert;
 
 /**
  * Default form model implementation. Is configurable, hierarchical and validating.
+ * <p>
+ * If you need this form model to use validation rules that are specific to a given
+ * context (such as a specific form), then you will need to call {@link #setValidator(Validator)}
+ * with a validator configured with the required context id.  Like this:
+ * <code>
+ * RulesValidator validator = myValidatingFormModel.getValidator();
+ * validator.setRulesContextId( "mySpecialFormId" );
+ * </code>
+ * Along with this you will need to register your rules using the context id.  See
+ * {@link DefaultRulesSource#addRules(String, Rules)}.
  * 
  * @author  Keith Donald
  * @author  Oliver Hutchison 
@@ -117,7 +127,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         }
     }
 
-    protected Validator getValidator() {
+    public Validator getValidator() {
         if (validator == null) {
             validator = new RulesValidator(this);
         }

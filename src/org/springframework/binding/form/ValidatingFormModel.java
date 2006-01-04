@@ -16,6 +16,7 @@
 package org.springframework.binding.form;
 
 import org.springframework.binding.validation.ValidationResultsModel;
+import org.springframework.binding.validation.Validator;
 
 /**
  * Sub-interface implemented by form models that can validatate the form's 
@@ -54,4 +55,17 @@ public interface ValidatingFormModel extends ConfigurableFormModel, Hierarchical
      * does nothing.     
      */
     public void validate();
+    
+    /**
+     * Get the validator that will be used to validate the form model.
+     * @return validator
+     */
+    public Validator getValidator();
+
+    /**
+     * set the validator that will be used to validate the form model.
+     * @param validator
+     */
+    public void setValidator(Validator validator);
+
 }

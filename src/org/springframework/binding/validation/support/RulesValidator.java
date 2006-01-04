@@ -43,6 +43,8 @@ public class RulesValidator implements RichValidator {
 
     private RulesSource rulesSource;
 
+    private String rulesContextId = null;
+
     public RulesValidator(FormModel formModel) {
         this.formModel = formModel;
         validationResultsCollector = new BeanValidationResultsCollector(formModel.getPropertyAccessStrategy());
@@ -63,7 +65,7 @@ public class RulesValidator implements RichValidator {
         }
         else {
             if (getRulesSource() != null) {
-                rules = getRulesSource().getRules(object.getClass(), null);
+                rules = getRulesSource().getRules(object.getClass(), getRulesContextId());
                 if (rules != null) {
                     for (Iterator i = rules.iterator(); i.hasNext();) {
                         PropertyConstraint validationRule = (PropertyConstraint)i.next();
@@ -137,5 +139,22 @@ public class RulesValidator implements RichValidator {
 
     private void returnResultsCollector(BeanValidationResultsCollector resultsCollector) {
         validationResultsCollector = resultsCollector;
+    }
+
+    /**
+     * Get the rules context id set on this validator.
+     * @return rules context id
+     */
+    public String getRulesContextId() {
+        return rulesContextId;
+    }
+
+    /**
+     * Set the rules context id.  This is passed in the call to
+     * {@link RulesSource#getRules(Class, String)} to allow for context specific rules.
+     * @param rulesContextId
+     */
+    public void setRulesContextId(String rulesContextId) {
+        this.rulesContextId = rulesContextId;
     }
 }
