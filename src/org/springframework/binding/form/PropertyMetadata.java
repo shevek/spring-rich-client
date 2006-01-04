@@ -18,7 +18,7 @@ package org.springframework.binding.form;
 import org.springframework.binding.value.PropertyChangePublisher;
 
 /**
- * Encapsulates the state of an indervidual property of a form model.
+ * Encapsulates the state of an individual property of a form model.
  *   
  * @author Oliver Hutchison
  */
@@ -99,6 +99,4 @@ public interface PropertyMetadata extends PropertyChangePublisher {
      * Returns whether or not the property is dirty.  
      */
     boolean isDirty();       
-    
-
 }

@@ -222,7 +222,7 @@ public abstract class AbstractSecurityController implements SecurityController, 
             method.invoke( controlledObject, new Object[] { new Boolean( authorized ) } );
         } catch( NoSuchMethodException ignored ) {
             System.out.println( "NO setVisible method on object: " + controlledObject );
-            ; // No method to call, so nothing to do
+            // No method to call, so nothing to do
         } catch( IllegalAccessException ignored ) {
             _logger.error( "Could not call setVisible", ignored );
         } catch( InvocationTargetException ignored ) {

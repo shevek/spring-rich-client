@@ -16,7 +16,6 @@
 package org.springframework.binding.form;
 
 import org.springframework.beans.InvalidPropertyException;
-import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.convert.Converter;
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
@@ -57,7 +56,7 @@ public interface FormModel extends PropertyChangePublisher {
     Object getFormObject();
 
     /**
-     * Sets the object currently backing ths form.
+     * Sets the object currently backing this form.
      */
     void setFormObject(Object formObject);
     
@@ -146,7 +145,7 @@ public interface FormModel extends PropertyChangePublisher {
     boolean isEnabled();
     
     /**
-     * Returns true if the changes held by this form are able to be commited.
+     * Returns true if the changes held by this form are able to be committed.
      */
     boolean isCommittable();
     
@@ -166,15 +165,4 @@ public interface FormModel extends PropertyChangePublisher {
      * FIXME: this should be on the PropertyMetadata class
      */
     FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String propertyName);
-    
-    /**
-     * Returns a PropertyAccessStrategy that allows for access to the properties of 
-     * this form. 
-     * <p>
-     * NOTE: this is not the same as the MutablePropertyAccessStrategy used to access
-     * properties on the backing form object.
-     * 
-     * FIXME: this needs to work some other way...
-     */
-    PropertyAccessStrategy getPropertyAccessStrategy();
 }

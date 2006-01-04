@@ -41,7 +41,7 @@ public class AbstractValueModelTests extends TestCase {
         public boolean equals(Object other) {
             return true;
         }
-    };
+    }
 
     public void setUp() {
         Application.load(null);

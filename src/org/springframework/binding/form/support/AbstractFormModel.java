@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
@@ -74,7 +73,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     private HierarchicalFormModel parent;
 
-    private List children = new ArrayList();
+    private final List children = new ArrayList();
 
     private boolean buffered = false;
 
@@ -135,30 +134,28 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         this.formObjectHolder = formObjectHolder;
         this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
         this.buffered = buffered;
-
-        prepareValueModel( this.formObjectHolder );
+        prepareValueModel(this.formObjectHolder);
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
         this.formObjectHolder = propertyAccessStrategy.getDomainObjectHolder();
         this.propertyAccessStrategy = propertyAccessStrategy;
         this.buffered = buffered;
-
-        prepareValueModel( formObjectHolder );
+        prepareValueModel(formObjectHolder);
     }
 
     /**
      * Prepare the provided value model for use in this form model.
      * @param valueModel to prepare
      */
-    protected void prepareValueModel( ValueModel valueModel ) {
+    protected void prepareValueModel(ValueModel valueModel) {
         if (valueModel instanceof BufferedValueModel) {
             ((BufferedValueModel)valueModel).setCommitTrigger(commitTrigger);
         }
-        
+
         // If the value model that we were built on is "dirty trackable" then we
         // need to monitor it for changes in its dirty state
-        if( valueModel instanceof DirtyTrackingValueModel ) {
+        if (valueModel instanceof DirtyTrackingValueModel) {
             ((DirtyTrackingValueModel)valueModel).addPropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
         }
     }
@@ -176,13 +173,24 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public void setFormObject(Object formObject) {
-        revert();
+        setDisconectViewFromData(true);
         if (formObject == null) {
             handleSetNullFormObject();
         }
         else {
             getFormObjectHolder().setValue(formObject);
             setEnabled(true);
+        }
+        // this will cause all buffered value models to revert 
+        // to the new form objects property values 
+        commitTrigger.revert();
+        setDisconectViewFromData(false);
+    }
+
+    private void setDisconectViewFromData(boolean disconectViewFromData) {
+        for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
+            FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel)i.next();
+            valueModel.setDisconectViewFromData(disconectViewFromData);
         }
     }
 
@@ -248,7 +256,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     /**
-     * Creates a new value mode for the the given property. Usualy delegates to the 
+     * Creates a new value mode for the the given property. Usually delegates to the 
      * underlying property access strategy but subclasses may provide alternative
      * value model creation strategies.
      */
@@ -273,30 +281,28 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         if (sourceClass == targetClass) {
             return sourceValueModel;
         }
-        
+
         final ConversionService conversionService = getConversionService();
         ConversionExecutor convertTo = null;
         ConversionExecutor convertFrom = null;
 
         // Check for locally registered property converters
-        if( propertyConversionServices.containsKey( formProperty ) ) {
-            final DefaultConversionService propertyConversionService =
-                (DefaultConversionService)propertyConversionServices.get( formProperty );
-            
-            if( propertyConversionService != null ) {
+        if (propertyConversionServices.containsKey(formProperty)) {
+            final DefaultConversionService propertyConversionService = (DefaultConversionService)propertyConversionServices.get(formProperty);
+
+            if (propertyConversionService != null) {
                 convertTo = propertyConversionService.getConversionExecutor(sourceClass, targetClass);
                 convertFrom = propertyConversionService.getConversionExecutor(targetClass, sourceClass);
             }
         }
 
         // If we have nothing from the property level, then try the conversion service
-        if( convertTo == null ) {
+        if (convertTo == null) {
             convertTo = conversionService.getConversionExecutor(sourceClass, targetClass);
         }
         Assert.notNull(convertTo, "conversionService returned null ConversionExecutor");
-        
-        
-        if( convertFrom == null ) {
+
+        if (convertFrom == null) {
             convertFrom = conversionService.getConversionExecutor(targetClass, sourceClass);
         }
         Assert.notNull(convertFrom, "conversionService returned null ConversionExecutor");
@@ -313,11 +319,10 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      * @param toConverter Convert from source to target type
      * @param fromConverter Convert from target to source type
      */
-    public void registerPropertyConverter( String propertyName, Converter toConverter, Converter fromConverter ) {
+    public void registerPropertyConverter(String propertyName, Converter toConverter, Converter fromConverter) {
 
-        DefaultConversionService propertyConversionService =
-            (DefaultConversionService)propertyConversionServices.get( propertyName );
-        
+        DefaultConversionService propertyConversionService = (DefaultConversionService)propertyConversionServices.get(propertyName);
+
         propertyConversionService.addConverter(toConverter);
         propertyConversionService.addConverter(fromConverter);
     }
@@ -338,7 +343,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         // from the property access strategy when this is not always the case. 
         PropertyMetadataAccessStrategy metadataAccessStrategy = getFormObjectPropertyAccessStrategy().getMetadataAccessStrategy();
 
-        FormModelMediatingValueModel mediatingValueModel = new FormModelMediatingValueModel(valueModel, metadataAccessStrategy.isWriteable(formProperty));
+        FormModelMediatingValueModel mediatingValueModel = new FormModelMediatingValueModel(valueModel,
+                metadataAccessStrategy.isWriteable(formProperty));
         mediatingValueModels.put(formProperty, mediatingValueModel);
 
         PropertyMetadata metadata = new PropertyMetadataImpl(this, mediatingValueModel,
@@ -357,7 +363,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     /**
-     * Provides a hook for subclasses to optionaly decorate a new value model added to
+     * Provides a hook for subclasses to optionally decorate a new value model added to
      * this form model.
      */
     protected abstract ValueModel preProcessNewValueModel(String formProperty, ValueModel formValueModel);
@@ -445,20 +451,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public PropertyAccessStrategy getPropertyAccessStrategy() {
-        return new PropertyAccessStrategy() {
-
-            public Object getPropertyValue(String propertyPath) throws BeansException {
-                return getValueModel(propertyPath).getValue();
-            }
-
-            public PropertyMetadataAccessStrategy getMetadataAccessStrategy() {
-                throw new UnsupportedOperationException("not implemented");
-            }
-
-            public Object getDomainObject() {
-                return getFormObject();
-            }
-        };
+        return new FormModelPropertyAccessStrategy(this);
     }
 
     public void commit() {
@@ -482,8 +475,10 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                 for (Iterator i = commitListeners.iterator(); i.hasNext();) {
                     ((CommitListener)i.next()).postCommit(this);
                 }
-            } else {
-                throw new IllegalStateException("Form model '" + this + "' became non-committable after preCommit phase"); 
+            }
+            else {
+                throw new IllegalStateException("Form model '" + this
+                        + "' became non-committable after preCommit phase");
             }
         }
         else {
@@ -508,7 +503,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     /**
-     * Hook for subclasses to intercept after a successfull commit
+     * Hook for subclasses to intercept after a successful commit
      * has finished.
      */
     protected void postCommit() {
@@ -606,7 +601,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     protected class DirtyChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
             Object source = evt.getSource();
-            
+
             if (source instanceof PropertyMetadata) {
                 PropertyMetadata metadata = (PropertyMetadata)source;
                 if (metadata.isDirty()) {
@@ -616,7 +611,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                     dirtyValueAndFormModels.remove(metadata);
                 }
             }
-            else if( source instanceof FormModel ) {
+            else if (source instanceof FormModel) {
                 FormModel formModel = (FormModel)source;
                 if (formModel.isDirty()) {
                     dirtyValueAndFormModels.add(formModel);
@@ -624,7 +619,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                 else {
                     dirtyValueAndFormModels.remove(formModel);
                 }
-            } else {
+            }
+            else {
                 DirtyTrackingValueModel valueModel = (DirtyTrackingValueModel)source;
                 if (valueModel.isDirty()) {
                     dirtyValueAndFormModels.add(valueModel);

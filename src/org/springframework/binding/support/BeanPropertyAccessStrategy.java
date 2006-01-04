@@ -262,6 +262,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
                 settingBeanProperty = false;
             }
             fireValueChange(savedPropertyValue, value);
+            savedPropertyValue = value;
         }
 
         /**

@@ -15,6 +15,9 @@
  */
 package org.springframework.binding.form.support;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import junit.framework.TestCase;
 
 import org.springframework.beans.NotReadablePropertyException;
@@ -26,6 +29,8 @@ import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * Tests for @link AbstractFormModel
@@ -33,6 +38,11 @@ import org.springframework.binding.value.ValueModel;
  * @author  Oliver Hutchison
  */
 public class AbstractFormModelTests extends TestCase {
+
+    public void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
+    }
 
     protected AbstractFormModel getFormModel(Object formObject) {
         return new TestAbstractFormModel(formObject);
@@ -164,6 +174,15 @@ public class AbstractFormModelTests extends TestCase {
         assertEquals(4, pcl.eventCount());
     }
 
+    public void testSetFormObjectDoesNotRevertChangesToPreviousFormObject() {
+        TestBean p1 = new TestBean();
+        BeanPropertyAccessStrategy pas = new BeanPropertyAccessStrategy(p1);
+        AbstractFormModel fm = getFormModel(pas, false);
+        fm.getValueModel("simpleProperty").setValue("1");
+        fm.setFormObject(new TestBean());
+        assertEquals("1", p1.getSimpleProperty());
+    }
+
     public void testCommitEvents() {
         TestBean p = new TestBean();
         BeanPropertyAccessStrategy pas = new BeanPropertyAccessStrategy(p);
@@ -185,7 +204,7 @@ public class AbstractFormModelTests extends TestCase {
         AbstractFormModel fm = getFormModel(pas, true);
         fm.addCommitListener(cl);
         ValueModel vm = fm.getValueModel("simpleProperty");
-        
+
         vm.setValue("1");
         fm.commit();
         assertEquals("1", p.getSimpleProperty());
@@ -212,11 +231,11 @@ public class AbstractFormModelTests extends TestCase {
 
         assertEquals(null, vm.getValue());
         assertEquals(null, p.getSimpleProperty());
-                
+
         TestBean tb2 = new TestBean();
-        tb2.setSimpleProperty("tb2");        
+        tb2.setSimpleProperty("tb2");
         fm.setFormObject(tb2);
-        
+
         vm.setValue("1");
         fm.revert();
 
@@ -320,6 +339,30 @@ public class AbstractFormModelTests extends TestCase {
         assertTrue(fm.getPropertyMetadata("readOnly").isReadOnly());
     }
 
+    public void testSetFormObjectUpdatesDirtyState() {
+        final AbstractFormModel fm = getFormModel(new TestBean());
+        fm.add("simpleProperty");
+        fm.add("singleSelectListProperty");
+
+        assertTrue(!fm.isDirty());
+
+        fm.getValueModel("simpleProperty").addValueChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                fm.getValueModel("singleSelectListProperty").setValue(null);
+            }
+        });
+
+        TestBean newBean = new TestBean();
+        newBean.setSimpleProperty("simpleProperty");
+        newBean.setSingleSelectListProperty("singleSelectListProperty");
+        fm.setFormObject(newBean);
+        assertEquals(null, fm.getValueModel("singleSelectListProperty").getValue());
+        assertTrue(fm.isDirty());
+        fm.getValueModel("singleSelectListProperty").setValue("singleSelectListProperty");
+        assertTrue(!fm.isDirty());
+    }
+
     public static class TestCommitListener implements CommitListener {
         int preEditCalls;
 
@@ -358,12 +401,12 @@ public class AbstractFormModelTests extends TestCase {
 
         public ConversionExecutor getConversionExecutorByTargetAlias(Class arg0, String arg1)
                 throws IllegalArgumentException {
-            fail("this method shold never be called");
+            fail("this method should never be called");
             return null;
         }
 
         public Class getClassByAlias(String arg0) {
-            fail("this method shold never be called");
+            fail("this method should never be called");
             return null;
         }
     }

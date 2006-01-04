@@ -8,37 +8,33 @@ import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
- * Mediates between the base property value model and the derived view value models. 
- * 
- * TODO: allow for disconnection of the property valuemodel form the view value models; so 
- * for instance we can bulk update all properties without efcting the view.  
- * 
- * <p>
- * NOTE: This is a framework internal class and should not be
- * instantiated in user code. 
+ * A value model wrapper that mediates between the (wrapped) data value model and the 
+ * derived view value model. Allows for disconnection/reconnection of view and data models.
  * 
  * @author Oliver Hutchison
  */
-public class FormModelMediatingValueModel extends AbstractValueModelWrapper implements
-        DirtyTrackingValueModel, PropertyChangeListener {
+public class FormModelMediatingValueModel extends AbstractValueModelWrapper implements DirtyTrackingValueModel,
+        PropertyChangeListener {
 
     private final EventListenerListHelper dirtyChangeListeners = new EventListenerListHelper(
             PropertyChangeListener.class);
 
-    private Object originalValue;
+    private boolean disconectViewFromData = false;
 
-    private boolean settingValue;
+    private final ValueHolder mediatedValueHolder;
+
+    private Object originalValue;
 
     private boolean oldDirty;
 
     private final boolean trackDirty;
-    
-    private ValueChangeDetector valueChangeDetector;
 
+    private ValueChangeDetector valueChangeDetector;
 
     public FormModelMediatingValueModel(ValueModel propertyValueModel) {
         this(propertyValueModel, true);
@@ -46,48 +42,61 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
 
     public FormModelMediatingValueModel(ValueModel propertyValueModel, boolean trackDirty) {
         super(propertyValueModel);
-        propertyValueModel.addValueChangeListener(this);
-        originalValue = getValue();
+        super.addValueChangeListener(this);
+        this.originalValue = propertyValueModel.getValue();
+        this.mediatedValueHolder = new ValueHolder(originalValue);
         this.trackDirty = trackDirty;
     }
 
-    public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
-        try {
-            settingValue = true;
-            super.setValueSilently(value, listenerToSkip);
-            valueUpdated();
-        }
-        finally {
-            settingValue = false;
-        }
+    public Object getValue() {
+        return mediatedValueHolder.getValue();
     }
 
+    public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
+        if (disconectViewFromData) {
+            throw new IllegalStateException("View attempted to set value to data model when data model was disconnected");
+        }
+        getWrappedValueModel().setValueSilently(value, this);
+        mediatedValueHolder.setValueSilently(value, listenerToSkip);
+        updateDirtyState();
+    }
+
+    // called by the wrapped value model
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!settingValue) {
-            originalValue = getValue();
-            valueUpdated();
+        originalValue = getWrappedValueModel().getValue();
+        if (!disconectViewFromData) {
+            mediatedValueHolder.setValue(originalValue);
+            updateDirtyState();
+        }        
+    }
+
+    public void setDisconectViewFromData(boolean disconectViewFromData) {
+        boolean oldDisconectViewFromData = this.disconectViewFromData;
+        this.disconectViewFromData = disconectViewFromData;
+        if (oldDisconectViewFromData && !disconectViewFromData) {
+            mediatedValueHolder.setValue(originalValue);
+            updateDirtyState();
         }
     }
 
     public boolean isDirty() {
-        return this.trackDirty &&
-            getValueChangeDetector().hasValueChanged(originalValue, getValue());
+        return trackDirty && getValueChangeDetector().hasValueChanged(originalValue, getValue());
     }
 
     public void clearDirty() {
-        if (this.trackDirty) {
+        if (trackDirty) {
             originalValue = getValue();
-            valueUpdated();
+            updateDirtyState();
         }
     }
-    
+
     public void revertToOriginal() {
-        if (this.trackDirty) {
+        if (trackDirty) {
             setValue(originalValue);
         }
     }
 
-    protected void valueUpdated() {
+    protected void updateDirtyState() {
         boolean dirty = isDirty();
         if (oldDirty != dirty) {
             oldDirty = dirty;
@@ -100,10 +109,18 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     }
 
     protected ValueChangeDetector getValueChangeDetector() {
-        if( valueChangeDetector == null ) {
+        if (valueChangeDetector == null) {
             valueChangeDetector = Application.services().getValueChangeDetector();
         }
         return valueChangeDetector;
+    }
+
+    public void addValueChangeListener(PropertyChangeListener listener) {
+        mediatedValueHolder.addValueChangeListener(listener);
+    }
+
+    public void removeValueChangeListener(PropertyChangeListener listener) {
+        mediatedValueHolder.removeValueChangeListener(listener);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -114,6 +131,9 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
         if (DIRTY_PROPERTY.equals(propertyName)) {
             dirtyChangeListeners.add(listener);
         }
+        else if (VALUE_PROPERTY.equals(propertyName)) {
+            addValueChangeListener(listener);
+        }
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -123,6 +143,9 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         if (DIRTY_PROPERTY.equals(propertyName)) {
             dirtyChangeListeners.remove(listener);
+        }
+        else if (VALUE_PROPERTY.equals(propertyName)) {
+            removeValueChangeListener(listener);
         }
     }
 

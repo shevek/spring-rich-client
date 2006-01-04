@@ -33,8 +33,6 @@ import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.binding.validation.Validator;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * Tests for @link DefaultFormModel
@@ -42,11 +40,6 @@ import org.springframework.richclient.application.config.DefaultApplicationLifec
  * @author  Oliver Hutchison
  */
 public class DefaultFormModelTests extends AbstractFormModelTests {
-
-    public final void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
 
     protected AbstractFormModel getFormModel(Object formObject) {
         return new TestDefaultFormModel(formObject);
