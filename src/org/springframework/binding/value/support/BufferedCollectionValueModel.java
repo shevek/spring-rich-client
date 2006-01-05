@@ -169,7 +169,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 return false;
             }
             for (int i = 0; i < bufferedListModel.size(); i++) {
-                if(hasValueChanged(wrappedArray[i], bufferedListModel.get(i))) {
+                if(super.hasValueChanged(wrappedArray[i], bufferedListModel.get(i))) {
                     return false;
                 }
             }
@@ -179,7 +179,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
                 return false;
             }
             for (Iterator i = ((Collection)wrappedCollection).iterator(), j = bufferedListModel.iterator(); i.hasNext();) {
-                if (hasValueChanged(i.next(), j.next())) {
+                if (super.hasValueChanged(i.next(), j.next())) {
                     return false;
                 }
             }
