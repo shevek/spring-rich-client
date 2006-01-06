@@ -33,6 +33,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
  * Test cases for {@link BufferedCollectionValueModel}
@@ -44,6 +46,11 @@ public class BufferedCollectionValueModelTest extends TestCase {
     private Class[] supportedIterfaces = new Class[] {Collection.class, List.class, Set.class, SortedSet.class,};
 
     private Class[] supportedClasses = new Class[] {ArrayList.class, HashSet.class, TreeSet.class,};
+
+    public void setUp() {
+        Application.load(null);
+        new Application(new DefaultApplicationLifecycleAdvisor());
+    }
 
     public void testCreating() {
         try {
