@@ -172,7 +172,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public void setFormObject(Object formObject) {
-        setDisconectViewFromData(true);
+        setDeliverDataChangeEvent(false);
         if (formObject == null) {
             handleSetNullFormObject();
         }
@@ -183,14 +183,14 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         // this will cause all buffered value models to revert 
         // to the new form objects property values 
         commitTrigger.revert();
-        setDisconectViewFromData(false);
+        setDeliverDataChangeEvent(true);
     }
 
-    private void setDisconectViewFromData(boolean disconectViewFromData) {
-        formObjectHolder.setDisconectViewFromData(disconectViewFromData);
+    private void setDeliverDataChangeEvent(boolean disconectViewFromData) {
+        formObjectHolder.setDeliverDataChangeEvent(disconectViewFromData);
         for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
             FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel)i.next();
-            valueModel.setDisconectViewFromData(disconectViewFromData);
+            valueModel.setDeliverDataChangeEvent(disconectViewFromData);
         }        
     }
 

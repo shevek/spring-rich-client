@@ -24,7 +24,7 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     private final EventListenerListHelper dirtyChangeListeners = new EventListenerListHelper(
             PropertyChangeListener.class);
 
-    private boolean disconectViewFromData = false;
+    private boolean deliverDataChangeEvents = true;
 
     private final ValueHolder mediatedValueHolder;
 
@@ -54,23 +54,26 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
         getWrappedValueModel().setValueSilently(value, this);
-        mediatedValueHolder.setValueSilently(value, listenerToSkip);
+        if (deliverDataChangeEvents) {
+            mediatedValueHolder.setValueSilently(value, listenerToSkip);
+        }
         updateDirtyState();
     }
 
     // called by the wrapped value model
-    public void propertyChange(PropertyChangeEvent evt) {
-        originalValue = getWrappedValueModel().getValue();
-        if (!disconectViewFromData) {
+    public void propertyChange(PropertyChangeEvent evt) {        
+        if (deliverDataChangeEvents) {
+            originalValue = getWrappedValueModel().getValue();
             mediatedValueHolder.setValue(originalValue);
             updateDirtyState();
         }        
     }
 
-    public void setDisconectViewFromData(boolean disconectViewFromData) {
-        boolean oldDisconectViewFromData = this.disconectViewFromData;
-        this.disconectViewFromData = disconectViewFromData;
-        if (oldDisconectViewFromData && !disconectViewFromData) {
+    public void setDeliverDataChangeEvent(boolean deliverDataChangeEvents) {
+        boolean oldDeliverDataChangeEvents = this.deliverDataChangeEvents;
+        this.deliverDataChangeEvents = deliverDataChangeEvents;
+        if (!oldDeliverDataChangeEvents && deliverDataChangeEvents) {
+            originalValue = getWrappedValueModel().getValue();
             mediatedValueHolder.setValue(originalValue);
             updateDirtyState();
         }

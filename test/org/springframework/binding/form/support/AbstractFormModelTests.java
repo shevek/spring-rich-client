@@ -378,8 +378,9 @@ public class AbstractFormModelTests extends TestCase {
     }
     
     public void testFormObjectChangeEventComesBeforePropertyChangeEvent() {
-        final AbstractFormModel fm = getFormModel(new TestBean());
-        TestBean newTestBean = new TestBean();
+        final TestBean testBean = new TestBean();
+        final AbstractFormModel fm = getFormModel(testBean);
+        final TestBean newTestBean = new TestBean();
         newTestBean.setSimpleProperty("NewValue");
         final boolean[] formObjectChangeCalled = new boolean[1];
         fm.getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
@@ -395,6 +396,19 @@ public class AbstractFormModelTests extends TestCase {
             }
         });
         fm.setFormObject(newTestBean);
+    }
+    
+    public void testFormObjectChangeEvents() {
+        TestBean testBean = new TestBean();
+        final AbstractFormModel fm = getFormModel(testBean);
+        TestBean newTestBean = new TestBean();
+        newTestBean.setSimpleProperty("NewValue");
+        TestPropertyChangeListener testPCL = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
+        fm.getFormObjectHolder().addValueChangeListener(testPCL);
+        fm.setFormObject(newTestBean);
+        assertEquals(1, testPCL.eventCount());
+        assertEquals(testBean, testPCL.lastEvent().getOldValue());
+        assertEquals(newTestBean, testPCL.lastEvent().getNewValue());
     }
 
     public static class TestCommitListener implements CommitListener {
