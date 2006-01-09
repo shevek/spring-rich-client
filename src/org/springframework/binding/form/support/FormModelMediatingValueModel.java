@@ -49,13 +49,10 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     }
 
     public Object getValue() {
-        return mediatedValueHolder.getValue();
+        return getWrappedValueModel().getValue();
     }
 
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
-        if (disconectViewFromData) {
-            throw new IllegalStateException("View attempted to set value to data model when data model was disconnected");
-        }
         getWrappedValueModel().setValueSilently(value, this);
         mediatedValueHolder.setValueSilently(value, listenerToSkip);
         updateDirtyState();
