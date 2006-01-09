@@ -215,23 +215,19 @@ public abstract class AbstractMasterForm extends AbstractForm {
     }
 
     /**
-     * Rebuild the event list with data from the form object. This is normally invoked
+     * Handle the root event list being changed externally. This is normally invoked
      * when the value model holding this forms source property has changed (which can
      * occur when the parent form object is changed). This method is normally invoked from
      * the parent form object listener.
      * 
      * @see #_parentFormPropertyChangeHandler
      */
-    protected void rebuildRootEventList() {
+    protected void handleExternalRootEventListChange() {
         if( _masterEventList != null ) {
             // While we do this, we need to disable our normal list listener since it's
             // too late to interact with the user due to unsaved changes (the underlying
             // value model has already changed).
             uninstallSelectionHandler();
-
-            // Simply clear the current (old) list data and replace it with the new data
-            _masterEventList.clear();
-            _masterEventList.addAll( getFormData() );
 
             // Clean up the detail form
             if( _detailForm != null ) {
@@ -703,7 +699,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     private class ParentFormPropertyChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            rebuildRootEventList();
+            handleExternalRootEventListChange();
         }
 
     }
