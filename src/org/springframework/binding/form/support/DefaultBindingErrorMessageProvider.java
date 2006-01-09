@@ -49,7 +49,7 @@ public class DefaultBindingErrorMessageProvider implements BindingErrorMessagePr
         String messageCode = getMessageCodeForException(e);
         Object[] args = new Object[] {formModel.getFormPropertyFaceDescriptor(propertyName).getDisplayName(),
                 valueBeingSet};
-        String message = getMessageSourceAccessor().getMessage(messageCode, args);
+        String message = getMessageSourceAccessor().getMessage(messageCode, args, messageCode);
         return new DefaultValidationMessage(propertyName, Severity.ERROR, message);
     }
 
