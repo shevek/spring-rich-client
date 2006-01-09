@@ -67,7 +67,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     private String id;
 
-    private final ValueModel formObjectHolder;
+    private final FormModelMediatingValueModel formObjectHolder;
 
     private final MutablePropertyAccessStrategy propertyAccessStrategy;
 
@@ -131,17 +131,16 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     protected AbstractFormModel(ValueModel formObjectHolder, boolean buffered) {
-        this.formObjectHolder = formObjectHolder;
+        prepareValueModel(formObjectHolder);
+        this.formObjectHolder = new FormModelMediatingValueModel(formObjectHolder, false);
         this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
-        this.buffered = buffered;
-        prepareValueModel(this.formObjectHolder);
+        this.buffered = buffered;        
     }
 
     protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
-        this.formObjectHolder = propertyAccessStrategy.getDomainObjectHolder();
+        this.formObjectHolder = new FormModelMediatingValueModel(propertyAccessStrategy.getDomainObjectHolder(), false);
         this.propertyAccessStrategy = propertyAccessStrategy;
-        this.buffered = buffered;
-        prepareValueModel(formObjectHolder);
+        this.buffered = buffered;        
     }
 
     /**
@@ -188,10 +187,11 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     private void setDisconectViewFromData(boolean disconectViewFromData) {
+        formObjectHolder.setDisconectViewFromData(disconectViewFromData);
         for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
             FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel)i.next();
             valueModel.setDisconectViewFromData(disconectViewFromData);
-        }
+        }        
     }
 
     protected void handleSetNullFormObject() {
@@ -320,9 +320,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      * @param fromConverter Convert from target to source type
      */
     public void registerPropertyConverter(String propertyName, Converter toConverter, Converter fromConverter) {
-
         DefaultConversionService propertyConversionService = (DefaultConversionService)propertyConversionServices.get(propertyName);
-
         propertyConversionService.addConverter(toConverter);
         propertyConversionService.addConverter(fromConverter);
     }
@@ -375,7 +373,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     protected abstract void postProcessNewValueModel(String formProperty, ValueModel valueModel);
 
     /**
-     * Provides a hook for subclasses to optionaly decorate a new converting value model added to
+     * Provides a hook for subclasses to optionally decorate a new converting value model added to
      * this form model.
      */
     protected abstract ValueModel preProcessNewConvertingValueModel(String formProperty, Class targetClass,
