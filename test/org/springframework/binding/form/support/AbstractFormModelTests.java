@@ -362,6 +362,40 @@ public class AbstractFormModelTests extends TestCase {
         fm.getValueModel("singleSelectListProperty").setValue("singleSelectListProperty");
         assertTrue(!fm.isDirty());
     }
+    
+    public void testFormPropertiesAreAccessableFromFormObjectChangeEvents() {
+        final AbstractFormModel fm = getFormModel(new TestBean());
+        assertEquals(null, fm.getValueModel("simpleProperty").getValue());
+        TestBean newTestBean = new TestBean();
+        newTestBean.setSimpleProperty("NewValue");
+        fm.getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                assertEquals("NewValue", fm.getValueModel("simpleProperty").getValue());
+            }
+        });
+        fm.setFormObject(newTestBean);
+    }
+    
+    public void testFormObjectChangeEventComesBeforePropertyChangeEvent() {
+        final AbstractFormModel fm = getFormModel(new TestBean());
+        TestBean newTestBean = new TestBean();
+        newTestBean.setSimpleProperty("NewValue");
+        final boolean[] formObjectChangeCalled = new boolean[1];
+        fm.getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                formObjectChangeCalled[0] = true;
+            }
+        });
+        fm.getValueModel("simpleProperty").addValueChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                assertEquals("Form property change event was called before form object change event", true, formObjectChangeCalled[0]);
+            }
+        });
+        fm.setFormObject(newTestBean);
+    }
 
     public static class TestCommitListener implements CommitListener {
         int preEditCalls;
