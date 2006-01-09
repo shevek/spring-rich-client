@@ -19,7 +19,7 @@ package org.springframework.binding.value;
  * A value model that derives its value by applying some transformation to
  * one or more source value models. 
  * 
- * Typical usage would be a type converter or string formatter.
+ * <p>Typical usage would be a type converter or string formatter.
  *  
  * @author Oliver Hutchison
  */

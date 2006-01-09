@@ -16,7 +16,7 @@
 package org.springframework.binding.validation;
 
 /**
- * Interface to be implemented by classes capable of incrementaly validating 
+ * Interface to be implemented by classes capable of incrementally validating 
  * domain objects. This interface is intended for validators that are able to 
  * validate a subset of the domain objects properties.
  *  

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2002-2004 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.springframework.binding.form.support;
 
 import java.beans.PropertyChangeEvent;
@@ -14,7 +29,7 @@ import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
  * A value model wrapper that mediates between the (wrapped) data value model and the 
- * derived view value model. Allows for disconnection/reconnection of view and data models.
+ * derived view value model. Allows for value change event delivery to be disabled.
  * 
  * @author Oliver Hutchison
  */
@@ -24,7 +39,7 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     private final EventListenerListHelper dirtyChangeListeners = new EventListenerListHelper(
             PropertyChangeListener.class);
 
-    private boolean deliverDataChangeEvents = true;
+    private boolean deliverValueChangeEvents = true;
 
     private final ValueHolder mediatedValueHolder;
 
@@ -43,39 +58,34 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     public FormModelMediatingValueModel(ValueModel propertyValueModel, boolean trackDirty) {
         super(propertyValueModel);
         super.addValueChangeListener(this);
-        this.originalValue = propertyValueModel.getValue();
+        this.originalValue = getValue();
         this.mediatedValueHolder = new ValueHolder(originalValue);
         this.trackDirty = trackDirty;
     }
 
-    public Object getValue() {
-        return getWrappedValueModel().getValue();
-    }
-
     public void setValueSilently(Object value, PropertyChangeListener listenerToSkip) {
-        getWrappedValueModel().setValueSilently(value, this);
-        if (deliverDataChangeEvents) {
+        super.setValueSilently(value, this);
+        if (deliverValueChangeEvents) {
             mediatedValueHolder.setValueSilently(value, listenerToSkip);
-        }
-        updateDirtyState();
+            updateDirtyState();
+        }        
     }
 
     // called by the wrapped value model
-    public void propertyChange(PropertyChangeEvent evt) {        
-        if (deliverDataChangeEvents) {
-            originalValue = getWrappedValueModel().getValue();
+    public void propertyChange(PropertyChangeEvent evt) {
+        originalValue = getValue();
+        if (deliverValueChangeEvents) {            
             mediatedValueHolder.setValue(originalValue);
             updateDirtyState();
         }        
     }
 
-    public void setDeliverDataChangeEvent(boolean deliverDataChangeEvents) {
-        boolean oldDeliverDataChangeEvents = this.deliverDataChangeEvents;
-        this.deliverDataChangeEvents = deliverDataChangeEvents;
-        if (!oldDeliverDataChangeEvents && deliverDataChangeEvents) {
-            originalValue = getWrappedValueModel().getValue();
-            mediatedValueHolder.setValue(originalValue);
-            updateDirtyState();
+    public void setDeliverValueChangeEvents(boolean deliverValueChangeEvents) {
+        boolean oldDeliverValueChangeEvents = this.deliverValueChangeEvents;
+        this.deliverValueChangeEvents = deliverValueChangeEvents;
+        if (!oldDeliverValueChangeEvents && deliverValueChangeEvents) {
+            mediatedValueHolder.setValue(getValue());
+            updateDirtyState();            
         }
     }
 

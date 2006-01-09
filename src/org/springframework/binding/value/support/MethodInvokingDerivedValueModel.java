@@ -21,10 +21,10 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.util.Assert;
 
 /**
- * A value model that derives it's value from the result of invoking a method 
- * with the method invocations parameters being extracted from a list of
+ * A value model that derives it's value from the result of invoking a method. 
+ * The parameters for the method invocation are generated from a list of
  * "source" value models. Should any of the "source" values change the method
- * will be reinvoked and if the return value has changes the value held by 
+ * will be invoked and if the return value has changed the value held by 
  * this class will be updated.
  *  
  * @author  Oliver Hutchison
@@ -35,7 +35,7 @@ public final class MethodInvokingDerivedValueModel extends AbstractDerivedValueM
 
     private final Method method;
 
-    Object value;
+    private Object value;
 
     public MethodInvokingDerivedValueModel(Object target, String methodName, ValueModel[] paramSourceValueModels) {
         super(paramSourceValueModels);

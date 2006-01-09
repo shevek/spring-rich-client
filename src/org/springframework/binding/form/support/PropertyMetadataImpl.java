@@ -106,7 +106,7 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
     }
 
     /**
-     * Propogates dirty changes from the value model on to 
+     * Propagates dirty changes from the value model on to 
      * the dirty change listeners attached to this class.
      */
     private class DirtyChangeHandler extends CommitListenerAdapter implements PropertyChangeListener {

@@ -146,6 +146,8 @@ public interface FormModel extends PropertyChangePublisher {
     
     /**
      * Returns true if the changes held by this form are able to be committed.
+     * A form is committable when it and it's child form models have no validation 
+     * errors.
      */
     boolean isCommittable();
     

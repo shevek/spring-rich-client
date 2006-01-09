@@ -23,8 +23,8 @@ import org.springframework.binding.value.ValueModel;
 
 /**
  * Abstract base class for value models that derive their value from one or
- * more "source" value model. Provides a convinent hook so that subclasses are 
- * notifed when any of the "source" value models change.
+ * more "source" value model. Provides a hook to notify when any of the 
+ * "source" value models change.
  * 
  * @author  Oliver Hutchison
  */
