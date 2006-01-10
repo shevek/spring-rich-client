@@ -15,18 +15,23 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
-import org.springframework.richclient.list.DynamicComboBoxListModel;
 
 /**
  * TODO: support for filters
@@ -36,12 +41,12 @@ import org.springframework.richclient.list.DynamicComboBoxListModel;
 public class ComboBoxBinding extends AbstractBinding implements Binding {
 
     private final JComboBox comboBox;
+    
+    private final BoundComboBoxModel model = new BoundComboBoxModel();
+    
+    private final SelectableItemsChangeHander selectableItemsChangeHander = new SelectableItemsChangeHander();
 
     private ValueModel selectableItemsHolder;
-
-    private ListCellRenderer renderer;
-
-    private Comparator comparator;
 
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -54,13 +59,27 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     }
 
     protected JComponent doBindControl() {
-        final ValueModel valueModel = getValueModel();
-        DynamicComboBoxListModel model = new DynamicComboBoxListModel(valueModel, getSelectableItemsHolder());
-        model.setComparator(getComparator());
-        model.sort();
+        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHander);
+        updateSelectableItems();
         comboBox.setModel(model);
-        comboBox.setSelectedItem(getValue());
+        comboBox.setSelectedItem(getValueModel().getValue());
         return comboBox;
+    }
+
+    protected Collection getSelectableItems() {
+        final Object selectableItems = selectableItemsHolder.getValue();
+        if (selectableItems instanceof Object[]) {
+            return Arrays.asList((Object[])selectableItems);
+        } else if (selectableItems instanceof Collection) {
+            return (Collection) selectableItems;
+        } else {
+            throw new UnsupportedOperationException("selectableItemsHolder must contain an array or a Collection");
+        }
+    }
+    
+    protected void updateSelectableItems() {
+        model.replaceWith(getSelectableItems());
+        model.sort();
     }
 
     public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
@@ -81,12 +100,8 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
         }
     }
 
-    private Comparator getComparator() {
-        return comparator;
-    }
-
     public void setComparator(Comparator comparator) {
-        this.comparator = comparator;
+        model.setComparator(comparator);
     }
 
     public ListCellRenderer getRenderer() {
@@ -108,5 +123,23 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     protected void enabledChanged() {
         comboBox.setEnabled(isEnabled() && !isReadOnly());
     }
+    
+    private class BoundComboBoxModel extends ListListModel implements ComboBoxModel {        
 
+        public void setSelectedItem(Object selectedItem) {
+            getValueModel().setValue(selectedItem);
+        }
+
+        public Object getSelectedItem() {
+            return getValueModel().getValue();
+        }        
+    }
+    
+    private class SelectableItemsChangeHander implements PropertyChangeListener {
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            updateSelectableItems();            
+        }        
+
+    }
 }
