@@ -41,9 +41,9 @@ import org.springframework.richclient.form.binding.support.AbstractBinding;
 public class ComboBoxBinding extends AbstractBinding implements Binding {
 
     private final JComboBox comboBox;
-    
+
     private final BoundComboBoxModel model = new BoundComboBoxModel();
-    
+
     private final SelectableItemsChangeHander selectableItemsChangeHander = new SelectableItemsChangeHander();
 
     private ValueModel selectableItemsHolder;
@@ -59,31 +59,36 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     }
 
     protected JComponent doBindControl() {
-        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHander);
-        updateSelectableItems();
         comboBox.setModel(model);
         comboBox.setSelectedItem(getValueModel().getValue());
         return comboBox;
     }
 
     protected Collection getSelectableItems() {
-        final Object selectableItems = selectableItemsHolder.getValue();
+        final Object selectableItems = getSelectableItemsHolder().getValue();
         if (selectableItems instanceof Object[]) {
             return Arrays.asList((Object[])selectableItems);
-        } else if (selectableItems instanceof Collection) {
-            return (Collection) selectableItems;
-        } else {
+        }
+        else if (selectableItems instanceof Collection) {
+            return (Collection)selectableItems;
+        }
+        else {
             throw new UnsupportedOperationException("selectableItemsHolder must contain an array or a Collection");
         }
     }
-    
+
     protected void updateSelectableItems() {
         model.replaceWith(getSelectableItems());
         model.sort();
     }
 
     public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
+        if (this.selectableItemsHolder != null) {
+            this.selectableItemsHolder.removeValueChangeListener(selectableItemsChangeHander);
+        }
         this.selectableItemsHolder = selectableItemsHolder;
+        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHander);
+        updateSelectableItems();
     }
 
     public ValueModel getSelectableItemsHolder() {
@@ -123,8 +128,8 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     protected void enabledChanged() {
         comboBox.setEnabled(isEnabled() && !isReadOnly());
     }
-    
-    private class BoundComboBoxModel extends ListListModel implements ComboBoxModel {        
+
+    private class BoundComboBoxModel extends ListListModel implements ComboBoxModel {
 
         public void setSelectedItem(Object selectedItem) {
             getValueModel().setValue(selectedItem);
@@ -132,14 +137,14 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
 
         public Object getSelectedItem() {
             return getValueModel().getValue();
-        }        
+        }
     }
-    
+
     private class SelectableItemsChangeHander implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
-            updateSelectableItems();            
-        }        
+            updateSelectableItems();
+        }
 
     }
 }
