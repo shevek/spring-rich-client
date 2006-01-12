@@ -16,6 +16,7 @@
 package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JComboBox;
+import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
@@ -36,21 +37,31 @@ public class ComboBoxBindingTests extends AbstractBindingTests {
         return "simpleProperty";
     }
 
-    public void testValueModelUpdatesComponent() {
+    public void testValueModelUpdatesComponent() {        
+        TestListDataListener tldl = new TestListDataListener();
+        cb.getModel().addListDataListener(tldl);
+        
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
+        tldl.assertCalls(0);        
 
         vm.setValue("1");
         assertEquals("1", cb.getSelectedItem());
         assertEquals(1, cb.getSelectedIndex());
+        tldl.assertEvent(1, ListDataEvent.CONTENTS_CHANGED, -1, -1);
 
         vm.setValue("2");
         assertEquals("2", cb.getSelectedItem());
         assertEquals(2, cb.getSelectedIndex());
+        tldl.assertEvent(2, ListDataEvent.CONTENTS_CHANGED, -1, -1);
 
         vm.setValue(null);
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
+        tldl.assertEvent(3, ListDataEvent.CONTENTS_CHANGED, -1, -1);
+        
+        vm.setValue(null);
+        tldl.assertCalls(3);
     }
 
     public void testComponentUpdatesValueModel() {

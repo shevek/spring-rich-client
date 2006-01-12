@@ -141,7 +141,7 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
         public Object getSelectedItem() {
             return getValueModel().getValue();
         }
-        
+
         protected void selectedValueChanged() {
             fireContentsChanged(-1, -1);
         }
@@ -154,11 +154,12 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
         }
 
     }
+
     private class SelectedItemChangeHandler implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
-            if( logger.isDebugEnabled() ) {
-                logger.debug( "Firing contents change event; selected item value has changed" );
+            if (logger.isDebugEnabled()) {
+                logger.debug("Firing contents change event; selected item value has changed");
             }
 
             model.selectedValueChanged();
