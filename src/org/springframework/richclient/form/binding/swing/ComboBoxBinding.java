@@ -44,6 +44,8 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
 
     private final BoundComboBoxModel model = new BoundComboBoxModel();
 
+    private final SelectedItemChangeHandler selectedItemChangeHandler = new SelectedItemChangeHandler();
+
     private final SelectableItemsChangeHander selectableItemsChangeHander = new SelectableItemsChangeHander();
 
     private ValueModel selectableItemsHolder;
@@ -61,6 +63,7 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     protected JComponent doBindControl() {
         comboBox.setModel(model);
         comboBox.setSelectedItem(getValueModel().getValue());
+        getValueModel().addValueChangeListener(selectedItemChangeHandler);
         return comboBox;
     }
 
@@ -138,6 +141,10 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
         public Object getSelectedItem() {
             return getValueModel().getValue();
         }
+        
+        protected void selectedValueChanged() {
+            fireContentsChanged(-1, -1);
+        }
     }
 
     private class SelectableItemsChangeHander implements PropertyChangeListener {
@@ -146,5 +153,15 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
             updateSelectableItems();
         }
 
+    }
+    private class SelectedItemChangeHandler implements PropertyChangeListener {
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            if( logger.isDebugEnabled() ) {
+                logger.debug( "Firing contents change event; selected item value has changed" );
+            }
+
+            model.selectedValueChanged();
+        }
     }
 }
