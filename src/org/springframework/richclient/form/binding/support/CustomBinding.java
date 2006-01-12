@@ -49,6 +49,9 @@ public abstract class CustomBinding extends AbstractBinding {
 
     private class ValueModelChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Notifying binding of value model value changed");
+            }
             valueModelChanged(getValue());
         }
     }  

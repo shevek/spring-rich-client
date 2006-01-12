@@ -30,21 +30,18 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.form.binding.Binding;
-import org.springframework.richclient.form.binding.support.AbstractBinding;
+import org.springframework.richclient.form.binding.support.CustomBinding;
 
 /**
  * TODO: support for filters
  * 
  * @author Oliver Hutchison
  */
-public class ComboBoxBinding extends AbstractBinding implements Binding {
+public class ComboBoxBinding extends CustomBinding {
 
     private final JComboBox comboBox;
 
     private final BoundComboBoxModel model = new BoundComboBoxModel();
-
-    private final SelectedItemChangeHandler selectedItemChangeHandler = new SelectedItemChangeHandler();
 
     private final SelectableItemsChangeHander selectableItemsChangeHander = new SelectableItemsChangeHander();
 
@@ -63,7 +60,6 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
     protected JComponent doBindControl() {
         comboBox.setModel(model);
         comboBox.setSelectedItem(getValueModel().getValue());
-        getValueModel().addValueChangeListener(selectedItemChangeHandler);
         return comboBox;
     }
 
@@ -146,23 +142,15 @@ public class ComboBoxBinding extends AbstractBinding implements Binding {
             fireContentsChanged(-1, -1);
         }
     }
+    
+    protected void valueModelChanged(Object newValue) {
+        model.selectedValueChanged();
+    }
 
     private class SelectableItemsChangeHander implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
             updateSelectableItems();
-        }
-
-    }
-
-    private class SelectedItemChangeHandler implements PropertyChangeListener {
-
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Firing contents change event; selected item value has changed");
-            }
-
-            model.selectedValueChanged();
         }
     }
 }
