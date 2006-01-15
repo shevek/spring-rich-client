@@ -25,9 +25,12 @@ public class TestBean {
 
     private String simpleProperty;
 
+    public TestLabeledEnum enumProperty;
+
     private Map mapProperty;
 
     private List listProperty;
+
     private Object singleSelectListProperty;
 
     private TestBean nestedProperty;
@@ -42,6 +45,14 @@ public class TestBean {
 
     public void setSimpleProperty(String simpleProperty) {
         this.simpleProperty = simpleProperty;
+    }
+
+    public TestLabeledEnum getEnumProperty() {
+        return enumProperty;
+    }
+
+    public void setEnumProperty(TestLabeledEnum enumProperty) {
+        this.enumProperty = enumProperty;
     }
 
     public Map getMapProperty() {
@@ -63,7 +74,7 @@ public class TestBean {
     public Object getSingleSelectListProperty() {
         return singleSelectListProperty;
     }
-  
+
     public void setSingleSelectListProperty(final Object singleSelectListProperty) {
         this.singleSelectListProperty = singleSelectListProperty;
     }
@@ -81,6 +92,6 @@ public class TestBean {
     }
 
     public void setWriteOnly(Object writeOnly) {
-        this.writeOnly = writeOnly;        
+        this.writeOnly = writeOnly;
     }
 }
