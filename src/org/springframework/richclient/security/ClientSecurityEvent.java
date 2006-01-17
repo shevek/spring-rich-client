@@ -15,9 +15,8 @@
  */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-
+import org.acegisecurity.Authentication;
+import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.context.ApplicationEvent;
 
 /**

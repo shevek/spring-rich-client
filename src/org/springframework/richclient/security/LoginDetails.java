@@ -15,8 +15,7 @@
  */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.Authentication;
-
+import org.acegisecurity.Authentication;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.rules.PropertyConstraintProvider;

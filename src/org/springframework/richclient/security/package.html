@@ -261,7 +261,7 @@ constructed). To achieve this, on the client you'll need to use the
 to use the <code>RemoteAuthenticationManagerImpl</code>. On the client
 you'll use your preferred remoting proxy factory to access the server-side
 RemoteAuthenticationManagerImpl. You can find these classes in Acegi
-Security's <code>net.sf.acegisecurity.providers.rcp</code> package.
+Security's <code>org.acegisecurity.providers.rcp</code> package.
 An example using the HTTP proxy would be configured like this:</P>
 
 <pre>
@@ -273,7 +273,7 @@ An example using the HTTP proxy would be configured like this:</P>
 
 	&lt;!-- Remote authentication manager configuration --&gt;
 	&lt;bean id="authenticationManager"
-		class="net.sf.acegisecurity.providers.ProviderManager"&gt;
+		class="org.acegisecurity.providers.ProviderManager"&gt;
 		&lt;property name="providers"&gt;
 			&lt;list&gt;
 				&lt;ref bean="remoteAuthenticationProvider" /&gt;
@@ -282,7 +282,7 @@ An example using the HTTP proxy would be configured like this:</P>
 	&lt;/bean&gt;
 
 	&lt;bean id="remoteAuthenticationProvider"
-		class="net.sf.acegisecurity.providers.rcp.RemoteAuthenticationProvider"&gt;
+		class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider"&gt;
 		&lt;property name="remoteAuthenticationManager" ref="remoteAuthenticationManager" /&gt;
 	&lt;/bean&gt;
 
@@ -292,7 +292,7 @@ An example using the HTTP proxy would be configured like this:</P>
 			&lt;value&gt;http://localhost:8080/myserver/context/RemoteAuthenticationManager&lt;/value&gt;
 		&lt;/property&gt;
 		&lt;property name="serviceInterface"&gt;
-			&lt;value&gt;net.sf.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
+			&lt;value&gt;org.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
 		&lt;/property&gt;
 	&lt;/bean&gt;
 </code>
@@ -346,7 +346,7 @@ your server:</P>
 <pre>
 <code>
 	&lt;bean id="basicProcessingFilter"
-		class="net.sf.acegisecurity.ui.basicauth.BasicProcessingFilter"&gt;
+		class="org.acegisecurity.ui.basicauth.BasicProcessingFilter"&gt;
 		&lt;property name="authenticationManager"&gt;
 			&lt;ref bean="authenticationManager" /&gt;
 		&lt;/property&gt;
@@ -356,14 +356,14 @@ your server:</P>
 	&lt;/bean&gt;
 
 	&lt;bean id="basicProcessingFilterEntryPoint"
-		class="net.sf.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint"&gt;
+		class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint"&gt;
 		&lt;property name="realmName"&gt;
 			&lt;value&gt;My Realm&lt;/value&gt;
 		&lt;/property&gt;
 	&lt;/bean&gt;
 
 	&lt;bean id="httpSessionContextIntegrationFilter"
-		class="net.sf.acegisecurity.context.HttpSessionContextIntegrationFilter"&gt;
+		class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"&gt;
 		&lt;property name="allowSessionCreation"&gt;
 			&lt;value&gt;false&lt;/value&gt;
 		&lt;/property&gt;
@@ -371,14 +371,14 @@ your server:</P>
 
 	&lt;!-- Allows remote clients to check if a username/password is valid --&gt;
 	&lt;bean id="remoteAuthenticationManager"
-		class="net.sf.acegisecurity.providers.rcp.RemoteAuthenticationManagerImpl"&gt;
+		class="org.acegisecurity.providers.rcp.RemoteAuthenticationManagerImpl"&gt;
 		&lt;property name="authenticationManager"&gt;
 			&lt;ref bean="authenticationManager" /&gt;
 		&lt;/property&gt;
 	&lt;/bean&gt;
 
 	&lt;bean id="authenticationManager"
-		class="net.sf.acegisecurity.providers.ProviderManager"&gt;
+		class="org.acegisecurity.providers.ProviderManager"&gt;
 		&lt;property name="providers"&gt;
 			&lt;list&gt;
 				&lt;ref bean="daoAuthenticationProvider" /&gt;
@@ -387,7 +387,7 @@ your server:</P>
 	&lt;/bean&gt;
 
 	&lt;bean id="daoAuthenticationProvider"
-		class="net.sf.acegisecurity.providers.dao.DaoAuthenticationProvider"&gt;
+		class="org.acegisecurity.providers.dao.DaoAuthenticationProvider"&gt;
 		&lt;property name="authenticationDao"&gt;
 			&lt;ref bean="authenticationDao" /&gt;
 		&lt;/property&gt;
@@ -405,10 +405,10 @@ your server:</P>
     &lt;!-- Security configuration --&gt;
     &lt;filter&gt;
         &lt;filter-name&gt;Acegi HTTP Session Integration&lt;/filter-name&gt;
-        &lt;filter-class&gt;net.sf.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
+        &lt;filter-class&gt;org.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
         &lt;init-param&gt;
             &lt;param-name&gt;targetClass&lt;/param-name&gt;
-            &lt;param-value&gt;net.sf.acegisecurity.context.HttpSessionContextIntegrationFilter&lt;/param-value&gt;
+            &lt;param-value&gt;org.acegisecurity.context.HttpSessionContextIntegrationFilter&lt;/param-value&gt;
         &lt;/init-param&gt;
     &lt;/filter&gt;
 
@@ -419,10 +419,10 @@ your server:</P>
 
     &lt;filter&gt;
         &lt;filter-name&gt;Acegi HTTP BASIC Authorization Filter&lt;/filter-name&gt;
-        &lt;filter-class&gt;net.sf.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
+        &lt;filter-class&gt;org.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
         &lt;init-param&gt;
             &lt;param-name&gt;targetClass&lt;/param-name&gt;
-            &lt;param-value&gt;net.sf.acegisecurity.ui.basicauth.BasicProcessingFilter&lt;/param-value&gt;
+            &lt;param-value&gt;org.acegisecurity.ui.basicauth.BasicProcessingFilter&lt;/param-value&gt;
         &lt;/init-param&gt;
     &lt;/filter&gt;
 

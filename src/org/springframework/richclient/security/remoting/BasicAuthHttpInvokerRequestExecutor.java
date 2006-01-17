@@ -18,8 +18,7 @@ package org.springframework.richclient.security.remoting;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import net.sf.acegisecurity.Authentication;
-
+import org.acegisecurity.Authentication;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +33,7 @@ import org.springframework.richclient.security.AuthenticationAware;
  * received.
  * <p>
  * In comparison, see
- * {@link net.sf.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}
+ * {@link org.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}
  * for a class that manages the Authentication per-thread. If you need to have threads
  * with different authentication credentials, then you should use the acegi class instead.
  * <p>
@@ -72,7 +71,7 @@ public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerReques
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(net.sf.acegisecurity.Authentication)
+     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
         _authentication = authentication;

@@ -39,7 +39,7 @@
 	<!-- Proxy for the Hessian-exported RemoteAuthenticationManager -->
 	<bean id="remoteAuthenticationManager" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
 		<property name="serviceInterface">
-			<value>net.sf.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
+			<value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
 		</property>
 		<property name="serviceUrl">
 			<value>http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-hessian</value>
@@ -50,7 +50,7 @@
 <!--
 	<bean id="remoteAuthenticationManager" class="org.springframework.remoting.caucho.BurlapProxyFactoryBean">
 		<property name="serviceInterface">
-			<value>net.sf.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
+			<value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
 		</property>
 		<property name="serviceUrl">
 			<value>http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-burlap</value>

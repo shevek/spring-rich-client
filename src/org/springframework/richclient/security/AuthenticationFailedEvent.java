@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.AcegiSecurityException;
-import net.sf.acegisecurity.Authentication;
+import org.acegisecurity.AcegiSecurityException;
+import org.acegisecurity.Authentication;
 
 /**
  * Event fired when an authentication attempt fails.

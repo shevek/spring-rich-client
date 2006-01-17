@@ -17,9 +17,8 @@ package org.springframework.richclient.security;
 
 import javax.swing.JOptionPane;
 
-import net.sf.acegisecurity.AcegiSecurityException;
-import net.sf.acegisecurity.Authentication;
-
+import org.acegisecurity.AcegiSecurityException;
+import org.acegisecurity.Authentication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.Application;

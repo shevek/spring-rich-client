@@ -17,14 +17,13 @@ package org.springframework.richclient.security.support;
 
 import java.util.Map;
 
-import net.sf.acegisecurity.AcegiSecurityException;
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.AuthenticationManager;
-import net.sf.acegisecurity.GrantedAuthority;
-import net.sf.acegisecurity.context.SecurityContextHolder;
-import net.sf.acegisecurity.providers.AuthenticationProvider;
-import net.sf.acegisecurity.providers.ProviderManager;
-
+import org.acegisecurity.AcegiSecurityException;
+import org.acegisecurity.Authentication;
+import org.acegisecurity.AuthenticationManager;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.AuthenticationProvider;
+import org.acegisecurity.providers.ProviderManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,7 +40,7 @@ import org.springframework.richclient.security.LogoutEvent;
  * login and logout actions and the event lifecycle.
  * <p>
  * Instances of this class should be configured with an instance of
- * {@link net.sf.acegisecurity.AuthenticationManager} to be used to handle authentication
+ * {@link org.acegisecurity.AuthenticationManager} to be used to handle authentication
  * (login) requests. This would be done like this:
  * 
  * <pre>
@@ -51,7 +50,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *         &lt;/bean&gt;
  *         
  *         &lt;bean id=&quot;authenticationManager&quot;
- *           class=&quot;net.sf.acegisecurity.providers.ProviderManager&quot;&gt;
+ *           class=&quot;org.acegisecurity.providers.ProviderManager&quot;&gt;
  *           &lt;property name=&quot;providers&quot;&gt;
  *               &lt;list&gt;
  *                   &lt;ref bean=&quot;remoteAuthenticationProvider&quot; /&gt;
@@ -60,7 +59,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *       &lt;/bean&gt;
  *       
  *       &lt;bean id=&quot;remoteAuthenticationProvider&quot;
- *           class=&quot;net.sf.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
+ *           class=&quot;org.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
  *           &lt;property name=&quot;remoteAuthenticationManager&quot; ref=&quot;remoteAuthenticationManager&quot; /&gt;
  *       &lt;/bean&gt;
  *    
@@ -70,7 +69,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *               &lt;value&gt;http://localhost:8080/myserver/rootContext/RemoteAuthenticationManager&lt;/value&gt;
  *           &lt;/property&gt;
  *           &lt;property name=&quot;serviceInterface&quot;&gt;
- *               &lt;value&gt;net.sf.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
+ *               &lt;value&gt;org.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
  *           &lt;/property&gt;
  *       &lt;/bean&gt;
  * </pre>
@@ -153,8 +152,8 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * 
      * @param authentication token to use for the login attempt
      * @return Authentication token resulting from a successful call to
-     *         {@link AuthenticationManager#authenticate(net.sf.acegisecurity.Authentication)}.
-     * @see org.springframework.richclient.security.ApplicationSecurityManager#doLogin(net.sf.acegisecurity.Authentication)
+     *         {@link AuthenticationManager#authenticate(org.acegisecurity.Authentication)}.
+     * @see org.springframework.richclient.security.ApplicationSecurityManager#doLogin(org.acegisecurity.Authentication)
      * @throws AcegiSecurityException If the authentication attempt fails
      */
     public Authentication doLogin(Authentication authentication) {

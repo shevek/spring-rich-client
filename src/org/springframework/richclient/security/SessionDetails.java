@@ -2,12 +2,11 @@ package org.springframework.richclient.security;
 
 import java.io.Serializable;
 
-import net.sf.acegisecurity.AcegiSecurityException;
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.AuthenticationManager;
-import net.sf.acegisecurity.context.SecurityContextHolder;
-import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-
+import org.acegisecurity.AcegiSecurityException;
+import org.acegisecurity.Authentication;
+import org.acegisecurity.AuthenticationManager;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -147,7 +146,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         // Create a non-null Authentication object if required (to meet
         // ApplicationEvent contract)
         if (existing == null) {
-            existing = LogoutEvent.NO_AUTHENTICATION;
+            existing = ClientSecurityEvent.NO_AUTHENTICATION;
         }
 
         // Fire application event to advise of logout

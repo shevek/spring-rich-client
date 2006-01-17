@@ -17,10 +17,10 @@ package org.springframework.richclient.security.support;
 
 import java.util.Arrays;
 
-import net.sf.acegisecurity.ConfigAttributeDefinition;
-import net.sf.acegisecurity.ConfigAttributeEditor;
-import net.sf.acegisecurity.vote.AffirmativeBased;
-import net.sf.acegisecurity.vote.RoleVoter;
+import org.acegisecurity.ConfigAttributeDefinition;
+import org.acegisecurity.ConfigAttributeEditor;
+import org.acegisecurity.vote.AffirmativeBased;
+import org.acegisecurity.vote.RoleVoter;
 
 /**
  * This class controls the authorization of other objects, that implement the

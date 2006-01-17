@@ -6,12 +6,13 @@ package org.springframework.richclient.security.support;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import net.sf.acegisecurity.AccessDecisionManager;
-import net.sf.acegisecurity.AccessDeniedException;
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.ConfigAttribute;
-import net.sf.acegisecurity.ConfigAttributeDefinition;
-import net.sf.acegisecurity.providers.TestingAuthenticationToken;
+
+import org.acegisecurity.AccessDecisionManager;
+import org.acegisecurity.AccessDeniedException;
+import org.acegisecurity.Authentication;
+import org.acegisecurity.ConfigAttribute;
+import org.acegisecurity.ConfigAttributeDefinition;
+import org.acegisecurity.providers.TestingAuthenticationToken;
 
 /**
  * @author Larry Streepy

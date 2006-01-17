@@ -7,11 +7,11 @@
 
 <beans>
 
-	<bean id="remoteAuthenticationProvider" class="net.sf.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
+	<bean id="remoteAuthenticationProvider" class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
   		<property name="remoteAuthenticationManager"><ref bean="remoteAuthenticationManager"/></property>
 	</bean>
 	
-	<bean id="authenticationManager" class="net.sf.acegisecurity.providers.ProviderManager">
+	<bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
 		<property name="providers">
 		  <list>
 		    <ref bean="remoteAuthenticationProvider"/>
@@ -23,9 +23,9 @@
 
 	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
 	
-	<bean id="roleVoter" class="net.sf.acegisecurity.vote.RoleVoter"/>
+	<bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter"/>
 
-	<bean id="accessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+	<bean id="accessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
    		<property name="allowIfAllAbstainDecisions"><value>false</value></property>
 		<property name="decisionVoters">
 		  <list>

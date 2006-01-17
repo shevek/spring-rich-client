@@ -15,14 +15,14 @@
  */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.Authentication;
+import org.acegisecurity.Authentication;
 
 /**
  * Event fired when a user logs in.
  * <P>
  * The source of this event is the <code>Authentication</code> token returned by a
  * successful call to
- * {@link net.sf.acegisecurity.AuthenticationManager#authenticate(net.sf.acegisecurity.Authentication)}
+ * {@link org.acegisecurity.AuthenticationManager#authenticate(org.acegisecurity.Authentication)}
  * 
  * @author Ben Alex
  * @see AuthenticationEvent

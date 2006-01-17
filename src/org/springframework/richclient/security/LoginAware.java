@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.security;
 
-import net.sf.acegisecurity.Authentication;
+import org.acegisecurity.Authentication;
 
 /**
  * A Spring managed bean implementing this interface will be automatically notified of any

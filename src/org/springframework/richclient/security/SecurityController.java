@@ -17,8 +17,7 @@ package org.springframework.richclient.security;
 
 import java.util.List;
 
-import net.sf.acegisecurity.AccessDecisionManager;
-
+import org.acegisecurity.AccessDecisionManager;
 import org.springframework.richclient.core.Authorizable;
 
 /**

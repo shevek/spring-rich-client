@@ -16,10 +16,10 @@
 package org.springframework.richclient.security;
 
 import junit.framework.TestCase;
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.AuthenticationManager;
-import net.sf.acegisecurity.BadCredentialsException;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.AuthenticationManager;
+import org.acegisecurity.BadCredentialsException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
