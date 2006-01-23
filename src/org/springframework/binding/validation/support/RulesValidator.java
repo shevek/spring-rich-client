@@ -55,12 +55,27 @@ public class RulesValidator implements RichValidator {
 
     private String rulesContextId = null;
 
+    /**
+     * Creates a RulesValidator for the given formModel. When no RulesSource is
+     * given, a default/global RulesSource is retrieved by the ApplicationServices class.
+     * 
+     * @see org.springframework.richclient.application.ApplicationServices#getRulesSource()
+     */
     public RulesValidator(FormModel formModel) {
-        this.formModel = formModel;
-        validationResultsCollector = new BeanValidationResultsCollector(new FormModelPropertyAccessStrategy(formModel));
-        messageTranslator = new FormModelAwareMessageTranslator(formModel, Application.services());
+        this(formModel, null);
     }
 
+    /**
+     * Create a RulesValidator which uses the supplied RulesSource on the FormModel. 
+     */
+    public RulesValidator(FormModel formModel, RulesSource rulesSource)
+    {
+        this.formModel = formModel;
+        this.rulesSource = rulesSource;
+        validationResultsCollector = new BeanValidationResultsCollector(new FormModelPropertyAccessStrategy(formModel));
+        messageTranslator = new FormModelAwareMessageTranslator(formModel, Application.services());        
+    }
+    
     public ValidationResults validate(Object object) {
         return validate(object, null);
     }
@@ -100,7 +115,7 @@ public class RulesValidator implements RichValidator {
 
     private void checkRule(PropertyConstraint validationRule) {
         BeanValidationResultsCollector resultsCollector = takeResultsCollector();
-        PropertyResults results = (PropertyResults)resultsCollector.collectPropertyResults(validationRule);
+        PropertyResults results = resultsCollector.collectPropertyResults(validationRule);
         returnResultsCollector(resultsCollector);
         if (results == null) {
             constraintSatisfied(validationRule);
