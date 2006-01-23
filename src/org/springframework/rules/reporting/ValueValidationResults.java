@@ -1,5 +1,6 @@
 package org.springframework.rules.reporting;
 
+import org.springframework.binding.validation.Severity;
 import org.springframework.core.closure.Constraint;
 
 /**
