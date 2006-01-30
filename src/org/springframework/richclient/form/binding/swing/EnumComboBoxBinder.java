@@ -36,7 +36,7 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
     private final LabeledEnumResolver enumResolver = Application.services().getLabeledEnumResolver();
 
     public EnumComboBoxBinder() {
-        super(new String[] {COMPARATOR_KEY, RENDERER_KEY, FILTER_KEY});
+        super(new String[] {COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY});
     }
 
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {

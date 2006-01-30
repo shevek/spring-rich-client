@@ -21,11 +21,13 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.ComboBoxEditor;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
+import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.util.Assert;
 
 /**
@@ -38,11 +40,13 @@ public class ComboBoxBinder extends AbstractBinder  {
 
     public static final String RENDERER_KEY = "renderer";
 
+    public static final String EDITOR_KEY = "editor";
+
     public static final String FILTER_KEY = "filter";
     
     public ComboBoxBinder() {
         super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY,
-            COMPARATOR_KEY, RENDERER_KEY, FILTER_KEY});
+            COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY});
     }
     
     public ComboBoxBinder(String[] supportedContextKeys) {
@@ -62,6 +66,16 @@ public class ComboBoxBinder extends AbstractBinder  {
         }
         if (context.containsKey(RENDERER_KEY)) {
             binding.setRenderer((ListCellRenderer)context.get(RENDERER_KEY));
+        }
+        if (context.containsKey(EDITOR_KEY)) {
+            ComboBoxEditor comboBoxEditor = (ComboBoxEditor) context.get(EDITOR_KEY);
+            if (comboBoxEditor instanceof BeanPropertyValueComboBoxEditor) {
+                // HACK because SwingBindingFactory that made the editor hadn't access to the inner editor yet
+                BeanPropertyValueComboBoxEditor beanPropertyValueComboBoxEditor
+                        = (BeanPropertyValueComboBoxEditor) comboBoxEditor;
+                beanPropertyValueComboBoxEditor.setInnerEditor(binding.getEditor());
+            }
+            binding.setEditor(comboBoxEditor);
         }
         if (context.containsKey(COMPARATOR_KEY)) {
             binding.setComparator((Comparator)context.get(COMPARATOR_KEY));

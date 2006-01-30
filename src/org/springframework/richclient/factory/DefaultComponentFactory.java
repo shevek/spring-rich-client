@@ -48,7 +48,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.core.enums.AbstractLabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
@@ -56,6 +56,7 @@ import org.springframework.richclient.control.PatchedJFormattedTextField;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.list.ComboBoxListModel;
+import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
@@ -142,9 +143,7 @@ public class DefaultComponentFactory implements ComponentFactory {
                 if (messageKeys.length > 0) {
                     return messageKeys[0];
                 }
-                else {
-                    return "";
-                }
+                return "";
             }
         };
         return getMessages().getMessage(resolvable);
@@ -309,10 +308,11 @@ public class DefaultComponentFactory implements ComponentFactory {
                     + enumValues + "]");
         }
         CompoundComparator comparator = new CompoundComparator();
-        comparator.addComparator(AbstractLabeledEnum.LABEL_ORDER);
+        comparator.addComparator(LabeledEnum.LABEL_ORDER);
         comparator.addComparator(new ComparableComparator());
         comboBox.setModel(new ComboBoxListModel(new ArrayList(enumValues), comparator));
         comboBox.setRenderer(new LabeledEnumListRenderer(messageSource));
+        comboBox.setEditor(new LabeledEnumComboBoxEditor(messageSource, comboBox.getEditor()));
     }
 
     public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {

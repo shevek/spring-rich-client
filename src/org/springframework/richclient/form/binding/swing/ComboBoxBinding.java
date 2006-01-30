@@ -25,12 +25,14 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.ComboBoxEditor;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.support.CustomBinding;
+import org.springframework.richclient.form.builder.FormComponentInterceptor;
 
 /**
  * TODO: support for filters
@@ -43,7 +45,7 @@ public class ComboBoxBinding extends CustomBinding {
 
     private final BoundComboBoxModel model = new BoundComboBoxModel();
 
-    private final SelectableItemsChangeHander selectableItemsChangeHander = new SelectableItemsChangeHander();
+    private final SelectableItemsChangeHandler selectableItemsChangeHandler = new SelectableItemsChangeHandler();
 
     private ValueModel selectableItemsHolder;
 
@@ -83,10 +85,10 @@ public class ComboBoxBinding extends CustomBinding {
 
     public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
         if (this.selectableItemsHolder != null) {
-            this.selectableItemsHolder.removeValueChangeListener(selectableItemsChangeHander);
+            this.selectableItemsHolder.removeValueChangeListener(selectableItemsChangeHandler);
         }
         this.selectableItemsHolder = selectableItemsHolder;
-        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHander);
+        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHandler);
         updateSelectableItems();
     }
 
@@ -116,6 +118,14 @@ public class ComboBoxBinding extends CustomBinding {
         comboBox.setRenderer(renderer);
     }
 
+    public void setEditor(ComboBoxEditor comboBoxEditor) {
+        comboBox.setEditor(comboBoxEditor);
+    }
+
+    public ComboBoxEditor getEditor() {
+        return comboBox.getEditor();
+    }
+
     protected JComboBox createComboBox() {
         return getComponentFactory().createComboBox();
     }
@@ -142,12 +152,12 @@ public class ComboBoxBinding extends CustomBinding {
             fireContentsChanged(-1, -1);
         }
     }
-    
+
     protected void valueModelChanged(Object newValue) {
         model.selectedValueChanged();
     }
 
-    private class SelectableItemsChangeHander implements PropertyChangeListener {
+    private class SelectableItemsChangeHandler implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
             updateSelectableItems();

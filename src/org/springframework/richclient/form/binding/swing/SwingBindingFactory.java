@@ -39,6 +39,7 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 
 /**
  * A convenient implementation of <code>BindingFactory</code>. Provides a set
@@ -115,6 +116,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder, String renderedProperty) {
         Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
+        context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyValueComboBoxEditor(renderedProperty));
         context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
         return createBinding(JComboBox.class, formProperty, context);
     }

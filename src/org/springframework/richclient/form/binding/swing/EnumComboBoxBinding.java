@@ -21,9 +21,10 @@ import javax.swing.JComponent;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.MessageSource;
-import org.springframework.core.enums.AbstractLabeledEnum;
+import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.util.comparator.ComparableComparator;
 import org.springframework.util.comparator.CompoundComparator;
@@ -48,8 +49,9 @@ public class EnumComboBoxBinding extends ComboBoxBinding {
     protected JComponent doBindControl() {
         setSelectableItemsHolder(new ValueHolder(getEnumResolver().getLabeledEnumSet(getPropertyType())));
         setRenderer(new LabeledEnumListRenderer(getMessageSource()));
+        setEditor(new LabeledEnumComboBoxEditor(getMessageSource(), getEditor()));
         CompoundComparator comparator = new CompoundComparator();
-        comparator.addComparator(AbstractLabeledEnum.LABEL_ORDER);
+        comparator.addComparator(LabeledEnum.LABEL_ORDER);
         comparator.addComparator(new ComparableComparator());
         setComparator(comparator);
         return super.doBindControl();
