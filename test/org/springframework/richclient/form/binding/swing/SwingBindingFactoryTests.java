@@ -42,6 +42,7 @@ import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.form.FormModelHelper;
+import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 
 /**
@@ -114,11 +115,13 @@ public class SwingBindingFactoryTests extends TestCase {
     public void testCreateBoundComboBoxStringStringString() {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", "listProperty", "displayProperty");
         assertBindingProperties(b, JComboBox.class, null, "name");
-        assertEquals(3, b.getContext().size(), 3);
+        assertEquals(4, b.getContext().size());
         assertEquals(sbf.getFormModel().getValueModel("listProperty"), b.getContext().get(
                 ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName());
+        assertEquals("displayProperty",
+                ((BeanPropertyValueComboBoxEditor)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getPropertyName());
         assertEquals("displayProperty", getComparatorProperty(b));
 
         try {
@@ -134,10 +137,12 @@ public class SwingBindingFactoryTests extends TestCase {
         ValueModel selectableItemsHolder = new ValueHolder(new Object());
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", selectableItemsHolder, "displayProperty");
         assertBindingProperties(b, JComboBox.class, null, "name");
-        assertEquals(3, b.getContext().size());
+        assertEquals(4, b.getContext().size());
         assertEquals(selectableItemsHolder, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName());
+        assertEquals("displayProperty",
+                ((BeanPropertyValueComboBoxEditor)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getPropertyName());
         assertEquals("displayProperty", getComparatorProperty(b));
     }
 

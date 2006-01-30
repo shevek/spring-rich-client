@@ -110,4 +110,11 @@ public class BeanPropertyValueComboBoxEditor implements ComboBoxEditor {
             }
         }
     }
+    
+    /**
+     * @return the property name
+     */
+    public String getPropertyName() {
+        return this.renderedProperty;
+    }
 }
