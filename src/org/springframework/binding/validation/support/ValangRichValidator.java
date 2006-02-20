@@ -343,5 +343,9 @@ public class ValangRichValidator implements RichValidator {
         public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown) throws BeansException {
             throw new UnsupportedOperationException("Not implemented");
         }
+
+        public void setExtractOldValueForEditor(boolean extractOldValueForEditor){
+            throw new UnsupportedOperationException("Not implemented");
+        }
     }
 }
