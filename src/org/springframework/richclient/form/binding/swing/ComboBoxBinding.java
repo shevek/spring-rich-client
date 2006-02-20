@@ -19,20 +19,20 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
-import javax.swing.ComboBoxEditor;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.support.CustomBinding;
-import org.springframework.richclient.form.builder.FormComponentInterceptor;
 
 /**
  * TODO: support for filters
@@ -65,9 +65,18 @@ public class ComboBoxBinding extends CustomBinding {
         return comboBox;
     }
 
+    /**
+     * @return Collections.EMPTY_LIST if SelectableItemHolder's value was null,
+     *         a created List if value was an instance of Object[] or a
+     *         Collection if the value was already a collection.
+     * @exception UnsupportedOperationException
+     *                if none the SelectableItemholder's value wasn't any of the above
+     */
     protected Collection getSelectableItems() {
         final Object selectableItems = getSelectableItemsHolder().getValue();
-        if (selectableItems instanceof Object[]) {
+        if (selectableItems == null) {
+            return Collections.EMPTY_LIST;
+        } else if (selectableItems instanceof Object[]) {
             return Arrays.asList((Object[])selectableItems);
         }
         else if (selectableItems instanceof Collection) {
@@ -96,14 +105,12 @@ public class ComboBoxBinding extends CustomBinding {
         if (selectableItemsHolder != null) {
             return selectableItemsHolder;
         }
-        else {
-            // copy the existing Model
-            Object[] items = new Object[comboBox.getModel().getSize()];
-            for (int i = 0; i < comboBox.getModel().getSize(); i++) {
-                items[i] = comboBox.getModel().getElementAt(i);
-            }
-            return new ValueHolder(items);
+        // copy the existing Model
+        Object[] items = new Object[comboBox.getModel().getSize()];
+        for (int i = 0; i < comboBox.getModel().getSize(); i++) {
+            items[i] = comboBox.getModel().getElementAt(i);
         }
+        return new ValueHolder(items);
     }
 
     public void setComparator(Comparator comparator) {

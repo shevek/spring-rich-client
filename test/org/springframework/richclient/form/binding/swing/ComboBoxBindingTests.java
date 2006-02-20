@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.Collections;
+
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
 
@@ -100,5 +102,14 @@ public class ComboBoxBindingTests extends AbstractBindingTests {
 
         fm.getPropertyMetadata("simpleProperty").setReadOnly(false);
         assertTrue(cb.isEnabled());
+    }
+    
+    public void testSelectableItemHolderNullValue()
+    {
+        ComboBoxBinding binding = new ComboBoxBinding(fm, "simpleProperty");
+        JComboBox comboBox = (JComboBox)binding.getControl();
+        ValueHolder valueHolder = new ValueHolder();
+        binding.setSelectableItemsHolder(valueHolder);
+        assertEquals(binding.getSelectableItems(), Collections.EMPTY_LIST);
     }
 }
