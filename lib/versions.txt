@@ -28,6 +28,7 @@ jgoodies/looks.jar: 1.3.1
 junit/junit.jar: 3.8.1
 log4j/log4j.jar: 1.2.8
 spin/spin.jar: 1.3
-spring/spring.jar: 1.2.3
+spring/spring.jar: 1.2.6
+spring/spring-petclinic.jar: 1.2.6
 spring/spring-binding.jar: snapshot 22 july 2005
 swingx/swingx.jar: snapshot 2 jun 2005
