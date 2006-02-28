@@ -36,6 +36,7 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.support.ButtonBarGroupContainerPopulator;
+import org.springframework.richclient.command.support.ButtonStackGroupContainerPopulator;
 import org.springframework.richclient.command.support.SimpleGroupContainerPopulator;
 import org.springframework.richclient.command.support.ToggleButtonPopupListener;
 import org.springframework.richclient.core.UIConstants;
@@ -482,24 +483,69 @@ public class CommandGroup extends AbstractCommand {
      * @return never null
      */
     public JComponent createButtonBar(final Size minimumButtonSize, final Border border) {
-        final Iterator members = getMemberList().iterator();
-
         final ButtonBarGroupContainerPopulator container = new ButtonBarGroupContainerPopulator();
         container.setMinimumButtonSize(minimumButtonSize);
+        addCommandsToGroupContainer(container);
+        return GuiStandardUtils.attachBorder(container.getButtonBar(), border);
+    }
+    
+    /**
+     * Create a button stack with buttons for all the commands.
+     * 
+     * @return never null
+     */
+    public JComponent createButtonStack()
+    {
+        return createButtonStack(null);
+    }
+    
+    /**
+     * Create a button stack with buttons for all the commands.
+     * 
+     * @param minimumButtonSize Minimum size of the buttons (can be null)
+     * @return  never null
+     */
+    public JComponent createButtonStack(final Size minimumButtonSize)
+    {
+        return createButtonStack(minimumButtonSize, GuiStandardUtils
+                .createTopAndBottomBorder(UIConstants.TWO_SPACES));
+    }
+
+    /**
+     * Create a button stack with buttons for all the commands.
+     * 
+     * @param minimumButtonSize Minimum size of the buttons (can be null)
+     * @param border    Border to set around the stack.
+     * @return  never null
+     */
+    public JComponent createButtonStack(final Size minimumButtonSize, final Border border)
+    {
+        final ButtonStackGroupContainerPopulator container = new ButtonStackGroupContainerPopulator();
+        container.setMinimumButtonSize(minimumButtonSize);
+        addCommandsToGroupContainer(container);
+        return GuiStandardUtils.attachBorder(container.getButtonStack(), border);
+    }
+
+    /**
+     * Create a container with the given GroupContainerPopulator which will hold the members of this group.
+     *
+     * @param groupContainerPopulator
+     */
+    protected void addCommandsToGroupContainer(final GroupContainerPopulator groupContainerPopulator) {
+        final Iterator members = getMemberList().iterator();
 
         while (members.hasNext()) {
             final GroupMember member = (GroupMember)members.next();
             if (member.getCommand() instanceof CommandGroup) {
-                member.fill(container, getButtonFactory(), getPullDownMenuButtonConfigurer(), Collections.EMPTY_LIST);
+                member.fill(groupContainerPopulator, getButtonFactory(), getPullDownMenuButtonConfigurer(), Collections.EMPTY_LIST);
             }
             else {
-                member.fill(container, getButtonFactory(), getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
+                member.fill(groupContainerPopulator, getButtonFactory(), getDefaultButtonConfigurer(), Collections.EMPTY_LIST);
             }
         }
-        container.onPopulated();
-        return GuiStandardUtils.attachBorder(container.getButtonBar(), border);
+        groupContainerPopulator.onPopulated();
     }
-
+    
     private void bindMembers(Object owner, Container memberContainer, Object controlFactory,
             CommandButtonConfigurer configurer) {
         getMemberList().bindMembers(owner, new SimpleGroupContainerPopulator(memberContainer), controlFactory,
