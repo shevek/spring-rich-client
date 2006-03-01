@@ -47,6 +47,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Size;
 
 /**
@@ -454,7 +456,7 @@ public class CommandGroup extends AbstractCommand {
     }
 
     /**
-     * Create a button bar with buttons for all the commands in this.
+     * Create a button bar with buttons for all the commands in this group.
      *
      * @return never null
      */
@@ -463,7 +465,8 @@ public class CommandGroup extends AbstractCommand {
     }
 
     /**
-     * Create a button bar with buttons for all the commands in this.
+     * Create a button bar with buttons for all the commands in this group. 
+     * Adds a border top and bottom of 2 spaces.
      *
      * @param minimumButtonSize if null, then there is no minimum size
      *
@@ -477,14 +480,39 @@ public class CommandGroup extends AbstractCommand {
     /**
      * Create a button bar with buttons for all the commands in this.
      *
+     * @param columnSpec    Custom columnSpec for each column containing a button, can be <code>null</code>.
+     * @param rowSpec   Custom rowspec for the buttonbar, can be <code>null</code>.
+     * @return never null
+     */
+    public JComponent createButtonBar(final ColumnSpec columnSpec, final RowSpec rowSpec) {
+        return createButtonBar(columnSpec, rowSpec, null);
+    }
+
+    /**
+     * Create a button bar with buttons for all the commands in this.
+     *
      * @param minimumButtonSize if null, then there is no minimum size
      * @param border            if null, then don't use a border
      *
      * @return never null
      */
     public JComponent createButtonBar(final Size minimumButtonSize, final Border border) {
+        return createButtonBar(minimumButtonSize == null ? null : new ColumnSpec(minimumButtonSize), null, border);
+    }
+
+    /**
+     * Create a button bar with buttons for all the commands in this.
+     *
+     * @param columnSpec    Custom columnSpec for each column containing a button, can be <code>null</code>.
+     * @param rowSpec   Custom rowspec for the buttonbar, can be <code>null</code>.
+     * @param border    if null, then don't use a border
+     *
+     * @return never null
+     */
+    public JComponent createButtonBar(final ColumnSpec columnSpec, final RowSpec rowSpec, final Border border) {
         final ButtonBarGroupContainerPopulator container = new ButtonBarGroupContainerPopulator();
-        container.setMinimumButtonSize(minimumButtonSize);
+        container.setColumnSpec(columnSpec);
+        container.setRowSpec(rowSpec);
         addCommandsToGroupContainer(container);
         return GuiStandardUtils.attachBorder(container.getButtonBar(), border);
     }
@@ -501,6 +529,7 @@ public class CommandGroup extends AbstractCommand {
     
     /**
      * Create a button stack with buttons for all the commands.
+     * Adds a border left and right of 2 spaces.
      * 
      * @param minimumButtonSize Minimum size of the buttons (can be null)
      * @return  never null
@@ -508,20 +537,46 @@ public class CommandGroup extends AbstractCommand {
     public JComponent createButtonStack(final Size minimumButtonSize)
     {
         return createButtonStack(minimumButtonSize, GuiStandardUtils
-                .createTopAndBottomBorder(UIConstants.TWO_SPACES));
+                .createLeftAndRightBorder(UIConstants.TWO_SPACES));
     }
 
     /**
      * Create a button stack with buttons for all the commands.
      * 
-     * @param minimumButtonSize Minimum size of the buttons (can be null)
+     * @param minimumButtonSize Minimum size of the buttons (can be <code>null</code>)
      * @param border    Border to set around the stack.
      * @return  never null
      */
     public JComponent createButtonStack(final Size minimumButtonSize, final Border border)
     {
+        return createButtonStack(minimumButtonSize == null ? null : new ColumnSpec(minimumButtonSize), null, border);
+    }
+
+    /**
+     * Create a button stack with buttons for all the commands.
+     * 
+     * @param columnSpec    Custom columnSpec for the stack, can be <code>null</code>.
+     * @param rowSpec   Custom rowspec for each row containing a button can be <code>null</code>.
+     * @return  never null
+     */
+    public JComponent createButtonStack(final ColumnSpec columnSpec, final RowSpec rowSpec)
+    {
+        return createButtonStack(columnSpec, rowSpec, null);
+    }
+
+    /**
+     * Create a button stack with buttons for all the commands.
+     * 
+     * @param columnSpec    Custom columnSpec for the stack, can be <code>null</code>.
+     * @param rowSpec   Custom rowspec for each row containing a button can be <code>null</code>.
+     * @param border    Border to set around the stack.
+     * @return  never null
+     */
+    public JComponent createButtonStack(final ColumnSpec columnSpec, final RowSpec rowSpec, final Border border)
+    {
         final ButtonStackGroupContainerPopulator container = new ButtonStackGroupContainerPopulator();
-        container.setMinimumButtonSize(minimumButtonSize);
+        container.setColumnSpec(columnSpec);
+        container.setRowSpec(rowSpec);
         addCommandsToGroupContainer(container);
         return GuiStandardUtils.attachBorder(container.getButtonStack(), border);
     }

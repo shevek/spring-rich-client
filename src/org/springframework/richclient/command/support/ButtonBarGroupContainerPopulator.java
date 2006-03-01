@@ -26,10 +26,11 @@ import org.springframework.richclient.command.CommandGroupFactoryBean;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Size;
 
 public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopulator {
-    private Size minimumSize;
+    private ColumnSpec columnSpec;
 
     private ButtonBarBuilder builder;
 
@@ -41,9 +42,20 @@ public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopula
     }
 
     public void setMinimumButtonSize(Size minimumSize) {
-        this.minimumSize = minimumSize;
+        this.columnSpec = new ColumnSpec(minimumSize);
     }
 
+    public void setColumnSpec(final ColumnSpec columnSpec)
+    {
+        this.columnSpec = columnSpec;
+    }
+    
+    public void setRowSpec(final RowSpec rowSpec)
+    {
+        if (rowSpec != null)
+            builder.getLayout().setRowSpec(1, rowSpec);
+    }
+    
     public JPanel getButtonBar() {
         return builder.getPanel();
     }
@@ -60,14 +72,13 @@ public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopula
         builder.addGlue();
         int length = buttons.size();
         for (int i = 0; i < length; i++) {
-            int index = true ? i : length - 1 - i;
             Object o = buttons.get(i);
             if (o instanceof String && o == CommandGroupFactoryBean.SEPARATOR_MEMBER_CODE) {
                 builder.addUnrelatedGap();
             }
             else if (o instanceof AbstractButton) {
                 AbstractButton button = (AbstractButton)o;
-                if (minimumSize != null) {
+                if (this.columnSpec != null) {
                     addCustomGridded(button);
                 }
                 else {
@@ -81,7 +92,7 @@ public class ButtonBarGroupContainerPopulator extends SimpleGroupContainerPopula
     }
 
     private void addCustomGridded(AbstractButton button) {
-        builder.getLayout().appendColumn(new ColumnSpec(minimumSize));
+        builder.getLayout().appendColumn(this.columnSpec);
         builder.getLayout().addGroupedColumn(builder.getColumn());
         button.putClientProperty("jgoodies.isNarrow", Boolean.TRUE);
         builder.add(button);

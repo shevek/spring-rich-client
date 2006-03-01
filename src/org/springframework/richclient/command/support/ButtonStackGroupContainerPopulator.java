@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.springframework.richclient.command.CommandGroupFactoryBean;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
+import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.Size;
 
@@ -23,7 +24,7 @@ import com.jgoodies.forms.layout.Size;
  */
 public class ButtonStackGroupContainerPopulator extends SimpleGroupContainerPopulator
 {
-    private Size minimumSize;
+    private RowSpec rowSpec;
 
     private ButtonStackBuilder builder;
 
@@ -38,14 +39,38 @@ public class ButtonStackGroupContainerPopulator extends SimpleGroupContainerPopu
     }
 
     /**
-     * Define the minimum buttonsize of the buttonStack. 
+     * Define the minimum buttonsize of the buttonStack. This will actually
+     * replace the rowSpec with a new one. 
      * 
      * @param minimumSize
+     * @see #setRowSpec(RowSpec)
      */
-    public void setMinimumButtonSize(Size minimumSize) {
-        this.minimumSize = minimumSize;
+    public void setMinimumButtonSize(Size minimumSize) 
+    {
+        this.rowSpec = new RowSpec(minimumSize);
     }
 
+    /**
+     * This allows to completely customize the rowspec.
+     * 
+     * @param rowSpec
+     */
+    public void setRowSpec(RowSpec rowSpec)
+    {
+        this.rowSpec = rowSpec;
+    }
+
+    /**
+     * Set a custom columnSpec for the buttonstack.
+     * 
+     * @param columnSpec
+     */
+    public void setColumnSpec(ColumnSpec columnSpec)
+    {
+        if (columnSpec != null)
+            builder.getLayout().setColumnSpec(1, columnSpec);
+    }    
+    
     /**
      * @return the created ButtonStack panel
      */
@@ -71,7 +96,6 @@ public class ButtonStackGroupContainerPopulator extends SimpleGroupContainerPopu
      * @see SimpleGroupContainerPopulator#onPopulated()
      */
     public void onPopulated() {
-        builder.addGlue();
         int length = buttons.size();
         for (int i = 0; i < length; i++) {
             Object o = buttons.get(i);
@@ -80,7 +104,7 @@ public class ButtonStackGroupContainerPopulator extends SimpleGroupContainerPopu
             }
             else if (o instanceof AbstractButton) {
                 AbstractButton button = (AbstractButton)o;
-                if (minimumSize != null) {
+                if (this.rowSpec != null) {
                     addCustomGridded(button);
                 }
                 else {
@@ -91,15 +115,16 @@ public class ButtonStackGroupContainerPopulator extends SimpleGroupContainerPopu
                 }
             }
         }
+        builder.addGlue();
     }
 
     /**
-     * Handle the minimumSize by grouping the rows and defining a minimumSize on that row.
+     * Handle the custom RowSpec.
      * 
      * @param button
      */
     private void addCustomGridded(AbstractButton button) {
-        builder.getLayout().appendRow(new RowSpec(minimumSize));
+        builder.getLayout().appendRow(this.rowSpec);
         builder.getLayout().addGroupedRow(builder.getRow());
         button.putClientProperty("jgoodies.isNarrow", Boolean.TRUE);
         builder.add(button);
