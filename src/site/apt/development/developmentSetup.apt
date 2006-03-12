@@ -97,7 +97,7 @@ Configuring your favorite IDE
 
     * Generate .project, ... (recommended for the moment)
 
-        Run in the root of the project [mvn eclipse:eclipse].
+        Run in the root of the project <<<mvn eclipse:eclipse>>>.
         This command automatically makes use of the <eclipse plugin in Maven 2>.
 
         Import all existing projects found under the root of the project.
@@ -133,7 +133,7 @@ Configuring your favorite IDE
 
 * IntelliJ IDEA
 
-    Run in the root of the project [mvn idea:idea].
+    Run in the root of the project <<<mvn idea:idea>>>.
     This command automatically makes use of the <idea plugin in Maven 2>.
 
     Open the <<<ipr>>> generated in the root of the project.
