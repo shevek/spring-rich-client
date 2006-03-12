@@ -29,21 +29,25 @@ Installation
 
         * Eclipse 3.1+ from {{http://www.eclipse.org}}
 
-            * Install Subclipse plugin from {{http://subclipse.tigris.org/}} for Subversion support
+            * Install Subclipse plugin from {{http://subclipse.tigris.org}} for Subversion support
+
+            * Install Web Tools from {{http://www.eclipse.org}} for XML support
 
         * NetBeans 5+ from {{http://www.netbeans.org}}
 
             * Subversion support is not that good yet, use a seperate subversion client
 
-        * IntelliJ IDEA 5+ from {{http://www.jetbains.com}}
+        * IntelliJ IDEA 5.1+ from {{http://www.jetbains.com}}
 
-            * Subversion is fully supported in IDEA 5+
+            * Subversion is fully supported since IDEA 5
 
     * One seperate Subversion client (optional if already supported in the IDE)
 
+        * Subversion (shell client) from {{http://subversion.tigris.org}}
+
         * Tortoise for Windows explorer from {{http://tortoisesvn.tigris.org}}
 
-        * Subversion for your shell from {{http://subversion.tigris.org/}}
+        * Any Subversion client referenced in Links on {{http://subversion.tigris.org}}
 
     * One UML tool (optional)
 
@@ -61,7 +65,7 @@ Installation
 
     * One J2EE 1.4+ application server (only required for petclinic standapart)
 
-        * Tomcat 5+ from {{http://tomcat.apache.org}}
+        * Tomcat 5.5+ from {{http://tomcat.apache.org}}
 
         * JBoss 4+ from {{http://www.jboss.org}}
 
@@ -91,21 +95,37 @@ Configuring your favorite IDE
 
     There are 2 choices:
 
-    * Generate .project, ... (recommended)
+    * Generate .project, ... (recommended for the moment)
 
         Run in the root of the project [mvn eclipse:eclipse].
         This command automatically makes use of the <eclipse plugin in Maven 2>.
 
-        Import all projects found under the root of the project.
+        Import all existing projects found under the root of the project.
         All the dependend libraries, source directories, ... will be configured.
 
-        Set the variable <<<M2_REPO>>> to something like
-        <<<USER_HOME/.m2/repository>>> if dependencies aren't found.
+        Set the M2_REPO variable:
+        Open the window <Window>\><Preferences>.
+        open the item <Java>\><Build Path>\><Classpath variables>.
+        Add the new variable <<<M2_REPO>>> with the value of the folder
+        <<<USER_HOME/.m2/repository>>>, for example
+        <<<C:/Documents and Settings/ge0ffrey/.m2/repository>>>.
 
-    * Using a plugin for Eclipse
+        Enable Subversion (if you haven't checked out with Subclipse):
+        Right-click on each project and open <Team>\><Share...>.
+
+        NOTE: This solution currently doesn't show you all files due to a limitation of Eclipse:
+        Eclipse does not allow a project folder in a project folder.
+        (There is an issue at eclipse.org for this.)
+        Therefore the direct root, samples and root petclinic content aren't shown.
+        This includes the super pom.xml (!) and the site documentation files.
+
+    * Using the plugin for Eclipse
 
         Install the <maven 2 plugin for Eclipse> referenced on {{http://maven.apache.org}}.
-        Do not install a maven 1 plugin.
+
+        NOTE: This solution is untested.
+
+        Warning: Do not install a mevenide for maven 1 plugin, they do not work for Maven 2.
 
 * NetBeans
 
@@ -118,6 +138,10 @@ Configuring your favorite IDE
 
     Open the <<<ipr>>> generated in the root of the project.
     All the dependend libraries, source directories, ... will be configured.
+
+    Enable Subversion (if you haven't checked out with IntelliJ):
+    Open <File>\><Settings>\><Project>\><Version Control>.
+    Select <<<Subversion>>> as version control.
 
     Note: Use at least version 2.0-beta-2-SNAPSHOT of the maven-idea-plugin to get a decent
     configuration. 
@@ -162,11 +186,14 @@ mvn test
 
 Website
 
-    To generate the website simple do:
-    TODO NOTE: This currently doesn't work properly on any computer and will be fixed soon.
+    To generate the website simply do:
 
 +--
 mvn site
 +--
 
-    To change the site content, take a look at <<</src/site/apt>>>.
+    Then take a look at <<<target/site/index.html>>>.
+
+    To change the site content, take a look at <<<src/site/apt>>>.
+
+    TODO Note: The module sites are generated but aren't included in the main site yet.
