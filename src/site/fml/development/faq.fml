@@ -10,7 +10,7 @@
       </answer>
     </faq>
     <faq>
-      <question>How do I add a library to the project?</question>
+      <question>How do I add a library available in Ibiblio to the project?</question>
       <answer>
         <p>
           Search <a href="http://www.ibiblio.org/maven2">http://www.ibiblio.org/maven2</a>
@@ -24,7 +24,19 @@
           Add it in the dependencies entity in the pom.xml of those modules.
         </p>
         <p>
-          Do a mvn compile or install and the library will be downloaded.
+          Do a mvn install eclipse:eclipse idea:idea to download the library
+          and configure it your IDE. If it works, send a mail to the mailing list
+          to notify everyone to do this too.
+        </p>
+      </answer>
+    </faq>
+    <faq>
+      <question>How do I add a library not available in Ibiblio to the project?</question>
+      <answer>
+        <p>
+          If the library is not available in Ibiblio,
+          it can be added it to our own remote repository with mvn deploy:deploy-file.
+          Contact the build guy (ge0ffrey).
         </p>
       </answer>
     </faq>
@@ -33,9 +45,6 @@
       <answer>
         <p>
           Yes, it's at <a href="http://spring-rich-c.sf.net/maven2repository">http://spring-rich-c.sf.net/maven2repository</a>.
-        </p>
-        <p>
-          TODO NOTE: currently it's not there but at Geoffrey's homepage.
         </p>
       </answer>
     </faq>
