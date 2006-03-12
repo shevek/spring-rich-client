@@ -180,13 +180,13 @@
     </licenses>
     <scm>
         <connection>
-            scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/spring-rich-c:spring-richclient
+            scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
         </connection>
         <developerConnection>
-            scm:cvs:pserver:cvs.sourceforge.net:/cvsroot/spring-rich-c:spring-richclient
+            scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
         </developerConnection>
         <url>
-            http://cvs.sourceforge.net/viewcvs.py/spring-rich-c/
+            http://svn.sourceforge.net/viewcvs.cgi/spring-rich-c/trunk/spring-richclient/
         </url>
     </scm>
     <organization>

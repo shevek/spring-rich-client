@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- TODO currently this isn't configured or used in by maven - do we want it? -->
 <ruleset name="SpringRichRules">
     <description>Checks for bad usage of anonymous inner classes</description>
     <rule name="UsingAnonymousClassForListener" 
