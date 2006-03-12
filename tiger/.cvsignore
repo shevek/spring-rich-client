@@ -1,0 +1,21 @@
+# Maven 2
+target
+*.log
+*.log.*
+
+# Eclipse
+.classpath
+.project
+.settings
+.wtpmodules
+
+# IDEA
+*.ipr
+*.iws
+*.iml
+
+# NetBeans
+nbproject
+
+# Local directory
+local

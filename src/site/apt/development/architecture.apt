@@ -1,0 +1,15 @@
+ -----
+ Architecture
+ -----
+ Geoffrey De Smet
+ -----
+
+Introduction
+
+    This section describes how the modules of spring-rich interrelate.
+
+[../uml/architecture.png] Architecture
+
+Directory structure
+
+[../images/directoryStructure.png] Directory structure

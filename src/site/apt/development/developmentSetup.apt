@@ -1,0 +1,172 @@
+ -----
+ Development setup
+ -----
+ Geoffrey De Smet
+ -----
+
+Development setup
+
+    This section describes how to setup Thot and start developing it.
+
+Installation
+
+    Download and install the following technologies:
+
+    * JDK 1.5+ from {{http://java.sun.com}}
+
+        * Set the <<<JAVA_HOME>>> environment variable.
+
+    * Maven 2+ from {{http://maven.apache.org}}
+
+        * Set the <<<M2_HOME>>> environment variable.
+
+        * Adjust the <<<PATH>>> environment variable to add [$M2_HOME$/bin];
+
+        * On Windows, the use of cygwin (with OpenSSH and subversion) from {{http://www.cygwin.com}}
+        to run maven is required for advanced functionality (ssh repository deploy, ...)
+
+    * One Java IDE (see below for configuration) with Subversion support
+
+        * Eclipse 3.1+ from {{http://www.eclipse.org}}
+
+            * Install Subclipse plugin from {{http://subclipse.tigris.org/}} for Subversion support
+
+        * NetBeans 5+ from {{http://www.netbeans.org}}
+
+            * Subversion support is not that good yet, use a seperate subversion client
+
+        * IntelliJ IDEA 5+ from {{http://www.jetbains.com}}
+
+            * Subversion is fully supported in IDEA 5+
+
+    * One seperate Subversion client (optional if already supported in the IDE)
+
+        * Tortoise for Windows explorer from {{http://tortoisesvn.tigris.org}}
+
+        * Subversion for your shell from {{http://subversion.tigris.org/}}
+
+    * One UML tool (optional)
+
+        * Poseidon 4+ community edition from {{http://www.gentleware.com}}
+
+    * One relational database (only required for petclinic)
+
+        * HSQLDB in memory (already included in dependencies, no need to install)
+
+        * MySQL server 5+ from {{http://www.mysql.org}} with
+
+            * MySQL Query browser
+
+            * MySQL Administrator
+
+    * One J2EE 1.4+ application server (only required for petclinic standapart)
+
+        * Tomcat 5+ from {{http://tomcat.apache.org}}
+
+        * JBoss 4+ from {{http://www.jboss.org}}
+
+        * ...
+
+Getting the sources
+
+    See {{{../source-repository.html}the source repository}}.
+
+Building
+
+    Open your command line (CygWin, bash, DOS, ...) and run:
+
++--
+mvn install
++--
+
+    This build the project and installs it into your local repository.
+
+    NOTE: The first time you run maven it will download all dependencies
+    and cache them in your local repository in <<<~/.m2/repository>>>,
+    this will take a while. Run it again afterwards to see how fast it really is.
+
+Configuring your favorite IDE
+
+* Eclipse
+
+    There are 2 choices:
+
+    * Generate .project, ... (recommended)
+
+        Run in the root of the project [mvn eclipse:eclipse].
+        This command automatically makes use of the <eclipse plugin in Maven 2>.
+
+        Import all projects found under the root of the project.
+        All the dependend libraries, source directories, ... will be configured.
+
+        Set the variable <<<M2_REPO>>> to something like
+        <<<USER_HOME/.m2/repository>>> if dependencies aren't found.
+
+    * Using a plugin for Eclipse
+
+        Install the <maven 2 plugin for Eclipse> referenced on {{http://maven.apache.org}}.
+        Do not install a maven 1 plugin.
+
+* NetBeans
+
+    Install the <maven 2 plugin for NetBeans> referenced on {{http://maven.apache.org}}.
+
+* IntelliJ IDEA
+
+    Run in the root of the project [mvn idea:idea].
+    This command automatically makes use of the <idea plugin in Maven 2>.
+
+    Open the <<<ipr>>> generated in the root of the project.
+    All the dependend libraries, source directories, ... will be configured.
+
+    Note: Use at least version 2.0-beta-2-SNAPSHOT of the maven-idea-plugin to get a decent
+    configuration. 
+
+Maven 2 versus your favorite IDE
+
+    After your IDE is configured with maven 2, you 'll use Maven 2 less frequently.
+
+    You 'll use your IDE to:
+
+    * Compile and run an application or a specific testcase
+
+    * SCM update or commit
+
+    []
+
+    However, Continuum will use Maven 2 every night to:
+
+    * SCM update and clean
+
+    * Compile and run every single testcase
+
+    * Build and deploy snapshots
+
+    * Generate and deploy the site
+
+    []
+
+Testing
+
+* Running Petclinic
+
+    See {{../user/petclinicSample.html}}
+
+* Running testcases
+
+    Either configure them in your IDE or do:
+
++--
+mvn test
++--
+
+Website
+
+    To generate the website simple do:
+    TODO NOTE: This currently doesn't work properly on any computer and will be fixed soon.
+
++--
+mvn site
++--
+
+    To change the site content, take a look at <<</src/site/apt>>>.

@@ -1,0 +1,22 @@
+ -----
+ Spring-richclient home
+ -----
+ Geoffrey De Smet
+ -----
+
+What is spring-richclient?
+
+    Spring-rich adds value for people needing to develop Swing applications
+    and do so in a way that promotes consistent, well-designed, configurable Swing applications.
+    The spring-rich developers strongly feel the "old days" of Swing apps "not looking native"
+    and not being performant or web-accessible are gone with JDK1.4.2 and 1.5 and webstart.
+    It is our belief the only problem with Swing is that there are a limited number
+    of higher-level abstractions available that assist in making the toolkit simpler
+    and easier to use, and a limited number of design best practices.
+    The goal of spring-richclient is to provide that.
+
+    TODO: clean this up description and make it more consise and to the point.
+
+News
+
+    * <<2006-02-25>>: maven2ization proposed

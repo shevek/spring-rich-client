@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs title="Frequently Asked Questions">
+  <part>
+    <faq>
+      <question>How do I build the project?</question>
+      <answer>
+        <p>
+          See <a href="developmentSetup.html">development setup</a>.
+        </p>
+      </answer>
+    </faq>
+    <faq>
+      <question>How do I add a library to the project?</question>
+      <answer>
+        <p>
+          Search <a href="http://www.ibiblio.org/maven2">http://www.ibiblio.org/maven2</a>
+          and specifically the org and com subdirectories.
+        </p>
+        <p>
+          First add it as a dependency in dependencyManagement entity in the root pom.xml.
+        </p>
+        <p>
+          Then decide which modules will <b>directly</b> use the dependency.
+          Add it in the dependencies entity in the pom.xml of those modules.
+        </p>
+        <p>
+          Do a mvn compile or install and the library will be downloaded.
+        </p>
+      </answer>
+    </faq>
+    <faq>
+      <question>Do we have our own remote repository for dependencies?</question>
+      <answer>
+        <p>
+          Yes, it's at <a href="http://spring-rich-c.sf.net/maven2repository">http://spring-rich-c.sf.net/maven2repository</a>.
+        </p>
+        <p>
+          TODO NOTE: currently it's not there but at Geoffrey's homepage.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>

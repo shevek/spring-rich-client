@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <bannerLeft>
+    <name>Spring rich client</name>
+  </bannerLeft>
+  <bannerRight>
+      <name>Spring framework</name>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="Spring framework" href="http://www.springframework.org/"/>
+    </links>
+
+    <menu name="tmp">
+      <item name="Maven2ization" href="/development/maven2ization.html"/>
+    </menu>
+
+    <menu name="Overview">
+      <item name="Home" href="/index.html"/>
+      <item name="Download" href="/download.html"/>
+      <item name="Screenshots" href="/screenshots.html"/>
+    </menu>
+
+    <menu name="User">
+      <item name="Petclinic sample" href="/user/petclinicSample.html"/>
+      <item name="Powered by" href="/user/poweredBy.html"/>
+      <item name="Articles" href="/user/articles.html"/>
+      <item name="Related projects" href="/user/relatedProjects.html"/>
+      <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
+      <item name="Wiki" href="http://opensource2.atlassian.com/confluence/spring/display/RCP/Home"/>
+      <item name="FAQ" href="/user/faq.html"/>
+    </menu>
+
+    <menu name="Development">
+      <item name="Development setup" href="/development/developmentSetup.html"/>
+      <item name="Architecture" href="/development/architecture.html"/>
+      <item name="JIRA" href="http://opensource2.atlassian.com/projects/spring/browse/RCP"/>
+      <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
+      <item name="FAQ" href="/development/faq.html"/>
+    </menu>
+
+    ${modules}
+
+    ${reports}
+
+  </body>
+</project>

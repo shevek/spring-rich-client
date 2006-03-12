@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs title="Frequently Asked Questions">
+  <part>
+    <faq>
+      <question>When will 0.1 be released?</question>
+      <answer>
+        <p>
+          Soon, when it's ready.
+        </p>
+      </answer>
+    </faq>
+    <faq>
+      <question>When will 1.0 be released?</question>
+      <answer>
+        <p>
+          Not soon.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>

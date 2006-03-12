@@ -1,0 +1,42 @@
+ -----
+ Petclinic sample
+ -----
+ Geoffrey De Smet
+ -----
+
+Petclinic architecture
+
+[../uml/petclinicArchitecture.png] Petclinic architecture
+
+Petclinic use
+
+    Make sure you've done {{../development/developmentSetup.html}}.
+
+* Standalone
+
+    Just run the following class of the project
+    <<<spring-richclient-petclinic-standalone>>>:
+
++--
+org.springframework.richclient.samples.petclinic.PetClinicStandalone
++--
+
+* Standapart (client-server)
+
+    Do a <<<mvn install>>> and deploy the war to a J2EE server:
+
++--
+cp samples/petclinic/server/target/spring-richclient-petclinic-server-<version>-SNAPSHOT.war /
+<tomcat-home>/webapps/petclinic-server.war OR <jboss-home>/server/default/deploy/petclinic-server.war
++--
+
+    TODO: the war's name should not define it's URL
+
+    Then run the following class of the project
+    <<<spring-richclient-petclinic-client>>>:
+
++--
+org.springframework.richclient.samples.petclinic.PetClinicClientServer
++--
+
+    TODO NOTE: webstart doesn't work at this time, but will soon
