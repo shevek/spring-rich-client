@@ -240,7 +240,9 @@
         <module>support</module>
         <module>tiger</module>
         <module>sandbox</module>
-        <module>full</module>
+        <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
+        <!-- TODO bug in maven -->
+        <!--<module>full</module>-->
         <module>samples</module>
     </modules>
 
@@ -248,7 +250,7 @@
         <repository>
             <id>springRichclientRepository</id>
             <name>Spring rich client repository</name>
-            <url>http://spring-rich-c.sourceforge.net/maven2repository/</url>
+            <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
