@@ -119,14 +119,13 @@
             <timezone/>
         </developer>
         <developer>
-            <!-- TODO verify and complete -->
             <id>jdigger</id>
             <name>Jim Moore</name>
-            <email/>
+            <email>springrich at mooresoft dot net</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone>-5</timezone>
         </developer>
         <developer>
             <!-- TODO verify and complete -->
@@ -190,7 +189,7 @@
         </url>
     </scm>
     <organization>
-        <name>The spring framework</name>
+        <name>The Spring Framework</name>
         <url>http://www.springframework.org</url>
     </organization>
 
