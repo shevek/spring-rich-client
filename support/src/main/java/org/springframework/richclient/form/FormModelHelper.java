@@ -20,9 +20,11 @@ import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.validation.ValidationListener;
+import org.springframework.binding.validation.support.RulesValidator;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
+import org.springframework.rules.RulesSource;
 
 /**
  * @author Keith Donald
@@ -40,6 +42,13 @@ public class FormModelHelper {
     public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, String formId) {
         DefaultFormModel formModel = new DefaultFormModel(formObject, bufferChanges);
         formModel.setId(formId);       
+        return formModel;
+    }
+
+    public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, RulesSource rulesSource, String formId) {
+        DefaultFormModel formModel = new DefaultFormModel(formObject, bufferChanges);
+        formModel.setId(formId);
+        formModel.setValidator(new RulesValidator(formModel, rulesSource));
         return formModel;
     }
 
