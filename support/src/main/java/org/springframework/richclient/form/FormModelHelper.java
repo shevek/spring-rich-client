@@ -27,7 +27,10 @@ import org.springframework.richclient.dialog.Messagable;
 import org.springframework.rules.RulesSource;
 
 /**
+ * This provides a collection of useful functions for working with {@link FormModel}s.
+ *
  * @author Keith Donald
+ * @author Jim Moore
  */
 public class FormModelHelper {
 
@@ -41,11 +44,12 @@ public class FormModelHelper {
 
     public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, String formId) {
         DefaultFormModel formModel = new DefaultFormModel(formObject, bufferChanges);
-        formModel.setId(formId);       
+        formModel.setId(formId);
         return formModel;
     }
 
-    public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, RulesSource rulesSource, String formId) {
+    public static ValidatingFormModel createFormModel(Object formObject, boolean bufferChanges, RulesSource rulesSource,
+                                                      String formId) {
         DefaultFormModel formModel = new DefaultFormModel(formObject, bufferChanges);
         formModel.setId(formId);
         formModel.setValidator(new RulesValidator(formModel, rulesSource));
@@ -57,11 +61,11 @@ public class FormModelHelper {
         model.setId(formId);
         return model;
     }
-    
+
     public static ValidatingFormModel createFormModel(ValueModel formObjectHolder) {
         return createFormModel(formObjectHolder, true, null);
     }
-    
+
     public static ValidatingFormModel createFormModel(ValueModel formObjectHolder, String formId) {
         return createFormModel(formObjectHolder, true, formId);
     }
@@ -70,9 +74,10 @@ public class FormModelHelper {
         return createFormModel(formObjectHolder, false, formId);
     }
 
-    public static ValidatingFormModel createFormModel(ValueModel formObjectHolder, boolean bufferChanges, String formId) {
+    public static ValidatingFormModel createFormModel(ValueModel formObjectHolder, boolean bufferChanges,
+                                                      String formId) {
         DefaultFormModel formModel = new DefaultFormModel(formObjectHolder, bufferChanges);
-        formModel.setId(formId);       
+        formModel.setId(formId);
         return formModel;
     }
 
@@ -97,12 +102,13 @@ public class FormModelHelper {
     public static HierarchicalFormModel createCompoundFormModel(Object formObject) {
         return createCompoundFormModel(formObject, null);
     }
-    
+
     public static FormModel createChildPageFormModel(HierarchicalFormModel parentModel) {
         return createChildPageFormModel(parentModel, null);
     }
 
-    public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName) {        
+    public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel,
+                                                               String childPageName) {
         ValidatingFormModel child = createFormModel(parentModel.getFormObjectHolder());
         child.setId(childPageName);
         parentModel.addChild(child);
@@ -113,35 +119,60 @@ public class FormModelHelper {
      * Create a child form model nested by this form model identified by the
      * provided name. The form object associated with the created child model is
      * the value model at the specified parent property path.
-     * 
-     * @param groupingModel the model to create the FormModelHelper in
-     * @param childPageName the name to associate the created FormModelHelper
-     *        with in the groupingModel
+     *
+     * @param parentModel                 the model to create the FormModelHelper in
+     * @param childPageName               the name to associate the created FormModelHelper
+     *                                    with in the groupingModel
      * @param childFormObjectPropertyPath the path into the groupingModel that
-     *        the FormModelHelper is for
+     *                                    the FormModelHelper is for
+     *
      * @return The child form model
      */
     public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName,
-            String childFormObjectPropertyPath) {
-        ValidatingFormModel child = createFormModel(parentModel.getValueModel(childFormObjectPropertyPath));
-        child.setId(childPageName);
-        parentModel.addChild(child);
-        return child;
+                                                               String childFormObjectPropertyPath) {
+        final ValueModel childValueModel = parentModel.getValueModel(childFormObjectPropertyPath);
+        return createChildPageFormModel(parentModel, childPageName, childValueModel);
     }
 
     public static ValidatingFormModel createChildPageFormModel(HierarchicalFormModel parentModel, String childPageName,
-            ValueModel childFormObjectHolder) {
+                                                               ValueModel childFormObjectHolder) {
         ValidatingFormModel child = createFormModel(childFormObjectHolder);
         child.setId(childPageName);
         parentModel.addChild(child);
         return child;
     }
 
-    public static ValidationListener createSingleLineResultsReporter(ValidatingFormModel formModel, Guarded guardedComponent,
-            Messagable messageReceiver) {
+    public static ValidationListener createSingleLineResultsReporter(ValidatingFormModel formModel,
+                                                                     Guarded guardedComponent,
+                                                                     Messagable messageReceiver) {
         return new SimpleValidationResultsReporter(formModel.getValidationResults(), guardedComponent, messageReceiver);
     }
 
 
+    /**
+     * Returns the child of the formModel with the given page name.
+     *
+     * @param formModel     the parent model to get the child from
+     * @param childPageName the name of the child to retrieve
+     *
+     * @return null the child can not be found
+     *
+     * @throws IllegalArgumentException if childPageName or formModel are null
+     */
+    public static FormModel getChild(HierarchicalFormModel formModel, String childPageName) {
+        if (childPageName == null) throw new IllegalArgumentException("childPageName == null");
+        if (formModel == null) throw new IllegalArgumentException("formModel == null");
+
+        final FormModel[] children = formModel.getChildren();
+
+        if (children == null) return null;
+
+        for (int i = 0; i < children.length; i++) {
+            final FormModel child = children[i];
+            if (childPageName.equals(child.getId())) return child;
+        }
+
+        return null;
+    }
 
 }
