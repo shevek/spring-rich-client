@@ -6,7 +6,7 @@
 
 Development setup
 
-    This section describes how to setup Thot and start developing it.
+    This section describes how to setup the project and start developing it.
 
 Installation
 
@@ -47,7 +47,7 @@ Installation
 
         * Tortoise for Windows explorer from {{http://tortoisesvn.tigris.org}}
 
-        * Any Subversion client referenced in Links on {{http://subversion.tigris.org}}
+        * Any Subversion client referenced in <Links> on {{http://subversion.tigris.org}}
 
     * One UML tool (optional)
 
@@ -77,17 +77,20 @@ Getting the sources
 
 Building
 
-    Open your command line (CygWin, bash, DOS, ...) and run:
+    Open your command line (CygWin, bash, DOS, ...) and run in the project root:
 
 +--
 mvn install
 +--
 
-    This build the project and installs it into your local repository.
+    This builds the project and installs it into your local repository.
 
     NOTE: The first time you run maven it will download all dependencies
     and cache them in your local repository in <<<~/.m2/repository>>>,
     this will take a while. Run it again afterwards to see how fast it really is.
+
+    Once a multiproject install has been run, it's possible to build a single module
+    with the same command in the module root
 
 Configuring your favorite IDE
 
@@ -117,7 +120,7 @@ Configuring your favorite IDE
         Eclipse does not allow a project folder in a project folder.
         (There is an issue at eclipse.org for this.)
         Therefore the direct root, samples and root petclinic content aren't shown.
-        This includes the super pom.xml (!) and the site documentation files.
+        This includes the multiproject pom.xml (very important!) and the site documentation files.
 
     * Using the plugin for Eclipse
 
@@ -144,7 +147,7 @@ Configuring your favorite IDE
     Select <<<Subversion>>> as version control.
 
     Note: Use at least version 2.0-beta-2-SNAPSHOT of the maven-idea-plugin to get a decent
-    configuration. 
+    configuration. You 'll have to check it out and mvn install it though...
 
 Maven 2 versus your favorite IDE
 
@@ -170,11 +173,39 @@ Maven 2 versus your favorite IDE
 
     []
 
+
+Petclinic
+
+* Standalone
+
+    Just run the following class of the project
+    <<<spring-richclient-petclinic-standalone>>>:
+
++--
+org.springframework.richclient.samples.petclinic.PetClinicStandalone
++--
+
+* Standapart (client-server)
+
+    Do a <<<mvn install>>> and deploy the war to a J2EE server:
+
++--
+cp samples/petclinic/server/target/spring-richclient-petclinic-server-<version>-SNAPSHOT.war /
+<tomcat-home>/webapps/petclinic-server.war OR <jboss-home>/server/default/deploy/petclinic-server.war
++--
+
+    TODO: the war's name should not define it's URL
+
+    Then run the following class of the project
+    <<<spring-richclient-petclinic-client>>>:
+
++--
+org.springframework.richclient.samples.petclinic.PetClinicClientServer
++--
+
+    TODO NOTE: webstart doesn't work at this time, but will soon
+
 Testing
-
-* Running Petclinic
-
-    See {{../user/petclinicSample.html}}
 
 * Running testcases
 
@@ -195,5 +226,3 @@ mvn site
     Then take a look at <<<target/site/index.html>>>.
 
     To change the site content, take a look at <<<src/site/apt>>>.
-
-    TODO Note: The module sites are generated but aren't included in the main site yet.

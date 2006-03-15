@@ -22,7 +22,7 @@
     </menu>
 
     <menu name="User">
-      <item name="Petclinic sample" href="/user/petclinicSample.html"/>
+      <item name="Upgrading" href="/user/upgrading.html"/>
       <item name="Powered by" href="/user/poweredBy.html"/>
       <item name="Articles" href="/user/articles.html"/>
       <item name="Related projects" href="/user/relatedProjects.html"/>
@@ -34,6 +34,8 @@
     <menu name="Development">
       <item name="Development setup" href="/development/developmentSetup.html"/>
       <item name="Architecture" href="/development/architecture.html"/>
+      <item name="Conventions" href="/development/conventions.html"/>
+      <item name="Help out" href="/development/helpOut.html"/>
       <item name="JIRA" href="http://opensource2.atlassian.com/projects/spring/browse/RCP"/>
       <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
       <item name="FAQ" href="/development/faq.html"/>

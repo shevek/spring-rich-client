@@ -10,6 +10,15 @@
       </answer>
     </faq>
     <faq>
+      <question>Can I build faster?</question>
+      <answer>
+        <p>
+          Yes, by building only the module you need
+          and/or by building offline. For example: <code>/sandbox/mvn -o compile</code>.
+        </p>
+      </answer>
+    </faq>
+    <faq>
       <question>How do I add a library available in Ibiblio to the project?</question>
       <answer>
         <p>

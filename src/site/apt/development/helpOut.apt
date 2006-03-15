@@ -1,0 +1,50 @@
+ -----
+ Help out
+ -----
+ Geoffrey De Smet
+ -----
+
+Contributions are welcome!
+
+    Contributions are very welcome.
+    Feed-back and contributions to our code help to improve out open source project.
+    So we really appreciate it.
+
+    However:
+
+Well-formed contributions are more welcome
+
+    Well-formed contributions are applied a lot faster.
+    Here's what defines a well-formed contributions:
+
+* Create a JIRA issue
+
+    Make the title self-explaining
+
+* Make the modifications
+
+    * Update before making the modifications
+
+    * All modifications should be for the current issue,
+    seperate patches for different issues.
+
+    * Follow {{conventions.html}}
+
+    * Test the modifications thoroughly:
+    bouncing a patch back and forth due small bugs slow down the process
+
+* Create a patch
+
+    Create a patch <<from the project root>> and name it the JIRA issue number:
+
++--
+svn diff > RCP-123.patch
++--
+
+    Attach that file to the JIRA issue.
+
+    We will apply it like this:
+
++--
+patch -p0 < RCP-123.patch
++--

@@ -4,12 +4,18 @@
  Geoffrey De Smet
  -----
 
-Introduction
+Directory structure
 
-    This section describes how the modules of spring-rich interrelate.
+    Each module has a separete directory and <<<pom.xml>>> file.
+
+[../images/directoryStructure.png] Directory structure
+
+Spring-richclient architecture
+
+    This UML diagram shows how the modules depend on each other:
 
 [../uml/architecture.png] Architecture
 
-Directory structure
+Petclinic architecture
 
-[../images/directoryStructure.png] Directory structure
+[../uml/petclinicArchitecture.png] Petclinic architecture
