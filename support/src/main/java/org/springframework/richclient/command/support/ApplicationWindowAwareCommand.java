@@ -46,9 +46,11 @@ public abstract class ApplicationWindowAwareCommand extends ActionCommand implem
     }
 
     protected JFrame getParentWindowControl() {
-        if (window == null) {
+        // allow subclasses to derive where the application window comes from
+        final ApplicationWindow applicationWindow = getApplicationWindow();
+        if (applicationWindow == null) {
             return Application.instance().getActiveWindow().getControl();
         }
-        return window.getControl();
+        return applicationWindow.getControl();
     }
 }
