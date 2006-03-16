@@ -566,7 +566,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     public boolean isCommittable() {
         for (Iterator i = children.iterator(); i.hasNext();) {
-            if (!((FormModel)i.next()).isCommittable()) {
+            final FormModel childFormModel = (FormModel)i.next();
+            if (!childFormModel.isCommittable()) {
                 return false;
             }
         }

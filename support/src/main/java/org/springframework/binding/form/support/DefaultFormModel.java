@@ -139,8 +139,10 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         this.validator = validator;
     }
 
-    public boolean isCommittable() {        
-        return super.isCommittable() && !getValidationResults().getHasErrors();
+    public boolean isCommittable() {
+        final boolean superIsCommittable = super.isCommittable();
+        final boolean hasNoErrors = !getValidationResults().getHasErrors();
+        return superIsCommittable && hasNoErrors;
     }
 
     protected ValueModel preProcessNewValueModel(String formProperty, ValueModel formValueModel) {
