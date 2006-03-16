@@ -1,0 +1,32 @@
+ -----
+ Support
+ -----
+ Geoffrey De Smet
+ -----
+
+Community
+
+    <The most honest kind of support is peer support from the community.>
+    Here a few community resources.
+
+User forum
+
+    The user forum is for end users questions.
+    It's the place to ask for support.
+
+    {{http://forum.springframework.org/forumdisplay.php?f=28}}
+
+Developer mailing list
+
+    The developer mailing lists is for project decisions.
+
+    {{../mail-lists.html}}
+
+Developer IRC
+
+    Currently no IRC server and channel have been chosen yet to hold real-time meetings.
+
+    Geoffrey's proposition: irc.codehaus.org #spring-richclient (because it has #maven too)
+
+    Important: IRC chat logs should be send to the mailing list.
+    

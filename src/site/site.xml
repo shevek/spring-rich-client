@@ -1,49 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <bannerLeft>
-    <name>Spring rich client</name>
-  </bannerLeft>
-  <bannerRight>
-      <name>Spring framework</name>
-  </bannerRight>
-  <body>
-    <links>
-      <item name="Spring framework" href="http://www.springframework.org/"/>
-    </links>
+    <bannerLeft>
+        <name>Spring rich client</name>
+    </bannerLeft>
+    <bannerRight>
+        <name>Spring framework</name>
+    </bannerRight>
+    <body>
+        <links>
+            <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
+            <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
+            <item name="Spring framework" href="http://www.springframework.org/"/>
+        </links>
 
-    <menu name="tmp">
-      <item name="Maven2ization" href="/development/maven2ization.html"/>
-    </menu>
+        <menu name="tmp">
+            <item name="Maven2ization" href="/development/maven2ization.html"/>
+        </menu>
 
-    <menu name="Overview">
-      <item name="Home" href="/index.html"/>
-      <item name="Download" href="/download.html"/>
-      <item name="Screenshots" href="/screenshots.html"/>
-    </menu>
+        <menu name="Overview">
+            <item name="Home" href="/index.html"/>
+            <item name="Download" href="/download.html"/>
+            <item name="Screenshots" href="/screenshots.html"/>
+        </menu>
 
-    <menu name="User">
-      <item name="Upgrading" href="/user/upgrading.html"/>
-      <item name="Powered by" href="/user/poweredBy.html"/>
-      <item name="Articles" href="/user/articles.html"/>
-      <item name="Related projects" href="/user/relatedProjects.html"/>
-      <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
-      <item name="Wiki" href="http://opensource2.atlassian.com/confluence/spring/display/RCP/Home"/>
-      <item name="FAQ" href="/user/faq.html"/>
-    </menu>
+        <menu name="User">
+            <item name="User Guide" href="/user/userGuide.html"/>
+            <item name="Support" href="/user/support.html"/>
+            <item name="Upgrading" href="/user/upgrading.html"/>
+            <item name="Powered by" href="/user/poweredBy.html"/>
+            <item name="Articles" href="/user/articles.html"/>
+            <item name="Related projects" href="/user/relatedProjects.html"/>
+            <item name="FAQ" href="/user/faq.html"/>
+        </menu>
 
-    <menu name="Development">
-      <item name="Development setup" href="/development/developmentSetup.html"/>
-      <item name="Architecture" href="/development/architecture.html"/>
-      <item name="Conventions" href="/development/conventions.html"/>
-      <item name="Help out" href="/development/helpOut.html"/>
-      <item name="JIRA" href="http://opensource2.atlassian.com/projects/spring/browse/RCP"/>
-      <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
-      <item name="FAQ" href="/development/faq.html"/>
-    </menu>
+        <menu name="Development">
+            <item name="Development setup" href="/development/developmentSetup.html"/>
+            <item name="Architecture" href="/development/architecture.html"/>
+            <item name="Conventions" href="/development/conventions.html"/>
+            <item name="Help out" href="/development/helpOut.html"/>
+            <item name="FAQ" href="/development/faq.html"/>
+        </menu>
 
-    ${modules}
+        <menu name="Modules">
 
-    ${reports}
+            <item name="resources" href="spring-richclient-resources"/>
+            <item name="core" href="spring-richclient-core"/>
+            <item name="binding" href="spring-richclient-binding"/>
+            <item name="form" href="spring-richclient-form"/>
+            <item name="support" href="spring-richclient-support"/>
+            <item name="tiger" href="spring-richclient-tiger"/>
+            <item name="sandbox" href="spring-richclient-sandbox"/>
+            <item name="samples" href="spring-richclient-samples"/>
+        </menu>
 
-  </body>
+        <!-- ${modules} does not work in site plugin beta -->
+
+        ${reports}
+
+    </body>
 </project>

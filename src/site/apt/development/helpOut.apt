@@ -6,32 +6,32 @@
 
 Contributions are welcome!
 
-    Contributions are very welcome.
-    Feed-back and contributions to our code help to improve out open source project.
+    Contributions (code, docs, ...) are very welcome.
+    Feed-back and contributions to our code help to improve our open source project.
     So we really appreciate it.
 
-    However:
+    However...
 
 Well-formed contributions are more welcome
 
-    Well-formed contributions are applied a lot faster.
-    Here's what defines a well-formed contributions:
+    Well-formed contributions get priority because they are easier to apply.
+    Here's what defines a well-formed contribution:
 
 * Create a JIRA issue
 
-    Make the title self-explaining
+    Make the title self-explaining and the summary helpfull.
 
 * Make the modifications
 
     * Update before making the modifications
 
-    * All modifications should be for the current issue,
-    seperate patches for different issues.
+    * All modifications should only apply to the current issue:
+    make sure to seperate patches for different issues.
 
     * Follow {{conventions.html}}
 
     * Test the modifications thoroughly:
-    bouncing a patch back and forth due small bugs slow down the process
+    bouncing a patch back and forth due to small bugs slows down the contribution process
 
 * Create a patch
 
@@ -48,3 +48,5 @@ svn diff > RCP-123.patch
 +--
 patch -p0 < RCP-123.patch
 +--
+
+    Note: you can also do both actions visually with some Subversion clients (Tortoise, ...)

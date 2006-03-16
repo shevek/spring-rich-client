@@ -65,6 +65,8 @@ knowledge about it immediately.
 
 2. RELEASE INFO
 
+NOTE: This information is outdated, see http://spring-rich-c.sf.net
+
 Sprint-RCP requires J2SE 1.4 and the core SpringFramework.  Integration is 
 provided with Log4J 1.2,CGLIB 1.0, Jakarta Commons Attributes, and Jakarta 
 Commons Lang 2.0.
