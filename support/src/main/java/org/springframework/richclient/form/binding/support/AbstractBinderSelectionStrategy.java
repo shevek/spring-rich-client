@@ -17,10 +17,14 @@ package org.springframework.richclient.form.binding.support;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.springframework.beans.propertyeditors.ClassEditor;
 import org.springframework.binding.form.FormModel;
 import org.springframework.core.enums.LabeledEnum;
+import org.springframework.richclient.application.Application;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
 import org.springframework.richclient.util.ClassUtils;
@@ -37,6 +41,8 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
 
     private final Class defaultControlType;
 
+    private final ClassEditor classEditor = new ClassEditor();
+    
     private final Map controlTypeBinders = new HashMap();
 
     private final Map propertyTypeBinders = new HashMap();
@@ -62,10 +68,8 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
         if (binder != null) {
             return binder;
         }
-        else {
-            throw new UnsupportedOperationException("Unable to select a binder for form model [" + formModel
-                    + "] property [" + propertyName + "]");
-        }
+        throw new UnsupportedOperationException("Unable to select a binder for form model [" + formModel
+                + "] property [" + propertyName + "]");
     }
 
     public Binder selectBinder(Class controlType, FormModel formModel, String propertyName) {
@@ -76,10 +80,8 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
         if (binder != null) {
             return binder;
         }
-        else {
-            throw new UnsupportedOperationException("Unable to select a binder for form model [" + formModel
-                    + "] property [" + propertyName + "]");
-        }
+        throw new UnsupportedOperationException("Unable to select a binder for form model [" + formModel
+                + "] property [" + propertyName + "]");
     }
 
     /**
@@ -136,6 +138,97 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
 
     protected void registerBinderForPropertyName(Class parentObjectType, String propertyName, Binder binder) {
         propertyNameBinders.put(new PropertyNameKey(parentObjectType, propertyName), binder);
+    }
+    
+    /**
+     * Add a list of binders that are bound to propertyNames. Each element in the list should
+     * be a Properties element describing the binder and propertyName. For more information
+     * about the structure of the properties see {@link #setBinderForPropertyName(Properties)}.
+
+     * <br><br>
+     *  &lt;list&gt;<br>
+     *   &lt;props&gt;<br>
+     *     &lt;prop key="..."&gt;...&lt;/prop&gt;<br>
+     *     &lt;!-- More info in docs of setBinderForPropertyName(Properties)--&gt;<br>
+     *   &lt;/props&gt;<br>
+     *  &lt;/list&gt;<br>
+     *  
+     * @param binders List of <code>Properties</code> elements
+     * @see #setBinderForPropertyName(Properties)
+     */
+    public void setBindersForPropertyNames(List binders)
+    {
+        for (Iterator i = binders.iterator(); i.hasNext();)
+        {
+            setBinderForPropertyName((Properties) i.next());
+        }
+    }
+    
+    /**
+     * Create/link a <code>Binder</code> to a propertyName from the given <code>Properties</code>.
+     * <p> 
+     * The used keys are:
+     * <ul>
+     * <li><b>objectClass</b>: The bean which has the property.
+     * <li><b>propertyName</b>: The property that will need the binder.
+     * <li><b>binder</b>: The Fully Qualified ClassName that will be used to instantiate the <code>Binder</code>.
+     * <li><b>binderRef</b>: The beanId that identifies the <code>Binder</code> which is defined elsewhere.
+     * </ul>
+     * <p>
+     * The first two keys are mandatory in combination with one of the two latter (binder or binderRef)
+     * The following two cases can be used to define a binder/propertyName combination:
+     * <br><br>
+     *  &lt;props&gt;<br>
+     *    &lt;prop key="objectClass"&gt;mypackage.MyBean&lt;/prop&gt;<br>
+     *    &lt;prop key="propertyName"&gt;myProperty&lt;/prop&gt;<br>
+     *    &lt;prop key="binder"&gt;mypackage.MyBinder&lt;/prop&gt;<br>
+     *  &lt;/props&gt;<br>
+     *  <br>
+     *  &lt;props&gt;<br>
+     *    &lt;prop key="objectClass"&gt;mypackage.MyBean&lt;/prop&gt;<br>
+     *    &lt;prop key="propertyName"&gt;myProperty&lt;/prop&gt;<br>
+     *    &lt;prop key="binderRef"&gt;myBinderBeanId&lt;/prop&gt;<br>
+     *    &lt;!-- myBinderBeanId identifies a bean defined elsewhere--&gt;<br>
+     *  &lt;/props&gt;<br>
+     *   
+     * @param binder The <code>Properties</code> object containing the correct keys.
+     */
+    public void setBinderForPropertyName(Properties binder)
+    {
+        String objectClassName = (String) binder.get("objectClass");
+        if (objectClassName == null)
+            throw new IllegalArgumentException("objectClass is required");
+
+        classEditor.setAsText(objectClassName);
+        Class objectClass = (Class) classEditor.getValue();
+        
+        String propertyName = (String) binder.get("propertyName");
+        if (propertyName == null)
+            throw new IllegalArgumentException("propertyName is required");
+        
+        if (binder.containsKey("binder"))
+        {
+            Object binderParameter = binder.get("binder");
+            classEditor.setAsText((String) binderParameter);
+            Class binderClass = (Class) classEditor.getValue();
+            try
+            {
+                registerBinderForPropertyName(objectClass, propertyName, (Binder) binderClass.newInstance());
+            }
+            catch (Exception e)
+            {
+                throw new IllegalArgumentException(
+                        "Could not instantiate new binder with default constructor: " + binderParameter);
+            }
+        }
+        else if (binder.containsKey("binderRef"))
+        {
+            String binderID = (String) binder.get("binderRef");
+            Binder binderBean = (Binder) Application.services().getBean(binderID);
+            registerBinderForPropertyName(objectClass, propertyName, binderBean);
+        }
+        else
+            throw new IllegalArgumentException("binder or binderRef is required");
     }
 
     protected void registerBinderForPropertyType(Class propertyType, Binder binder) {
