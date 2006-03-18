@@ -109,7 +109,7 @@ public abstract class AbstractSecurityController implements SecurityController, 
     /**
      * Set the list of post-processor actions to be run. This must be a comma-separated
      * list of action names.
-     * @param Comma-separated list of post-processor action names
+     * @param actions Comma-separated list of post-processor action names
      */
     public void setPostProcessorActionsToRun(String actions) {
         _postProcessorActionsToRun = actions;
