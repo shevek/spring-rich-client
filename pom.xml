@@ -30,7 +30,7 @@
             <notifier>
                 <type>mail</type>
                 <configuration>
-                    <address>spring-rich-c-cvs@lists.sourceforge.net</address><!-- TODO verify -->
+                    <address>spring-rich-c-cvs@lists.sourceforge.net</address>
                 </configuration>
             </notifier>
         </notifiers>
@@ -46,6 +46,7 @@
         </mailingList>
         <mailingList>
             <name>Developer list</name>
+            <!-- This list is not part of the spring-rich-c SF project but of the springframework -->
             <post>springframework-rcp-dev@lists.sourceforge.net</post>
             <subscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</subscribe>
             <unsubscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</unsubscribe>
