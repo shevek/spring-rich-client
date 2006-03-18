@@ -23,7 +23,7 @@ Modules and the parent project
     I've split spring-richclient up in several modules,
     following best practices of the spring framework, maven2, ...
 
-    Each module is a seperate project, generates a single jar/war
+    Each module is a separate project, generates a single jar/war
     and has one pom.xml. The POM's hold the maven configuration.
 
     Everything starts with the parent project's POM: <<</pom.xml>>>.
@@ -42,7 +42,7 @@ Modules and the parent project
     This way code can be easily moved to core, binding and form
     without having to fix dependency order.
 
-    All resources are currently in a module resources, to generate a seperate jar,
+    All resources are currently in a module resources, to generate a separate jar,
     but I believe they should be part of the other modules in time...
     Others can not aggree on this, we should discuss it later.
 
@@ -68,7 +68,7 @@ sandbox
 +--
 
     Sandbox has been moved to it's own module.
-    Resources from /resources too, but only because they need to generate a seperate jar.
+    Resources from /resources too, but only because they need to generate a separate jar.
     The resources from /src (mostly some xml files) have been relocated.
 
     This is the new directory structure proposal.
@@ -87,7 +87,7 @@ src/site
     * It's the default directory structure for maven 2 projects.
     Maven is a project for projects, they have been thinking about this longer then us.
 
-    * resources and java source should be seperated:
+    * resources and java source should be separated:
     hello.java can be a resource (very rare) and package.html probably isn't a resource.
 
     * tests can also have resources

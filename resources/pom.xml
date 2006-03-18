@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
     <name>Spring richclient resources</name>
     <description>
-        Most resources kept seperate from the rest due to its size.
+        Most resources kept separate from the rest due to its size.
     </description>
 
     <dependencies>

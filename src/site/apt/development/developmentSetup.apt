@@ -38,13 +38,13 @@ Installation
 
         * NetBeans 5+ from {{http://www.netbeans.org}}
 
-            * Subversion support is not that good yet, use a seperate subversion client
+            * Subversion support is not that good yet, use a separate subversion client
 
         * IntelliJ IDEA 5.1+ from {{http://www.jetbains.com}}
 
             * Subversion is fully supported since IDEA 5
 
-    * One seperate Subversion client (optional if already supported in the IDE)
+    * One separate Subversion client (optional if already supported in the IDE)
 
         * Subversion (shell client) from {{http://subversion.tigris.org}}
 

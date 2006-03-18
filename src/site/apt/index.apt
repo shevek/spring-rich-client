@@ -6,20 +6,13 @@
 
 What is spring-richclient?
 
-    Spring-rich adds value for people needing to develop Swing applications
-    and do so in a way that promotes consistent, well-designed, configurable Swing applications.
-    The spring-rich developers strongly feel the "old days" of Swing apps "not looking native"
-    and not being performant or web-accessible are gone with JDK1.4.2 and 1.5 and webstart.
-    It is our belief the only problem with Swing is that there are a limited number
-    of higher-level abstractions available that assist in making the toolkit simpler
-    and easier to use, and a limited number of design best practices.
-    The goal of spring-richclient is to provide that.
-
-    TODO: clean this up description and make it more consise and to the point.
+    Spring-RCP's mission is to provide an elegant way to build highly-configurable,
+    GUI-standards-following rich-client applications faster by leveraging the Spring
+    Framework, and a rich library of UI factories and support classes.
 
 News
 
-    * <<2006-03-12>>: maven2ization done in subversion
+    * <<2006-03-12>>: Moved to subversion and maven2ization done
 
     * <<2006-02-25>>: maven2ization proposed
 
@@ -32,58 +25,50 @@ Abstract
     focus is on providing support for Swing applications but a goal of Spring-RCP is
     to be view agnostic as much as possible.
 
-    The Spring Framework is a layered Java/J2EE application framework, based on code
-    published in "Expert One-on-One J2EE Design and Development" by Rod Johnson
-    (Wrox, 2002). Spring includes:
+    The goal of the Spring Rich Client Project (Spring Rich) is to provide a viable option
+    for developers that need a platform and a <best-practices> guide for constructing
+    Swing applications quickly.
 
-    * Powerful JavaBeans-based configuration management, applying
-    Inversion-of-Control principles. This makes wiring up applications quick and
-    easy. No more singletons littered throughout your codebase, no more arbitrary
-    properties files: one consistent and elegant approach everywhere. This core bean
-    factory can be used in any environment, from applets to J2EE containers.
+    Specifically, spring-richclient seeks to:
 
-    * Generic abstraction layer for transaction management, allowing for pluggable
-    transaction managers, and making it easy to demarcate transactions without
-    dealing with low-level issues. Generic strategies for JTA and a single JDBC
-    DataSource are included. In contrast to plain JTA or EJB CMT, Spring's
-    transaction support is not tied to J2EE environments.
+    * Provide a way to build structured, highly-configurable, GUI-standards-following Swing
+    applications faster by leveraging the Spring Framework.
 
-    * JDBC abstraction layer that offers a meaningful exception hierarchy (no more
-    pulling vendor codes out of SQLException), simplifies error handling, and
-    greatly reduces the amount of code you'll need to write. You'll never need to
-    write another finally block to use JDBC again. The JDBC-oriented exceptions
-    comply to Spring's generic DAO exception hierarchy.
+    * Foster integration with existing rich-client-related projects where it make sense.
+    For example, jgoodies-forms and TableLayout are two good layout managers.
+    We don't need to develop another one.
 
-    * Integration with Hibernate, JDO, and iBATIS SQL Maps: in terms of resource
-    holders, DAO implementation support, and transaction strategies. First-class
-    Hibernate support with lots of IoC convenience features, addressing many typical
-    Hibernate integration issues. All of these comply to Spring's generic
-    transaction and DAO exception hierarchies.
+    * Adhere to the principles set forth by the Spring Framework--programming to interfaces;
+    the importance of sound OO design, documentation, and testing.
 
-    * AOP functionality, fully integrated into Spring configuration management. You
-    can AOP-enable any object managed by Spring, adding aspects such as declarative
-    transaction management. With Spring, you can have declarative transaction
-    management without EJB... even without JTA, if you're using a single database in
-    Tomcat or another web container without JTA support.
+    Some features of the platform under development include:
 
-    * Flexible MVC web application framework, built on core Spring functionality.
-    This framework is highly configurable via strategy interfaces, and accommodates
-    multiple view technologies like JSP, Velocity, Tiles, iText, and POI. Note that
-    a Spring middle tier can easily be combined with a web tier based on any other
-    web MVC framework, like Struts, WebWork, or Tapestry.
+    * A command framework that provides centralized configuration of Swing actions
+    and appropriate handler registration based on the current active view.
+    Command configuration, as well asaction bar contribution policies (to menus or toolbars),
+    can be defined centrally and externalized in Spring bean defintiions.
 
-    []
+    * A forms data binding and validation framework, for connecting edits made in your UI controls
+    with your domain model automatically--with <as you type> feedback.
 
-    You can use all of Spring's functionality in any J2EE server, and most of it
-    also in non-managed environments. A central focus of Spring is to allow for
-    reusable business and data access objects that are not tied to specific J2EE
-    services. Such objects can be reused across J2EE environments (web or EJB),
-    standalone applications, test environments, etc without any hassle.
+    * Support for multiple window management, page configuration, and view management.
+    The concepts here are inspired by Eclipse's perspective/view constructs.
+    Views can be defined in the Spring container, associated with one or more pages,
+    and a default page can be configured to be loaded at startup.
 
-    Spring has a layered architecture. All its functionality builds on lower levels.
-    So you can e.g. use the JavaBeans configuration management without using the MVC
-    framework or AOP support. But if you use the web MVC framework or AOP support,
-    you'll find they build on the configuration framework, so you can apply your
-    knowledge about it immediately.
+    * Common support classes addressing various rich client requirements including:
+    well formed dialogs, wizards, input validation (typing hints and validation results reporting),
+    button bars,internationalization, image/icon caching, progress  monitoring,
+    UI threading (classes cleanly promoting responsive UIs), treetable/property sheet,
+    table sorting/high-volume table updates, GUI standards builders/helpers, help/about, etc.
+
+    Spring-rich adds value for people needing to develop Swing applications
+    and do so in a way that promotes consistent, well-designed, configurable Swing applications.
+    The spring-rich developers strongly feel the <old days> of Swing apps <not looking native>
+    and not being performant or web-accessible are gone with JDK1.4.2 and 1.5 and webstart.
+    It is our belief the only problem with Swing is that there are a limited number of higher-level
+    abstractions available that assist in making the toolkit simpler and easier to use,
+    and a limited number of design best practices.
+    The goal of spring-richclient is to provide that.
 
     TODO: this abstract might be not be up to date.

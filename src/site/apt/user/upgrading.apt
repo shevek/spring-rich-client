@@ -16,5 +16,6 @@ pre-0.1.0 to 0.1.0
     * Switch from CVS with ANT to Subversion with Maven 2:
     if you have made local changes to the spring rich code,
     take a <<<cvs diff \> file.patch>>> in <<</src>>> and <<</sandbox>>>
-    and patch it in <<</support/src/main/java>>> and <<</sandobx/src/main/java>>>
+    and patch it in <<</support/src/main/java>>> or <<</support/src/main/resources>>>
+    and <<</sandbox/src/main/java>>> or <<</sandbox/src/main/resources>>>
     
