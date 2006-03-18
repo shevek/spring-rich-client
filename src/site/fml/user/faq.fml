@@ -17,5 +17,17 @@
         </p>
       </answer>
     </faq>
+    <faq>
+      <question>Can I use the project under java 1.4?</question>
+      <answer>
+        <p>
+          Yes. You can everything except the tiger module and petclinic sample under Java 1.4.
+        </p>
+        <p>
+          To build, you 'll need JDK 1.5 however, unless you comment out the appropriate modules
+          in the project root pom.xml.
+        </p>
+      </answer>
+    </faq>
   </part>
 </faqs>

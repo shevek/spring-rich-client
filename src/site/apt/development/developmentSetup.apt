@@ -16,6 +16,9 @@ Installation
 
         * Set the <<<JAVA_HOME>>> environment variable.
 
+        * NOTE: Spring-richclient can be used in Java 1.4+,
+         but the tiger module and the petclinic sample require Java 1.5+.
+
     * Maven 2+ from {{http://maven.apache.org}}
 
         * Set the <<<M2_HOME>>> environment variable.
@@ -90,7 +93,7 @@ mvn install
     this will take a while. Run it again afterwards to see how fast it really is.
 
     Once a multiproject install has been run, it's possible to build a single module
-    with the same command in the module root
+    with the same command in the module root.
 
 Configuring your favorite IDE
 
