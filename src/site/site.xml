@@ -10,6 +10,7 @@
         <links>
             <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
             <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
+            <item name="JIRA" href="http://opensource2.atlassian.com/projects/spring/browse/RCP"/>
             <item name="Spring framework" href="http://www.springframework.org/"/>
         </links>
 

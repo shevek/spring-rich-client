@@ -38,20 +38,30 @@
     <inceptionYear>2004</inceptionYear>
     <mailingLists>
         <mailingList>
-            <name>spring-richclient-user</name>
+            <name>User list</name>
             <post>http://forum.springframework.org/forumdisplay.php?f=28</post>
             <subscribe>http://forum.springframework.org/forumdisplay.php?f=28</subscribe>
             <unsubscribe>http://forum.springframework.org/forumdisplay.php?f=28</unsubscribe>
             <archive>http://forum.springframework.org/forumdisplay.php?f=28</archive>
         </mailingList>
         <mailingList>
-            <name>spring-richclient-develop</name>
+            <name>Developer list</name>
+            <post>springframework-rcp-dev@lists.sourceforge.net</post>
+            <subscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</subscribe>
+            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</unsubscribe>
+            <archive>http://sourceforge.net/mailarchive/forum.php?forum=springframework-rcp-dev</archive>
+            <otherArchives>
+                <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.devel</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>Version control commits</name>
             <post>spring-rich-c-cvs@lists.sourceforge.net</post>
             <subscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</subscribe>
             <unsubscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</unsubscribe>
             <archive>http://sourceforge.net/mailarchive/forum.php?forum=spring-rich-c-cvs</archive>
             <otherArchives>
-                <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.devel</otherArchive>
+                <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.commits</otherArchive>
             </otherArchives>
         </mailingList>
     </mailingLists>
