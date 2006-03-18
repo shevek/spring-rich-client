@@ -13,8 +13,21 @@
       <question>Can I build faster?</question>
       <answer>
         <p>
-          Yes, by building only the module you need
-          and/or by building offline. For example: <code>/sandbox/mvn -o compile</code>.
+          Yes, by:
+        </p>
+        <ul>
+            <li>
+                <p>Using the fast build profile with <code>-Pfast</code>, that does:</p>
+                <ul>
+                    <li>Skipping test with <code>-Dmaven.test.skip</code></li>
+                </ul>
+            </li>
+            <li>Building offline (doesn't work the first time) with <code>-o</code></li>
+            <li>Building only the module you need</li>
+            <li>Only compiling if you need nothing more with <code>mvn compile</code></li>
+        </ul>
+        <p>
+            For example: <code>/sandbox/mvn -o -Pfast install</code>.
         </p>
       </answer>
     </faq>

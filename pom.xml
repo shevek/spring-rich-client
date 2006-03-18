@@ -250,6 +250,15 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>fast</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <modules>
         <module>resources</module>
         <module>core</module>

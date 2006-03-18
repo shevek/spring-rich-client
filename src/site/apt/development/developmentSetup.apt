@@ -91,6 +91,7 @@ mvn install
     NOTE: The first time you run maven it will download all dependencies
     and cache them in your local repository in <<<~/.m2/repository>>>,
     this will take a while. Run it again afterwards to see how fast it really is.
+    Then take a look at the {{faq.html}} to run it even faster.
 
     Once a multiproject install has been run, it's possible to build a single module
     with the same command in the module root.
