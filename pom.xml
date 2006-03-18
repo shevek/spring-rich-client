@@ -112,11 +112,11 @@
             <!-- TODO verify and complete -->
             <id>anodos</id>
             <name>Andy DePue</name>
-            <email/>
+            <email>andy AT marathon-man DOT com</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone>-8</timezone>
         </developer>
         <developer>
             <id>jdigger</id>
