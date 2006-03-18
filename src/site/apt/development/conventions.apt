@@ -13,6 +13,18 @@ Code style
     TODO: none yet, this has to be thoroughly discussed on the developer list:
     Sun code conventions??? What is Spring doing?
 
+Naming Conventions
+
+* Main code
+
+* Test code
+
+    * All testcases should end with <<<Test>>> or <<<Tests>>>.
+    TODO: make a decision
+
+    * Abstract testcases should end with <<<AbstractTest>>> so the build process doen't
+    try to run them.
+
 Build process
 
     * All versions should be specified in the project root pom.xml: never in a child pom.

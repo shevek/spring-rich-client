@@ -20,7 +20,7 @@ import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.support.TestLabeledEnum;
 
-public class EnumComboBoxBindingTests extends AbstractBindingTests {
+public class EnumComboBoxBindingAbstractTest extends BindingAbstractTest {
 
     private EnumComboBoxBinding cbb;
 

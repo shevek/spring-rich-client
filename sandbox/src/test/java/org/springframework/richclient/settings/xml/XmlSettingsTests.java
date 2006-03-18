@@ -25,7 +25,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.richclient.settings.Settings;
-import org.springframework.richclient.settings.SettingsTestCase;
+import org.springframework.richclient.settings.SettingsAbstractTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Peter De Bruycker
  */
-public class XmlSettingsTests extends SettingsTestCase {
+public class XmlSettingsTests extends SettingsAbstractTest {
 
 	protected Settings createSettings() throws Exception {
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

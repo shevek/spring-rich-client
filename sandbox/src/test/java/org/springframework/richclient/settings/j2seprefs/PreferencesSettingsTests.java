@@ -16,12 +16,12 @@
 package org.springframework.richclient.settings.j2seprefs;
 
 import org.springframework.richclient.settings.Settings;
-import org.springframework.richclient.settings.SettingsTestCase;
+import org.springframework.richclient.settings.SettingsAbstractTest;
 
 /**
  * @author Peter De Bruycker
  */
-public class PreferencesSettingsTests extends SettingsTestCase {
+public class PreferencesSettingsTests extends SettingsAbstractTest {
 
 	protected Settings createSettings() {
 		return new PreferencesSettings(new TransientPreferences());

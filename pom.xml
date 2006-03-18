@@ -225,6 +225,15 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <testFailureIgnore>true</testFailureIgnore>
+                        <!-- TODO Testcases should all end with Test, not Tests-->
+                        <includes>
+                            <include>**/*Test.java</include>
+                            <include>**/*Tests.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/*AbstractTest.java</exclude>
+                            <exclude>**/*AbstractTests.java</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
                 <!--<plugin>-->

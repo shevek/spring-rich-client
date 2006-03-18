@@ -24,7 +24,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
-public abstract class AbstractBindingTests extends TestCase {
+public abstract class BindingAbstractTest extends TestCase {
     
     protected ConfigurableFormModel fm;
 

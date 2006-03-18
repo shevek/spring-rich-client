@@ -22,7 +22,7 @@ import org.springframework.core.enums.LabeledEnum;
 /**
  * @author Peter De Bruycker
  */
-public abstract class SettingsTestCase extends TestCase {
+public abstract class SettingsAbstractTest extends TestCase {
 	private Settings settings;
 
 	private TestablePropertyChangeListener propertyChangeListener;

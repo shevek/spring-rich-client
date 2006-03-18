@@ -18,7 +18,7 @@ package org.springframework.richclient.settings;
 /**
  * @author Peter De Bruycker
  */
-public class TransientSettingsTests extends SettingsTestCase {
+public class TransientSettingsTests extends SettingsAbstractTest {
 
 	protected Settings createSettings() {
 		return new TransientSettings();

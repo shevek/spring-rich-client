@@ -23,7 +23,7 @@ import javax.swing.event.ListDataEvent;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
-public class ComboBoxBindingTests extends AbstractBindingTests {
+public class ComboBoxBindingAbstractTest extends BindingAbstractTest {
 
     private ValueModel sih;
 

@@ -40,7 +40,7 @@ import org.springframework.richclient.list.BeanPropertyValueListRenderer;
  * @author  Oliver Hutchison
  * @author  Andy DePue 
  */
-public class ListBinderTests extends AbstractBindingTests {
+public class ListBinderAbstractTest extends BindingAbstractTest {
     private ListBinder lb;
 
     private Map context;
