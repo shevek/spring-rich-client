@@ -22,7 +22,7 @@ Naming Conventions
     * All testcases should end with <<<Test>>> or <<<Tests>>>.
     TODO: make a decision
 
-    * Abstract testcases should end with <<<AbstractTest>>> so the build process doen't
+    * Abstract testcases should end with <<<AbstractTest>>> so the build process doesn't
     try to run them.
 
 Build process

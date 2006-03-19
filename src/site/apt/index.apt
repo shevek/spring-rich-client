@@ -41,11 +41,13 @@ Abstract
     * Adhere to the principles set forth by the Spring Framework--programming to interfaces;
     the importance of sound OO design, documentation, and testing.
 
+    []
+
     Some features of the platform under development include:
 
     * A command framework that provides centralized configuration of Swing actions
     and appropriate handler registration based on the current active view.
-    Command configuration, as well asaction bar contribution policies (to menus or toolbars),
+    Command configuration, as well as action bar contribution policies (to menus or toolbars),
     can be defined centrally and externalized in Spring bean defintiions.
 
     * A forms data binding and validation framework, for connecting edits made in your UI controls
@@ -61,6 +63,8 @@ Abstract
     button bars,internationalization, image/icon caching, progress  monitoring,
     UI threading (classes cleanly promoting responsive UIs), treetable/property sheet,
     table sorting/high-volume table updates, GUI standards builders/helpers, help/about, etc.
+
+    []
 
     Spring-rich adds value for people needing to develop Swing applications
     and do so in a way that promotes consistent, well-designed, configurable Swing applications.
