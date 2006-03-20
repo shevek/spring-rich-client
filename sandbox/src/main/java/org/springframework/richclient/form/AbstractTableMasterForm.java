@@ -36,7 +36,7 @@ import org.springframework.richclient.util.PopupMenuMouseListener;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.Matcher;
+import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;

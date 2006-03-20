@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -37,10 +37,13 @@ import org.springframework.richclient.text.TextComponentPopup;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.impl.filter.StringTextFilterator;
 import ca.odell.glazedlists.swing.EventListModel;
-import ca.odell.glazedlists.swing.TextFilterList;
+import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+
 
 /**
  * A <code>ListSelectionDialog</code> can be used to select an item from a list.
@@ -58,7 +61,7 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
     private EventList eventList;
 
     public ListSelectionDialog(String title, Window parent, List items) {
-        this(title, parent, new BasicEventList(items));
+        this(title, parent, GlazedLists.eventList(items));
     }
 
     public ListSelectionDialog(String title, Window parent, EventList eventList) {
@@ -79,16 +82,18 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
         this.renderer = renderer;
     }
 
-    /** 
+    /**
      * @see org.springframework.richclient.dialog.ApplicationDialog#createDialogContentPane()
      */
     protected JComponent createDialogContentPane() {
         createListControl();
-        
-        JTextField filter = null;        
-        
-        if(eventList instanceof TextFilterList) {
-            filter = ((TextFilterList)eventList).getFilterEdit();
+
+        JTextField filter = null;
+
+        if(eventList instanceof FilterList) {
+            filter = new JTextField();
+            TextComponentMatcherEditor me = new TextComponentMatcherEditor(filter, new StringTextFilterator());
+            ((FilterList)eventList).setMatcherEditor(me);
             TextComponentPopup.attachPopup(filter);
             filter.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
@@ -96,10 +101,14 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
                         // transfer focus to list
                         list.requestFocusInWindow();
                     }
+                    else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        if (getFinishCommand().isEnabled())
+                            getFinishCommand().execute();
+                    }
                 }
             });
         }
-        
+
         setFinishEnabled(false);
 
         if (!eventList.isEmpty()) {
@@ -167,7 +176,7 @@ public abstract class ListSelectionDialog extends ApplicationDialog {
         }
     }
 
-    /** 
+    /**
      * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
      */
     protected boolean onFinish() {
