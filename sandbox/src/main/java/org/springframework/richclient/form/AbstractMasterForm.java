@@ -60,7 +60,7 @@ import ca.odell.glazedlists.EventList;
  * <strong>Important note:</strong> Any subclass that implements
  * {@link AbstractForm#createControl()} <strong>MUST</strong> call {@link #configure()}
  * prior to its work in order to have the detail form properly prepared.
- * 
+ *
  * @author Larry Streepy
  * @see AbstractDetailForm
  * @see #creatingNewObject()
@@ -92,7 +92,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * path. The form model for this class will be constructed by getting the value model
      * of the specified property from the parent form model and constructing a
      * DeepCopyBufferedCollectionValueModel on top of it.
-     * 
+     *
      * @param parentFormModel Parent form model to access for this form's data
      * @param property containing this forms data (must be a collection or an array)
      * @param formId Id of this form
@@ -123,7 +123,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * <p>
      * You must use this method to get the value model since calling getValueModel on the
      * parent form model will not get you what you want.
-     * 
+     *
      * @return collection value model
      */
     public ValueModel getCollectionValueModel() {
@@ -140,7 +140,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * new instance of this type would result in a somewhat misleading error regarding
      * lazy instantiation since the new PersistentList instance would not have been
      * properly initialized by Hibernate.
-     * 
+     *
      * @param collectionPropertyVM ValueModel holding the master collection
      * @return Type of collection to use
      */
@@ -174,7 +174,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Construct the detail half of this master/detail pair.
-     * 
+     *
      * @param parentFormModel
      * @param valueHolder BufferedValueModel holding an object of the type configured for
      *            this master form.
@@ -189,7 +189,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * created on top of the event list obtained from {@link #getRootEventList()} so that
      * all changes are propery proxied onto the actual form data. The event list provided
      * will be wrapped in a {@link ObservableEventList}.
-     * 
+     *
      * @param eventList new EventList to install
      */
     protected void installEventList(EventList eventList) {
@@ -219,7 +219,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * when the value model holding this forms source property has changed (which can
      * occur when the parent form object is changed). This method is normally invoked from
      * the parent form object listener.
-     * 
+     *
      * @see #_parentFormPropertyChangeHandler
      */
     protected void handleExternalRootEventListChange() {
@@ -246,7 +246,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Get the form data we are operating upon. The form object must be castable to List
      * for this to work.
-     * 
+     *
      * @return List The form object's value
      */
     public List getFormData() {
@@ -255,7 +255,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Get the master EventList (which proxies the real form data).
-     * 
+     *
      * @return EventList
      */
     public ObservableEventList getMasterEventList() {
@@ -264,7 +264,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Get the selection model for the master list representation.
-     * 
+     *
      * @return selection model
      */
     protected abstract ListSelectionModel getSelectionModel();
@@ -299,7 +299,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Get the selection handler for the master list. Default implementation.
-     * 
+     *
      * @return listener to handle master table selection events
      */
     protected ListSelectionListener getSelectionHandler() {
@@ -308,7 +308,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Get the command group for the master table (the add and delete commands).
-     * 
+     *
      * @return command group
      */
     protected CommandGroup getCommandGroup() {
@@ -333,7 +333,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Get the popup menu for the master table. This is built from the command group
      * returned from {@link #getCommandGroup()}.
-     * 
+     *
      * @return popup menu
      */
     protected JPopupMenu getPopupMenu() {
@@ -356,7 +356,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * Create the "new detail object" command. This will encapsulate the action from our
      * detail forms {@link AbstractForm#getNewFormObjectCommand} as well as controlling
      * the state of the detail form.
-     * 
+     *
      * @return command
      */
     protected ActionCommand createNewFormObjectCommand() {
@@ -378,7 +378,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Construct the "new detail object" command id as
      * <code>new[detailTypeName]Command</code>
-     * 
+     *
      * @return constructed command id
      */
     protected String getNewFormObjectCommandId() {
@@ -387,7 +387,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Return the command to delete the currently selected item in the master set.
-     * 
+     *
      * @return command, created on demand
      */
     public ActionCommand getDeleteCommand() {
@@ -399,7 +399,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Create the "delete object" command.
-     * 
+     *
      * @return command
      */
     protected ActionCommand createDeleteCommand() {
@@ -455,7 +455,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Delete the detail item at the specified index.
-     * @param index Index of item to delete
      */
     protected void deleteSelectedItems() {
         ListSelectionModel sm = getSelectionModel();
@@ -479,7 +478,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
     /**
      * Construct the button to invoke the delete command.
-     * 
+     *
      * @return button
      */
     protected JButton createDeleteButton() {
@@ -490,7 +489,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Construct the "delete detail object" command id as
      * <code>delete[DetailTypeName]Command</code>
-     * 
+     *
      * @return constructed command id
      */
     protected String getDeleteCommandId() {
@@ -552,8 +551,6 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Deal with the user invoking a "new object" command. If we have unsaved changes,
      * then we need to query the user to ensure they want to really make the change.
-     * 
-     * @param newIndex The new selection index, may be -1 to clear the selection
      */
     protected void maybeCreateNewObject() {
         if( getDetailForm().isEditingNewFormObject() ) {
@@ -589,8 +586,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
         int state = getDetailForm().getEditState();
         boolean isCreating = state == AbstractDetailForm.STATE_CREATE;
 
-        _deleteCommand.setEnabled( getDetailForm().getEditingFormObjectIndex() >= 0 );
-        _newFormObjectCommand.setEnabled( !isCreating );
+        getDeleteCommand().setEnabled( getDetailForm().getEditingFormObjectIndex() >= 0 );
+        getNewFormObjectCommand().setEnabled( !isCreating );
 
         // If we are in the CLEAR state, then we need to disable validations on the form
         getDetailFormModel().setValidating( state != AbstractDetailForm.STATE_CLEAR );
@@ -624,7 +621,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
         /**
          * Called when the user selects a single row. Override this method to handle
          * single selection
-         * 
+         *
          * @param index the selected row
          */
         protected void onSingleSelection(final int index) {
@@ -634,7 +631,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
         /**
          * Deal with a change in the selected index. If we have unsaved changes, then we
          * need to query the user to ensure they want to really make the change.
-         * 
+         *
          * @param newIndex The new selection index, may be -1 to clear the selection
          */
         protected void maybeChangeSelection(final int newIndex) {
@@ -715,7 +712,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
         /**
          * Constructs a new DirtyTrackingDCBCVM.
-         * 
+         *
          * @param wrappedModel the value model to wrap
          * @param wrappedType the class of the value contained by wrappedModel; this must
          *            be assignable to <code>java.util.Collection</code> or
