@@ -54,7 +54,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected Log logger = LogFactory.getLog(getClass());
 
     private static final String DEFAULT_APPLICATION_PAGE_BEAN_ID = "defaultApplicationPagePrototype";
-    
+
     private final EventListenerListHelper pageListeners = new EventListenerListHelper(PageListener.class);
 
     private int number;
@@ -144,17 +144,47 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         this.windowManager = windowManager;
     }
 
+    /**
+     * Show the given page in this window.
+     *
+     * @param pageId the page to show, identified by id
+     *
+     * @throws IllegalArgumentException if pageId == null
+     */
     public void showPage(String pageId) {
+        if (pageId == null) throw new IllegalArgumentException("pageId == null");
+
+        if (getPage() == null || !getPage().getId().equals(pageId)) {
+            showPage(createPage(this, pageId));
+        }
+        else {
+            // asking for the same page, so ignore
+        }
+    }
+
+    /**
+     * Show the given page in this window.
+     *
+     * @param page the page to show
+     *
+     * @throws IllegalArgumentException if page == null
+     */
+    protected void showPage(ApplicationPage page) {
+        if (page == null) throw new IllegalArgumentException("page == null");
+
         if (this.currentPage == null) {
-            this.currentPage = createPage(this, pageId);
+            this.currentPage = page;
             initWindow();
         }
         else {
-            if (!currentPage.getId().equals(pageId)) {
+            if (!currentPage.getId().equals(page.getId())) {
                 final ApplicationPage oldPage = this.currentPage;
-                this.currentPage = createPage(this, pageId);
+                this.currentPage = page;
                 updatePageControl(oldPage);
                 pageListeners.fire("pageClosed", oldPage);
+            }
+            else {
+                // asking for the same page, so ignore
             }
         }
         pageListeners.fire("pageOpened", this.currentPage);
@@ -176,7 +206,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     protected ApplicationPage createPage(PageDescriptor descriptor) {
         try {
             DefaultApplicationPage page = (DefaultApplicationPage)getServices().getBean(
-                    DEFAULT_APPLICATION_PAGE_BEAN_ID, DefaultApplicationPage.class);
+                DEFAULT_APPLICATION_PAGE_BEAN_ID, DefaultApplicationPage.class);
             page.setApplicationWindow(this);
             page.setDescriptor(descriptor);
             return page;
@@ -189,8 +219,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
         Assert.state(getServices().containsBean(pageDescriptorId),
-                "Do not know about page or view descriptor with name '" + pageDescriptorId
-                        + "' - check your context config");
+            "Do not know about page or view descriptor with name '" + pageDescriptorId
+                + "' - check your context config");
         Object desc = getServices().getBean(pageDescriptorId);
         if (desc instanceof PageDescriptor) {
             return (PageDescriptor)desc;
@@ -200,7 +230,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         }
         else {
             throw new IllegalArgumentException("Page id '" + pageDescriptorId
-                    + "' is not backed by an ApplicationPageDescriptor");
+                + "' is not backed by an ApplicationPageDescriptor");
         }
     }
 
@@ -311,11 +341,11 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     public boolean close() {
         boolean canClose = getAdvisor().onPreWindowClose(this);
         if (canClose) {
-            if( currentPage != null ) {
+            if (currentPage != null) {
                 currentPage.close();
             }
 
-            if( control != null ) {
+            if (control != null) {
                 control.dispose();
                 control = null;
             }
