@@ -50,14 +50,13 @@ import org.springframework.richclient.list.BeanPropertyValueListRenderer;
  */
 public class SwingBindingFactoryTests extends TestCase {
 
-    static {
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
-        Application.services().setApplicationContext(new StaticApplicationContext());
-    }
-
     private SwingBindingFactory sbf;
 
     public void setUp() {
+        Application.load( null );
+        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
+        application.setApplicationContext(new StaticApplicationContext());
+
         sbf = new SwingBindingFactory(FormModelHelper.createFormModel(new TestBean()));
         sbf.setBinderSelectionStrategy(new TestingBinderSelectionStrategy());
     }
