@@ -1,3 +1,4 @@
+package org;
 
 /**
  * Dummy class for testing that move and rename refactoring in Eclipse with Subversive 
