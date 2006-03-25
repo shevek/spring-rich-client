@@ -17,7 +17,7 @@
         </p>
         <ul>
             <li>
-                <p>Using the fast build profile with <code>-Pfast</code>, that does:</p>
+                Using the fast build profile with <code>-Pfast</code>, that does:
                 <ul>
                     <li>Skipping test with <code>-Dmaven.test.skip</code></li>
                 </ul>
@@ -25,6 +25,10 @@
             <li>Building offline (doesn't work the first time) with <code>-o</code></li>
             <li>Building only the module you need</li>
             <li>Only compiling if you need nothing more with <code>mvn compile</code></li>
+            <li>
+                Using a mirror of Ibiblio, which are a lot faster.
+                See <a href="http://maven.apache.org">Maven's documentation</a>.
+            </li>
         </ul>
         <p>
             For example: <code>/sandbox/mvn -o -Pfast install</code>.
@@ -35,15 +39,28 @@
       <question>How do I add a library available in Ibiblio to the project?</question>
       <answer>
         <p>
-          Search <a href="http://www.ibiblio.org/maven2">http://www.ibiblio.org/maven2</a>
-          and specifically the org and com subdirectories.
+          Search <a href="http://www.ibiblio.org/maven2">http://www.ibiblio.org/maven2</a>,
+          starting with the <b>org</b> and <b>net</b> subdirectories. For example
+          <a href="http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/">
+              http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/
+          </a> has groupId org.springframework, artifactId spring-core and version 1.2.6.
         </p>
+        <ul>
+          <li>
+            Always prefer a longer groupIds (org.springframework is better then springframework).
+          </li>
+          <li>
+            Always prefer smaller peices (don't take spring-full).
+          </li>
+        </ul>
         <p>
           First add it as a dependency in dependencyManagement entity in the root pom.xml.
+          This way the version only is defined on one place, making it easy to upgrade later.
+          However it must stil be added to the dependencies list of each module that requires it.
         </p>
         <p>
-          Then decide which modules will <b>directly</b> use the dependency.
-          Add it in the dependencies entity in the pom.xml of those modules.
+          Then decide which modules will <b>directly</b> (not transitively) use the dependency.
+          Add it in the dependencies entity in the pom.xml of those modules without version.
         </p>
         <p>
           Do a mvn install eclipse:eclipse idea:idea to download the library
@@ -58,7 +75,12 @@
         <p>
           If the library is not available in Ibiblio,
           it can be added it to our own remote repository with mvn deploy:deploy-file.
-          Contact the build guy (ge0ffrey).
+        </p>
+        <p>
+          Warning: Some libraries have their pom on Ibiblio but not their artifact (jar, war, ...),
+          such as Sun's activation.
+          Add the jar to our own remote repository but use the pom of Ibiblio as it will
+          have decently configured transitive dependencies.
         </p>
       </answer>
     </faq>
@@ -66,7 +88,10 @@
       <question>Do we have our own remote repository for dependencies?</question>
       <answer>
         <p>
-          Yes, it's at <a href="http://spring-rich-c.sf.net/maven2repository">http://spring-rich-c.sf.net/maven2repository</a>.
+          Yes, it's at
+          <a href="http://spring-rich-c.sf.net/maven2repository">
+              http://spring-rich-c.sf.net/maven2repository
+          </a>.
         </p>
       </answer>
     </faq>

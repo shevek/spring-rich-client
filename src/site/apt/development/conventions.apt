@@ -27,7 +27,14 @@ Naming Conventions
 
 Build process
 
-    * All versions should be specified in the project root pom.xml: never in a child pom.
+    The project root pom is the (in)direct parent pom of all module poms.
+    Therefor dependency configuration is inherited.
+
+    * All versions should be specified in the project root pom: never in a child pom.
+
+    * All poms should only depend on their direct dependencies.
+
+    * Dependency scope is ussually defined in the projet root pom.xml
 
 Documentation
 
