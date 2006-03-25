@@ -90,14 +90,13 @@
             <timezone/>
         </developer>
         <developer>
-            <!-- TODO verify and complete -->
             <id>lstreepy</id>
             <name>Larry Streepy</name>
-            <email/>
+            <email>lstreepy AT nyc.rr DOT com</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone>-5</timezone>
         </developer>
         <developer>
             <!-- TODO verify and complete -->
