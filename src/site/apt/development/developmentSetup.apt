@@ -80,6 +80,8 @@ Getting the sources
 
 Building
 
+* Main build command
+
     Open your command line (CygWin, bash, DOS, ...) and run in the project root:
 
 +--
@@ -95,6 +97,22 @@ mvn install
 
     Once a multiproject install has been run, it's possible to build a single module
     with the same command in the module root.
+
+* Other build commands
+
++--
+mvn clean
+mvn compile
+mvn test
+mvn package
+mvn install
+mvn site
++--
+
+* Build result
+
+    Take a look in the <<<target>>> directory in the project root and every module.
+    You 'll find the module jar there, test reports and the website if you've generated it.
 
 Configuring your favorite IDE
 
