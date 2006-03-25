@@ -4,11 +4,12 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.richclient</groupId>
+        <groupId>org.springframework.richclient.samples</groupId>
         <artifactId>spring-richclient-samples</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>org.springframework.richclient.samples.petclinic</groupId>
     <artifactId>spring-richclient-petclinic</artifactId>
     <packaging>pom</packaging>
     <name>Spring richclient petclinic sample</name>
@@ -44,32 +45,32 @@
         <dependencies>
             <!-- Internal -->
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-common</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-business</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-gui</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-server</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-client</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.richclient</groupId>
+                <groupId>org.springframework.richclient.samples.petclinic</groupId>
                 <artifactId>spring-richclient-petclinic-standalone</artifactId>
                 <version>${pom.version}</version>
             </dependency>
