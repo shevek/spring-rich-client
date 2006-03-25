@@ -222,6 +222,17 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <testFailureIgnore>true</testFailureIgnore>
@@ -338,8 +349,22 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-resources</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
                 <artifactId>spring-richclient-core</artifactId>
                 <version>${pom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-core</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
@@ -348,8 +373,22 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-binding</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
                 <artifactId>spring-richclient-form</artifactId>
                 <version>${pom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-form</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
@@ -358,13 +397,34 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-support</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
                 <artifactId>spring-richclient-tiger</artifactId>
                 <version>${pom.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-tiger</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
                 <artifactId>spring-richclient-sandbox</artifactId>
                 <version>${pom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.richclient</groupId>
+                <artifactId>spring-richclient-sandbox</artifactId>
+                <type>test-jar</type>
+                <version>${pom.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Testing -->
@@ -374,7 +434,6 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
-          
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>

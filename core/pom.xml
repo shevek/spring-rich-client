@@ -22,6 +22,11 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-resources</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-resources</artifactId>
+            <type>test-jar</type>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
