@@ -301,29 +301,3 @@ mvn site
     Then take a look at <<<target/site/index.html>>>.
 
     To change the site content, take a look at <<<src/site/apt>>>.
-
-    Note: There is a known problem with the maven repository regarding the
-    changelog-maven-plugin pom at the moment regarding the netbeans CVS library jar.
-    Thanks to Jim Moore, there is a work-around.  If,
-    when you try to geneate the site, you get an error something like this:
-
-+---
-[ERROR] BUILD ERROR
-[INFO] ----------------------------------------------------------------
-[INFO] Failed to resolve artifact.
-
-required artifacts missing:
-  org.netbeans:lib:jar:3.6
-
-for the artifact:
-  org.codehaus.mojo:changelog-maven-plugin:maven-plugin:2.0-beta-1
-
-from the specified remote repositories:
-  central ( http://repo1.maven.org/maven2),
-  snapshots (http://snapshots.maven.codehaus.org/maven2)
-+---
-
-    Then you'll need to copy the jar file into your local repository by hand.  Just
-    copy the jar file from {{http://www.ibiblio.org/maven/netbeans/jars/cvslib-3.6.jar}}
-    and put it in <<<~\.m2\repository\org\netbeans\lib\\3.6\lib-3.6.jar>>>.  Notice
-    that you need to rename the file from cvslib-3.6.jar to lib-3.6.jar.
