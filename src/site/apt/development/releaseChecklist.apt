@@ -33,7 +33,7 @@ mvn install
 cd full
 mvn install
 cd ../release
-mvn assembly
+mvn package
 ---
 
     * perform release with release plugin
