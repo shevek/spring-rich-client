@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>release</id>
+    <formats>
+        <format>zip</format>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>README-bin.txt</include>
+                <include>../LICENSE.txt</include>
+                <!-- TODO include release notes from JIRA -->
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>..</directory>
+            <outputDirectory>src</outputDirectory>
+            <excludes>
+                <exclude>**/target/**</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/*.log.*</exclude>
+                <exclude>**/.classpath</exclude>
+                <exclude>**/.project</exclude>
+                <exclude>**/.settings/**</exclude>
+                <exclude>**/.wtpmodules/**</exclude>
+                <exclude>**/*.ipr</exclude>
+                <exclude>**/*.iws</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/nbproject/**</exclude>
+                <exclude>**/local/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>org.springframework.richclient:spring-richclient-resources</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-core</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-binding</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-form</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-support</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-tiger</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-sandbox</exclude>
+                <exclude>org.springframework.richclient:spring-richclient-full</exclude>
+                <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</exclude>
+                <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>modules</outputDirectory>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.springframework.richclient:spring-richclient-resources</include>
+                <include>org.springframework.richclient:spring-richclient-core</include>
+                <include>org.springframework.richclient:spring-richclient-binding</include>
+                <include>org.springframework.richclient:spring-richclient-form</include>
+                <include>org.springframework.richclient:spring-richclient-support</include>
+                <include>org.springframework.richclient:spring-richclient-tiger</include>
+                <include>org.springframework.richclient:spring-richclient-sandbox</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>full</outputDirectory>
+            <scope>runtime</scope>
+            <includes>
+                <!-- TODO full needs to be the jar assembly -->
+                <include>org.springframework.richclient:spring-richclient-full</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>samples/petclinic</outputDirectory>
+            <scope>runtime</scope>
+            <!-- These 2 artifacts contain their transitive dependencies, including only them works as desired -->
+            <includes>
+                <!-- TODO server doesn't contain the webstartable client yet -->
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</include>
+                <!-- TODO Standalone needs to be the jar with dependencies assembly -->
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

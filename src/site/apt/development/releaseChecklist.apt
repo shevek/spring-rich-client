@@ -1,0 +1,41 @@
+ -----
+ Release checklist
+ -----
+ Geoffrey De Smet
+ -----
+
+Purpose
+
+    A succesfull release should accomplish the following objectives:
+
+    * Tagged in subversion
+
+    * Release notes are included where needed
+
+    * Each jar is deployed in our maven2repository and possibly uploaded to Ibiblio
+
+    * The zip/tar.gz (assembly) are available for download on SourceForge
+
+    * News item on homepage
+
+    * Press is contacted: Freshmeat, Java.net news, ...
+
+    All this is done by following the checklist.
+
+Checklist
+
+    * TODO prepare release with release plugin
+
+    * Do the following
+
+---
+mvn install
+cd full
+mvn install
+cd ../release
+mvn assembly
+---
+
+    * perform release with release plugin
+
+    TODO
