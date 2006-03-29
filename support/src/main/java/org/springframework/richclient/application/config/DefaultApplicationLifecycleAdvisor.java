@@ -44,8 +44,6 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
 
     private ConfigurableListableBeanFactory openingWindowCommandBarFactory;
 
-    private CommandBarApplicationContext commandBarContext;
-    
     /** Set of child command contexts created - used to bridge application events. */
     private ArrayList childContexts = new ArrayList();
     
@@ -73,7 +71,8 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
 
     protected void initNewWindowCommandBarFactory() {
         // Install our own application context so we can register needed post-processors
-        commandBarContext = new CommandBarApplicationContext( windowCommandBarDefinitions );
+        final CommandBarApplicationContext commandBarContext =
+            new CommandBarApplicationContext(windowCommandBarDefinitions);
         addChildCommandContext(commandBarContext);
         this.openingWindowCommandBarFactory = commandBarContext.getBeanFactory();
     }
