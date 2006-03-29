@@ -7,30 +7,21 @@
     </formats>
     <fileSets>
         <fileSet>
+			<directory>..</directory>
+			<outputDirectory></outputDirectory>
             <includes>
-                <include>README-bin.txt</include>
-                <include>../LICENSE.txt</include>
+                <include>LICENSE.txt</include>
                 <!-- TODO include release notes from JIRA -->
             </includes>
             <lineEnding>dos</lineEnding>
         </fileSet>
         <fileSet>
-            <directory>..</directory>
-            <outputDirectory>src</outputDirectory>
-            <excludes>
-                <exclude>**/target/**</exclude>
-                <exclude>**/*.log</exclude>
-                <exclude>**/*.log.*</exclude>
-                <exclude>**/.classpath</exclude>
-                <exclude>**/.project</exclude>
-                <exclude>**/.settings/**</exclude>
-                <exclude>**/.wtpmodules/**</exclude>
-                <exclude>**/*.ipr</exclude>
-                <exclude>**/*.iws</exclude>
-                <exclude>**/*.iml</exclude>
-                <exclude>**/nbproject/**</exclude>
-                <exclude>**/local/**</exclude>
-            </excludes>
+			<directory>.</directory>
+			<outputDirectory></outputDirectory>
+            <includes>
+                <include>README-bin.txt</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
         </fileSet>
     </fileSets>
     <dependencySets>
@@ -46,6 +37,9 @@
                 <exclude>org.springframework.richclient:spring-richclient-tiger</exclude>
                 <exclude>org.springframework.richclient:spring-richclient-sandbox</exclude>
                 <exclude>org.springframework.richclient:spring-richclient-full</exclude>
+                <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-business</exclude>
+                <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-common</exclude>
+                <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-gui</exclude>
                 <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</exclude>
                 <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</exclude>
             </excludes>
@@ -72,14 +66,24 @@
             </includes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>samples/petclinic</outputDirectory>
+            <outputDirectory>samples/petclinic/standalone</outputDirectory>
+            <scope>runtime</scope>
+            <!-- These 2 artifacts contain their transitive dependencies, including only them works as desired -->
+            <includes>
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-business</include>
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-common</include>
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-gui</include>
+                <!-- TODO Standalone needs to be the jar with dependencies assembly -->
+                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>samples/petclinic/webapp</outputDirectory>
             <scope>runtime</scope>
             <!-- These 2 artifacts contain their transitive dependencies, including only them works as desired -->
             <includes>
                 <!-- TODO server doesn't contain the webstartable client yet -->
                 <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</include>
-                <!-- TODO Standalone needs to be the jar with dependencies assembly -->
-                <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</include>
             </includes>
         </dependencySet>
     </dependencySets>

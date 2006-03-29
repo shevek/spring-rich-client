@@ -71,7 +71,14 @@
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-full</artifactId>
-            <type>pom</type>
+            <version>${pom.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-full</artifactId>
+            <version>${pom.version}</version>
+            <type>zip</type>
         </dependency>
         <!-- Petclinic -->
         <dependency>
