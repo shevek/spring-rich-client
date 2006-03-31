@@ -20,6 +20,17 @@
 			<outputDirectory></outputDirectory>
             <includes>
                 <include>README-bin.txt</include>
+                <include>CHANGES.txt</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+        <!-- When changing to use UberJar with petclinic standalone, remove this and the mentioned files/dirs -->
+        <fileSet>
+			<directory>src/samples/petclinic/standalone</directory>
+			<outputDirectory>samples/petclinic/standalone</outputDirectory>
+            <includes>
+                <include>run.bat</include>
+                <include>run.sh</include>
             </includes>
             <lineEnding>dos</lineEnding>
         </fileSet>
