@@ -111,6 +111,12 @@ public class TableLayoutBuilder implements LayoutBuilder {
     public static final String ROWGROUPID = "rowGrId";
 
     public static final String COLGROUPID = "colGrId";
+    
+    /** Constant indicating column major focus traversal order. */
+    public static final int COLUMN_MAJOR_FOCUS_ORDER = 1;
+    
+    /** Constant indicating row major focus traversal order. */
+    public static final int ROW_MAJOR_FOCUS_ORDER = 2;
 
     private List rowSpecs = new ArrayList();
 
@@ -142,7 +148,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
 
     private JPanel panel;
 
-    private List focusOrder;
+    private List focusOrder = null;
 
     private ComponentFactory componentFactory;
 
@@ -364,7 +370,11 @@ public class TableLayoutBuilder implements LayoutBuilder {
         fixColSpans();
         fillInGaps();
         fillPanel();
-        //        buildFocusOrder();
+        
+        if( focusOrder != null ) {
+            installFocusOrder( focusOrder );
+        }
+
         return panel;
     }
 
@@ -592,17 +602,53 @@ public class TableLayoutBuilder implements LayoutBuilder {
         }
     }
 
-    private void buildFocusOrder() {
+    /**
+     * Set the focus traversal order.
+     * @param order forcus traversal order. Must be one of {@link #COLUMN_MAJOR_FOCUS_ORDER}
+     * or {@link #ROW_MAJOR_FOCUS_ORDER}.
+     */
+    public void setFocusTraversalOrder( int traversalOrder ) {
+        Assert.isTrue( traversalOrder == COLUMN_MAJOR_FOCUS_ORDER || traversalOrder == ROW_MAJOR_FOCUS_ORDER,
+            "traversalOrder must be one of COLUMN_MAJOR_FOCUS_ORDER or ROW_MAJOR_FOCUS_ORDER");
+        
         List focusOrder = new ArrayList(items.size());
-        for (int col = maxColumns; col >= 0; col--) {
-            for (int row = rowOccupiers.size() - 1; row >= 0; row--) {
 
-                Cell currentCell = getOccupier(row, col);
-                if (currentCell != null && !focusOrder.contains(currentCell.getComponent())) {
-                    focusOrder.add(currentCell.getComponent());
+        if( traversalOrder == ROW_MAJOR_FOCUS_ORDER ) {
+            for( int row=0; row < rowOccupiers.size() - 1; row++ ) {
+                for( int col=0; col < maxColumns; col++ ) {
+                    Cell currentCell = getOccupier(row, col);
+                    if (currentCell != null && !focusOrder.contains(currentCell.getComponent())) {
+                        focusOrder.add(currentCell.getComponent());
+                    }
+                }
+            }
+        } else if( traversalOrder == COLUMN_MAJOR_FOCUS_ORDER ) {
+            for( int col = 0; col < maxColumns; col++ ) {
+                for( int row = 0; row < rowOccupiers.size() - 1; row++ ) {
+                    Cell currentCell = getOccupier( row, col );
+                    if( currentCell != null && !focusOrder.contains( currentCell.getComponent() ) ) {
+                        focusOrder.add( currentCell.getComponent() );
+                    }
                 }
             }
         }
+        
+        setCustomFocusTraversalOrder( focusOrder );
+    }
+
+    /**
+     * Set a custom focus traversal order using the provided list of components.
+     * @param focusOrder List of components in the order that focus should follow.
+     */
+    public void setCustomFocusTraversalOrder( List focusOrder ) {
+        this.focusOrder = focusOrder;
+    }
+
+    /**
+     * Install the specified focus order.
+     * @param focusOrder List of components in the order that focus should follow.
+     */
+    protected void installFocusOrder( List focusOrder ) {
         CustomizableFocusTraversalPolicy.installCustomizableFocusTraversalPolicy();
         CustomizableFocusTraversalPolicy.customizeFocusTraversalOrder(panel, focusOrder);
     }
