@@ -1,146 +1,97 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>spring-richclient-tiger</artifactId>
-    <packaging>jar</packaging>
-    <name>Spring richclient tiger</name>
-    <description>
-        Code that is compiled in java 1.5 (AKA Tiger).
-    </description>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <!-- Internal -->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-resources</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-resources</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-core</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-core</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-binding</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-binding</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-form</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-form</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-support</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-support</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-
-        <!-- Dependency injection -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <!-- Binding and validation -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-binding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-modules-sandbox</artifactId>
-        </dependency>
-
-        <!-- Security -->
-        <dependency>
-            <groupId>org.acegisecurity</groupId>
-            <artifactId>acegi-security</artifactId>
-        </dependency>
-
-        <!-- Components -->
-        <dependency>
-            <groupId>jgoodies</groupId>
-            <artifactId>forms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jgoodies</groupId>
-            <artifactId>looks</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.glazedlists</groupId>
-            <artifactId>glazedlists</artifactId>
-        </dependency>
-
-        <!-- Utils -->
-        <dependency>
-            <groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.help</groupId>
-            <artifactId>jhelp</artifactId>
-        </dependency>
-
-    </dependencies>
-
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <parent>
+    <artifactId>spring-richclient</artifactId>
+    <groupId>org.springframework.richclient</groupId>
+    <version>0.1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>spring-richclient-tiger</artifactId>
+  <name>Spring richclient tiger</name>
+  <version>0.1.0</version>
+  <description>Code that is compiled in java 1.5 (AKA Tiger).</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-binding</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-binding</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-modules-sandbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-form</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.glazedlists</groupId>
+      <artifactId>glazedlists</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jgoodies</groupId>
+      <artifactId>looks</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jgoodies</groupId>
+      <artifactId>forms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.help</groupId>
+      <artifactId>jhelp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>concurrent</groupId>
+      <artifactId>concurrent</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.acegisecurity</groupId>
+      <artifactId>acegi-security</artifactId>
+    </dependency>
+  </dependencies>
 </project>
