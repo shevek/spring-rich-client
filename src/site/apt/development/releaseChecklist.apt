@@ -24,6 +24,11 @@ Purpose
 
 Checklist
 
+    Important note: Currently the release plugin messes up the pom.xml files a lot.
+    See {{{http://jira.codehaus.org/browse/MRELEASE-88}}}.
+    It deletes comments, shema declaration, rearranges dependencies and hard codes inherited version numbers.
+    TODO adjust the checklist accordingly
+
     * Release version on JIRA: any issues that are not closed/resolved must be moved to next version,
     all issues that are resolved should be closed, all closed issues that aren't assigned to a fix version must
     set their fix version to the current release version.(Bulk Edit)
