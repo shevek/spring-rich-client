@@ -1,0 +1,183 @@
+Release Notes - Spring Framework Rich Client Project - Version 0.1.0
+====================================================================
+
+Bug
+
+    * [RCP-1] - TextFields always in mode Overwrite
+    * [RCP-4] - SwingFormModel.isBoolean does not recognize boolean types
+    * [RCP-5] - SelectableButtonValueModel does not track changes to underlying ValueModel
+    * [RCP-7] - NPE in RegexpConstraint
+    * [RCP-9] - Closing WizardDialog with Dialogbuttons
+    * [RCP-12] - Null pointer exception
+    * [RCP-14] - org.springframework.richclient.table.ListTableModel is missing a call to init().
+    * [RCP-16] - typo in org/springframework/richclient/application/messages.properties
+    * [RCP-27] - "must be" string duplicated in some validation error messages
+    * [RCP-28] - InvocationTargetException When Entering New Name on Rename Owner Dialog in Petclinic
+    * [RCP-29] - greaterThan message in messages.properties has extra space at end
+    * [RCP-30] - Bad Data Validation Messages for ParameterizedBinaryConstraints
+    * [RCP-31] - Need Message Translation for IfTrue constraint
+    * [RCP-32] - setFormObject() crashes
+    * [RCP-34] - PropertyEditors are not validated
+    * [RCP-35] - ERROR: Required JARs not found in current_working_directory/lib.
+    * [RCP-43] - OverlayValidationInterceptorFactory does bad layout when in a JScrollPane
+    * [RCP-49] - Combobox binding not working
+    * [RCP-54] - Application window not properly centered on multiple monitor displays
+    * [RCP-57] - Nested form properties don't reflect changes
+    * [RCP-58] - ShowViewCommand sets its id to the view's displayName
+    * [RCP-61] - NPE when detaching commands
+    * [RCP-63] - checkbox not updating when setting model
+    * [RCP-65] - PropertyEditorValueSetter leaks event back to originating ValueModel
+    * [RCP-66] - BufferedValueModel fails at notifying its IS_DIRTY property change properly
+    * [RCP-67] - InputApplicationDialog: formModel not validated on show
+    * [RCP-68] - Should be able to bind controls to map properties
+    * [RCP-69] - ComboBoxAutoCompletionInterceptor does not honor 'renderedItemProperty'
+    * [RCP-71] - Problem with nested objects
+    * [RCP-72] - Message: severity.getIcon() or severity.getCode() ?
+    * [RCP-73] - AbstractCommand not notifyinig all attached buttons
+    * [RCP-74] - Adapting to some refactoring in the glazedlists project.
+    * [RCP-76] - Text area does not validate as you type
+    * [RCP-77] - Validation overlay problem with text area
+    * [RCP-78] - Comboxbox does not allow custom values (only selection is allowed)
+    * [RCP-79] - componentOpened not called
+    * [RCP-84] - ApplicationDialog.setPreferredSize() doesn't alter the size of the dialog.
+    * [RCP-85] - DynamicListModel does not release listeners correctly
+    * [RCP-87] - PropertyAdapter doesn't fire property change upon domain object change
+    * [RCP-88] - TableFormBuilder.add(String, JComponent, String) ignores attributes parameter
+    * [RCP-90] - Image paths in images.properties are broken
+    * [RCP-93] - Logic bug in ValidatingFormModel (?)
+    * [RCP-100] - ComboBoxModelAdapter doesn' pick up selection changes correctly from SelectableItemsListModel
+    * [RCP-103] - JDK1.5 support
+    * [RCP-104] - 2 forms sharing 1 form model exception
+    * [RCP-109] - FormGuard does not respond to FormModel.setEnabled(false)
+    * [RCP-114] - PageComponent interface methods not called in AbstractView
+    * [RCP-116] - SwingFormModel can't set formId,but FormPropertyFaceDescriptor need FormModel's id.
+    * [RCP-117] - Odd sequence of PageComponent lifecycle method invocation
+    * [RCP-119] - When change FormObject nested PropertyAccesStrategy not refresh
+    * [RCP-125] - petclient doesn't build
+    * [RCP-132] - BufferedValueModel implements ValueModelWrapper reflects in DefaultFormModel
+    * [RCP-133] - TreeCompositeDialogPage (Bug)
+    * [RCP-135] - TreeCompositeDialogPage (look again)
+    * [RCP-137] - table background is wrong color
+    * [RCP-139] - Controls on child form are readonly.
+    * [RCP-142] - Duplicate componentFocusGained
+    * [RCP-143] - Useless GlazedTableModel constructors
+    * [RCP-147] - Menu Label for ShowViewCommand
+    * [RCP-148] - NPE in PropertiesPreferenceStore
+    * [RCP-150] - DefaultMessageAreaPane does not take into account icon height
+    * [RCP-154] - Attempting to bind a component twice should not be allowed
+    * [RCP-157] - ListBinder should throw exception when needed context is missing
+    * [RCP-160] - AbstractForm doesn't properly handle editableObjects
+    * [RCP-172] - AbstractFormModel constructor is not obeying the buffered parameter
+    * [RCP-180] - Acegi upgrade breaking petclinic client server
+    * [RCP-181] - AbstractFormModel constructor isn't associating the formObjectHolder with the form's commit trigger
+    * [RCP-184] - Escape button in ApplicationDialog
+    * [RCP-187] - build.xml sample must refer tolib/spring-binding.jar
+    * [RCP-195] - 0 and "" isDirty bug in master-detail
+    * [RCP-196] - dialog in LoginCommand doesn't inform LoginForm when user select cancel button
+    * [RCP-199] - Could AbstractTableMasterForm pass the formId to the GlazedTableModel?
+    * [RCP-205] - ComboBoxAutoCompletion throws IllegalComponentStateException
+    * [RCP-207] - Master/Detail tables do not update the master table when the model changes
+    * [RCP-217] - OverlayHelper.updateOverlay throws IllegalComponentStateException
+    * [RCP-225] - FileChooserUtils duplicates filters
+    * [RCP-231] - RemotingSecurityConfigurer can't find ProxyFactoryBeans when configuring username/password
+    * [RCP-234] - xml child settings don't show up in "getChildSettings"
+    * [RCP-237] - AbstractMasterForm is not properly reporting when the underlying collection has been modified
+    * [RCP-240] - Status and toolbar are always visible
+    * [RCP-247] - No mnemonics on tabs in TabbedDialogPage
+    * [RCP-248] - Fixing the splash startup sequence (patch attached)
+    * [RCP-249] - SplashScreen class should use commons logger instead of java logger.
+    * [RCP-252] - TableFormBuilder.addInScrollPane(Binding) didn't use the given binder
+    * [RCP-254] - using addChildForm for validation reporting can leave form guard in an improper state
+    * [RCP-274] - FormModelPropertyAccessStrategy.isWriteable always returns true
+    * [RCP-275] - FormObjectChangeListener called twice when model.setFormObject
+    * [RCP-276] - New ComboBoxBinding changes behaviour when no initial collection is given.
+    * [RCP-288] - Acces to SVN always fails on '/svnroot/spring-rich-c/!svn/vcc/default'
+    * [RCP-295] - Sandbox test build fails org.springframework.richclient.settings.TestEnum.<init>()
+    * [RCP-296] - Petclinic does not build under Java 1.4
+
+Improvement
+
+    * [RCP-2] - Ability to configure JGoodies Options
+    * [RCP-6] - Application object is hard to use in a larger application
+    * [RCP-8] - improve support for PropertyEditors
+    * [RCP-17] - tests and patches for LabelInfo, CommandButtonLabelInfo and LabelInfoFactory
+    * [RCP-18] - test for MessageBuffer
+    * [RCP-19] - test for CommandButtonIconInfo and patch
+    * [RCP-20] - DefaultButtonConfigurerTest
+    * [RCP-21] - created CommandFaceDescriptorTest
+    * [RCP-22] - created ListTableModelTest + fixed bug #RCP-14
+    * [RCP-23] - created ListSelectionListenerSupport and ListStatusBarUpdater
+    * [RCP-24] - ClassUtilsTest
+    * [RCP-26] - Let to bussiness aplication layer decide if a property is editable or not
+    * [RCP-36] - SwingFormModel.createBoundTableModel
+    * [RCP-37] - building random modelstructures (and JComponent graphs) from CommandGroup structures.
+    * [RCP-38] - Make the "Guarded" "Wizard" easier
+    * [RCP-39] - Enable/Disable commit command only if Form is dirty
+    * [RCP-40] - Helper method for building ActionListeners on AbstractView
+    * [RCP-42] - FormModels should use RulesSource from Application if not explicitly set
+    * [RCP-46] - AbstractForm.setEnabled(false) should disable editable fields
+    * [RCP-50] - Rules translations
+    * [RCP-51] - Create AbstractApplicationPage
+    * [RCP-52] - Make ConfirmationDialog wrap long lines
+    * [RCP-53] - Date chooser integration
+    * [RCP-62] - Add "indeterminate" mode for status bar
+    * [RCP-64] - Glazed Lists integration
+    * [RCP-70] - ConfirmationDialog: i18n of ActionKeyBinding of Yes and No command
+    * [RCP-83] - Add getParent() accessor to ApplicationDialog
+    * [RCP-86] - Expose IndexAdapter in ListListModel
+    * [RCP-91] - Allow specification of columnNames in constructor of GlazedTableModel
+    * [RCP-105] - Provide method for easily creating bound multiple selection lists
+    * [RCP-110] - ValidatingFormModel doesn't change rules constraints if form object changes
+    * [RCP-113] - add application descriptor that pulls info from manifest
+    * [RCP-115] - Update of JGoodies Looks library to 1.3.1
+    * [RCP-128] - New ApplicationDialog implementation: MessageDialog
+    * [RCP-131] - Patch for better unification of GlazedTableModel and BeanTableModel
+    * [RCP-144] - ant target srczip doesn't include sandbox sources
+    * [RCP-146] - Add setLocation method to ApplicationDialog
+    * [RCP-151] - SwingBindingFactory.createBoundList should not require a renderedProperty
+    * [RCP-152] - ListBinding should allow array types in addition to Collections
+    * [RCP-159] - TreeCompositeDialogPage should be less private
+    * [RCP-163] - Support alternative Validation strategies
+    * [RCP-167] - BindingFactory used by AbstractForm should be configurable
+    * [RCP-176] - GlazedTableModel should be less private
+    * [RCP-177] - RulesValidator constructor with RulesSource
+    * [RCP-178] - Required constraint should also handle arrays
+    * [RCP-179] - TreeCompositeDialogPage should allow pages to be added dynamically
+    * [RCP-186] - AbstractMasterForm should support confirmation of delete operation
+    * [RCP-188] - AbstractTableMasterForm with Matcher but not MatcherEditor
+    * [RCP-190] - GlazedTableModel should take a model Id to use for message key generation
+    * [RCP-191] - TableFormBuilder should have better support for placing forms in forms
+    * [RCP-197] - Add ability to register binders for property names in the AbstractBinderSelectionStrategy
+    * [RCP-200] - Fix embedded att issue and modify GlazedTableModel to automatically detect the column class
+    * [RCP-201] - No need to extend SwingBinderSelectionStrategy for custom binders with DefaultBinderSelectionStrategy (patch attached)
+    * [RCP-206] - ComponentFactory to create Tables
+    * [RCP-213] - Change build system to Spring's Common Build
+    * [RCP-218] - ValueChangeHelper should be replaced with a configurable implementation
+    * [RCP-228] - Validation Rules should be checked in a specific order
+    * [RCP-230] - BeanTreeCellRenderer should use icon of VisualizedElement
+    * [RCP-239] - Upgrade Acegi library to latest 0.9.0 release
+    * [RCP-245] - allow subclassing of TabbedDialogPage
+    * [RCP-246] - Let's ApplicationDialog show exception description using MessageDialog
+    * [RCP-286] - Support Glazed Lists 1.5
+
+New Feature
+
+    * [RCP-15] - Added functionality to JTable
+    * [RCP-25] - created new CompositeDialogPage
+    * [RCP-48] - Provide settings support
+    * [RCP-55] - new FormComponentInterceptor
+    * [RCP-56] - Multiple views per page: JDesktopPane
+    * [RCP-75] - Add ability to find out what FormModels are nested in NestingFormModel
+    * [RCP-118] - SwingFormModel.setId(String id)
+    * [RCP-149] - ApplicationEvents for ActionCommands
+    * [RCP-171] - RCP core should provide a VetoablePropertyChangePublisher
+    * [RCP-223] - Create Xml settings implementation
+
+Task
+
+    * [RCP-44] - Use the fine-grained jars for Spring
+    * [RCP-45] - Add spring-src.zip to CVS distribution
+    * [RCP-278] - Duplicate CVS repo to SVN repo
+    * [RCP-287] - Make sure all test cases run and they get reported on the site
+    * [RCP-293] - Enable SVN commit mails (admin rights required)
+    * [RCP-302] - Put samples and petclinic is a seperate groupId
