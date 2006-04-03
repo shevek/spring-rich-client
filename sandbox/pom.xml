@@ -2,12 +2,12 @@
   <parent>
     <artifactId>spring-richclient</artifactId>
     <groupId>org.springframework.richclient</groupId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>spring-richclient-sandbox</artifactId>
   <name>Spring richclient sandbox</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description>Sandbox with code in development.
         The code contained in the sandbox is very volatile.
         Changes can violate backwards compatibility frequently.
@@ -16,10 +16,12 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-binding</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-resources</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -32,6 +34,7 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-form</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -72,6 +75,7 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-support</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>concurrent</groupId>
@@ -80,6 +84,7 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-core</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.acegisecurity</groupId>

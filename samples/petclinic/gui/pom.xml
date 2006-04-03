@@ -2,12 +2,12 @@
   <parent>
     <artifactId>spring-richclient-petclinic</artifactId>
     <groupId>org.springframework.richclient.samples.petclinic</groupId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>spring-richclient-petclinic-gui</artifactId>
   <name>Spring richclient petclinic sample GUI</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description>The GUI presentation layer which resides in client and standalone,
         but NOT in the server.</description>
   <dependencies>
@@ -18,10 +18,12 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-binding</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-resources</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jdesktop</groupId>
@@ -30,10 +32,12 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-sandbox</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-form</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -50,10 +54,12 @@
     <dependency>
       <groupId>org.springframework.richclient.samples.petclinic</groupId>
       <artifactId>spring-richclient-petclinic-common</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-support</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -62,6 +68,7 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-core</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

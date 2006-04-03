@@ -2,14 +2,14 @@
   <parent>
     <artifactId>spring-richclient</artifactId>
     <groupId>org.springframework.richclient</groupId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.richclient.samples</groupId>
   <artifactId>spring-richclient-samples</artifactId>
   <packaging>pom</packaging>
   <name>Spring richclient samples</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description>Spring richclient samples.</description>
   <modules>
     <module>petclinic</module>

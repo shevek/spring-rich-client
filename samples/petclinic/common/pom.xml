@@ -2,11 +2,11 @@
   <parent>
     <artifactId>spring-richclient-petclinic</artifactId>
     <groupId>org.springframework.richclient.samples.petclinic</groupId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>spring-richclient-petclinic-common</artifactId>
   <name>Spring richclient petclinic sample common</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description>The model and server interfaces which reside on client, server and standalone.</description>
 </project>
