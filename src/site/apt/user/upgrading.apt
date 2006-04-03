@@ -11,6 +11,10 @@ Introduction
 
     To easy the upgrading path of our users, the most important upgrades are noted here.
 
+0.1.0 to 0.2.0
+
+    * None yet
+
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
