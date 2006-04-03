@@ -1,0 +1,8 @@
+This is a text file
+it will be used to test subversion checking conflicts using eclipse.
+It should not be here for long.
+
+Please ignore me.
+
+Thanks,
+Larry.
