@@ -24,18 +24,54 @@ Purpose
 
 Checklist
 
-    * TODO prepare release with release plugin
+    * Release version on JIRA: any issues that are not closed/resolved must be moved to next version,
+    all issues that are resolved should be closed, all closed issues that aren't assigned to a fix version must
+    set their fix version to the current release version.(Bulk Edit)
 
-    * Do the following
+    * Set the version of /full/pom.xml and /release/pom.xml to the correct one
+
+    * Prepare with the release plugin (user/pass for svn):
 
 ---
-mvn install
+mvn release:prepare -Duser -Dpassword
+---
+
+    This does the following:
+
+        * plugin asks for a release version and proposes the current version without SNAPSHOT (this is ok, press enter for each subproject)
+
+        * plugin will commit these changes prior to setting the tag, as /release and /full aren't touched you had
+    to set them manually in a previous step.
+
+        * plugin asks for a tag to set in subversion, use the following format (X.X.X = version):
+
+---
+RELEASE-X.X.X
+---
+
+
+        * the plugin will now tag current head in svn
+
+        * plugin asks for the next developer version, enter the next version with snapshot extension: X.X.X-SNAPSHOT
+
+        * plugin will commit pom's with next developer version.
+
+    * perform release with release plugin, this will checkout the svn tagged release, install and deploy the components:
+
+---
+mvn release:perform
+---
+
+    * build the full jar and the release zip:
+
+---
 cd full
 mvn install
 cd ../release
 mvn package
 ---
 
-    * perform release with release plugin
+    * ftp to upload.sourceforge.net with username anonymous and password your sf login, place release zip under /incoming
 
-    TODO
+    * create a release on SourceForge (admin) and attach the zip to this release, changes and readme can be uploaded.
+
