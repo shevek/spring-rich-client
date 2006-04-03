@@ -4,16 +4,21 @@
 package org.springframework.richclient.components;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
+import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactory;
+import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactoryProvider;
+import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.util.Assert;
 
 /**
@@ -45,7 +50,42 @@ import org.springframework.util.Assert;
  * <dd>to specify formId in which this ShuttleList appears, this allow
  * form-specific settings like the texts and icon.</dd>
  * 
- * @author lstreepy
+ * In order to have this Binder selected properly when adding ShuttleList
+ * components to a form, you will need to have the following context
+ * configuration:
+ * 
+ * <pre>
+ * &lt;bean id=&quot;binderSelectionStrategy&quot; class=&quot;org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy&quot;&gt;
+ *     &lt;property name=&quot;bindersForControlTypes&quot;&gt;
+ *         &lt;map&gt;
+ *             &lt;entry&gt;
+ *                 &lt;key&gt;
+ *                     &lt;value type=&quot;java.lang.Class&quot;&gt;org.springframework.richclient.components.ShuttleList&lt;/value&gt;
+ *                 &lt;/key&gt;
+ *                 &lt;bean class=&quot;org.springframework.richclient.components.ShuttleListBinder&quot; /&gt;
+ *             &lt;/entry&gt;
+ *         &lt;/map&gt;
+ *     &lt;/property&gt;
+ * &lt;/bean&gt;
+ * </pre>
+ * 
+ * <p>
+ * Also, see {@link SandboxSwingBindingFactoryProvider} and
+ * {@link SandboxSwingBindingFactory} for how to configure and use that binding
+ * factory, which offers convenience methods for constructing a bound shuttle
+ * list. With the provider, factory, and binder registered, the following code
+ * can be used to add a bound shuttle list to a form:
+ * 
+ * <pre>
+ * final SandboxSwingBindingFactory bf = (SandboxSwingBindingFactory) getBindingFactory();
+ * TableFormBuilder formBuilder = new TableFormBuilder( bf );
+ * ...
+ * String[] languages = new String[] { &quot;java&quot;, &quot;perl&quot;, &quot;ruby&quot;, &quot;C#&quot; };
+ * List languagesList = Arrays.asList( languages ); 
+ * formBuilder.add( bf.createBoundShuttleList( &quot;languageSkills&quot;, languagesList ), &quot;align=left&quot; );
+ * </pre>
+ * 
+ * @author Larry Streepy
  * @author Benoit Xhenseval
  */
 public class ShuttleListBinder extends AbstractBinder {
@@ -64,45 +104,110 @@ public class ShuttleListBinder extends AbstractBinder {
 
     public static final String RENDERER_KEY = "renderer";
 
+    /**
+     * Utility method to construct the context map used to configure instances
+     * of {@link ShutteListBinding} created by this binder.
+     * <p>
+     * Binds the values specified in the collection contained within
+     * <code>selectableItemsHolder</code> to a {@link ShuttleList}, with any
+     * user selection being placed in the form property referred to by
+     * <code>selectionFormProperty</code>. Each item in the list will be
+     * rendered by looking up a property on the item by the name contained in
+     * <code>renderedProperty</code>, retrieving the value of the property,
+     * and rendering that value in the UI.
+     * <p>
+     * Note that the selection in the bound list will track any changes to the
+     * <code>selectionFormProperty</code>. This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code> is
+     * not empty when the list is bound, then its content will be used for the
+     * initial selection.
+     * 
+     * @param selectionFormProperty form property to hold user's selection. This
+     *        property must be a <code>Collection</code> or array type.
+     * @param selectableItemsHolder <code>ValueModel</code> containing the
+     *        items with which to populate the list.
+     * @param renderedProperty the property to be queried for each item in the
+     *        list, the result of which will be used to render that item in the
+     *        UI. May be null, in which case the selectable items will be
+     *        rendered as strings.
+     */
+    public static Map createBindingContext( FormModel formModel, String selectionFormProperty,
+            ValueModel selectableItemsHolder, String renderedProperty ) {
+
+        final Map context = new HashMap(4);
+
+        final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
+        context.put(SELECTED_ITEMS_HOLDER_KEY, selectionValueModel);
+
+        final Class selectionPropertyType = formModel.getPropertyMetadata(selectionFormProperty).getPropertyType();
+        if( selectionPropertyType != null ) {
+            context.put(SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
+        }
+
+        context.put(SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+
+        if( renderedProperty != null ) {
+            context.put(RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
+            context.put(COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, true));
+        }
+
+        return context;
+    }
+
+    /**
+     * Constructor.
+     */
     public ShuttleListBinder() {
         super(null, new String[] { SELECTABLE_ITEMS_HOLDER_KEY, SELECTED_ITEMS_HOLDER_KEY, SELECTED_ITEM_TYPE_KEY,
                 MODEL_KEY, COMPARATOR_KEY, RENDERER_KEY, FORM_ID });
     }
 
-    public ShuttleListBinder(final String[] supportedContextKeys) {
+    /**
+     * Constructor allowing the specification of additional/alternate context keys.  This
+     * is for use by derived classes.
+     * 
+     * @param supportedContextKeys Context keys supported by subclass
+     */
+    protected ShuttleListBinder( final String[] supportedContextKeys ) {
         super(null, supportedContextKeys);
     }
 
     /**
      * @inheritDoc
      */
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
+    protected Binding doBind( JComponent control, FormModel formModel, String formPropertyPath, Map context ) {
         Assert.isTrue(control instanceof ShuttleList, formPropertyPath);
         ShuttleListBinding binding = new ShuttleListBinding((ShuttleList) control, formModel, formPropertyPath);
         applyContext(binding, context);
         return binding;
     }
 
-    protected void applyContext(ShuttleListBinding binding, Map context) {
-        if (context.containsKey(MODEL_KEY)) {
+    /**
+     * Apply the values from the context to the specified binding.
+     * 
+     * @param binding Binding to update
+     * @param context Map of context values to apply to the binding
+     */
+    protected void applyContext( ShuttleListBinding binding, Map context ) {
+        if( context.containsKey(MODEL_KEY) ) {
             binding.setModel((ListModel) context.get(MODEL_KEY));
         }
-        if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
+        if( context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY) ) {
             binding.setSelectableItemsHolder((ValueModel) context.get(SELECTABLE_ITEMS_HOLDER_KEY));
         }
-        if (context.containsKey(SELECTED_ITEMS_HOLDER_KEY)) {
+        if( context.containsKey(SELECTED_ITEMS_HOLDER_KEY) ) {
             binding.setSelectedItemsHolder((ValueModel) context.get(SELECTED_ITEMS_HOLDER_KEY));
         }
-        if (context.containsKey(RENDERER_KEY)) {
+        if( context.containsKey(RENDERER_KEY) ) {
             binding.setRenderer((ListCellRenderer) context.get(RENDERER_KEY));
         }
-        if (context.containsKey(COMPARATOR_KEY)) {
+        if( context.containsKey(COMPARATOR_KEY) ) {
             binding.setComparator((Comparator) context.get(COMPARATOR_KEY));
         }
-        if (context.containsKey(SELECTED_ITEM_TYPE_KEY)) {
+        if( context.containsKey(SELECTED_ITEM_TYPE_KEY) ) {
             binding.setSelectedItemType((Class) context.get(SELECTED_ITEM_TYPE_KEY));
         }
-        if (context.containsKey(FORM_ID)) {
+        if( context.containsKey(FORM_ID) ) {
             binding.setFormId((String) context.get(FORM_ID));
         }
     }
@@ -110,7 +215,7 @@ public class ShuttleListBinder extends AbstractBinder {
     /**
      * @inheritDoc
      */
-    protected JComponent createControl(Map context) {
+    protected JComponent createControl( Map context ) {
         return new ShuttleList();
     }
 }
