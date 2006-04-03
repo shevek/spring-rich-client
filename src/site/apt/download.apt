@@ -8,15 +8,11 @@ Latest stable release
 
     Stable releases are available from
     {{{http://sourceforge.net/project/showfiles.php?group_id=113660}SourceForge}}.
-
-    TODO: no releases have been made yet.
-
+    
 Nightly builds (unstable)
 
     The latest snapshots are available in
-    {{{http://spring-rich-c.sourceforge.net/maven2repository/}the snapshot repository}}.
-
-    TODO: No snapshots have been released yet.
+    {{{http://spring-rich-c.sourceforge.net/maven2repository/org/springframework/richclient}the snapshot repository}}.
 
 Source repository
 
