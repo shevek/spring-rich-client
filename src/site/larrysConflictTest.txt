@@ -4,5 +4,6 @@ It should not be here for long.
 
 Please ignore me.
 
-Thanks,
+ - and this not is a conflicting changeThanks,
+
 Larry.
