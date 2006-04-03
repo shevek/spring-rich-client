@@ -1,4 +1,4 @@
-This is a text file
+This is a text file - and it has been changed
 it will be used to test subversion checking conflicts using eclipse.
 It should not be here for long.
 
