@@ -1,17 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <parent>
-    <artifactId>spring-richclient</artifactId>
-    <groupId>org.springframework.richclient</groupId>
-    <version>0.2.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.springframework.richclient.samples</groupId>
-  <artifactId>spring-richclient-samples</artifactId>
-  <packaging>pom</packaging>
-  <name>Spring richclient samples</name>
-  <version>0.2.0-SNAPSHOT</version>
-  <description>Spring richclient samples.</description>
-  <modules>
-    <module>petclinic</module>
-  </modules>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.springframework.richclient.samples</groupId>
+    <artifactId>spring-richclient-samples</artifactId>
+    <packaging>pom</packaging>
+    <name>Spring richclient samples</name>
+    <description>
+        Spring richclient samples.
+    </description>
+
+    <modules>
+        <module>petclinic</module>
+    </modules>
+
+    <dependencies>
+    </dependencies>
+
 </project>

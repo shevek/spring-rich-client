@@ -1,74 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <parent>
-    <artifactId>spring-richclient-petclinic</artifactId>
-    <groupId>org.springframework.richclient.samples.petclinic</groupId>
-    <version>0.2.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>spring-richclient-petclinic-gui</artifactId>
-  <name>Spring richclient petclinic sample GUI</name>
-  <version>0.2.0-SNAPSHOT</version>
-  <description>The GUI presentation layer which resides in client and standalone,
-        but NOT in the server.</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-petclinic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-binding</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-resources</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jdesktop</groupId>
-      <artifactId>jdnc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-sandbox</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-form</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jdesktop</groupId>
-      <artifactId>swingx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient.samples.petclinic</groupId>
-      <artifactId>spring-richclient-petclinic-common</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-support</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-core</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>spring-richclient-petclinic</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-richclient-petclinic-gui</artifactId>
+    <packaging>jar</packaging>
+    <name>Spring richclient petclinic sample GUI</name>
+    <description>
+        The GUI presentation layer which resides in client and standalone,
+        but NOT in the server.
+    </description>
+
+    <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>org.springframework.richclient.samples.petclinic</groupId>
+            <artifactId>spring-richclient-petclinic-common</artifactId>
+        </dependency>
+
+        <!-- Spring rich -->
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-binding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-form</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-support</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.richclient</groupId>-->
+            <!--<artifactId>spring-richclient-tiger</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-sandbox</artifactId>
+        </dependency>
+
+        <!-- Dependency injection -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Spring's petclinic -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-petclinic</artifactId>
+        </dependency>
+
+        <!-- Components -->
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>swingx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>jdnc</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
