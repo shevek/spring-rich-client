@@ -136,6 +136,8 @@ public class ShuttleListBinder extends AbstractBinder {
 
         final Map context = new HashMap(4);
 
+        context.put(ShuttleListBinder.FORM_ID, formModel.getId());
+
         final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
         context.put(SELECTED_ITEMS_HOLDER_KEY, selectionValueModel);
 
