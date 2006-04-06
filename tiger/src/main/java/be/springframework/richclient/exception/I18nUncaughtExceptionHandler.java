@@ -21,7 +21,7 @@ import java.util.List;
  * And add this to your messages.properties:
  * java.lang.RuntimeException.caption = Unexpected problem
  * java.lang.RuntimeException.description = \
- *   The systeem experienced an unexpected problem.\n\
+ *   The system experienced an unexpected problem.\n\
  *   \n\
  *   The exact problem is:\n\
  *   {0}
