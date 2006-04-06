@@ -30,7 +30,7 @@ import java.util.List;
  * java.lang.Error.description = Serious problem:\n\
  *   {0}
  *
- * org.acegisecurity.AuthenticationCredentialsNotFoundException.caption = Ongeauthorized action
+ * org.acegisecurity.AuthenticationCredentialsNotFoundException.caption = Unauthorized action
  * org.acegisecurity.AuthenticationCredentialsNotFoundException.description = \
  *   You don't have permission to do that.
  *
