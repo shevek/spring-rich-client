@@ -1,0 +1,22 @@
+ -----
+ Getting started
+ -----
+ Geoffrey De Smet
+ -----
+
+Getting started
+
+    * {{{download.html}Download}} the release and try out petclinic standalone.
+
+    * The {{{user/articles.html}articles}} page contains a link to a good tutorial.
+
+    * Take a look at the source of the samples.
+
+    * Take a look at {{{user/userGuide.html}the user guide}} on master-detail forms and security integration.
+
+Snapshots better then releases?
+
+    Because spring-richclient is still alpha,
+    many users prefer to work with a development snapshot instead of the release.
+
+    Take a look at {{developement/developmentSetup.html}}.

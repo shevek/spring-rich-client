@@ -1,6 +1,7 @@
  -----
  Release checklist
  -----
+ Jan Hoskens
  Geoffrey De Smet
  -----
 
@@ -24,14 +25,14 @@ Purpose
 
 Checklist
 
-    Important note: Currently the release plugin messes up the pom.xml files a lot.
+    Important note: Currently the release plugin messes up the <<<pom.xml>>> files a lot.
     See {{{http://jira.codehaus.org/browse/MRELEASE-88}}}.
     It deletes comments, shema declaration, rearranges dependencies and hard codes inherited version numbers.
-    TODO adjust the checklist accordingly
+    TODO adjust this checklist accordingly
 
     * Release version on JIRA: any issues that are not closed/resolved must be moved to next version,
     all issues that are resolved should be closed, all closed issues that aren't assigned to a fix version must
-    set their fix version to the current release version.(Bulk Edit)
+    set their fix version to the current release version. (Use bulk edit.)
 
     * Set the version of /full/pom.xml and /release/pom.xml to the correct one
 
@@ -43,23 +44,24 @@ mvn release:prepare -Duser -Dpassword
 
     This does the following:
 
-        * plugin asks for a release version and proposes the current version without SNAPSHOT (this is ok, press enter for each subproject)
+        * Plugin asks for a release version and proposes the current version without SNAPSHOT
+        (this is ok, press enter for each subproject)
 
-        * plugin will commit these changes prior to setting the tag, as /release and /full aren't touched you had
-    to set them manually in a previous step.
+        * Plugin will commit these changes prior to setting the tag, as /release and /full aren't touched you had
+        to set them manually in a previous step.
 
-        * plugin asks for a tag to set in subversion, use the following format (X.X.X = version):
+        * Plugin asks for a tag to set in subversion, use the following format (X.X.X = version):
 
 ---
 RELEASE-X.X.X
 ---
 
 
-        * the plugin will now tag current head in svn
+        * The plugin will now tag current head in svn
 
-        * plugin asks for the next developer version, enter the next version with snapshot extension: X.X.X-SNAPSHOT
+        * Plugin asks for the next developer version, enter the next version with snapshot extension: X.X.X-SNAPSHOT
 
-        * plugin will commit pom's with next developer version.
+        * Plugin will commit pom's with next developer version.
 
     * perform release with release plugin, this will checkout the svn tagged release, install and deploy the components:
 
@@ -67,7 +69,7 @@ RELEASE-X.X.X
 mvn release:perform
 ---
 
-    * build the full jar and the release zip:
+    * Build the full jar and the release zip:
 
 ---
 cd full
@@ -76,7 +78,11 @@ cd ../release
 mvn package
 ---
 
-    * ftp to upload.sourceforge.net with username anonymous and password your sf login, place release zip under /incoming
+    * Change the distributionManagement in the project root <<<pom.xml>>> to <archive deployment>
+    and run <<<mvn site-deploy>>>. Change it back afterwards. Add a link to the site in <<</src/site/site.xml>>>.
 
-    * create a release on SourceForge (admin) and attach the zip to this release, changes and readme can be uploaded.
+    * ftp to upload.sourceforge.net with username anonymous and password your sf login,
+    place release zip under /incoming
+
+    * Create a release on SourceForge (admin) and attach the zip to this release, changes and readme can be uploaded.
 

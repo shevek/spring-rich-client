@@ -6,6 +6,7 @@
 
 Directory structure
 
+    The project root has the parent <<<pom.xml>>> file.
     Each module has a separate directory and <<<pom.xml>>> file.
 
 [../images/directoryStructure.png] Directory structure

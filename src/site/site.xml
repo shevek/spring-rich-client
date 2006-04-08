@@ -21,6 +21,7 @@
         <menu name="Overview">
             <item name="Home" href="/index.html"/>
             <item name="Download" href="/download.html"/>
+            <item name="Getting started" href="/gettingStarted.html"/>
             <item name="Screenshots" href="/screenshots.html"/>
         </menu>
 
@@ -44,7 +45,6 @@
         </menu>
 
         <menu name="Modules">
-
             <item name="resources" href="spring-richclient-resources"/>
             <item name="core" href="spring-richclient-core"/>
             <item name="binding" href="spring-richclient-binding"/>
@@ -53,6 +53,10 @@
             <item name="tiger" href="spring-richclient-tiger"/>
             <item name="sandbox" href="spring-richclient-sandbox"/>
             <item name="samples" href="spring-richclient-samples"/>
+        </menu>
+
+        <menu name="Release documentation">
+            <item name="0.1.0" href="/releases/0.1.0/index.html"/>
         </menu>
 
         <!-- ${modules} does not work in site plugin beta -->

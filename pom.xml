@@ -664,6 +664,14 @@
                 scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/
             </url>
         </site>
+        <!-- Archive deployment
+        <site>
+            <id>shell.sourceforge.net</id>
+            <url>
+                scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/archive/${pom.version}/
+            </url>
+        </site>
+        -->
     </distributionManagement>
 
 </project>
