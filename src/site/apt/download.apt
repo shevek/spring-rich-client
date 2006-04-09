@@ -8,7 +8,62 @@ Latest stable release
 
     Stable releases are available from
     {{{http://sourceforge.net/project/showfiles.php?group_id=113660}SourceForge}}.
-    
+
+Maven 2 releases
+
+    Add this in your pom.xml and run <<<mvn compile>>> or <<<mvn install>>>.
+    Replace <<<VERSION>>> with the latest version or a snapshot version.
+
++--
+<repositories>
+    <repository>
+        <id>springRichclientRepository</id>
+        <name>Spring rich client repository</name>
+        <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+    </repository>
+</repositories>
+...
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-resources</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-core</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-binding</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-form</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-support</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-tiger</artifactId>
+        <version>VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-sandbox</artifactId>
+        <version>VERSION</version>
+    </dependency>
+</dependencies>
++--
+
+    Note: If you are using spring-richclient in multiple modules, make use of <<<dependencyManagement>>>.
+
 Nightly builds (unstable)
 
     The latest snapshots are available in
@@ -16,4 +71,6 @@ Nightly builds (unstable)
 
 Source repository
 
-    More information at {{{source-repository.html}the source repository}}.
+    More information at {{{source-repository.html}the source repository}},
+    but take a look at the development guide first.
+    

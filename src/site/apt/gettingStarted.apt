@@ -19,4 +19,4 @@ Snapshots better then releases?
     Because spring-richclient is still alpha,
     many users prefer to work with a development snapshot instead of the release.
 
-    Take a look at {{developement/developmentSetup.html}}.
+    Take a look at {{development/developmentSetup.html}}.

@@ -4,9 +4,35 @@
  Geoffrey De Smet
  -----
 
-Related projects
+Projects that expand Spring-richclient
 
-    * {{{https://jide-springrcp.dev.java.net/}jide-springrcp}}
+    * {{{https://jide-springrcp.dev.java.net/}Jide-springrcp}}
+
+Projects for which there is integration in Spring-richclient
+
+    * {{{https://looks.dev.java.net/}JGoodies looks}}
+
+    * {{{https://forms.dev.java.net/}JGoodies forms}}
+
+    * {{{https://jgoodies.dev.java.net/}Other JGoodies components}}
+
+    * {{{http://www.publicobject.com/glazedlists/}Glazedlists}}
+
+    * {{{http://www.acegisecurity.org/}Acegi security}}
+
+    * {{{http://java.sun.com/products/javawebstart//}Java webstart}}
+
+Projects for which might have integration in Spring-richclient in the future
+
+    * {{{http://www.netbeans.org/}Matisse}}
+
+    * {{{https://swingx.dev.java.net/}SwingX}}
+
+    * {{{https://flexdock.dev.java.net/}Flex dock}}
+
+    * {{http://jasperreports.sourceforge.net/}Jasper reports}}
+
+    * {{{https://eventbus.dev.java.net//}Eventbus}}
 
 Contact us
 

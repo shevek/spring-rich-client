@@ -86,3 +86,11 @@ mvn package
 
     * Create a release on SourceForge (admin) and attach the zip to this release, changes and readme can be uploaded.
 
+    * Make an announcement on:
+
+        * Our forums
+
+        * {{http://today.java.net/today/news/}}
+
+        * {{http://freshmeat.net/}}
+        
