@@ -62,6 +62,9 @@ Maven 2 releases
 </dependencies>
 +--
 
+    Warning: The current repostory, at SourceForge, disconnects quite often on large files,
+    so you might need to rerun the maven command several times...
+
     Note: If you are using spring-richclient in multiple modules, make use of <<<dependencyManagement>>>.
 
 Nightly builds (unstable)
@@ -73,4 +76,3 @@ Source repository
 
     More information at {{{source-repository.html}the source repository}},
     but take a look at the development guide first.
-    
