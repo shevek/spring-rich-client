@@ -119,12 +119,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      */
     public DefaultApplicationSecurityManager(boolean autoConfigure) {
         if( autoConfigure ) {
-            try {
-                afterPropertiesSet();
-            } catch( Exception e ) {
-                _logger.error( "Auto-configuration failed", e );
-                throw new IllegalArgumentException( "No AuthenticationManager found during autoconfiguration" );
-            }
+            afterPropertiesSet();
         }
     }
 
@@ -267,7 +262,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * 
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         // Ensure that we have our authentication manager
         if( _authenticationManager == null ) {
             if( _logger.isDebugEnabled() ) {
