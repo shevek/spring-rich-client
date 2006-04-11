@@ -30,6 +30,13 @@ public class AboutCommand extends ApplicationWindowAwareCommand {
         super(ID);
     }
 
+    /**
+     * Set the path to the HTML file to display.  This is optional.  If
+     * it is not specified, then the scrolling HTML panel will not be
+     * displayed.
+     * 
+     * @param path
+     */
     public void setAboutTextPath(Resource path) {
         this.aboutBox.setAboutTextPath(path);
     }

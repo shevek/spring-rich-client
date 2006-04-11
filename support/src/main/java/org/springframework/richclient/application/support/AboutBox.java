@@ -25,9 +25,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.Timer;
 import javax.swing.event.HyperlinkEvent;
@@ -35,17 +37,26 @@ import javax.swing.event.HyperlinkListener;
 
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationDescriptor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CloseAction;
 import org.springframework.richclient.text.HtmlPane;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 
 /**
- * An implementation of an about box..
+ * An implementation of an about box in a dialog.  The dialog contents contain
+ * a simple, fixed area at the top showing the information from the
+ * ApplicationDescriptor configured in the context.  Below that is a scrolling
+ * (animated) panel that displays the contents of a specified file.
  * 
  * @author Keith Donald
  * @author Oliver Hutchison
+ * 
+ * @see #setAboutTextPath(Resource)
+ * @see ApplicationDescriptor
+ * @see HtmlPane
  */
 public class AboutBox {
     private Resource aboutTextPath;
@@ -53,8 +64,18 @@ public class AboutBox {
     public AboutBox() {
     }
 
+    /**
+     * @param path
+     */
     public void setAboutTextPath(Resource path) {
         this.aboutTextPath = path;
+    }
+
+    /**
+     * @return the aboutTextPath
+     */
+    public Resource getAboutTextPath() {
+        return aboutTextPath;
     }
 
     protected String getApplicationName() {
@@ -67,7 +88,7 @@ public class AboutBox {
         aboutMainDialog.showDialog();
     }
 
-    private class AboutDialog extends ApplicationDialog {
+    protected class AboutDialog extends ApplicationDialog {
 
         private HtmlScroller scroller;
 
@@ -75,7 +96,6 @@ public class AboutBox {
             setTitle("About " + getApplicationName());
             setResizable(false);
             setCloseAction(CloseAction.DISPOSE);
-            scroller = new HtmlScroller(false, 2000, 15, 10);
         }
 
         protected void addDialogComponents() {
@@ -84,49 +104,114 @@ public class AboutBox {
             getDialogContentPane().add(createButtonBar(), BorderLayout.SOUTH);
         }
 
+        /**
+         * Create the control that shows the application descriptor data (title,
+         * caption, description, version, and build id).
+         * 
+         * @return control
+         */
+        protected JComponent createApplicationDescriptorComponent() {
+            // Build the application descriptor data, if available
+            JTextArea txtDescriptor = getComponentFactory().createTextAreaAsLabel();
+            txtDescriptor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 0));
+            ApplicationDescriptor appDesc = Application.instance().getDescriptor();
+            if( appDesc != null ) {
+                String displayName = appDesc.getDisplayName();
+                String caption = appDesc.getCaption();
+                String description = appDesc.getDescription();
+                String version = appDesc.getVersion();
+                String buildId = appDesc.getBuildId();
+                StringBuilder sb = new StringBuilder();
+
+                if( StringUtils.hasText(displayName) ) {
+                    sb.append(displayName).append("\n");
+                }
+                if( StringUtils.hasText(caption) ) {
+                    sb.append(caption).append("\n\n");
+                }
+                if( StringUtils.hasText(description) ) {
+                    sb.append(description).append("\n\n");
+                }
+                if( StringUtils.hasText(version) ) {
+                    sb.append(getMessage("aboutBox.version.label")).append(": ").append(version).append("\n");
+                }
+                if( StringUtils.hasText(buildId) ) {
+                    sb.append(getMessage("aboutBox.buildId.label")).append(": ").append(buildId).append("\n");
+                }
+                txtDescriptor.setText(sb.toString());
+            }
+            return txtDescriptor;
+        }
+
+        /**
+         * Construct the main dialog pane.
+         * @return Constructed component
+         */
         protected JComponent createDialogContentPane() {
             JPanel dialogPanel = new JPanel(new BorderLayout());
 
-            try {
-                String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
-                        .getInputStream())));
-                scroller.setHtml(text);
+            // Add in the application descriptor data, if available
+            dialogPanel.add(createApplicationDescriptorComponent(), BorderLayout.NORTH);
+
+            // If a text file resource has been specified, then construct the
+            // scroller to show it.
+            if( aboutTextPath != null ) {
+                try {
+                    scroller = new HtmlScroller(false, 2000, 15, 10);
+                    String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
+                            .getInputStream())));
+                    scroller.setHtml(text);
+                } catch( IOException e ) {
+                    final IllegalStateException exp = new IllegalStateException("About text not accessible: "
+                            + e.getMessage());
+                    exp.setStackTrace(e.getStackTrace());
+                    throw exp;
+                }
+                dialogPanel.add(scroller);
+                dialogPanel.setPreferredSize(new Dimension(scroller.getPreferredSize().width, 300));
+            } else {
+                // Set the preferred size
+                dialogPanel.setPreferredSize(new Dimension( 300, 200));
             }
-            catch (IOException e) {
-                final IllegalStateException exp =
-                        new IllegalStateException("About text not accessible: "+e.getMessage());
-                exp.setStackTrace(e.getStackTrace());
-                throw exp;
-            }
-            dialogPanel.add(scroller);
-            dialogPanel.setPreferredSize(new Dimension(scroller.getPreferredSize().width, 200));
             dialogPanel.add(new JSeparator(), BorderLayout.SOUTH);
             return dialogPanel;
         }
 
         protected void onAboutToShow() {
-            try {
-                String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
-                        .getInputStream())));
-                scroller.setHtml(text);
+            if( scroller != null ) {
+                try {
+                    String text = FileCopyUtils.copyToString(new BufferedReader(new InputStreamReader(aboutTextPath
+                            .getInputStream())));
+                    scroller.setHtml(text);
+                }
+                catch (IOException e) {
+                    final IllegalStateException exp =
+                            new IllegalStateException("About text not accessible: "+e.getMessage());
+                    exp.setStackTrace(e.getStackTrace());
+                    throw exp;
+                }
+                scroller.reset();
+                scroller.startScrolling();
             }
-            catch (IOException e) {
-                final IllegalStateException exp =
-                        new IllegalStateException("About text not accessible: "+e.getMessage());
-                exp.setStackTrace(e.getStackTrace());
-                throw exp;
-            }
-            scroller.reset();
-            scroller.startScrolling();
         }
 
         protected boolean onFinish() {
-            scroller.pauseScrolling();
+            if( scroller != null ) {
+                scroller.pauseScrolling();
+            }
             return true;
         }
 
         protected Object[] getCommandGroupMembers() {
             return new AbstractCommand[] { getFinishCommand() };
+        }
+        
+        /**
+         * Get the scrolling HTML panel.
+         * @return scroller
+         */
+        protected HtmlScroller getHtmlScroller() {
+            return scroller;
         }
     }
 
@@ -135,7 +220,7 @@ public class AboutBox {
      * 
      * @author Oliver Hutchison
      */
-    private static class HtmlScroller extends JViewport implements HyperlinkListener {
+    protected static class HtmlScroller extends JViewport implements HyperlinkListener {
 
         private HtmlPane htmlPane;
 
