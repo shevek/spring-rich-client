@@ -139,7 +139,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     }
 
     public void showIntroComponentIfNecessary(ApplicationWindow window) {
-        if (introShown) {
+        if( !introShown ) {
             showIntro(window);
             introShown = true;
         }
