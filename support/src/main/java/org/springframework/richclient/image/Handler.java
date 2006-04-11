@@ -50,12 +50,20 @@ public class Handler extends URLStreamHandler {
         Handler.urlHandlerImageSource = urlHandlerImageSource;
 
         try {
+            // System properties should be set at JVM startup
+            // Testcases in IDEA/Eclipse are at JVM startup, but not in Maven's surefire...
+            // TODO this entire implementation should be changed with a java.net.URLStreamHandlerFactory instead.
             String packagePrefixList = System.getProperty("java.protocol.handler.pkgs");
-            if (packagePrefixList != "") {
-                packagePrefixList = packagePrefixList + "|";
+            String newPackagePrefixList = null;
+            String orgSpringFrameworkRichclientString = "org.springframework.richclient";
+            if (packagePrefixList == null || packagePrefixList.equals("")) {
+                newPackagePrefixList = orgSpringFrameworkRichclientString;
+            } else if (("|" + packagePrefixList + "|").indexOf("|" + orgSpringFrameworkRichclientString + "|") < 0) {
+                newPackagePrefixList = packagePrefixList + "|" + orgSpringFrameworkRichclientString;
             }
-            packagePrefixList = packagePrefixList + "org.springframework.richclient";
-            System.setProperty("java.protocol.handler.pkgs", packagePrefixList);
+            if (newPackagePrefixList != null) {
+                System.setProperty("java.protocol.handler.pkgs", newPackagePrefixList);
+            }
         }
         catch (SecurityException e) {
             logger.warn("Unable to install image URL handler", e);

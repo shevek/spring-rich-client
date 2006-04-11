@@ -229,6 +229,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <testFailureIgnore>true</testFailureIgnore>
+                        <forkMode>pertest</forkMode>
                         <!-- TODO Testcases should all end with Test, not Tests-->
                         <includes>
                             <include>**/*Test.java</include>

@@ -52,8 +52,9 @@ public class HandlerTest extends TestCase {
 //        }
 
         // test install
-        Handler.installImageUrlHandler((ImageSource)new ClassPathXmlApplicationContext(
-                "org/springframework/richclient/image/application-context.xml").getBean("imageSource"));
+        ImageSource urlHandlerImageSource = (ImageSource) new ClassPathXmlApplicationContext(
+                "org/springframework/richclient/image/application-context.xml").getBean("imageSource");
+        // Handler.installImageUrlHandler(urlHandlerImageSource); is not needed because imageSource calls it itself
         try {
             url = new URL("image:test");
             imageHasNotBeenInstalledInThisJVM = false;
@@ -76,4 +77,5 @@ public class HandlerTest extends TestCase {
         url = new URL("image:test.image.key");
         url.openConnection();
     }
+
 }
