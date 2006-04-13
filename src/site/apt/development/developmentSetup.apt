@@ -133,6 +133,8 @@ mvn site
 
     It's highly recommended to depend on the seperate modules jar instead of the full jar.
 
+    Common pitfall: the full jar does not include spring binding or modules: don't forget them on your classpath.
+
 Configuring your favorite IDE
 
 * Eclipse
