@@ -34,6 +34,15 @@
             </includes>
             <lineEnding>dos</lineEnding>
         </fileSet>
+        <fileSet>
+            <directory>src/assembly/bin/samples/simple</directory>
+            <outputDirectory>samples/simple</outputDirectory>
+            <includes>
+                <include>run.bat</include>
+                <include>run.sh</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
@@ -95,6 +104,13 @@
             <includes>
                 <!-- TODO server doesn't contain the webstartable client yet -->
                 <include>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>samples/simple</outputDirectory>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.springframework.richclient.samples.simple:spring-richclient-simple</include>
             </includes>
         </dependencySet>
     </dependencySets>

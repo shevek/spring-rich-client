@@ -12,7 +12,7 @@
 
     <artifactId>spring-richclient-release</artifactId>
     <packaging>pom</packaging>
-    <name>Spring richclient release (all modules + full + petclinic)</name>
+    <name>Spring richclient release (all modules + full + samples)</name>
     <description>
         Generates the public release assemblies of zip and tar.gz's.
     </description>
@@ -90,6 +90,12 @@
         <dependency>
             <groupId>org.springframework.richclient.samples.petclinic</groupId>
             <artifactId>spring-richclient-petclinic-standalone</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <!-- Samples/simple -->
+        <dependency>
+            <groupId>org.springframework.richclient.samples.simple</groupId>
+            <artifactId>spring-richclient-simple</artifactId>
             <version>${pom.version}</version>
         </dependency>
     </dependencies>
