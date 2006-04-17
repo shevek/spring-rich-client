@@ -19,6 +19,7 @@
 
     <modules>
         <module>petclinic</module>
+        <module>simple</module>
     </modules>
 
     <dependencies>
