@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.richclient.samples</groupId>
+        <artifactId>spring-richclient-samples</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-richclient-simple</artifactId>
+    <packaging>jar</packaging>
+    <name>Spring richclient SIMPLE sample application</name>
+    <description>
+        This application provides a very simple example of how to use the
+        basic features of the Spring Rich Client platform.
+    </description>
+
+    <dependencies>
+        <!-- Internal -->
+
+        <!-- Spring rich -->
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-binding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-form</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-support</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.richclient</groupId>-->
+            <!--<artifactId>spring-richclient-tiger</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-sandbox</artifactId>
+        </dependency>
+
+        <!-- Dependency injection -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
