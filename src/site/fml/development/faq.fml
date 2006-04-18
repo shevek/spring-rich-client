@@ -44,6 +44,7 @@
           <a href="http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/">
               http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/
           </a> has groupId org.springframework, artifactId spring-core and version 1.2.6.
+          Note: <a href="http://www.mavenregistry.com">http://www.mavenregistry.com</a> is an easier to search.
         </p>
         <ul>
           <li>
