@@ -16,6 +16,7 @@
 package org.springframework.richclient.command;
 
 import java.awt.Container;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,6 +80,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
     protected AbstractCommand() {
+        this(null);
     }
 
     protected AbstractCommand(String id) {
@@ -96,6 +98,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     protected AbstractCommand(String id, CommandFaceDescriptor faceDescriptor) {
         super();
         setId(id);
+        addEnabledListener(new ButtonEnablingListener()); // keep track of enable state for buttons
         if (faceDescriptor != null) {
             setFaceDescriptor(faceDescriptor);
         }
@@ -104,6 +107,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     protected AbstractCommand(String id, Map faceDescriptors) {
         super();
         setId(id);
+        addEnabledListener(new ButtonEnablingListener()); // keep track of enable state for buttons
         setFaceDescriptors(faceDescriptors);
     }
 
@@ -327,17 +331,27 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     protected void internalSetEnabled( boolean enabled ) {
         if (hasChanged(isEnabled(), enabled)) {
             this.enabled.setValue(Boolean.valueOf(enabled));
-
-            // the rest of this seems redundant now... -JJM
+        }
+    }
+    
+    /**
+     * Listener to keep track of enabled state. When enable on command changes,
+     * each button has to be checked and set.
+     */
+    private class ButtonEnablingListener implements PropertyChangeListener
+    {
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+            // We need to keep the buttons in sync with the command, so go through the buttons and set Enabled state.
+            // alternative is to add a listener to the enabled value and change buttons in that listener 
+            // NOT redundant
+            boolean enabled = evt.getNewValue() == Boolean.TRUE ? true : false;
             Iterator it = buttonIterator();
-            while (it.hasNext()) {
-                AbstractButton button = (AbstractButton)it.next();
-                // it's possible for the itterator to return nulls...
-                if (button != null) {
-                  button.setEnabled(enabled);
-                }
+            while (it.hasNext()) 
+            {
+                 AbstractButton button = (AbstractButton)it.next();
+                   button.setEnabled(enabled);
             }
-            firePropertyChange(ENABLED_PROPERTY_NAME, !enabled, enabled);
         }
     }
 
@@ -395,7 +409,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         
         private void preFetchNextButton()
         {
-            if (this.currentButtonIterator == null || !this.currentButtonIterator.hasNext())
+            while (this.currentButtonIterator == null || !this.currentButtonIterator.hasNext())
             {
                 if (this.managerIterator.hasNext()){
                     CommandFaceButtonManager cfbm = (CommandFaceButtonManager)this.managerIterator.next();
@@ -568,9 +582,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         if (button != null) {
             return button.requestFocusInWindow();
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public AbstractButton getButtonIn(Container container) {
