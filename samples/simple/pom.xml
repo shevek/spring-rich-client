@@ -9,7 +9,8 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-richclient-simple</artifactId>
+    <groupId>org.springframework.richclient.samples.simple</groupId>
+    <artifactId>spring-richclient-samples-simple</artifactId>
     <packaging>jar</packaging>
     <name>Spring richclient SIMPLE sample application</name>
     <description>
