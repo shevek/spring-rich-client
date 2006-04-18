@@ -94,7 +94,7 @@
         </dependency>
         <!-- Samples/simple -->
         <dependency>
-            <groupId>org.springframework.richclient.samples.simple</groupId>
+            <groupId>org.springframework.richclient.samples</groupId>
             <artifactId>spring-richclient-simple</artifactId>
             <version>${pom.version}</version>
         </dependency>
