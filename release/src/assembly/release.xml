@@ -62,7 +62,7 @@
                 <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-gui</exclude>
                 <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-server</exclude>
                 <exclude>org.springframework.richclient.samples.petclinic:spring-richclient-petclinic-standalone</exclude>
-                <exclude>org.springframework.richclient.samples:spring-richclient-simple</exclude>
+                <exclude>org.springframework.richclient.samples.simple:spring-richclient-samples-simple</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -111,7 +111,7 @@
             <outputDirectory>samples/simple</outputDirectory>
             <scope>runtime</scope>
             <includes>
-                <include>org.springframework.richclient.samples:spring-richclient-simple</include>
+                <include>org.springframework.richclient.samples.simple:spring-richclient-samples-simple</include>
             </includes>
         </dependencySet>
     </dependencySets>
