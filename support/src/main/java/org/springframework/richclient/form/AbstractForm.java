@@ -426,7 +426,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
         ActionCommand commitCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
-                getFormModel().commit();
+                commit();
             }
         };
         commitCmd.setSecurityControllerId(getCommitSecurityControllerId());
@@ -466,7 +466,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         }
         ActionCommand revertCmd = new ActionCommand(commandId) {
             protected void doExecuteCommand() {
-                getFormModel().revert();
+                revert();
             }
         };
         attachFormGuard(revertCmd, FormGuard.LIKE_REVERTCOMMAND);
