@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <!-- 
+        Bean: windowCommandManager
+        Type: magic
+        Usage: required
+        Description: This specifies the component that will manage the commands
+            associated with a window.  You can specify the ids of commands that
+            are "shared" among views.  This indicates to the manager that they
+            will have different target executors in each view.
+    -->
+	<bean id="windowCommandManager" 
+		class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+		<property name="sharedCommandIds">
+			<list>
+				<value>propertiesCommand</value>
+				<value>deleteCommand</value>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 
+        Bean: menuBar
+        Type: magic
+        Usage: required
+        Description: This specifies the makeup of the main menu bar for the application.
+            The CommandGroupFactoryBean is a factory that generates command groups.
+            The "members" property is used to specify the top level menus in the
+            menu bar.
+    -->
+	<bean id="menuBar" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<ref bean="fileMenu"/>
+				<ref bean="windowMenu"/>
+				<ref bean="helpMenu"/>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 
+        Bean: toolBar
+        Type: magic
+        Usage: required
+        Description: This specifies the makeup of the toolbar for the application.
+            The CommandGroupFactoryBean is a factory that generates command groups.
+            The "members" property is used to specify the commands to place on the
+            toolbar.  Note that you can place command groups (menus) in the toolbar
+            as well and they will be rendered as a button that creates a drop down
+            menu when pressed.
+    -->
+	<bean id="toolBar" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<value>deleteCommand</value>
+                <value>propertiesCommand</value>
+			</list>
+		</property>
+	</bean>
+
+    <!-- 
+        Bean: fileMenu
+        Type: user named
+        Usage: optional
+        Description: This specifies the content of the file menu.  Note the references
+            to shared (predefined) commands by name, directly including a bean (the
+            ExitCommand), and including a sub-menu (newMenu).
+    -->
+	<bean id="fileMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<value>separator</value>
+				<value>propertiesCommand</value>
+                <value>separator</value>
+                <value>deleteCommand</value>
+				<value>separator</value>
+				<bean class="org.springframework.richclient.command.support.ExitCommand"/>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 
+        Bean: windowMenu
+        Type: user named
+        Usage: optional
+        Description: This specifies the content of the "Window" menu.
+    -->
+	<bean id="windowMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<bean class="org.springframework.richclient.command.support.NewWindowCommand"/>
+				<value>separator</value>
+				<bean class="org.springframework.richclient.command.support.ShowViewMenu"/>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 
+        Bean: helpMenu
+        Type: user named
+        Usage: optional
+        Description: This specifies the content of the "Help" menu.
+    -->
+	<bean id="helpMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<ref bean="aboutCommand"/>
+			</list>
+		</property>
+	</bean>
+
+    <!-- 
+        Bean: aboutCommand
+        Type: user named
+        Usage: optional
+        Description: This creates a command to handle the "about" menu item.  It uses
+            a platform class to generate an about box from the configured application
+            data in the application context.
+    -->
+	<bean id="aboutCommand" 
+		class="org.springframework.richclient.command.support.AboutCommand">
+	</bean>
+		
+</beans>

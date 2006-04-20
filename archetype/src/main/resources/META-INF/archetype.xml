@@ -1,0 +1,16 @@
+<archetype>
+  <id>spring-richchlient-archetype</id>
+  <sources>
+    <source>src/main/java/SimpleApp.java</source>
+    <source>src/main/java/SimpleLifecycleAdvisor.java</source>
+    <source>src/main/java/InitialView.java</source>
+  </sources>
+  <resources>
+    <resource>src/main/resources/ctx/richclient-startup-context.xml</resource>
+    <resource>src/main/resources/ctx/richclient-application-context.xml</resource>
+    <resource filtered="false">src/main/resources/images/splash-screen.jpg</resource>
+    <resource>src/main/resources/ui/commands-context.xml</resource>
+    <resource>src/main/resources/ui/images.properties</resource>
+    <resource>src/main/resources/ui/messages.properties</resource>
+  </resources>
+</archetype>
