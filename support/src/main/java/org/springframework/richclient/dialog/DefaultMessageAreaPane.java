@@ -24,8 +24,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.EmptyIcon;
@@ -38,8 +36,6 @@ import com.jgoodies.forms.layout.Sizes;
  * @author Oliver Hutchison
  */
 public class DefaultMessageAreaPane extends AbstractControlFactory implements MessagePane, PropertyChangeListener {
-    private static final Log logger = LogFactory.getLog(DefaultMessageAreaPane.class);
-
     private static final int ONE_LINE_IN_DLU = 10;
 
     public static final int DEFAULT_LINES_TO_DISPLAY = 2;

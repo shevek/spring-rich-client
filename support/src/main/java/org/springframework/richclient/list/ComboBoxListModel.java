@@ -32,8 +32,6 @@ import org.springframework.util.ObjectUtils;
 public class ComboBoxListModel extends ListListModel implements ComboBoxModel, MutableComboBoxModel {
     private Object selectedItem;
 
-    private Comparator sorter;
-
     public ComboBoxListModel() {
         this(new ArrayList(9));
     }

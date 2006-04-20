@@ -27,8 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationListener;
 import org.springframework.richclient.factory.AbstractControlFactory;
@@ -44,8 +42,6 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Keith Donald
  */
 public class FileChooserComboBox extends AbstractControlFactory {
-
-    private static final Log logger = LogFactory.getLog(FileChooserComboBox.class);
 
     private JFileChooser fileChooser;
 

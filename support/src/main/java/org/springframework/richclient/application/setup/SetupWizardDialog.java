@@ -19,8 +19,6 @@ import org.springframework.richclient.wizard.WizardPage;
  */
 public class SetupWizardDialog extends WizardDialog {
 
-    private static final String NEXT_MESSAGE_CODE = "wizard.next";
-
     private Container pageControlBackup;
 
     private GradientPanel firstPageControl;

@@ -55,13 +55,13 @@ public class ImageSourceTest extends TestCase {
     public void testInvalidImageAccess() {
         ImageSource source = (ImageSource)context.getBean("imageSourceBroken");
         try {
-            Resource resource = source.getImageResource("invalid.image.key");
+            source.getImageResource("invalid.image.key");
         }
         catch (NoSuchImageResourceException e) {
             // expected
         }
         try {
-            Image image = source.getImage("invalid.image.key");
+            source.getImage("invalid.image.key");
         }
         catch (NoSuchImageResourceException e) {
             // expected

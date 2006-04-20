@@ -107,7 +107,7 @@ public class ComboBoxBindingAbstractTest extends BindingAbstractTest {
     public void testSelectableItemHolderNullValue()
     {
         ComboBoxBinding binding = new ComboBoxBinding(fm, "simpleProperty");
-        JComboBox comboBox = (JComboBox)binding.getControl();
+        binding.getControl();
         ValueHolder valueHolder = new ValueHolder();
         binding.setSelectableItemsHolder(valueHolder);
         assertEquals(binding.getSelectableItems(), Collections.EMPTY_LIST);

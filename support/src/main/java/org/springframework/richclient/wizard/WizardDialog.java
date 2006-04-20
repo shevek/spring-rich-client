@@ -36,10 +36,6 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class WizardDialog extends TitledApplicationDialog implements WizardContainer, PropertyChangeListener {
-    private static final String NEXT_MESSAGE_CODE = "wizard.next";
-
-    private static final String BACK_MESSAGE_CODE = "wizard.back";
-
     private Wizard wizard;
 
     private ActionCommand nextCommand;

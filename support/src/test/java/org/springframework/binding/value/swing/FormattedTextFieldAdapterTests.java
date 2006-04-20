@@ -42,8 +42,6 @@ public class FormattedTextFieldAdapterTests extends TestCase {
 
     private TestableJTextComponent comp;
 
-    private FormattedTextFieldAdapter valueSetter;
-
     public void setUp() throws Exception {
         super.setUp();
         Application.load(null);
@@ -53,7 +51,7 @@ public class FormattedTextFieldAdapterTests extends TestCase {
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
         comp.setFormatterFactory(new OnlyAlowLowerCaseFormatterFactory());
-        valueSetter = new FormattedTextFieldAdapter(comp, valueModel, ValueCommitPolicy.AS_YOU_TYPE);
+        new FormattedTextFieldAdapter(comp, valueModel, ValueCommitPolicy.AS_YOU_TYPE);
     }
 
     public void testComponentChangeUpdatesValueModel() {

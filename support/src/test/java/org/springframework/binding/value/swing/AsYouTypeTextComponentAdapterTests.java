@@ -36,8 +36,6 @@ public class AsYouTypeTextComponentAdapterTests extends TestCase {
 
     private TestableJTextComponent comp;
 
-    private AsYouTypeTextComponentAdapter valueSetter;
-
     public void setUp() throws Exception {
         super.setUp();
         Application.load(null);
@@ -46,7 +44,9 @@ public class AsYouTypeTextComponentAdapterTests extends TestCase {
         valueListener = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
-        valueSetter = new AsYouTypeTextComponentAdapter(comp, valueModel);
+        
+        // Just creatnig this object is all that's needed
+        new AsYouTypeTextComponentAdapter(comp, valueModel);
     }
 
     public void testComponentChangeUpdatesValueModel() {

@@ -151,8 +151,6 @@ public abstract class AbstractElementGenerator implements ElementGenerator {
 
 		private Constraint constraint;
 
-		private boolean allTrue = true;
-
 		public UntilTrueController(ElementGenerator template, Closure templateCallback, Constraint constraint) {
 			this.template = template;
 			this.templateCallback = templateCallback;

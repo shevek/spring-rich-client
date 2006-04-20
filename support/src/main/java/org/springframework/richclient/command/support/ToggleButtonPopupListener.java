@@ -32,8 +32,6 @@ public class ToggleButtonPopupListener implements PopupMenuListener, ItemListene
 
     private boolean buttonWasPressed;
 
-    private boolean shouldReopen = true;
-
     public static void bind(JToggleButton button, JPopupMenu menu) {
         new ToggleButtonPopupListener(button, menu);
     }

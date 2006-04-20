@@ -271,14 +271,14 @@ public class BufferedCollectionValueModelTest extends TestCase {
 
     public void testIncompatibleCollections() {
         try {
-            BufferedCollectionValueModel vm = getBufferedCollectionValueModel(new ArrayList(), Set.class);
+            getBufferedCollectionValueModel(new ArrayList(), Set.class);
             fail("backing object must be assignable to backingCollectionClass");
         }
         catch (IllegalArgumentException e) {
             // expected
         }
         try {
-            BufferedCollectionValueModel vm = getBufferedCollectionValueModel(new Double[0], Integer[].class);
+            getBufferedCollectionValueModel(new Double[0], Integer[].class);
             fail("backing object must be assignable to backingCollectionClass");
         }
         catch (IllegalArgumentException e) {

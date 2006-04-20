@@ -57,7 +57,6 @@ public class LabeledObjectSupport extends ApplicationServicesAccessor implements
     private PropertyChangeSupport propertyChangeSupport;
 
     public void setLabelInfo(CommandButtonLabelInfo label) {
-        CommandButtonLabelInfo oldLabel = label;
         String oldDisplayName = getDisplayName();
         int oldMnemonic = getMnemonic();
         int oldMnemonicIndex = getMnemonicIndex();

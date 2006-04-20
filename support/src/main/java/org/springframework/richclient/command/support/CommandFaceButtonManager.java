@@ -29,7 +29,6 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
-import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -41,8 +40,6 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     private String faceDescriptorId;
 
     private CommandFaceDescriptor faceDescriptor;
-
-    private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
     private static class ManagedButton {
         private WeakReference buttonHolder;

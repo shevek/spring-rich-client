@@ -18,10 +18,7 @@ package org.springframework.richclient.list;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FormModel;
-import org.springframework.context.MessageSource;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
@@ -30,8 +27,6 @@ import org.springframework.richclient.form.builder.support.AbstractFormComponent
  * @author Peter De Bruycker
  */
 public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentInterceptorFactory {
-
-    private final Log logger = LogFactory.getLog(getClass());
 
     public class ComboBoxAutoCompletionInterceptor extends AbstractFormComponentInterceptor {
 
@@ -63,17 +58,10 @@ public class ComboBoxAutoCompletionInterceptorFactory implements FormComponentIn
         }
     }
 
-    private MessageSource messages;
-
     /**
      * @see org.springframework.richclient.form.builder.FormComponentInterceptorFactory#getInterceptor(org.springframework.binding.form.FormModel)
      */
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
         return new ComboBoxAutoCompletionInterceptor(formModel);
     }
-
-    public void setMessageSource(MessageSource messageSource) {
-        messages = messageSource;
-    }
-
 }

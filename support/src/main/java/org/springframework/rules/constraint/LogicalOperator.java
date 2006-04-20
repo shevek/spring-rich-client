@@ -40,15 +40,6 @@ public abstract class LogicalOperator extends Operator {
 		}
 	};
 
-	/**
-	 * The <code>OR</code> operator
-	 */
-	public static final LogicalOperator NOT = new LogicalOperator("not", "!") {
-		public Not createNotConstraint() {
-			return new Not();
-		}
-	};
-
 	private LogicalOperator(String code, String symbol) {
 		super(code, symbol);
 	}

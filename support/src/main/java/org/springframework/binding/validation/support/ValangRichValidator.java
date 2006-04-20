@@ -206,7 +206,6 @@ public class ValangRichValidator implements RichValidator {
                 doVisit(rule.getPredicate());
                 Collection errorArgs = rule.getErrorArgs();
                 if (errorArgs != null && !errorArgs.isEmpty()) {
-                    Collection arguments = new ArrayList();
                     for (Iterator iter = errorArgs.iterator(); iter.hasNext();) {
                         doVisit((Function)iter.next());
                     }

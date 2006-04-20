@@ -16,8 +16,6 @@ import org.springframework.richclient.wizard.WizardDialog;
 public class SetupWizard extends AbstractWizard implements ActionCommandExecutor {
     private WizardDialog wizardDialog;
 
-    private Resource licenseLocation;
-
     private SetupLicenseWizardPage licensePage = new SetupLicenseWizardPage();
 
     public SetupWizard() {

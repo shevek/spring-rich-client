@@ -50,7 +50,6 @@ public class SetupIntroWizardPage extends AbstractWizardPage {
         JLabel bigTitleLabel = new JLabel(getMessage("setup.intro.title")) {
             public void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D)g;
-                Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 super.paintComponent(g2);
             }

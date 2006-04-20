@@ -36,8 +36,6 @@ public class FocusLostTextComponentAdapterTests extends TestCase {
 
     private TestableJTextComponent comp;
 
-    private FocusLostTextComponentAdapter valueSetter;
-
     public void setUp() throws Exception {
         super.setUp();
         Application.load(null);
@@ -46,7 +44,7 @@ public class FocusLostTextComponentAdapterTests extends TestCase {
         valueListener = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         valueModel.addValueChangeListener(valueListener);
         comp = new TestableJTextComponent();
-        valueSetter = new FocusLostTextComponentAdapter(comp, valueModel);
+        new FocusLostTextComponentAdapter(comp, valueModel);
     }
 
     public void testComponentChangeDoesNotUpdateValueModel() {

@@ -21,7 +21,7 @@ import java.awt.Insets;
 import org.springframework.richclient.core.UIConstants;
 
 /**
- * Utility functions to assist using the horridily complex Grid bag layout.
+ * Utility functions to assist using the horridly complex Grid bag layout.
  * 
  * @author Keith Donald
  */
@@ -43,8 +43,6 @@ public class GridBagCellConstraints {
             UIConstants.ONE_SPACE);
 
     public GridBagConstraints xy(int x, int y) {
-        int low = 0;
-        int high = 10;
         GridBagConstraints result = new GridBagConstraints();
         result.gridx = x;
         result.gridy = y;
@@ -52,8 +50,6 @@ public class GridBagCellConstraints {
     }
 
     public GridBagConstraints xywh(int x, int y, int width, int height) {
-        int low = 0;
-        int high = 10;
         GridBagConstraints result = xy(x, y);
         result.gridheight = height;
         result.gridwidth = width;

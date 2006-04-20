@@ -19,14 +19,10 @@ import java.awt.Image;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.dialog.AbstractDialogPage;
 
 public abstract class AbstractWizardPage extends AbstractDialogPage implements WizardPage {
-    private static final Log logger = LogFactory.getLog(AbstractWizardPage.class);
-
     private Wizard wizard;
 
     private WizardPage previousPage;

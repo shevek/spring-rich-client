@@ -179,10 +179,10 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
     private EncodedGroupMemberInfo parseEncodedCommandInfo(String str) {
         String[] info = StringUtils.commaDelimitedListToStringArray(str);
         if (info.length == 1) {
-            return new EncodedGroupMemberInfo(info[0], false);
+            return new EncodedGroupMemberInfo(info[0]);
         }
         else if (info.length == 2) {
-            return new EncodedGroupMemberInfo(info[0], Boolean.valueOf(info[1]).booleanValue());
+            return new EncodedGroupMemberInfo(info[0]);
         }
         else {
             throw new IllegalArgumentException("Invalid encoded command group info '" + str
@@ -201,11 +201,8 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
     private static final class EncodedGroupMemberInfo {
         private String commandId;
 
-        private boolean inlined;
-
-        public EncodedGroupMemberInfo(String commandId, boolean inlined) {
+        public EncodedGroupMemberInfo(String commandId) {
             this.commandId = commandId;
-            this.inlined = inlined;
         }
     }
 
