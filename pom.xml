@@ -290,6 +290,7 @@
         <!-- TODO bug in maven -->
         <!--<module>full</module>-->
         <module>samples</module>
+        <module>archetype</module>
         <!-- Module release is delibertly skipped -->
     </modules>
 
