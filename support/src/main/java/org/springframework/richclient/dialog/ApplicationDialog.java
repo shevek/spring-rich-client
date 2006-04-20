@@ -348,7 +348,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                         executeCloseAction();
                     }
                 }
-                catch (Exception e) {
+                catch (RuntimeException e) {
                     logger.warn("Exception occurred executing dialog finish command.", e);
                     onFinishException(e);
                 }
