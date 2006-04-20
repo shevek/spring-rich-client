@@ -255,11 +255,10 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     protected JButton getDefaultButton() {
         if (isControlCreated()) {
-            return SwingUtilities.getRootPane(getControl()).getDefaultButton();
+            JRootPane rootPane = SwingUtilities.getRootPane(getControl());
+            return rootPane == null ? null : rootPane.getDefaultButton();
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
     protected void setDefaultButton(JButton button) {
@@ -407,10 +406,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         if (editingFormObjectIndexHolder == null) {
             return false;
         }
-        else {
-            int value = ((Integer)editingFormObjectIndexHolder.getValue()).intValue();
-            return value != -1;
-        }
+        int value = ((Integer)editingFormObjectIndexHolder.getValue()).intValue();
+        return value != -1;
     }
 
     protected void setEditingFormObjectIndexSilently(int index) {
