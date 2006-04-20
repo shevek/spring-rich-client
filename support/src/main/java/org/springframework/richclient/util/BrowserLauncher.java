@@ -149,12 +149,6 @@ public class BrowserLauncher {
     /** The kAnyTransactionID AppleEvent code */
     private static Integer kAnyTransactionID;
 
-    /** The linkage object required for JDirect 3 on Mac OS X. */
-    private static Object linkage;
-
-    /** The framework to reference on Mac OS X */
-    private static final String JDirect_MacOSX = "/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/HIToolbox";
-
     /** JVM constant for MRJ 2.0 */
     private static final int MRJ_2_0 = 0;
 
@@ -372,7 +366,7 @@ public class BrowserLauncher {
             try {
                 Class linker = Class.forName("com.apple.mrj.jdirect.Linker");
                 Constructor constructor = linker.getConstructor(new Class[] {Class.class});
-                linkage = constructor.newInstance(new Object[] {BrowserLauncher.class});
+                constructor.newInstance(new Object[] {BrowserLauncher.class});
             }
             catch (ClassNotFoundException cnfe) {
                 errorMessage = cnfe.getMessage();
