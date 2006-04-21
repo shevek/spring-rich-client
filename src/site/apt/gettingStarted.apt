@@ -6,7 +6,8 @@
 
 Getting started
 
-    * {{{download.html}Download}} the release and try out petclinic standalone.
+    * {{{download.html}Download}} the release and try out the sample applicaitons,
+    simple and petclinic.
 
     * The {{{user/articles.html}articles}} page contains a link to a good tutorial.
 
@@ -20,3 +21,25 @@ Snapshots better then releases?
     many users prefer to work with a development snapshot instead of the release.
 
     Take a look at {{development/developmentSetup.html}}.
+
+Creating your first project
+
+	In order to simplify the process of getting your first Spring Rich Client project started,
+	a maven archetype has been created to do just that.  Once you have the development
+	environment setup, run the following command (with approprite substitutions for
+	<<<your.group.id>>> and <<<your-artifact-id>>>):
+	
++---
+mvn archetype:create \
+-DarchetypeGroupId=org.springframework.richclient \
+-DarchetypeArtifactId=spring-richchlient-archetype \
+-DarchetypeVersion=0.1.0-SNAPSHOT \
+-DgroupId=your.group.id -DartifactId=your-artifact-id
++---
+
+	Once this command completes, you will have a new project that is ready to go.
+	You can use the eclipse or Idea maven plugins to get the project into your
+	favorite IDE.  The application is runnable as is.
+
+	NOTE: This archetype relies on new features in the archetype core, so you
+	must be using at least maven-archetype-core-1.0-alpha-4 or later.
