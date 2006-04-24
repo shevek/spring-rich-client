@@ -12,5 +12,5 @@ To create a new project using this archetype, use the following command
 mvn archetype:create \
 -DarchetypeGroupId=org.springframework.richclient \
 -DarchetypeArtifactId=spring-richchlient-archetype \
--DarchetypeVersion=0.1.0-SNAPSHOT \
+-DarchetypeVersion=0.2.0-SNAPSHOT \
 -DgroupId=your.group.id -DartifactId=your-artifact-id
