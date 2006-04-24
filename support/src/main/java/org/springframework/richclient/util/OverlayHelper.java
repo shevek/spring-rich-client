@@ -35,8 +35,6 @@ import javax.swing.JRootPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 
-import org.springframework.util.Assert;
-
 /**
  * A helper class that attaches one component (the overlay) on top of another
  * component.
@@ -268,14 +266,14 @@ public class OverlayHelper implements SwingConstants {
         else if (overlayCapableParent instanceof JViewport) {
             JViewport viewPort = (JViewport)overlayCapableParent;
             JLayeredPane layeredPane = (JLayeredPane)viewPort.getClientProperty(LAYERED_PANE_PROPERTY);
-            if (layeredPane != null) {
-                Assert.isTrue(viewPort.getView() == layeredPane,
-                        "JViewport's view has been modified since layeredPane was inserted.");
+            Component view = viewPort.getView();
+            // check if we already have a layeredPane installed and if it's still available
+            if ((layeredPane != null) && (view == layeredPane)) 
                 return layeredPane;
-            }
+
+            // no layeredPane or it was removed at some point, so construct a new one
             layeredPane = new JLayeredPane();
             viewPort.putClientProperty(LAYERED_PANE_PROPERTY, layeredPane);
-            Component view = viewPort.getView();
             viewPort.remove(view);
             layeredPane.setLayout(new SingleComponentLayoutManager(view, viewPort));
             layeredPane.add(view);
