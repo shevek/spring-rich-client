@@ -48,9 +48,9 @@ public class OverlayHelper implements SwingConstants {
 
     private final OverlayChangeHandler overlayChangeHandler = new OverlayChangeHandler();
 
-    private final JComponent overlay;
+    protected final JComponent overlay;
 
-    private final JComponent overlayTarget;
+    protected final JComponent overlayTarget;
 
     private final int center;
 
@@ -250,7 +250,7 @@ public class OverlayHelper implements SwingConstants {
         setOverlayBounds(new Rectangle(0, 0, 0, 0));
     }
 
-    private Container getOverlayCapableParent(JComponent component) {
+    protected Container getOverlayCapableParent(JComponent component) {
         Container overlayCapableParent = component.getParent();
         while (overlayCapableParent != null && !(overlayCapableParent instanceof JRootPane)
                 && !(overlayCapableParent instanceof JViewport)) {
@@ -259,7 +259,7 @@ public class OverlayHelper implements SwingConstants {
         return overlayCapableParent;
     }
 
-    private JLayeredPane getLayeredPane(Container overlayCapableParent) {
+    protected JLayeredPane getLayeredPane(Container overlayCapableParent) {
         if (overlayCapableParent instanceof JRootPane) {
             return ((JRootPane)overlayCapableParent).getLayeredPane();
         }
