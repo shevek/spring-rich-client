@@ -206,13 +206,15 @@ Configuring your favorite IDE
         If you don't have an M2_HOME environment variable setup, then you need to
         add it on the <Environment> tab.
 
-    []
-
-    NOTE: This solution currently doesn't show you all files due to a limitation of Eclipse:
+    [[8]] NOTE: This solution currently doesn't show you all files due to a limitation of Eclipse:
     Eclipse does not allow a project folder in a project folder.
     (There is an issue at eclipse.org for this.)
-    Therefore the direct root, samples and root petclinic content aren't shown.
-    This includes the multiproject pom.xml (very important!) and the site documentation files.
+    Therefore the direct project root, samples root and petclinic root content isn't shown.
+    This includes the multiproject pom.xml (very important!) and the site apt files.
+    One way to fix this partually is to manually make a module of the <<</src>>> directory under the root project,
+    so you can at least edit the site apt files.
+
+    []
 
 ** Using the plugin for Eclipse - <<THIS IS NOT RECOMMENDED AT THIS TIME!!!>>
 
@@ -265,10 +267,20 @@ Maven 2 versus your favorite IDE
 
     []
 
+Samples
 
-Petclinic
+* Simple
 
-* Standalone
+    Just run the following class of the project
+    <<<spring-richclient-samples-simple>>>:
+
++--
+org.springframework.richclient.samples.simple.app.SimpleApp
++--
+
+* Petclinic
+
+** Standalone
 
     Just run the following class of the project
     <<<spring-richclient-petclinic-standalone>>>:
@@ -277,7 +289,7 @@ Petclinic
 org.springframework.richclient.samples.petclinic.PetClinicStandalone
 +--
 
-* Standapart (client-server)
+** Standapart (client-server)
 
     Do a <<<mvn install>>> and deploy the war to a J2EE server:
 
