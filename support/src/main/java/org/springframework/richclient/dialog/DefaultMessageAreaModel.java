@@ -78,16 +78,17 @@ public class DefaultMessageAreaModel implements Messagable {
         if (ObjectUtils.nullSafeEquals(this.message, message)) {
             return;
         }
+        Message oldMsg = this.message;
         this.message = message;
-        fireMessageUpdated();
+        fireMessageUpdated(oldMsg, this.message);
     }
 
     public void renderMessage(JComponent component) {
         message.renderMessage(component);
     }
     
-    protected void fireMessageUpdated() {
-        listenerList.fire("propertyChange", new PropertyChangeEvent(delegate, MESSAGE_PROPERTY, null, null));
+    protected void fireMessageUpdated(Message oldMsg, Message newMsg) {
+        listenerList.fire("propertyChange", new PropertyChangeEvent(delegate, MESSAGE_PROPERTY, oldMsg, newMsg));
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
