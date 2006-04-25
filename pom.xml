@@ -137,24 +137,23 @@
             <timezone>-5</timezone>
         </developer>
         <developer>
-            <!-- TODO verify and complete -->
             <id>jhoskens</id>
             <name>Jan Hoskens</name>
-            <email/>
+            <email>jh AT schaubroeck DOT be</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone>+1</timezone>
         </developer>
         <developer>
             <!-- TODO verify and complete -->
             <id>mportier</id>
             <name>Marc Portier</name>
-            <email/>
+            <email>mpo AT outerthought DOT org</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone>+1</timezone>
         </developer>
         <developer>
             <!-- TODO verify and complete -->
