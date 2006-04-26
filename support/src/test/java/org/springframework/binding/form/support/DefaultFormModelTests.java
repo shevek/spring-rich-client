@@ -309,15 +309,14 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     private static class TestDefaultFormModel extends DefaultFormModel {
         public TestDefaultFormModel(Object bean) {
             super(bean, false);
-            init();
         }
 
         public TestDefaultFormModel(BeanPropertyAccessStrategy pas, boolean buffering) {
             super(pas, buffering);
-            init();
         }
 
-        private void init() {
+        public void init() {
+            super.init();
             setValidator(new TestValidator());
             setBindingErrorMessageProvider(new BindingErrorMessageProvider() {
 

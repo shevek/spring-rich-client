@@ -68,30 +68,54 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     private BindingErrorMessageProvider bindingErrorMessageProvider = new DefaultBindingErrorMessageProvider();
 
     public DefaultFormModel() {
+        init();
     }
 
     public DefaultFormModel(Object domainObject) {
         super(domainObject);
+        init();
     }
     
     public DefaultFormModel(Object domainObject, boolean buffered) {
         super(domainObject, buffered);
+        init();
     }
 
     public DefaultFormModel(ValueModel domainObjectHolder) {
         super(domainObjectHolder);
+        init();
     }
     
     public DefaultFormModel(ValueModel domainObjectHolder, boolean buffered) {
         super(domainObjectHolder, buffered);
+        init();
     }
 
     public DefaultFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy) {
         super(domainObjectAccessStrategy, true);
+        init();
     }
 
     public DefaultFormModel(MutablePropertyAccessStrategy domainObjectAccessStrategy, boolean bufferChanges) {
         super(domainObjectAccessStrategy, bufferChanges);
+        init();
+    }
+    
+    /**
+     * Initialization of DefaultFormModel.
+     * Adds a listener on the Enabled property in order to switch validating state
+     * on or off. When disabling a formModel, no validation will happen.
+     */
+    protected void init()
+    {
+        addPropertyChangeListener(ENABLED_PROPERTY, new PropertyChangeListener(){
+
+            public void propertyChange(PropertyChangeEvent evt)
+            {
+                setValidating(evt.getNewValue() == Boolean.TRUE ? true : false);                
+            }
+            
+        });
     }
 
     public boolean isValidating() {
@@ -149,9 +173,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         if (!(formValueModel instanceof ValidatingFormValueModel)) {
             return new ValidatingFormValueModel(formProperty, formValueModel, true);
         }
-        else {
-            return formValueModel;
-        }
+        return formValueModel;
     }
 
     protected void postProcessNewValueModel(String formProperty, ValueModel valueModel) {
