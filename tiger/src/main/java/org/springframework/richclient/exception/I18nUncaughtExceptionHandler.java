@@ -1,4 +1,4 @@
-package be.springframework.richclient.exception;
+package org.springframework.richclient.exception;
 
 //import org.apache.commons.lang.StringUtils;
 //import org.apache.commons.lang.WordUtils;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Register it like this:
  * &lt;bean id="uncaughtExceptionHandler" lazy-init="false"
- *          class="be.kahosl.thot.swingui.app.exception.I18nUncaughtExceptionHandler" /&gt;
+ *          class="org.springframework.richclient.exception.I18nUncaughtExceptionHandler" /&gt;
  *
  * And add this to your messages.properties:
  * java.lang.RuntimeException.caption = Unexpected problem
