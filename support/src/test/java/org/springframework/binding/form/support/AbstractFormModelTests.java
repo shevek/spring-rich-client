@@ -140,6 +140,10 @@ public class AbstractFormModelTests extends TestCase {
         assertEquals(6, pcl.eventCount());
     }
 
+    /**
+     * Test on dirty state of parent-child relations. When child gets dirty, parent should
+     * also be dirty. When parent reverts, child should revert too.
+     */
     public void testDirtyTracksKids() {
         TestPropertyChangeListener pcl = new TestPropertyChangeListener(FormModel.DIRTY_PROPERTY);
         AbstractFormModel pfm = getFormModel(new TestBean());
@@ -148,7 +152,7 @@ public class AbstractFormModelTests extends TestCase {
         pfm.addChild(fm);
         ValueModel childSimpleProperty = fm.getValueModel("simpleProperty");
         ValueModel parentSimpleProperty = pfm.getValueModel("simpleProperty");
-
+        // test child property dirty -> parent dirty
         childSimpleProperty.setValue("1");
         assertTrue(pfm.isDirty());
         assertEquals(1, pcl.eventCount());
@@ -156,22 +160,31 @@ public class AbstractFormModelTests extends TestCase {
         fm.revert();
         assertTrue(!pfm.isDirty());
         assertEquals(2, pcl.eventCount());
-
+        // child dirty -> revert parent triggers revert on child
         childSimpleProperty.setValue("1");
         assertTrue(pfm.isDirty());
         assertEquals(3, pcl.eventCount());
+        
+        pfm.revert(); 
+        assertTrue(!pfm.isDirty());
+        assertTrue(!fm.isDirty());
+        assertEquals(4, pcl.eventCount());
+        // child & parent property dirty -> parent dirty, revert child, then parent
+        childSimpleProperty.setValue("1");
+        assertTrue(pfm.isDirty());
+        assertEquals(5, pcl.eventCount());
 
         parentSimpleProperty.setValue("2");
         assertTrue(pfm.isDirty());
-        assertEquals(3, pcl.eventCount());
+        assertEquals(5, pcl.eventCount());
 
         fm.revert();
         assertTrue(pfm.isDirty());
-        assertEquals(3, pcl.eventCount());
+        assertEquals(5, pcl.eventCount());
 
         pfm.revert();
         assertTrue(!pfm.isDirty());
-        assertEquals(4, pcl.eventCount());
+        assertEquals(6, pcl.eventCount());
     }
 
     public void testSetFormObjectDoesNotRevertChangesToPreviousFormObject() {
@@ -442,9 +455,7 @@ public class AbstractFormModelTests extends TestCase {
             if (executer != null) {
                 return executer;
             }
-            else {
-                throw new IllegalArgumentException("no converter found");
-            }
+            throw new IllegalArgumentException("no converter found");
         }
 
         public ConversionExecutor getConversionExecutorByTargetAlias(Class arg0, String arg1)
