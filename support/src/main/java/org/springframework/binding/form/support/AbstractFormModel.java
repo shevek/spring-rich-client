@@ -232,6 +232,14 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         child.addPropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
         child.addPropertyChangeListener(COMMITTABLE_PROPERTY, committableChangeHandler);
     }
+    
+    public void removeChild(HierarchicalFormModel child)
+    {
+        Assert.required(child, "child");
+        children.remove(child);
+        child.removePropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
+        child.removePropertyChangeListener(COMMITTABLE_PROPERTY, committableChangeHandler);
+    }
 
     public boolean hasProperty(String formProperty) {
         return propertyValueModels.containsKey(formProperty);
@@ -507,7 +515,15 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     protected void postCommit() {
     }
 
+    /**
+     * Revert state. If formModel has children, these will be reverted first.
+     * CommitTrigger is used to revert bufferedValueModels while revertToOriginal() is
+     * called upon FormMediatingValueModels.
+     */
     public void revert() {
+        for (Iterator i = children.iterator(); i.hasNext();) {
+            ((FormModel)i.next()).revert();
+        }
         // this will cause all buffered value models to revert
         commitTrigger.revert();
         // this will then go back and revert all unbuffered value models
@@ -517,9 +533,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     /**
+     * If formModel has children, these are reset first.
      * @see FormModel#reset()
      */
     public void reset() {
+        for (Iterator i = children.iterator(); i.hasNext();) {
+            ((FormModel)i.next()).reset();
+        }
         setFormObject(null);
     }
 
