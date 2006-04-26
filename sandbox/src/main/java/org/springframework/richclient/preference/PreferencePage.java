@@ -15,58 +15,46 @@
  */
 package org.springframework.richclient.preference;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.dialog.AbstractDialogPage;
 import org.springframework.richclient.layout.GridBagLayoutBuilder;
 import org.springframework.richclient.settings.Settings;
+import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 
 public abstract class PreferencePage extends AbstractDialogPage {
 
-	private JButton applyButton;
-
 	private boolean createApplyAndDefaultButtons = true;
-
-	private JButton defaultsButton;
-
 	private PreferencePage parent;
-
 	private PreferenceDialog preferenceDialog;
+	private ActionCommand restoreDefaultsCommand;
+	private ActionCommand applyCommand;
 
 	public PreferencePage(String id) {
 		super(id);
 	}
 
 	private JComponent createButtons() {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-		defaultsButton = new JButton("Restore defaults");
-		defaultsButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
+		restoreDefaultsCommand = new ActionCommand("restoreDefaultsCommand") {
+			public void doExecuteCommand() {
 				onDefaults();
 			}
-		});
+		};
 
-		applyButton = new JButton("Apply");
-		applyButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
+		applyCommand = new ActionCommand("applyCommand") {
+			public void doExecuteCommand() {
 				onApply();
 			}
-		});
+		};
 
-		panel.add(defaultsButton);
-		panel.add(applyButton);
-
-		return panel;
+		CommandGroup commandGroup = CommandGroup.createCommandGroup(null,
+				new Object[] { restoreDefaultsCommand, applyCommand });
+		JComponent buttonBar = commandGroup.createButtonBar();
+		GuiStandardUtils.attachDialogBorder(buttonBar);
+		return buttonBar;
 	}
 
 	protected abstract JComponent createContents();
