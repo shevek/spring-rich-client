@@ -128,7 +128,11 @@ public abstract class PreferencePage extends AbstractDialogPage {
 		preferenceDialog = dialog;
 	}
 
-	protected ActionCommand getApplyCommand() {
-		return applyCommand;
+	public void setPageComplete(boolean pageComplete) {
+		if(applyCommand != null) {
+			applyCommand.setEnabled(pageComplete);
+		}
+		
+		super.setPageComplete(pageComplete);
 	}
 }

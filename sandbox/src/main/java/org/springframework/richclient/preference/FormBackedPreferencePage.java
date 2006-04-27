@@ -53,10 +53,6 @@ public abstract class FormBackedPreferencePage extends PreferencePage {
 	}
 
 	public void setEnabled(boolean enabled) {
-		if (getApplyCommand() != null) {
-			getApplyCommand().setEnabled(enabled);
-		}
-
 		setPageComplete(enabled);
 	}
 }
