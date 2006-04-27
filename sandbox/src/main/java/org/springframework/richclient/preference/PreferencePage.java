@@ -28,9 +28,13 @@ import org.springframework.util.Assert;
 public abstract class PreferencePage extends AbstractDialogPage {
 
 	private boolean createApplyAndDefaultButtons = true;
+
 	private PreferencePage parent;
+
 	private PreferenceDialog preferenceDialog;
+
 	private ActionCommand restoreDefaultsCommand;
+
 	private ActionCommand applyCommand;
 
 	public PreferencePage(String id) {
@@ -64,6 +68,11 @@ public abstract class PreferencePage extends AbstractDialogPage {
 
 		// JPanel panel = new JPanel(new BorderLayout());
 
+		JComponent buttonPanel = null;
+		if (createApplyAndDefaultButtons) {
+			buttonPanel = createButtons();
+		}
+
 		JComponent contents = createContents();
 		Assert.notNull(contents, "Contents cannot be null.");
 		// panel.add(contents);
@@ -73,6 +82,7 @@ public abstract class PreferencePage extends AbstractDialogPage {
 			builder.nextLine();
 			builder.append(createButtons());
 			// panel.add(createButtons(), BorderLayout.SOUTH);
+			builder.append(buttonPanel);
 		}
 
 		// return panel;
@@ -116,5 +126,9 @@ public abstract class PreferencePage extends AbstractDialogPage {
 	public void setPreferenceDialog(PreferenceDialog dialog) {
 		Assert.notNull(dialog);
 		preferenceDialog = dialog;
+	}
+
+	protected ActionCommand getApplyCommand() {
+		return applyCommand;
 	}
 }

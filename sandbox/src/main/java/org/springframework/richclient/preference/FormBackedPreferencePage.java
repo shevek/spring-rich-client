@@ -22,36 +22,41 @@ import org.springframework.util.Assert;
 
 public abstract class FormBackedPreferencePage extends PreferencePage {
 
-    private Form form;
+	private Form form;
 
-    public FormBackedPreferencePage(String id) {
-        super(id);
-    }
+	public FormBackedPreferencePage(String id) {
+		super(id);
+	}
 
-    protected final JComponent createContents() {
-        form = createForm();
-        Assert.notNull(form, "You must set the form before contents are created.");
+	protected final JComponent createContents() {
+		form = createForm();
+		Assert.notNull(form,
+				"You must set the form before contents are created.");
 
-        initPageValidationReporter();
+		initPageValidationReporter();
 
-        return form.getControl();
-    }
+		return form.getControl();
+	}
 
-    protected abstract Form createForm();
+	protected abstract Form createForm();
 
-    public Form getForm() {
-        return form;
-    }
+	public Form getForm() {
+		return form;
+	}
 
-    protected void initPageValidationReporter() {
-        form.newSingleLineResultsReporter(this, this);
-    }
+	protected void initPageValidationReporter() {
+		form.newSingleLineResultsReporter(this, this);
+	}
 
-    public void onAboutToShow() {
-        setEnabled(!form.hasErrors());
-    }
+	public void onAboutToShow() {
+		setEnabled(!form.hasErrors());
+	}
 
-    public void setEnabled(boolean enabled) {
-        setPageComplete(enabled);
-    }
+	public void setEnabled(boolean enabled) {
+		if (getApplyCommand() != null) {
+			getApplyCommand().setEnabled(enabled);
+		}
+
+		setPageComplete(enabled);
+	}
 }
