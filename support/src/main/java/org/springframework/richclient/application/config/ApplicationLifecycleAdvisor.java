@@ -93,7 +93,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     }
 
     public void onPreInitialize(Application application) {
-        this.application = application;
+        
     }
 
     public void onPreStartup() {
@@ -103,9 +103,12 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     public void onPostStartup() {
 
     }
+    
+    public void setOpeningWindow(ApplicationWindow window) {
+    	this.openingWindow = window;
+    }
 
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
-        this.openingWindow = configurer.getWindow();
         configurer.setTitle(getApplication().getName());
         configurer.setImage(getApplication().getImage());
     }
@@ -174,5 +177,9 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
         }
         return this.eventExceptionHandler;
     }
+
+	public void setApplication(Application application) {
+		this.application = application;
+	}
 
 }

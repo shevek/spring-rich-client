@@ -41,7 +41,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         app.setApplicationContext( _applicationContext );
 
         ala.setStartingPageId( "start" );
-        ala.onPreInitialize( app );
+        ala.setApplication( app );
         app.openWindow( "start" );
 
         _testAuth1 = (TestAuthorizable) _applicationContext.getBean( "testAuth1" );

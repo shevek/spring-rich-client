@@ -81,6 +81,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     public DefaultApplicationWindow(int number) {
         this.number = number;
+        getAdvisor().setOpeningWindow(this);
         getAdvisor().onPreWindowOpen(getWindowConfigurer());
         init();
         getAdvisor().onCommandsCreated(this);

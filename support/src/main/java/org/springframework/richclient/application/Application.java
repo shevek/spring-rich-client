@@ -132,6 +132,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(this.lifecycleAdvisor,
                 "The application advisor is required, for processing of application lifecycle events");
+        getLifecycleAdvisor().setApplication(this);
         getLifecycleAdvisor().onPreInitialize(this);
     }
 
