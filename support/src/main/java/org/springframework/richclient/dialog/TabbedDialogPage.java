@@ -44,7 +44,7 @@ public class TabbedDialogPage extends CompositeDialogPage {
 
     protected JComponent createControl() {
         createPageControls();
-        tabbedPane = new JTabbedPane();
+        tabbedPane = getComponentFactory().createTabbedPane();
         List pages = getPages();
         for (int i = 0; i < pages.size(); i++) {
             final DialogPage page = (DialogPage) pages.get(i);
