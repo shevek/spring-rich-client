@@ -35,6 +35,10 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
 
     private JComponent control;
 
+    public DefaultApplicationPage() {
+    	
+    }
+    
     public DefaultApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
         super(window, pageDescriptor);
     }

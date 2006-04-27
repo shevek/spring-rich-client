@@ -22,4 +22,8 @@ public interface ApplicationPage extends ControlFactory {
     public boolean closeAllEditors();
 
     public boolean close();
+    
+    public void setApplicationWindow(ApplicationWindow window);
+    
+    public void setDescriptor(PageDescriptor descriptor);
 }

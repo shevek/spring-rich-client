@@ -55,6 +55,10 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 
 	private ApplicationWindow window;
 
+	public AbstractApplicationPage() {
+		
+	}
+	
 	public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
 		setApplicationWindow(window);
 		setDescriptor(pageDescriptor);

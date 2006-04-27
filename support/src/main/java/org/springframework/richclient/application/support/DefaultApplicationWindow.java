@@ -205,8 +205,8 @@ public class DefaultApplicationWindow implements ApplicationWindow {
      */
     protected ApplicationPage createPage(PageDescriptor descriptor) {
         try {
-            DefaultApplicationPage page = (DefaultApplicationPage)getServices().getBean(
-                DEFAULT_APPLICATION_PAGE_BEAN_ID, DefaultApplicationPage.class);
+            ApplicationPage page = (ApplicationPage)getServices().getBean(
+                DEFAULT_APPLICATION_PAGE_BEAN_ID, ApplicationPage.class);
             page.setApplicationWindow(this);
             page.setDescriptor(descriptor);
             return page;
@@ -214,7 +214,6 @@ public class DefaultApplicationWindow implements ApplicationWindow {
         catch (NoSuchBeanDefinitionException e) {
             return new DefaultApplicationPage(this, descriptor);
         }
-
     }
 
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
