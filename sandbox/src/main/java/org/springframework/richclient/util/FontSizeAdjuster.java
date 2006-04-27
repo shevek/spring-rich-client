@@ -17,7 +17,6 @@ public class FontSizeAdjuster {
 		public void eventDispatched(AWTEvent e) {
 			MouseWheelEvent event = (MouseWheelEvent) e;
 			if (event.isControlDown()) {
-				System.out.println("adjust");
 				adjust(event.getWheelRotation() < 0 ? -1 : 1);
 			}
 		}
