@@ -113,7 +113,7 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
      */
     public void afterPropertiesSet() throws Exception {
         // Verify that we have been properly configured
-        Assert.state(getContactTableFactory() != null, "contactTableFactory msut be set");
+        Assert.state(getContactTableFactory() != null, "contactTableFactory must be set");
     }
 
     /**
