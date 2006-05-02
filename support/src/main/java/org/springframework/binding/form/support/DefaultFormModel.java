@@ -60,7 +60,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     private final Map bindingErrorMessages = new HashMap();
 
     private boolean validating = true;
-
+    
     private boolean oldValidating = true;
 
     private Validator validator;
@@ -112,14 +112,20 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
 
             public void propertyChange(PropertyChangeEvent evt)
             {
-                setValidating(evt.getNewValue() == Boolean.TRUE ? true : false);                
+                validatingUpdated();                
             }
             
         });
+        validationResultsModel.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, new PropertyChangeListener(){
+
+            public void propertyChange(PropertyChangeEvent evt)
+            {
+                committableUpdated();
+            }});
     }
 
     public boolean isValidating() {
-        return validating;
+        return validating && isEnabled();
     }
 
     public void setValidating(boolean validating) {
@@ -146,7 +152,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     }
 
     public void validate() {
-        if (validating) {
+        if (isValidating()) {
             validateAfterPropertyChanged(null);
         }
     }
@@ -199,7 +205,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
      * known/available.
      */
     protected void validateAfterPropertyChanged(String formProperty) {
-        if (validating) {
+        if (isValidating()) {
             Validator validator = getValidator();
             if (validator != null) {
                 DefaultValidationResults validationResults = new DefaultValidationResults(bindingErrorMessages.values());
@@ -219,7 +225,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         ValidationMessage oldValidationMessage = (ValidationMessage)bindingErrorMessages.get(valueModel);
         ValidationMessage newValidationMessage = getBindingErrorMessage(valueModel.getFormProperty(), valueBeingSet, e);
         bindingErrorMessages.put(valueModel, newValidationMessage);
-        if (validating) {
+        if (isValidating()) {
             validationResultsModel.replaceMessage(oldValidationMessage, newValidationMessage);
         }
     }
@@ -242,7 +248,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
      */
     protected void raiseValidationMessage(ValidationMessage validationMessage) {
         additionalValidationResults.addMessage(validationMessage);
-        if (validating) {
+        if (isValidating()) {
             validationResultsModel.addMessage(validationMessage);
         }
     }
@@ -254,7 +260,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
      */
     protected void clearValidationMessage(ValidationMessage validationMessage) {
         additionalValidationResults.removeMessage(validationMessage);
-        if (validating) {
+        if (isValidating()) {
             validationResultsModel.removeMessage(validationMessage);
         }
     }
