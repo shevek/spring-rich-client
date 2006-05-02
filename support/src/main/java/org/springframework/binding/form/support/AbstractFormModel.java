@@ -599,7 +599,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      * property. Must be called whenever the value of committable is changed.
      */
     protected void committableUpdated() {
-        boolean committable = isEnabled();
+        boolean committable = isCommittable();
         if (hasChanged(oldCommittable, committable)) {
             oldCommittable = committable;
             firePropertyChange(COMMITTABLE_PROPERTY, !committable, committable);
