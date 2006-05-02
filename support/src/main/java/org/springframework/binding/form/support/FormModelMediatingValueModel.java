@@ -94,14 +94,14 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
     }
 
     public void clearDirty() {
-        if (trackDirty) {
+        if (isDirty()) {
             originalValue = getValue();
             updateDirtyState();
         }
     }
 
     public void revertToOriginal() {
-        if (trackDirty) {
+        if (isDirty()) {
             setValue(originalValue);
         }
     }
