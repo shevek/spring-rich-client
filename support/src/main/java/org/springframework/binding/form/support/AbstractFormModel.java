@@ -224,6 +224,11 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         return (FormModel[])children.toArray(new FormModel[children.size()]);
     }
 
+    /**
+     * Add child to this FormModel. Dirty and committable changes are forwarded to
+     * parent model.
+     * @param child FormModel to add as child.
+     */
     public void addChild(HierarchicalFormModel child) {
         Assert.required(child, "child");
         Assert.isTrue(child.getParent() == null, "Child form model '" + child + "' already has a parent");
@@ -233,12 +238,21 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         child.addPropertyChangeListener(COMMITTABLE_PROPERTY, committableChangeHandler);
     }
     
+    /**
+     * Remove a child FormModel. Dirty and committable listeners are removed.
+     * When child was dirty, remove the formModel from the dirty list and update the dirty state.
+     * @param child FormModel to remove from childlist.
+     */
     public void removeChild(HierarchicalFormModel child)
     {
         Assert.required(child, "child");
         children.remove(child);
         child.removePropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
         child.removePropertyChangeListener(COMMITTABLE_PROPERTY, committableChangeHandler);
+        // when dynamically adding/removing childModels take care of dirtymessages:
+        // removing child that was dirty: remove from dirty map and update dirty state
+        if (dirtyValueAndFormModels.remove(child))
+            dirtyUpdated();
     }
 
     public boolean hasProperty(String formProperty) {
