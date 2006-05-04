@@ -255,7 +255,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
             dirtyUpdated();
     }
 
-    public boolean hasProperty(String formProperty) {
+    public boolean hasValueModel(String formProperty) {
         return propertyValueModels.containsKey(formProperty);
     }
 
@@ -354,7 +354,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     public ValueModel add(String formProperty, ValueModel valueModel) {
         // XXX: this assert should be active but it breaks the 
         // code in SwingBindingFactory#createBoundListModel
-        //Assert.isTrue(!hasProperty(formProperty), "A property called '" + formProperty + "' already exists.");
+        //Assert.isTrue(!hasValueModel(formProperty), "A property called '" + formProperty + "' already exists.");
         if (valueModel instanceof BufferedValueModel) {
             ((BufferedValueModel)valueModel).setCommitTrigger(commitTrigger);
         }

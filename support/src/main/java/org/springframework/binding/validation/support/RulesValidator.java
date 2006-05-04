@@ -95,7 +95,7 @@ public class RulesValidator implements RichValidator {
                     for (Iterator i = rules.iterator(); i.hasNext();) {
                         PropertyConstraint validationRule = (PropertyConstraint)i.next();
                         if (propertyName == null) {
-                            if (formModel.hasProperty(validationRule.getPropertyName())) {
+                            if (formModel.hasValueModel(validationRule.getPropertyName())) {
                                 checkRule(validationRule);
                             }
                         }

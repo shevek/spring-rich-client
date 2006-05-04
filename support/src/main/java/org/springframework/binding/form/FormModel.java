@@ -101,7 +101,7 @@ public interface FormModel extends PropertyChangePublisher {
     /**
      * Returns true if the form has a value model for the provided property name.
      */
-    boolean hasProperty(String formProperty);
+    boolean hasValueModel(String formProperty);
 
     /**
      * Commits any changes buffered by the form property value models into the
