@@ -337,20 +337,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private void initStandardCommands() {
         finishCommand = new ActionCommand(getFinishCommandId()) {
-
             public void doExecuteCommand() {
-                try {
-                    boolean result = onFinish();
-                    if (result) {
-                        if (getDisplayFinishSuccessMessage()) {
-                            showFinishSuccessMessageDialog();
-                        }
-                        executeCloseAction();
+                boolean result = onFinish();
+                if (result) {
+                    if (getDisplayFinishSuccessMessage()) {
+                        showFinishSuccessMessageDialog();
                     }
-                }
-                catch (RuntimeException e) {
-                    logger.warn("Exception occurred executing dialog finish command.", e);
-                    onFinishException(e);
+                    executeCloseAction();
                 }
             }
         };
@@ -436,24 +429,6 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private String getCallingCommandText() {
         return getCallingCommand() != null ? getCallingCommand().getText() : null;
-    }
-
-    protected void onFinishException(Exception e) {
-        String exceptionMessage;
-        if (e instanceof MessageSourceResolvable) {
-            exceptionMessage = getMessages().getMessage((MessageSourceResolvable)e);
-        }
-        else {
-            exceptionMessage = e.getLocalizedMessage();
-        }
-        if (!StringUtils.hasText(exceptionMessage)) {
-            String defaultMessage = "Unable to finish; an application exception occurred.\nPlease contact your administrator.";
-            exceptionMessage = getMessages().getMessage("applicationDialog.defaultFinishException", defaultMessage);
-        }
-	
-		Message message = new Message(exceptionMessage, Severity.ERROR);
-		MessageDialog messageDialog = new MessageDialog(getApplicationName(), getDialog(), message);
-		messageDialog.showDialog();
     }
 
     protected String getCancelCommandId() {
