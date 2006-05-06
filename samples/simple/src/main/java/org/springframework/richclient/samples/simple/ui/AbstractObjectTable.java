@@ -109,8 +109,8 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
     }
 
     /**
-     * Get the initial data to display. If none has been set, then return the full
-     * physician summary.
+     * Get the initial data to display. If none has been set, then return the default
+     * initial data.
      * 
      * @return initial data to display
      * @see #getDefaultInitialData()

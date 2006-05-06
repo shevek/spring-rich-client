@@ -36,12 +36,8 @@
     -->
 	<bean id="application" 
 		class="org.springframework.richclient.application.Application">
-		<constructor-arg index="0">
-			<ref bean="applicationDescriptor"/>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<ref bean="lifecycleAdvisor"/>
-		</constructor-arg>
+		<constructor-arg index="0" ref="applicationDescriptor"/>
+		<constructor-arg index="1" ref="lifecycleAdvisor"/>
 	</bean>
 	
     <!-- 
@@ -67,15 +63,11 @@
     -->
     <bean id="lifecycleAdvisor"
         class="org.springframework.richclient.samples.simple.app.SimpleLifecycleAdvisor">
-        <property name="windowCommandBarDefinitions">
-            <value>org/springframework/richclient/samples/simple/ui/commands-context.xml</value>
-        </property>
-        <property name="startingPageId">
-            <value>initialView</value>
-        </property>
-        <property name="eventExceptionHandler">
-            <value>org.springframework.richclient.samples.simple.app.SimpleApp$AWTExceptionHandler</value>
-        </property>
+        <property name="windowCommandBarDefinitions"
+                  value="org/springframework/richclient/samples/simple/ui/commands-context.xml"/>
+        <property name="startingPageId" value="initialView"/>
+        <property name="eventExceptionHandler"
+                  value="org.springframework.richclient.samples.simple.app.SimpleApp$AWTExceptionHandler"/>
     </bean>
 
     <!-- 
@@ -98,12 +90,8 @@
     -->
     <bean id="applicationDescriptor" 
 		class="org.springframework.richclient.application.support.DefaultApplicationDescriptor">
-		<property name="version">
-			<value>1.0</value>
-		</property>
-		<property name="buildId">
-			<value>20060408-001</value>
-		</property>
+		<property name="version" value="1.0"/>
+		<property name="buildId" value="20060408-001"/>
 	</bean>
 
     <!-- 
@@ -118,15 +106,9 @@
     -->
 	<bean id="applicationObjectConfigurer"
 		class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
-		<constructor-arg index="0">
-			<ref bean="messageSource"/>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<ref bean="imageSource"/>
-		</constructor-arg>
-		<constructor-arg index="2">
-			<ref bean="iconSource"/>
-		</constructor-arg>
+		<constructor-arg index="0" ref="messageSource"/>
+		<constructor-arg index="1" ref="imageSource"/>
+		<constructor-arg index="2" ref="iconSource"/>
 	</bean>
 		
     <!-- 
@@ -143,12 +125,8 @@
     -->
 	<bean id="componentFactory" 
 		class="org.springframework.richclient.factory.DefaultComponentFactory">
-		<property name="iconSource">
-			<ref bean="iconSource"/>
-		</property>
-		<property name="messageSource">
-			<ref bean="messageSource"/>
-		</property>
+		<property name="iconSource" ref="iconSource"/>
+		<property name="messageSource" ref="messageSource"/>
 	</bean>
 
     <!-- 
@@ -208,9 +186,7 @@
 				<value>classpath:org/springframework/richclient/samples/simple/ui/images.properties</value>
 			</list>
 		</property>
-		<property name="resourceBasePath">
-			<value>images/</value>
-		</property>
+		<property name="resourceBasePath" value="images/"/>
 	</bean>
 	
     <!-- 
@@ -225,12 +201,8 @@
     -->
 	<bean id="imageSource" 
 		class="org.springframework.richclient.image.DefaultImageSource">
-		<constructor-arg index="0">
-			<ref bean="imageResourcesFactory"/>
-		</constructor-arg>
-		<property name="brokenImageIndicator">
-			<value>images/alert/error_obj.gif</value>
-		</property>
+		<constructor-arg index="0" ref="imageResourcesFactory"/>
+		<property name="brokenImageIndicator" value="images/alert/error_obj.gif"/>
 	</bean>
 	
     <!-- 
@@ -243,9 +215,7 @@
     -->
 	<bean id="iconSource" 
 		class="org.springframework.richclient.image.DefaultIconSource">
-		<constructor-arg index="0">
-			<ref bean="imageSource"/>
-		</constructor-arg>
+		<constructor-arg index="0" ref="imageSource"/>
 	</bean>
 
     <!-- 
@@ -264,9 +234,7 @@
 		<property name="interceptorFactories">
 			<list>
 				<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
-					<property name="errorColor">
-						<value>255,245,245</value>
-					</property>
+					<property name="errorColor" value="255,245,245"/>
 				</bean>
 				<bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
 				<bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
@@ -306,12 +274,12 @@
             service) to add the converters for Date handling.
     -->
 	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="conversionService" /></property>
-	    <property name="targetMethod"><value>addConverters</value></property>
+	    <property name="targetObject" ref="conversionService"/>
+	    <property name="targetMethod" value="addConverters"/>
 	    <property name="arguments">
 	        <list>
                 <list>
-    	            <bean class="org.springframework.richclient.samples.simple.ui.convert.TextToDate" />
+   	               <bean class="org.springframework.richclient.samples.simple.ui.convert.TextToDate" />
 	               <bean class="org.springframework.richclient.samples.simple.ui.convert.DateToText" />
                 </list>
 	        </list>
@@ -352,17 +320,12 @@
     -->
     <bean id="initialView"
         class="org.springframework.richclient.application.support.DefaultViewDescriptor">
-        <property name="viewClass">
-            <value>org.springframework.richclient.samples.simple.ui.InitialView</value>
-        </property>
+        <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView"/>
         <property name="viewProperties">
             <map>
-                <entry key="firstMessage">
-                    <value>firstMessage.text</value>
-                </entry>
-                <entry key="descriptionTextPath">
-                    <value>org/springframework/richclient/samples/simple/ui/initialViewText.html</value>
-                </entry>
+                <entry key="firstMessage" value="firstMessage.text"/>
+                <entry key="descriptionTextPath"
+                       value="org/springframework/richclient/samples/simple/ui/initialViewText.html"/>
             </map>
         </property>
     </bean>
@@ -420,7 +383,7 @@
     -->
     <bean id="contactTableFactory"
         class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
-        <property name="targetBeanName"><idref local="contactTable"/></property>
+        <property name="targetBeanName" value="contactTable"/>
     </bean> 
 
     <!-- 
