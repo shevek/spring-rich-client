@@ -37,7 +37,7 @@ public class ContactTable extends AbstractObjectTable {
      * Default constructor.
      */
     public ContactTable() {
-        super(new String[] { "lastName", "firstName", "address.address1", "address.city", "address.state",
+        super("contacts", new String[] { "lastName", "firstName", "address.address1", "address.city", "address.state",
                 "address.zip" });
     }
 

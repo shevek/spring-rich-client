@@ -64,7 +64,50 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
  * <li>Offers the selection model up as a ValueModel, using
  * {@link #getTableSelectionHolder()} so that Guards can be constructed based on the
  * selection contents.</li>
+ * <li>It can report on row counts (after filtering) and selection counts to a status bar</li>
  * </ol>
+ * <p>
+ * Several I18N messages are needed for proper reporting to a configured status bar. The
+ * message keys used are:
+ * <p>
+ * <table border="1">
+ * <tr>
+ * <td><b>Message key </b></td>
+ * <td><b>Usage </b></td>
+ * </tr>
+ * <tr>
+ * <td><i>modelId</i>.objectName.singular</td>
+ * <td>The singular name of the objects in the table</td>
+ * </tr>
+ * <tr>
+ * <td><i>modelId</i>.objectName.plural</td>
+ * <td>The plural name of the objects in the table</td>
+ * </tr>
+ * <tr>
+ * <td><i>[modelId]</i>.objectTable.showingAll.message</td>
+ * <td>The message to show when all objects are being shown, that is no objects have been
+ * filtered. This is typically something like "Showing all nn contacts". The message takes
+ * the number of objects nd the object name (singular or plural) as parameters.</td>
+ * </tr>
+ * <tr>
+ * <td><i>[modelId]</i>.objectTable.showingN.message</td>
+ * <td>The message to show when some of the objects have been filtered from the display.
+ * This is typically something like "Showing nn contacts of nn". The message takes the
+ * shown count, the total count, and the object name (singular or plural) as parameters.</td>
+ * </tr>
+ * <tr>
+ * <td><i>[modelId]</i>.objectTable.selectedN.message</td>
+ * <td>The message to append to the filter message when the selection is not empty.
+ * Typically something like ", nn selected". The message takes the number of selected
+ * entries as a parameter.</td>
+ * </tr>
+ * </table>
+ * <p>
+ * Note that the message keys that show the model id in brackets, like this <i>[modelId]</i>,
+ * indicate that the model id is optional. If no message is found using the model id, then
+ * the key will be tried without the model id and the resulting string will be used. This
+ * makes it easy to construct one single message property that can be used on numerous
+ * tables.
  * <p>
  * <em>Note:</em> If you are using application events to inform UI components of changes
  * to domain objects, then instances of this class have to be wired into the event
@@ -78,6 +121,9 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
 
     private final Log _logger = LogFactory.getLog(getClass());
 
+    private String modelId;
+    private String objectSingularName;
+    private String objectPluralName;
     private Object[] initialData = null;
     private String[] columnPropertyNames;
     private GlazedTableModel model;
@@ -87,16 +133,31 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
     private ActionCommandExecutor doubleClickHandler;
     private CommandGroup popupCommandGroup;
     private StatusBarCommandGroup statusBar;
-    private String singularName;
-    private String pluralName;
+
+    public static final String SHOWINGALL_MSG_KEY = "objectTable.showingAll.message";
+    public static final String SHOWINGN_MSG_KEY = "objectTable.showingN.message";
+    public static final String SELECTEDN_MSG_KEY = "objectTable.selectedN.message";
 
     /**
      * Constructor.
      * 
+     * @param modelId used for generating message keys
      * @param objectType The type of object held in the table
      */
-    public AbstractObjectTable( String[] columnPropertyNames ) {
+    public AbstractObjectTable( String modelId, String[] columnPropertyNames ) {
+        this.modelId = modelId;
         setColumnPropertyNames(columnPropertyNames);
+        init();
+    }
+
+    /**
+     * Initialize our internal values.
+     */
+    protected void init() {
+        // Get all our messages
+
+        objectSingularName = getMessage(modelId + ".objectName.singular");
+        objectPluralName = getMessage(modelId + ".objectName.plural");
     }
 
     /**
@@ -237,12 +298,14 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
             }
         });
 
-        // Keep our status line up to date with the selection
+        // Keep our status line up to date with the selections and filtering
         getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged( ListSelectionEvent e ) {
                 updateStatusBar();
             }
         });
+
+        getFinalEventList().addListEventListener(this);
     }
 
     /**
@@ -448,16 +511,9 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      * current object counts.
      * 
      * @param statusBar to update
-     * @param singular name of the objects being displayed
-     * @param plural name of the objects being displayed
      */
-    protected void reportToStatusBar( StatusBarCommandGroup statusBar, String singular, String plural ) {
+    protected void reportToStatusBar( StatusBarCommandGroup statusBar ) {
         this.statusBar = statusBar;
-        this.singularName = singular;
-        this.pluralName = plural;
-
-        // Make sure that we get notified when things change
-        getFinalEventList().addListEventListener(this);
     }
 
     /*
@@ -474,23 +530,29 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      * Update the status bar with the current display counts.
      */
     protected void updateStatusBar() {
-        int all = getBaseEventList().size();
-        int showing = getFinalEventList().size();
-        StringBuffer msg = new StringBuffer();
-        if( all == showing ) {
-            msg.append("Showing all ").append(all).append(" ").append(pluralName);
-        } else {
-            String lbl = " " + ((showing > 1 || showing == 0) ? pluralName : singularName);
-            msg.append("Showing ").append(showing).append(lbl).append(" of ").append(all);
-        }
+        if( statusBar != null ) {
+            int all = getBaseEventList().size();
+            int showing = getFinalEventList().size();
+            String msg;
+            if( all == showing ) {
+                String[] keys = new String[] { modelId + "." + SHOWINGALL_MSG_KEY, SHOWINGALL_MSG_KEY };
+                msg = getMessage(keys, new Object[] { ""+all, (all != 1) ? objectPluralName : objectSingularName } );
+            } else {
+                String[] keys = new String[] { modelId + "." + SHOWINGN_MSG_KEY, SHOWINGN_MSG_KEY };
 
-        // Now add the selection info
-        int nselected = table.getSelectedRowCount();
-        if( nselected > 0 ) {
-            msg.append(", ").append(nselected).append(" selected");
-        }
+                msg = getMessage(keys, new Object[] { ""+showing, (showing != 1) ? objectPluralName : objectSingularName, ""+all } );
+            }
 
-        statusBar.setMessage(msg.toString());
+            // Now add the selection info
+            int nselected = table.getSelectedRowCount();
+            if( nselected > 0 ) {
+                String[] keys = new String[] { modelId + "." + SELECTEDN_MSG_KEY, SELECTEDN_MSG_KEY };
+
+                msg += getMessage(keys, new Object[] { ""+nselected } );
+            }
+
+            statusBar.setMessage(msg.toString());
+        }
     }
 
     /**

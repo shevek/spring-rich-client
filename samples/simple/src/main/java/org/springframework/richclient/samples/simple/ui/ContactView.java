@@ -233,7 +233,7 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
         contactTable.setFinalEventList(filterList);
 
         // Register to get notified when the filtered list changes
-        contactTable.reportToStatusBar(getStatusBar(), "Contact", "Contacts");
+        contactTable.reportToStatusBar(getStatusBar());
 
         // Ensure our commands are only active when something is selected.
         // These guard objects operate by inspecting a list selection model
