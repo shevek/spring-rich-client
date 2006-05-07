@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -39,6 +39,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * MessagePane implementation used by <code>MessageDialog</code>
+ * 
  * @author Peter De Bruycker
  */
 public class AlertMessageAreaPane extends AbstractControlFactory implements MessagePane, PropertyChangeListener {
@@ -50,42 +51,33 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
     private DefaultMessageAreaModel messageAreaModel;
 
     public AlertMessageAreaPane() {
-        init(this);
+        init( this );
     }
 
-    public AlertMessageAreaPane(Messagable delegate) {
-        init(delegate);
+    public AlertMessageAreaPane( Messagable delegate ) {
+        init( delegate );
     }
 
-    private void init(Messagable delegate) {
-        this.messageAreaModel = new DefaultMessageAreaModel(delegate);
-        this.messageAreaModel.addPropertyChangeListener(this);
+    private void init( Messagable delegate ) {
+        this.messageAreaModel = new DefaultMessageAreaModel( delegate );
+        this.messageAreaModel.addPropertyChangeListener( this );
 
         iconLabel = new JLabel();
         messageArea = new HtmlPane();
 
-        Font defaultFont = UIManager.getFont("Button.font");
-        String stylesheet =
-            "body {  font-family: "
-                + defaultFont.getName()
-                + "; font-size: "
-                + defaultFont.getSize()
-                + "pt;  }"
-                + "a, p, li { font-family: "
-                + defaultFont.getName()
-                + "; font-size: "
-                + defaultFont.getSize()
-                + "pt;  }";
+        Font defaultFont = UIManager.getFont( "Button.font" );
+        String stylesheet = "body {  font-family: " + defaultFont.getName() + "; font-size: " + defaultFont.getSize()
+                + "pt;  }" + "a, p, li { font-family: " + defaultFont.getName() + "; font-size: "
+                + defaultFont.getSize() + "pt;  }";
         try {
-            ((HTMLDocument) messageArea.getDocument()).getStyleSheet().loadRules(new StringReader(stylesheet), null);
-        }
-        catch (IOException e) {
+            ((HTMLDocument) messageArea.getDocument()).getStyleSheet().loadRules( new StringReader( stylesheet ), null );
+        } catch( IOException e ) {
         }
 
-        //        messageArea.setContentType("text/html");
-        GuiStandardUtils.textComponentAsLabel(messageArea);
-        messageArea.setFont(new JLabel().getFont());
-        //        messageArea.setVerticalAlignment(SwingConstants.TOP);
+        // messageArea.setContentType("text/html");
+        GuiStandardUtils.textComponentAsLabel( messageArea );
+        messageArea.setFont( new JLabel().getFont() );
+        // messageArea.setVerticalAlignment(SwingConstants.TOP);
     }
 
     public int getPreferredHeight() {
@@ -93,9 +85,9 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
     }
 
     protected JComponent createControl() {
-        JPanel panel = new JPanel(new BorderLayout(UIConstants.TWO_SPACES, 0));
-        panel.add(iconLabel, BorderLayout.LINE_START);
-        panel.add(messageArea);
+        JPanel panel = new JPanel( new BorderLayout( UIConstants.TWO_SPACES, 0 ) );
+        panel.add( iconLabel, BorderLayout.LINE_START );
+        panel.add( messageArea );
 
         return panel;
     }
@@ -104,101 +96,101 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         return messageAreaModel.getMessage();
     }
 
-    public void setMessage(Message message) {
-        messageAreaModel.setMessage(message);
+    public void setMessage( Message message ) {
+        messageAreaModel.setMessage( message );
     }
 
     public boolean isMessageShowing() {
-        if (messageArea == null) {
+        if( messageArea == null ) {
             return false;
         }
-        return StringUtils.hasText(messageArea.getText()) && messageArea.isVisible();
+        return StringUtils.hasText( messageArea.getText() ) && messageArea.isVisible();
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaModel.addPropertyChangeListener(listener);
+    public void addPropertyChangeListener( PropertyChangeListener listener ) {
+        messageAreaModel.addPropertyChangeListener( listener );
     }
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        messageAreaModel.addPropertyChangeListener(propertyName, listener);
+    public void addPropertyChangeListener( String propertyName, PropertyChangeListener listener ) {
+        messageAreaModel.addPropertyChangeListener( propertyName, listener );
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        messageAreaModel.removePropertyChangeListener(listener);
+    public void removePropertyChangeListener( PropertyChangeListener listener ) {
+        messageAreaModel.removePropertyChangeListener( listener );
     }
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        messageAreaModel.removePropertyChangeListener(propertyName, listener);
+    public void removePropertyChangeListener( String propertyName, PropertyChangeListener listener ) {
+        messageAreaModel.removePropertyChangeListener( propertyName, listener );
     }
 
-    public void propertyChange(PropertyChangeEvent evt) {
-        update(getMessage());
+    public void propertyChange( PropertyChangeEvent evt ) {
+        update( getMessage() );
     }
 
-    private void update(Message message) {
+    private void update( Message message ) {
         String text = message.getText();
 
         // try to split it into two parts
-        String[] parts = message.getText().split("\\n");
-        if (parts.length > 1) {
+        String[] parts = message.getText().split( "\\n" );
+        if( parts.length > 1 ) {
             StringBuffer sb = new StringBuffer();
-            sb.append("<html>");
-            sb.append("<b>");
-            sb.append(parts[0]);
-            sb.append("</b>");
+            sb.append( "<html>" );
+            sb.append( "<b>" );
+            sb.append( parts[0] );
+            sb.append( "</b>" );
 
-            for (int i = 1; i < parts.length; i++) {
-                sb.append("<p>");
-                sb.append(parts[i]);
+            for( int i = 1; i < parts.length; i++ ) {
+                sb.append( "<p>" );
+                sb.append( parts[i] );
             }
 
             text = sb.toString();
         }
 
-        messageArea.setText(text);
-        iconLabel.setIcon(getIcon(message.getSeverity()));
+        messageArea.setText( text );
+        iconLabel.setIcon( getIcon( message.getSeverity() ) );
     }
 
-    private Icon getIcon(Severity severity) {
-        if (severity == Severity.ERROR) {
+    private Icon getIcon( Severity severity ) {
+        if( severity == Severity.ERROR ) {
             return getErrorIcon();
         }
-        if (severity == Severity.WARNING) {
+        if( severity == Severity.WARNING ) {
             return getWarningIcon();
         }
         return getInfoIcon();
     }
 
     private Icon getErrorIcon() {
-        if (errorIcon == null) {
-            errorIcon = UIManager.getIcon("OptionPane.errorIcon");
+        if( errorIcon == null ) {
+            errorIcon = UIManager.getIcon( "OptionPane.errorIcon" );
         }
         return errorIcon;
     }
 
-    public void setErrorIcon(Icon icon) {
+    public void setErrorIcon( Icon icon ) {
         errorIcon = icon;
     }
 
     private Icon getWarningIcon() {
-        if (warningIcon == null) {
-            warningIcon = UIManager.getIcon("OptionPane.warningIcon");
+        if( warningIcon == null ) {
+            warningIcon = UIManager.getIcon( "OptionPane.warningIcon" );
         }
         return warningIcon;
     }
 
-    public void setWarningIcon(Icon icon) {
+    public void setWarningIcon( Icon icon ) {
         warningIcon = icon;
     }
 
     private Icon getInfoIcon() {
-        if (infoIcon == null) {
-            infoIcon = UIManager.getIcon("OptionPane.informationIcon");
+        if( infoIcon == null ) {
+            infoIcon = UIManager.getIcon( "OptionPane.informationIcon" );
         }
         return infoIcon;
     }
 
-    public void setInfoIcon(Icon icon) {
+    public void setInfoIcon( Icon icon ) {
         infoIcon = icon;
     }
 }
