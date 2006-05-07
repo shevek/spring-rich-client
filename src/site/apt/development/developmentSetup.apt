@@ -24,7 +24,8 @@ Installation
 
         * Set the <<<M2_HOME>>> environment variable.
 
-        * Adjust the <<<PATH>>> environment variable to add <<<$M2_HOME/bin>>>;
+        * Adjust the <<<PATH>>> environment variable to add <<<$M2_HOME/bin;>>> (Linux)
+        or <<<%M2_HOME%\bin;>>> (Windows)
 
         * On Windows, the use of cygwin (with OpenSSH and Subversion) from {{http://www.cygwin.com}}
         to run maven is required for very advanced functionality (ssh repository deploy, ...)
