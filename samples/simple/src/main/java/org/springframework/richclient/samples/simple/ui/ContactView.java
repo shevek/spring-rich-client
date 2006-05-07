@@ -92,9 +92,6 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
     /** The executor to handle the "delete" command. */
     private DeleteExecutor deleteExecutor = new DeleteExecutor();
 
-    /** The command Id of the Delete command. */
-    private static final String DELETE_COMMAND_ID = "deleteCommand";
-
     /** The group Id for the popup menu. */
     private static final String POPUP_COMMAND_ID = "contactViewPopupMenu";
 
@@ -151,8 +148,7 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
      */
     protected void registerLocalCommandExecutors( PageComponentContext context ) {
         context.register(GlobalCommandIds.PROPERTIES, propertiesExecutor);
-        context.register(DELETE_COMMAND_ID, deleteExecutor);
-
+        context.register(GlobalCommandIds.DELETE, deleteExecutor);
     }
 
     /**
