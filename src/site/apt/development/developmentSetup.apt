@@ -33,9 +33,13 @@ Installation
 
         * Eclipse 3.1+ from {{http://www.eclipse.org}}
 
-            * Install Subclipse plugin from {{http://subclipse.tigris.org}} for Subversion support
+            * Install one Subversion team support plugin:
 
-            * Install Web Tools from {{http://www.eclipse.org}} for XML support
+                * Subversive plugin from {{http://www.polarion.org}}
+
+                * Subclipse plugin from {{http://subclipse.tigris.org}}
+
+            * Install Web Tools from {{http://www.eclipse.org}} for XML support (or MyEclipse)
 
         * NetBeans 5+ from {{http://www.netbeans.org}}
 
