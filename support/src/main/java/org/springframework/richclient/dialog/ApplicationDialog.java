@@ -36,14 +36,11 @@ import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.validation.Severity;
-import org.springframework.context.MessageSourceResolvable;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.core.Message;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
@@ -255,6 +252,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     public JDialog getDialog() {
+        if (!isControlCreated()) {
+            createDialog();
+        }
         return dialog;
     }
 
@@ -270,7 +270,6 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     public void showDialog() {
         if (!isControlCreated()) {
             createDialog();
-            dialog.pack();
             onAboutToShow();
             if (getLocation() != null)
                 dialog.setLocation(getLocation());
@@ -307,6 +306,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         attachListeners();
         registerDefaultCommand();
         onInitialized();
+
+        dialog.pack();
     }
 
     private void constructDialog() {
