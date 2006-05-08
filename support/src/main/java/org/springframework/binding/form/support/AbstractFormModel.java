@@ -547,13 +547,15 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     /**
-     * If formModel has children, these are reset first.
+     * Complex forms with parent-child relations can use derived formModels.
+     * Such a Hierarchical tree cannot have its children reset on its own as it
+     * would break the top-down structure. see RCP-329 and the cvs maillist.
+     * 
+     * TODO add a unit test with such a complex use case
+     * 
      * @see FormModel#reset()
      */
     public void reset() {
-        for (Iterator i = children.iterator(); i.hasNext();) {
-            ((FormModel)i.next()).reset();
-        }
         setFormObject(null);
     }
 
