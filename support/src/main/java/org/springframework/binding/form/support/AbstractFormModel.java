@@ -220,6 +220,11 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         this.parent.addPropertyChangeListener(ENABLED_PROPERTY, enabledChangeHandler);
     }
 
+    public void removeParent() {
+        this.parent.removePropertyChangeListener(ENABLED_PROPERTY, enabledChangeHandler);
+        this.parent = null;
+    }
+
     public FormModel[] getChildren() {
         return (FormModel[])children.toArray(new FormModel[children.size()]);
     }
@@ -246,6 +251,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     public void removeChild(HierarchicalFormModel child)
     {
         Assert.required(child, "child");
+        child.removeParent();
         children.remove(child);
         child.removePropertyChangeListener(DIRTY_PROPERTY, dirtyChangeHandler);
         child.removePropertyChangeListener(COMMITTABLE_PROPERTY, committableChangeHandler);

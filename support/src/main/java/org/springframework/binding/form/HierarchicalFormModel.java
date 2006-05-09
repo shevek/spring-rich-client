@@ -50,6 +50,11 @@ public interface HierarchicalFormModel extends FormModel {
     void setParent(HierarchicalFormModel parent);
     
     /**
+     * Remove the parent form model
+     */
+    void removeParent();
+    
+    /**
      * Adds a new child to the form model. The child form model will have it's 
      * parent set to this.
      */
