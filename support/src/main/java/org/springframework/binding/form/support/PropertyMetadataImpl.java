@@ -17,6 +17,8 @@ package org.springframework.binding.form.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.PropertyMetadata;
@@ -40,6 +42,8 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
     private final Class propertyType;
 
     private final boolean forceReadOnly;
+  
+    private final Map userMetadata = new HashMap();
 
     private boolean oldReadOnly;
 
@@ -59,10 +63,16 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
      * @param formModel the form model 
      * @param valueModel the value model for the property  
      * @param propertyType the type of the property
-     * @param forceReadOnly should readOnly be forced to true; this is required if the 
-     * property can not be modified. e.g. at the PropertyAccessStrategy level.
+     * @param forceReadOnly should readOnly be forced to true; this is
+     *                      required if the property can not be modified. e.g.
+     *                      at the PropertyAccessStrategy level. 
+     * @param userMetadata map using String keys containing user defined
+     *                     metadata.  As an example, tiger extensions
+     *                     currently use this to expose JDK 1.5 annotations on
+     *                     the backing object as property metadata.  This
+     *                     parameter may be <code>null</code>.
      */
-    public PropertyMetadataImpl(FormModel formModel, DirtyTrackingValueModel valueModel, Class propertyType, boolean forceReadOnly) {
+    public PropertyMetadataImpl(FormModel formModel, DirtyTrackingValueModel valueModel, Class propertyType, boolean forceReadOnly, Map userMetadata) {
         this.formModel = formModel;
         this.valueModel = valueModel;
         this.valueModel.addPropertyChangeListener(DirtyTrackingValueModel.DIRTY_PROPERTY, dirtyChangeHandler);
@@ -71,6 +81,9 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
         this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, formChangeHandler);        
         this.oldReadOnly = isReadOnly();
         this.oldEnabled = isEnabled();
+        if(userMetadata != null) {
+            this.userMetadata.putAll(userMetadata);
+        }
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -101,15 +114,58 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
         return propertyType;
     }
 
-    public Object getUserMetadata(String key) {
-        throw new UnsupportedOperationException("not implemented");
+    public Object getUserMetadata(final String key) {
+        return userMetadata.get(key); 
+    }
+
+    public Map getAllUserMetadata() {
+        return userMetadata;
+    }
+
+  /**
+     * Sets custom metadata to be associated with this property.  A property
+     * change event will be fired (from this PropertyMetadata, not from the
+     * associated form property) if <code>value</code> differs from the
+     * current value of the specified <code>key</code>.  The property change
+     * event will use the value of <code>key</code> as the property name in
+     * the property change event.
+     *
+     * @param key
+     * @param value
+     */
+    public void setUserMetadata(final String key, final Object value) {
+        final Object old = userMetadata.put(key, value);
+        firePropertyChange(key, old, value);
     }
 
     /**
+     * Clears all custom metadata associated with this property.  A property
+     * change event will be fired for every <code>key</code> that contained a
+     * non-null value before this method was invoked.  It is possible for a
+     * PropertyChangeListener to mutate user metadata, by setting a key value
+     * for example, in response to one of these property change events fired
+     * during the course of the clear operation.  Because of this, there is
+     * no guarantee that all user metadata is in fact completely clear and
+     * empty by the time this method returns.
+     */
+    public void clearUserMetadata() {
+        // Copy keys into array to avoid concurrent modification exceptions
+        // if any PropertyChangeListeners should modify user metadata during
+        // clear operation.
+        final Object[] keys = userMetadata.keySet().toArray();
+        for(int i = keys.length - 1;i >= 0;i--) {
+            final Object old = userMetadata.remove(keys[i]);
+            if(old != null) {
+                firePropertyChange((String)keys[i], old, null);
+            }
+        }
+    }
+
+  /**
      * Propagates dirty changes from the value model on to 
      * the dirty change listeners attached to this class.
      */
-    private class DirtyChangeHandler extends CommitListenerAdapter implements PropertyChangeListener {
+  private class DirtyChangeHandler extends CommitListenerAdapter implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
             firePropertyChange(DIRTY_PROPERTY, evt.getOldValue(), evt.getNewValue());

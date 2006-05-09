@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.form;
 
+import java.util.Map;
+
 import org.springframework.binding.value.PropertyChangePublisher;
 
 /**
@@ -48,7 +50,15 @@ public interface PropertyMetadata extends PropertyChangePublisher {
      * Returns custom metadata that may be associated with this property. 
      */
     Object getUserMetadata(String key);
-    
+  
+    /**
+     * Returns all custom metadata associated with this property in the form
+     * of a Map.
+     *
+     * @return Map containing String keys
+     */
+    Map getAllUserMetadata();
+
     /**
      * Sets whether or not this property is read only.
      * <p>It's expected that controls bound to this form property will 

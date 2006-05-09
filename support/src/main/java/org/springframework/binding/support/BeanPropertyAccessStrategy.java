@@ -17,6 +17,7 @@ package org.springframework.binding.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -98,6 +99,48 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
         this.metaAspectAccessor = new BeanPropertyMetaAspectAccessor();
     }
 
+
+    /**
+     * Subclasses may override this method to supply user metadata for the
+     * specified <code>propertyPath</code> and <code>key</code>.  The default
+     * implementation invokes {@link #getAllUserMetadataFor(String)} and uses
+     * the returned Map with the <code>key</code> parameter to find the
+     * correlated value.
+     * 
+     * @param propertyPath path of property relative to this bean
+     * @param key 
+     * @return metadata associated with the specified key for the property or
+     *         <code>null</code> if there is no custom metadata associated
+     *         with the property and key.
+     */
+    protected Object getUserMetadataFor(String propertyPath, String key) {
+        final Map allMetadata = getAllUserMetadataFor(propertyPath);
+        return allMetadata != null ? allMetadata.get(key) : null;
+    }
+
+    /**
+     * Subclasses may override this method to supply user metadata for the
+     * specified <code>propertyPath</code>.  The default implementation
+     * always returns <code>null</code>.
+     * 
+     * @param propertyPath path of property relative to this bean
+     * @return all metadata for the specified property in the form of a Map
+     *         containing String keys and Object values.  This method may
+     *         return <code>null</code> if there is no metadata for the
+     *         property. 
+     */
+    protected Map getAllUserMetadataFor(String propertyPath) {
+        return null;
+    }
+
+    /**
+     * Provides <code>BeanWrapper</code> access to subclasses. 
+     * @return Spring <code>BeanWrapper</code> used to access the bean.
+     */
+    protected BeanWrapper getBeanWrapper() {
+        return beanWrapper;
+    }
+  
     public ValueModel getDomainObjectHolder() {
         return domainObjectHolder;
     }
@@ -109,14 +152,14 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
     /**
      * Returns a property path that includes the base property path of the class.
      */
-    private String getFullPropertyPath(String propertyPath) {
+    protected String getFullPropertyPath(String propertyPath) {
         return basePropertyPath == "" ? propertyPath : basePropertyPath + '.' + propertyPath;
     }
 
     /**
      * Extracts the property name from a propertyPath. 
      */
-    private String getPropertyName(String propertyPath) {
+    protected String getPropertyName(String propertyPath) {
         int lastSeparator = getLastPropertySeparatorIndex(propertyPath);
         if (lastSeparator == -1) {
             return propertyPath;
@@ -134,7 +177,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
     /**
      * Returns the property name component of the provided property path. 
      */
-    private String getParentPropertyPath(String propertyPath) {
+    protected String getParentPropertyPath(String propertyPath) {
         int lastSeparator = getLastPropertySeparatorIndex(propertyPath);
         return lastSeparator == -1 ? "" : propertyPath.substring(0, lastSeparator);
     }
@@ -144,7 +187,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
      * the given property path, ignoring dots in keys 
      * (like "map[my.key]").
      */
-    private int getLastPropertySeparatorIndex(String propertyPath) {
+    protected int getLastPropertySeparatorIndex(String propertyPath) {
         boolean inKey = false;
         for (int i = propertyPath.length() - 1; i >= 0; i--) {
             switch (propertyPath.charAt(i)) {
@@ -333,6 +376,14 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
 
         public boolean isWriteable(String propertyPath) {
             return beanWrapper.isWritableProperty(getFullPropertyPath(propertyPath));
+        }
+
+        public Object getUserMetadata(String propertyPath, String key) {
+            return getUserMetadataFor(propertyPath, key);
+        }
+
+        public Map getAllUserMetadata(String propertyPath) {
+            return getAllUserMetadataFor(propertyPath);
         }
     }
 

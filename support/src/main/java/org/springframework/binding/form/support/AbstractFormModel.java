@@ -374,7 +374,9 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         mediatingValueModels.put(formProperty, mediatingValueModel);
 
         PropertyMetadata metadata = new PropertyMetadataImpl(this, mediatingValueModel,
-                metadataAccessStrategy.getPropertyType(formProperty), !metadataAccessStrategy.isWriteable(formProperty));
+                metadataAccessStrategy.getPropertyType(formProperty),
+                !metadataAccessStrategy.isWriteable(formProperty),
+                metadataAccessStrategy.getAllUserMetadata(formProperty));
         metadata.addPropertyChangeListener(PropertyMetadata.DIRTY_PROPERTY, dirtyChangeHandler);
         propertyMetadata.put(formProperty, metadata);
 

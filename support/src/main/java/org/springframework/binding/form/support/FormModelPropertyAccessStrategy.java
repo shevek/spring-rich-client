@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.form.support;
 
+import java.util.Map;
+
 import org.springframework.beans.BeansException;
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
@@ -68,6 +70,14 @@ public class FormModelPropertyAccessStrategy implements PropertyAccessStrategy {
 
         public Class getPropertyType(String propertyName) {
             return formModel.getPropertyMetadata(propertyName).getPropertyType();
+        }
+
+        public Object getUserMetadata(String propertyName, String key) {
+            return formModel.getPropertyMetadata(propertyName).getUserMetadata(key);
+        }
+  
+        public Map getAllUserMetadata(String propertyName) {
+            return formModel.getPropertyMetadata(propertyName).getAllUserMetadata();
         }
     }
 }
