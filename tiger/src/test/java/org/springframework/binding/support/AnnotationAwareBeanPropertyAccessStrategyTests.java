@@ -22,14 +22,13 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.form.support.DefaultFormModel;
-
-import junit.framework.TestCase;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * @author andy
  * @since May 8, 2006 5:20:39 PM
  */
-public class AnnotationAwareBeanPropertyAccessStrategyTests extends TestCase {
+public class AnnotationAwareBeanPropertyAccessStrategyTests extends SpringRichTestCase {
     public void testBeanWithNoAnnotations() {
         final AnnotationAwareBeanPropertyAccessStrategy pas = new AnnotationAwareBeanPropertyAccessStrategy(new NoAnnotationTestBean());
         final PropertyMetadataAccessStrategy mas = pas.getMetadataAccessStrategy();

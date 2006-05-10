@@ -27,8 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
-import junit.framework.TestCase;
-
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.beans.support.SortDefinition;
@@ -38,25 +36,19 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * @author Oliver Hutchison
  */
-public class SwingBindingFactoryTests extends TestCase {
+public class SwingBindingFactoryTests extends SpringRichTestCase {
 
     private SwingBindingFactory sbf;
 
-    public void setUp() {
-        Application.load( null );
-        Application application = new Application(new DefaultApplicationLifecycleAdvisor());
-        application.setApplicationContext(new StaticApplicationContext());
-
+    public void doSetUp() {
         sbf = new SwingBindingFactory(FormModelHelper.createFormModel(new TestBean()));
         sbf.setBinderSelectionStrategy(new TestingBinderSelectionStrategy());
     }

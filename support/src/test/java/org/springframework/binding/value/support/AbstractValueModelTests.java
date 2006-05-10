@@ -19,19 +19,16 @@ import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Tests class {@link AbstractValueModel}.
  *  
  * @author Oliver Hutchison
  */
-public class AbstractValueModelTests extends TestCase {
+public class AbstractValueModelTests extends SpringRichTestCase {
 
     private TestAbstractValueModel vm;
 
@@ -43,9 +40,7 @@ public class AbstractValueModelTests extends TestCase {
         }
     }
 
-    public void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
+    public void doSetUp() {
         vm = new TestAbstractValueModel();
         pcl = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         vm.addValueChangeListener(pcl);

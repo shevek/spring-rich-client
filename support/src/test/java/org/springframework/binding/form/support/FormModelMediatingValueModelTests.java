@@ -19,17 +19,14 @@ import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
-
-import junit.framework.TestCase;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Tests for @link FormModelMediatingValueModel
  * 
  * @author  Oliver Hutchison
  */
-public class FormModelMediatingValueModelTests extends TestCase {
+public class FormModelMediatingValueModelTests extends SpringRichTestCase {
     
     private FormModelMediatingValueModel mvm;
     
@@ -39,10 +36,7 @@ public class FormModelMediatingValueModelTests extends TestCase {
     
     private TestPropertyChangeListener dcl;
     
-    protected void setUp() throws Exception {
-        super.setUp();        
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
+    protected void doSetUp() throws Exception {
         pvm = new ValueHolder();
         mvm = new FormModelMediatingValueModel(pvm, true);
         vcl = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);

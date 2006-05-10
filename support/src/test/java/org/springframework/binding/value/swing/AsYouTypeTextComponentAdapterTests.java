@@ -15,20 +15,17 @@
  */
 package org.springframework.binding.value.swing;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Test cases for {@link AsYouTypeTextComponentAdapter}
  * 
  * @author Oliver Hutchison
  */
-public class AsYouTypeTextComponentAdapterTests extends TestCase {
+public class AsYouTypeTextComponentAdapterTests extends SpringRichTestCase {
 
     private ValueModel valueModel;
 
@@ -36,10 +33,7 @@ public class AsYouTypeTextComponentAdapterTests extends TestCase {
 
     private TestableJTextComponent comp;
 
-    public void setUp() throws Exception {
-        super.setUp();
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
+    public void doSetUp() throws Exception {
         valueModel = new ValueHolder("");
         valueListener = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);
         valueModel.addValueChangeListener(valueListener);

@@ -17,25 +17,17 @@ package org.springframework.richclient.command.config;
 
 import javax.swing.AbstractButton;
 
-import junit.framework.TestCase;
-
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * MultiFacedEnablingTests was built to check up on the issue reported as <a
  * href="http://opensource.atlassian.com/projects/spring/browse/RCP-73">RCP-73 </a>.
  */
-public class MultiFacedEnablingTests extends TestCase
+public class MultiFacedEnablingTests extends SpringRichTestCase
 {
     private static final String ALTERNATE_ID = "otherId";
     private static final String MAIN_ID = "someid";
-
-    public final void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
 
     /**
      * Big idea of the test:

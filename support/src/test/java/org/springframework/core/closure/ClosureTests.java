@@ -6,24 +6,16 @@ package org.springframework.core.closure;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.closure.support.Block;
 import org.springframework.core.closure.support.IteratorTemplate;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * @author Keith Donald
  */
-public class ClosureTests extends TestCase {
-    public final void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
-
+public class ClosureTests extends SpringRichTestCase {
 	public void testIteratorProcessTemplateRunOnce() {
 		List collection = new ArrayList();
 		collection.add("Item 1");
