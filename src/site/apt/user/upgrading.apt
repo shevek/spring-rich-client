@@ -13,8 +13,115 @@ Introduction
 
 0.1.0 to 0.2.0
 
-    * None yet
+    * A major refactoring of the way that application services (like ImageSource, RulesSource, etc.)
+    are handld/located was introduced in version 0.2.0.  This change is <<NOT>> backward
+    compatible and it requires changes to both the application context XML file and to
+    source code that used the ApplicationServices class.
+    
+    A new <<<ApplicationServicesLocator>>> singleton has been introduced in order to
+    remove the coupling with the <<<Application>>> object (this improves the modularity
+    of the overall framework.  The <<<ApplicationServices>>> class has been changed into
+    an interface and a new <<<DefaultApplicationServices>>> class has been created to
+    provide the basic functionality.  The new <<<DefaultApplicationServices>>> class
+    must be configured in the application context (or programatically) to register the
+    needed runtime services.  The application context will no longer be searched for
+    beans with magic names.  A typical configuration would look something like this:
+    
+    +---
+    <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+        <property name="applicationServices" ref="applicationServices"/>
+    </bean>
 
+	<bean id="applicationServices" singleton="true"
+          class="org.springframework.richclient.application.support.DefaultApplicationServices">
+          <property name="imageSource" ref="imageSource"/>
+          <property name="rulesSource" ref="rulesSource"/>
+          <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
+          <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
+	</bean>
+    +---
+
+    Note that the <<<DefaultApplicationServices>>> implementation provides setter methods
+    for each of the standard platform services.  It also contains a mechanism to register
+    a whole set of services using the <<<registryEntries>>> property.  The entryMap
+    parameter must be a map with keys that are either class instances (the serviceType) or
+    the String name of the class and values that are the implementation to use for that service.
+    
+    <<It is critical that any services that you are using be registered on the applicationServices
+    instance, as they will no longer be located using the old magic bean names.>>
+    
+    Also, many of the core services have been updated to use the new service locator pattern
+    to locate other services instead of requiring explicit configuration in the application
+    context.  For example, previously, to define the IconSource, you had to configure a bean
+    with a constructor argument referencing the ImageSource, like this:
+    
+    +---
+    <bean id="iconSource" 
+	    class="org.springframework.richclient.image.DefaultIconSource">
+	    <constructor-arg index="0" ref="imageSource"/>
+    </bean>
+    +---
+    
+    With the new service resolution, this is no longer necessary.  In fact, since the
+    default IconSource references the registered ImageSource there isn't even a need to
+    define the iconSource bean in the context any more.  This kind of runtime resolution
+    also applies to the <<<applicationObjectConfigurer>>>, which used to require 3
+    constructor arguments.  It no longer requires this explicit configuration, you can
+    simply declare the bean like this:
+    
+    +---
+    <bean id="applicationObjectConfigurer" depends-on="serviceLocator"
+        class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
+    </bean>
+    +---
+    
+    Note the "depends-on" attribute.  This is necessary in order to ensure that the
+    service locator is constructed before the AOC.
+    
+    There is a subtle chicken and egg problem with the service locator and the AOC.
+    Since the AOC needs the service locator to be constructed before it and the AOC
+    also needs to be registered as a runtime service, we have to play a subtle game
+    to break the circular dependency.  This is accomplished by registering the AOC
+    runtime service (in the <<<applicationServices>>> configuration, using its bean
+    id, not a direct reference to the bean.  You can see this in the code (repeated
+    from above):
+    
+    +---
+    <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
+    +---
+    
+    The best way to see how the application context should now be configured is to look
+    at the simple sample.
+    
+    Ok, enough with the application context, let's talk about the changes to how services
+    are accessed at runtime.  In version 0.1.0, you would access a service by using a
+    simple getter method on the <<<ApplicationServices>>> class, like this:
+    
+    +---
+    IconSource iconSource = Application.services().getIconSource();
+    +---
+    
+    In the new version, there are no specific getters for the individual services.  Instead,
+    there is a general <<<Object getServices( Class serviceType )>>> method.  You pass it
+    the type of the service you need and it returns the implementation.  So, the new way
+    to make the same request as above would be:
+    
+    +---
+    IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
+    +---
+    
+    Note that that <<<ApplicationServicesAccessor>>> base class has been updated to make
+    appropriate delegated calls, so it can continue to be used as is.  Also, the
+    <<<Application.services()>>> method still exists, it just delegates to
+    <<<ApplicationServicesLocator.services()>>>.
+    
+    In order to support simple programmatic use of the <<<ApplicationServices>>>, a new
+    <<<StaticApplicationServices>>> class has been provided.  It has a simple
+    <<<registerService(Object service, Class serviceInterface)>>> method for registering
+    a service.  Take a look at the new <<<SpringRichTestClass>> for an example of how this
+    can be used for programmatic control.
+    
+    
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
