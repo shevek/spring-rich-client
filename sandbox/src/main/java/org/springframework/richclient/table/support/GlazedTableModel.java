@@ -23,7 +23,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -142,7 +142,7 @@ public class GlazedTableModel extends EventTableModel {
 
     protected MessageSourceAccessor getMessages() {
         if (messages == null) {
-            messages = Application.services().getMessages();
+            messages = (MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
         }
         return messages;
     }

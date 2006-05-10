@@ -34,32 +34,45 @@
 		</property>
 	</bean>
 	
-	<bean id="applicationObjectConfigurer"
+    <!-- 
+        Bean: serviceLocator
+        Usage: Platform required
+        Description: This defines the singleton application service locator instance.
+            This is a trivial singleton object providing access to the configured
+            services, as specified on the applicationServices property.
+    -->
+    <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+        <property name="applicationServices" ref="applicationServices"/>
+    </bean>
+
+    <!-- 
+        Bean: applicationServices
+        Usage: Platform required (unless you set this up programmatically)
+        Description: This configures the application services available to the platform.
+            There are specific setter methods for all the standard services, see the
+            javadoc on teh DefaultApplicationServices class for more details.
+            NOTE: The use of applicationObjectConfigurerBeanId instead of a direct bean
+            reference is required in order to break a circular dependency with the
+            ApplicationObjectConfigurer (which is a BeanPostProcessor).
+    -->
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="imageSource" ref="imageSource" />
+        <property name="rulesSource" ref="rulesSource" />
+        <property name="binderSelectionStrategy" ref="binderSelectionStrategy"/>
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory" />
+        <property name="applicationObjectConfigurerBeanId">
+            <idref bean="applicationObjectConfigurer" />
+        </property>
+    </bean>
+
+	<bean id="applicationObjectConfigurer" depends-on="serviceLocator"
 		class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
-		<constructor-arg index="0">
-			<ref bean="messageSource"/>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<ref bean="imageSource"/>
-		</constructor-arg>
-		<constructor-arg index="2">
-			<ref bean="iconSource"/>
-		</constructor-arg>
 	</bean>
 		
 	<bean id="applicationEventMulticaster" 
 		class="org.springframework.context.event.SimpleApplicationEventMulticaster"/>
 		
-	<bean id="componentFactory" 
-		class="org.springframework.richclient.factory.DefaultComponentFactory">
-		<property name="iconSource">
-			<ref bean="iconSource"/>
-		</property>
-		<property name="messageSource">
-			<ref bean="messageSource"/>
-		</property>
-	</bean>
-    
     <bean id="binderSelectionStrategy" 
         class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
         <property name="bindersForPropertyTypes">
@@ -128,13 +141,6 @@
 		</property>
 	</bean>
 	
-	<bean id="iconSource" 
-		class="org.springframework.richclient.image.DefaultIconSource">
-		<constructor-arg index="0">
-			<ref bean="imageSource"/>
-		</constructor-arg>
-	</bean>
-	
 	<bean id="formComponentInterceptorFactory" 
 		class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
 		<property name="interceptorFactories">
@@ -154,9 +160,6 @@
 	<bean id="rulesSource" 
 		class="org.springframework.richclient.samples.petclinic.domain.PetClinicValidationRulesSource"/>
         
-    <bean id="formPropertyFaceDescriptorSource" 
-		class="org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource"/>    
-		
 	<bean id="ownerManagerView"
 		class="org.springframework.richclient.application.support.DefaultViewDescriptor">
 		<property name="viewClass">

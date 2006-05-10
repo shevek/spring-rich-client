@@ -21,9 +21,10 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.binding.value.support.ListListModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.context.MessageSource;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
+import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.list.DynamicListModel;
 
 /**
@@ -134,15 +135,15 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     private String getMsgText( String key, String defaultMsg ) {
-        final ApplicationServices services = Application.services();
+        final MessageSource messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
         String text = null;
 
         if( getFormId() != null ) {
-            text = services.getMessage(getFormId() + "." + key, null, null, null);
+            text = messageSource.getMessage(getFormId() + "." + key, null, null, null);
         }
 
         if( text == null ) {
-            text = services.getMessage(key, null, defaultMsg, null);
+            text = messageSource.getMessage(key, null, defaultMsg, null);
         }
 
         return text;
@@ -155,16 +156,16 @@ public class ShuttleListBinding extends AbstractBinding {
      * @return an Icon
      */
     private Icon getEditIcon() {
-        final ApplicationServices services = Application.services();
+        final IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
         // @TODO find the form Id.
         Icon icon = null;
 
         if( getFormId() != null ) {
-            icon = services.getIcon(getFormId() + ".shuttleList.edit");
+            icon = iconSource.getIcon(getFormId() + ".shuttleList.edit");
         }
 
         if( icon == null ) {
-            icon = services.getIcon("shuttleList.edit");
+            icon = iconSource.getIcon("shuttleList.edit");
         }
         return icon;
     }

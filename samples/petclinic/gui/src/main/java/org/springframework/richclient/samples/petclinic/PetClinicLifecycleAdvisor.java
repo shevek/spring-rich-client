@@ -30,8 +30,8 @@ import org.springframework.richclient.command.ActionCommand;
 public class PetClinicLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
     public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
         super.onPreWindowOpen(configurer);
-        if (getApplicationServices().containsBean("setupWizard")) {
-            SetupWizard setupWizard = (SetupWizard)getApplicationServices().getBean("setupWizard", SetupWizard.class);
+        if (getApplication().getApplicationContext().containsBean("setupWizard")) {
+            SetupWizard setupWizard = (SetupWizard)getApplication().getApplicationContext().getBean("setupWizard", SetupWizard.class);
             setupWizard.execute();
         }
         // comment out to hide the menubar, toolbar, or reduce window size...

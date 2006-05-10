@@ -6,10 +6,15 @@
 
     <!--
         The application context is used to configure components and services within
-        the platform.  The platform defines a number of "magic" bean names that it
-        uses to locate specific components, so they must be named exactly as shown.
-        These magic beans are identified in the documentation below and they are
-        marked as required or optional.
+        the platform.  The platform utilizes a number of services at runtime, and
+        these must be configured here.  The two key beans for this are the serviceLocator
+        and applicationServices.  Many of the services have reasonable default
+        implementations, meaning that you probably won't need to define them here
+        unless you have specific needs not addressed in the default implementation.
+        
+        Beyond the services, you will define the various components that make up
+        your application, like the application descriptor, views, lifecycle advisor,
+        validation rules, etc.
         
         This may look a little daunting at first, but hang in there.  The good news
         is that you don't have to change many of the bean configurations provided
@@ -28,8 +33,7 @@
 
     <!-- 
         Bean: application
-        Type: magic
-        Usage: required
+        Usage: Platform required
         Description: This defines the singleton application instance to be used.
             Note that, currently, this object is not pluggable.  You must use the
             class specified below and configure it as needed.
@@ -42,8 +46,7 @@
 	
     <!-- 
         Bean: lifecycleAdvisor
-        Type: user named
-        Usage: required
+        Usage: Platform required
         Description: This defines the LifecycleAdvisor instance to be used by the
             Application.  Note the reference to this bean in the constructor
             args in the application bean.  If you don't need any special handling
@@ -71,6 +74,37 @@
     </bean>
 
     <!-- 
+        Bean: serviceLocator
+        Usage: Platform required
+        Description: This defines the singleton application service locator instance.
+            This is a trivial singleton object providing access to the configured
+            services, as specified on the applicationServices property.
+    -->
+    <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+        <property name="applicationServices" ref="applicationServices"/>
+    </bean>
+
+    <!-- 
+        Bean: applicationServices
+        Usage: Platform required (unless you set this up programmatically)
+        Description: This configures the application services available to the platform.
+            There are specific setter methods for all the standard services, see the
+            javadoc on teh DefaultApplicationServices class for more details.
+            NOTE: The use of applicationObjectConfigurerBeanId instead of a direct bean
+            reference is required in order to break a circular dependency with the
+            ApplicationObjectConfigurer (which is a BeanPostProcessor).
+    -->
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="imageSource" ref="imageSource" />
+        <property name="rulesSource" ref="rulesSource" />
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory" />
+        <property name="applicationObjectConfigurerBeanId">
+            <idref bean="applicationObjectConfigurer" />
+        </property>
+    </bean>
+
+    <!-- 
         Bean: applicationEventMulticaster
         Type: magic
         Usage: platform required
@@ -82,7 +116,6 @@
 
     <!-- 
         Bean: applicationDescriptor
-        Type: user named
         Usage: platform required
         Description: This defines the Application metadata to be used by the
             Application.  Note the reference to this bean in the constructor
@@ -95,43 +128,17 @@
 	</bean>
 
     <!-- 
-        Bean: applicationDescriptor
-        Type: magic
-        Usage: platform required (because it requires configuration)
+        Bean: applicationObjectConfigurer
+        Usage: platform required (because it is a bean post processor)
         Description: This defines the object responsible for configuring other objects
             constructed via the platform.  This is a critical part of the I18N support.
-            Unless you have very special needs, you should use the default implementation,
-            as is done here.  The implementation is configured with three other
-            components responsible for providing I18N messages, images, and icons.
     -->
-	<bean id="applicationObjectConfigurer"
+	<bean id="applicationObjectConfigurer" depends-on="serviceLocator"
 		class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
-		<constructor-arg index="0" ref="messageSource"/>
-		<constructor-arg index="1" ref="imageSource"/>
-		<constructor-arg index="2" ref="iconSource"/>
 	</bean>
 		
     <!-- 
-        Bean: componentFactory
-        Type: magic
-        Usage: platform required (because it requires configuration)
-        Description: This defines the factory responsible for constructing UI
-            components that are configured according to the platform standards.
-            This is a critical part of the I18N support.
-            If you have special needs when constructing UI controls, then you
-            may need to override the default implementation.
-            The imlpementation is configured with two other
-            components responsible for providing I18N messages and icons.
-    -->
-	<bean id="componentFactory" 
-		class="org.springframework.richclient.factory.DefaultComponentFactory">
-		<property name="iconSource" ref="iconSource"/>
-		<property name="messageSource" ref="messageSource"/>
-	</bean>
-
-    <!-- 
         Bean: lookAndFeelConfigurer
-        Type: magic
         Usage: platform optional
         Description: The platform doesn't specifically make direct use of this
             object (other than instantiating it).  It is expected that the object
@@ -149,7 +156,6 @@
 	
     <!-- 
         Bean: messageSource
-        Type: user named
         Usage: platform required (not really, but you can't do much without it)
         Description: This specifies the component that is responsible for providing
             messages (all kinds of text) to the platform.  This is a critical piece
@@ -172,7 +178,6 @@
 	
     <!-- 
         Bean: imageResourcesFactory
-        Type: user named
         Usage: platform required (if you are using the DefaultImageSource, see below)
         Description: This specifies the component that is responsible for providing
             image resources locations.  This factory uses the specified properties
@@ -206,21 +211,7 @@
 	</bean>
 	
     <!-- 
-        Bean: iconSource
-        Type: user named
-        Usage: platform required (because it requires configuration)
-        Description: This specifies the component that is responsible for providing
-            icons to the platform.  It makes use of an image source to locate the
-            image resources for the named icons.
-    -->
-	<bean id="iconSource" 
-		class="org.springframework.richclient.image.DefaultIconSource">
-		<constructor-arg index="0" ref="imageSource"/>
-	</bean>
-
-    <!-- 
         Bean: formComponentInterceptorFactory
-        Type: magic
         Usage: platform optional
         Description: This specifies the list of interceptors to attach to controls
             constructed by the platform.  This allows for a declarative model for
@@ -245,7 +236,6 @@
 
     <!-- 
         Bean: rulesSource
-        Type: magic
         Usage: platform optional
         Description: This specifies the component that will supply validation rules
             for properties bound into forms.  This allows validation rules to be
@@ -256,7 +246,6 @@
 
     <!-- 
         Bean: conversionService
-        Type: user named
         Usage: platform optional
         Description: This specifies the component that will supply converters
             for property values.  Since we are going to add a special converter
@@ -288,7 +277,6 @@
 
     <!-- 
         Bean: applicationEventRedispatcher
-        Type: user named
         Usage: application
         Description: An object to redispatch application events.  See it's class
             documentation for why this is needed.
@@ -299,7 +287,6 @@
 
     <!-- 
         Bean: contactDataStore
-        Type: user named
         Usage: application
         Description: Defines the data store holding all the contacts.
     -->

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class I18nUncaughtExceptionHandler implements Thread.UncaughtExceptionHan
 
     public void afterPropertiesSet() {
         if (messageSourceAccessor == null) {
-            messageSourceAccessor = Application.services().getMessages();
+            messageSourceAccessor = (MessageSourceAccessor) ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
         }
         if (registerAsDefaultOnInitialization) {
             Thread.setDefaultUncaughtExceptionHandler(this);
@@ -89,7 +90,7 @@ public class I18nUncaughtExceptionHandler implements Thread.UncaughtExceptionHan
     public static class ExceptionHandlerAdapterHack {
         public void handle(Throwable e) {
             Thread.UncaughtExceptionHandler uncaughtExceptionHandler
-                    = (Thread.UncaughtExceptionHandler) Application.instance().getServices()
+                    = (Thread.UncaughtExceptionHandler) Application.instance().getApplicationContext()
                     .getBean(REQUIRED_BEAN_NAME);
             if (uncaughtExceptionHandler == null) {
                 throw new RuntimeException("No bean found with name " + REQUIRED_BEAN_NAME);

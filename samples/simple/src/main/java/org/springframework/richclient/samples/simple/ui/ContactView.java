@@ -284,9 +284,6 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
      * state.
      */
     private class DeleteExecutor extends AbstractActionCommandExecutor {
-        public DeleteExecutor() {
-            getApplicationServices().configure(this, "delete");
-        }
 
         /**
          * Execute this command.
