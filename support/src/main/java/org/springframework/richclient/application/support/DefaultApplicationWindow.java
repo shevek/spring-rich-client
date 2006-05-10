@@ -31,9 +31,11 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageListener;
@@ -107,7 +109,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     }
 
     protected ApplicationServices getServices() {
-        return Application.services();
+        return ApplicationServicesLocator.services();
     }
 
     protected ApplicationWindowConfigurer getWindowConfigurer() {
@@ -205,8 +207,9 @@ public class DefaultApplicationWindow implements ApplicationWindow {
      * @return The window's page
      */
     protected ApplicationPage createPage(PageDescriptor descriptor) {
+        ApplicationContext ctx = Application.instance().getApplicationContext();
         try {
-            ApplicationPage page = (ApplicationPage)getServices().getBean(
+            ApplicationPage page = (ApplicationPage)ctx.getBean(
                 DEFAULT_APPLICATION_PAGE_BEAN_ID, ApplicationPage.class);
             page.setApplicationWindow(this);
             page.setDescriptor(descriptor);
@@ -218,10 +221,11 @@ public class DefaultApplicationWindow implements ApplicationWindow {
     }
 
     protected PageDescriptor getPageDescriptor(String pageDescriptorId) {
-        Assert.state(getServices().containsBean(pageDescriptorId),
+        ApplicationContext ctx = Application.instance().getApplicationContext();
+        Assert.state(ctx.containsBean(pageDescriptorId),
             "Do not know about page or view descriptor with name '" + pageDescriptorId
                 + "' - check your context config");
-        Object desc = getServices().getBean(pageDescriptorId);
+        Object desc = ctx.getBean(pageDescriptorId);
         if (desc instanceof PageDescriptor) {
             return (PageDescriptor)desc;
         }

@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
 
@@ -67,14 +68,14 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
         assertTrue( "authenticationManager must implement AuthenticationManager", am instanceof AuthenticationManager );
         assertTrue( "authenticationManager must be instance of TestAuthenticationManager",
             am instanceof TestAuthenticationManager );
-        assertEquals( asm, Application.services().getApplicationSecurityManager() );
+        assertEquals( asm, ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class) );
     }
 
     public void testSecurityEvents() {
         prepareApplication( "security-test-ctx.xml" );
         eventCounter = (EventCounter) ac.getBean( "eventCounter" );
 
-        ApplicationSecurityManager asm = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager asm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
         eventCounter.resetCounters();
         asm.doLogin( TestAuthenticationManager.VALID_USER1 );
         testCounters( 1, 0, 1, 0 );
@@ -95,7 +96,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
 
     public void testUserInRole() {
         prepareApplication( "security-test-ctx.xml" );
-        ApplicationSecurityManager asm = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager asm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
         asm.doLogin( TestAuthenticationManager.VALID_USER1 );
 
         assertTrue( "User should be in role ROLE_EXPECTED", asm.isUserInRole( TestAuthenticationManager.ROLE_EXPECTED ) );
@@ -106,7 +107,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
         prepareApplication( "security-test-ctx.xml" );
         eventCounter = (EventCounter) ac.getBean( "eventCounter" );
 
-        ApplicationSecurityManager asm = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager asm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
         asm.doLogout(); // Start with no one logged in
         asm.doLogin( TestAuthenticationManager.VALID_USER1 );
@@ -137,7 +138,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
         // Test that the auto-configuration fails when there is no context
         prepareApplication( null ); // No context
         try {
-            Application.services().getApplicationSecurityManager();
+            ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
             fail( "Shouldn't be able to auto-configure without context" );
         } catch( Exception e ) {
             // expected
@@ -149,7 +150,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
         // security manager.
 
         prepareApplication( "security-test-autoconfig-ctx.xml" );
-        ApplicationSecurityManager asm = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager asm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
         // Ensure it's the right one
         Object am = ac.getBean( "authenticationManager" );
@@ -162,7 +163,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
      * @param exceptionType Type of exception that should be thrown
      */
     private void doOneFailed(Authentication authentication, Class exceptionType) {
-        ApplicationSecurityManager asm = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager asm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
         Authentication current = asm.getAuthentication();
 
         eventCounter.resetCounters();

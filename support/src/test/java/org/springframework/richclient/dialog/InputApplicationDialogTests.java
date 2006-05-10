@@ -17,18 +17,16 @@ package org.springframework.richclient.dialog;
 
 import javax.swing.JTextField;
 
-import junit.framework.TestCase;
-
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.support.StaticApplicationServices;
+import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.Rules;
+import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
  * @author Peter De Bruycker
  */
-public class InputApplicationDialogTests extends TestCase {
+public class InputApplicationDialogTests extends SpringRichTestCase {
     private static final String BUSINESS_FIELD = "name";
 
     private BusinessObject businessObject;
@@ -73,25 +71,17 @@ public class InputApplicationDialogTests extends TestCase {
         assertEnabledStateReflectsFormModelState(dialog);
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        // load application
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-        Application.services().setRulesSource(new BusinessRulesSource());
-        StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext(applicationContext);
-        applicationContext.refresh();
-
+    protected void doSetUp() {
         // create business object
         businessObject = new BusinessObject();
     }
 
-    protected void tearDown() throws Exception {
-        // unload application
-        Application.load(null);
+    /**
+     * May be implemented in subclasses that need to register services with the global
+     * application services instance.
+     */
+    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
+        applicationServices.registerService(new BusinessRulesSource(), RulesSource.class);
     }
 
     private class BusinessRulesSource extends DefaultRulesSource {

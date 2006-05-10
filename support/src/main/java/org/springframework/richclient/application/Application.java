@@ -26,14 +26,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
+import org.springframework.richclient.image.ImageSource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
  * A singleton workbench or shell of a rich client application.
  * <p>
- * The application provides a point of reference and context for an entire
- * application. It provides an interface to open application windows.
+ * The application provides a point of reference and context for an entire application. It
+ * provides an interface to open application windows.
  * 
  * @author Keith Donald
  */
@@ -45,9 +46,9 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private static Application SOLE_INSTANCE;
 
-    private ApplicationDescriptor descriptor;
+    private ApplicationContext applicationContext;
 
-    private ApplicationServices services;
+    private ApplicationDescriptor descriptor;
 
     private ApplicationLifecycleAdvisor lifecycleAdvisor;
 
@@ -58,10 +59,9 @@ public class Application implements InitializingBean, ApplicationContextAware {
     /**
      * Load the single application instance.
      * 
-     * @param instance
-     *            The application
+     * @param instance The application
      */
-    public static void load(Application instance) {
+    public static void load( Application instance ) {
         SOLE_INSTANCE = instance;
     }
 
@@ -87,29 +87,23 @@ public class Application implements InitializingBean, ApplicationContextAware {
      * @return The application services locator.
      */
     public static ApplicationServices services() {
-        return instance().getServices();
+        return ApplicationServicesLocator.services();
     }
 
-    public Application(ApplicationLifecycleAdvisor advisor) {
-        this(null, advisor, null);
+    public Application( ApplicationLifecycleAdvisor advisor ) {
+        this(null, advisor);
     }
 
-    public Application(ApplicationDescriptor descriptor, ApplicationLifecycleAdvisor advisor) {
-        this(descriptor, advisor, null);
-    }
-
-    public Application(ApplicationDescriptor descriptor, ApplicationLifecycleAdvisor advisor,
-            ApplicationServices services) {
+    public Application( ApplicationDescriptor descriptor, ApplicationLifecycleAdvisor advisor ) {
         setDescriptor(descriptor);
         setLifecycleAdvisor(advisor);
-        setServices(services);
         this.windowManager = new WindowManager();
         this.windowManager.addObserver(new CloseApplicationObserver());
         Assert.state(!isLoaded(), "Only one instance of a Spring Rich Application allowed per VM.");
         load(this);
     }
 
-    public void setDescriptor(ApplicationDescriptor descriptor) {
+    public void setDescriptor( ApplicationDescriptor descriptor ) {
         this.descriptor = descriptor;
     }
 
@@ -117,16 +111,16 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return descriptor;
     }
 
-    public void setServices(ApplicationServices services) {
-        this.services = services;
-    }
-
-    private void setLifecycleAdvisor(ApplicationLifecycleAdvisor advisor) {
+    private void setLifecycleAdvisor( ApplicationLifecycleAdvisor advisor ) {
         this.lifecycleAdvisor = advisor;
     }
 
-    public void setApplicationContext(ApplicationContext context) {
-        getServices().setApplicationContext(context);
+    public void setApplicationContext( ApplicationContext context ) {
+        applicationContext = context;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public void afterPropertiesSet() throws Exception {
@@ -140,15 +134,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return lifecycleAdvisor;
     }
 
-    public ApplicationServices getServices() {
-        if (services == null) {
-            services = new ApplicationServices();
-        }
-        return services;
-    }
-
     public String getName() {
-        if (descriptor != null && StringUtils.hasText(descriptor.getDisplayName())) {
+        if( descriptor != null && StringUtils.hasText(descriptor.getDisplayName()) ) {
             return descriptor.getDisplayName();
         } else {
             return "Spring Rich Client Application";
@@ -156,29 +143,31 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public Image getImage() {
-        if (descriptor != null && descriptor.getImage() != null) {
+        if( descriptor != null && descriptor.getImage() != null ) {
             return descriptor.getImage();
         } else {
-            return Application.services().getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+            ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
+            return isrc.getImage(DEFAULT_APPLICATION_IMAGE_KEY);
         }
     }
 
-    public void openWindow(String pageDescriptorId) {
+    public void openWindow( String pageDescriptorId ) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
         newWindow.showPage(pageDescriptorId);
         // @TODO track active window...
         this.activeWindow = newWindow;
     }
 
-    private ApplicationWindow initWindow(ApplicationWindow window) {
+    private ApplicationWindow initWindow( ApplicationWindow window ) {
         windowManager.add(window);
         return window;
     }
 
     protected ApplicationWindow createNewWindow() {
         try {
-            return (ApplicationWindow) services().getBean(APPLICATION_WINDOW_BEAN_ID, ApplicationWindow.class);
-        } catch (NoSuchBeanDefinitionException e) {
+            return (ApplicationWindow) getApplicationContext().getBean(APPLICATION_WINDOW_BEAN_ID,
+                    ApplicationWindow.class);
+        } catch( NoSuchBeanDefinitionException e ) {
             return new DefaultApplicationWindow();
         }
     }
@@ -192,9 +181,9 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public void close() {
-        if (windowManager.close()) {
-            if (getServices().getApplicationContext() instanceof ConfigurableApplicationContext) {
-                ((ConfigurableApplicationContext) getServices().getApplicationContext()).close();
+        if( windowManager.close() ) {
+            if( getApplicationContext() instanceof ConfigurableApplicationContext ) {
+                ((ConfigurableApplicationContext) getApplicationContext()).close();
             }
 
             System.exit(0);
@@ -208,13 +197,13 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
         boolean firstWindowCreated = false;
 
-        public void update(Observable o, Object arg) {
+        public void update( Observable o, Object arg ) {
             int numOpenWidows = windowManager.getWindows().length;
             // make sure we only close the application after at least 1 window
             // has been added
-            if (!firstWindowCreated && numOpenWidows > 0) {
+            if( !firstWindowCreated && numOpenWidows > 0 ) {
                 firstWindowCreated = true;
-            } else if (firstWindowCreated && numOpenWidows == 0) {
+            } else if( firstWindowCreated && numOpenWidows == 0 ) {
                 close();
             }
         }

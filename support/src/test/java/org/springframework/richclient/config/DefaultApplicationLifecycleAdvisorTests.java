@@ -36,7 +36,7 @@ public class DefaultApplicationLifecycleAdvisorTests extends TestCase {
         Application.load(null);
         new Application(advisor);
         StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext(applicationContext);
+        Application.instance().setApplicationContext(applicationContext);
         applicationContext.registerSingleton( "eventMulticaster", SimpleApplicationEventMulticaster.class );
         applicationContext.refresh();
 

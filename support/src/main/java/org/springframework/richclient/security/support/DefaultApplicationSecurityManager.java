@@ -152,7 +152,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * @throws AcegiSecurityException If the authentication attempt fails
      */
     public Authentication doLogin(Authentication authentication) {
-        final ApplicationContext appCtx = Application.services().getApplicationContext();
+        final ApplicationContext appCtx = Application.instance().getApplicationContext();
 
         Authentication result = null;
 
@@ -247,7 +247,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
         setAuthentication( null );
 
         // Fire application event to advise of logout
-        ApplicationContext appCtx = Application.services().getApplicationContext();
+        ApplicationContext appCtx = Application.instance().getApplicationContext();
         appCtx.publishEvent( new AuthenticationEvent( null ) );
         appCtx.publishEvent( new LogoutEvent( existing ) );
 
@@ -294,7 +294,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
     protected boolean tryToWire(Class type) {
         boolean success = false;
         String className = type.getName();
-        Map map = Application.services().getApplicationContext().getBeansOfType( type );
+        Map map = Application.instance().getApplicationContext().getBeansOfType( type );
         if( _logger.isDebugEnabled() ) {
             _logger.debug( "Search for '" + className + "' found: " + map );
         }

@@ -31,7 +31,7 @@ import javax.swing.JToolBar;
 import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
@@ -137,7 +137,7 @@ public class CommandGroup extends AbstractCommand {
                                                    final boolean exclusive,
                                                    final CommandConfigurer configurer) {
         final CommandConfigurer theConfigurer = (configurer != null) ?
-                configurer : Application.services();
+                configurer : (CommandConfigurer)ApplicationServicesLocator.services().getService(CommandConfigurer.class);
 
         final CommandGroupFactoryBean groupFactory =
                 new CommandGroupFactoryBean(groupId, null, theConfigurer, members);

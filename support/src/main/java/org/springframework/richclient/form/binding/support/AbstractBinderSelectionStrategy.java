@@ -224,7 +224,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
         else if (binder.containsKey("binderRef"))
         {
             String binderID = (String) binder.get("binderRef");
-            Binder binderBean = (Binder) Application.services().getBean(binderID);
+            Binder binderBean = (Binder) Application.instance().getApplicationContext().getBean(binderID);
             registerBinderForPropertyName(objectClass, propertyName, binderBean);
         }
         else

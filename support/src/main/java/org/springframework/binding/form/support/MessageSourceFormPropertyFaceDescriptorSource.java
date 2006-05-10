@@ -21,8 +21,8 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FormPropertyFaceDescriptor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.util.StringUtils;
 
@@ -109,7 +109,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
      */
     protected MessageSourceAccessor getMessageSourceAccessor() {
         if (messageSourceAccessor == null) {
-            messageSourceAccessor = Application.services().getMessages();
+            messageSourceAccessor = (MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
         }
         return messageSourceAccessor;
     }
@@ -124,7 +124,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
 
     protected IconSource getIconSource() {
         if (iconSource == null) {
-            iconSource = Application.services().getIconSource();
+            iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
         }
         return iconSource;
     }

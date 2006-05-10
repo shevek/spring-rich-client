@@ -17,23 +17,24 @@ package org.springframework.richclient.application.config;
 
 import java.util.Properties;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.binding.validation.Severity;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.core.Message;
-import org.springframework.richclient.dialog.MessageDialog;
+import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.binding.validation.Severity;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * @author Keith Donald
@@ -97,7 +98,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     }
 
     protected ApplicationServices getApplicationServices() {
-        return getApplication().getServices();
+        return ApplicationServicesLocator.services();
     }
 
     public void onPreInitialize(Application application) {
@@ -178,14 +179,14 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
             LogFactory.getLog(ApplicationLifecycleAdvisor.class).error(t.getMessage(), t);
             String exceptionMessage;
             if (t instanceof MessageSourceResolvable) {
-                exceptionMessage = Application.instance().getServices().getMessages()
+                exceptionMessage = ((MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class))
                         .getMessage((MessageSourceResolvable) t);
             } else {
                 exceptionMessage = t.getLocalizedMessage();
             }
             if (!StringUtils.hasText(exceptionMessage)) {
                 String defaultMessage = "An application exception occurred.\nPlease contact your administrator.";
-                exceptionMessage = Application.instance().getServices().getMessages()
+                exceptionMessage = ((MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class))
                         .getMessage("applicationDialog.defaultException", defaultMessage);
             }
 

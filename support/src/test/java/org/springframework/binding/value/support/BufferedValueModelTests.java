@@ -15,16 +15,14 @@
  */
 package org.springframework.binding.value.support;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 
 /**
@@ -34,7 +32,7 @@ import org.springframework.richclient.application.config.DefaultApplicationLifec
  * @author Karsten Lentzsch
  * @author Oliver Hutchison
  */
-public final class BufferedValueModelTests extends TestCase {
+public final class BufferedValueModelTests extends SpringRichTestCase {
 
     private static final Object INITIAL_VALUE = "initial value";
     private static final Object RESET_VALUE   = "reset value";
@@ -42,10 +40,7 @@ public final class BufferedValueModelTests extends TestCase {
     private ValueModel wrapped;
     private CommitTrigger commitTrigger;
         
-    protected void setUp() throws Exception {
-        super.setUp();
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
+    protected void doSetUp() throws Exception {
         wrapped = new ValueHolder(INITIAL_VALUE);
         commitTrigger = new CommitTrigger();
     }
@@ -452,8 +447,8 @@ public final class BufferedValueModelTests extends TestCase {
         
         // Now replace the default value change detector with one that
         // only uses true equivalence.
-        ValueChangeDetector oldVCD = Application.services().getValueChangeDetector();
-        Application.services().setValueChangeDetector(new StrictEquivalenceValueChangeDetector());
+        ValueChangeDetector oldVCD = (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
+        getApplicationServices().registerService(new StrictEquivalenceValueChangeDetector(), ValueChangeDetector.class);
         testValueChangeSendsProperEvents(null, obj1,   true);
         testValueChangeSendsProperEvents(obj1, null,   true);
         testValueChangeSendsProperEvents(obj1, obj1,   false);
@@ -461,7 +456,7 @@ public final class BufferedValueModelTests extends TestCase {
         testValueChangeSendsProperEvents(obj2a, obj2b, true); 
         testValueChangeSendsProperEvents(null, null,   false);
 
-        Application.services().setValueChangeDetector(oldVCD);
+        getApplicationServices().registerService(oldVCD, ValueChangeDetector.class);
     }
 
   

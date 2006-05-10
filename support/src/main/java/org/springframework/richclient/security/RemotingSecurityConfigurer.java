@@ -77,7 +77,7 @@ public class RemotingSecurityConfigurer implements ApplicationListener {
      * @return Array of beans to update
      */
     private Object[] getExporters() {
-        ApplicationContext appCtx = Application.services().getApplicationContext();
+        ApplicationContext appCtx = Application.instance().getApplicationContext();
         List list = new Vector();
 
         Class[] types = new Class[] {

@@ -26,7 +26,7 @@ import javax.swing.JTextArea;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
@@ -51,7 +51,7 @@ public abstract class AbstractFormBuilder {
 
     protected ComponentFactory getComponentFactory() {
         if (componentFactory == null) {
-            componentFactory = Application.services().getComponentFactory();
+            componentFactory = (ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class);
         }
         return componentFactory;
     }

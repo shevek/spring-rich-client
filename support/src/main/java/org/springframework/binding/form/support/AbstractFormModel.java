@@ -48,7 +48,7 @@ import org.springframework.binding.value.support.DirtyTrackingValueModel;
 import org.springframework.binding.value.support.MethodInvokingDerivedValueModel;
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.DefaultConversionService;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.ClassUtils;
@@ -441,7 +441,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      */
     protected FormPropertyFaceDescriptorSource getFormPropertyFaceDescriptorSource() {
         if (formPropertyFaceDescriptorSource == null) {
-            formPropertyFaceDescriptorSource = Application.services().getFormPropertyFaceDescriptorSource();
+            formPropertyFaceDescriptorSource = (FormPropertyFaceDescriptorSource)ApplicationServicesLocator.services().getService(FormPropertyFaceDescriptorSource.class);
         }
         return formPropertyFaceDescriptorSource;
     }
@@ -465,7 +465,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     public ConversionService getConversionService() {
         if (conversionService == null) {
-            conversionService = Application.services().getConversionService();
+            conversionService = (ConversionService)ApplicationServicesLocator.services().getService(ConversionService.class);
         }
         return conversionService;
     }

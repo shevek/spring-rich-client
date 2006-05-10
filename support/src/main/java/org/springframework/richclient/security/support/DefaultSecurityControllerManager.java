@@ -82,7 +82,7 @@ public class DefaultSecurityControllerManager implements SecurityControllerManag
         if( sc == null ) {
             // Try for a named bean
             try {
-                sc = (SecurityController) Application.services().getApplicationContext().getBean( id,
+                sc = (SecurityController) Application.instance().getApplicationContext().getBean( id,
                     SecurityController.class );
             } catch( NoSuchBeanDefinitionException e ) {
                 // Try for a fallback

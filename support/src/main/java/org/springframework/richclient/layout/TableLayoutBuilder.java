@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 
 import org.springframework.binding.support.Assert;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.CustomizableFocusTraversalPolicy;
 import org.springframework.util.StringUtils;
@@ -179,10 +180,10 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * @return if not explicitly set, this uses the {@link Application}'s
      */
     public ComponentFactory getComponentFactory() {
-        if (this.componentFactory == null) {
-            this.componentFactory = Application.services().getComponentFactory();
+        if (componentFactory == null) {
+            componentFactory = (ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class);
         }
-        return this.componentFactory;
+        return componentFactory;
     }
 
     /**

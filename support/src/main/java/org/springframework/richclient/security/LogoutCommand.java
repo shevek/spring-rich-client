@@ -18,7 +18,7 @@ package org.springframework.richclient.security;
 import javax.swing.JOptionPane;
 
 import org.acegisecurity.Authentication;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 
 /**
@@ -55,7 +55,9 @@ public class LogoutCommand extends ApplicationWindowAwareCommand {
     }
 
     protected void doExecuteCommand() {
-        onLogout(Application.services().getApplicationSecurityManager().doLogout());
+        ApplicationSecurityManager sm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
+        Authentication loggedOutAuth = sm.doLogout();
+        onLogout(loggedOutAuth);
 
         if (displaySuccess) {
             JOptionPane.showMessageDialog(getParentWindowControl(), "You have been logged out.", "Logout Successful",

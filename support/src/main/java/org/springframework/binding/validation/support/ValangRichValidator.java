@@ -42,7 +42,7 @@ import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.ReflectiveVisitorHelper;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
@@ -100,7 +100,7 @@ public class ValangRichValidator implements RichValidator {
 
     public MessageSourceAccessor getMessageSourceAccessor() {
         if (messageSourceAccessor == null) {
-            messageSourceAccessor = Application.services().getMessages();
+            messageSourceAccessor = (MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
         }
         return messageSourceAccessor;
     }

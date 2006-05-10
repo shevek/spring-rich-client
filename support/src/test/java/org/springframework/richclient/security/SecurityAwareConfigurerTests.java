@@ -22,6 +22,7 @@ import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.BadCredentialsException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
 
@@ -45,7 +46,7 @@ public class SecurityAwareConfigurerTests extends TestCase {
         Application app = new Application( new DefaultApplicationLifecycleAdvisor() );
         app.setApplicationContext( applicationContext );
 
-        securityManager = Application.services().getApplicationSecurityManager();
+        securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
         authAwareBean = (AuthAwareBean) applicationContext.getBean( "authAwareBean" );
         loginAwareBean = (LoginAwareBean) applicationContext.getBean( "loginAwareBean" );
     }
@@ -62,7 +63,7 @@ public class SecurityAwareConfigurerTests extends TestCase {
         assertTrue( "authenticationManager must implement AuthenticationManager", am instanceof AuthenticationManager );
         assertTrue( "authenticationManager must be instance of TestAuthenticationManager",
             am instanceof TestAuthenticationManager );
-        assertEquals( asm, Application.services().getApplicationSecurityManager() );
+        assertEquals( asm, ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class) );
         assertTrue( "securityConfigurer must implement SecurityAwareConfigurer", sc instanceof SecurityAwareConfigurer );
     }
 

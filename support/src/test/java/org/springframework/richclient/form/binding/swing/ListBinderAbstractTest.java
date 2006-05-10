@@ -57,7 +57,7 @@ public class ListBinderAbstractTest extends BindingAbstractTest {
         Application.load(null);
         new Application(new DefaultApplicationLifecycleAdvisor());
         StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext(applicationContext);
+        Application.instance().setApplicationContext(applicationContext);
         applicationContext.refresh();
 
         lb = new ListBinder();

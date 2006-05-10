@@ -24,7 +24,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelWrapper;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
@@ -120,7 +120,7 @@ public class FormModelMediatingValueModel extends AbstractValueModelWrapper impl
 
     protected ValueChangeDetector getValueChangeDetector() {
         if (valueChangeDetector == null) {
-            valueChangeDetector = Application.services().getValueChangeDetector();
+            valueChangeDetector = (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
         }
         return valueChangeDetector;
     }

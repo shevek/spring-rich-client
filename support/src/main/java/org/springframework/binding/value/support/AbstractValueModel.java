@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 
 /**
  * An abstract class that minimizes the effort required to implement
@@ -190,7 +190,7 @@ public abstract class AbstractValueModel extends AbstractPropertyChangePublisher
      */
     protected ValueChangeDetector getValueChangeDetector() {
         if( valueChangeDetector == null ) {
-            valueChangeDetector = Application.services().getValueChangeDetector();
+            valueChangeDetector = (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
         }
         return valueChangeDetector;
     }

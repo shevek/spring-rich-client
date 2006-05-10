@@ -103,8 +103,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
     }
 
     public void login() throws AcegiSecurityException {
-        final ApplicationContext appCtx = Application.services().getApplicationContext();
-        Application.services().getApplicationSecurityManager();
+        final ApplicationContext appCtx = Application.instance().getApplicationContext();
 
         // Attempt login
         UsernamePasswordAuthenticationToken request = new UsernamePasswordAuthenticationToken(getUsername(),
@@ -150,7 +149,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         }
 
         // Fire application event to advise of logout
-        ApplicationContext appCtx = Application.services().getApplicationContext();
+        ApplicationContext appCtx = Application.instance().getApplicationContext();
         appCtx.publishEvent(new LogoutEvent(existing));
 
         return existing;

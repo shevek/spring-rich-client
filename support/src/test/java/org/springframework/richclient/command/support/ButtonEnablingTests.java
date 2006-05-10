@@ -2,30 +2,37 @@ package org.springframework.richclient.command.support;
 
 import javax.swing.AbstractButton;
 
+import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.EqualsValueChangeDetector;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
+import org.springframework.richclient.application.support.StaticApplicationServices;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
-import junit.framework.TestCase;
 
-
-public class ButtonEnablingTests extends TestCase
+public class ButtonEnablingTests extends SpringRichTestCase
 {
     
-    protected void setUp() throws Exception
+    protected void doSetUp()
     {
         // load application
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
         StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext(applicationContext);
-        Application.services().setValueChangeDetector(new EqualsValueChangeDetector());
+        Application.instance().setApplicationContext(applicationContext);
         applicationContext.refresh();    
     }
     
+    /**
+     * May be implemented in subclasses that need to register services with the global
+     * application services instance.
+     */
+    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
+        applicationServices.registerService(new EqualsValueChangeDetector(), ValueChangeDetector.class);
+    }
+
     public void testButtonEnabling()
     {
         TestCommand testCommand = new TestCommand();
@@ -83,7 +90,8 @@ public class ButtonEnablingTests extends TestCase
     private void registerCommandFaceDescriptor(String faceId, AbstractCommand command)
     {
         CommandFaceDescriptor face = new CommandFaceDescriptor();
-        Application.services().configure(face, faceId);
+        ApplicationObjectConfigurer configurer = (ApplicationObjectConfigurer)ApplicationServicesLocator.services().getService(ApplicationObjectConfigurer.class);
+        configurer.configure(face, faceId);
         command.setFaceDescriptor(faceId, face);        
     }
 }

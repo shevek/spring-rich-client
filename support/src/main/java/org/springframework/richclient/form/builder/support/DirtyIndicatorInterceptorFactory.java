@@ -25,9 +25,11 @@ import javax.swing.JLabel;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
+import org.springframework.context.MessageSource;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
+import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;
 import org.springframework.util.ObjectUtils;
 
@@ -47,7 +49,8 @@ public class DirtyIndicatorInterceptorFactory implements FormComponentIntercepto
     private String iconKey = DEFAULT_ICON_KEY;
 
     public FormComponentInterceptor getInterceptor( FormModel formModel ) {
-        return new DirtyIndicatorInterceptor( formModel, Application.instance().getServices().getIcon( iconKey ) );
+        IconSource iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
+        return new DirtyIndicatorInterceptor( formModel, iconSource.getIcon( iconKey ) );
     }
 
     public void setIconKey( String iconKey ) {
@@ -87,10 +90,11 @@ public class DirtyIndicatorInterceptorFactory implements FormComponentIntercepto
                     }
 
                     if( isDirty(originalValueHolder.getValue(), evt.getNewValue()) ) {
-                        String tooltip = Application.services().getMessage(
+                        MessageSource messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
+                        String tooltip = messageSource.getMessage(
                                 DEFAULT_MESSAGE_KEY,
                                 new Object[] {
-                                        Application.services().getMessage( propertyName + ".label", null,
+                                        messageSource.getMessage( propertyName + ".label", null,
                                                 Locale.getDefault() ), originalValueHolder.getValue() }, null );
                         overlay.setToolTipText( tooltip );
                         overlay.setVisible( true );

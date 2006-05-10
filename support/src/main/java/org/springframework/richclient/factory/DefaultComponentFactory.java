@@ -50,7 +50,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.enums.LabeledEnumResolver;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.control.PatchedJFormattedTextField;
 import org.springframework.richclient.core.UIConstants;
@@ -81,7 +81,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     private MenuFactory menuFactory;
 
-    private LabeledEnumResolver enumResolver = Application.services().getLabeledEnumResolver();
+    private LabeledEnumResolver enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
 
     private MessageSource messageSource;
 
@@ -151,7 +151,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     private MessageSourceAccessor getMessages() {
         if (messages == null) {
-            return Application.services().getMessages();
+            messages = (MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
         }
         return messages;
     }
@@ -388,7 +388,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     private IconSource getIconSource() {
         if (iconSource == null) {
-            return Application.services().getIconSource();
+            iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
         }
         return iconSource;
     }

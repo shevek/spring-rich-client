@@ -142,7 +142,7 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
          * @param location of bean definitions
          */
         public CommandBarApplicationContext(String location) {
-            super( new String[] { location }, false, Application.services().getApplicationContext() );
+            super( new String[] { location }, false, Application.instance().getApplicationContext() );
             refresh();
         }
 

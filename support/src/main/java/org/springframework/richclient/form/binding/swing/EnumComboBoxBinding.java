@@ -23,7 +23,7 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.enums.LabeledEnumResolver;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.util.comparator.ComparableComparator;
@@ -63,7 +63,7 @@ public class EnumComboBoxBinding extends ComboBoxBinding {
 
     protected LabeledEnumResolver getEnumResolver() {
         if (enumResolver == null) {
-            enumResolver = Application.services().getLabeledEnumResolver();
+            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
         }
         return enumResolver;
     }
@@ -74,7 +74,7 @@ public class EnumComboBoxBinding extends ComboBoxBinding {
 
     protected MessageSource getMessageSource() {
         if (messageSource == null) {
-            messageSource = Application.services();
+            messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
         }
         return messageSource;
     }

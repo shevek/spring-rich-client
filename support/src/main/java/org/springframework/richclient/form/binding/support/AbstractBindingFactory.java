@@ -22,12 +22,13 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
+import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -45,8 +46,9 @@ public abstract class AbstractBindingFactory implements BindingFactory {
     
     protected AbstractBindingFactory(FormModel formModel) {
         Assert.notNull(formModel, "formModel can not be null.");
-        this.formModel = formModel;        
-        this.interceptor = Application.services().getInterceptor(formModel);
+        this.formModel = formModel;
+        FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory)ApplicationServicesLocator.services().getService(FormComponentInterceptorFactory.class);
+        interceptor = factory.getInterceptor(formModel);
     }
     
     public Binding createBinding(String formPropertyPath) {
@@ -97,7 +99,7 @@ public abstract class AbstractBindingFactory implements BindingFactory {
         
     protected BinderSelectionStrategy getBinderSelectionStrategy() {
         if (binderSelectionStrategy == null) {
-            binderSelectionStrategy = Application.services().getBinderSelectionStrategy();
+            binderSelectionStrategy = (BinderSelectionStrategy)ApplicationServicesLocator.services().getService(BinderSelectionStrategy.class);
         }
         return binderSelectionStrategy;
     }

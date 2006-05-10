@@ -25,6 +25,7 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
@@ -47,15 +48,19 @@ public class ApplicationServicesAccessor {
     }
 
     protected ApplicationServices getApplicationServices() {
-        return Application.services();
+        return ApplicationServicesLocator.services();
+    }
+
+    protected Object getService(Class serviceType) {
+        return getApplicationServices().getService(serviceType);
     }
 
     protected ApplicationContext getApplicationContext() {
-        return getApplicationServices().getApplicationContext();
+        return getApplication().getApplicationContext();
     }
 
     protected ComponentFactory getComponentFactory() {
-        return getApplicationServices().getComponentFactory();
+        return (ComponentFactory)getService(ComponentFactory.class);
     }
 
     protected MessageSource getMessageSource() {
@@ -63,23 +68,23 @@ public class ApplicationServicesAccessor {
     }
 
     protected MessageSourceAccessor getMessages() {
-        return getApplicationServices().getMessages();
+        return (MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
     }
 
     protected ImageSource getImageSource() {
-        return getApplicationServices().getImageSource();
+        return (ImageSource)getService(ImageSource.class);
     }
 
     protected IconSource getIconSource() {
-        return getApplicationServices().getIconSource();
+        return (IconSource)getService(IconSource.class);
     }
 
     protected ApplicationObjectConfigurer getObjectConfigurer() {
-        return getApplicationServices().getObjectConfigurer();
+        return (ApplicationObjectConfigurer)getService(ApplicationObjectConfigurer.class);
     }
 
     protected CommandConfigurer getCommandConfigurer() {
-        return getApplicationServices().getCommandConfigurer();
+        return (CommandConfigurer)getService(CommandConfigurer.class);
     }
 
     protected ApplicationWindow getActiveWindow() {

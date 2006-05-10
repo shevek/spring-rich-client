@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.acegisecurity.Authentication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
@@ -45,7 +46,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         app.openWindow( "start" );
 
         _testAuth1 = (TestAuthorizable) _applicationContext.getBean( "testAuth1" );
-        _manager = Application.services().getSecurityControllerManager();
+        _manager = (SecurityControllerManager)ApplicationServicesLocator.services().getService(SecurityControllerManager.class);
 
         // Prepare the command context
         ala.createWindowCommandManager();
@@ -82,7 +83,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
      * Test the processing of beans referenced in the app context.
      */
     public void testApplicationContext() {
-        ApplicationSecurityManager securityManager = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
         assertFalse( "Object should not be authorized", _testAuth1.isAuthorized() );
         assertEquals( "Object should be updated", _testAuth1.getAuthCount(), 2 );
@@ -121,7 +122,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
      * Test that the authorized state overrides the enabled state
      */
     public void testAuthorizedOverridesEnabled() {
-        ApplicationSecurityManager securityManager = Application.services().getApplicationSecurityManager();
+        ApplicationSecurityManager securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
         CommandManager cmgr = Application.instance().getActiveWindow().getCommandManager();
         ActionCommand cmdWrite = cmgr.getActionCommand( "cmdWrite" );
 

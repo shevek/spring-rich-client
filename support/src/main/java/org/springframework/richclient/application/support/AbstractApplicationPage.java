@@ -22,8 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.springframework.core.closure.support.AbstractConstraint;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageComponentDescriptor;
@@ -43,7 +43,8 @@ public abstract class AbstractApplicationPage implements ApplicationPage {
 	private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
 			PageComponentListener.class);
 
-	private final ViewDescriptorRegistry viewDescriptorRegistry = Application.services().getViewDescriptorRegistry();
+	private final ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator.services()
+            .getService(ViewDescriptorRegistry.class);
 
 	private final Set pageComponents = new LinkedHashSet();
 

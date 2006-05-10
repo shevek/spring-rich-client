@@ -24,7 +24,7 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.enums.LabeledEnumResolver;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.util.Assert;
 
@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
  */
 public class EnumComboBoxBinder extends ComboBoxBinder {
 
-    private final LabeledEnumResolver enumResolver = Application.services().getLabeledEnumResolver();
+    private LabeledEnumResolver enumResolver;
 
     public EnumComboBoxBinder() {
         super(new String[] {COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY});
@@ -46,9 +46,16 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
     }
 
     private ValueModel createEnumSelectableItemsHolder(FormModel formModel, String formPropertyPath) {
-        Collection enumCollection = enumResolver.getLabeledEnumSet(getPropertyType(formModel, formPropertyPath));
+        Collection enumCollection = getLabeledEnumResolver().getLabeledEnumSet(getPropertyType(formModel, formPropertyPath));
         Assert.notNull(enumCollection, "Unable to resolve enums for class '"
                 + getPropertyType(formModel, formPropertyPath).getName() + "'.");
         return new ValueHolder(enumCollection);
+    }
+    
+    private LabeledEnumResolver getLabeledEnumResolver() {
+        if( enumResolver == null ) {
+            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
+        }
+        return enumResolver;
     }
 }

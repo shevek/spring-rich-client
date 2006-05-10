@@ -15,9 +15,10 @@
  */
 package org.springframework.richclient.command.support;
 
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationWindowAware;
 import org.springframework.richclient.command.CommandGroup;
 
@@ -44,8 +45,10 @@ public class ShowViewMenu extends CommandGroup implements ApplicationWindowAware
     }
 
     private void populate() {
-        ViewDescriptor[] views = Application.services().getViewDescriptorRegistry().getViewDescriptors();
-        for (int i = 0; i < views.length; i++) {
+        ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator.services().getService(
+                ViewDescriptorRegistry.class);
+        ViewDescriptor[] views = viewDescriptorRegistry.getViewDescriptors();
+        for( int i = 0; i < views.length; i++ ) {
             ViewDescriptor view = views[i];
             addInternal(view.createShowViewCommand(window));
         }

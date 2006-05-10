@@ -17,9 +17,10 @@ package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JComponent;
 
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.DecoratedControlBinding;
-import org.springframework.richclient.application.Application;
 
 /**
  * A convenience class that decorates the component produced from a source
@@ -30,11 +31,11 @@ import org.springframework.richclient.application.Application;
  */
 public class ScrollPaneDecoratedBinding extends DecoratedControlBinding {
     public ScrollPaneDecoratedBinding(final Binding source) {
-        this(source, Application.services().getComponentFactory().createScrollPane(source.getControl()));
+        this(source, ((ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class)).createScrollPane(source.getControl()));
     }
 
     public ScrollPaneDecoratedBinding(final Binding source, final int vsbPolicy, final int hsbPolicy) {
-        this(source, Application.services().getComponentFactory().createScrollPane(source.getControl(), vsbPolicy,
+        this(source, ((ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class)).createScrollPane(source.getControl(), vsbPolicy,
                 hsbPolicy));
     }
 

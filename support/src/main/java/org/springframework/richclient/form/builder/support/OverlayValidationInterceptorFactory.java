@@ -24,13 +24,14 @@ import javax.swing.JTextField;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.validation.Severity;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.DefaultMessageAreaModel;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
+import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;
 
 /**
@@ -52,64 +53,65 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
     }
 
     public FormComponentInterceptor getInterceptor( FormModel formModel ) {
-        return new OverlayValidationInterceptor( formModel );
+        return new OverlayValidationInterceptor(formModel);
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
 
         public OverlayValidationInterceptor( FormModel formModel ) {
-            super( formModel );
+            super(formModel);
         }
 
         public void processComponent( String propertyName, final JComponent component ) {
             final ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
-            registerGuarded( propertyName, overlay );
-            registerMessageReceiver( propertyName, overlay );
+            registerGuarded(propertyName, overlay);
+            registerMessageReceiver(propertyName, overlay);
 
             if( component.getParent() == null ) {
                 PropertyChangeListener waitUntilHasParentListener = new PropertyChangeListener() {
                     public void propertyChange( PropertyChangeEvent e ) {
                         if( component.getParent() != null ) {
-                            component.removePropertyChangeListener( "ancestor", this );
-                            attachOverlay( overlay, component );
+                            component.removePropertyChangeListener("ancestor", this);
+                            attachOverlay(overlay, component);
                         }
                     }
                 };
-                component.addPropertyChangeListener( "ancestor", waitUntilHasParentListener );
+                component.addPropertyChangeListener("ancestor", waitUntilHasParentListener);
             } else {
-                attachOverlay( overlay, component );
+                attachOverlay(overlay, component);
             }
         }
 
         private void attachOverlay( ErrorReportingOverlay overlay, JComponent component ) {
             int yOffset = component.getPreferredSize().height;
-            InterceptorOverlayHelper.attachOverlay( overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min( yOffset,
-                    textCompHeight ) );
+            InterceptorOverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
+                    textCompHeight));
         }
     }
 
     private class ErrorReportingOverlay extends JLabel implements Messagable, Guarded {
-        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel( this );
+        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
 
         public boolean isEnabled() {
             return true;
         }
 
         public void setEnabled( boolean enabled ) {
-            setVisible( !enabled );
+            setVisible(!enabled);
         }
 
         public void setMessage( Message message ) {
-            messageBuffer.setMessage( message );
+            messageBuffer.setMessage(message);
             message = messageBuffer.getMessage();
-            setToolTipText( message.getText() );
+            setToolTipText(message.getText());
             Severity severity = message.getSeverity();
+
             if( severity != null ) {
-                setIcon( Application.services().getIconSource()
-                        .getIcon( "severity." + severity.getLabel() + ".overlay" ) );
+                IconSource iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
+                setIcon(iconSource.getIcon("severity." + severity.getLabel() + ".overlay"));
             } else {
-                setIcon( null );
+                setIcon(null);
             }
         }
     }

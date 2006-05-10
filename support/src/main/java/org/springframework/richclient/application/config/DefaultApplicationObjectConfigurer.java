@@ -26,7 +26,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
@@ -75,6 +75,13 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 
     private IconSource iconSource;
 
+    /**
+     * Default constructor.  Will obtain services dependencies from the ApplicationServices
+     * locator.
+     */
+    public DefaultApplicationObjectConfigurer() {
+    }
+
     public DefaultApplicationObjectConfigurer(MessageSource messageSource) {
         this(messageSource, null, null);
     }
@@ -85,7 +92,6 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 
     public DefaultApplicationObjectConfigurer(MessageSource messageSource, ImageSource imageSource,
             IconSource iconSource) {
-        Assert.notNull(messageSource, "The message source is required");
         this.messageSource = messageSource;
         this.imageSource = imageSource;
         this.iconSource = iconSource;
@@ -96,14 +102,23 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
     }
 
     protected MessageSource getMessageSource() {
+        if( messageSource == null ) {
+            messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
+        }
         return messageSource;
     }
 
     protected IconSource getIconSource() {
+        if( iconSource == null ) {
+            iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
+        }
         return iconSource;
     }
 
     protected ImageSource getImageSource() {
+        if( imageSource == null ) {
+            imageSource = (ImageSource)ApplicationServicesLocator.services().getService(ImageSource.class);
+        }
         return imageSource;
     }
 
@@ -186,7 +201,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 
             if( controllerId != null ) {
                 // Find the referenced controller.
-                SecurityControllerManager manager = Application.services().getSecurityControllerManager();
+                SecurityControllerManager manager = (SecurityControllerManager)ApplicationServicesLocator.services().getService(SecurityControllerManager.class);
                 SecurityController controller = manager.getSecurityController( controllerId );
 
                 if( logger.isDebugEnabled() ) {

@@ -66,8 +66,7 @@ public class MessageDialogSample {
         Application.load( null );
         new Application( new DefaultApplicationLifecycleAdvisor() );
         StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext( applicationContext );
-        Application.services().setValueChangeDetector( new EqualsValueChangeDetector() );
+        Application.instance().setApplicationContext( applicationContext );
         applicationContext.getStaticMessageSource().addMessage( "okCommand.label", Locale.getDefault(), "Ok" );
         applicationContext.refresh();
     }

@@ -25,7 +25,8 @@ import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.validation.Severity;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.ObjectUtils;
@@ -99,7 +100,8 @@ public class Message implements Serializable {
             return null;
         }
         try {
-            return Application.services().getIconSource().getIcon("severity." + severity.getLabel());
+            IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
+            return iconSource.getIcon("severity." + severity.getLabel());
         }
         catch (NoSuchImageResourceException e) {
             return null;

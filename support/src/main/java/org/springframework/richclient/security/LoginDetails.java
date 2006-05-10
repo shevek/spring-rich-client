@@ -17,7 +17,7 @@ package org.springframework.richclient.security;
 
 import org.acegisecurity.Authentication;
 import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.PropertyConstraint;
@@ -52,7 +52,8 @@ public class LoginDetails implements PropertyConstraintProvider {
      */
     public LoginDetails() {
         // Retrieve any existing login information and install it
-        Authentication authentication = Application.services().getApplicationSecurityManager().getAuthentication();
+        ApplicationSecurityManager sm = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
+        Authentication authentication = sm.getAuthentication();
         if( authentication != null ) {
             setUsername( authentication.getName() );
         }

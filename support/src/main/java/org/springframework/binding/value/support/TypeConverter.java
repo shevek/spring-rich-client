@@ -22,7 +22,7 @@ import org.springframework.binding.value.DerivedValueModel;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 
 /**
  * A value model wrapper that supports converting the wrapped value to and from another type 
@@ -74,7 +74,7 @@ public class TypeConverter extends AbstractValueModelWrapper implements DerivedV
 
     protected ValueChangeDetector getValueChangeDetector() {
         if( valueChangeDetector == null ) {
-            valueChangeDetector = Application.services().getValueChangeDetector();
+            valueChangeDetector = (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
         }
         return valueChangeDetector;
     }

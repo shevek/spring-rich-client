@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.GridBagLayoutDebugPanel;
 
@@ -127,7 +127,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
 
     public ComponentFactory getComponentFactory() {
         if (componentFactory == null) {
-            componentFactory = Application.services().getComponentFactory();
+            componentFactory = (ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class);
         }
         return componentFactory;
     }

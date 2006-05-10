@@ -128,7 +128,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 Authentication authentication = loginForm.getAuthentication();
 
                 // Hand this token to the security manager to actually attempt the login
-                ApplicationSecurityManager sm = getApplicationServices().getApplicationSecurityManager();
+                ApplicationSecurityManager sm = (ApplicationSecurityManager)getService(ApplicationSecurityManager.class);
                 try {
                     sm.doLogin( authentication );
                     postLogin();
@@ -150,8 +150,8 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
 
                 // Now exit if configured
                 if( isCloseOnCancel() ) {
-                    Authentication authentication = getApplicationServices().getApplicationSecurityManager()
-                        .getAuthentication();
+                    ApplicationSecurityManager sm = (ApplicationSecurityManager)getService(ApplicationSecurityManager.class);
+                    Authentication authentication = sm.getAuthentication();
                     if( authentication == null ) {
                         _logger.info( "User canceled login; close the application." );
                         getApplication().close();

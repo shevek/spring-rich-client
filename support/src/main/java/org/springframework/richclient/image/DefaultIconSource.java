@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.util.CachingMapDecorator;
 
 /**
@@ -37,26 +38,11 @@ public class DefaultIconSource implements IconSource {
     private IconCache cache;
 
     /**
-     * Icon cache using soft references.
-     * 
-     * @author Keith Donald
+     * Default constructor.  Will obtain services dependencies from the ApplicationServices
+     * locator.
      */
-    protected static class IconCache extends CachingMapDecorator {
-        private ImageSource images;
-
-        public IconCache(ImageSource images) {
-            super(true);
-            this.images = images;
-        }
-
-        public Object create(Object key) {
-            Image image = images.getImage((String)key);
-            return new ImageIcon(image);
-        }
-
-        public ImageSource images() {
-            return images;
-        }
+    public DefaultIconSource() {
+        this( (ImageSource)ApplicationServicesLocator.services().getService(ImageSource.class));
     }
 
     /**
@@ -97,4 +83,26 @@ public class DefaultIconSource implements IconSource {
         return cache;
     }
 
+    /**
+     * Icon cache using soft references.
+     * 
+     * @author Keith Donald
+     */
+    protected static class IconCache extends CachingMapDecorator {
+        private ImageSource images;
+
+        public IconCache(ImageSource images) {
+            super(true);
+            this.images = images;
+        }
+
+        public Object create(Object key) {
+            Image image = images.getImage((String)key);
+            return new ImageIcon(image);
+        }
+
+        public ImageSource images() {
+            return images;
+        }
+    }
 }

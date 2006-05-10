@@ -178,6 +178,8 @@ public class ApplicationLauncher {
         try {
             Application application = (Application)rootApplicationContext.getBean(APPLICATION_BEAN_ID,
                     Application.class);
+
+            application.getLifecycleAdvisor().onPreStartup();
             application.openWindow(application.getLifecycleAdvisor().getStartingPageId());
             application.getLifecycleAdvisor().onPostStartup();
         }

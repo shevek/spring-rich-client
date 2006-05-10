@@ -19,20 +19,18 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.form.ValidatingFormModel;
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.support.StaticApplicationServices;
 import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.Rules;
+import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
  * @author Peter De Bruycker
  */
-public class FormGuardTests extends TestCase {
+public class FormGuardTests extends SpringRichTestCase {
 
     private ValidatingFormModel formModel;
 
@@ -105,25 +103,25 @@ public class FormGuardTests extends TestCase {
         
     }
 
-    protected void setUp() throws Exception {
-        DefaultRulesSource rulesSource = new DefaultRulesSource();
-        Rules rules = new Rules(TestBean.class);
-        rules.add("field", rules.required());
-        rulesSource.addRules(rules);
-
-        // load application
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-        StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.services().setApplicationContext(applicationContext);
-        Application.services().setRulesSource(rulesSource);
-        applicationContext.refresh();
-
+    protected void doSetUp() {
         guarded = new TestGuarded();
         TestBean bean = new TestBean();
         bean.setField("ok"); // initialize rule to be valid.
         formModel = FormModelHelper.createFormModel(bean);
         formModel.setEnabled(true);
+    }
+
+    /**
+     * May be implemented in subclasses that need to register services with the global
+     * application services instance.
+     */
+    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
+        DefaultRulesSource rulesSource = new DefaultRulesSource();
+        Rules rules = new Rules(TestBean.class);
+        rules.add("field", rules.required());
+        rulesSource.addRules(rules);
+
+        applicationServices.registerService(rulesSource, RulesSource.class);
     }
 
     public void testEnabledState() {

@@ -39,6 +39,7 @@ import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.BindingFactoryProvider;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -142,7 +143,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
 
     public BindingFactory getBindingFactory() {
         if (bindingFactory == null) {
-            bindingFactory = getApplicationServices().getBindingFactory(formModel);
+            bindingFactory = ((BindingFactoryProvider)getService(BindingFactoryProvider.class)).getBindingFactory(formModel);
         }
         return bindingFactory;
     }
