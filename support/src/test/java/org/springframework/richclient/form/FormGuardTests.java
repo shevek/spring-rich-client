@@ -20,11 +20,10 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 import org.springframework.binding.form.ValidatingFormModel;
-import org.springframework.richclient.application.support.StaticApplicationServices;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.Rules;
-import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
@@ -115,13 +114,13 @@ public class FormGuardTests extends SpringRichTestCase {
      * May be implemented in subclasses that need to register services with the global
      * application services instance.
      */
-    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
+    protected void registerAdditionalServices( DefaultApplicationServices applicationServices ) {
         DefaultRulesSource rulesSource = new DefaultRulesSource();
         Rules rules = new Rules(TestBean.class);
         rules.add("field", rules.required());
         rulesSource.addRules(rules);
 
-        applicationServices.registerService(rulesSource, RulesSource.class);
+        applicationServices.setRulesSource(rulesSource);
     }
 
     public void testEnabledState() {

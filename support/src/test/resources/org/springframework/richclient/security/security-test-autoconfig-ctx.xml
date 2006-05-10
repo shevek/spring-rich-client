@@ -8,6 +8,14 @@
       use the defined authentication manager
 -->
  
+<bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+    <property name="applicationServices" ref="applicationServices"/>
+</bean>
+
+<bean id="applicationServices"
+    class="org.springframework.richclient.application.support.DefaultApplicationServices">
+</bean>
+
 <bean id="authenticationManager"
 	class="org.springframework.richclient.security.TestAuthenticationManager"/>
 

@@ -2,13 +2,10 @@ package org.springframework.richclient.command.support;
 
 import javax.swing.AbstractButton;
 
-import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.EqualsValueChangeDetector;
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.application.support.StaticApplicationServices;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.test.SpringRichTestCase;
@@ -17,20 +14,12 @@ import org.springframework.richclient.test.SpringRichTestCase;
 public class ButtonEnablingTests extends SpringRichTestCase
 {
     
-    protected void doSetUp()
-    {
-        // load application
-        StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.instance().setApplicationContext(applicationContext);
-        applicationContext.refresh();    
-    }
-    
     /**
      * May be implemented in subclasses that need to register services with the global
      * application services instance.
      */
-    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
-        applicationServices.registerService(new EqualsValueChangeDetector(), ValueChangeDetector.class);
+    protected void registerAdditionalServices( DefaultApplicationServices applicationServices ) {
+        applicationServices.setValueChangeDetector(new EqualsValueChangeDetector());
     }
 
     public void testButtonEnabling()

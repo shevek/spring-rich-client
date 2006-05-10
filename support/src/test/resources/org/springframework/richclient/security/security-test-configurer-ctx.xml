@@ -3,6 +3,15 @@
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
+<bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+    <property name="applicationServices" ref="applicationServices"/>
+</bean>
+
+<bean id="applicationServices"
+    class="org.springframework.richclient.application.support.DefaultApplicationServices">
+    <property name="applicationSecurityManager" ref="applicationSecurityManager" />
+</bean>
+
 <bean id="applicationSecurityManager"
 	class="org.springframework.richclient.security.support.DefaultApplicationSecurityManager">
 	<property name="authenticationManager" ref="authenticationManager"/>

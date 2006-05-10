@@ -15,27 +15,19 @@
  */
 package org.springframework.binding.form.support;
 
-import java.util.Map;
 import java.util.HashMap;
-
-import junit.framework.TestCase;
+import java.util.Map;
 
 import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * 
  * @author  Oliver Hutchison
  */
-public class PropertyMetadataImplTests extends TestCase {
-
-    public final void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
+public class PropertyMetadataImplTests extends SpringRichTestCase {
 
     public void testDirtyChangeTrackingOnValueChange() {
         FormModelMediatingValueModel vm = new FormModelMediatingValueModel(new ValueHolder("v1"));

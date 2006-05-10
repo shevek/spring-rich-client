@@ -15,24 +15,19 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
-public abstract class BindingAbstractTest extends TestCase {
+public abstract class BindingAbstractTest extends SpringRichTestCase {
     
     protected ConfigurableFormModel fm;
 
     protected ValueModel vm;
 
-    public final void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor()); 
+    public void doSetUp() {
         fm = new DefaultFormModel(new TestBean());        
         String property = setUpBinding();
         vm = fm.getValueModel(property);

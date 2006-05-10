@@ -30,9 +30,6 @@ import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.PropertyMetadata;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 /**
  * Tests for ListBinder and ListBinding
@@ -54,11 +51,6 @@ public class ListBinderAbstractTest extends BindingAbstractTest {
     private JList c;
 
     protected String setUpBinding() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-        StaticApplicationContext applicationContext = new StaticApplicationContext();
-        Application.instance().setApplicationContext(applicationContext);
-        applicationContext.refresh();
 
         lb = new ListBinder();
         context = new HashMap();

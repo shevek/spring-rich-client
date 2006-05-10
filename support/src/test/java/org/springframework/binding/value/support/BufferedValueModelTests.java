@@ -448,7 +448,7 @@ public final class BufferedValueModelTests extends SpringRichTestCase {
         // Now replace the default value change detector with one that
         // only uses true equivalence.
         ValueChangeDetector oldVCD = (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
-        getApplicationServices().registerService(new StrictEquivalenceValueChangeDetector(), ValueChangeDetector.class);
+        getApplicationServices().setValueChangeDetector(new StrictEquivalenceValueChangeDetector());
         testValueChangeSendsProperEvents(null, obj1,   true);
         testValueChangeSendsProperEvents(obj1, null,   true);
         testValueChangeSendsProperEvents(obj1, obj1,   false);
@@ -456,7 +456,7 @@ public final class BufferedValueModelTests extends SpringRichTestCase {
         testValueChangeSendsProperEvents(obj2a, obj2b, true); 
         testValueChangeSendsProperEvents(null, null,   false);
 
-        getApplicationServices().registerService(oldVCD, ValueChangeDetector.class);
+        getApplicationServices().setValueChangeDetector(oldVCD);
     }
 
   

@@ -19,15 +19,12 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.binding.value.ValueChangeDetector;
-import org.springframework.binding.value.support.DefaultValueChangeDetector;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
-import org.springframework.richclient.application.support.StaticApplicationServices;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
 
 /**
  * Convenient base implementation for Spring Rich test cases; automatically configures the
@@ -43,11 +40,12 @@ public abstract class SpringRichTestCase extends TestCase {
      */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    protected StaticApplicationServices applicationServices;
+    protected DefaultApplicationServices applicationServices;
 
     protected final void setUp() throws Exception {
         try {
-            applicationServices = new StaticApplicationServices();
+            Application.load(null);
+            applicationServices = new DefaultApplicationServices();
             new ApplicationServicesLocator(applicationServices);
 
             new Application(new DefaultApplicationLifecycleAdvisor());
@@ -68,22 +66,21 @@ public abstract class SpringRichTestCase extends TestCase {
     /**
      * Register the application services needed for our tests.
      */
-    protected void registerBasicServices( StaticApplicationServices applicationServices ) {
-        applicationServices.registerService(new StaticMessageSource(), MessageSource.class);
-        applicationServices.registerService(new DefaultValueChangeDetector(), ValueChangeDetector.class);
+    protected void registerBasicServices( DefaultApplicationServices applicationServices ) {
+        applicationServices.setMessageSource(new StaticMessageSource());
     }
 
     /**
      * May be implemented in subclasses that need to register services with the global
      * application services instance.
      */
-    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
+    protected void registerAdditionalServices( DefaultApplicationServices applicationServices ) {
     }
 
     /**
      * Get the application services instance.
      */
-    protected StaticApplicationServices getApplicationServices() {
+    protected DefaultApplicationServices getApplicationServices() {
         return applicationServices;
     }
 

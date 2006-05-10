@@ -47,6 +47,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
      */
     private void prepareApplication(String ctxFileName) {
         Application.load( null );
+        ApplicationServicesLocator.load(null);
         Application app = new Application( new DefaultApplicationLifecycleAdvisor() );
 
         if( ctxFileName != null ) {

@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
@@ -32,15 +30,14 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.support.Block;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Tests class {@link BeanPropertyAccessStrategy}.
  * 
  * @author Oliver Hutchison
  */
-public class BeanPropertyAccessStrategyTests extends TestCase {
+public class BeanPropertyAccessStrategyTests extends SpringRichTestCase {
 
     private BeanPropertyAccessStrategy pas;
 
@@ -50,9 +47,7 @@ public class BeanPropertyAccessStrategyTests extends TestCase {
 
     private TestPropertyChangeListener pcl;
 
-    protected void setUp() throws Exception {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
+    protected void doSetUp() throws Exception {
         testBean = new TestBean();
         pas = new BeanPropertyAccessStrategy(testBean);
         pcl = new TestPropertyChangeListener(ValueModel.VALUE_PROPERTY);

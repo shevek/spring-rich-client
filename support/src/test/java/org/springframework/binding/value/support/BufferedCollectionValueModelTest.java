@@ -27,30 +27,22 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import junit.framework.TestCase;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Test cases for {@link BufferedCollectionValueModel}
  *
  * @author oliverh
  */
-public class BufferedCollectionValueModelTest extends TestCase {
+public class BufferedCollectionValueModelTest extends SpringRichTestCase {
 
     private Class[] supportedIterfaces = new Class[] {Collection.class, List.class, Set.class, SortedSet.class,};
 
     private Class[] supportedClasses = new Class[] {ArrayList.class, HashSet.class, TreeSet.class,};
-
-    public void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
 
     public void testCreating() {
         try {

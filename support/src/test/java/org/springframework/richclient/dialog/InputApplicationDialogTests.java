@@ -17,10 +17,9 @@ package org.springframework.richclient.dialog;
 
 import javax.swing.JTextField;
 
-import org.springframework.richclient.application.support.StaticApplicationServices;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
 import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.Rules;
-import org.springframework.rules.RulesSource;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
@@ -30,6 +29,11 @@ public class InputApplicationDialogTests extends SpringRichTestCase {
     private static final String BUSINESS_FIELD = "name";
 
     private BusinessObject businessObject;
+
+    protected void doSetUp() {
+        // create business object
+        businessObject = new BusinessObject();
+    }
 
     public void testInitialEnabledState() {
         assertEnabledStateReflectsFormModelState(createDialog(businessObject, BUSINESS_FIELD));
@@ -71,17 +75,12 @@ public class InputApplicationDialogTests extends SpringRichTestCase {
         assertEnabledStateReflectsFormModelState(dialog);
     }
 
-    protected void doSetUp() {
-        // create business object
-        businessObject = new BusinessObject();
-    }
-
     /**
      * May be implemented in subclasses that need to register services with the global
      * application services instance.
      */
-    protected void registerAdditionalServices( StaticApplicationServices applicationServices ) {
-        applicationServices.registerService(new BusinessRulesSource(), RulesSource.class);
+    protected void registerAdditionalServices( DefaultApplicationServices applicationServices ) {
+        applicationServices.setRulesSource(new BusinessRulesSource());
     }
 
     private class BusinessRulesSource extends DefaultRulesSource {
