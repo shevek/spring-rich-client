@@ -18,8 +18,6 @@ package org.springframework.binding.form.support;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import junit.framework.TestCase;
-
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.ConversionService;
@@ -29,20 +27,14 @@ import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * Tests for @link AbstractFormModel
  * 
  * @author  Oliver Hutchison
  */
-public class AbstractFormModelTests extends TestCase {
-
-    public void setUp() {
-        Application.load(null);
-        new Application(new DefaultApplicationLifecycleAdvisor());
-    }
+public class AbstractFormModelTests extends SpringRichTestCase {
 
     protected AbstractFormModel getFormModel(Object formObject) {
         return new TestAbstractFormModel(formObject);
