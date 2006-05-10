@@ -118,7 +118,7 @@ Introduction
     In order to support simple programmatic use of the <<<ApplicationServices>>>, a new
     <<<StaticApplicationServices>>> class has been provided.  It has a simple
     <<<registerService(Object service, Class serviceInterface)>>> method for registering
-    a service.  Take a look at the new <<<SpringRichTestClass>> for an example of how this
+    a service.  Take a look at the new <<<SpringRichTestClass>>> for an example of how this
     can be used for programmatic control.
     
     
