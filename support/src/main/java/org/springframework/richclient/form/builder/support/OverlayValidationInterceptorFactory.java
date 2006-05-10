@@ -20,9 +20,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JViewport;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.validation.Severity;
@@ -36,12 +34,11 @@ import org.springframework.richclient.form.builder.FormComponentInterceptorFacto
 import org.springframework.richclient.util.OverlayHelper;
 
 /**
- * Adds an "overlay" to a component that is triggered by a validation event. The
- * overlaid image is retrieved by the image key
- * "severity.{severityShortCode}.overlay", where {severityShortCode} is the
- * number returned by {@link Severity#getShortCode()}. The image is placed at
- * the bottom-left corner of the component, and the image's tooltip is set to
- * the validation message.
+ * Adds an "overlay" to a component that is triggered by a validation event. The overlaid
+ * image is retrieved by the image key "severity.{severityShortCode}.overlay", where
+ * {severityShortCode} is the number returned by {@link Severity#getShortCode()}. The
+ * image is placed at the bottom-left corner of the component, and the image's tooltip is
+ * set to the validation message.
  * 
  * @author Oliver Hutchison
  * @see OverlayHelper#attachOverlay
@@ -54,76 +51,65 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
         textCompHeight = new JTextField().getPreferredSize().height;
     }
 
-    public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        return new OverlayValidationInterceptor(formModel);
+    public FormComponentInterceptor getInterceptor( FormModel formModel ) {
+        return new OverlayValidationInterceptor( formModel );
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
 
-        public OverlayValidationInterceptor(FormModel formModel) {
-            super(formModel);
+        public OverlayValidationInterceptor( FormModel formModel ) {
+            super( formModel );
         }
 
-        public void processComponent(String propertyName, final JComponent component) {
+        public void processComponent( String propertyName, final JComponent component ) {
             final ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
-            registerGuarded(propertyName, overlay);
-            registerMessageReceiver(propertyName, overlay);
+            registerGuarded( propertyName, overlay );
+            registerMessageReceiver( propertyName, overlay );
 
-            if (component.getParent() == null) {
+            if( component.getParent() == null ) {
                 PropertyChangeListener waitUntilHasParentListener = new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent e) {
-                        if (component.getParent() != null) {
-                            component.removePropertyChangeListener("ancestor", this);
-                            attachOverlay(overlay, component);
+                    public void propertyChange( PropertyChangeEvent e ) {
+                        if( component.getParent() != null ) {
+                            component.removePropertyChangeListener( "ancestor", this );
+                            attachOverlay( overlay, component );
                         }
                     }
                 };
-                component.addPropertyChangeListener("ancestor", waitUntilHasParentListener);
+                component.addPropertyChangeListener( "ancestor", waitUntilHasParentListener );
+            } else {
+                attachOverlay( overlay, component );
             }
-            else {
-                attachOverlay(overlay, component);
-            }
         }
 
-        private void attachOverlay(ErrorReportingOverlay overlay, JComponent component) {
-            JComponent componentToOverlay = hasParentScrollPane(component) ? getParentScrollPane(component) : component;
-            int yOffset = componentToOverlay.getPreferredSize().height;
-            OverlayHelper.attachOverlay(overlay, componentToOverlay, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
-                    textCompHeight));
-        }
-
-        private JScrollPane getParentScrollPane(JComponent component) {
-            return (JScrollPane)component.getParent().getParent();
-        }
-
-        private boolean hasParentScrollPane(JComponent component) {
-            return component.getParent() != null && component.getParent() instanceof JViewport
-                    && component.getParent().getParent() instanceof JScrollPane;
+        private void attachOverlay( ErrorReportingOverlay overlay, JComponent component ) {
+            int yOffset = component.getPreferredSize().height;
+            InterceptorOverlayHelper.attachOverlay( overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min( yOffset,
+                    textCompHeight ) );
         }
     }
 
     private class ErrorReportingOverlay extends JLabel implements Messagable, Guarded {
-        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
+        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel( this );
 
         public boolean isEnabled() {
             return true;
         }
 
-        public void setEnabled(boolean enabled) {
-            setVisible(!enabled);
+        public void setEnabled( boolean enabled ) {
+            setVisible( !enabled );
         }
 
-        public void setMessage(Message message) {
-            messageBuffer.setMessage(message);
+        public void setMessage( Message message ) {
+            messageBuffer.setMessage( message );
             message = messageBuffer.getMessage();
-            setToolTipText(message.getText());
+            setToolTipText( message.getText() );
             Severity severity = message.getSeverity();
-            if (severity != null) {
-                setIcon(Application.services().getIconSource().getIcon("severity." + severity.getLabel() + ".overlay"));
-            }
-            else {
-                setIcon(null);
+            if( severity != null ) {
+                setIcon( Application.services().getIconSource()
+                        .getIcon( "severity." + severity.getLabel() + ".overlay" ) );
+            } else {
+                setIcon( null );
             }
         }
     }
