@@ -44,7 +44,7 @@
           <a href="http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/">
               http://www.ibiblio.org/maven2/org/springframework/spring-core/1.2.6/
           </a> has groupId org.springframework, artifactId spring-core and version 1.2.6.
-          Note: <a href="http://www.mavenregistry.com">http://www.mavenregistry.com</a> is an easier to search.
+          Note: <a href="http://www.mvnrepository.com">http://www.mvnrepository.com</a> is an easier to search.
         </p>
         <ul>
           <li>
@@ -79,14 +79,14 @@
         </p>
         <p>
           Warning: Some libraries have their pom on Ibiblio but not their artifact (jar, war, ...),
-          such as Sun's activation.
+          such as Sun's older activation jars.
           Add the jar to our own remote repository but use the pom of Ibiblio as it will
           have decently configured transitive dependencies.
         </p>
       </answer>
     </faq>
     <faq>
-      <question>Do we have our own remote repository for dependencies?</question>
+      <question>Do we have our own remote repository for dependencies not in Ibiblio?</question>
       <answer>
         <p>
           Yes, it's at
