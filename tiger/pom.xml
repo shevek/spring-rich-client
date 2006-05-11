@@ -71,11 +71,12 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-support</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-support</artifactId>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-support</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
