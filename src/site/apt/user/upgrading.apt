@@ -114,12 +114,44 @@ Introduction
     appropriate delegated calls, so it can continue to be used as is.  Also, the
     <<<Application.services()>>> method still exists, it just delegates to
     <<<ApplicationServicesLocator.services()>>>.
+
+    One final note.  The order of object initialization has gotten a little more sensitive
+    with this change.  Previously, several classes used a member initializer to obtain
+    a reference to a needed service (like LabeledEnumResolver).  This can be a problem
+    now if the class in question is itself a service that needs to be registered with
+    the service locator.  If so (as was the DefaultComponentFactory for example), then
+    you need to refactor the member initializer to use runtime resolution instead.  As
+    a concrete example, the code in DefaultFormFactory used to have this initializer:
     
++---
+    private LabeledEnumResolver enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
++---
+
+    Now, this code should be used (and all references to the <<<eunumResolver>>> member
+    should be replaced with calls to <<<getEnumResolver>>>):
+
++---
+    public void setEnumResolver(LabeledEnumResolver enumResolver) {
+        this.enumResolver = enumResolver;
+    }
+
+    protected LabeledEnumResolver getEnumResolver() {
+        if (enumResolver == null) {
+            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
+        }
+        return enumResolver;
+    }
++---
+
     In order to support simple programmatic use of the <<<ApplicationServices>>>, a new
     <<<StaticApplicationServices>>> class has been provided.  It has a simple
     <<<registerService(Object service, Class serviceInterface)>>> method for registering
-    a service.  Take a look at the new <<<SpringRichTestClass>>> for an example of how this
-    can be used for programmatic control.
+    a service.
+    
+    And lastly, there is a new test case base class that makes getting the proper application
+    and services locator configured, named <<<SpringRichTestClass>>>.  Take a look at how
+    it's used in the existing test classes for more details.  All new tests should use this
+    class as their base class.
     
     
 pre-0.1.0 to 0.1.0
