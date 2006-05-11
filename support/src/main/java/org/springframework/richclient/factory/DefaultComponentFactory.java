@@ -81,7 +81,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     private MenuFactory menuFactory;
 
-    private LabeledEnumResolver enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
+    private LabeledEnumResolver enumResolver;
 
     private MessageSource messageSource;
 
@@ -106,6 +106,13 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     public void setEnumResolver(LabeledEnumResolver enumResolver) {
         this.enumResolver = enumResolver;
+    }
+
+    protected LabeledEnumResolver getEnumResolver() {
+        if (enumResolver == null) {
+            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
+        }
+        return enumResolver;
     }
 
     public JLabel createLabel(String labelKey) {
