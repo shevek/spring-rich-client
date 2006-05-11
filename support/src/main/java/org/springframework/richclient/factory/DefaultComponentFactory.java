@@ -309,7 +309,7 @@ public class DefaultComponentFactory implements ComponentFactory {
     }
 
     public void configureForEnum(JComboBox comboBox, Class enumType) {
-        Collection enumValues = enumResolver.getLabeledEnumSet(enumType);
+        Collection enumValues = getEnumResolver().getLabeledEnumSet(enumType);
         if (logger.isDebugEnabled()) {
             logger.debug("Populating combo box model with enums of type '" + enumType.getName() + "'; enums are ["
                     + enumValues + "]");
