@@ -42,7 +42,7 @@ public class StaticApplicationServices implements ApplicationServices {
 
     public void registerService(Object service, Class serviceInterface) {
         Assert.required(service, "service");
-        Assert.required(service, "serviceInterface");
+        Assert.required(serviceInterface, "serviceInterface");
         services.put(serviceInterface, service);
     }
 }
