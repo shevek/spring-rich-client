@@ -34,6 +34,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import javax.swing.Scrollable;
 
 /**
  * A helper class that attaches one component (the overlay) on top of another
@@ -236,7 +237,7 @@ public class OverlayHelper implements SwingConstants {
         }
         Dimension size = overlay.getPreferredSize();
         Rectangle newBound = new Rectangle(centerX - (size.width / 2), centerY - (size.height / 2), size.width,
-                size.height);
+                                           size.height);
         setOverlayBounds(newBound);
     }
 
@@ -253,7 +254,7 @@ public class OverlayHelper implements SwingConstants {
     protected Container getOverlayCapableParent(JComponent component) {
         Container overlayCapableParent = component.getParent();
         while (overlayCapableParent != null && !(overlayCapableParent instanceof JRootPane)
-                && !(overlayCapableParent instanceof JViewport)) {
+               && !(overlayCapableParent instanceof JViewport)) {
             overlayCapableParent = overlayCapableParent.getParent();
         }
         return overlayCapableParent;
@@ -268,14 +269,18 @@ public class OverlayHelper implements SwingConstants {
             JLayeredPane layeredPane = (JLayeredPane)viewPort.getClientProperty(LAYERED_PANE_PROPERTY);
             Component view = viewPort.getView();
             // check if we already have a layeredPane installed and if it's still available
-            if ((layeredPane != null) && (view == layeredPane)) 
+            if ((layeredPane != null) && (view == layeredPane))
                 return layeredPane;
 
             // no layeredPane or it was removed at some point, so construct a new one
-            layeredPane = new JLayeredPane();
+            if(view instanceof Scrollable) {
+                layeredPane = new ScrollableProxyingLayeredPane((Scrollable)view);
+            } else {
+                layeredPane = new JLayeredPane();
+            }
             viewPort.putClientProperty(LAYERED_PANE_PROPERTY, layeredPane);
             viewPort.remove(view);
-            layeredPane.setLayout(new SingleComponentLayoutManager(view, viewPort));
+            layeredPane.setLayout(new SingleComponentLayoutManager(view));
             layeredPane.add(view);
             layeredPane.setLayer(view, JLayeredPane.DEFAULT_LAYER.intValue());
             viewPort.setView(layeredPane);
@@ -283,18 +288,15 @@ public class OverlayHelper implements SwingConstants {
         }
         else {
             throw new IllegalArgumentException("Don't know how to handle parent of type ["
-                    + overlayCapableParent.getClass().getName() + "].");
+                                               + overlayCapableParent.getClass().getName() + "].");
         }
     }
 
     public static class SingleComponentLayoutManager implements LayoutManager {
         private Component singleComponent;
 
-        private JViewport viewport;
-
-        public SingleComponentLayoutManager(Component singleComponent, JViewport viewport) {
+        public SingleComponentLayoutManager(Component singleComponent) {
             this.singleComponent = singleComponent;
-            this.viewport = viewport;
         }
 
         public void removeLayoutComponent(Component comp) {
@@ -304,12 +306,13 @@ public class OverlayHelper implements SwingConstants {
         }
 
         public void layoutContainer(Container parent) {
-            final Dimension prefSize = singleComponent.getPreferredSize();
-            final Dimension viewSize = viewport.getExtentSize();
-            final int maxWidth = Math.max(prefSize.width, viewSize.width);
-            final int maxHeight = Math.max(prefSize.height, viewSize.height);
-
-            singleComponent.setBounds(0, 0, maxWidth, maxHeight);
+            // Fix 5/12/06 AlD: we don't need to base this on the
+            // preferred size of the singleComponent or the extentSize
+            // of the viewport because the viewport will have already resized
+            // the JLayeredPane and taken everything else into consideration.
+            // It will have also honored the Scrollable flags, which is
+            // something the original code here did not do.
+            singleComponent.setBounds(0, 0, parent.getWidth(), parent.getHeight());
         }
 
         public Dimension minimumLayoutSize(Container parent) {
@@ -318,6 +321,44 @@ public class OverlayHelper implements SwingConstants {
 
         public Dimension preferredLayoutSize(Container parent) {
             return singleComponent.getPreferredSize();
+        }
+    }
+
+
+
+
+    public static class ScrollableProxyingLayeredPane extends JLayeredPane
+        implements Scrollable {
+        private final Scrollable scrollableDelegate;
+
+        public ScrollableProxyingLayeredPane(final Scrollable delegate) {
+            super();
+            this.scrollableDelegate = delegate;
+        }
+        
+        
+        //
+        // METHODS FROM INTERFACE Scrollable
+        //
+
+        public Dimension getPreferredScrollableViewportSize() {
+            return this.scrollableDelegate.getPreferredScrollableViewportSize();
+        }
+
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return this.scrollableDelegate.getScrollableUnitIncrement(visibleRect, orientation, direction);
+        }
+
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return this.scrollableDelegate.getScrollableBlockIncrement(visibleRect, orientation, direction);
+        }
+
+        public boolean getScrollableTracksViewportWidth() {
+            return this.scrollableDelegate.getScrollableTracksViewportWidth();
+        }
+
+        public boolean getScrollableTracksViewportHeight() {
+            return this.scrollableDelegate.getScrollableTracksViewportHeight();
         }
     }
 }
