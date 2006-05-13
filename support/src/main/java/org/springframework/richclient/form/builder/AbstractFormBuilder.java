@@ -93,7 +93,7 @@ public abstract class AbstractFormBuilder {
 
     protected JLabel getLabelFor(String propertyName, JComponent component) {
         JLabel label = getComponentFactory().createLabel("");
-        getFormModel().getFormPropertyFaceDescriptor(propertyName).configure(label);
+        getFormModel().getFieldFace(propertyName).configure(label);
         label.setLabelFor(component);
         return label;
     }

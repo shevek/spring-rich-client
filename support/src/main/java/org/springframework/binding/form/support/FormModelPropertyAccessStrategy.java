@@ -55,7 +55,7 @@ public class FormModelPropertyAccessStrategy implements PropertyAccessStrategy {
 
         /**
          * @return Always true, current implementation doesn't allow for non-readable properties.
-         * @see org.springframework.binding.form.PropertyMetadata
+         * @see org.springframework.binding.form.FieldMetadata
          */
         public boolean isReadable(String propertyName) {
             return true;
@@ -65,19 +65,19 @@ public class FormModelPropertyAccessStrategy implements PropertyAccessStrategy {
          * @return True if property isn't readOnly
          */
         public boolean isWriteable(String propertyName) {
-            return !formModel.getPropertyMetadata(propertyName).isReadOnly();
+            return !formModel.getFieldMetadata(propertyName).isReadOnly();
         }
 
         public Class getPropertyType(String propertyName) {
-            return formModel.getPropertyMetadata(propertyName).getPropertyType();
+            return formModel.getFieldMetadata(propertyName).getPropertyType();
         }
 
         public Object getUserMetadata(String propertyName, String key) {
-            return formModel.getPropertyMetadata(propertyName).getUserMetadata(key);
+            return formModel.getFieldMetadata(propertyName).getUserMetadata(key);
         }
   
         public Map getAllUserMetadata(String propertyName) {
-            return formModel.getPropertyMetadata(propertyName).getAllUserMetadata();
+            return formModel.getFieldMetadata(propertyName).getAllUserMetadata();
         }
     }
 }

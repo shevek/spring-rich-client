@@ -16,20 +16,20 @@
 package org.springframework.binding.form;
 
 /**
- * Interface to be implemented by objects that can resolve a FormPropertyFaceDescriptor 
+ * Interface to be implemented by objects that can resolve a FieldFace 
  * for a given form model and form property path.
  *  
  * @author Oliver Hutchison
- * @see org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource 
+ * @see org.springframework.binding.form.support.MessageSourceFieldFaceSource 
  */
-public interface FormPropertyFaceDescriptorSource {
+public interface FieldFaceSource {
 
     /**
-     * Return the FormPropertyFaceDescriptor for the given form model and form property path.
+     * Return the FieldFace for the given form model and form field.
      * 
-     * @param formModel the form model for which the FormPropertyFaceDescriptor is being resolved
-     * @param formPropertyPath the form property path
-     * @return the FormPropertyFaceDescriptor for the given form model and form property path (never null). 
+     * @param formModel the form model for which the FieldFace is being resolved
+     * @param field the form field
+     * @return the FieldFace for the given form model and field (never null). 
      */
-    FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(FormModel formModel, String formPropertyPath);
+    FieldFace getFieldFace(FormModel formModel, String field);
 }

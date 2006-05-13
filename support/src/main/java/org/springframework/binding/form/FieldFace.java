@@ -28,7 +28,7 @@ import org.springframework.richclient.factory.LabelInfo;
  * 
  * @author Oliver Hutchison
  */
-public interface FormPropertyFaceDescriptor extends DescribedElement, VisualizedElement {
+public interface FieldFace extends DescribedElement, VisualizedElement {
 
     /**
      * The name of the property in human readable form; typically used for validation messages.

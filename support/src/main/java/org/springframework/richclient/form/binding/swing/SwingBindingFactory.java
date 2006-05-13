@@ -132,7 +132,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         if (!(valueModel instanceof BufferedCollectionValueModel)) {
             // XXX: HACK!
             valueModel = new BufferedCollectionValueModel(((MutablePropertyAccessStrategy)((DefaultFormModel) formModel).getFormObjectPropertyAccessStrategy()).getPropertyValueModel(
-                    formProperty), formModel.getPropertyMetadata(formProperty).getPropertyType());
+                    formProperty), formModel.getFieldMetadata(formProperty).getPropertyType());
             formModel.add(formProperty, valueModel);
         }
         return (ObservableList)valueModel.getValue();
@@ -307,7 +307,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
 
         final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
         final Map context = createContext(ListBinder.SELECTED_ITEM_HOLDER_KEY, selectionValueModel);
-        final Class selectionPropertyType = formModel.getPropertyMetadata(selectionFormProperty).getPropertyType();
+        final Class selectionPropertyType = formModel.getFieldMetadata(selectionFormProperty).getPropertyType();
         if (selectionPropertyType != null) {
             context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
         }

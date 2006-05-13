@@ -86,9 +86,9 @@ public interface FormModel extends PropertyChangePublisher {
     ValueModel getValueModel(String formProperty, Class targetClass);
     
     /**
-     * Returns the metadata for the given form property.
+     * Returns the metadata for the given form field.
      */
-    PropertyMetadata getPropertyMetadata(String formProperty);
+    FieldMetadata getFieldMetadata(String field);
     
     /**
      * Register converters for a given property name.
@@ -164,7 +164,7 @@ public interface FormModel extends PropertyChangePublisher {
     void removeCommitListener(CommitListener listener);
 
     /**
-     * FIXME: this should be on the PropertyMetadata class
+     * FIXME: this should be on the FieldMetadata class
      */
-    FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String propertyName);
+    FieldFace getFieldFace(String field);
 }

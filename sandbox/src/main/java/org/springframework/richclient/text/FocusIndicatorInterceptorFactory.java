@@ -49,7 +49,7 @@ public class FocusIndicatorInterceptorFactory implements FormComponentIntercepto
         }
 
         private String getCaption(String propertyName) {
-            return formModel.getFormPropertyFaceDescriptor(propertyName).getCaption();
+            return formModel.getFieldFace(propertyName).getCaption();
         }
 
         public void processComponent(final String propertyName, final JComponent component) {

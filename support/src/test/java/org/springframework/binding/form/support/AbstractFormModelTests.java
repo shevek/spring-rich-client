@@ -334,14 +334,14 @@ public class AbstractFormModelTests extends SpringRichTestCase {
         assertEquals(3, cs.calls);
     }
 
-    public void testPropertyMetadata() {
+    public void testFieldMetadata() {
         AbstractFormModel fm = getFormModel(new TestBean());
 
-        assertEquals(String.class, fm.getPropertyMetadata("simpleProperty").getPropertyType());
-        assertTrue(!fm.getPropertyMetadata("simpleProperty").isReadOnly());
+        assertEquals(String.class, fm.getFieldMetadata("simpleProperty").getPropertyType());
+        assertTrue(!fm.getFieldMetadata("simpleProperty").isReadOnly());
 
-        assertEquals(Object.class, fm.getPropertyMetadata("readOnly").getPropertyType());
-        assertTrue(fm.getPropertyMetadata("readOnly").isReadOnly());
+        assertEquals(Object.class, fm.getFieldMetadata("readOnly").getPropertyType());
+        assertTrue(fm.getFieldMetadata("readOnly").isReadOnly());
     }
 
     public void testSetFormObjectUpdatesDirtyState() {

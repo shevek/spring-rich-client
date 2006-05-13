@@ -87,20 +87,20 @@ public class ComboBoxBindingAbstractTest extends BindingAbstractTest {
     public void testComponentTracksEnabledChanges() {
         assertTrue(cb.isEnabled());
 
-        fm.getPropertyMetadata("simpleProperty").setEnabled(false);
+        fm.getFieldMetadata("simpleProperty").setEnabled(false);
         assertFalse(cb.isEnabled());
 
-        fm.getPropertyMetadata("simpleProperty").setEnabled(true);
+        fm.getFieldMetadata("simpleProperty").setEnabled(true);
         assertTrue(cb.isEnabled());
     }
 
     public void testComponentTracksReadOnlyChanges() {
         assertTrue(cb.isEnabled());
 
-        fm.getPropertyMetadata("simpleProperty").setReadOnly(true);
+        fm.getFieldMetadata("simpleProperty").setReadOnly(true);
         assertFalse(cb.isEnabled());
 
-        fm.getPropertyMetadata("simpleProperty").setReadOnly(false);
+        fm.getFieldMetadata("simpleProperty").setReadOnly(false);
         assertTrue(cb.isEnabled());
     }
     

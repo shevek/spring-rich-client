@@ -37,7 +37,7 @@ public class CheckBoxBinding extends AbstractBinding {
     
     protected JComponent doBindControl() {
         final ValueModel valueModel = getValueModel();
-        checkBox.setText(getFormPropertyFaceDescriptor().getDescription());
+        checkBox.setText(getFieldFace().getDescription());
         checkBox.setModel(new SelectableButtonModelAdapter(valueModel));
         return checkBox;
     }

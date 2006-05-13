@@ -274,7 +274,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
     }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
-        return formModel.getPropertyMetadata(formPropertyPath).getPropertyType();
+        return formModel.getFieldMetadata(formPropertyPath).getPropertyType();
     }
 
     protected boolean isEnumeration(FormModel formModel, String formPropertyPath) {

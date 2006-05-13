@@ -21,18 +21,18 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import org.springframework.binding.form.FormPropertyFaceDescriptor;
+import org.springframework.binding.form.FieldFace;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.richclient.factory.LabelInfo;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.util.Assert;
 
 /**
- * A default implementation of FormPropertyFaceDescriptor
+ * A default implementation of FieldFace
  * 
  * @author Oliver Hutchison
  */
-public class DefaultFormPropertyFaceDescriptor extends AbstractPropertyChangePublisher implements FormPropertyFaceDescriptor {
+public class DefaultFieldFace extends AbstractPropertyChangePublisher implements FieldFace {
 
     private final String displayName;
 
@@ -45,9 +45,9 @@ public class DefaultFormPropertyFaceDescriptor extends AbstractPropertyChangePub
     private final Icon icon;
 
     /**
-     * Constructs a new DefaultFormPropertyFaceDescriptor with the provided values.
+     * Constructs a new DefaultFieldFace with the provided values.
      */
-    public DefaultFormPropertyFaceDescriptor(String displayName, String caption, String description, String encodedLabel, Icon icon) {
+    public DefaultFieldFace(String displayName, String caption, String description, String encodedLabel, Icon icon) {
         this.displayName = displayName;
         this.caption = caption;
         this.description = description;

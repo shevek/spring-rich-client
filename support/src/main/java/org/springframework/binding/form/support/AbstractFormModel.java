@@ -35,10 +35,10 @@ import org.springframework.binding.convert.Converter;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.FormPropertyFaceDescriptor;
-import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
+import org.springframework.binding.form.FieldFace;
+import org.springframework.binding.form.FieldFaceSource;
 import org.springframework.binding.form.HierarchicalFormModel;
-import org.springframework.binding.form.PropertyMetadata;
+import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
@@ -95,7 +95,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     private final Map convertingValueModels = new HashMap();
 
-    private final Map propertyMetadata = new HashMap();
+    private final Map fieldMetadata = new HashMap();
 
     private final Set dirtyValueAndFormModels = new HashSet();
 
@@ -108,7 +108,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         }
     };
 
-    private FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource;
+    private FieldFaceSource fieldFaceSource;
 
     private final PropertyChangeListener dirtyChangeHandler = new DirtyChangeHandler();
 
@@ -305,7 +305,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         }
         final ValueModel sourceValueModel = getValueModel(formProperty);
         Assert.notNull(sourceValueModel, "Form does not have a property called '" + formProperty + "'.");
-        final Class sourceClass = ClassUtils.convertPrimitiveToWrapper(getPropertyMetadata(formProperty).getPropertyType());
+        final Class sourceClass = ClassUtils.convertPrimitiveToWrapper(getFieldMetadata(formProperty).getPropertyType());
         if (sourceClass == targetClass) {
             return sourceValueModel;
         }
@@ -373,12 +373,12 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                 metadataAccessStrategy.isWriteable(formProperty));
         mediatingValueModels.put(formProperty, mediatingValueModel);
 
-        PropertyMetadata metadata = new PropertyMetadataImpl(this, mediatingValueModel,
+        FieldMetadata metadata = new DefaultFieldMetadata(this, mediatingValueModel,
                 metadataAccessStrategy.getPropertyType(formProperty),
                 !metadataAccessStrategy.isWriteable(formProperty),
                 metadataAccessStrategy.getAllUserMetadata(formProperty));
-        metadata.addPropertyChangeListener(PropertyMetadata.DIRTY_PROPERTY, dirtyChangeHandler);
-        propertyMetadata.put(formProperty, metadata);
+        metadata.addPropertyChangeListener(FieldMetadata.DIRTY_PROPERTY, dirtyChangeHandler);
+        fieldMetadata.put(formProperty, metadata);
 
         valueModel = preProcessNewValueModel(formProperty, mediatingValueModel);
         propertyValueModels.put(formProperty, valueModel);
@@ -416,38 +416,38 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     protected abstract void postProcessNewConvertingValueModel(String formProperty, Class targetClass,
             ValueModel valueModel);
 
-    public PropertyMetadata getPropertyMetadata(String propertyName) {
-        PropertyMetadata metadata = (PropertyMetadata)propertyMetadata.get(propertyName);
+    public FieldMetadata getFieldMetadata(String propertyName) {
+        FieldMetadata metadata = (FieldMetadata)fieldMetadata.get(propertyName);
         if (metadata == null) {
             add(propertyName);
-            metadata = (PropertyMetadata)propertyMetadata.get(propertyName);
+            metadata = (FieldMetadata)fieldMetadata.get(propertyName);
         }
         return metadata;
     }
 
     /**
-     * Sets the FormPropertyFaceDescriptorSource that this will be used to resolve 
-     * FormPropertyFaceDescriptors. 
-     * <p>If this value is <code>null</code> the default FormPropertyFaceDescriptorSource from
+     * Sets the FieldFaceSource that will be used to obtain 
+     * FieldFace instances. 
+     * <p>If this value is <code>null</code> the default FieldFaceSource from
      * <code>ApplicationServices</code> instance will be used.
      */
-    public void setFormPropertyFaceDescriptorSource(FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource) {
-        this.formPropertyFaceDescriptorSource = formPropertyFaceDescriptorSource;
+    public void setFieldFaceSource(FieldFaceSource fieldFaceSource) {
+        this.fieldFaceSource = fieldFaceSource;
     }
 
     /**
-     * Returns the FormPropertyFaceDescriptorSource that should be used to resolve 
-     * FormPropertyFaceDescriptors for this form model.   
+     * Returns the FieldFaceSource that should be used to obtain 
+     * FieldFace instances for this form model.   
      */
-    protected FormPropertyFaceDescriptorSource getFormPropertyFaceDescriptorSource() {
-        if (formPropertyFaceDescriptorSource == null) {
-            formPropertyFaceDescriptorSource = (FormPropertyFaceDescriptorSource)ApplicationServicesLocator.services().getService(FormPropertyFaceDescriptorSource.class);
+    protected FieldFaceSource getFieldFaceSource() {
+        if (fieldFaceSource == null) {
+            fieldFaceSource = (FieldFaceSource)ApplicationServicesLocator.services().getService(FieldFaceSource.class);
         }
-        return formPropertyFaceDescriptorSource;
+        return fieldFaceSource;
     }
 
-    public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(String formPropertyPath) {
-        return getFormPropertyFaceDescriptorSource().getFormPropertyFaceDescriptor(this, formPropertyPath);
+    public FieldFace getFieldFace(String field) {
+        return getFieldFaceSource().getFieldFace(this, field);
     }
 
     public ValueModel addMethod(String propertyMethodName, String derivedFromProperty) {
@@ -645,8 +645,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         public void propertyChange(PropertyChangeEvent evt) {
             Object source = evt.getSource();
 
-            if (source instanceof PropertyMetadata) {
-                PropertyMetadata metadata = (PropertyMetadata)source;
+            if (source instanceof FieldMetadata) {
+                FieldMetadata metadata = (FieldMetadata)source;
                 if (metadata.isDirty()) {
                     dirtyValueAndFormModels.add(metadata);
                 }

@@ -18,7 +18,7 @@ package org.springframework.binding.form.support;
 import javax.swing.Icon;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.FormPropertyFaceDescriptor;
+import org.springframework.binding.form.FieldFace;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.ApplicationServices;
@@ -27,12 +27,12 @@ import org.springframework.richclient.image.IconSource;
 import org.springframework.util.StringUtils;
 
 /**
- * An implementation of FormPropertyFaceDescriptorSource that resolves the 
- * FormPropertyFaceDescriptor from the <code>MessageSourceAccessor</code> provided to the 
+ * An implementation of FieldFaceSource that resolves the 
+ * FieldFace from the <code>MessageSourceAccessor</code> provided to the 
  * setMessageSourceAccessor method or from the {@link ApplicationServices} 
  * singleton if none is provided. 
  * 
- * <p>The various properties of the FormPropertyFaceDescriptor are resolved from the message 
+ * <p>The various properties of the FieldFace are resolved from the message 
  * source using message keys in the following order:
  * 
  * <p><code>{formModelId}.{formPropertyPath}.{faceDescriptorProperty}</code><br>
@@ -48,30 +48,30 @@ import org.springframework.util.StringUtils;
  * 
  * @author Oliver Hutchison
  */
-public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachingPropertyFaceDescriptorSource {
+public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
 
     /**
-     * Name for the FormPropertyFaceDescriptor's <code>displayName</code> property.
+     * Name for the FieldFace's <code>displayName</code> property.
      */
     private static final String DISPLAY_NAME_PROPERTY = "displayName";
 
     /**
-     * Name for the FormPropertyFaceDescriptor's <code>caption</code> property.
+     * Name for the FieldFace's <code>caption</code> property.
      */
     private static final String CAPTION_PROPERTY = "caption";
 
     /**
-     * Name for the FormPropertyFaceDescriptor's <code>description</code> property.
+     * Name for the FieldFace's <code>description</code> property.
      */
     private static final String DESCRIPTION_PROPERTY = "description";
 
     /**
-     * Name for the FormPropertyFaceDescriptor's <code>labelInfo</code> property.
+     * Name for the FieldFace's <code>labelInfo</code> property.
      */
     private static final String ENCODED_LABEL_PROPERTY = "label";
 
     /**
-     * Name for the FormPropertyFaceDescriptor's <code>icon</code> property.
+     * Name for the FieldFace's <code>icon</code> property.
      */
     private static final String ICON_PROPERTY = "icon";
 
@@ -82,21 +82,21 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
     /**
      * Constructs a new MessageSourcePropertyFaceDescriptorSource.
      */
-    public MessageSourceFormPropertyFaceDescriptorSource() {
+    public MessageSourceFieldFaceSource() {
     }
 
-    protected FormPropertyFaceDescriptor loadFormPropertyFaceDescriptor(FormModel formModel, String formPropertyPath) {
+    protected FieldFace loadFieldFace(FormModel formModel, String formPropertyPath) {
         String displayName = getMessage(formModel, formPropertyPath, DISPLAY_NAME_PROPERTY);
         String caption = getMessage(formModel, formPropertyPath, CAPTION_PROPERTY);
         String description = getMessage(formModel, formPropertyPath, DESCRIPTION_PROPERTY);
         String encodedLabel = getMessage(formModel, formPropertyPath, ENCODED_LABEL_PROPERTY);
         Icon icon = getIconSource().getIcon(getMessage(formModel, formPropertyPath, ICON_PROPERTY));
-        return new DefaultFormPropertyFaceDescriptor(displayName, caption, description, encodedLabel, icon);
+        return new DefaultFieldFace(displayName, caption, description, encodedLabel, icon);
     }
 
     /**
      * Set the message source that will be used to resolve the 
-     * FormPropertyFaceDescriptor's properties.
+     * FieldFace's properties.
      */
     public void setMessageSourceAccessor(MessageSourceAccessor messageSourceAccessor) {
         this.messageSourceAccessor = messageSourceAccessor;
@@ -116,7 +116,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
 
     /**
      * Set the icon source that will be used to resolve the 
-     * FormPropertyFaceDescriptor's icon property.
+     * FieldFace's icon property.
      */
     public void setIconSource(IconSource iconSource) {
         this.iconSource = iconSource;
@@ -130,7 +130,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
     }
 
     /**
-     * Returns the value of the required property of the FormPropertyFaceDescriptor. Delegates to the 
+     * Returns the value of the required property of the FieldFace. Delegates to the 
      * getMessageKeys for the message key generation strategy.  
      */
     protected String getMessage(FormModel formModel, String formPropertyPath, String faceDescriptorProperty) {
@@ -140,7 +140,7 @@ public class MessageSourceFormPropertyFaceDescriptorSource extends AbstractCachi
 
     /**
      * Returns an array of message keys that are used to resolve the required property of the 
-     * FormPropertyFaceDescriptor. The property will be resolved from the message source using the returned 
+     * FieldFace. The property will be resolved from the message source using the returned 
      * message keys in order. 
      * <p>Subclasses my override this method to provide an alternative to the default message 
      * key generation strategy.

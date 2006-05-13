@@ -73,20 +73,20 @@ public class EnumComboBoxBindingAbstractTest extends BindingAbstractTest {
     public void testComponentTracksEnabledChanges() {
         assertTrue(cb.isEnabled());
 
-        fm.getPropertyMetadata("enumProperty").setEnabled(false);
+        fm.getFieldMetadata("enumProperty").setEnabled(false);
         assertFalse(cb.isEnabled());
 
-        fm.getPropertyMetadata("enumProperty").setEnabled(true);
+        fm.getFieldMetadata("enumProperty").setEnabled(true);
         assertTrue(cb.isEnabled());
     }
 
     public void testComponentTracksReadOnlyChanges() {
         assertTrue(cb.isEnabled());
 
-        fm.getPropertyMetadata("enumProperty").setReadOnly(true);
+        fm.getFieldMetadata("enumProperty").setReadOnly(true);
         assertFalse(cb.isEnabled());
 
-        fm.getPropertyMetadata("enumProperty").setReadOnly(false);
+        fm.getFieldMetadata("enumProperty").setReadOnly(false);
         assertTrue(cb.isEnabled());
     }
 }

@@ -141,7 +141,7 @@ public class ShuttleListBinder extends AbstractBinder {
         final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
         context.put(SELECTED_ITEMS_HOLDER_KEY, selectionValueModel);
 
-        final Class selectionPropertyType = formModel.getPropertyMetadata(selectionFormProperty).getPropertyType();
+        final Class selectionPropertyType = formModel.getFieldMetadata(selectionFormProperty).getPropertyType();
         if( selectionPropertyType != null ) {
             context.put(SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
         }

@@ -21,19 +21,19 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.PropertyMetadata;
+import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
 
 /**
- * Default implementation of PropertyMetadata. 
+ * Default implementation of FieldMetadata. 
  * <p>
  * NOTE: This is a framework internal class and should not be
  * instantiated in user code. 
  * 
  * @author Oliver Hutchison
  */
-public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implements PropertyMetadata {
+public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implements FieldMetadata {
 
     private final FormModel formModel;
 
@@ -58,7 +58,7 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
     private final PropertyChangeListener formChangeHandler = new FormModelChangeHandler();
 
     /**
-     * Constructs a new instance of DefaultFormPropertyMetadata. 
+     * Constructs a new instance of DefaultFieldMetadata. 
      * 
      * @param formModel the form model 
      * @param valueModel the value model for the property  
@@ -72,7 +72,7 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
      *                     the backing object as property metadata.  This
      *                     parameter may be <code>null</code>.
      */
-    public PropertyMetadataImpl(FormModel formModel, DirtyTrackingValueModel valueModel, Class propertyType, boolean forceReadOnly, Map userMetadata) {
+    public DefaultFieldMetadata(FormModel formModel, DirtyTrackingValueModel valueModel, Class propertyType, boolean forceReadOnly, Map userMetadata) {
         this.formModel = formModel;
         this.valueModel = valueModel;
         this.valueModel.addPropertyChangeListener(DirtyTrackingValueModel.DIRTY_PROPERTY, dirtyChangeHandler);
@@ -124,7 +124,7 @@ public class PropertyMetadataImpl extends AbstractPropertyChangePublisher implem
 
   /**
      * Sets custom metadata to be associated with this property.  A property
-     * change event will be fired (from this PropertyMetadata, not from the
+     * change event will be fired (from this FieldMetadata, not from the
      * associated form property) if <code>value</code> differs from the
      * current value of the specified <code>key</code>.  The property change
      * event will use the value of <code>key</code> as the property name in

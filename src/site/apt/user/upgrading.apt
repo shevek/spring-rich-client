@@ -13,7 +13,9 @@ Introduction
 
 0.1.0 to 0.2.0
 
-    * A major refactoring of the way that application services (like ImageSource, RulesSource, etc.)
+    * Major Refactoring of application services configuration
+
+    A major refactoring of the way that application services (like ImageSource, RulesSource, etc.)
     are handld/located was introduced in version 0.2.0.  This change is <<NOT>> backward
     compatible and it requires changes to both the application context XML file and to
     source code that used the ApplicationServices class.
@@ -153,10 +155,63 @@ Introduction
     it's used in the existing test classes for more details.  All new tests should use this
     class as their base class.
     
+    * Change of "property" to "field" on forms and form models
     
+    In order to remove confusion regarding form fields and object properties, the
+    use of the word "property" has been replaced with "field" in all the Form and FormModel
+    contexts.  This should make clear the distinction between a property (in the java beans
+    sense) on a model object and the fields (visual abstractions and value models) in a form
+    or form model that are generally derived from (bound to) object properties.
+    
+    The following tables list the changes made the names of classes and methods.
+    
+*---------+----------+
+|<<Old Class Name>> | <<New Class Name>> |
+*---------+----------+
+| FormPropertyFaceDescriptor | FieldFace |
+*---------+----------+
+| DefaultFormPropertyFaceDescriptor | DefaultFieldFace |
+*---------+----------+
+| FormPropertyFaceDescriptorSource | FieldFaceSource |
+*---------+----------+
+| MessageSourceFormPropertyFaceDescriptorSource | MessageSourceFieldFaceSource |
+*---------+----------+
+| AbstractCachingPropertyFaceDescriptorSource | CachingFieldFaceSource |
+*---------+----------+
+| PropertyMetaData | FieldMetadata |
+*---------+----------+
+| PropertyMetaDataImpl | DefaultFieldMetadata |
+*---------+----------+
+| PropertyMetadataImplTests | DefaultFieldMetadataTests |
+*---------+----------+
+Class name changes
+
+
+*---------+----------+
+|<<Old method Name>> | <<New Method Name>> |
+*---------+----------+
+| FormModel.getPropertyMetadata | FormModel.getFieldMetadata |
+*---------+----------+
+| FormModel.getFormPropertyFaceDescriptor | FormModel.getFieldFace |
+*---------+----------+
+| AbstractFormModel.setFormPropertyFaceDescriptorSource | AbstractFormModel.setFieldFaceSource |
+*---------+----------+
+| AbstractFormModel.getFormPropertyFaceDescriptorSource | AbstractFormModel.getFieldFaceSource |
+*---------+----------+
+| FormPropertyFaceDescriptorSource.getFormPropertyFaceDescriptor | FieldFaceSource.getFieldFace |
+*---------+----------+
+| AbstractCachingPropertyFaceDescriptorSource.loadFormPropertyFaceDescriptor | CachingFieldFaceSource.loadFieldFace |
+*---------+----------+
+| DefaultApplicationServices.setFormPropertyFaceDescriptorSource | DefaultApplicationServices.setFieldFaceSource |
+*---------+----------+
+| AbstractBinding.getFormPropertyFaceDescriptor | AbstractBinding.getFieldFace |
+*---------+----------+
+Method name changes
+
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
+
     if you have made local changes to the spring rich code,
     take a <<<cvs diff \> file.patch>>> in <<</src>>> and <<</sandbox>>>
     and patch it in <<</support/src/main/java>>> or <<</support/src/main/resources>>>

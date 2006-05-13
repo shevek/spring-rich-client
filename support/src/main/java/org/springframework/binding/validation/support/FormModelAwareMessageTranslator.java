@@ -48,7 +48,7 @@ import org.springframework.util.ClassUtils;
 
 /**
  * A validation message translator that is aware of form property names info exposed through
- * the FormPropertyFaceDescriptor class.
+ * the FieldFace class.
  * 
  * TODO: This class is an almost exact copy of DefaultMessageTranslator ideally we
  * would just be able to extend that class but I can't modify DefaultMessageTranslator
@@ -114,7 +114,7 @@ public class FormModelAwareMessageTranslator {
     }
 
     private String getDisplayName(String propertyName) {
-        return formModel.getFormPropertyFaceDescriptor(propertyName).getDisplayName();
+        return formModel.getFieldFace(propertyName).getDisplayName();
     }
 
     private MessageSourceResolvable[] resolveArguments(Constraint constraint) {

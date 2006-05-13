@@ -17,7 +17,7 @@ package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JTextField;
 
-import org.springframework.binding.form.PropertyMetadata;
+import org.springframework.binding.form.FieldMetadata;
 
 public class TextComponentBindingAbstractTest extends BindingAbstractTest {
 
@@ -40,7 +40,7 @@ public class TextComponentBindingAbstractTest extends BindingAbstractTest {
     }
 
     public void testComponentTracksReadOnlyChanges() {
-        PropertyMetadata state = fm.getPropertyMetadata("simpleProperty");
+        FieldMetadata state = fm.getFieldMetadata("simpleProperty");
         assertEquals(true, tc.isEditable());
         state.setReadOnly(true);
         assertEquals(false, tc.isEditable());

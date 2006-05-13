@@ -18,7 +18,7 @@ package org.springframework.binding.form.support;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.binding.form.PropertyMetadata;
+import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.test.SpringRichTestCase;
@@ -27,14 +27,14 @@ import org.springframework.richclient.test.SpringRichTestCase;
  * 
  * @author  Oliver Hutchison
  */
-public class PropertyMetadataImplTests extends SpringRichTestCase {
+public class DefaultFieldMetadataTests extends SpringRichTestCase {
 
     public void testDirtyChangeTrackingOnValueChange() {
         FormModelMediatingValueModel vm = new FormModelMediatingValueModel(new ValueHolder("v1"));
         DefaultFormModel fm = new DefaultFormModel(new Object());
-        PropertyMetadataImpl m = new PropertyMetadataImpl(fm, vm, Object.class, false, null);
-        TestPropertyChangeListener pcl = new TestPropertyChangeListener(PropertyMetadata.DIRTY_PROPERTY);
-        m.addPropertyChangeListener(PropertyMetadata.DIRTY_PROPERTY, pcl);        
+        DefaultFieldMetadata m = new DefaultFieldMetadata(fm, vm, Object.class, false, null);
+        TestPropertyChangeListener pcl = new TestPropertyChangeListener(FieldMetadata.DIRTY_PROPERTY);
+        m.addPropertyChangeListener(FieldMetadata.DIRTY_PROPERTY, pcl);        
         assertTrue(!m.isDirty());
         assertEquals(0, pcl.eventCount());
         
@@ -70,9 +70,9 @@ public class PropertyMetadataImplTests extends SpringRichTestCase {
     public void testEnabledChange() {
         FormModelMediatingValueModel vm = new FormModelMediatingValueModel(new ValueHolder("v1"));
         DefaultFormModel fm = new DefaultFormModel(new Object());
-        PropertyMetadataImpl m = new PropertyMetadataImpl(fm, vm, Object.class, false, null);
-        TestPropertyChangeListener pcl = new TestPropertyChangeListener(PropertyMetadata.ENABLED_PROPERTY);
-        m.addPropertyChangeListener(PropertyMetadata.ENABLED_PROPERTY, pcl);
+        DefaultFieldMetadata m = new DefaultFieldMetadata(fm, vm, Object.class, false, null);
+        TestPropertyChangeListener pcl = new TestPropertyChangeListener(FieldMetadata.ENABLED_PROPERTY);
+        m.addPropertyChangeListener(FieldMetadata.ENABLED_PROPERTY, pcl);
         assertEquals(0, pcl.eventCount());
         assertTrue(m.isEnabled());        
         
@@ -104,7 +104,7 @@ public class PropertyMetadataImplTests extends SpringRichTestCase {
         final Map customMeta = new HashMap();
         customMeta.put("custom1", "a");
         customMeta.put("custom2", "b");
-        final PropertyMetadataImpl m = new PropertyMetadataImpl(fm, vm, Object.class, false, customMeta);
+        final DefaultFieldMetadata m = new DefaultFieldMetadata(fm, vm, Object.class, false, customMeta);
   
         assertNull(m.getUserMetadata("custom3"));
         assertEquals("a", m.getUserMetadata("custom1"));
@@ -114,7 +114,7 @@ public class PropertyMetadataImplTests extends SpringRichTestCase {
     public void testMutableCustomMetaData() {
         final FormModelMediatingValueModel vm = new FormModelMediatingValueModel(new ValueHolder("v1"));
         final DefaultFormModel fm = new DefaultFormModel(new Object());
-        final PropertyMetadataImpl m = new PropertyMetadataImpl(fm, vm, Object.class, false, null);
+        final DefaultFieldMetadata m = new DefaultFieldMetadata(fm, vm, Object.class, false, null);
         final String name = "customProperty";
         final String othername = "othername";
         final TestPropertyChangeListener pcl = new TestPropertyChangeListener(name);

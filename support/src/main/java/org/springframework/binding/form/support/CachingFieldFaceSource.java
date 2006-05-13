@@ -19,24 +19,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.FormPropertyFaceDescriptor;
-import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
+import org.springframework.binding.form.FieldFace;
+import org.springframework.binding.form.FieldFaceSource;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
 
 /**
- * A convenience superclass for FormPropertyFaceDescriptorSource's that require caching 
- * to improve the performance of FormPropertyFaceDescriptor lookup.
+ * A convenience superclass for FieldFaceSource's that require caching 
+ * to improve the performance of FieldFace lookup.
  *  
- * <p>FormPropertyFaceDescriptor retrieval is delegated to subclasses
+ * <p>FieldFace retrieval is delegated to subclasses
  * using the <code>loadPropertyFaceDescriptor</code> method.  
  * 
  * @author Oliver Hutchison
  */
-public abstract class AbstractCachingPropertyFaceDescriptorSource implements FormPropertyFaceDescriptorSource {
+public abstract class CachingFieldFaceSource implements FieldFaceSource {
 
     /*
-     * A cache with FormModel keys and Map from formPropertyPath to FormPropertyFaceDescriptor 
+     * A cache with FormModel keys and Map from formPropertyPath to FieldFace 
      * values. The keys are held with week references so this class will not prevent 
      * GC of FormModels.
      */
@@ -46,28 +46,28 @@ public abstract class AbstractCachingPropertyFaceDescriptorSource implements For
         }
     };
 
-    protected AbstractCachingPropertyFaceDescriptorSource() {
+    protected CachingFieldFaceSource() {
     }
 
-    public FormPropertyFaceDescriptor getFormPropertyFaceDescriptor(FormModel formModel, String formPropertyPath) {
+    public FieldFace getFieldFace(FormModel formModel, String formPropertyPath) {
         Map faceDescriptors = (Map)formModelPropertyFaceDescriptors.get(formModel);
-        FormPropertyFaceDescriptor propertyFaceDescriptor = (FormPropertyFaceDescriptor)faceDescriptors.get(formPropertyPath);
+        FieldFace propertyFaceDescriptor = (FieldFace)faceDescriptors.get(formPropertyPath);
         if (propertyFaceDescriptor == null) {
-            propertyFaceDescriptor = loadFormPropertyFaceDescriptor(formModel, formPropertyPath);
-            Assert.notNull(propertyFaceDescriptor, "FormPropertyFaceDescriptor must not be null.");
+            propertyFaceDescriptor = loadFieldFace(formModel, formPropertyPath);
+            Assert.notNull(propertyFaceDescriptor, "FieldFace must not be null.");
             faceDescriptors.put(formPropertyPath, propertyFaceDescriptor);
         }
         return propertyFaceDescriptor;
     }
 
     /**
-     * Loads the FormPropertyFaceDescriptor for the given form model and form property path. This value 
+     * Loads the FieldFace for the given form model and form property path. This value 
      * will be cached so performance need not be a concern of this method.
      * 
-     * @param formModel the form model for which the FormPropertyFaceDescriptor is being resolved
+     * @param formModel the form model for which the FieldFace is being resolved
      * @param formPropertyPath the form property path
-     * @return the FormPropertyFaceDescriptor for the given form model and form property path (never null). 
+     * @return the FieldFace for the given form model and form property path (never null). 
      */
-    protected abstract FormPropertyFaceDescriptor loadFormPropertyFaceDescriptor(FormModel formModel,
+    protected abstract FieldFace loadFieldFace(FormModel formModel,
             String formPropertyPath);
 }

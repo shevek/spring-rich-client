@@ -105,6 +105,6 @@ public abstract class AbstractBinder implements Binder {
     }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
-        return formModel.getPropertyMetadata(formPropertyPath).getPropertyType();
+        return formModel.getFieldMetadata(formPropertyPath).getPropertyType();
     }
 }

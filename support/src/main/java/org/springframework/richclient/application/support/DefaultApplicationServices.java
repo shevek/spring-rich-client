@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.FormPropertyFaceDescriptorSource;
-import org.springframework.binding.form.support.MessageSourceFormPropertyFaceDescriptorSource;
+import org.springframework.binding.form.FieldFaceSource;
+import org.springframework.binding.form.support.MessageSourceFieldFaceSource;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.DefaultValueChangeDetector;
 import org.springframework.context.ApplicationContext;
@@ -273,10 +273,10 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     /**
      * Set the form property face descriptor source service implementation
      * 
-     * @param formPropertyFaceDescriptorSource
+     * @param fieldFaceSource
      */
-    public void setFormPropertyFaceDescriptorSource( FormPropertyFaceDescriptorSource formPropertyFaceDescriptorSource ) {
-        services.put(FormPropertyFaceDescriptorSource.class, formPropertyFaceDescriptorSource);
+    public void setFieldFaceSource( FieldFaceSource fieldFaceSource ) {
+        services.put(FieldFaceSource.class, fieldFaceSource);
     }
 
     /**
@@ -471,10 +471,10 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         }
     };
 
-    protected static final ImplBuilder formPropertyFaceDescriptorSourceImplBuilder = new ImplBuilder() {
+    protected static final ImplBuilder FieldFaceSourceImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
-            logger.info("Creating default service impl: FormPropertyFaceDescriptorSource");
-            return new MessageSourceFormPropertyFaceDescriptorSource();
+            logger.info("Creating default service impl: FieldFaceSource");
+            return new MessageSourceFieldFaceSource();
         }
     };
 
@@ -550,7 +550,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put(ComponentFactory.class, componentFactoryImplBuilder);
         serviceImplBuilders.put(ConversionService.class, conversionServiceImplBuilder);
         serviceImplBuilders.put(FormComponentInterceptorFactory.class, formComponentInterceptorFactoryImplBuilder);
-        serviceImplBuilders.put(FormPropertyFaceDescriptorSource.class, formPropertyFaceDescriptorSourceImplBuilder);
+        serviceImplBuilders.put(FieldFaceSource.class, FieldFaceSourceImplBuilder);
         serviceImplBuilders.put(IconSource.class, iconSourceImplBuilder);
         serviceImplBuilders.put(ImageSource.class, imageSourceImplBuilder);
         serviceImplBuilders.put(LabeledEnumResolver.class, labeledEnumResolverImplBuilder);

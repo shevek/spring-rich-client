@@ -24,7 +24,7 @@ import org.springframework.binding.value.PropertyChangePublisher;
  *   
  * @author Oliver Hutchison
  */
-public interface PropertyMetadata extends PropertyChangePublisher {
+public interface FieldMetadata extends PropertyChangePublisher {
     
     /**
      * The name of the bound property <code>enabled</code>.

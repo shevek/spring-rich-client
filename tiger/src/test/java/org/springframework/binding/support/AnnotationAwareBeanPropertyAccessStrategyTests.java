@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.form.PropertyMetadata;
+import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.richclient.test.SpringRichTestCase;
 
@@ -91,14 +91,14 @@ public class AnnotationAwareBeanPropertyAccessStrategyTests extends SpringRichTe
         final AnnotationAwareBeanPropertyAccessStrategy pas = new AnnotationAwareBeanPropertyAccessStrategy(new TestBean());
         final FormModel fm = new DefaultFormModel(pas);
         
-        PropertyMetadata pm = fm.getPropertyMetadata("name"); 
+        FieldMetadata pm = fm.getFieldMetadata("name"); 
         assertNotNull(pm);
         assertEquals(Boolean.TRUE, pm.getUserMetadata("org.springframework.binding.support.NoValueAnnotation"));
         NoValueAnnotation nva = (NoValueAnnotation)pm.getUserMetadata("@" + NoValueAnnotation.class.getName());
         assertNotNull(nva);
         assertEquals(2, pm.getAllUserMetadata().size());
         
-        pm = fm.getPropertyMetadata("age");
+        pm = fm.getFieldMetadata("age");
         assertNotNull(pm);
         assertEquals(Boolean.TRUE, pm.getUserMetadata("org.springframework.binding.support.NoValueAnnotation"));
         assertEquals("The Age Method", pm.getUserMetadata("org.springframework.binding.support.SingleValueAnnotation"));
@@ -109,7 +109,7 @@ public class AnnotationAwareBeanPropertyAccessStrategyTests extends SpringRichTe
         assertEquals("The Age Method", sva.value());
         assertEquals(4, pm.getAllUserMetadata().size());
         
-        pm = fm.getPropertyMetadata("rank");
+        pm = fm.getFieldMetadata("rank");
         assertNotNull(pm);
         assertEquals(Boolean.TRUE, pm.getUserMetadata("org.springframework.binding.support.NoValueAnnotation"));
         assertEquals("The Rank Method", pm.getUserMetadata("org.springframework.binding.support.SingleValueAnnotation"));
@@ -129,7 +129,7 @@ public class AnnotationAwareBeanPropertyAccessStrategyTests extends SpringRichTe
         assertEquals(10, mva.rank());
         assertEquals(9, pm.getAllUserMetadata().size());
         
-        pm = fm.getPropertyMetadata("description");
+        pm = fm.getFieldMetadata("description");
         assertNotNull(pm);
         assertTrue(pm.getAllUserMetadata() == null || pm.getAllUserMetadata().size() == 0);
     }
