@@ -156,6 +156,7 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
         if (getRows() instanceof ObservableList) {
             ((ObservableList) getRows()).getIndexAdapter(rowIndex).fireIndexedObjectChanged();
         }
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     protected void setValueAtInternal(Object value, Object row, int columnIndex) {
