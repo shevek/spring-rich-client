@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-default-skin</artifactId>
+        <version>1.0</version>
+    </skin>
     <bannerLeft>
-        <name>Spring rich client</name>
+        <name>Spring Rich Client</name>
+        <href>http://spring-rich-c.sf.net</href>
     </bannerLeft>
     <bannerRight>
         <name>Spring framework</name>
+        <src>http://www.springframework.org/buttons/spring_clear.png</src>
+        <href>http://www.springframework.org</href>
     </bannerRight>
+    <publishDate format="yyyy-MM-dd HH:mm"/>
     <body>
         <links>
             <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
@@ -14,7 +23,7 @@
             <item name="Spring framework" href="http://www.springframework.org/"/>
         </links>
 
-        <menu name="Overview">
+        <menu name="Overview" inherit="top">
             <item name="Home" href="/index.html"/>
             <item name="Download" href="/download.html"/>
             <item name="Getting started" href="/gettingStarted.html"/>
@@ -34,18 +43,7 @@
             <item name="FAQ" href="/user/faq.html"/>
         </menu>
 
-        <menu name="Modules">
-            <item name="resources" href="spring-richclient-resources"/>
-            <item name="core" href="spring-richclient-core"/>
-            <item name="binding" href="spring-richclient-binding"/>
-            <item name="form" href="spring-richclient-form"/>
-            <item name="support" href="spring-richclient-support"/>
-            <item name="tiger" href="spring-richclient-tiger"/>
-            <item name="sandbox" href="spring-richclient-sandbox"/>
-            <item name="samples" href="spring-richclient-samples"/>
-        </menu>
-
-        <!-- ${modules} does not work in site plugin beta -->
+        <menu ref="modules"/>
 
         <menu name="Archived website">
             <item name="0.1.0" href="/archive/0.1.0/index.html"/>
@@ -64,7 +62,7 @@
             <item name="Maven2ization" href="/development/maven2ization.html"/>
         </menu>
 
-        ${reports}
+        <menu ref="reports"/>
 
     </body>
 </project>
