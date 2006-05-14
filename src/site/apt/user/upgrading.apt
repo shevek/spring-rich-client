@@ -9,7 +9,7 @@ Introduction
     Because the project is still in an alpha stage, backwards compability is sometimes broken
     to create a better overall framework design.
 
-    To easy the upgrading path of our users, the most important upgrades are noted here.
+    To ease the upgrading path of our users, the most important upgrades are noted here.
 
 0.1.0 to 0.2.0
 
