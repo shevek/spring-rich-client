@@ -27,7 +27,7 @@ public class ValidationResultsTests extends TestCase {
 
 	private static final Constraints constraints = Constraints.instance();
 
-	static {
+	public void setUp() {
 		ac = new ClassPathXmlApplicationContext("org/springframework/rules/rules-context.xml");
 		rulesSource = (RulesSource) ac.getBean("rulesSource");
 		rules = rulesSource.getRules(Person.class);
