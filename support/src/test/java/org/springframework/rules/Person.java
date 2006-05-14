@@ -22,6 +22,9 @@ public class Person {
     /** Holds value of property telephone. */
     private String telephone;
 
+    private String state;
+    private String zip;
+    
     /**
      * Getter for property firstName.
      * 
@@ -115,6 +118,34 @@ public class Person {
      */
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    /**
+     * @return the state
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState( String state ) {
+        this.state = state;
+    }
+
+    /**
+     * @return the zip
+     */
+    public String getZip() {
+        return zip;
+    }
+
+    /**
+     * @param zip the zip to set
+     */
+    public void setZip( String zip ) {
+        this.zip = zip;
     }
 
 }

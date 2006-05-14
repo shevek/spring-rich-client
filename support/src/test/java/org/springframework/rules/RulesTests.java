@@ -34,6 +34,7 @@ import org.springframework.rules.constraint.GreaterThan;
 import org.springframework.rules.constraint.GreaterThanEqualTo;
 import org.springframework.rules.constraint.LessThan;
 import org.springframework.rules.constraint.LessThanEqualTo;
+import org.springframework.rules.constraint.LogicalOperator;
 import org.springframework.rules.constraint.Not;
 import org.springframework.rules.constraint.Or;
 import org.springframework.rules.constraint.ParameterizedBinaryConstraint;
@@ -46,6 +47,7 @@ import org.springframework.rules.constraint.property.ParameterizedPropertyConstr
 import org.springframework.rules.constraint.property.PropertiesConstraint;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.constraint.property.PropertyValueConstraint;
+import org.springframework.rules.constraint.property.RequiredIfOthersPresent;
 import org.springframework.rules.factory.Constraints;
 import org.springframework.util.Assert;
 
@@ -169,6 +171,52 @@ public class RulesTests extends TestCase {
         assertTrue(req.test(new Object[1]));
         assertTrue(req.test(Arrays.asList(new Object[1])));
 	}
+
+    public void testRequiredIfOthersPresent() {
+        Rules r = new Rules(Person.class);
+        PropertyConstraint c = new RequiredIfOthersPresent("zip", "city,state");
+        r.add(c);
+
+        // Ensure that it properly reports all property dependencies
+        assertTrue(c.isDependentOn("zip"));
+        assertTrue(c.isDependentOn("city"));
+        assertTrue(c.isDependentOn("state"));
+
+        Person p = new Person();
+        
+        assertTrue(r.test(p)); // No city or state, so not required
+        
+        p.setCity("city");
+        assertTrue(r.test(p)); // Need both city and state, so not required
+        
+        p.setState("state");
+        assertFalse(r.test(p));
+        
+        p.setZip("zip");
+        assertTrue(r.test(p));
+        
+        // Now test the OR version
+        r = new Rules(Person.class);
+        c = new RequiredIfOthersPresent("zip", "city,state", LogicalOperator.OR);
+        r.add(c);
+        
+        assertTrue(c.isDependentOn("zip"));
+        assertTrue(c.isDependentOn("city"));
+        assertTrue(c.isDependentOn("state"));
+
+        p = new Person();
+        
+        assertTrue(r.test(p)); // No city or state, so not required
+        
+        p.setCity("city");
+        assertFalse(r.test(p)); // Need either city and state, so required
+        
+        p.setState("state");
+        assertFalse(r.test(p));
+        
+        p.setZip("zip");
+        assertTrue(r.test(p));
+    }
 
 	public void testMaxLengthConstraint() {
 		Constraint p = new StringLengthConstraint(5);
