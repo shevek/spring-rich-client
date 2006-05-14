@@ -422,11 +422,12 @@ public abstract class AbstractMasterForm extends AbstractForm {
     /**
      * Get the message to present to the user when confirming the delete of selected
      * detail items. This default implementation just obtains the message with key
+     * <code>&lt;formId&gt;.confirmDelete.message</code> or
      * <code>masterForm.confirmDelete.message</code>. Subclasses can use the selected
      * item(s) to construct a more meaningful message.
      */
     protected String getConfirmDeleteMessage() {
-        return getMessage( "masterForm.confirmDelete.message" );
+        return getMessage(new String[] { getId() + ".confirmDelete.message", "masterForm.confirmDelete.message" });
     }
 
     /**
@@ -437,7 +438,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
 
         // If configured, have the user confirm the delete operation
         if( isConfirmDelete() ) {
-            String title = getMessage( "masterForm.confirmDelete.title" );
+            String title = getMessage( new String[] { getId() + ".confirmDelete.title", "masterForm.confirmDelete.title" } );
             String message = getConfirmDeleteMessage();
             ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
 
@@ -560,8 +561,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
         final ActionCommand detailNewObjectCommand = _detailForm.getNewFormObjectCommand();
 
         if( getDetailForm().isDirty() ) {
-            String title = getMessage( "masterForm.dirtyNew.title" );
-            String message = getMessage( "masterForm.dirtyNew.message" );
+            String title = getMessage( new String[] { getId() + ".dirtyNew.title", "masterForm.dirtyNew.title" } );
+            String message = getMessage( new String[] { getId() + ".dirtyNew.message", "masterForm.dirtyNew.message" } );
             ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
                 protected void onConfirm() {
                     // Tell both forms that we are creating a new object
@@ -639,8 +640,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
                 return;
             }
             if( getDetailForm().isDirty() ) {
-                String title = getMessage( "masterForm.dirtyChange.title" );
-                String message = getMessage( "masterForm.dirtyChange.message" );
+                String title = getMessage( new String[] { getId() + ".dirtyChange.title", "masterForm.dirtyChange.title" } );
+                String message = getMessage( new String[] { getId() + ".dirtyChange.message", "masterForm.dirtyChange.message" } );
                 ConfirmationDialog dlg = new ConfirmationDialog( title, message ) {
 
                     protected void onConfirm() {
