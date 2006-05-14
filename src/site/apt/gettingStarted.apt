@@ -8,11 +8,11 @@ Getting started
 
     * {{{download.html}Download}} the release and try out the sample applications: simple and petclinic.
 
-    * The {{{user/articles.html}articles}} page contains a link to a good tutorial.
+    * The {{{user/articles.html}articles}} page contains a link to a good beginner tutorial.
 
     * Take a look at the source of the samples.
 
-    * Take a look at {{{user/userGuide.html}the user guide}} on master-detail forms and security integration.
+    * Take a look at {{{user/userGuide.html}the user guide}}.
 
 Snapshots better then releases?
 
@@ -20,13 +20,21 @@ Snapshots better then releases?
     many users prefer to work with a development snapshot instead of the release.
 
     Take a look at {{development/developmentSetup.html}}.
+    It also explains how to get the latest examples running.
 
-Creating your first project
+Creating your first project based on an archetype
 
 	In order to simplify the process of getting your first Spring Rich Client project started,
-	a maven archetype has been created to do just that. Once you have the development
-	environment setup, run the following command (with appropriate substitutions for
-	<<<your.group.id>>> and <<<your-artifact-id>>>):
+	a maven archetype has been created to do just that.
+
+    * See {{development/developmentSetup.html}} to install Maven 2, checkout the project and run
+
++--
+mvn install
++--
+
+	* Next, run the following command (with appropriate substitutions for
+	<<<your.group.id>>> and <<<your-artifact-id>>>) in an empty directory:
 	
 +---
 mvn archetype:create \
@@ -37,8 +45,12 @@ mvn archetype:create \
 +---
 
 	Once this command completes, you will have a new project that is ready to go.
-	You can use the eclipse or Idea maven plugins to get the project into your
-	favorite IDE. The application is runnable as is.
 
-	NOTE: This archetype relies on new features in the archetype core, so you
-	must be using at least maven-archetype-core-1.0-alpha-4 or later.
+	* You can use the Eclipse or Idea plugins in Maven to get the project into your
+	favorite IDE.
++--
+cd your-artifact-id
+mvn install eclipse:eclipse idea:idea
++--
+
+	The application should be runnable as is.
