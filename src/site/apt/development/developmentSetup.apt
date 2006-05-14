@@ -161,14 +161,15 @@ Configuring your favorite IDE
 
     [[4]] Import all existing projects found under the root of the project.  Open
     the import wizard and select <Import existing projects into workspace>.
-    Choose the root directory of the project and you should see 13 projects
+    Choose the root directory of the project and you should see 15 projects
     displayed.  They will be named
 
 ---
+    spring-richchlient-archetype
     spring-richclient-binding
     spring-richclient-core
     spring-richclient-form
-    spring-richclient-petclinic-business>
+    spring-richclient-petclinic-business
     spring-richclient-petclinic-client
     spring-richclient-petclinic-common
     spring-richclient-petclinic-gui
@@ -176,6 +177,7 @@ Configuring your favorite IDE
     spring-richclient-petclinic-standalone
     spring-richclient-resources
     spring-richclient-sandbox
+    spring-richclient-samples-simple
     spring-richclient-support
     spring-richclient-tiger
 ---
@@ -244,9 +246,6 @@ Configuring your favorite IDE
     Enable Subversion (if you haven't checked out with IntelliJ):
     Open <File>\><Settings>\><Project>\><Version Control>.
     Select <<<Subversion>>> as version control.
-
-    Note: Use at least version 2.0-beta-2-SNAPSHOT of the maven-idea-plugin to get a decent
-    configuration. You 'll have to check it out and mvn install it though...
 
 Maven 2 versus your favorite IDE
 
