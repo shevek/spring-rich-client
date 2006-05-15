@@ -135,6 +135,11 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
             if( service != null ) {
                 services.put(serviceType, service);
             }
+        } else {
+            // Runtime derefence of refid's
+            if( service instanceof String ) {
+                service = getApplicationContext().getBean((String)service, serviceType);
+            }
         }
 
         // If we still don't have an implementation, then it's a bust
@@ -154,7 +159,8 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * Add entries to the service registry. This is typically called from a bean
      * definition in the application context. The entryMap parameter must be a map with
      * keys that are either class instances (the serviceType) or the String name of the
-     * class and values that are the implementation to use for that service.
+     * class and values that are the implementation to use for that service or an idref
+     * to a bean that is the implementation (passed as a String).
      * 
      * @param entryMap Map of entries
      */
