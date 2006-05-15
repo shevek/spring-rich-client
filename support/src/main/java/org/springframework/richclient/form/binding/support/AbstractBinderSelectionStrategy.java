@@ -21,10 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.propertyeditors.ClassEditor;
 import org.springframework.binding.form.FormModel;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.enums.LabeledEnum;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
 import org.springframework.richclient.util.ClassUtils;
@@ -37,7 +39,7 @@ import org.springframework.util.Assert;
  * @author Oliver Hutchison
  * @author Jim Moore
  */
-public abstract class AbstractBinderSelectionStrategy implements BinderSelectionStrategy {
+public abstract class AbstractBinderSelectionStrategy implements BinderSelectionStrategy, ApplicationContextAware, InitializingBean{
 
     private final Class defaultControlType;
 
@@ -48,6 +50,10 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
     private final Map propertyTypeBinders = new HashMap();
 
     private final Map propertyNameBinders = new HashMap();
+    
+    private List bindersForPropertyNames;
+    
+    private ApplicationContext applicationContext;
 
     public AbstractBinderSelectionStrategy(Class defaultControlType) {
         this.defaultControlType = defaultControlType;
@@ -158,10 +164,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
      */
     public void setBindersForPropertyNames(List binders)
     {
-        for (Iterator i = binders.iterator(); i.hasNext();)
-        {
-            setBinderForPropertyName((Properties) i.next());
-        }
+        bindersForPropertyNames = binders;
     }
     
     /**
@@ -224,7 +227,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
         else if (binder.containsKey("binderRef"))
         {
             String binderID = (String) binder.get("binderRef");
-            Binder binderBean = (Binder) Application.instance().getApplicationContext().getBean(binderID);
+            Binder binderBean = (Binder) getApplicationContext().getBean(binderID);
             registerBinderForPropertyName(objectClass, propertyName, binderBean);
         }
         else
@@ -315,6 +318,24 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
 
         public int hashCode() {
             return (propertyName.hashCode() * 29) + parentObjectType.hashCode();
+        }
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext)
+    {
+        this.applicationContext = applicationContext;
+    }
+    
+    protected ApplicationContext getApplicationContext()
+    {
+        return applicationContext;
+    }
+    
+    public void afterPropertiesSet() throws Exception
+    {
+        for (Iterator i = bindersForPropertyNames.iterator(); i.hasNext();)
+        {
+            setBinderForPropertyName((Properties) i.next());
         }
     }
 }
