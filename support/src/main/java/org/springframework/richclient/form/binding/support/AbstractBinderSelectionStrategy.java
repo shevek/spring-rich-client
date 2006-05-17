@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.form.binding.support;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +52,7 @@ public abstract class AbstractBinderSelectionStrategy implements BinderSelection
 
     private final Map propertyNameBinders = new HashMap();
     
-    private List bindersForPropertyNames;
+    private List bindersForPropertyNames = new ArrayList();
     
     private ApplicationContext applicationContext;
 
