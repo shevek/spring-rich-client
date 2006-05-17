@@ -29,7 +29,7 @@ import org.springframework.core.io.Resource;
  * 
  * @author Keith Donald
  */
-public class ImageSourceTest extends TestCase {
+public class ImageSourceTests extends TestCase {
     private ApplicationContext context;
 
     public void testValidImageAccess() throws IOException {

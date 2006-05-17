@@ -23,12 +23,12 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.richclient.settings.Settings;
-import org.springframework.richclient.settings.SettingsAbstractTest;
+import org.springframework.richclient.settings.SettingsAbstractTests;
 
 /**
  * @author Peter De Bruycker
  */
-public class JdbcSettingsTests extends SettingsAbstractTest {
+public class JdbcSettingsTests extends SettingsAbstractTests {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
 

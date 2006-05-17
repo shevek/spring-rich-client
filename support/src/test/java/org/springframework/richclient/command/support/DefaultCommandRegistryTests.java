@@ -31,7 +31,7 @@ import org.springframework.richclient.command.CommandRegistryListener;
 /**
  * @author Peter De Bruycker
  */
-public class DefaultCommandRegistryTest extends TestCase {
+public class DefaultCommandRegistryTests extends TestCase {
     public void testConstructor() {
         DefaultCommandRegistry registry = new DefaultCommandRegistry();
         assertNull("parent must be null", registry.getParent());

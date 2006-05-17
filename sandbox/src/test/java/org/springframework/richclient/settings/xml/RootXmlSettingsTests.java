@@ -3,11 +3,11 @@ package org.springframework.richclient.settings.xml;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.richclient.settings.Settings;
-import org.springframework.richclient.settings.SettingsAbstractTest;
+import org.springframework.richclient.settings.SettingsAbstractTests;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class RootXmlSettingsTests extends SettingsAbstractTest {
+public class RootXmlSettingsTests extends SettingsAbstractTests {
 	private StringXmlSettingsReaderWriter readerWriter;
 
 	private Document document;

@@ -25,7 +25,7 @@ import org.springframework.richclient.application.support.DefaultPropertyEditorR
 /**
  * Test cases for {@link DefaultPropertyEditorRegistry}
  */
-public class DefaultPropertyEditorRegistryTest extends TestCase {
+public class DefaultPropertyEditorRegistryTests extends TestCase {
 
     public void testRegisteringClass() throws Exception {
         PropertyEditor pe;

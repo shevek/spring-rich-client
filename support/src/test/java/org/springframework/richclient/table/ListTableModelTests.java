@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 /**
  * @author peter.de.bruycker
  */
-public class ListTableModelTest extends TestCase {
+public class ListTableModelTests extends TestCase {
 
     /**
      * TestCase for bug #RCP-14

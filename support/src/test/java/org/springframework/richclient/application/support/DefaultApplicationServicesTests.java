@@ -16,7 +16,7 @@ import org.springframework.rules.RulesSource;
  * @author Larry Streepy
  * 
  */
-public class DefaultApplicationServicesTest extends SpringRichTestCase {
+public class DefaultApplicationServicesTests extends SpringRichTestCase {
 
     public void testRegisteredServiceIsReturned() {
         ValueChangeDetector vcd = new DefaultValueChangeDetector();

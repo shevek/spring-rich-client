@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 /**
  * @author Peter De Bruycker
  */
-public class LabelInfoTest extends TestCase {
+public class LabelInfoTests extends TestCase {
 
     public void testConstructor() {
         LabelInfo info = new LabelInfo("test");

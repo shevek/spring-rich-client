@@ -28,7 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author oliverh
  */
-public class HandlerTest extends TestCase {
+public class HandlerTests extends TestCase {
 
     private static boolean imageHasNotBeenInstalledInThisJVM = true;
 

@@ -19,11 +19,10 @@ Naming Conventions
 
 * Test code
 
-    * All testcases should end with <<<Test>>> or <<<Tests>>>.
-    TODO: make a decision
+    * All testcase names should end with <<<Tests>>>.
 
-    * Abstract testcases should end with <<<AbstractTest>>> so the build process doesn't
-    try to run them.
+    * Abstract testcase names should end with <<<AbstractTests>>>
+    so the build process doesn't try to run them.
 
 Build process
 

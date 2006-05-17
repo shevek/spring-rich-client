@@ -24,7 +24,7 @@ import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 /**
  * @author Peter De Bruycker
  */
-public class LabelInfoFactoryTest extends TestCase {
+public class LabelInfoFactoryTests extends TestCase {
 
     public void testCreateLabelInfo() {
         LabelInfo info = LabelInfoFactory.createLabelInfo("Test");

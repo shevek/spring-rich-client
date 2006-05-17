@@ -26,7 +26,7 @@ import org.springframework.core.closure.Closure;
  * 
  * @author oliverh
  */
-public class ListenerListHelperTest extends TestCase {
+public class ListenerListHelperTests extends TestCase {
 
     private EventListenerListHelper llh;
 

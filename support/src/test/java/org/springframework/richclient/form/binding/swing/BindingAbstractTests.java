@@ -21,7 +21,7 @@ import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.test.SpringRichTestCase;
 
-public abstract class BindingAbstractTest extends SpringRichTestCase {
+public abstract class BindingAbstractTests extends SpringRichTestCase {
     
     protected ConfigurableFormModel fm;
 

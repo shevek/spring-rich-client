@@ -38,7 +38,7 @@ import org.springframework.richclient.test.SpringRichTestCase;
  *
  * @author oliverh
  */
-public class BufferedCollectionValueModelTest extends SpringRichTestCase {
+public class BufferedCollectionValueModelTests extends SpringRichTestCase {
 
     private Class[] supportedIterfaces = new Class[] {Collection.class, List.class, Set.class, SortedSet.class,};
 

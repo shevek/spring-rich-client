@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 import org.springframework.binding.form.FieldMetadata;
 
-public class TextComponentBindingAbstractTest extends BindingAbstractTest {
+public class TextComponentBindingAbstractTests extends BindingAbstractTests {
 
     private JTextField tc;
 
