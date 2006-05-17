@@ -167,21 +167,23 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         }
     }
 
-    private void configureImageIcons(Object bean, String beanName) {
-        if (getImageSource() != null) {
-            if (bean instanceof ImageConfigurable) {
-                ImageConfigurable imageable = (ImageConfigurable)bean;
+    private void configureImageIcons( Object bean, String beanName ) {
+        if( bean instanceof ImageConfigurable ) {
+            if( getImageSource() != null ) {
+                ImageConfigurable imageable = (ImageConfigurable) bean;
                 imageable.setImage(loadImage(beanName, IMAGE_KEY));
             }
         }
-        if (getIconSource() != null) {
-            if (bean instanceof IconConfigurable) {
-                IconConfigurable iconable = (IconConfigurable)bean;
+        if( bean instanceof IconConfigurable ) {
+            if( getIconSource() != null ) {
+                IconConfigurable iconable = (IconConfigurable) bean;
                 iconable.setIcon(loadOptionalIcon(beanName, ICON_KEY));
             }
-            else if (bean instanceof CommandIconConfigurable) {
-                setIconInfo((CommandIconConfigurable)bean, beanName);
-                setLargeIconInfo((CommandIconConfigurable)bean, beanName);
+        }
+        if( bean instanceof CommandIconConfigurable ) {
+            if( getIconSource() != null ) {
+                setIconInfo((CommandIconConfigurable) bean, beanName);
+                setLargeIconInfo((CommandIconConfigurable) bean, beanName);
             }
         }
     }
