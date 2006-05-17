@@ -16,7 +16,7 @@ Introduction
     * Major Refactoring of application services configuration
 
     A major refactoring of the way that application services (like ImageSource, RulesSource, etc.)
-    are handld/located was introduced in version 0.2.0.  This change is <<NOT>> backward
+    are handled/located was introduced in version 0.2.0.  This change is <<NOT>> backward
     compatible and it requires changes to both the application context XML file and to
     source code that used the ApplicationServices class.
     
@@ -34,13 +34,13 @@ Introduction
         <property name="applicationServices" ref="applicationServices"/>
     </bean>
 
-	<bean id="applicationServices" singleton="true"
-          class="org.springframework.richclient.application.support.DefaultApplicationServices">
-          <property name="imageSource" ref="imageSource"/>
-          <property name="rulesSource" ref="rulesSource"/>
-          <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
-          <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
-	</bean>
+    <bean id="applicationServices" singleton="true"
+            class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="imageSource" ref="imageSource"/>
+        <property name="rulesSource" ref="rulesSource"/>
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
+        <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
+    </bean>
 +---
 
     Note that the <<<DefaultApplicationServices>>> implementation provides setter methods
@@ -59,8 +59,8 @@ Introduction
     
 +---
     <bean id="iconSource" 
-	    class="org.springframework.richclient.image.DefaultIconSource">
-	    <constructor-arg index="0" ref="imageSource"/>
+        class="org.springframework.richclient.image.DefaultIconSource">
+        <constructor-arg index="0" ref="imageSource"/>
     </bean>
 +---
     
@@ -144,6 +144,18 @@ Introduction
         return enumResolver;
     }
 +---
+
++--
+    Application.instance().getServices().configure(command)
++--
+
+    should now be
+
++--
+    CommandConfigurer commandConfigurer = (CommandConfigurer) ApplicationServicesLocator.services()
+            .getService(CommandConfigurer.class);
+    commandConfigurer.configure(command);
++--
 
     In order to support simple programmatic use of the <<<ApplicationServices>>>, a new
     <<<StaticApplicationServices>>> class has been provided.  It has a simple
