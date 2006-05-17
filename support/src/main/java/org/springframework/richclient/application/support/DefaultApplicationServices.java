@@ -395,6 +395,12 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         Object build( DefaultApplicationServices applicationServices );
     }
 
+    protected static final ImplBuilder applicationContextImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            return applicationServices.getApplicationContext();
+        }
+    };
+
     protected static final ImplBuilder componentFactoryImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             logger.info("Creating default service impl: ComponentFactory");
