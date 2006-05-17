@@ -130,6 +130,12 @@
             <groupId>javax.help</groupId>
             <artifactId>jhelp</artifactId>
         </dependency>
+        
+        <!-- JDBC -->
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
