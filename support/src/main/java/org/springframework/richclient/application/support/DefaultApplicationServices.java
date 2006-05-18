@@ -554,6 +554,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      */
     static {
         // Default service implementation builders
+        serviceImplBuilders.put(ApplicationContext.class, applicationContextImplBuilder);        
         serviceImplBuilders.put(ApplicationObjectConfigurer.class, applicationObjectConfigurerImplBuilder);
         serviceImplBuilders.put(ApplicationSecurityManager.class, applicationSecurityManagerImplBuilder);
         serviceImplBuilders.put(BinderSelectionStrategy.class, binderSelectionStrategyImplBuilder);
