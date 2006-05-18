@@ -125,6 +125,13 @@
             <artifactId>jhelp</artifactId>
         </dependency>
 
+        <!-- Docking -->
+        <dependency>
+            <groupId>net.java.dev.flexdock</groupId>
+            <artifactId>flexdock</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
