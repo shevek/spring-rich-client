@@ -24,8 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.binding.convert.ConversionService;
-import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FieldFaceSource;
+import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.support.MessageSourceFieldFaceSource;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.DefaultValueChangeDetector;
@@ -64,9 +64,37 @@ import org.springframework.rules.support.DefaultRulesSource;
 
 /**
  * A default implementation of the ApplicationServices (service locator) interface. This
- * implementation uses information from the application context in order to locate
- * services using "magic" bean names. If requested beans are not defined in the context,
- * then a suitable default service will be created.
+ * implementation allows for the direct registration of service implementations by using
+ * various setter methods (like {@link #setImageSource(ImageSource)}). Service registry
+ * entries can also be added in bulk using the {@link #setRegistryEntries(Map)} method.
+ * <p>
+ * Except in testing environments, this class will typically be instantiated in the
+ * application context and the various service implementations will be set <b>BY ID</b>.
+ * The use of service bean ids instead of direct bean references is to avoid numerous
+ * problems with cyclic dependencies and other order dependent operations. So, a typical
+ * incarnation might look like this:
+ * 
+ * <pre>
+ *  &lt;bean id=&quot;applicationServices&quot;
+ *      class=&quot;org.springframework.richclient.application.support.DefaultApplicationServices&quot;&gt;
+ *      &lt;property name=&quot;applicationObjectConfigurerId&quot;&gt;&lt;idref bean=&quot;applicationObjectConfigurer&quot; /&gt;&lt;/property&gt;
+ *      &lt;property name=&quot;imageSourceId&quot;&gt;&lt;idref bean=&quot;imageSource&quot;/&gt;&lt;/property&gt;
+ *      &lt;property name=&quot;rulesSourceId&quot;&gt;&lt;idref bean=&quot;rulesSource&quot;/&gt;&lt;/property&gt;
+ *      &lt;property name=&quot;conversionServiceId&quot;&gt;&lt;idref bean=&quot;conversionService&quot;/&gt;&lt;/property&gt;
+ *      &lt;property name=&quot;formComponentInterceptorFactoryId&quot;&gt;&lt;idref bean=&quot;formComponentInterceptorFactory&quot;/&gt;&lt;/property&gt;
+ *  &lt;/bean&gt;
+ * </pre>
+ * Note the use of the <code>refid</code> form instead of just using a string value.  This
+ * is the preferred syntax in order to avoid having misspelled bean names go unreported.
+ * <p>
+ * When a service is requested, via {@link #getService(Class)}, the current registry of
+ * service implementations is consulted.  If a registry entry was made using a bean id, this
+ * is the point at which it will be dereferenced into the actual bean implementation. So,
+ * the bean impementation will not be referenced until it is requested.
+ * <p>
+ * If a service is requested that has not been registered and a default implementation
+ * can be provided, it will be constructed at that time.  Default implementations are
+ * provided for essentially all services referenced by the platform.
  * 
  * @author Larry Streepy
  */
@@ -138,7 +166,8 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         } else {
             // Runtime derefence of refid's
             if( service instanceof String ) {
-                service = getApplicationContext().getBean((String)service, serviceType);
+                service = getApplicationContext().getBean((String) service, serviceType);
+                services.put(serviceType, service);
             }
         }
 
@@ -159,8 +188,8 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * Add entries to the service registry. This is typically called from a bean
      * definition in the application context. The entryMap parameter must be a map with
      * keys that are either class instances (the serviceType) or the String name of the
-     * class and values that are the implementation to use for that service or an idref
-     * to a bean that is the implementation (passed as a String).
+     * class and values that are the implementation to use for that service or an idref to
+     * a bean that is the implementation (passed as a String).
      * 
      * @param entryMap Map of entries
      */
@@ -193,24 +222,21 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
-     * Set the Id of the context bean that holds the ApplicationObjectConfigurer instance
-     * to use as the service. This mechanism is used to break a chicken/egg problem in
-     * providing a reference to the AOC to the application services when the AOC needs to
-     * ensure that the application services locator is constructed before the AOC.
-     * 
-     * @param aocBeanId Id of the ApplicationObjectConfigurer bean
-     */
-    public void setApplicationObjectConfigurerBeanId( String aocBeanId ) {
-        applicationObjectConfigurerBeanId = aocBeanId;
-    }
-
-    /**
      * Set the application object configurer service implementation.
      * 
      * @param applicationObjectConfigurer
      */
     public void setApplicationObjectConfigurer( ApplicationObjectConfigurer applicationObjectConfigurer ) {
         services.put(ApplicationObjectConfigurer.class, applicationObjectConfigurer);
+    }
+
+    /**
+     * Set the application object configurer service implementation bean id
+     * 
+     * @param applicationObjectConfigurerId bean id
+     */
+    public void setApplicationObjectConfigurerId( String applicationObjectConfigurerId ) {
+        services.put(ApplicationObjectConfigurer.class, applicationObjectConfigurerId);
     }
 
     /**
@@ -223,12 +249,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the application security manager service implementation bean id
+     * 
+     * @param applicationSecurityManagerId bean id
+     */
+    public void setApplicationSecurityManagerId( String applicationSecurityManagerId ) {
+        services.put(ApplicationSecurityManager.class, applicationSecurityManagerId);
+    }
+
+    /**
      * Set the binder selection strategy service implementation
      * 
      * @param binderSelectionStrategy
      */
     public void setBinderSelectionStrategy( BinderSelectionStrategy binderSelectionStrategy ) {
         services.put(BinderSelectionStrategy.class, binderSelectionStrategy);
+    }
+
+    /**
+     * Set the binder selection strategy service implementation bean id
+     * 
+     * @param binderSelectionStrategyId bean id
+     */
+    public void setBinderSelectionStrategyId( String binderSelectionStrategyId ) {
+        services.put(BinderSelectionStrategy.class, binderSelectionStrategyId);
     }
 
     /**
@@ -241,12 +285,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the binding factory provider service implementation bean id
+     * 
+     * @param bindingFactoryProviderId bean id
+     */
+    public void setBindingFactoryProviderId( String bindingFactoryProviderId ) {
+        services.put(BindingFactoryProvider.class, bindingFactoryProviderId);
+    }
+
+    /**
      * Set the command configurer service implementation
      * 
      * @param commandConfigurer
      */
     public void setCommandConfigurer( CommandConfigurer commandConfigurer ) {
         services.put(CommandConfigurer.class, commandConfigurer);
+    }
+
+    /**
+     * Set the command configurer service implementation bean id
+     * 
+     * @param commandConfigurerId bean id
+     */
+    public void setCommandConfigurerId( String commandConfigurerId ) {
+        services.put(CommandConfigurer.class, commandConfigurerId);
     }
 
     /**
@@ -259,12 +321,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the component factory service implementation bean id
+     * 
+     * @param componentFactoryId bean id
+     */
+    public void setComponentFactoryId( String componentFactoryId ) {
+        services.put(ComponentFactory.class, componentFactoryId);
+    }
+
+    /**
      * Set the conversion service service implementation
      * 
      * @param conversionService
      */
     public void setConversionService( ConversionService conversionService ) {
         services.put(ConversionService.class, conversionService);
+    }
+
+    /**
+     * Set the conversion service service implementation bean id
+     * 
+     * @param conversionServiceId bean id
+     */
+    public void setConversionServiceId( String conversionServiceId ) {
+        services.put(ConversionService.class, conversionServiceId);
     }
 
     /**
@@ -277,12 +357,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
-     * Set the form property face descriptor source service implementation
+     * Set the form component interceptor factory service implementation bean id
+     * 
+     * @param formComponentInterceptorFactoryId bean id
+     */
+    public void setFormComponentInterceptorFactoryId( String formComponentInterceptorFactoryId ) {
+        services.put(FormComponentInterceptorFactory.class, formComponentInterceptorFactoryId);
+    }
+
+    /**
+     * Set the field face descriptor source service implementation
      * 
      * @param fieldFaceSource
      */
     public void setFieldFaceSource( FieldFaceSource fieldFaceSource ) {
         services.put(FieldFaceSource.class, fieldFaceSource);
+    }
+
+    /**
+     * Set the field face descriptor source service implementation bean id
+     * 
+     * @param fieldFaceSourceId bean id
+     */
+    public void setFieldFaceSourceId( String fieldFaceSourceId ) {
+        services.put(FieldFaceSource.class, fieldFaceSourceId);
     }
 
     /**
@@ -295,12 +393,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the icon source service implementation bean id
+     * 
+     * @param iconSourceId bean id
+     */
+    public void setIconSourceId( String iconSourceId ) {
+        services.put(IconSource.class, iconSourceId);
+    }
+
+    /**
      * Set the image source service implementation
      * 
      * @param imageSource
      */
     public void setImageSource( ImageSource imageSource ) {
         services.put(ImageSource.class, imageSource);
+    }
+
+    /**
+     * Set the image source service implementation bean id
+     * 
+     * @param imageSourceId bean id
+     */
+    public void setImageSourceId( String imageSourceId ) {
+        services.put(ImageSource.class, imageSourceId);
     }
 
     /**
@@ -313,12 +429,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the labeled enum resolver service implementation bean id
+     * 
+     * @param labeledEnumResolverId bean id
+     */
+    public void setLabeledEnumResolverId( String labeledEnumResolverId ) {
+        services.put(LabeledEnumResolver.class, labeledEnumResolverId);
+    }
+
+    /**
      * Set the message source service implementation
      * 
      * @param messageSource
      */
     public void setMessageSource( MessageSource messageSource ) {
         services.put(MessageSource.class, messageSource);
+    }
+
+    /**
+     * Set the message source service implementation bean id
+     * 
+     * @param messageSourceId bean id
+     */
+    public void setMessageSourceId( String messageSourceId ) {
+        services.put(MessageSource.class, messageSourceId);
     }
 
     /**
@@ -331,12 +465,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the message source accessor service implementation bean id
+     * 
+     * @param messageSourceAccessorId bean id
+     */
+    public void setMessageSourceAccesorId( String messageSourceAccessorId ) {
+        services.put(MessageSourceAccessor.class, messageSourceAccessorId);
+    }
+
+    /**
      * Set the rules source service implementation
      * 
      * @param rulesSource
      */
     public void setRulesSource( RulesSource rulesSource ) {
         services.put(RulesSource.class, rulesSource);
+    }
+
+    /**
+     * Set the rules source service implementation bean id
+     * 
+     * @param rulesSourceId bean id
+     */
+    public void setRulesSourceId( String rulesSourceId ) {
+        services.put(RulesSource.class, rulesSourceId);
     }
 
     /**
@@ -349,6 +501,15 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the security controller manager service implementation bean id
+     * 
+     * @param securityControllerManagerId bean id
+     */
+    public void setSecurityControllerManagerId( String securityControllerManagerId ) {
+        services.put(SecurityControllerManager.class, securityControllerManagerId);
+    }
+
+    /**
      * Set the value change detector service imlpementation.
      * 
      * @param valueChangeDetector instance to use
@@ -358,12 +519,30 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the value change detector service imlpementation bean id
+     * 
+     * @param valueChangeDetectorId bean id
+     */
+    public void setValueChangeDetectorId( String valueChangeDetectorId ) {
+        services.put(ValueChangeDetector.class, valueChangeDetectorId);
+    }
+
+    /**
      * Set the view descriptor registry service implementation
      * 
      * @param viewDescriptorRegistry
      */
     public void setViewDescriptorRegistry( ViewDescriptorRegistry viewDescriptorRegistry ) {
         services.put(ViewDescriptorRegistry.class, viewDescriptorRegistry);
+    }
+
+    /**
+     * Set the view descriptor registry service implementation bean id
+     * 
+     * @param viewDescriptorRegistryId bean id
+     */
+    public void setViewDescriptorRegistryId( String viewDescriptorRegistryId ) {
+        services.put(ViewDescriptorRegistry.class, viewDescriptorRegistryId);
     }
 
     /**

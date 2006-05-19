@@ -88,18 +88,15 @@
         Usage: Platform required (unless you set this up programmatically)
         Description: This configures the application services available to the platform.
             There are specific setter methods for all the standard services, see the
-            javadoc on teh DefaultApplicationServices class for more details.
-            NOTE: The use of applicationObjectConfigurerBeanId instead of a direct bean
-            reference is required in order to break a circular dependency with the
-            ApplicationObjectConfigurer (which is a BeanPostProcessor).
+            javadoc on the DefaultApplicationServices class for more details.
+            NOTE: The use of bean ids (idref) is preferred over using direct bean
+            references to avoid startup problems with circular references.
     -->
     <bean id="applicationServices"
         class="org.springframework.richclient.application.support.DefaultApplicationServices">
-        <property name="imageSource" ref="imageSource" />
-        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory" />
-        <property name="applicationObjectConfigurerBeanId">
-            <idref bean="applicationObjectConfigurer" />
-        </property>
+        <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
     </bean>
 
     <!-- 
