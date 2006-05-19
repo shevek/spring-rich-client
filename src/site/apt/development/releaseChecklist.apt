@@ -30,6 +30,8 @@ Checklist
     It deletes comments, shema declaration, rearranges dependencies and hard codes inherited version numbers.
     TODO adjust this checklist accordingly
 
+    * Do a <<<-DdryRun=true>>> with the release plugin and fix any issues.
+
     * Release version on JIRA: any issues that are not closed/resolved must be moved to next version,
     all issues that are resolved should be closed, all closed issues that aren't assigned to a fix version must
     set their fix version to the current release version. (Use bulk edit.)
