@@ -165,7 +165,7 @@ Configuring your favorite IDE
     displayed.  They will be named
 
 ---
-    spring-richchlient-archetype
+    spring-richclient-archetype
     spring-richclient-binding
     spring-richclient-core
     spring-richclient-form

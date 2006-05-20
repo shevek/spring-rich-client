@@ -1,5 +1,5 @@
 <archetype>
-  <id>spring-richchlient-archetype</id>
+  <id>spring-richclient-archetype</id>
   <sources>
     <source>src/main/java/SimpleApp.java</source>
     <source>src/main/java/SimpleLifecycleAdvisor.java</source>

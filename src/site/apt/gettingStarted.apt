@@ -39,7 +39,7 @@ mvn install
 +---
 mvn archetype:create \
 -DarchetypeGroupId=org.springframework.richclient \
--DarchetypeArtifactId=spring-richchlient-archetype \
+-DarchetypeArtifactId=spring-richclient-archetype \
 -DarchetypeVersion=0.2.0-SNAPSHOT \
 -DgroupId=your.group.id -DartifactId=your-artifact-id
 +---
