@@ -10,7 +10,7 @@
     <bean id="applicationServices"
         class="org.springframework.richclient.application.support.DefaultApplicationServices">
         <property name="imageSource" ref="imageSource" />
-        <property name="applicationObjectConfigurerBeanId">
+        <property name="applicationObjectConfigurerId">
             <idref bean="applicationObjectConfigurer" />
         </property>
     </bean>
