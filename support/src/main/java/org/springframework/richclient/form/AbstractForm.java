@@ -17,8 +17,10 @@ package org.springframework.richclient.form;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -82,6 +84,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     private BindingFactory bindingFactory;
 
     private Map childForms = new HashMap();
+    
+    private List validationResultsReporters = new ArrayList();
 
     protected AbstractForm() {
         init();
@@ -183,13 +187,54 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
      * 
      * @param childForm to add
      */
-    protected void addChildForm(Form childForm) {
-        if( isControlCreated() ) {
-            throw new IllegalStateException( "Cannot add child forms once the form control is created" );
-        }
+    public void addChildForm(Form childForm) {
         childForms.put( childForm.getId(), childForm );
+        getFormModel().addChild(childForm.getFormModel());
+        Iterator it = validationResultsReporters.iterator();
+        while (it.hasNext())
+        {
+            ValidationResultsReporter reporter = (ValidationResultsReporter)it.next();
+            childForm.addValidationResultsReporter(reporter.createChild(childForm.getFormModel().getValidationResults()));
+        }
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public List getValidationResultsReporters()
+    {
+        return validationResultsReporters;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public void addValidationResultsReporter(ValidationResultsReporter reporter)
+    {
+        this.validationResultsReporters.add(reporter);
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public void removeValidationResultsReporter(ValidationResultsReporter reporter)
+    {
+        this.validationResultsReporters.remove(reporter);
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public void removeChildForm(Form childForm) {
+        getFormModel().removeChild(childForm.getFormModel());
+        childForms.remove(childForm.getId());
+        Iterator it = childForm.getValidationResultsReporters().iterator();
+        while (it.hasNext())
+        {
+            ValidationResultsReporter reporter = (ValidationResultsReporter)it.next();
+            reporter.removeParent();
+        }
+    }
     /**
      * Return a child form of this form with the given form id.
      * @param id of child form
@@ -609,7 +654,8 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
             reporter.addChild( child );
             childForm.getFormModel().validate();    // Force an initial validation
         }
-
+        validationResultsReporters.add(reporter);
+        
         return reporter;
     }
 

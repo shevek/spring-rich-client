@@ -16,6 +16,8 @@
 
 package org.springframework.richclient.form;
 
+import java.util.List;
+
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.value.ValueModel;
@@ -44,6 +46,39 @@ public interface Form extends ControlFactory {
     public void removeValidationListener(ValidationListener listener);
 
     public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageAreaPane);
+    
+    /**
+     * @return The list of ValidationResultsReporters of this Form. 
+     */
+    public List getValidationResultsReporters();
+    
+    /**
+     * Add a ValidationResultsReporter to this Form.
+     * 
+     * @param validationResultsReporter
+     */
+    public void addValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
+    
+    /**
+     * Remove a ValidationResultsReporter from this Form.
+     * 
+     * @param validationResultsReporter
+     */
+    public void removeValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
+    
+    /**
+     * Add a child to this Form. Models and available ResultsReporters will be coupled as well.
+     *  
+     * @param form The childForm to add.
+     */
+    public void addChildForm(Form form);
+    
+    /**
+     * Remove a child from this Form. Models and available ResultsReporters will be decoupled as well.
+     * 
+     * @param form The childForm to remove.
+     */
+    public void removeChildForm(Form form);
 
     public boolean hasErrors();
 

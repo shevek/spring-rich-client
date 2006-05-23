@@ -66,7 +66,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
         this.messageReceiver = messageReceiver;
         init();
     }
-
+    
     private void init() {
         resultsModel.addValidationListener( this );
 
@@ -178,7 +178,38 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
         child.setParent( this );
         validationResultsChanged( null ); // Force a re-reporting
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public void removeChild(ValidationResultsReporter child)
+    {
+        _children.remove(child);
+        validationResultsChanged(null);
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public void removeParent()
+    {
+        if (getParent() != null)
+        {
+            getParent().removeChild(this);
+            setParent(null);
+        }
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public ValidationResultsReporter createChild(ValidationResultsModel validationResultsModel)
+    {
+        SimpleValidationResultsReporter simpleValidationResultsReporter = new SimpleValidationResultsReporter(validationResultsModel, this.guarded, this.messageReceiver);
+        addChild(simpleValidationResultsReporter);
+        return simpleValidationResultsReporter;
+    }
+    
     /*
      * (non-Javadoc)
      * @see org.springframework.richclient.form.ValidationResultsReporter#getParent()

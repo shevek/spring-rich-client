@@ -16,6 +16,7 @@
 package org.springframework.richclient.form;
 
 import org.springframework.binding.validation.ValidationListener;
+import org.springframework.binding.validation.ValidationResultsModel;
 
 public interface ValidationResultsReporter extends ValidationListener {
 
@@ -36,6 +37,26 @@ public interface ValidationResultsReporter extends ValidationListener {
      * @param child to add
      */
     public void addChild(ValidationResultsReporter child);
+    
+    /**
+     * Remove the childReporter from the children list.
+     * 
+     * @param child
+     */
+    public void removeChild(ValidationResultsReporter child);
+    
+    /**
+     * Remove this reporter's parent.
+     */
+    public void removeParent();
+
+    /**
+     * Create a child based upon this Reporter.
+     * 
+     * @param validationResultsModel The specific ResultsModel for the new reporter.
+     * @return A new Reporter that reacts on the given ValidationResultsModel and is a child of this reporter.
+     */
+    public ValidationResultsReporter createChild(ValidationResultsModel validationResultsModel);
 
     /**
      * Get the parent results reporter. If this reporter has not been added as a child to
