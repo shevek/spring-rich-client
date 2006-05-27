@@ -737,7 +737,12 @@
                 <!-- This isn't purely jnlp, it contains sun files... -->
             <!--</dependency>-->
 
-            <!-- JDBC -->
+            <!-- Persistence (for samples) -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-annotations</artifactId>
+                <version>3.1beta9</version>
+            </dependency>
             <dependency>
                 <groupId>hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>

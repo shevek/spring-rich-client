@@ -83,6 +83,12 @@
             <groupId>org.jdesktop</groupId>
             <artifactId>jdnc</artifactId>
         </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

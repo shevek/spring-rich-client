@@ -191,6 +191,18 @@
 			</map>
 		</property>
 	</bean>
+
+    <bean id="exceptionHandlingView"
+        class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+        <property name="viewClass">
+            <value>org.springframework.richclient.samples.petclinic.exceptionHandling.ExceptionHandlingView</value>
+        </property>
+        <!--<property name="viewProperties">-->
+            <!--<map>-->
+                <!--<entry key="ggg" value-ref="ggg"/>-->
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
 	
 	<bean id="setupWizard" 
 		class="org.springframework.richclient.application.setup.SetupWizard">

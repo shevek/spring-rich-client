@@ -153,6 +153,13 @@
             <artifactId>jhelp</artifactId>
         </dependency>
 
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
