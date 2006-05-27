@@ -149,4 +149,12 @@ public class PreferencesSettings extends AbstractSettings {
             throw new RuntimeException(e);
         }
     }
+
+    protected void internalRemoveSettings() {
+        try {
+            prefs.removeNode();
+        } catch( BackingStoreException e ) {
+            throw new RuntimeException(e);
+        }
+    }
 }

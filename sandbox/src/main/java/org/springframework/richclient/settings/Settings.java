@@ -108,6 +108,11 @@ public interface Settings {
 	void load() throws IOException;
 
 	Settings getSettings(String name);
+    
+    /**
+     * Removes this <code>Settings</code> from the backing store.
+     */
+    void removeSettings();
 
 	String getName();
 

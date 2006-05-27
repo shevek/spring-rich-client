@@ -194,4 +194,8 @@ public class XmlSettings extends AbstractSettings {
 
         return (String[]) childSettingsNames.toArray(new String[childSettingsNames.size()]);
     }
+
+    public void internalRemoveSettings() {
+        element.getParentNode().removeChild(element);
+    }
 }

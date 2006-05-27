@@ -71,4 +71,8 @@ public class TransientSettings extends AbstractSettings {
     protected String[] internalGetChildSettings() {
         return new String[0];
     }
+
+    public void internalRemoveSettings() {
+        
+    }
 }

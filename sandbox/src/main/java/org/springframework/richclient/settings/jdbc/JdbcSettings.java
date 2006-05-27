@@ -169,10 +169,30 @@ public class JdbcSettings extends AbstractSettings {
         childKeys = (String[]) keys.toArray( new String[keys.size()] );
     }
 
-    protected void internalRemoveChild( String key ) {
-    }
-
     public String getUser() {
         return user;
+    }
+
+    public void internalRemoveSettings() {
+        if( id != null ) {
+            // first delete all children
+            for( int i = 0; i < childKeys.length; i++ ) {
+                getSettings(childKeys[i]).removeSettings();
+            }
+
+            // now delete all values
+            JdbcTemplate template = new JdbcTemplate( dataSource );
+            template.update( "DELETE FROM SETTINGS_VALUES WHERE SETTINGS_ID=?", new Object[] { id } );
+
+            // now delete our own record
+            template.update( "DELETE FROM SETTINGS WHERE ID=?", new Object[] { id } );
+
+            id = null;
+        }
+
+        values.clear();
+        remove.clear();
+        add.clear();
+        update.clear();
     }
 }

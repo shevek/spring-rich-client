@@ -17,6 +17,7 @@ package org.springframework.richclient.settings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public abstract class AbstractSettings implements Settings {
 
     private boolean childSettingsLoaded = false;
 
-    private List childSettingNames = new ArrayList();
+    private Set childSettingNames = new HashSet();
 
     public Settings getSettings(String name) {
         if (!children.containsKey(name)) {
@@ -610,4 +611,13 @@ public abstract class AbstractSettings implements Settings {
     public boolean isRoot() {
         return getParent() == null;
     }
+    
+    public void removeSettings() {
+        internalRemoveSettings();
+        if(getParent() instanceof AbstractSettings) {
+            ((AbstractSettings)getParent()).childSettingNames.remove(getName());
+        }
+    }
+    
+    protected abstract void internalRemoveSettings();
 }
