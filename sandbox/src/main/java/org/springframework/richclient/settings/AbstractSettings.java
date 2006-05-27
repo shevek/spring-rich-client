@@ -17,12 +17,9 @@ package org.springframework.richclient.settings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.AbstractSet;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +36,7 @@ import org.springframework.util.StringUtils;
  */
 public abstract class AbstractSettings implements Settings {
 
-    private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+    private PropertyChangeSupport listeners = new PropertyChangeSupport( this );
 
     private Map defaults = new HashMap();
 
@@ -49,20 +46,20 @@ public abstract class AbstractSettings implements Settings {
 
     private Settings parent;
 
-    public AbstractSettings(Settings parent, String name) {
+    public AbstractSettings( Settings parent, String name ) {
         this.name = name;
         this.parent = parent;
     }
 
-    public boolean contains(String key) {
-        return internalContains(key) || defaults.containsKey(key);
+    public boolean contains( String key ) {
+        return internalContains( key ) || defaults.containsKey( key );
     }
 
-    protected abstract boolean internalContains(String key);
+    protected abstract boolean internalContains( String key );
 
     /**
-     * Should return the names of the child settings initially in this settings
-     * instance, i.e. the children that were stored in the backend.
+     * Should return the names of the child settings initially in this settings instance,
+     * i.e. the children that were stored in the backend.
      * 
      * @return the names of the child settings
      */
@@ -74,55 +71,55 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setString(java.lang.String,
      *      java.lang.String)
      */
-    public void setString(String key, String value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setString( String key, String value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String old = getString(key);
-        internalSet(key, value);
-        afterSet(key, old, value);
+        String old = getString( key );
+        internalSet( key, value );
+        afterSet( key, old, value );
 
     }
 
-    protected abstract Settings internalCreateChild(String key);
+    protected abstract Settings internalCreateChild( String key );
 
     public String[] getChildSettings() {
-        if (!childSettingsLoaded) {
+        if( !childSettingsLoaded ) {
             childSettingsLoaded = true;
-            childSettingNames.addAll(Arrays.asList(internalGetChildSettings()));
+            childSettingNames.addAll( Arrays.asList( internalGetChildSettings() ) );
         }
-        return (String[]) childSettingNames.toArray(new String[childSettingNames.size()]);
+        return (String[]) childSettingNames.toArray( new String[childSettingNames.size()] );
     }
 
     private boolean childSettingsLoaded = false;
 
     private Set childSettingNames = new HashSet();
 
-    public Settings getSettings(String name) {
-        if (!children.containsKey(name)) {
-            children.put(name, internalCreateChild(name));
-            childSettingNames.add(name);
+    public Settings getSettings( String name ) {
+        if( !children.containsKey( name ) ) {
+            children.put( name, internalCreateChild( name ) );
+            childSettingNames.add( name );
         }
-        return (Settings) children.get(name);
+        return (Settings) children.get( name );
     }
 
-    protected abstract void internalSet(String key, String value);
+    protected abstract void internalSet( String key, String value );
 
     /**
      * Return null if no value found for key
      */
-    protected abstract String internalGet(String key);
+    protected abstract String internalGet( String key );
 
     /*
      * (non-Javadoc)
      * 
      * @see org.springframework.richclient.settings.Settings#getString(java.lang.String)
      */
-    public String getString(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public String getString( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultString(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultString( key );
         }
         return value;
     }
@@ -133,10 +130,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultString(java.lang.String,
      *      java.lang.String)
      */
-    public void setDefaultString(String key, String value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultString( String key, String value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, value);
+        defaults.put( key, value );
     }
 
     /*
@@ -144,28 +141,27 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultString(java.lang.String)
      */
-    public String getDefaultString(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public String getDefaultString( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return "";
         }
-        return (String) defaults.get(key);
+        return (String) defaults.get( key );
 
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.richclient.settings.Settings#setInt(java.lang.String,
-     *      int)
+     * @see org.springframework.richclient.settings.Settings#setInt(java.lang.String, int)
      */
-    public void setInt(String key, int value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setInt( String key, int value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        int old = getInt(key);
-        internalSet(key, String.valueOf(value));
-        afterSet(key, new Integer(old), new Integer(value));
+        int old = getInt( key );
+        internalSet( key, String.valueOf( value ) );
+        afterSet( key, new Integer( old ), new Integer( value ) );
     }
 
     /*
@@ -173,14 +169,14 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getInt(java.lang.String)
      */
-    public int getInt(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public int getInt( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultInt(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultInt( key );
         }
-        return Integer.parseInt(value);
+        return Integer.parseInt( value );
     }
 
     /*
@@ -189,10 +185,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultInt(java.lang.String,
      *      int)
      */
-    public void setDefaultInt(String key, int value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultInt( String key, int value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, String.valueOf(value));
+        defaults.put( key, String.valueOf( value ) );
     }
 
     /*
@@ -200,13 +196,13 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultInt(java.lang.String)
      */
-    public int getDefaultInt(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public int getDefaultInt( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return 0;
         }
-        return Integer.parseInt((String) defaults.get(key));
+        return Integer.parseInt( (String) defaults.get( key ) );
 
     }
 
@@ -216,10 +212,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultLong(java.lang.String,
      *      long)
      */
-    public void setDefaultLong(String key, long value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultLong( String key, long value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, String.valueOf(value));
+        defaults.put( key, String.valueOf( value ) );
     }
 
     /*
@@ -227,13 +223,13 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultLong(java.lang.String)
      */
-    public long getDefaultLong(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public long getDefaultLong( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return 0L;
         }
-        return Long.parseLong((String) defaults.get(key));
+        return Long.parseLong( (String) defaults.get( key ) );
 
     }
 
@@ -243,12 +239,12 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setFloat(java.lang.String,
      *      float)
      */
-    public void setFloat(String key, float value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setFloat( String key, float value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        float old = getFloat(key);
-        internalSet(key, String.valueOf(value));
-        afterSet(key, new Float(old), new Float(value));
+        float old = getFloat( key );
+        internalSet( key, String.valueOf( value ) );
+        afterSet( key, new Float( old ), new Float( value ) );
     }
 
     /*
@@ -256,14 +252,14 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getFloat(java.lang.String)
      */
-    public float getFloat(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public float getFloat( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultFloat(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultFloat( key );
         }
-        return Float.parseFloat(value);
+        return Float.parseFloat( value );
     }
 
     /*
@@ -272,10 +268,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultFloat(java.lang.String,
      *      float)
      */
-    public void setDefaultFloat(String key, float value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultFloat( String key, float value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, String.valueOf(value));
+        defaults.put( key, String.valueOf( value ) );
     }
 
     /*
@@ -283,13 +279,13 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultFloat(java.lang.String)
      */
-    public float getDefaultFloat(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public float getDefaultFloat( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return 0.0f;
         }
-        return Float.parseFloat((String) defaults.get(key));
+        return Float.parseFloat( (String) defaults.get( key ) );
 
     }
 
@@ -299,12 +295,12 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDouble(java.lang.String,
      *      double)
      */
-    public void setDouble(String key, double value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDouble( String key, double value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        double old = getDouble(key);
-        internalSet(key, String.valueOf(value));
-        afterSet(key, new Double(old), new Double(value));
+        double old = getDouble( key );
+        internalSet( key, String.valueOf( value ) );
+        afterSet( key, new Double( old ), new Double( value ) );
     }
 
     /*
@@ -312,14 +308,14 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDouble(java.lang.String)
      */
-    public double getDouble(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public double getDouble( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultDouble(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultDouble( key );
         }
-        return Double.parseDouble(value);
+        return Double.parseDouble( value );
     }
 
     /*
@@ -328,10 +324,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultDouble(java.lang.String,
      *      double)
      */
-    public void setDefaultDouble(String key, double value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultDouble( String key, double value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, String.valueOf(value));
+        defaults.put( key, String.valueOf( value ) );
     }
 
     /*
@@ -339,13 +335,13 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultDouble(java.lang.String)
      */
-    public double getDefaultDouble(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public double getDefaultDouble( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return 0.0;
         }
-        return Double.parseDouble((String) defaults.get(key));
+        return Double.parseDouble( (String) defaults.get( key ) );
 
     }
 
@@ -355,12 +351,12 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setBoolean(java.lang.String,
      *      boolean)
      */
-    public void setBoolean(String key, boolean value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setBoolean( String key, boolean value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        boolean old = getBoolean(key);
-        internalSet(key, String.valueOf(value));
-        afterSet(key, Boolean.valueOf(old), Boolean.valueOf(value));
+        boolean old = getBoolean( key );
+        internalSet( key, String.valueOf( value ) );
+        afterSet( key, Boolean.valueOf( old ), Boolean.valueOf( value ) );
     }
 
     /*
@@ -368,14 +364,14 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getBoolean(java.lang.String)
      */
-    public boolean getBoolean(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public boolean getBoolean( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultBoolean(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultBoolean( key );
         }
-        return Boolean.valueOf(value).booleanValue();
+        return Boolean.valueOf( value ).booleanValue();
     }
 
     /*
@@ -384,16 +380,15 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultBoolean(java.lang.String,
      *      boolean)
      */
-    public void setDefaultBoolean(String key, boolean value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultBoolean( String key, boolean value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (value) {
-            defaults.put(key, String.valueOf(value));
+        if( value ) {
+            defaults.put( key, String.valueOf( value ) );
+        } else {
+            defaults.remove( key );
         }
-        else {
-            defaults.remove(key);
-        }
-        removeIfDefault(key);
+        removeIfDefault( key );
     }
 
     /*
@@ -401,13 +396,13 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultBoolean(java.lang.String)
      */
-    public boolean getDefaultBoolean(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public boolean getDefaultBoolean( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        if (!defaults.containsKey(key)) {
+        if( !defaults.containsKey( key ) ) {
             return false;
         }
-        return Boolean.valueOf((String) defaults.get(key)).booleanValue();
+        return Boolean.valueOf( (String) defaults.get( key ) ).booleanValue();
     }
 
     /*
@@ -416,23 +411,23 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setLabeledEnum(java.lang.String,
      *      org.springframework.enums.LabeledEnum)
      */
-    public void setLabeledEnum(String key, LabeledEnum value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setLabeledEnum( String key, LabeledEnum value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        LabeledEnum old = getLabeledEnum(key);
-        internalSet(key, enumToString(value));
-        afterSet(key, old, value);
+        LabeledEnum old = getLabeledEnum( key );
+        internalSet( key, enumToString( value ) );
+        afterSet( key, old, value );
     }
 
-    private LabeledEnum stringToEnum(String s) {
-        if (s == null || s.trim().equals("")) {
+    private LabeledEnum stringToEnum( String s ) {
+        if( s == null || s.trim().equals( "" ) ) {
             return null;
         }
-        return (LabeledEnum) ClassUtils.getFieldValue(s);
+        return (LabeledEnum) ClassUtils.getFieldValue( s );
     }
 
-    private String enumToString(LabeledEnum e) {
-        return e == null ? "" : ClassUtils.getClassFieldNameWithValue(e.getClass(), e);
+    private String enumToString( LabeledEnum e ) {
+        return e == null ? "" : ClassUtils.getClassFieldNameWithValue( e.getClass(), e );
     }
 
     /*
@@ -440,14 +435,14 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getLabeledEnum(java.lang.String)
      */
-    public LabeledEnum getLabeledEnum(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public LabeledEnum getLabeledEnum( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultLabeledEnum(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultLabeledEnum( key );
         }
-        return stringToEnum(value);
+        return stringToEnum( value );
     }
 
     /*
@@ -456,10 +451,10 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setDefaultLabeledEnum(java.lang.String,
      *      org.springframework.enums.LabeledEnum)
      */
-    public void setDefaultLabeledEnum(String key, LabeledEnum value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setDefaultLabeledEnum( String key, LabeledEnum value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        defaults.put(key, enumToString(value));
+        defaults.put( key, enumToString( value ) );
     }
 
     /*
@@ -467,15 +462,15 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getDefaultLabeledEnum(java.lang.String)
      */
-    public LabeledEnum getDefaultLabeledEnum(String key) {
-        Assert.notNull(key, "Key cannot be null");
-        return stringToEnum((String) defaults.get(key));
+    public LabeledEnum getDefaultLabeledEnum( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
+        return stringToEnum( (String) defaults.get( key ) );
     }
 
-    public boolean isDefault(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public boolean isDefault( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        return internalGet(key) == null || ObjectUtils.nullSafeEquals(internalGet(key), defaults.get(key));
+        return internalGet( key ) == null || ObjectUtils.nullSafeEquals( internalGet( key ), defaults.get( key ) );
     }
 
     /*
@@ -484,7 +479,7 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#getDefaultKeys()
      */
     public String[] getDefaultKeys() {
-        return (String[]) defaults.keySet().toArray(new String[0]);
+        return (String[]) defaults.keySet().toArray( new String[0] );
     }
 
     /*
@@ -494,10 +489,10 @@ public abstract class AbstractSettings implements Settings {
      */
     public String[] getAllKeys() {
         Set keys = new HashSet();
-        keys.addAll(Arrays.asList(getKeys()));
-        keys.addAll(defaults.keySet());
+        keys.addAll( Arrays.asList( getKeys() ) );
+        keys.addAll( defaults.keySet() );
 
-        return (String[]) keys.toArray(new String[0]);
+        return (String[]) keys.toArray( new String[0] );
     }
 
     /*
@@ -523,8 +518,8 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        listeners.addPropertyChangeListener(l);
+    public void addPropertyChangeListener( PropertyChangeListener l ) {
+        listeners.addPropertyChangeListener( l );
     }
 
     /*
@@ -533,8 +528,8 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#addPropertyChangeListener(java.lang.String,
      *      java.beans.PropertyChangeListener)
      */
-    public void addPropertyChangeListener(String key, PropertyChangeListener l) {
-        listeners.addPropertyChangeListener(key, l);
+    public void addPropertyChangeListener( String key, PropertyChangeListener l ) {
+        listeners.addPropertyChangeListener( key, l );
     }
 
     /*
@@ -542,8 +537,8 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#removePropertyChangeListener(java.beans.PropertyChangeListener)
      */
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        listeners.removePropertyChangeListener(l);
+    public void removePropertyChangeListener( PropertyChangeListener l ) {
+        listeners.removePropertyChangeListener( l );
     }
 
     /*
@@ -552,30 +547,30 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#removePropertyChangeListener(java.lang.String,
      *      java.beans.PropertyChangeListener)
      */
-    public void removePropertyChangeListener(String key, PropertyChangeListener l) {
-        listeners.removePropertyChangeListener(key, l);
+    public void removePropertyChangeListener( String key, PropertyChangeListener l ) {
+        listeners.removePropertyChangeListener( key, l );
     }
 
-    private void afterSet(String key, Object oldValue, Object newValue) {
-        removeIfDefault(key);
-        firePropertyChange(key, oldValue, newValue);
+    private void afterSet( String key, Object oldValue, Object newValue ) {
+        removeIfDefault( key );
+        firePropertyChange( key, oldValue, newValue );
     }
 
-    private void firePropertyChange(String key, Object oldValue, Object newValue) {
-        listeners.firePropertyChange(key, oldValue, newValue);
+    private void firePropertyChange( String key, Object oldValue, Object newValue ) {
+        listeners.firePropertyChange( key, oldValue, newValue );
     }
 
-    protected abstract void internalRemove(String key);
+    protected abstract void internalRemove( String key );
 
-    private void removeIfDefault(String key) {
-        if (isDefault(key)) {
-            internalRemove(key);
+    private void removeIfDefault( String key ) {
+        if( isDefault( key ) ) {
+            internalRemove( key );
         }
     }
 
-    public void remove(String key) {
-        if (contains(key)) {
-            internalRemove(key);
+    public void remove( String key ) {
+        if( contains( key ) ) {
+            internalRemove( key );
         }
     }
 
@@ -585,12 +580,12 @@ public abstract class AbstractSettings implements Settings {
      * @see org.springframework.richclient.settings.Settings#setLong(java.lang.String,
      *      long)
      */
-    public void setLong(String key, long value) {
-        Assert.notNull(key, "Key cannot be null");
+    public void setLong( String key, long value ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        long old = getLong(key);
-        internalSet(key, String.valueOf(value));
-        afterSet(key, new Long(old), new Long(value));
+        long old = getLong( key );
+        internalSet( key, String.valueOf( value ) );
+        afterSet( key, new Long( old ), new Long( value ) );
     }
 
     /*
@@ -598,26 +593,26 @@ public abstract class AbstractSettings implements Settings {
      * 
      * @see org.springframework.richclient.settings.Settings#getLong(java.lang.String)
      */
-    public long getLong(String key) {
-        Assert.notNull(key, "Key cannot be null");
+    public long getLong( String key ) {
+        Assert.notNull( key, "Key cannot be null" );
 
-        String value = internalGet(key);
-        if (!StringUtils.hasText(value)) {
-            return getDefaultLong(key);
+        String value = internalGet( key );
+        if( !StringUtils.hasText( value ) ) {
+            return getDefaultLong( key );
         }
-        return Long.parseLong(value);
+        return Long.parseLong( value );
     }
 
     public boolean isRoot() {
         return getParent() == null;
     }
-    
+
     public void removeSettings() {
         internalRemoveSettings();
-        if(getParent() instanceof AbstractSettings) {
-            ((AbstractSettings)getParent()).childSettingNames.remove(getName());
+        if( getParent() instanceof AbstractSettings ) {
+            ((AbstractSettings) getParent()).childSettingNames.remove( getName() );
         }
     }
-    
+
     protected abstract void internalRemoveSettings();
 }
