@@ -66,8 +66,6 @@ public abstract class PreferencePage extends AbstractDialogPage {
 	protected final JComponent createControl() {
 		GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
 
-		// JPanel panel = new JPanel(new BorderLayout());
-
 		JComponent buttonPanel = null;
 		if (createApplyAndDefaultButtons) {
 			buttonPanel = createButtons();
@@ -75,17 +73,13 @@ public abstract class PreferencePage extends AbstractDialogPage {
 
 		JComponent contents = createContents();
 		Assert.notNull(contents, "Contents cannot be null.");
-		// panel.add(contents);
 		builder.append(contents, 1, 1, true, true);
 
 		if (createApplyAndDefaultButtons) {
 			builder.nextLine();
-			builder.append(createButtons());
-			// panel.add(createButtons(), BorderLayout.SOUTH);
 			builder.append(buttonPanel);
 		}
 
-		// return panel;
 		return builder.getPanel();
 	}
 
