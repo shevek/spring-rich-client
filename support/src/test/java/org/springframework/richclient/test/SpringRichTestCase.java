@@ -51,6 +51,7 @@ public abstract class SpringRichTestCase extends TestCase {
             new Application(new DefaultApplicationLifecycleAdvisor());
             StaticApplicationContext applicationContext = new StaticApplicationContext();
             Application.instance().setApplicationContext(applicationContext);
+            applicationServices.setApplicationContext(applicationContext);
 
             registerBasicServices(applicationServices);
             registerAdditionalServices(applicationServices);
