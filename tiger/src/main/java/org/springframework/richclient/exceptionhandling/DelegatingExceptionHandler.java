@@ -20,9 +20,9 @@ import org.apache.commons.logging.Log;
  */
 public class DelegatingExceptionHandler implements Thread.UncaughtExceptionHandler, InitializingBean {
 
-    private final transient Log logger = LogFactory.getLog(getClass());
+    protected final transient Log logger = LogFactory.getLog(getClass());
 
-    private List<DelegatingExceptionHandlerDelegate> delegateList;
+    protected List<DelegatingExceptionHandlerDelegate> delegateList;
 
     /**
      * Sets the list of delegates.
