@@ -1,4 +1,4 @@
-package org.springframework.richclient.samples.petclinic.exceptionHandling;
+package org.springframework.richclient.samples.petclinic.exceptionhandling;
 
 import org.springframework.richclient.application.support.AbstractView;
 import org.springframework.richclient.layout.TableLayoutBuilder;
@@ -74,7 +74,7 @@ public class ExceptionHandlingView extends AbstractView {
         layoutBuilder.row();
         layoutBuilder.relatedGapRow();
 
-        JButton stackOverflow = new JButton(new AbstractAction("Cause a stack overflow"){
+        JButton stackOverflow = new JButton(new AbstractAction("Cause a stack overflow error"){
             public void actionPerformed(ActionEvent e) {
                 causeStackOverflow();
             }
