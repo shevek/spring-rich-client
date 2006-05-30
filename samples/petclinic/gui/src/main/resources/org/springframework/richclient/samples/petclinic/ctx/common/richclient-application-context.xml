@@ -195,7 +195,7 @@
     <bean id="exceptionHandlingView"
         class="org.springframework.richclient.application.support.DefaultViewDescriptor">
         <property name="viewClass">
-            <value>org.springframework.richclient.samples.petclinic.exceptionhandling_move_for_case_problem.ExceptionHandlingView</value>
+            <value>org.springframework.richclient.samples.petclinic.exceptionhandling.ExceptionHandlingView</value>
         </property>
         <!--<property name="viewProperties">-->
             <!--<map>-->
