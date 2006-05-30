@@ -1,4 +1,4 @@
-package org.springframework.richclient.samples.petclinic.exceptionhandling;
+package org.springframework.richclient.samples.petclinic.exceptionhandling_move_for_case_problem;
 
 import org.springframework.richclient.application.support.AbstractView;
 import org.springframework.richclient.layout.TableLayoutBuilder;
