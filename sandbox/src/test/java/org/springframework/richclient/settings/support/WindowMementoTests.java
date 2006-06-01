@@ -16,6 +16,7 @@
 package org.springframework.richclient.settings.support;
 
 import java.awt.Component;
+import java.awt.Frame;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -156,12 +157,12 @@ public class WindowMementoTests extends TestCase {
 	public void testSaveMaximizedState() {
 		WindowMemento frameMemento = new WindowMemento(frame, "frame");
 
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frameMemento.saveMaximizedState(settings);
 
 		assertTrue(settings.getBoolean("frame.maximized"));
 
-		frame.setExtendedState(JFrame.NORMAL);
+		frame.setExtendedState(Frame.NORMAL);
 		frameMemento.saveMaximizedState(settings);
 		assertFalse(settings.getBoolean("frame.maximized"));
 	}
@@ -169,15 +170,15 @@ public class WindowMementoTests extends TestCase {
 	public void testRestoreMaximizedState() {
 		WindowMemento frameMemento = new WindowMemento(frame, "frame");
 
-		frame.setExtendedState(JFrame.NORMAL);
+		frame.setExtendedState(Frame.NORMAL);
 		settings.setBoolean("frame.maximized", true);
 		frameMemento.restoreMaximizedState(settings);
 
-		assertEquals(JFrame.MAXIMIZED_BOTH, frame.getExtendedState());
+		assertEquals(Frame.MAXIMIZED_BOTH, frame.getExtendedState());
 
 		settings.setBoolean("frame.maximized", false);
 		frameMemento.restoreMaximizedState(settings);
-		assertEquals(JFrame.NORMAL, frame.getExtendedState());
+		assertEquals(Frame.NORMAL, frame.getExtendedState());
 	}
 
 	public void testRestoreSize() {
