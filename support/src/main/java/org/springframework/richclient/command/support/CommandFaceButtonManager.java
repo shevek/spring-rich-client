@@ -102,12 +102,10 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     private CommandFaceDescriptor getFaceDescriptor(String faceDescriptorId) {
-        if (command.getFaceDescriptorRegistry() != null) {
+        if (command.getFaceDescriptorRegistry() != null)
             return command.getFaceDescriptorRegistry().getFaceDescriptor(command, faceDescriptorId);
-        }
-        else {
-            return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
-        }
+
+        return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
     }
 
     public boolean isFaceConfigured() {

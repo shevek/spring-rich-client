@@ -43,11 +43,9 @@ public class FileChooserUtils {
         filter.setDescription(fileTypeDescription);
         fileChooser.setFileFilter(filter);
         int returnVal = fileChooser.showDialog(parent, approveButtonName);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION)
             return fileChooser.getSelectedFile();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 }

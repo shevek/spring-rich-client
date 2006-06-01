@@ -93,12 +93,10 @@ public class LabelInfoFactory {
      * @return A new LabelInfo instance.
      */
     public static CommandButtonLabelInfo createButtonLabelInfo(String encodedLabel) {
-        if (StringUtils.hasText(encodedLabel)) {
+        if (StringUtils.hasText(encodedLabel))
             return new LabelInfoFactory(encodedLabel).createButtonLabelInfo();
-        }
-        else {
-            return BLANK_BUTTON_LABEL;
-        }
+
+        return BLANK_BUTTON_LABEL;
     }
 
     /**

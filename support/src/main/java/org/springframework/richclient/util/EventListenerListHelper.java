@@ -156,12 +156,10 @@ public class EventListenerListHelper implements Serializable {
 	 * Returns an iterator over the list of listeners registered with this list.
 	 */
 	public Iterator iterator() {
-		if (listeners == EMPTY_OBJECT_ARRAY) {
+		if (listeners == EMPTY_OBJECT_ARRAY)
 			return EMPTY_ITERATOR;
-		}
-		else {
-			return new ObjectArrayIterator(listeners);
-		}
+
+        return new ObjectArrayIterator(listeners);
 	}
 
 	/**
@@ -267,29 +265,27 @@ public class EventListenerListHelper implements Serializable {
 	public void remove(Object listener) {
 		checkListenerType(listener);
 		synchronized (this) {
-			if (listeners == EMPTY_OBJECT_ARRAY) {
+			if (listeners == EMPTY_OBJECT_ARRAY)
 				return;
-			}
-			else {
-				int listenersLength = listeners.length;
-				int index = 0;
-				for (; index < listenersLength; index++) {
-					if (listeners[index] == listener) {
-						break;
-					}
+
+            int listenersLength = listeners.length;
+			int index = 0;
+			for (; index < listenersLength; index++) {
+				if (listeners[index] == listener) {
+					break;
 				}
-				if (index < listenersLength) {
-					if (listenersLength == 1) {
-						listeners = EMPTY_OBJECT_ARRAY;
+			}
+			if (index < listenersLength) {
+				if (listenersLength == 1) {
+					listeners = EMPTY_OBJECT_ARRAY;
+				}
+				else {
+					Object[] tmp = new Object[listenersLength - 1];
+					System.arraycopy(listeners, 0, tmp, 0, index);
+					if (index < tmp.length) {
+						System.arraycopy(listeners, index + 1, tmp, index, tmp.length - index);
 					}
-					else {
-						Object[] tmp = new Object[listenersLength - 1];
-						System.arraycopy(listeners, 0, tmp, 0, index);
-						if (index < tmp.length) {
-							System.arraycopy(listeners, index + 1, tmp, index, tmp.length - index);
-						}
-						listeners = tmp;
-					}
+					listeners = tmp;
 				}
 			}
 		}
@@ -300,12 +296,10 @@ public class EventListenerListHelper implements Serializable {
 	 */
 	public void clear() {
 		synchronized (this) {
-			if (this.listeners == EMPTY_OBJECT_ARRAY) {
+			if (this.listeners == EMPTY_OBJECT_ARRAY)
 				return;
-			}
-			else {
-				this.listeners = EMPTY_OBJECT_ARRAY;
-			}
+
+            this.listeners = EMPTY_OBJECT_ARRAY;
 		}
 	}
 
@@ -389,15 +383,13 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	public Object toArray() {
-		if (listeners == EMPTY_OBJECT_ARRAY) {
+		if (listeners == EMPTY_OBJECT_ARRAY)
 			return Array.newInstance(listenerClass, 0);
-		}
-		else {
-			Object[] listenersCopy = listeners;
-			Object copy = Array.newInstance(listenerClass, listenersCopy.length);
-			System.arraycopy(listenersCopy, 0, copy, 0, listenersCopy.length);
-			return copy;
-		}
+
+        Object[] listenersCopy = listeners;
+		Object copy = Array.newInstance(listenerClass, listenersCopy.length);
+		System.arraycopy(listenersCopy, 0, copy, 0, listenersCopy.length);
+		return copy;
 	}
 
 	public String toString() {

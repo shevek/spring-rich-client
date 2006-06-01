@@ -18,8 +18,6 @@ package org.springframework.richclient.settings.support;
 import java.awt.Frame;
 import java.awt.Window;
 
-import javax.swing.JFrame;
-
 import org.springframework.richclient.settings.Settings;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -84,7 +82,7 @@ public class WindowMemento implements Memento {
 	void restoreMaximizedState(Settings settings) {
 		if (window instanceof Frame) {
 			Frame frame = (Frame) window;
-			frame.setExtendedState((settings.getBoolean(key + ".maximized") ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+			frame.setExtendedState((settings.getBoolean(key + ".maximized") ? Frame.MAXIMIZED_BOTH : Frame.NORMAL));
 		}
 	}
 

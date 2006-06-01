@@ -58,7 +58,7 @@ public class BeanValidationResultsCollector extends ValidationResultsCollector {
                 collectPropertyResultsInternal((PropertyConstraint)beanPropertyConstraint);
             }
         }.forEach(rules.iterator());
-        return (BeanValidationResults)getBeanResultsBuilder();
+        return getBeanResultsBuilder();
     }
 
     public PropertyResults collectPropertyResults(PropertyConstraint propertyRootExpression) {
@@ -74,12 +74,10 @@ public class BeanValidationResultsCollector extends ValidationResultsCollector {
         if (logger.isDebugEnabled()) {
             logger.debug("Final validation result: " + result);
         }
-        if (!result) {
+        if (!result)
             return getBeanResultsBuilder().getResults(rootExpression.getPropertyName());
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     Boolean visit(CompoundPropertyConstraint rule) {

@@ -49,18 +49,16 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
             }
             return control;
         }
-        else {
-            return createControl();
-        }
+
+        return createControl();
     }
 
     public final boolean isControlCreated() {
         if (isSingleton()) {
             return control != null;
         }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     protected void createControlIfNecessary() {

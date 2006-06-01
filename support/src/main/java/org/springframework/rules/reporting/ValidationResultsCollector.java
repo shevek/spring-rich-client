@@ -97,10 +97,9 @@ public class ValidationResultsCollector {
                     resultsBuilder.pop(false);
                     return false;
                 }
-                else {
-                    if (result) {
-                        result = false;
-                    }
+
+                if (result) {
+                    result = false;
                 }
             }
         }

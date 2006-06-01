@@ -44,12 +44,10 @@ public class ColumnSortList extends Observable {
     }
 
     public boolean isSorted(int columnIndex) {
-        if (findColumnToSort(columnIndex) != null) {
+        if (findColumnToSort(columnIndex) != null)
             return true;
-        }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     public void addSortLevel(int columnIndex, SortOrder order) {
@@ -63,14 +61,12 @@ public class ColumnSortList extends Observable {
 
     public void toggleSortOrder(int columnIndex) {
         ColumnToSort column = findColumnToSort(columnIndex);
-        if (column == null) {
+        if (column == null)
             throw new IllegalArgumentException("No such sorted column.");
-        }
-        else {
-            column.toggleSortOrder();
-            setChanged();
-            notifyObservers();
-        }
+
+        column.toggleSortOrder();
+        setChanged();
+        notifyObservers();
     }
 
     public void setSingleSortLevel(int columnIndex, SortOrder order) {

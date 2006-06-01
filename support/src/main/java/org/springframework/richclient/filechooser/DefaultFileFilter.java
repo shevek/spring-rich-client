@@ -211,16 +211,13 @@ public class DefaultFileFilter extends FileFilter {
         if (isExtensionListInDescription() && extensions.size() > 0) {
             String extensionList = buildExtensionList().toString();
 
-            if (description != null) {
+            if (description != null)
                 return description + " " + extensionList;
-            }
-            else {
-                return extensionList;
-            }
+
+            return extensionList;
         }
-        else {
-            return description;
-        }
+
+        return description;
     }
 
     private String buildExtensionList() {

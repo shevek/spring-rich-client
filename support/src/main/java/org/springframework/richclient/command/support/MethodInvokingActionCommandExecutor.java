@@ -43,7 +43,7 @@ public class MethodInvokingActionCommandExecutor extends ArgumentConvertingMetho
             invoke();
         }
         catch (RuntimeException e) {
-            throw (RuntimeException) e;
+            throw e;
         }
         catch (Exception e) {
             logger.warn("Could not invoke method '" + getTargetMethod() + "' on target object [" + getTargetObject()

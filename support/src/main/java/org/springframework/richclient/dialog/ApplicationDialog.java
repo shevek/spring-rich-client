@@ -154,12 +154,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     protected String getTitle() {
         if (!StringUtils.hasText(this.title)) {
-            if (StringUtils.hasText(getCallingCommandText())) {
+            if (StringUtils.hasText(getCallingCommandText()))
                 return getCallingCommandText();
-            }
-            else {
-                return DEFAULT_DIALOG_TITLE;
-            }
+
+            return DEFAULT_DIALOG_TITLE;
         }
         return this.title;
     }
@@ -232,12 +230,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     public boolean isEnabled() {
-        if (isControlCreated()) {
+        if (isControlCreated())
             return finishCommand.isEnabled();
-        }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     public boolean isShowing() {
@@ -402,9 +398,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                     DEFAULT_SUCCESS_MESSAGE_KEY};
             return getMessage(successMessageKeys, getFinishSuccessMessageArguments());
         }
-        else {
-            return getMessage(DEFAULT_SUCCESS_MESSAGE_KEY);
-        }
+
+        return getMessage(DEFAULT_SUCCESS_MESSAGE_KEY);
     }
 
     protected ActionCommand getCallingCommand() {
@@ -420,12 +415,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected Object[] getFinishSuccessTitleArguments() {
-        if (StringUtils.hasText(getCallingCommandText())) {
+        if (StringUtils.hasText(getCallingCommandText()))
             return new Object[] {getCallingCommandText()};
-        }
-        else {
-            return new Object[0];
-        }
+
+        return new Object[0];
     }
 
     private String getCallingCommandText() {

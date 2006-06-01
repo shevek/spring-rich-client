@@ -256,19 +256,18 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     private ListModel createModel() {
-        if( model != null ) {
+        if( model != null )
             return model;
+
+        ListListModel model;
+        if( selectableItemsHolder != null ) {
+            model = new DynamicListModel(selectableItemsHolder);
         } else {
-            ListListModel model;
-            if( selectableItemsHolder != null ) {
-                model = new DynamicListModel(selectableItemsHolder);
-            } else {
-                model = new ListListModel();
-            }
-            model.setComparator(comparator);
-            model.sort();
-            return model;
+            model = new ListListModel();
         }
+        model.setComparator(comparator);
+        model.sort();
+        return model;
     }
 
     protected void updateSelectionHolderFromList( final PropertyChangeListener silentValueChangeHandler ) {

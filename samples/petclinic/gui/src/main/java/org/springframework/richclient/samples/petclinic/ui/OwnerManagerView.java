@@ -130,12 +130,10 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         ownersTree.addTreeSelectionListener(new TreeStatusBarUpdater(getStatusBar()) {
             public String getSelectedObjectName() {
                 Owner selectedOwner = getSelectedOwner();
-                if (selectedOwner != null) {
+                if (selectedOwner != null)
                     return selectedOwner.getFirstName() + " " + selectedOwner.getLastName();
-                }
-                else {
-                    return "Owners";
-                }
+
+                return "Owners";
             }
         });
         ownersTree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -165,42 +163,34 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
 
     private Owner getSelectedOwner() {
         DefaultMutableTreeNode node = getSelectedOwnerNode();
-        if (node != null) {
+        if (node != null)
             return (Owner)node.getUserObject();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     private DefaultMutableTreeNode getSelectedOwnerNode() {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree.getLastSelectedPathComponent();
-        if (node == null || !(node.getUserObject() instanceof Owner)) {
+        if (node == null || !(node.getUserObject() instanceof Owner))
             return null;
-        }
-        else {
-            return node;
-        }
+
+        return node;
     }
 
     private Pet getSelectedPet() {
         DefaultMutableTreeNode node = getSelectedPetNode();
-        if (node != null) {
+        if (node != null)
             return (Pet)node.getUserObject();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     private DefaultMutableTreeNode getSelectedPetNode() {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)ownersTree.getLastSelectedPathComponent();
-        if (node == null || !(node.getUserObject() instanceof Pet)) {
+        if (node == null || !(node.getUserObject() instanceof Pet))
             return null;
-        }
-        else {
-            return node;
-        }
+
+        return node;
     }
 
     private void updateCommands() {

@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 
@@ -42,7 +43,7 @@ public class SwingActionAdapter extends AbstractAction implements PropertyChange
     }
 
     protected void update() {
-        putValue(AbstractAction.ACTION_COMMAND_KEY, command.getActionCommand());
+        putValue(Action.ACTION_COMMAND_KEY, command.getActionCommand());
         CommandFaceDescriptor face = command.getFaceDescriptor();
         if (face != null) {
             face.configure(this);

@@ -23,9 +23,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -153,7 +153,7 @@ public class TableSortIndicator {
             setBackground(header.getBackground());
             setBorder(UIManager.getBorder("TableHeader.cellBorder"));
             setIconTextGap(UIConstants.TWO_SPACES);
-            setHorizontalTextPosition(JLabel.LEFT);
+            setHorizontalTextPosition(SwingConstants.LEFT);
             this.tableHeader = header;
         }
 

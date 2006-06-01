@@ -61,11 +61,10 @@ public class DefaultValueChangeDetector implements ValueChangeDetector {
      *         model
      */
     public boolean hasValueChanged(Object oldValue, Object newValue) {
-        if( oldValue != null && classesWithSafeEquals.contains( oldValue.getClass() ) ) {
+        if( oldValue != null && classesWithSafeEquals.contains( oldValue.getClass() ) )
             return !oldValue.equals( newValue );
-        } else {
-            return oldValue != newValue;
-        }
+
+        return oldValue != newValue;
     }
 
     /**

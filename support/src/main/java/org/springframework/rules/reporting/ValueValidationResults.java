@@ -39,12 +39,10 @@ public class ValueValidationResults implements ValidationResults {
 	 * @see org.springframework.rules.reporting.ValidationResults#getViolatedCount()
 	 */
 	public int getViolatedCount() {
-		if (violatedConstraint != null) {
+		if (violatedConstraint != null)
 			return new SummingVisitor(violatedConstraint).sum();
-		}
-		else {
-			return 0;
-		}
+
+        return 0;
 	}
 
 	/**

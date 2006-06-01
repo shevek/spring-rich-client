@@ -25,6 +25,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -341,22 +342,22 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
         final Insets insets = getDefaultInsets();
 
         if (labelOrientation == LabelOrientation.LEFT || labelOrientation == null) {
-            label.setHorizontalAlignment(JLabel.RIGHT);
+            label.setHorizontalAlignment(SwingConstants.RIGHT);
             append(label, col, row, 1, 1, false, expandY, insets);
             append(field, col + 1, row, colSpan, rowSpan, expandX, expandY, insets);
         }
         else if (labelOrientation == LabelOrientation.RIGHT) {
-            label.setHorizontalAlignment(JLabel.LEFT);
+            label.setHorizontalAlignment(SwingConstants.LEFT);
             append(field, col, row, colSpan, rowSpan, expandX, expandY, insets);
             append(label, col + colSpan, row, 1, rowSpan, false, expandY, insets);
         }
         else if (labelOrientation == LabelOrientation.TOP) {
-            label.setHorizontalAlignment(JLabel.LEFT);
+            label.setHorizontalAlignment(SwingConstants.LEFT);
             append(label, col, row, colSpan, 1, expandX, false, insets);
             append(field, col, row + 1, colSpan, rowSpan, expandX, expandY, insets);
         }
         else if (labelOrientation == LabelOrientation.BOTTOM) {
-            label.setHorizontalAlignment(JLabel.LEFT);
+            label.setHorizontalAlignment(SwingConstants.LEFT);
             append(field, col, row, colSpan, rowSpan, expandX, expandY, insets);
             append(label, col, row + rowSpan, colSpan, 1, expandX, false, insets);
         }
@@ -513,7 +514,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      */
     public GridBagLayoutBuilder appendRightLabel(String labelKey, int colSpan) {
         final JLabel label = getComponentFactory().createLabel(labelKey);
-        label.setHorizontalAlignment(JLabel.RIGHT);
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
         return appendLabel(label, colSpan);
     }
 
@@ -546,7 +547,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      */
     public GridBagLayoutBuilder appendLeftLabel(String labelKey, int colSpan) {
         final JLabel label = getComponentFactory().createLabel(labelKey);
-        label.setHorizontalAlignment(JLabel.LEFT);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         return appendLabel(label, colSpan);
     }
 

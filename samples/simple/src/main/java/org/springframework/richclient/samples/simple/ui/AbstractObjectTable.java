@@ -253,7 +253,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
 
         table = new JTable(model);
         table.setSelectionModel(new EventSelectionModel(finalEventList));
-        table.setSelectionMode(EventSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Install the sorter
         TableComparatorChooser tableSorter = new TableComparatorChooser(table, baseList, true);

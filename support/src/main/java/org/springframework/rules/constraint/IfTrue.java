@@ -43,17 +43,13 @@ public class IfTrue extends AbstractConstraint {
 	}
 
 	public boolean test(Object argument) {
-		if (constraint.test(argument)) {
+		if (constraint.test(argument))
 			return mustBeTrueConstraint.test(argument);
-		}
-		else {
-			if (elseTrueConstraint != null) {
-				return elseTrueConstraint.test(argument);
-			}
-			else {
-				return true;
-			}
-		}
+
+		if (elseTrueConstraint != null)
+			return elseTrueConstraint.test(argument);
+
+        return true;
 	}
 
 }

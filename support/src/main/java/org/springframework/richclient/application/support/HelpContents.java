@@ -16,6 +16,7 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Window;
 
@@ -76,8 +77,8 @@ public class HelpContents {
             helpFrame.setLocationRelativeTo(parent);
             helpFrame.setVisible(true);
         }
-        if ((helpFrame.getExtendedState() & JFrame.NORMAL) == 0) {
-            helpFrame.setExtendedState(JFrame.NORMAL);
+        if ((helpFrame.getExtendedState() & Frame.NORMAL) == 0) {
+            helpFrame.setExtendedState(Frame.NORMAL);
         }
         helpFrame.toFront();
     }

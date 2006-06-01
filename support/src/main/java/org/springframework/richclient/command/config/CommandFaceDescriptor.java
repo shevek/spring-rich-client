@@ -17,7 +17,6 @@ package org.springframework.richclient.command.config;
 
 import java.awt.Image;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -222,13 +221,13 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
 
     public void configure(Action action) {
         Assert.notNull(action, "The swing action to configure is required");
-        action.putValue(AbstractAction.NAME, getText());
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer(getMnemonic()));
-        action.putValue(AbstractAction.SMALL_ICON, getIcon());
+        action.putValue(Action.NAME, getText());
+        action.putValue(Action.MNEMONIC_KEY, new Integer(getMnemonic()));
+        action.putValue(Action.SMALL_ICON, getIcon());
         action.putValue("LargeIcon", getLargeIcon());
-        action.putValue(AbstractAction.ACCELERATOR_KEY, getAccelerator());
-        action.putValue(AbstractAction.SHORT_DESCRIPTION, caption);
-        action.putValue(AbstractAction.LONG_DESCRIPTION, description);
+        action.putValue(Action.ACCELERATOR_KEY, getAccelerator());
+        action.putValue(Action.SHORT_DESCRIPTION, caption);
+        action.putValue(Action.LONG_DESCRIPTION, description);
     }
 
     public String toString() {

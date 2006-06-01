@@ -94,12 +94,10 @@ public class CommandButtonIconInfo implements ButtonConfigurer, VisualizedElemen
     }
 
     public Image getImage() {
-        if (getIcon() instanceof ImageIcon) {
+        if (getIcon() instanceof ImageIcon)
             return ((ImageIcon)getIcon()).getImage();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     public Icon getIcon() {

@@ -88,7 +88,7 @@ public class DefaultRulesSource extends ConstraintsAccessor implements RulesSour
 	}
 
 	public Rules getRules(Class bean) {
-		return (Rules)getRules(bean, DEFAULT_CONTEXT_ID);
+		return getRules(bean, DEFAULT_CONTEXT_ID);
 	}
 
 	public Rules getRules(Class bean, String contextId) {
@@ -108,12 +108,10 @@ public class DefaultRulesSource extends ConstraintsAccessor implements RulesSour
 					+ "'");
 		}
 		Rules rules = getRules(bean, contextId);
-		if (rules != null) {
+		if (rules != null)
 			return rules.getPropertyConstraint(propertyName);
-		}
-		else {
-			return null;
-		}
+
+        return null;
 	}
 
 	public String toString() {

@@ -18,7 +18,7 @@ package org.springframework.binding.value.support;
 import java.lang.reflect.Method;
 
 import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.util.Assert;
+import org.springframework.util.Assert;
 
 /**
  * A value model that derives it's value from the result of invoking a method. 

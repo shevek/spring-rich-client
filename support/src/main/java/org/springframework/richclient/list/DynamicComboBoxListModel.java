@@ -77,9 +77,8 @@ public class DynamicComboBoxListModel extends ComboBoxListModel implements Prope
             }
             return selectedItemHolder.getValue();
         }
-        else {
-            return super.getSelectedItem();
-        }
+
+        return super.getSelectedItem();
     }
 
     public void setSelectedItem(Object selectedItem) {

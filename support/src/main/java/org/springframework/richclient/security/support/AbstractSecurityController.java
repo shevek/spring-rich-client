@@ -276,7 +276,7 @@ public abstract class AbstractSecurityController implements SecurityController, 
 
         // Convert to weak references and validate the object types
         for( Iterator iter = secured.iterator(); iter.hasNext(); ) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
 
             // Ensure that we got something we can control
             if( !(o instanceof Authorizable) ) {

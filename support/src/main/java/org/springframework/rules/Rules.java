@@ -206,7 +206,7 @@ public class Rules extends ConstraintsAccessor implements Constraint, PropertyCo
 	 * @param compoundPredicate
 	 */
 	public void add(CompoundConstraint compoundPredicate) {
-		add(new CompoundPropertyConstraint((CompoundConstraint)compoundPredicate));
+		add(new CompoundPropertyConstraint(compoundPredicate));
 	}
 
 	public boolean test(Object bean) {

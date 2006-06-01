@@ -198,17 +198,13 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     }
 
     private JPopupMenu createPopup() {
-        if (textComponent instanceof JPasswordField) {
+        if (textComponent instanceof JPasswordField)
             return getPasswordCommandGroup().createPopupMenu();
-        }
-        else {
-            if (isEditable()) {
-                return getEditableCommandGroup().createPopupMenu();
-            }
-            else {
-                return getReadOnlyCommandGroup().createPopupMenu();
-            }
-        }
+        
+        if (isEditable())
+            return getEditableCommandGroup().createPopupMenu();
+
+        return getReadOnlyCommandGroup().createPopupMenu();
     }
 
     private void updateState() {

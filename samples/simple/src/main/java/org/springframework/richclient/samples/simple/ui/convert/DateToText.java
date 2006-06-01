@@ -63,7 +63,7 @@ public class DateToText extends AbstractFormattingConverter {
      * Convert the Date to a String using the configured format.
      */
     protected Object doConvert( Object source, Class targetClass ) throws Exception {
-        return (source == null) ? "" : format.formatValue((Date) source);
+        return (source == null) ? "" : format.formatValue(source);
     }
 
     /**

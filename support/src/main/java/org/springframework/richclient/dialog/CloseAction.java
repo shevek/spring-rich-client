@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.dialog;
 
-import javax.swing.JDialog;
+import javax.swing.WindowConstants;
 
 /**
  * Forces calls to constructor to have greater clarity, by using a type-safe
@@ -26,13 +26,13 @@ public final class CloseAction {
     /**
      * Dispose the dialog on close; reclaiming any dialog resources in memory.
      */
-    public static final CloseAction DISPOSE = new CloseAction(JDialog.DISPOSE_ON_CLOSE);
+    public static final CloseAction DISPOSE = new CloseAction(WindowConstants.DISPOSE_ON_CLOSE);
 
     /**
      * Hide the dialog on close; leaving it in memory for assumed re-display at
      * a later point.
      */
-    public static final CloseAction HIDE = new CloseAction(JDialog.HIDE_ON_CLOSE);
+    public static final CloseAction HIDE = new CloseAction(WindowConstants.HIDE_ON_CLOSE);
 
     private final int action;
 

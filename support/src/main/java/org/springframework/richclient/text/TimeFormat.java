@@ -87,12 +87,10 @@ public abstract class TimeFormat {
                 buf.append(milliseconds);
                 buf.append("ms");
             }
-            if (buf.length() == 0) {
+            if (buf.length() == 0)
                 return "0";
-            }
-            else {
-                return buf.toString();
-            }
+
+            return buf.toString();
         }
     };
 

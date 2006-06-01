@@ -158,7 +158,7 @@ public class JdbcSettings extends AbstractSettings {
                 new Object[] { id } );
         for( Iterator iter = entries.iterator(); iter.hasNext(); ) {
             Map entry = (Map) iter.next();
-            values.put( (String) entry.get( "KEY" ), (String) entry.get( "VALUE" ) );
+            values.put(entry.get( "KEY" ), entry.get( "VALUE" ));
         }
     }
 

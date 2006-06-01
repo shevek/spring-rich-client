@@ -98,11 +98,9 @@ public class Handler extends URLStreamHandler {
         }
         urlHandlerImageSource.getImage(url.getPath());
         Resource image = urlHandlerImageSource.getImageResource(url.getPath());
-        if (image != null) {
+        if (image != null)
             return image.getURL().openConnection();
-        }
-        else {
-            throw new IOException("null image returned for key [" + url.getFile() + "].");
-        }
+
+        throw new IOException("null image returned for key [" + url.getFile() + "].");
     }
 }

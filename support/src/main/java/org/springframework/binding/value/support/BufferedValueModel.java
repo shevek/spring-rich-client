@@ -167,11 +167,10 @@ public class BufferedValueModel extends AbstractValueModel implements ValueModel
      * @see ValueModelWrapper#getInnerMostWrappedValueModel()  
      */
     public final ValueModel getInnerMostWrappedValueModel() {
-        if (wrappedModel instanceof ValueModelWrapper) {
+        if (wrappedModel instanceof ValueModelWrapper)
             return ((ValueModelWrapper)wrappedModel).getInnerMostWrappedValueModel();
-        } else {
-            return wrappedModel;
-        }
+
+        return wrappedModel;
     }
 
     /**

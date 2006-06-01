@@ -22,6 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import org.springframework.richclient.command.GroupContainerPopulator;
 
@@ -51,7 +52,7 @@ public class SimpleGroupContainerPopulator implements GroupContainerPopulator {
             ((JToolBar)container).addSeparator();
         }
         else {
-            container.add(new JSeparator(JSeparator.VERTICAL));
+            container.add(new JSeparator(SwingConstants.VERTICAL));
         }
     }
 

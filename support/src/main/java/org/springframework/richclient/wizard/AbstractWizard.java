@@ -228,10 +228,9 @@ public abstract class AbstractWizard extends ApplicationServicesAccessor impleme
             // first page or page not found
             return null;
         }
-        else {
-            logger.debug("Returning previous page...");
-            return (WizardPage)pages.get(index - 1);
-        }
+
+        logger.debug("Returning previous page...");
+        return (WizardPage)pages.get(index - 1);
     }
 
     public WizardPage getStartingPage() {

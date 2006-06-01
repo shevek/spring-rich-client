@@ -57,7 +57,7 @@ public class NewOwnerWizard extends AbstractWizard implements ActionCommandExecu
     }
 
     protected boolean onFinish() {
-        Owner newOwner = (Owner)getNewOwner();
+        Owner newOwner = getNewOwner();
         clinic.storeOwner(newOwner);
         getApplicationContext()
                 .publishEvent(new LifecycleApplicationEvent(LifecycleApplicationEvent.CREATED, newOwner));

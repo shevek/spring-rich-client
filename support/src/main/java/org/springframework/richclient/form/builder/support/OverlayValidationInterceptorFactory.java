@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.validation.Severity;
@@ -85,7 +86,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
 
         private void attachOverlay( ErrorReportingOverlay overlay, JComponent component ) {
             int yOffset = component.getPreferredSize().height;
-            InterceptorOverlayHelper.attachOverlay(overlay, component, OverlayHelper.NORTH_WEST, 0, Math.min(yOffset,
+            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.NORTH_WEST, 0, Math.min(yOffset,
                     textCompHeight));
         }
     }

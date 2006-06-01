@@ -107,12 +107,10 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
     }
 
     private Icon getIcon() {
-        if (image != null) {
+        if (image != null)
             return new ImageIcon(image);
-        }
-        else {
-            return new ImageIcon(getImageSource().getImage(DEFAULT_TITLE_IMAGE));
-        }
+
+        return new ImageIcon(getImageSource().getImage(DEFAULT_TITLE_IMAGE));
     }
 
     private Color getBackgroundColor() {

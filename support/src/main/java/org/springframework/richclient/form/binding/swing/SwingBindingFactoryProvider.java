@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.BindingFactoryProvider;
@@ -34,7 +33,7 @@ public class SwingBindingFactoryProvider implements BindingFactoryProvider {
      * @return BindingFactory
      */
     public BindingFactory getBindingFactory(FormModel formModel) {
-        return new SwingBindingFactory((ConfigurableFormModel)formModel);
+        return new SwingBindingFactory(formModel);
     }
 
 }

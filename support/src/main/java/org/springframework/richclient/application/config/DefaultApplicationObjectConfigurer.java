@@ -246,7 +246,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            ((CommandIconConfigurable)bean).setIconInfo(iconInfo);
+            bean.setIconInfo(iconInfo);
         }
     }
 
@@ -264,7 +264,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            ((CommandIconConfigurable)bean).setLargeIconInfo(iconInfo);
+            bean.setLargeIconInfo(iconInfo);
         }
     }
 

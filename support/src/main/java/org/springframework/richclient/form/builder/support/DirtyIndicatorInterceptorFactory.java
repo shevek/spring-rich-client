@@ -22,6 +22,7 @@ import java.util.Locale;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.support.ValueHolder;
@@ -30,7 +31,6 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.image.IconSource;
-import org.springframework.richclient.util.OverlayHelper;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -111,7 +111,7 @@ public class DirtyIndicatorInterceptorFactory implements FormComponentIntercepto
                 }
             } );
 
-            InterceptorOverlayHelper.attachOverlay( overlay, component, OverlayHelper.NORTH_WEST, 0, 0 );
+            InterceptorOverlayHelper.attachOverlay( overlay, component, SwingConstants.NORTH_WEST, 0, 0 );
             overlay.setVisible( false );
         }
 
@@ -119,9 +119,9 @@ public class DirtyIndicatorInterceptorFactory implements FormComponentIntercepto
             if( oldValue == null && newValue instanceof String ) {
                 // hack for string comparison: null equals empty string
                 return !ObjectUtils.nullSafeEquals( "", newValue );
-            } else {
-                return !ObjectUtils.nullSafeEquals( oldValue, newValue );
-            }
+            } 
+            
+            return !ObjectUtils.nullSafeEquals( oldValue, newValue );
         }
     }
 

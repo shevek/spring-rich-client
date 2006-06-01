@@ -135,20 +135,18 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public String getName() {
-        if( descriptor != null && StringUtils.hasText(descriptor.getDisplayName()) ) {
+        if( descriptor != null && StringUtils.hasText(descriptor.getDisplayName()) )
             return descriptor.getDisplayName();
-        } else {
-            return "Spring Rich Client Application";
-        }
+
+        return "Spring Rich Client Application";
     }
 
     public Image getImage() {
-        if( descriptor != null && descriptor.getImage() != null ) {
+        if( descriptor != null && descriptor.getImage() != null ) 
             return descriptor.getImage();
-        } else {
-            ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
-            return isrc.getImage(DEFAULT_APPLICATION_IMAGE_KEY);
-        }
+
+        ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
+        return isrc.getImage(DEFAULT_APPLICATION_IMAGE_KEY);
     }
 
     public void openWindow( String pageDescriptorId ) {

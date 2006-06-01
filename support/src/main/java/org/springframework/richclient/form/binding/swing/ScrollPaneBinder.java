@@ -72,16 +72,12 @@ public class ScrollPaneBinder extends AbstractBinder {
             scrollPane.setViewportView(viewBinding.getControl());
             return viewBinding;
         }
-        else {
-            Binding existingBinding = (Binding)view.getClientProperty(BINDING_CLIENT_PROPERTY_KEY);
-            if (existingBinding != null) {
-                return existingBinding;
-            }
-            else {
-                return viewBinderSelectionStrategy.selectBinder(view.getClass(), formModel, formPropertyPath).bind(
-                        view, formModel, formPropertyPath, context);
-            }
+        Binding existingBinding = (Binding)view.getClientProperty(BINDING_CLIENT_PROPERTY_KEY);
+        if (existingBinding != null) {
+            return existingBinding;
         }
+        return viewBinderSelectionStrategy.selectBinder(view.getClass(), formModel, formPropertyPath).bind(
+                view, formModel, formPropertyPath, context);
     }
 
     protected void validateContextKeys(Map context) {

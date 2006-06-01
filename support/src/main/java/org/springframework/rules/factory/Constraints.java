@@ -483,12 +483,10 @@ public class Constraints extends AlgorithmsAccessor {
      * @return The negated constraint.
      */
     public Constraint not(Constraint constraint) {
-        if (!(constraint instanceof Not)) {
+        if (!(constraint instanceof Not))
             return new Not(constraint);
-        }
-        else {
-            return ((Not)constraint).getConstraint();
-        }
+
+        return ((Not)constraint).getConstraint();
     }
 
     /**

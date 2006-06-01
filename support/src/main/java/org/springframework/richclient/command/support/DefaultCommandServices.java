@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.command.support;
 
+import java.awt.Color;
 import java.awt.Insets;
-import java.awt.SystemColor;
 
 import javax.swing.AbstractButton;
 import javax.swing.SwingConstants;
@@ -40,7 +40,7 @@ public class DefaultCommandServices implements CommandServices {
 
     private static DefaultCommandServices INSTANCE = new DefaultCommandServices();
 
-    private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, SystemColor.BLACK);
+    private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, Color.BLACK);
 
     private ButtonFactory buttonFactory = DefaultButtonFactory.instance();
 

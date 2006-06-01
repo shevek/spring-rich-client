@@ -101,12 +101,10 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
         Object wrappedValue = getWrappedValue();
         // If the wrappedValue is null and the buffer is empty 
         // just return null rather than an empty collection
-        if (wrappedValue == null && bufferedListModel.size() == 0) {
+        if (wrappedValue == null && bufferedListModel.size() == 0)
             return null;
-        }
-        else {
-            return createCollection(wrappedValue);
-        }
+
+        return createCollection(wrappedValue);
     }
 
     //    protected void doBufferedValueCommit(Object bufferedValue) {
@@ -192,28 +190,26 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     }
 
     private Object createNewCollection(Object wrappedCollection) {
-        if (wrappedConcreteType.isArray()) {
+        if (wrappedConcreteType.isArray())
             return Array.newInstance(wrappedConcreteType.getComponentType(), bufferedListModel.size());
+
+        Object newCollection;
+        if (SortedSet.class.isAssignableFrom(wrappedConcreteType) && wrappedCollection instanceof SortedSet
+                && ((SortedSet)wrappedCollection).comparator() != null) {
+            try {
+                Constructor con = wrappedConcreteType.getConstructor(new Class[] {Comparator.class});
+                newCollection = BeanUtils.instantiateClass(con,
+                        new Object[] {((SortedSet)wrappedCollection).comparator()});
+            }
+            catch (NoSuchMethodException e) {
+                throw new FatalBeanException("Could not instantiate SortedSet class ["
+                        + wrappedConcreteType.getName() + "]: no constructor taking Comparator found", e);
+            }
         }
         else {
-            Object newCollection;
-            if (SortedSet.class.isAssignableFrom(wrappedConcreteType) && wrappedCollection instanceof SortedSet
-                    && ((SortedSet)wrappedCollection).comparator() != null) {
-                try {
-                    Constructor con = wrappedConcreteType.getConstructor(new Class[] {Comparator.class});
-                    newCollection = BeanUtils.instantiateClass(con,
-                            new Object[] {((SortedSet)wrappedCollection).comparator()});
-                }
-                catch (NoSuchMethodException e) {
-                    throw new FatalBeanException("Could not instantiate SortedSet class ["
-                            + wrappedConcreteType.getName() + "]: no constructor taking Comparator found", e);
-                }
-            }
-            else {
-                newCollection = BeanUtils.instantiateClass(wrappedConcreteType);
-            }
-            return newCollection;
+            newCollection = BeanUtils.instantiateClass(wrappedConcreteType);
         }
+        return newCollection;
     }
 
     private Object populateFromListModel(Object collection) {

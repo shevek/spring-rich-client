@@ -96,15 +96,14 @@ public class LabeledObjectSupport extends ApplicationServicesAccessor implements
         if (title != null) {
             return title;
         }
-        else {
-            if (label == null) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("This labeled object's display name is not configured; returning 'displayName'");
-                }
-                return "displayName";
+
+        if (label == null) {
+            if (logger.isInfoEnabled()) {
+                logger.info("This labeled object's display name is not configured; returning 'displayName'");
             }
-            return label.getText();
+            return "displayName";
         }
+        return label.getText();
     }
 
     public String getCaption() {
@@ -120,39 +119,31 @@ public class LabeledObjectSupport extends ApplicationServicesAccessor implements
     }
 
     public Icon getIcon() {
-        if (image != null) {
+        if (image != null)
             return new ImageIcon(image);
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     public int getMnemonic() {
-        if (label != null) {
+        if (label != null)
             return label.getMnemonic();
-        }
-        else {
-            return 0;
-        }
+
+        return 0;
     }
 
     public int getMnemonicIndex() {
-        if (label != null) {
+        if (label != null)
             return label.getMnemonicIndex();
-        }
-        else {
-            return 0;
-        }
+
+        return 0;
     }
 
     public KeyStroke getAccelerator() {
-        if (label != null) {
+        if (label != null)
             return label.getAccelerator();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     public CommandButtonLabelInfo getLabel() {

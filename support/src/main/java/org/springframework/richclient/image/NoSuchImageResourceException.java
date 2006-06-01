@@ -53,12 +53,10 @@ public class NoSuchImageResourceException extends RuntimeException {
     }
 
     public String getMessage() {
-        if (Resource.class.isInstance(imageKey)) {
+        if (Resource.class.isInstance(imageKey)) 
             return "No image at resource '" + imageKey + "' exists.";
-        }
-        else {
-            return "No image with key '" + imageKey + "' exists in source bundle.";
-        }
+
+        return "No image with key '" + imageKey + "' exists in source bundle.";
     }
 
     public String toString() {

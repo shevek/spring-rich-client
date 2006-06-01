@@ -87,7 +87,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
             return (!allowEmpty || source != null) ? getFormatterLocator().getDateTimeFormatter().formatValue(
-                    (Date)source) : "";
+                    source) : "";
         }
     }
 

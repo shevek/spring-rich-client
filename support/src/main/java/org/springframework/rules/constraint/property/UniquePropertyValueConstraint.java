@@ -74,9 +74,8 @@ public class UniquePropertyValueConstraint extends AbstractConstraint implements
 			if (distinctValueTable.containsKey(hashCode)) {
 				return false;
 			}
-			else {
-				distinctValueTable.put(hashCode, propertyValue);
-			}
+
+            distinctValueTable.put(hashCode, propertyValue);
 		}
 		return true;
 	}

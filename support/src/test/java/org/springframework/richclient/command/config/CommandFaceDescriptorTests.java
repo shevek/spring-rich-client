@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import junit.framework.TestCase;
 
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.EmptyIcon;
 
@@ -103,7 +104,7 @@ public class CommandFaceDescriptorTests extends TestCase {
         assertEquals(descriptor, propertyChangeListener.source);
         assertEquals("caption", propertyChangeListener.oldValue);
         assertEquals("new caption", propertyChangeListener.newValue);
-        assertEquals(CommandFaceDescriptor.CAPTION_PROPERTY, propertyChangeListener.propertyName);
+        assertEquals(DescribedElement.CAPTION_PROPERTY, propertyChangeListener.propertyName);
 
         propertyChangeListener.reset();
 

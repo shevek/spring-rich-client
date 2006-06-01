@@ -164,14 +164,10 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
         if (lastSeparator == -1) {
             return propertyPath;
         }
-        else {
-            if (propertyPath.charAt(lastSeparator) == PropertyAccessor.NESTED_PROPERTY_SEPARATOR_CHAR) {
-                return propertyPath.substring(lastSeparator + 1);
-            }
-            else {
-                return propertyPath.substring(lastSeparator);
-            }
-        }
+        if (propertyPath.charAt(lastSeparator) == PropertyAccessor.NESTED_PROPERTY_SEPARATOR_CHAR)
+            return propertyPath.substring(lastSeparator + 1);
+
+        return propertyPath.substring(lastSeparator);
     }
 
     /**

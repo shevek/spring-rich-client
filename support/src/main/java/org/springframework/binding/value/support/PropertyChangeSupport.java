@@ -300,7 +300,7 @@ public final class PropertyChangeSupport implements Serializable {
             for (int i = 0; i <= listenerList.length - 2; i += 2) {
                 if (listenerList[i] == PropertyChangeListener.class
                         && (PropertyChangeListener)listenerList[i + 1] instanceof Serializable) {
-                    s.writeObject((PropertyChangeListener)listenerList[i + 1]);
+                    s.writeObject(listenerList[i + 1]);
                 }
             }
         }

@@ -22,13 +22,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Element;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.html.FormView;
@@ -85,19 +83,9 @@ public class HtmlFormBuilder extends AbstractFormBuilder {
             String propertyName = (String)element.getAttributes().getAttribute(HTML.getAttributeKey("id"));
             if (propertyName != null) {
                 JComponent comp = (JComponent)view.getComponent();
-                if (comp instanceof JTextComponent) {
-                    getBindingFactory().bindControl((JTextComponent)comp, propertyName);
-                }
-                else if (comp instanceof JComboBox) {
-                    getBindingFactory().bindControl((JComboBox)comp, propertyName);
-                }
-                else if (comp instanceof JCheckBox) {
+                getBindingFactory().bindControl(comp, propertyName);
+                if (comp instanceof JCheckBox)
                     ((JCheckBox)comp).setOpaque(false);
-                    getBindingFactory().bindControl((JCheckBox)comp, propertyName);
-                }
-                else {
-                    System.out.println("Don't know how to bind " + comp);
-                }
             }
         }
     }

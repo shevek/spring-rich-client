@@ -109,9 +109,8 @@ public class GuiStandardUtils {
             buf.append(dialogName);
             return buf.toString();
         }
-        else {
-            return dialogName;
-        }
+
+        return dialogName;
     }
 
     /**

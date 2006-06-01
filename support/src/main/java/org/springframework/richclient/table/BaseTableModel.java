@@ -112,14 +112,12 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
 
     public String[] getDataColumnHeaders() {
         String[] headers = getColumnHeaders();
-        if (!hasRowNumbers()) {
+        if (!hasRowNumbers())
             return headers;
-        }
-        else {
-            String[] dataHeaders = new String[headers.length - 1];
-            System.arraycopy(headers, 1, dataHeaders, 0, headers.length - 1);
-            return dataHeaders;
-        }
+
+        String[] dataHeaders = new String[headers.length - 1];
+        System.arraycopy(headers, 1, dataHeaders, 0, headers.length - 1);
+        return dataHeaders;
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -171,16 +169,14 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
     }
 
     public List getColumnData(int column) {
-        if (getColumnCount() == 1) {
+        if (getColumnCount() == 1)
             return rows;
+
+        List colData = new ArrayList(getRowCount());
+        for (int i = 0; i < getRowCount(); i++) {
+            colData.add(getValueAt(i, column));
         }
-        else {
-            List colData = new ArrayList(getRowCount());
-            for (int i = 0; i < getRowCount(); i++) {
-                colData.add(getValueAt(i, column));
-            }
-            return colData;
-        }
+        return colData;
     }
 
     public int rowOf(Object o) {

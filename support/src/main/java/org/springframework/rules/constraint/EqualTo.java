@@ -68,12 +68,10 @@ public class EqualTo extends ComparisonBinaryPredicate {
 	 * @return true if they are equal, false otherwise
 	 */
 	public boolean test(Object argument1, Object argument2) {
-		if (getComparator() == null) {
+		if (getComparator() == null)
 			return ObjectUtils.nullSafeEquals(argument1, argument2);
-		}
-		else {
-			return super.test(argument1, argument2);
-		}
+
+        return super.test(argument1, argument2);
 	}
 
 	protected boolean testCompareResult(int result) {

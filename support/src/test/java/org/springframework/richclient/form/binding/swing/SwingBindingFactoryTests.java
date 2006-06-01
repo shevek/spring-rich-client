@@ -28,7 +28,6 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 
 import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.support.PropertyComparator;
 import org.springframework.beans.support.SortDefinition;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
@@ -199,7 +198,7 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
     private String getComparatorProperty(TestableBinding b) {
         // TODO: remove this nasty reflection once PropertyComparator is extended with the abbility
         // to query the SortDefinition
-        return ((SortDefinition)getField((PropertyComparator)b.getContext().get(ListBinder.COMPARATOR_KEY),
+        return ((SortDefinition)getField(b.getContext().get(ListBinder.COMPARATOR_KEY),
                 "sortDefinition")).getProperty();
     }
 

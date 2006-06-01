@@ -34,12 +34,10 @@ public class SortOrder {
     }
 
     public SortOrder flip() {
-        if (this == SortOrder.ASCENDING) {
+        if (this == SortOrder.ASCENDING)
             return SortOrder.DESCENDING;
-        }
-        else {
-            return SortOrder.ASCENDING;
-        }
+
+        return SortOrder.ASCENDING;
     }
 
     public String toString() {

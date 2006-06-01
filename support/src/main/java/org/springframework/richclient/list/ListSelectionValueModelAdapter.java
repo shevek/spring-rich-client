@@ -121,9 +121,8 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
                 }
             }
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

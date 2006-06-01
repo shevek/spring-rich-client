@@ -26,7 +26,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
-import org.springframework.richclient.util.Assert;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**

@@ -42,12 +42,10 @@ public abstract class AbstractPropertyConstraint implements PropertyConstraint {
 	}
 
 	public boolean test(Object o) {
-		if (o instanceof PropertyAccessStrategy) {
+		if (o instanceof PropertyAccessStrategy)
 			return test((PropertyAccessStrategy)o);
-		}
-		else {
-			return test(new BeanPropertyAccessStrategy(o));
-		}
+
+        return test(new BeanPropertyAccessStrategy(o));
 	}
 
 	protected abstract boolean test(PropertyAccessStrategy domainObjectAccessStrategy);

@@ -30,11 +30,11 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.springframework.binding.support.Assert;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.util.CustomizableFocusTraversalPolicy;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -443,21 +443,17 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     private RowSpec getRowSpec(String rowSpec) {
-        if (StringUtils.hasText(rowSpec)) {
+        if (StringUtils.hasText(rowSpec))
             return new RowSpec(rowSpec);
-        }
-        else {
-            return null;
-        }
+        
+        return null;
     }
 
     private ColumnSpec getColumnSpec(String columnSpec) {
-        if (StringUtils.hasText(columnSpec)) {
+        if (StringUtils.hasText(columnSpec)) 
             return new ColumnSpec(columnSpec);
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     private void nextCol() {

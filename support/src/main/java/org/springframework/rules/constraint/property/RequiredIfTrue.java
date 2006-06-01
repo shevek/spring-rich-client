@@ -75,9 +75,8 @@ public class RequiredIfTrue extends AbstractPropertyConstraint {
 					domainObjectAccessStrategy
 					.getPropertyValue(getPropertyName()));
 		}
-		else {
-			return true;
-		}
+
+        return true;
 	}
 
 	public String toString() {

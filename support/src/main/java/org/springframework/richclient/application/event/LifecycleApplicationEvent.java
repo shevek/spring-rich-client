@@ -34,12 +34,10 @@ public class LifecycleApplicationEvent extends ApplicationEvent {
     }
 
     public boolean objectIs(Class clazz) {
-        if (getSource().getClass().isAssignableFrom(clazz)) {
+        if (getSource().getClass().isAssignableFrom(clazz)) 
             return true;
-        }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     public String getEventType() {

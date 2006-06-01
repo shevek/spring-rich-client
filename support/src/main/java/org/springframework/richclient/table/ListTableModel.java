@@ -47,13 +47,10 @@ public abstract class ListTableModel extends BaseTableModel {
                 throw new IllegalArgumentException("Unsupported row collection type " + row);
             }
         }
-        else {
-            if (row != null & row.getClass().isArray()) {
-                return ((Object[])row)[0];
-            }
-            else {
-                return row;
-            }
-        }
+
+        if (row != null & row.getClass().isArray())
+            return ((Object[])row)[0];
+
+        return row;
     }
 }

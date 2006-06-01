@@ -91,13 +91,11 @@ public class ReloadableSizedIconSource extends DefaultIconSource implements Size
     }
 
     private String appendIconSizeSuffix(String key) {
-        if (iconSize == null) {
+        if (iconSize == null) 
             return key;
-        }
-        else {
-            logger.debug("Appending icon suffix '." + iconSize.getName() + "'");
-            return key + "." + iconSize.getName();
-        }
+
+        logger.debug("Appending icon suffix '." + iconSize.getName() + "'");
+        return key + "." + iconSize.getName();
     }
 
     protected String doProcessImageKeyBeforeLookup(String key) {

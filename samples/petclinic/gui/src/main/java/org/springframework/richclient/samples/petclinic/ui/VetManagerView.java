@@ -76,12 +76,10 @@ public class VetManagerView extends AbstractView {
         vetsTree.addTreeSelectionListener(new TreeStatusBarUpdater(getStatusBar()) {
             public String getSelectedObjectName() {
                 Vet selectedVet = getSelectedVet();
-                if (selectedVet != null) {
+                if (selectedVet != null)
                     return selectedVet.getFirstName() + " " + selectedVet.getLastName();
-                }
-                else {
-                    return "Vets";
-                }
+
+                return "Vets";
             }
         });
         vetsTree.setCellRenderer(getTreeCellRenderer());
@@ -90,22 +88,18 @@ public class VetManagerView extends AbstractView {
 
     private Vet getSelectedVet() {
         DefaultMutableTreeNode node = getSelectedVetNode();
-        if (node != null) {
+        if (node != null)
             return (Vet)node.getUserObject();
-        }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     private DefaultMutableTreeNode getSelectedVetNode() {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)vetsTree.getLastSelectedPathComponent();
-        if (node == null || !(node.getUserObject() instanceof Vet)) {
+        if (node == null || !(node.getUserObject() instanceof Vet))
             return null;
-        }
-        else {
-            return node;
-        }
+
+        return node;
     }
 
     private DefaultTreeCellRenderer treeCellRenderer = new FocusableTreeCellRenderer() {

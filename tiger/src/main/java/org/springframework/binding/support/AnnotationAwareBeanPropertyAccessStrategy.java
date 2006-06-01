@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.util.AnnotationUtils;
+import org.springframework.util.Assert;
 
 /**
  * A JavaBean {@link org.springframework.binding.PropertyAccessStrategy

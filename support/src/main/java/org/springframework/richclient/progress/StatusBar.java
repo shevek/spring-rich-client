@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.progress;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -321,7 +322,7 @@ public class StatusBar extends JPanel implements ProgressMonitor {
             clearErrorMessage();
         } else {
             if (!errorMessageShowing) {
-                messageLabel.setForeground(SystemColor.RED);
+                messageLabel.setForeground(Color.RED);
                 errorMessageShowing = true;
             }
             if (message == null) {

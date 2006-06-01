@@ -82,12 +82,10 @@ public class FileChooserComboBox extends AbstractControlFactory {
     }
 
     public File getStartDirectory() {
-        if (startDirectory != null) {
+        if (startDirectory != null) 
             return startDirectory;
-        }
-        else {
-            return getSelectedFile();
-        }
+
+        return getSelectedFile();
     }
 
     public File getSelectedFile() {

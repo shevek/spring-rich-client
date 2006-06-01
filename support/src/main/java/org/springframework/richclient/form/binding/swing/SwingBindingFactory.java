@@ -28,7 +28,6 @@ import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.beans.support.PropertyComparator;
-import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.ConfigurableFormModel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.support.DefaultFormModel;
@@ -38,8 +37,8 @@ import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
-import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
+import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 
 /**
  * A convenient implementation of <code>BindingFactory</code>. Provides a set
@@ -131,7 +130,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         ValueModel valueModel = formModel.getValueModel(formProperty);
         if (!(valueModel instanceof BufferedCollectionValueModel)) {
             // XXX: HACK!
-            valueModel = new BufferedCollectionValueModel(((MutablePropertyAccessStrategy)((DefaultFormModel) formModel).getFormObjectPropertyAccessStrategy()).getPropertyValueModel(
+            valueModel = new BufferedCollectionValueModel((((DefaultFormModel) formModel).getFormObjectPropertyAccessStrategy()).getPropertyValueModel(
                     formProperty), formModel.getFieldMetadata(formProperty).getPropertyType());
             formModel.add(formProperty, valueModel);
         }

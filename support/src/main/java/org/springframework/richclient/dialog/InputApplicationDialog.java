@@ -148,12 +148,10 @@ public class InputApplicationDialog extends ApplicationDialog {
     }
 
     private boolean checkInputConstraint() {
-        if (inputConstraint != null) {
+        if (inputConstraint != null)
             return inputConstraint.test(getInputValue());
-        }
-        else {
-            return true;
-        }
+
+        return true;
     }
 
     private Object getInputValue() {

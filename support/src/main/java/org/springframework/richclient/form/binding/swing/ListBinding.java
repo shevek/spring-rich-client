@@ -250,20 +250,18 @@ public class ListBinding extends AbstractBinding {
     }
 
     private ListModel createModel() {
-        if (model != null) {
+        if (model != null)
             return model;
+
+        ListListModel model;
+        if (selectableItemsHolder != null) {
+            model = new DynamicListModel(selectableItemsHolder);
         }
         else {
-            ListListModel model;
-            if (selectableItemsHolder != null) {
-                model = new DynamicListModel(selectableItemsHolder);
-            }
-            else {
-                model = new ListListModel();
-            }
-            model.setComparator(comparator);
-            return model;
+            model = new ListListModel();
         }
+        model.setComparator(comparator);
+        return model;
     }
 
     protected void readOnlyChanged() {

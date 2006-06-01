@@ -72,12 +72,10 @@ public abstract class ComparisonBinaryPredicate extends AbstractBinaryConstraint
 	 * @return true if the comparsion result passes, false otherwise
 	 */
 	public boolean test(Object argument1, Object argument2) {
-		if (getComparator() != null) {
+		if (getComparator() != null)
 			return testCompareResult(getComparator().compare(argument1, argument2));
-		}
-		else {
-			return testCompareResult(COMPARATOR.compare(argument1, argument2));
-		}
+			
+        return testCompareResult(COMPARATOR.compare(argument1, argument2));
 	}
 
 	/**

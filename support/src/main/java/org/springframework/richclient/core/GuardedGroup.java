@@ -84,12 +84,10 @@ public class GuardedGroup implements Guarded {
 
         public boolean isEnabled() {
             Guarded g = (Guarded)guardedHolder.getValue();
-            if (g != null) {
+            if (g != null)
                 return g.isEnabled();
-            }
-            else {
-                return false;
-            }
+
+            return false;
         }
 
         public void setEnabled(boolean enabled) {
@@ -124,26 +122,23 @@ public class GuardedGroup implements Guarded {
                 }
             };
         }
-        else {
-            return new Guarded() {
-                public boolean isEnabled() {
-                    return component.isEnabled();
-                }
 
-                public void setEnabled(boolean enabled) {
-                    component.setEnabled(enabled);
-                }
-            };
-        }
+        return new Guarded() {
+            public boolean isEnabled() {
+                return component.isEnabled();
+            }
+
+            public void setEnabled(boolean enabled) {
+                component.setEnabled(enabled);
+            }
+        };
     }
 
     private static final Guarded createGuardedAdapter(final Object component) {
-        if (component.getClass().isArray()) {
+        if (component.getClass().isArray())
             return doCreateGuardedGroup((Object[])component);
-        }
-        else {
-            return createGuardedAdapter((JComponent)component);
-        }
+
+        return createGuardedAdapter((JComponent)component);
     }
 
     public static final GuardedGroup createGuardedGroup(Object[] components) {

@@ -53,9 +53,8 @@ public class BeanTableCellRenderer extends OptimizedTableCellRenderer {
                 TableCellRenderer r = table.getDefaultRenderer(val.getClass());
                 return r.getTableCellRendererComponent(table, val, isSelected, hasFocus, row, column);
             }
-            else {
-                setText(String.valueOf(value));
-            }
+
+            setText(String.valueOf(value));
         }
         catch (IntrospectionException e) {
             setText(String.valueOf(value));

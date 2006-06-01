@@ -46,21 +46,17 @@ public class AbstractValueModelWrapper implements ValueModel, ValueModelWrapper 
     }
 
     public ValueModel getInnerMostWrappedValueModel() {
-        if (wrappedModel instanceof ValueModelWrapper) {
+        if (wrappedModel instanceof ValueModelWrapper)
             return ((ValueModelWrapper)wrappedModel).getInnerMostWrappedValueModel();
-        }
-        else {
-            return wrappedModel;
-        }
+
+        return wrappedModel;
     }
 
     public Object getInnerMostValue() {
-        if (wrappedModel instanceof ValueModelWrapper) {
+        if (wrappedModel instanceof ValueModelWrapper)
             return ((ValueModelWrapper)wrappedModel).getInnerMostWrappedValueModel().getValue();
-        }
-        else {
-            return wrappedModel.getValue();
-        }
+
+        return wrappedModel.getValue();
     }
 
     public void addValueChangeListener(PropertyChangeListener listener) {

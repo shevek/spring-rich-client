@@ -176,12 +176,10 @@ public class ClassUtils {
 	 */
 	public static String qualifier(String qualifiedName) {
 		int loc = qualifiedName.lastIndexOf('.');
-		if (loc < 0) {
+		if (loc < 0)
 			return "";
-		}
-		else {
-			return qualifiedName.substring(0, loc);
-		}
+
+		return qualifiedName.substring(0, loc);
 	}
 
 	/**
@@ -213,12 +211,10 @@ public class ClassUtils {
 			logger.debug("Attempting to get method '" + name + "' on class " + locatorClass + " with arguments '"
 					+ StylerUtils.style(args) + "'");
 			Method method = locatorClass.getDeclaredMethod(name, args);
-			if ((method.getModifiers() & Modifier.STATIC) != 0) {
+			if ((method.getModifiers() & Modifier.STATIC) != 0)
 				return method;
-			}
-			else {
-				return null;
-			}
+			
+			return null;
 		}
 		catch (NoSuchMethodException e) {
 			return null;
@@ -238,12 +234,10 @@ public class ClassUtils {
     }
 
     public static Class convertPrimitiveToWrapper(Class clazz) {
-        if (!clazz.isPrimitive()) {
+        if (!clazz.isPrimitive())
             return clazz;
-        }
-        else {
-            return (Class)primativeToWrapperMap.get(clazz);
-        }
+
+        return (Class)primativeToWrapperMap.get(clazz);
     }
 
 	/**
@@ -285,15 +279,12 @@ public class ClassUtils {
 				}
 				return null;
 			}
-			else {
-				// remember this so it doesn't have to be looked-up again
-				classMap.put(typeClass, val);
-				return val;
-			}
-		}
-		else {
+
+            // remember this so it doesn't have to be looked-up again
+			classMap.put(typeClass, val);
 			return val;
 		}
+		return val;
 	}
 
 	private static Object getValueFromMapForInterfaces(final Class typeClass, final Map classMap) {

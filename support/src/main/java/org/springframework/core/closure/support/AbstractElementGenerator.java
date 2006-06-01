@@ -104,9 +104,8 @@ public abstract class AbstractElementGenerator implements ElementGenerator {
 				throw new UnsupportedOperationException("This process template can only safely execute once; "
 						+ "instantiate a new instance per request");
 			}
-			else {
-				this.status = ProcessStatus.RESET;
-			}
+
+            this.status = ProcessStatus.RESET;
 		}
 	}
 
