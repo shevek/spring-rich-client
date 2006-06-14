@@ -52,11 +52,13 @@ public class ComboBoxBinding extends CustomBinding {
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
         this.comboBox = createComboBox();
+        updateSelectableItems();
     }
 
     public ComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
         this.comboBox = comboBox;
+        updateSelectableItems();
     }
 
     protected JComponent doBindControl() {

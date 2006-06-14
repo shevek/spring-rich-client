@@ -17,11 +17,13 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.util.Collections;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.richclient.form.binding.Binding;
 
 public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
 
@@ -111,5 +113,15 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
         ValueHolder valueHolder = new ValueHolder();
         binding.setSelectableItemsHolder(valueHolder);
         assertEquals(binding.getSelectableItems(), Collections.EMPTY_LIST);
+    }
+
+    public void testExistingModel() 
+    {
+        JComboBox cb = new JComboBox(new DefaultComboBoxModel(new Object[] {
+                "1", "2", "3" }));
+        ComboBoxBinder binder = new ComboBoxBinder();
+        Binding binding = binder.bind(cb, fm, "simpleProperty",
+                Collections.EMPTY_MAP);
+        assertEquals(3, ((JComboBox) binding.getControl()).getModel().getSize());
     }
 }
