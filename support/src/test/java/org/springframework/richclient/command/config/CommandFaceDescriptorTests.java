@@ -46,11 +46,11 @@ public class CommandFaceDescriptorTests extends TestCase {
     public void testDefaultConstructor() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor();
 
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getButtonLabelInfo());
+        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
         assertTrue(descriptor.isBlank());
         assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL.getText(), descriptor.getText());
         assertNull(descriptor.getDescription());
-        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getButtonIconInfo());
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
         assertNull(descriptor.getCaption());
     }
 
@@ -67,28 +67,28 @@ public class CommandFaceDescriptorTests extends TestCase {
     public void testConstructorWithEncodedLabel() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("&Test@ctrl T");
         assertEquals("Test", descriptor.getText());
-        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getButtonLabelInfo()));
+        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
         assertFalse(descriptor.isBlank());
         assertNull(descriptor.getDescription());
         assertNull(descriptor.getCaption());
-        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getButtonIconInfo());
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
     }
 
     public void testConstructorWithEmptyEncodedLabel() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("");
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getButtonLabelInfo());
+        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
     }
 
     public void testConstructorWithEncodedLabelAndIcon() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("&Test@ctrl T", EmptyIcon.SMALL, "caption");
 
         assertEquals("Test", descriptor.getText());
-        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getButtonLabelInfo()));
+        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
         assertFalse(descriptor.isBlank());
         assertNull(descriptor.getDescription());
         assertEquals("caption", descriptor.getCaption());
-        assertFalse(CommandButtonIconInfo.BLANK_ICON_INFO.equals(descriptor.getButtonIconInfo()));
-        assertEquals(EmptyIcon.SMALL, descriptor.getButtonIconInfo().getIcon());
+        assertFalse(CommandButtonIconInfo.BLANK_ICON_INFO.equals(descriptor.getIconInfo()));
+        assertEquals(EmptyIcon.SMALL, descriptor.getIconInfo().getIcon());
     }
 
     public void testSetDescription() {
@@ -115,11 +115,11 @@ public class CommandFaceDescriptorTests extends TestCase {
 
     public void testSetIconNull() {
         descriptor.setIcon(null);
-        assertNull(descriptor.getButtonIconInfo().getIcon());
+        assertNull(descriptor.getIconInfo().getIcon());
 
         descriptor.setIconInfo(CommandButtonIconInfo.BLANK_ICON_INFO);
         descriptor.setIcon(null);
-        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getButtonIconInfo());
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
     }
 
     public void testSetIcon() {
@@ -131,7 +131,7 @@ public class CommandFaceDescriptorTests extends TestCase {
         assertEquals(descriptor, propertyChangeListener.source);
         assertEquals(oldIcon, propertyChangeListener.oldValue);
         assertEquals(descriptor.getIcon(), propertyChangeListener.newValue);
-        assertEquals(CommandFaceDescriptor.BUTTON_ICON_INFO_PROPERTY, propertyChangeListener.propertyName);
+        assertEquals(CommandFaceDescriptor.ICON_PROPERTY, propertyChangeListener.propertyName);
 
         propertyChangeListener.reset();
         // no change
@@ -139,14 +139,40 @@ public class CommandFaceDescriptorTests extends TestCase {
         assertFalse(propertyChangeListener.changed);
     }
 
+    public void testSetLargeIconNull() {
+        descriptor.setLargeIcon(null);
+        assertNull(descriptor.getLargeIconInfo().getIcon());
+
+        descriptor.setLargeIconInfo(CommandButtonIconInfo.BLANK_ICON_INFO);
+        descriptor.setLargeIcon(null);
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getLargeIconInfo());
+    }
+
+    public void testSetLargeIcon() {
+        Icon oldIcon = descriptor.getLargeIcon();
+        descriptor.setLargeIcon(EmptyIcon.LARGE);
+        assertEquals(EmptyIcon.LARGE, descriptor.getLargeIcon());
+
+        assertTrue(propertyChangeListener.changed);
+        assertEquals(descriptor, propertyChangeListener.source);
+        assertEquals(oldIcon, propertyChangeListener.oldValue);
+        assertEquals(descriptor.getLargeIcon(), propertyChangeListener.newValue);
+        assertEquals(CommandFaceDescriptor.LARGE_ICON_PROPERTY, propertyChangeListener.propertyName);
+
+        propertyChangeListener.reset();
+        // no change
+        descriptor.setLargeIcon(EmptyIcon.LARGE);
+        assertFalse(propertyChangeListener.changed);
+    }
+
     public void testSetNullIconInfo() {
         descriptor.setIconInfo(null);
-        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getButtonIconInfo());
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
     }
 
     public void testSetNullLabelInfo() {
         descriptor.setLabelInfo(null);
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getButtonLabelInfo());
+        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
     }
 
     public void testConfigureWithConfigurer() {
@@ -188,16 +214,16 @@ public class CommandFaceDescriptorTests extends TestCase {
     }
 
     public void testSetLabelInfoAsText() {
-        CommandButtonLabelInfo oldLabelInfo = descriptor.getButtonLabelInfo();
+        CommandButtonLabelInfo oldLabelInfo = descriptor.getLabelInfo();
         descriptor.setButtonLabelInfo("&Other Test@ctrl O");
-        CommandButtonLabelInfo newLabelInfo = descriptor.getButtonLabelInfo();
+        CommandButtonLabelInfo newLabelInfo = descriptor.getLabelInfo();
         assertEquals(LabelInfoFactory.createButtonLabelInfo("&Other Test@ctrl O"), newLabelInfo);
 
         assertTrue(propertyChangeListener.changed);
         assertEquals(descriptor, propertyChangeListener.source);
         assertEquals(oldLabelInfo, propertyChangeListener.oldValue);
         assertEquals(newLabelInfo, propertyChangeListener.newValue);
-        assertEquals(CommandFaceDescriptor.BUTTON_LABEL_INFO_PROPERTY, propertyChangeListener.propertyName);
+        assertEquals(CommandFaceDescriptor.LABEL_INFO_PROPERTY, propertyChangeListener.propertyName);
 
         propertyChangeListener.reset();
         // no change
@@ -206,16 +232,16 @@ public class CommandFaceDescriptorTests extends TestCase {
     }
 
     public void testSetLabelInfo() {
-        CommandButtonLabelInfo oldLabelInfo = descriptor.getButtonLabelInfo();
+        CommandButtonLabelInfo oldLabelInfo = descriptor.getLabelInfo();
         CommandButtonLabelInfo newLabelInfo = LabelInfoFactory.createButtonLabelInfo("&Other Test@ctrl O");
         descriptor.setLabelInfo(newLabelInfo);
-        assertEquals(newLabelInfo, descriptor.getButtonLabelInfo());
+        assertEquals(newLabelInfo, descriptor.getLabelInfo());
 
         assertTrue(propertyChangeListener.changed);
         assertEquals(descriptor, propertyChangeListener.source);
         assertEquals(oldLabelInfo, propertyChangeListener.oldValue);
         assertEquals(newLabelInfo, propertyChangeListener.newValue);
-        assertEquals(CommandFaceDescriptor.BUTTON_LABEL_INFO_PROPERTY, propertyChangeListener.propertyName);
+        assertEquals(CommandFaceDescriptor.LABEL_INFO_PROPERTY, propertyChangeListener.propertyName);
 
         propertyChangeListener.reset();
         // no change
@@ -240,31 +266,49 @@ public class CommandFaceDescriptorTests extends TestCase {
         };
 
         descriptor.configure(action);
-        assertEquals("name", descriptor.getButtonLabelInfo().getText(), action.getValue(Action.NAME));
-        assertEquals("mnemonic", new Integer(descriptor.getButtonLabelInfo().getMnemonic()), action
+        assertEquals("name", descriptor.getLabelInfo().getText(), action.getValue(Action.NAME));
+        assertEquals("mnemonic", new Integer(descriptor.getLabelInfo().getMnemonic()), action
                 .getValue(Action.MNEMONIC_KEY));
-        assertEquals("accelerator", descriptor.getButtonLabelInfo().getAccelerator(), action
+        assertEquals("accelerator", descriptor.getLabelInfo().getAccelerator(), action
                 .getValue(Action.ACCELERATOR_KEY));
-        assertEquals("icon", descriptor.getButtonIconInfo().getIcon(), action.getValue(Action.SMALL_ICON));
+        assertEquals("icon", descriptor.getIconInfo().getIcon(), action.getValue(Action.SMALL_ICON));
         assertEquals("caption", descriptor.getCaption(), action.getValue(Action.SHORT_DESCRIPTION));
         assertEquals("description", descriptor.getDescription(), action.getValue(Action.LONG_DESCRIPTION));
     }
 
     public void testSetIconInfo() {
-        CommandButtonIconInfo oldIconInfo = descriptor.getButtonIconInfo();
+        CommandButtonIconInfo oldIconInfo = descriptor.getIconInfo();
         CommandButtonIconInfo newIconInfo = new CommandButtonIconInfo(EmptyIcon.LARGE);
         descriptor.setIconInfo(newIconInfo);
-        assertEquals(newIconInfo, descriptor.getButtonIconInfo());
+        assertEquals(newIconInfo, descriptor.getIconInfo());
 
         assertTrue(propertyChangeListener.changed);
         assertEquals(descriptor, propertyChangeListener.source);
         assertEquals(oldIconInfo, propertyChangeListener.oldValue);
         assertEquals(newIconInfo, propertyChangeListener.newValue);
-        assertEquals(CommandFaceDescriptor.BUTTON_ICON_INFO_PROPERTY, propertyChangeListener.propertyName);
+        assertEquals(CommandFaceDescriptor.ICON_INFO_PROPERTY, propertyChangeListener.propertyName);
 
         propertyChangeListener.reset();
         // no change
         descriptor.setIconInfo(newIconInfo);
+        assertFalse(propertyChangeListener.changed);
+    }
+
+    public void testSetLargeIconInfo() {
+        CommandButtonIconInfo oldIconInfo = descriptor.getLargeIconInfo();
+        CommandButtonIconInfo newIconInfo = new CommandButtonIconInfo(EmptyIcon.LARGE);
+        descriptor.setLargeIconInfo(newIconInfo);
+        assertEquals(newIconInfo, descriptor.getLargeIconInfo());
+
+        assertTrue(propertyChangeListener.changed);
+        assertEquals(descriptor, propertyChangeListener.source);
+        assertEquals(oldIconInfo, propertyChangeListener.oldValue);
+        assertEquals(newIconInfo, propertyChangeListener.newValue);
+        assertEquals(CommandFaceDescriptor.LARGE_ICON_INFO_PROPERTY, propertyChangeListener.propertyName);
+
+        propertyChangeListener.reset();
+        // no change
+        descriptor.setLargeIconInfo(newIconInfo);
         assertFalse(propertyChangeListener.changed);
     }
 
@@ -313,11 +357,11 @@ public class CommandFaceDescriptorTests extends TestCase {
     public void testConstructorWithButtonLabelInfo() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor(buttonLabelInfo);
 
-        assertEquals(buttonLabelInfo, descriptor.getButtonLabelInfo());
+        assertEquals(buttonLabelInfo, descriptor.getLabelInfo());
         assertFalse(descriptor.isBlank());
         assertEquals("Test", descriptor.getText());
         assertNull(descriptor.getDescription());
-        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getButtonIconInfo());
+        assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
         assertNull(descriptor.getCaption());
     }
 
@@ -328,7 +372,7 @@ public class CommandFaceDescriptorTests extends TestCase {
         buttonLabelInfo = LabelInfoFactory.createButtonLabelInfo("&Test@ctrl T");
         descriptor = new CommandFaceDescriptor("&Test@ctrl T", EmptyIcon.SMALL, "caption");
         descriptor.setDescription("long description");
-        assertNotNull(descriptor.getButtonLabelInfo().getAccelerator());
+        assertNotNull(descriptor.getLabelInfo().getAccelerator());
         propertyChangeListener = new TestPropertyChangeListener();
         descriptor.addPropertyChangeListener(propertyChangeListener);
     }

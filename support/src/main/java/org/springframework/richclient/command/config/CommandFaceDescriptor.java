@@ -37,11 +37,15 @@ import org.springframework.util.Assert;
 public class CommandFaceDescriptor extends AbstractPropertyChangePublisher implements DescribedElement,
         VisualizedElement, CommandLabelConfigurable, DescriptionConfigurable, CommandIconConfigurable {
 
-    public static final String BUTTON_LABEL_INFO_PROPERTY = "buttonLabelInfo";
+    public static final String LABEL_INFO_PROPERTY = "labelInfo";
 
-    public static final String BUTTON_ICON_INFO_PROPERTY = "iconInfo";
+    public static final String ICON_PROPERTY = "icon";
 
-    public static final String BUTTON_LARGE_ICON_INFO_PROPETY = "largeIconInfo";
+    public static final String LARGE_ICON_PROPERTY = "largeIcon";
+
+    public static final String ICON_INFO_PROPERTY = "iconInfo";
+
+    public static final String LARGE_ICON_INFO_PROPERTY = "largeIconInfo";
 
     public static final CommandFaceDescriptor BLANK_FACE_DESCRIPTOR = new CommandFaceDescriptor();
 
@@ -120,12 +124,16 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
         return labelInfo.getAccelerator();
     }
 
-    protected CommandButtonLabelInfo getButtonLabelInfo() {
+    protected CommandButtonLabelInfo getLabelInfo() {
         return labelInfo;
     }
 
-    protected CommandButtonIconInfo getButtonIconInfo() {
+    protected CommandButtonIconInfo getIconInfo() {
         return iconInfo;
+    }
+
+    protected CommandButtonIconInfo getLargeIconInfo() {
+        return largeIconInfo;
     }
 
     public void setCaption(String shortDescription) {
@@ -150,7 +158,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
         }
         CommandButtonLabelInfo old = this.labelInfo;
         this.labelInfo = labelInfo;
-        firePropertyChange(BUTTON_LABEL_INFO_PROPERTY, old, this.labelInfo);
+        firePropertyChange(LABEL_INFO_PROPERTY, old, this.labelInfo);
     }
 
     public void setIconInfo(CommandButtonIconInfo iconInfo) {
@@ -159,42 +167,46 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
         }
         CommandButtonIconInfo old = this.iconInfo;
         this.iconInfo = iconInfo;
-        firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
+        firePropertyChange(ICON_INFO_PROPERTY, old, this.iconInfo);
     }
 
     public void setLargeIconInfo(CommandButtonIconInfo largeIconInfo) {
         if (largeIconInfo == null) {
-            iconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
+        	largeIconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
         }
         CommandButtonIconInfo old = this.largeIconInfo;
         this.largeIconInfo = largeIconInfo;
-        firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, this.iconInfo);
+        firePropertyChange(LARGE_ICON_INFO_PROPERTY, old, this.largeIconInfo);
     }
 
     public void setIcon(Icon icon) {
+    	Icon old = null;
         if (iconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
-                setIconInfo(new CommandButtonIconInfo(icon));
+                // New IconInfo fires event
+            	setIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {
-            Icon old = iconInfo.getIcon();
+            old = iconInfo.getIcon();
             this.iconInfo.setIcon(icon);
-            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, icon);
         }
+        firePropertyChange(ICON_PROPERTY, old, icon);
     }
 
     public void setLargeIcon(Icon icon) {
+    	Icon old = null;
         if (largeIconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
-                setLargeIconInfo(new CommandButtonIconInfo(icon));
+                // new IconInfo fires event
+            	setLargeIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {
-            Icon old = largeIconInfo.getIcon();
+            old = largeIconInfo.getIcon();
             this.largeIconInfo.setIcon(icon);
-            firePropertyChange(BUTTON_ICON_INFO_PROPERTY, old, icon);
         }
+        firePropertyChange(LARGE_ICON_PROPERTY, old, icon);
     }
 
     public void configureLabel(AbstractButton button) {
