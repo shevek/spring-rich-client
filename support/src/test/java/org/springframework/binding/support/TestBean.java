@@ -38,6 +38,16 @@ public class TestBean {
     public Object readOnly;
 
     public Object writeOnly;
+    
+    public Number numberProperty;
+
+    public Number getNumberProperty() {
+        return numberProperty;
+    }
+
+    public void setNumberProperty(Number numberProperty) {
+        this.numberProperty = numberProperty;
+    }
 
     public String getSimpleProperty() {
         return simpleProperty;

@@ -28,9 +28,13 @@ public abstract class BindingAbstractTests extends SpringRichTestCase {
     protected ValueModel vm;
 
     public void doSetUp() {
-        fm = new DefaultFormModel(new TestBean());        
+        fm = new DefaultFormModel(createTestBean());        
         String property = setUpBinding();
         vm = fm.getValueModel(property);
+    }
+
+    protected TestBean createTestBean() {
+        return new TestBean();
     }
 
     protected abstract String setUpBinding();

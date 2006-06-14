@@ -41,15 +41,7 @@ public class FormattedTextFieldBinding extends AbstractBinding {
 
     protected JComponent doBindControl() {
         final ValueModel valueModel = getValueModel();
-        try {
-            formattedTextField.setText((String)valueModel.getValue());
-        }
-        catch (ClassCastException e) {
-            IllegalArgumentException ex = new IllegalArgumentException("Class cast exception converting '"
-                    + getProperty() + "' property value to string - did you install a type converter?");
-            ex.initCause(e);
-            throw ex;
-        }
+        formattedTextField.setValue(valueModel.getValue());
         // TODO: implement ValueCommitPolicies
         new FormattedTextFieldAdapter(formattedTextField, valueModel, ValueCommitPolicy.AS_YOU_TYPE);
         return formattedTextField;
