@@ -41,29 +41,65 @@ public abstract class PreferencePage extends AbstractDialogPage {
 		super(id);
 	}
 
-	private JComponent createButtons() {
-		restoreDefaultsCommand = new ActionCommand("restoreDefaultsCommand") {
-			public void doExecuteCommand() {
-				onDefaults();
-			}
-		};
+	/**
+	 * @return array containing "Restore defaults" and "Apply" commands
+	 */
+	protected ActionCommand[] getCommands() {
+		return new ActionCommand[] { getRestoreDefaultsCommand(), getApplyCommand() };
+	}
 
-		applyCommand = new ActionCommand("applyCommand") {
-			public void doExecuteCommand() {
-				onApply();
-			}
-		};
+    /**
+     * Will create "Apply" command if it doesn't exist yet
+     * 
+     * @return apply command.
+     */
+    protected ActionCommand getApplyCommand()
+    {
+        if (applyCommand == null) {
+            applyCommand = new ActionCommand("applyCommand") {
+    			public void doExecuteCommand() {
+    				onApply();
+    			}
+    		};
+        }
+        return applyCommand;
+    }
 
+    /**
+     * Will create "Restore Defaults" command if it doesn't exist yet
+     * 
+     * @return restore defaults command.
+     */
+    protected ActionCommand getRestoreDefaultsCommand()
+    {
+        if (restoreDefaultsCommand == null){
+            restoreDefaultsCommand = new ActionCommand("restoreDefaultsCommand") {
+    			public void doExecuteCommand() {
+    				onDefaults();
+    			}
+    		};
+        }
+        return restoreDefaultsCommand;
+    }
+
+	/**
+	 * Creates two commands "Restore defaults" and "Apply" for this page,
+	 * layouts them on the panel.
+	 * 
+	 * @return panel containing "Restore defaults" and "Apply" commands
+	 */
+	protected JComponent createButtons() {
 		CommandGroup commandGroup = CommandGroup.createCommandGroup(null,
-				new Object[] { restoreDefaultsCommand, applyCommand });
+				getCommands());
 		JComponent buttonBar = commandGroup.createButtonBar();
 		GuiStandardUtils.attachDialogBorder(buttonBar);
+
 		return buttonBar;
 	}
 
 	protected abstract JComponent createContents();
 
-	protected final JComponent createControl() {
+	protected JComponent createControl() {
 		GridBagLayoutBuilder builder = new GridBagLayoutBuilder();
 
 		JComponent buttonPanel = null;
@@ -113,6 +149,10 @@ public abstract class PreferencePage extends AbstractDialogPage {
 		createApplyAndDefaultButtons = create;
 	}
 
+	public boolean getCreateApplyAndDefaultButtons() {
+		return createApplyAndDefaultButtons;
+	}
+
 	public void setParent(PreferencePage parent) {
 		this.parent = parent;
 	}
@@ -123,10 +163,10 @@ public abstract class PreferencePage extends AbstractDialogPage {
 	}
 
 	public void setPageComplete(boolean pageComplete) {
-		if(applyCommand != null) {
+		if (applyCommand != null) {
 			applyCommand.setEnabled(pageComplete);
 		}
-		
+
 		super.setPageComplete(pageComplete);
 	}
 }
