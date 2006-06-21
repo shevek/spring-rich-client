@@ -206,7 +206,7 @@
             <plugins>
                 <!--
                     Last time synchronized with the latest plugin releases:
-                    2006-05-14
+                    2006-06-21
                     See http://news.gmane.org/gmane.comp.apache.maven.announce
                 -->
 
@@ -333,7 +333,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.0</version>
+                    <version>2.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
