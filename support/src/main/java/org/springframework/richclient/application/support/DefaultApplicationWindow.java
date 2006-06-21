@@ -374,13 +374,10 @@ public class DefaultApplicationWindow implements ApplicationWindow, WindowFocusL
     }
 
     /**
-     * When losing focus set actieve window to <code>null</code>. This is
-     * ok because focus lost/gained events always arrive in sequence.
-     * (no focus gained without a focus lost somewhere)  
+     * When losing focus no action is done. This way the last focussed window
+     * will stay listed as the activeWindow.
      */
     public void windowLostFocus(WindowEvent e)
     {
-        if (this.windowManager != null)
-            this.windowManager.setActiveWindow(null);
     }
 }

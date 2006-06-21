@@ -88,6 +88,9 @@ public class WindowManager extends Observable {
      *            the window
      */
     public void add(ApplicationWindow window) {
+        if (activeWindow == null) // first window will be set as activeWindow
+            setActiveWindow(window);
+        
         if (!windows.contains(window)) {
             windows.add(window);
             window.setWindowManager(this);
