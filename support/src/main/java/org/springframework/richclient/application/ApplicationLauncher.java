@@ -153,6 +153,7 @@ public class ApplicationLauncher {
         }
         catch (Exception e) {
             logger.warn("Exception occured initializing application startup context.", e);
+            destroySplashScreen(); // when app context fails to load, destroy splashscreen
             throw new ApplicationException("Unable to start rich client application", e);
         }
     }
