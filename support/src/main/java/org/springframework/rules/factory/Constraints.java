@@ -41,6 +41,7 @@ import org.springframework.rules.constraint.RegexpConstraint;
 import org.springframework.rules.constraint.RelationalOperator;
 import org.springframework.rules.constraint.Required;
 import org.springframework.rules.constraint.StringLengthConstraint;
+import org.springframework.rules.constraint.XOr;
 import org.springframework.rules.constraint.Like.LikeType;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
 import org.springframework.rules.constraint.property.NegatedPropertyConstraint;
@@ -470,10 +471,20 @@ public class Constraints extends AlgorithmsAccessor {
      * Returns a new, empty disjunction prototype, capable of composing
      * individual constraints where 'ANY' must test true.
      * 
-     * @return the UnaryAnd
+     * @return the UnaryOr
      */
     public Or disjunction() {
         return new Or();
+    }
+
+    /**
+     * Returns a new, empty exclusive disjunction prototype, capable of composing
+     * individual constraints where only one must test true.
+     * 
+     * @return the UnaryXOr
+     */
+    public XOr exclusiveDisjunction() {
+        return new XOr();
     }
 
     /**
