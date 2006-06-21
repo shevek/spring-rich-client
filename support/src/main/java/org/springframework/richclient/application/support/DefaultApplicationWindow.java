@@ -21,6 +21,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.Iterator;
 
 import javax.swing.JComponent;
@@ -52,7 +53,7 @@ import org.springframework.util.Assert;
 /**
  * Provides a default implementation of {@link ApplicationWindow}
  */
-public class DefaultApplicationWindow implements ApplicationWindow {
+public class DefaultApplicationWindow implements ApplicationWindow, WindowFocusListener {
     protected Log logger = LogFactory.getLog(getClass());
 
     private static final String DEFAULT_APPLICATION_PAGE_BEAN_ID = "defaultApplicationPagePrototype";
@@ -240,6 +241,7 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 
     private void initWindow() {
         this.control = createNewWindowControl();
+        this.control.addWindowFocusListener(this);
         initWindowControl(this.control);
         getAdvisor().onWindowCreated(this);
         getAdvisor().showIntroComponentIfNecessary(this);
@@ -360,5 +362,25 @@ public class DefaultApplicationWindow implements ApplicationWindow {
             windowManager = null;
         }
         return canClose;
+    }
+
+    /**
+     * When gaining focus, set this window as the active one on it's manager.
+     */
+    public void windowGainedFocus(WindowEvent e)
+    {
+        if (this.windowManager != null)
+            this.windowManager.setActiveWindow(this);
+    }
+
+    /**
+     * When losing focus set actieve window to <code>null</code>. This is
+     * ok because focus lost/gained events always arrive in sequence.
+     * (no focus gained without a focus lost somewhere)  
+     */
+    public void windowLostFocus(WindowEvent e)
+    {
+        if (this.windowManager != null)
+            this.windowManager.setActiveWindow(null);
     }
 }

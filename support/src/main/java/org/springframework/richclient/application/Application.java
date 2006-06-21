@@ -52,8 +52,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private ApplicationLifecycleAdvisor lifecycleAdvisor;
 
-    private ApplicationWindow activeWindow;
-
     private WindowManager windowManager;
 
     /**
@@ -152,8 +150,6 @@ public class Application implements InitializingBean, ApplicationContextAware {
     public void openWindow( String pageDescriptorId ) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
         newWindow.showPage(pageDescriptorId);
-        // @TODO track active window...
-        this.activeWindow = newWindow;
     }
 
     private ApplicationWindow initWindow( ApplicationWindow window ) {
@@ -174,8 +170,14 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return windowManager;
     }
 
+    /**
+     * ActiveWindow is tracked by windowManager. When a window gains focus, the
+     * manager will receive this window as the active one.
+     * 
+     * @return the activeWindow.
+     */
     public ApplicationWindow getActiveWindow() {
-        return activeWindow;
+        return windowManager.getActiveWindow();
     }
 
     public void close() {

@@ -55,6 +55,11 @@ public class WindowManager extends Observable {
      * (element type: <code>WindowManager</code>).
      */
     private List subManagers;
+    
+    /**
+     * Holds the currently active window.
+     */
+    private ApplicationWindow activeWindow;
 
     /**
      * Creates an empty window manager without a parent window manager (that is,
@@ -143,6 +148,9 @@ public class WindowManager extends Observable {
         return managed;
     }
 
+    /**
+     * @return the parent of this WindowManager
+     */
     public WindowManager getParent() {
         return parentManager;
     }
@@ -164,6 +172,32 @@ public class WindowManager extends Observable {
         }
     }
 
+    /**
+     * Set the currently active window. When a window gets focus, it will set itself
+     * as the current window of it's manager.
+     * 
+     * TODO maybe provide a way to listen to activeWindow changes?
+     * 
+     * @param window
+     */
+    public final void setActiveWindow(ApplicationWindow window)
+    {
+        this.activeWindow = window;
+        if (getParent() != null) // let things ripple up
+            getParent().setActiveWindow(window);
+    }
+    
+    /**
+     * @return the active window.
+     */
+    public final ApplicationWindow getActiveWindow()
+    {
+        return this.activeWindow;
+    }
+    
+    /**
+     * @return Number of windows managed by this instance.
+     */
     public int size() {
         return windows.size();
     }
