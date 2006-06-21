@@ -44,11 +44,12 @@ public abstract class BaseTableModel extends AbstractTableModel implements Mutab
     }
 
     public void setRows(List rows) {
-        if (this.rows == rows) {
-            return;
-        }
+        // first check null, if somehow field was null it may not return (in second if)
         if (rows == null) {
             this.rows = new ArrayList();
+        }
+        if (this.rows == rows) {
+            return;
         }
         this.rows = rows;
         fireTableDataChanged();
