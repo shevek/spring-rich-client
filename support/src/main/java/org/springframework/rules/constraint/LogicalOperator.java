@@ -40,7 +40,16 @@ public abstract class LogicalOperator extends Operator {
 		}
 	};
 
-	private LogicalOperator(String code, String symbol) {
+  /**
+   * The <code>XOR</code> operator
+   */
+  public static final LogicalOperator XOR = new LogicalOperator("xor", "^") {
+    public CompoundConstraint createConstraint() {
+      return new XOr();
+    }
+  };
+
+  private LogicalOperator(String code, String symbol) {
 		super(code, symbol);
 	}
 

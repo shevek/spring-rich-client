@@ -32,6 +32,7 @@ import org.springframework.rules.constraint.ClosureResultConstraint;
 import org.springframework.rules.constraint.EqualTo;
 import org.springframework.rules.constraint.GreaterThan;
 import org.springframework.rules.constraint.GreaterThanEqualTo;
+import org.springframework.rules.constraint.InGroup;
 import org.springframework.rules.constraint.LessThan;
 import org.springframework.rules.constraint.LessThanEqualTo;
 import org.springframework.rules.constraint.LogicalOperator;
@@ -42,6 +43,7 @@ import org.springframework.rules.constraint.Range;
 import org.springframework.rules.constraint.RelationalOperator;
 import org.springframework.rules.constraint.Required;
 import org.springframework.rules.constraint.StringLengthConstraint;
+import org.springframework.rules.constraint.XOr;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
 import org.springframework.rules.constraint.property.ParameterizedPropertyConstraint;
 import org.springframework.rules.constraint.property.PropertiesConstraint;
@@ -262,7 +264,17 @@ public class RulesTests extends TestCase {
 		assertFalse(or.test("           "));
 	}
 
-	public void testNot() {
+  public void testXOr() {
+    XOr xor = new XOr();
+    xor.add(new InGroup(new String[] {"123", "12345"}));
+    xor.add(new InGroup(new String[] {"1234", "12345"}));
+    assertTrue(xor.test("123"));
+    assertTrue(xor.test("1234"));
+    assertFalse(xor.test("           "));
+    assertFalse(xor.test("12345"));
+  }
+
+  public void testNot() {
 		Number n = new Integer("25");
 		Constraint p = constraints.bind(EqualTo.instance(), n);
 		Not not = new Not(p);
