@@ -39,7 +39,7 @@ Introduction
         <property name="imageSource" ref="imageSource"/>
         <property name="rulesSource" ref="rulesSource"/>
         <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
-        <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer"/></property>
     </bean>
 +---
 
@@ -89,7 +89,7 @@ Introduction
     from above):
     
 +---
-    <property name="applicationObjectConfigurerBeanId"><idref bean="applicationObjectConfigurer"/></property>
+    <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer"/></property>
 +---
     
     The best way to see how the application context should now be configured is to look
@@ -220,11 +220,42 @@ Class name changes
 *---------+----------+
 Method name changes
 
+    * Already changed in a previous upgrade item: DefaultApplicationServices's applicationObjectConfigurerBeanId
+    renamed to applicationObjectConfigurerId
+
+    * Inject id's into applicationServices instead of the beans itself (to avoid chicken-and-egg problems).
+
+    Before:
+
++--
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="applicationObjectConfigurer" ref="applicationObjectConfigurer"/>
+        <property name="binderSelectionStrategy" ref="binderSelectionStrategy"/>
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
+        <property name="imageSource" ref="imageSource"/>
+        <property name="rulesSource" ref="rulesSource"/>
+    </bean>
++--
+
+    After:
+
++--
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
+        <property name="binderSelectionStrategyId"><idref bean="binderSelectionStrategy"/></property>
+        <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
+        <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
+    </bean>
++--
+
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
 
-    if you have made local changes to the spring rich code,
+    If you have made local changes to the spring rich code,
     take a <<<cvs diff \> file.patch>>> in <<</src>>> and <<</sandbox>>>
     and patch it in <<</support/src/main/java>>> or <<</support/src/main/resources>>>
     and <<</sandbox/src/main/java>>> or <<</sandbox/src/main/resources>>>
