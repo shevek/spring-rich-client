@@ -699,12 +699,11 @@
                 <artifactId>jdnc</artifactId>
                 <version>0.7</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>nachocalendar</groupId>-->
-                <!--<artifactId>nachocalendar</artifactId>-->
-                <!--<version>0.23</version>-->
-                <!--<optional>true</optional>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>net.sf.nachocalendar</groupId>
+                <artifactId>nachocalendar</artifactId>
+                <version>0.23</version>
+            </dependency>
 
             <!-- Utils -->
             <dependency>

@@ -114,6 +114,11 @@
             <groupId>net.java.dev.glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.sf.nachocalendar</groupId>
+            <artifactId>nachocalendar</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Utils -->
         <dependency>

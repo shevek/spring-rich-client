@@ -17,13 +17,17 @@ package org.springframework.binding.support;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 /**
  * @author Oliver Hutchison
+ * @author Geoffrey De Smet
  */
 public class TestBean {
 
     private String simpleProperty;
+
+    private Date dateProperty;
 
     public TestLabeledEnum enumProperty;
 
@@ -38,7 +42,7 @@ public class TestBean {
     public Object readOnly;
 
     public Object writeOnly;
-    
+
     public Number numberProperty;
 
     public Number getNumberProperty() {
@@ -55,6 +59,14 @@ public class TestBean {
 
     public void setSimpleProperty(String simpleProperty) {
         this.simpleProperty = simpleProperty;
+    }
+
+    public Date getDateProperty() {
+        return dateProperty;
+    }
+
+    public void setDateProperty(Date dateProperty) {
+        this.dateProperty = dateProperty;
     }
 
     public TestLabeledEnum getEnumProperty() {
@@ -104,4 +116,5 @@ public class TestBean {
     public void setWriteOnly(Object writeOnly) {
         this.writeOnly = writeOnly;
     }
+
 }
