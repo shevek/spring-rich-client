@@ -56,11 +56,11 @@
     -->
     <bean id="applicationServices"
         class="org.springframework.richclient.application.support.DefaultApplicationServices">
-        <property name="imageSourceId"><idref bean="imageSource"/></property>
-        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
         <property name="binderSelectionStrategyId"><idref bean="binderSelectionStrategy"/></property>
         <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
-        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
+        <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
     </bean>
 
 	<bean id="applicationObjectConfigurer" depends-on="serviceLocator"
