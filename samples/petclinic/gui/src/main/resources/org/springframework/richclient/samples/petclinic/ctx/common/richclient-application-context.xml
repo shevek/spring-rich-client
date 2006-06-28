@@ -74,13 +74,22 @@
         class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
         <property name="bindersForPropertyTypes">
             <map>
-<!--                <entry>
+                <!--
+                <entry>
                     <key>
                         <value type="java.lang.Class">java.util.Date</value>
                     </key>
                     <bean 
                         class="org.springframework.richclient.samples.petclinic.ui.binder.CustomDatePickerBinder"/>
-                </entry>-->
+                </entry>
+                -->
+                <entry>
+                    <key>
+                        <value type="java.lang.Class">java.util.Date</value>
+                    </key>
+                    <bean
+                        class="org.springframework.richclient.form.binding.swing.NachoCalendarDateFieldBinder"/>
+                </entry>
                 <entry>
                     <key>
                         <value type="java.lang.Class"> 
