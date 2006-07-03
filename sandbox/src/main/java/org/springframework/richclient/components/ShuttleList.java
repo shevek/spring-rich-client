@@ -3,12 +3,15 @@
  */
 package org.springframework.richclient.components;
 
+import org.springframework.richclient.layout.TableLayoutBuilder;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -273,7 +276,7 @@ public class ShuttleList extends JPanel {
         _sourcePanel.add(BorderLayout.NORTH, _sourceLabel);
         JScrollPane sourceScroller = new JScrollPane(_sourceList);
         _sourcePanel.add(BorderLayout.CENTER, sourceScroller);
-        gbl.setConstraints(sourceScroller, gbc);
+        gbl.setConstraints(_sourcePanel, gbc);
 
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0;
@@ -286,7 +289,7 @@ public class ShuttleList extends JPanel {
         _chosenPanel.add(BorderLayout.NORTH, _chosenLabel);
         JScrollPane chosenScroller = new JScrollPane(_chosenList);
         _chosenPanel.add(BorderLayout.CENTER, chosenScroller);
-        gbl.setConstraints(chosenScroller, gbc);
+        gbl.setConstraints(_chosenPanel, gbc);
 
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
