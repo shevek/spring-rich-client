@@ -49,9 +49,11 @@ import javax.swing.event.ListSelectionListener;
  * 
  * @author lstreepy
  * @author Benoit Xhenseval (Small modifications for text + icons config)
- * 
+ * @author Geoffrey De Smet
  */
 public class ShuttleList extends JPanel {
+
+    private boolean showEditButton = false;
 
     private JList _helperList = new JList();
 
@@ -77,7 +79,7 @@ public class ShuttleList extends JPanel {
 
     private Comparator _comparator;
 
-    private boolean _panelsShowing = false;
+    private boolean _panelsShowing;
 
     private static final long serialVersionUID = -6038138479095186130L;
 
@@ -85,6 +87,13 @@ public class ShuttleList extends JPanel {
      * Simple constructor.
      */
     public ShuttleList() {
+        // The binder actually determines the default
+        this(true);
+    }
+
+    public ShuttleList(boolean showEditButton) {
+        this.showEditButton = showEditButton;
+        this._panelsShowing = !showEditButton;
         buildComponent();
     }
 
@@ -249,14 +258,10 @@ public class ShuttleList extends JPanel {
     protected JComponent buildComponent() {
         _helperList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        // JPanel buttonPanel = new ControlButtonPanel();
-        JPanel buttonPanel = buildButtonPanel();
-
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
 
-        _sourceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        _chosenList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        setLayout(gbl);
 
         _editButton = new JButton("Edit...");
         _editButton.setIconTextGap(0);
@@ -268,7 +273,15 @@ public class ShuttleList extends JPanel {
             }
         });
 
-        setLayout(gbl);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 0, 0, 3);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbl.setConstraints(_editButton, gbc);
+        add(_editButton);
+
+        _sourceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -277,12 +290,17 @@ public class ShuttleList extends JPanel {
         JScrollPane sourceScroller = new JScrollPane(_sourceList);
         _sourcePanel.add(BorderLayout.CENTER, sourceScroller);
         gbl.setConstraints(_sourcePanel, gbc);
+        add(_sourcePanel);
 
+        // JPanel buttonPanel = new ControlButtonPanel();
+        JPanel buttonPanel = buildButtonPanel();
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0;
         gbc.weighty = 1.0;
         gbl.setConstraints(buttonPanel, gbc);
+        add(buttonPanel);
 
+        _chosenList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -290,21 +308,11 @@ public class ShuttleList extends JPanel {
         JScrollPane chosenScroller = new JScrollPane(_chosenList);
         _chosenPanel.add(BorderLayout.CENTER, chosenScroller);
         gbl.setConstraints(_chosenPanel, gbc);
-
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.insets = new Insets(0, 0, 0, 3);
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbl.setConstraints(_editButton, gbc);
-
-        add(_editButton);
-        add(_sourcePanel);
-        add(buttonPanel);
         add(_chosenPanel);
 
-        _buttonPanel.setVisible(false);
-        _sourcePanel.setVisible(false);
+        _editButton.setVisible(showEditButton);
+        _buttonPanel.setVisible(_panelsShowing);
+        _sourcePanel.setVisible(_panelsShowing);
 
         return this;
     }

@@ -104,6 +104,12 @@ public class ShuttleListBinder extends AbstractBinder {
 
     public static final String RENDERER_KEY = "renderer";
 
+    private boolean showEditButton = true;
+
+    public void setShowEditButton(boolean showEditButton) {
+        this.showEditButton = showEditButton;
+    }
+
     /**
      * Utility method to construct the context map used to configure instances
      * of {@link ShutteListBinding} created by this binder.
@@ -218,6 +224,8 @@ public class ShuttleListBinder extends AbstractBinder {
      * @inheritDoc
      */
     protected JComponent createControl( Map context ) {
-        return new ShuttleList();
+        ShuttleList shuttleList = new ShuttleList(showEditButton);
+        return shuttleList;
     }
+
 }
