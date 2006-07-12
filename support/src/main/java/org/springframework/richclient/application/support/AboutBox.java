@@ -121,7 +121,7 @@ public class AboutBox {
                 String description = appDesc.getDescription();
                 String version = appDesc.getVersion();
                 String buildId = appDesc.getBuildId();
-                StringBuilder sb = new StringBuilder();
+                StringBuffer sb = new StringBuffer();
 
                 if( StringUtils.hasText(displayName) ) {
                     sb.append(displayName).append("\n");
