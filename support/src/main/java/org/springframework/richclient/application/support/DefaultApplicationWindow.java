@@ -341,7 +341,7 @@ public class DefaultApplicationWindow implements ApplicationWindow, WindowFocusL
     }
 
     public void removePageListener(PageListener listener) {
-        this.pageListeners.remove(PageListener.class);
+        this.pageListeners.remove(listener);
     }
 
     public boolean close() {

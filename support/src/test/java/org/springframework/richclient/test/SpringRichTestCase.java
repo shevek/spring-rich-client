@@ -24,6 +24,7 @@ import org.springframework.context.support.StaticMessageSource;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationServices;
 
 /**
@@ -48,7 +49,10 @@ public abstract class SpringRichTestCase extends TestCase {
             applicationServices = new DefaultApplicationServices();
             new ApplicationServicesLocator(applicationServices);
 
-            new Application(new DefaultApplicationLifecycleAdvisor());
+            final ApplicationLifecycleAdvisor advisor = createApplicationLifecycleAdvisor();
+            final Application application = new Application(advisor);
+            advisor.setApplication(application);
+            
             StaticApplicationContext applicationContext = new StaticApplicationContext();
             Application.instance().setApplicationContext(applicationContext);
             applicationServices.setApplicationContext(applicationContext);
@@ -63,6 +67,17 @@ public abstract class SpringRichTestCase extends TestCase {
             throw e;
         }
     }
+
+
+    /**
+     * Subclasses may override this to return a custom
+     * ApplicationLifecycleAdvisor.
+     */
+    protected ApplicationLifecycleAdvisor createApplicationLifecycleAdvisor() {
+        return new DefaultApplicationLifecycleAdvisor();
+    }
+    
+    
 
     /**
      * Register the application services needed for our tests.
