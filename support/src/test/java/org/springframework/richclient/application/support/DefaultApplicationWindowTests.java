@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.application.support;
 
-import static org.easymock.EasyMock.*;
+import org.easymock.EasyMock;
 
 import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.richclient.application.PageListener;
@@ -33,8 +33,8 @@ import org.springframework.richclient.command.CommandGroup;
 public class DefaultApplicationWindowTests extends SpringRichTestCase {
 
     public void testRegressionFailureToRemovePageListener() {
-        PageListener pageListener = createNiceMock(PageListener.class);
-        replay(pageListener);
+        PageListener pageListener = (PageListener)EasyMock.createNiceMock(PageListener.class);
+        EasyMock.replay(pageListener);
         DefaultApplicationWindow daw = new DefaultApplicationWindow();
         daw.addPageListener(pageListener);
 
@@ -54,28 +54,18 @@ public class DefaultApplicationWindowTests extends SpringRichTestCase {
      * ApplicationLifecycleAdvisor should be revisited to ensure it still
      * meets the needs of this test case.
      */
-    @Override
     protected ApplicationLifecycleAdvisor createApplicationLifecycleAdvisor() {
         return new DefaultApplicationLifecycleAdvisor() {
-            @Override
             public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
             }
-
-            @Override
             public void onCommandsCreated(ApplicationWindow window) {
             }
-
-            @Override
             public ApplicationWindowCommandManager createWindowCommandManager() {
                 return null;
             }
-
-            @Override
             public CommandGroup getMenuBarCommandGroup() {
                 return null;
             }
-
-            @Override
             public CommandGroup getToolBarCommandGroup() {
                 return null;
             }
