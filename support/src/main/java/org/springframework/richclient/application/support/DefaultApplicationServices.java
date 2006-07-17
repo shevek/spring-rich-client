@@ -60,6 +60,8 @@ import org.springframework.richclient.security.support.DefaultApplicationSecurit
 import org.springframework.richclient.security.support.DefaultSecurityControllerManager;
 import org.springframework.richclient.util.Assert;
 import org.springframework.rules.RulesSource;
+import org.springframework.rules.reporting.DefaultMessageTranslatorFactory;
+import org.springframework.rules.reporting.MessageTranslatorFactory;
 import org.springframework.rules.support.DefaultRulesSource;
 
 /**
@@ -537,6 +539,15 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the message translator registry service implementation
+     * 
+     * @param messageTranslatorFactory
+     */
+    public void setMessageTranslatorFactory( MessageTranslatorFactory messageTranslatorFactory ) {
+        services.put(MessageTranslatorFactory.class, messageTranslatorFactory);
+    }
+
+    /**
      * Set the view descriptor registry service implementation bean id
      * 
      * @param viewDescriptorRegistryId bean id
@@ -706,6 +717,16 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         }
     };
 
+    protected static final ImplBuilder messageTranslatorFactoryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info("Creating default service impl: MessageTranslatorFactory");
+            DefaultMessageTranslatorFactory impl = new DefaultMessageTranslatorFactory();
+            impl.setMessageSource(applicationServices.getApplicationContext());
+			return impl;
+        }
+    };
+    
+    
     protected static final ImplBuilder labeledEnumResolverImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             logger.info("Creating default service impl: LabeledEnumResolver");
@@ -752,5 +773,6 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put(SecurityControllerManager.class, SecurityControllerManagerImplBuilder);
         serviceImplBuilders.put(ValueChangeDetector.class, valueChangeDetectorImplBuilder);
         serviceImplBuilders.put(ViewDescriptorRegistry.class, viewDescriptorRegistryImplBuilder);
+        serviceImplBuilders.put(MessageTranslatorFactory.class, messageTranslatorFactoryImplBuilder);
     }
 }

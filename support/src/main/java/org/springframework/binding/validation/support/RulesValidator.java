@@ -29,22 +29,24 @@ import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
-import org.springframework.context.MessageSource;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;
 import org.springframework.rules.RulesSource;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.reporting.BeanValidationResultsCollector;
+import org.springframework.rules.reporting.MessageTranslator;
+import org.springframework.rules.reporting.MessageTranslatorFactory;
+import org.springframework.rules.reporting.ObjectNameResolver;
 import org.springframework.rules.reporting.PropertyResults;
 
-public class RulesValidator implements RichValidator {
+public class RulesValidator implements RichValidator, ObjectNameResolver {
 
     private static final Log logger = LogFactory.getLog(RulesValidator.class);
 
     private final DefaultValidationResults results = new DefaultValidationResults();
 
-    private final FormModelAwareMessageTranslator messageTranslator;
+    private final MessageTranslator messageTranslator;
 
     private final Map validationErrors = new HashMap();
 
@@ -74,8 +76,8 @@ public class RulesValidator implements RichValidator {
         this.formModel = formModel;
         this.rulesSource = rulesSource;
         validationResultsCollector = new BeanValidationResultsCollector(new FormModelPropertyAccessStrategy(formModel));
-        MessageSource messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
-        messageTranslator = new FormModelAwareMessageTranslator(formModel, messageSource);
+        MessageTranslatorFactory factory = (MessageTranslatorFactory) ApplicationServicesLocator.services().getService(MessageTranslatorFactory.class);
+        messageTranslator = factory.createTranslator(this);
     }
     
     public ValidationResults validate(Object object) {
@@ -184,4 +186,8 @@ public class RulesValidator implements RichValidator {
     public void setRulesContextId(String rulesContextId) {
         this.rulesContextId = rulesContextId;
     }
+
+	public String resolveObjectName(String objectName) {
+		return formModel.getFieldFace(objectName).getDisplayName();
+	}
 }

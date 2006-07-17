@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.springframework.binding.validation.Severity;
 import org.springframework.context.MessageSource;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 
 /**
  * @author Keith Donald
@@ -30,16 +31,27 @@ public class PropertyResults implements ValidationResults {
     private Object rejectedValue;
     private Constraint violatedConstraint;
     private Severity severity = Severity.ERROR;
+    private MessageTranslatorFactory messageTranslatorFactory;
 
     public PropertyResults(String propertyName, Object rejectedValue,
             Constraint violatedConstraint) {
         this.propertyName = propertyName;
         this.rejectedValue = rejectedValue;
         this.violatedConstraint = violatedConstraint;
+        this.messageTranslatorFactory = (MessageTranslatorFactory) ApplicationServicesLocator.services().getService(MessageTranslatorFactory.class);
     }
 
+    /**
+     * @deprecated MessageSource is configured by MessageTranslator. use <code>buildMessage(Locale)</code>
+     * @see #buildMessage(Locale)
+     */
     public String buildMessage(MessageSource messages, Locale locale) {
-        return new DefaultMessageTranslator(messages).getMessage(this);
+		return buildMessage(locale);
+    }
+
+    public String buildMessage(Locale locale) {
+    	MessageTranslator messageTranslator = messageTranslatorFactory.createTranslator(null, locale);    	
+        return messageTranslator.getMessage(this);
     }
 
     public String getPropertyName() {
@@ -61,5 +73,5 @@ public class PropertyResults implements ValidationResults {
     public Severity getSeverity() {
         return severity;
     }
-    
+
 }

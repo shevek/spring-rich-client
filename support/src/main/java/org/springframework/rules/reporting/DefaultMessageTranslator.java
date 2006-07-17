@@ -46,7 +46,8 @@ import org.springframework.util.ClassUtils;
 /**
  * @author Keith Donald
  */
-public class DefaultMessageTranslator {
+public class DefaultMessageTranslator implements MessageTranslator,
+		ObjectNameResolver {
 
 	protected static final Log logger = LogFactory
 			.getLog(DefaultMessageTranslator.class);
@@ -55,14 +56,27 @@ public class DefaultMessageTranslator {
 
 	private boolean appendValue = false;
 
-	PropertyResults results;
-
 	private List args = new ArrayList();
 
 	private MessageSource messages;
 
+	private ObjectNameResolver objectNameResolver;
+
+	private Locale locale;
+
 	public DefaultMessageTranslator(MessageSource messages) {
+		this(messages, null);
+	}
+
+	public DefaultMessageTranslator(MessageSource messages, ObjectNameResolver objectNameResolver) {
+		this(messages, objectNameResolver, null);
+	}
+
+	public DefaultMessageTranslator(MessageSource messages,
+			ObjectNameResolver objectNameResolver, Locale locale) {
 		setMessageSource(messages);
+		this.objectNameResolver = objectNameResolver;
+		this.locale = locale;
 	}
 
 	public void setMessageSource(MessageSource messageSource) {
@@ -70,47 +84,49 @@ public class DefaultMessageTranslator {
 		this.messages = messageSource;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.rules.reporting.MessageTranslator#getMessage(org.springframework.core.closure.Constraint)
+	 */
 	public String getMessage(Constraint constraint) {
 		String objectName = null;
 		if (constraint instanceof PropertyConstraint) {
 			objectName = ((PropertyConstraint) constraint).getPropertyName();
 		}
-		String message = buildMessage(objectName, null, constraint, Locale.getDefault());
+		String message = buildMessage(objectName, null, constraint);
 		return message;
 	}
 
 	public String getMessage(String objectName, Constraint constraint) {
-		return buildMessage(objectName, null, constraint, Locale.getDefault());
+		return buildMessage(objectName, null, constraint);
 	}
 
 	public String getMessage(String objectName, Object rejectedValue,
 			Constraint constraint) {
-		return buildMessage(objectName, rejectedValue, constraint, Locale
-				.getDefault());
+		return buildMessage(objectName, rejectedValue, constraint);
 	}
 
 	public String getMessage(String objectName, ValidationResults results) {
 		return buildMessage(objectName, results.getRejectedValue(), results
-				.getViolatedConstraint(), Locale.getDefault());
+				.getViolatedConstraint());
 	}
 
 	public String getMessage(PropertyResults results) {
 		Assert.notNull(results, "No property results specified");
 		return buildMessage(results.getPropertyName(), results
-				.getRejectedValue(), results.getViolatedConstraint(), Locale
-				.getDefault());
+				.getRejectedValue(), results.getViolatedConstraint());
 	}
 
 	private String buildMessage(String objectName, Object rejectedValue,
-			Constraint constraint, Locale locale) {
+			Constraint constraint) {
 		StringBuffer buf = new StringBuffer(255);
 		MessageSourceResolvable[] args = resolveArguments(constraint);
 		if (logger.isDebugEnabled()) {
 			logger.debug(StylerUtils.style(args));
 		}
 		if (objectName != null) {
-			buf.append(messages.getMessage(resolvableObjectName(objectName),
-					locale));
+			buf.append(resolveObjectName(objectName));
 			buf.append(' ');
 			if (appendValue) {
 				if (rejectedValue != null) {
@@ -130,6 +146,7 @@ public class DefaultMessageTranslator {
 	}
 
 	private MessageSourceResolvable[] resolveArguments(Constraint constraint) {
+		args.clear();
 		visitorSupport.invokeVisit(this, constraint);
 		return (MessageSourceResolvable[]) args
 				.toArray(new MessageSourceResolvable[0]);
@@ -142,28 +159,30 @@ public class DefaultMessageTranslator {
 	void visit(PropertiesConstraint e) {
 		add(
 				getMessageCode(e.getConstraint()),
-				new Object[]{resolvableObjectName(e.getOtherPropertyName())},
+				new Object[] { resolveObjectName(e.getOtherPropertyName()) },
 				e.toString());
 	}
 
 	void visit(ParameterizedPropertyConstraint e) {
 		add(getMessageCode(e.getConstraint()),
-				new Object[]{e.getParameter()}, e.toString());
+				new Object[] { e.getParameter() }, e.toString());
 	}
 
-	private void add(String code, Object[] args, String defaultMessage) {
+	public void add(String code, Object[] args, String defaultMessage) {
 		MessageSourceResolvable resolvable = new DefaultMessageSourceResolvable(
-				new String[]{code}, args, defaultMessage);
+				new String[] { code }, args, defaultMessage);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Adding resolvable: " + resolvable);
 		}
 		this.args.add(resolvable);
 	}
 
-	private MessageSourceResolvable resolvableObjectName(String objectName) {
-		return new DefaultMessageSourceResolvable(new String[]{objectName},
-				null, new DefaultBeanPropertyNameRenderer()
-				.renderShortName(objectName));
+	public String resolveObjectName(String objectName) {
+		if(objectNameResolver != null)
+			return objectNameResolver.resolveObjectName(objectName);
+		return messages.getMessage(objectName, null,
+				new DefaultBeanPropertyNameRenderer()
+						.renderShortName(objectName), locale);
 	}
 
 	void visit(PropertyValueConstraint valueConstraint) {
@@ -197,7 +216,7 @@ public class DefaultMessageTranslator {
 		visitorSupport.invokeVisit(this, not.getConstraint());
 	}
 
-	//@TODO - consider standard visitor here...
+	// @TODO - consider standard visitor here...
 	void visit(StringLengthConstraint constraint) {
 		ClosureResultConstraint c = (ClosureResultConstraint) constraint
 				.getPredicate();
@@ -205,11 +224,10 @@ public class DefaultMessageTranslator {
 		MessageSourceResolvable resolvable;
 		if (p instanceof ParameterizedBinaryConstraint) {
 			resolvable = handleParameterizedBinaryPredicate((ParameterizedBinaryConstraint) p);
-		}
-		else {
+		} else {
 			resolvable = handleRange((Range) p);
 		}
-		Object[] args = new Object[]{resolvable};
+		Object[] args = new Object[] { resolvable };
 		add(getMessageCode(constraint), args, constraint.toString());
 	}
 
@@ -220,23 +238,22 @@ public class DefaultMessageTranslator {
 	private MessageSourceResolvable handleParameterizedBinaryPredicate(
 			ParameterizedBinaryConstraint p) {
 		MessageSourceResolvable resolvable = new DefaultMessageSourceResolvable(
-				new String[]{getMessageCode(p.getConstraint())},
-				new Object[]{p.getParameter()}, p.toString());
+				new String[] { getMessageCode(p.getConstraint()) },
+				new Object[] { p.getParameter() }, p.toString());
 		return resolvable;
 	}
 
 	private MessageSourceResolvable handleRange(Range r) {
 		MessageSourceResolvable resolvable = new DefaultMessageSourceResolvable(
-				new String[]{getMessageCode(r)}, new Object[]{r.getMin(),
-																											r.getMax()}, r.toString());
+				new String[] { getMessageCode(r) }, new Object[] { r.getMin(),
+						r.getMax() }, r.toString());
 		return resolvable;
 	}
 
 	void visit(Constraint constraint) {
 		if (constraint instanceof Range) {
 			this.args.add(handleRange((Range) constraint));
-		}
-		else {
+		} else {
 			add(getMessageCode(constraint), null, constraint.toString());
 		}
 	}
@@ -250,5 +267,4 @@ public class DefaultMessageTranslator {
 		}
 		return ClassUtils.getShortNameAsProperty(o.getClass());
 	}
-
 }

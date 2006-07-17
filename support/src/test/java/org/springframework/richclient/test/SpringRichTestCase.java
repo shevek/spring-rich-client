@@ -19,12 +19,13 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationServices;
 
 /**
@@ -46,14 +47,14 @@ public abstract class SpringRichTestCase extends TestCase {
     protected final void setUp() throws Exception {
         try {
             Application.load(null);
-            applicationServices = new DefaultApplicationServices();
+            ConfigurableApplicationContext applicationContext = createApplicationContext();
+            applicationServices = new DefaultApplicationServices(applicationContext);
             new ApplicationServicesLocator(applicationServices);
 
             final ApplicationLifecycleAdvisor advisor = createApplicationLifecycleAdvisor();
             final Application application = new Application(advisor);
             advisor.setApplication(application);
             
-            StaticApplicationContext applicationContext = new StaticApplicationContext();
             Application.instance().setApplicationContext(applicationContext);
             applicationServices.setApplicationContext(applicationContext);
 
@@ -68,6 +69,16 @@ public abstract class SpringRichTestCase extends TestCase {
         }
     }
 
+	/**
+     * returns the application context to use for testing
+     * 
+     * overwrite to specify a different application context
+     * 
+     * @return this implementation returns an instance of StaticApplicationContext
+     */
+    protected ConfigurableApplicationContext createApplicationContext() {
+        return new StaticApplicationContext();
+    }
 
     /**
      * Subclasses may override this to return a custom

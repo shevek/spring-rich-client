@@ -6,10 +6,14 @@ package org.springframework.rules;
 
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
+import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.constraint.CompoundConstraint;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
 import org.springframework.rules.factory.Constraints;
@@ -19,18 +23,24 @@ import org.springframework.rules.reporting.BeanValidationResultsCollector;
 /**
  * @author Keith Donald
  */
-public class ValidationResultsTests extends TestCase {
+public class ValidationResultsTests extends SpringRichTestCase {
 
-	static ClassPathXmlApplicationContext ac;
 	static RulesSource rulesSource;
 	static Rules rules;
 
 	private static final Constraints constraints = Constraints.instance();
-
-	public void setUp() {
-		ac = new ClassPathXmlApplicationContext("org/springframework/rules/rules-context.xml");
-		rulesSource = (RulesSource) ac.getBean("rulesSource");
+	
+	protected void registerAdditionalServices(DefaultApplicationServices applicationServices) {
+		applicationServices.setRulesSourceId("rulesSource");
+	}
+	
+	protected void doSetUp() throws Exception {
+		rulesSource = (RulesSource) applicationServices.getService(RulesSource.class);
 		rules = rulesSource.getRules(Person.class);
+	}
+
+	protected ConfigurableApplicationContext createApplicationContext() {
+		return new ClassPathXmlApplicationContext("org/springframework/rules/rules-context.xml");
 	}
 
 	public void testValidationResultsCollector() {
@@ -69,7 +79,7 @@ public class ValidationResultsTests extends TestCase {
 		BeanValidationResults r = c.collectResults(rules);
 		assertEquals(3, r.getViolatedCount());
 		String message =
-				r.getResults("firstName").buildMessage(ac, Locale.getDefault());
+				r.getResults("firstName").buildMessage(Locale.getDefault());
 		System.out.println(message);
 		assertEquals(
 				"First Name must have text and must be at least 2 characters or must *not* equal Last Name.",

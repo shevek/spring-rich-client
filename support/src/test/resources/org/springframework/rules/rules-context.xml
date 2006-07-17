@@ -7,6 +7,15 @@
 	<!-- direct java / groovy / beanshell / jython or some other scripting solution is better
 	     Using the Constraints factory and builders is preferred -->
 
+	<bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+	    <property name="applicationServices" ref="applicationServices"/>
+	</bean>
+	
+	<bean id="applicationServices"
+	    class="org.springframework.richclient.application.support.DefaultApplicationServices">
+	    <property name="rulesSource" ref="rulesSource"/>
+	</bean>
+
 	<bean  id="messageSource" 
   	    class="org.springframework.context.support.ResourceBundleMessageSource">
   	  <property name="basenames">
@@ -15,7 +24,7 @@
   	  	</list>
   	  </property>
   	</bean>
-	     
+  	
   	<bean id="rulesSource" class="org.springframework.rules.support.DefaultRulesSource">
   		<property name="rules">
   			<list>
