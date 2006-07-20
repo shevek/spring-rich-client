@@ -175,6 +175,15 @@
             </roles>
             <timezone>+1</timezone>
         </developer>
+        <developer>
+            <id>mathiasbr</id>
+            <name>Mathias Broekelmann</name>
+            <email>mbroekelmann AT googlemail DOT com</email>
+            <roles>
+                <role>Java developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
     </developers>
     <contributors/>
 
