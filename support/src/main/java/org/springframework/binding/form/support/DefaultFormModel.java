@@ -82,7 +82,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     }
 
     public DefaultFormModel(ValueModel domainObjectHolder) {
-        super(domainObjectHolder);
+        super(domainObjectHolder, true);
         init();
     }
     

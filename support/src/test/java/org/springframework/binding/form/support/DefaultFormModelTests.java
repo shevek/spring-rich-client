@@ -33,6 +33,7 @@ import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.binding.validation.Validator;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 
 /**
  * Tests for @link DefaultFormModel
@@ -243,6 +244,13 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         fm.revert();
 
         // no additional asserts, this test should just not throw an exception!
+    }
+    
+    public void testDefaultFormModelFromValueModel() throws Exception {        
+        TestBean testBean = new TestBean();
+        ValueModel valueModel = new ValueHolder(testBean);
+        DefaultFormModel model = new DefaultFormModel(valueModel);
+        assertEquals(testBean, model.getFormObject());
     }
 
     private DefaultValidationResults getValidationResults(String message) {
