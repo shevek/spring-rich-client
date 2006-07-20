@@ -73,7 +73,7 @@
             <name>Oliver Hutchison</name>
             <email/>
             <roles>
-                <role>Project leader</role>
+                <role>Former project leader</role>
                 <role>Java developer</role>
             </roles>
             <timezone/>
@@ -94,6 +94,7 @@
             <name>Larry Streepy</name>
             <email>lstreepy AT nyc.rr DOT com</email>
             <roles>
+                <role>Project leader</role>
                 <role>Java developer</role>
             </roles>
             <timezone>-5</timezone>
@@ -141,6 +142,7 @@
             <name>Jan Hoskens</name>
             <email>jh AT schaubroeck DOT be</email>
             <roles>
+                <role>Project leader</role>
                 <role>Java developer</role>
             </roles>
             <timezone>+1</timezone>
