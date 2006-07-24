@@ -178,6 +178,10 @@ public abstract class ActionCommand extends AbstractCommand implements ActionCom
         this.displaysInputDialog = displaysInputDialog;
     }
 
+    public boolean isDisplaysInputDialog() {
+        return displaysInputDialog;
+    }
+
     public final void execute(Map parameters) {
         this.parameters.putAll(parameters);
         execute();
