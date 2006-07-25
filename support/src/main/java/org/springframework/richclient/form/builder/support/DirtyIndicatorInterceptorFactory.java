@@ -39,7 +39,8 @@ import org.springframework.util.ObjectUtils;
  * top-left corner of the component, and the image's tooltip is set to a message
  * (retrieved with key "dirty.message") such as "{field} has changed, original value was
  * {value}.".
- * 
+ *
+ *
  * @author Peter De Bruycker
  */
 public class DirtyIndicatorInterceptorFactory implements FormComponentInterceptorFactory {
@@ -119,8 +120,8 @@ public class DirtyIndicatorInterceptorFactory implements FormComponentIntercepto
             if( oldValue == null && newValue instanceof String ) {
                 // hack for string comparison: null equals empty string
                 return !ObjectUtils.nullSafeEquals( "", newValue );
-            } 
-            
+            }
+
             return !ObjectUtils.nullSafeEquals( oldValue, newValue );
         }
     }
