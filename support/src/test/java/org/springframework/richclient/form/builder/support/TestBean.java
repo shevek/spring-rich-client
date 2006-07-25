@@ -15,17 +15,19 @@
  */
 package org.springframework.richclient.form.builder.support;
 
-import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.form.builder.FormComponentInterceptor;
-import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
-
 /**
- * Factory for <code>DirtyIndicatorInterceptor</code> instances.
+ * Bean for testing purposes.
  *
  * @author Peter De Bruycker
  */
-public class DirtyIndicatorInterceptorFactory implements FormComponentInterceptorFactory {
-    public FormComponentInterceptor getInterceptor(FormModel formModel) {
-        return new DirtyIndicatorInterceptor(formModel);
+public class TestBean {
+    private String property;
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
     }
 }
