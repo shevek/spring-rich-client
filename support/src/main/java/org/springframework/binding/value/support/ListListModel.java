@@ -130,7 +130,7 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     }
 
     public boolean addAll(Collection c) {
-        int firstIndex = items.size() > 0 ? items.size() - 1 : 0;
+        int firstIndex = items.size();
         boolean result = items.addAll(c);
         if (result) {
             int lastIndex = items.size() - 1;
