@@ -74,7 +74,17 @@
             <artifactId>spring-petclinic</artifactId>
         </dependency>
 
+        <!-- Security -->
+        <dependency>
+            <groupId>org.acegisecurity</groupId>
+            <artifactId>acegi-security</artifactId>
+        </dependency>
+
         <!-- Components -->
+        <dependency>
+            <groupId>jgoodies</groupId>
+            <artifactId>forms</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jdesktop</groupId>
             <artifactId>swingx</artifactId>

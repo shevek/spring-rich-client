@@ -346,5 +346,9 @@ public class ValangRichValidator implements RichValidator {
         public void setExtractOldValueForEditor(boolean extractOldValueForEditor){
             throw new UnsupportedOperationException("Not implemented");
         }
+
+        public boolean isExtractOldValueForEditor() {
+            throw new UnsupportedOperationException("Not implemented");
+        }
     }
 }

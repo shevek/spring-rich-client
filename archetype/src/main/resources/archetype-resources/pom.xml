@@ -6,58 +6,102 @@
   <packaging>jar</packaging>
   <version>${version}</version>
   <name>Spring RCP Project Archetype</name>
+  
+  <properties>
+    <springrich.version>0.2.0-SNAPSHOT</springrich.version>
+    <spring.version>1.2.8</spring.version>
+  </properties>
+  
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                  <!-- this configuration generates the manifest in target/${artifactId}-${version}.jar -->
+                  <archive>
+                      <manifest>
+                          <!-- specify the main class for your application -->
+                          <mainClass>${groupId}.SimpleApp</mainClass>
+                          <addClasspath>true</addClasspath>
+                          <addExtensions/>
+                          <classpathPrefix>lib</classpathPrefix>
+                      </manifest>
+                  </archive>
+              </configuration>
+          </plugin>
+          
+          <!-- This plugin copies the dependencies into target/lib -->
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>dependency-maven-plugin</artifactId>
+              <configuration>
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              </configuration>
+              <executions>
+                  <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                    </goals>
+                  </execution>
+              </executions>
+          </plugin>
+      </plugins>
+  </build>
+
   <dependencies>
         <!-- Spring rich -->
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-resources</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-core</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-binding</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-form</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-support</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.richclient</groupId>-->
-            <!--<artifactId>spring-richclient-tiger</artifactId>-->
-        <!--</dependency>-->
+        <!-- Uncomment spring-richclient-tiger module if you want to use java 1.5 support classes from spring rich
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-tiger</artifactId>
+            <version>${springrich.version}</version>
+        </dependency>
+        -->
+        <!-- Uncomment spring-richclient-sandbox module if you want to use in dev classes from spring rich
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-sandbox</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${springrich.version}</version>
         </dependency>
+        -->
 
-        <!-- Dependency injection -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>1.2.6</version>
+            <groupId>jgoodies</groupId>
+            <artifactId>forms</artifactId>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>1.2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>1.2.6</version>
+            <groupId>jgoodies</groupId>
+            <artifactId>looks</artifactId>
+            <version>1.3.2</version>
         </dependency>
   </dependencies>
 </project>

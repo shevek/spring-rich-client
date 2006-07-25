@@ -27,30 +27,37 @@ Creating your first project based on an archetype
 	In order to simplify the process of getting your first Spring Rich Client project started,
 	a maven archetype has been created to do just that.
 
-    * See {{development/developmentSetup.html}} to install Maven 2, checkout the project and run
+  * See {{development/developmentSetup.html}} to install Maven 2, checkout the project and run
 
 +--
 mvn install
 +--
 
-	* Next, run the following command (with appropriate substitutions for
-	<<<your.group.id>>> and <<<your-artifact-id>>>) in an empty directory:
+
+  * Next, run the following command (with appropriate substitutions for	
+  <<<your.group.id>>> and <<<your-artifact-id>>>) in an empty directory:
 	
-+---
++--
 mvn archetype:create \
 -DarchetypeGroupId=org.springframework.richclient \
 -DarchetypeArtifactId=spring-richclient-archetype \
 -DarchetypeVersion=0.2.0-SNAPSHOT \
 -DgroupId=your.group.id -DartifactId=your-artifact-id
-+---
++--
 
-	Once this command completes, you will have a new project that is ready to go.
+  Once this command completes, you will have a new project that is ready to go.
 
-	* You can use the Eclipse or Idea plugins in Maven to get the project into your
-	favorite IDE.
+  * You can use the Eclipse or Idea plugins in Maven to get the project into your favorite IDE.
+
 +--
 cd your-artifact-id
 mvn install eclipse:eclipse idea:idea
 +--
 
-	The application should be runnable as is.
+  The application can be started either through the IDE or with:
+
++--
+cd your-artifact-id
+mvn package
+java -jar target/your-artifact-id-1.0-SNAPSHOT.jar
++--

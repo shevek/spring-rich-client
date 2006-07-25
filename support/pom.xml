@@ -21,11 +21,13 @@
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-resources</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-resources</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -35,6 +37,7 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-core</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -44,6 +47,7 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-binding</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -53,6 +57,7 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-form</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
 
         <!-- Logging -->
@@ -78,11 +83,27 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-remoting</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Binding and validation -->
@@ -90,29 +111,36 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-binding</artifactId>
         </dependency>
+        
+        <!-- only required when ValangRichValidator is used -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-modules-sandbox</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Security -->
         <dependency>
             <groupId>org.acegisecurity</groupId>
             <artifactId>acegi-security</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Components -->
         <dependency>
             <groupId>jgoodies</groupId>
             <artifactId>forms</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>jgoodies</groupId>
             <artifactId>looks</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.sf.nachocalendar</groupId>
@@ -124,10 +152,12 @@
         <dependency>
             <groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>javax.help</groupId>
             <artifactId>jhelp</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Docking -->
