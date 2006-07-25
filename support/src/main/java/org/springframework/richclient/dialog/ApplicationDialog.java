@@ -618,9 +618,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * re-built on the next show.
      */
     protected final void dispose() {
-        onWindowClosing();
-        this.dialog.dispose();
-        this.dialog = null;
+        if(dialog != null) {
+            onWindowClosing();
+            this.dialog.dispose();
+            this.dialog = null;
+        }
     }
 
     /**
