@@ -86,9 +86,7 @@ public class ComboBoxAutoCompletion extends PlainDocument {
 
         // Handle initially selected object
         Object selected = comboBox.getSelectedItem();
-        if (selected != null) {
-            editor.setText(getStringFor(selected));
-        }
+        comboBox.getEditor().setItem(selected);
     }
 
     private void fillItem2StringMap() {
