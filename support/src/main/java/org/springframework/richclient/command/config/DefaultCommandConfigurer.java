@@ -21,7 +21,6 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
-import org.springframework.richclient.command.support.DefaultCommandServices;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -89,7 +88,7 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
 
     protected CommandServices getCommandServices() {
         if (commandServices == null) {
-            return DefaultCommandServices.instance();
+            commandServices = (CommandServices) ApplicationServicesLocator.services().getService(CommandServices.class);
         }
         return commandServices;
     }

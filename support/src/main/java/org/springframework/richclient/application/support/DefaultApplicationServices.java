@@ -40,10 +40,16 @@ import org.springframework.richclient.application.DefaultConversionService;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer;
+import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.DefaultCommandConfigurer;
+import org.springframework.richclient.command.support.DefaultCommandServices;
+import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.factory.DefaultButtonFactory;
 import org.springframework.richclient.factory.DefaultComponentFactory;
+import org.springframework.richclient.factory.DefaultMenuFactory;
+import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.richclient.form.binding.BinderSelectionStrategy;
 import org.springframework.richclient.form.binding.BindingFactoryProvider;
 import org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy;
@@ -180,10 +186,9 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         return service;
     }
 
-    public boolean hasService( Class serviceType ) {
+    public boolean containsService( Class serviceType ) {
         Assert.required(serviceType, "serviceType");
-        // TODO implement this
-        throw new UnsupportedOperationException("Can not test service presence.");
+        return services.containsKey(serviceType) || containsDefaultImplementation(serviceType);
     }
 
     /**
@@ -296,6 +301,24 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the command services service implementation
+     * 
+     * @param commandServices
+     */
+    public void setCommandServices( CommandServices commandServices ) {
+        services.put(CommandServices.class, commandServices);
+    }
+
+    /**
+     * Set the command services service implementation bean id
+     * 
+     * @param commandServicesId bean id
+     */
+    public void setCommandServicesId( String commandServicesId ) {
+        services.put(CommandServices.class, commandServicesId);
+    }
+
+    /**
      * Set the command configurer service implementation
      * 
      * @param commandConfigurer
@@ -311,6 +334,42 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      */
     public void setCommandConfigurerId( String commandConfigurerId ) {
         services.put(CommandConfigurer.class, commandConfigurerId);
+    }
+
+    /**
+     * Set the button factory service implementation
+     * 
+     * @param buttonFactory
+     */
+    public void setButtonFactory( ButtonFactory buttonFactory ) {
+        services.put(ButtonFactory.class, buttonFactory);
+    }
+
+    /**
+     * Set the button factory service implementation bean id
+     * 
+     * @param buttonFactoryId bean id
+     */
+    public void setButtonFactoryId( String buttonFactoryId ) {
+        services.put(ButtonFactory.class, buttonFactoryId);
+    }
+
+    /**
+     * Set the menu factory service implementation
+     * 
+     * @param menuFactory
+     */
+    public void setMenuFactory( MenuFactory menuFactory ) {
+        services.put(MenuFactory.class, menuFactory);
+    }
+
+    /**
+     * Set the menu factory service implementation bean id
+     * 
+     * @param menuFactoryId bean id
+     */
+    public void setMenuFactoryId( String menuFactoryId ) {
+        services.put(MenuFactory.class, menuFactoryId);
     }
 
     /**
@@ -548,6 +607,15 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the message translator registry service implementation bean id
+     * 
+     * @param messageTranslatorFactory
+     */
+    public void setMessageTranslatorFactoryId(String messageTranslatorFactoryId ) {
+        services.put(MessageTranslatorFactory.class, messageTranslatorFactoryId);
+    }
+
+    /**
      * Set the view descriptor registry service implementation bean id
      * 
      * @param viewDescriptorRegistryId bean id
@@ -571,6 +639,15 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         }
         return impl;
     }
+    
+    /**
+     * Tests if a default implementation for the requested service type is available
+     * @param serviceType the requested service type
+     * @return true if a default implementation is available otherwise false.
+     */
+    protected boolean containsDefaultImplementation(Class serviceType) {
+        return serviceImplBuilders.containsKey(serviceType);
+    }
 
     /**
      * Internal interface used to provide default implementation builders.
@@ -588,6 +665,27 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     protected static final ImplBuilder applicationContextImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             return applicationServices.getApplicationContext();
+        }
+    };
+
+    protected static final ImplBuilder menuFactoryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info("Creating default service impl: MenuFactory");
+            return new DefaultMenuFactory();
+        }
+    };
+
+    protected static final ImplBuilder buttonFactoryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info("Creating default service impl: ButtonFactory");
+            return new DefaultButtonFactory();
+        }
+    };
+
+    protected static final ImplBuilder commandServicesImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info("Creating default service impl: CommandServices");
+            return new DefaultCommandServices();
         }
     };
 
@@ -759,6 +857,9 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put(ApplicationSecurityManager.class, applicationSecurityManagerImplBuilder);
         serviceImplBuilders.put(BinderSelectionStrategy.class, binderSelectionStrategyImplBuilder);
         serviceImplBuilders.put(BindingFactoryProvider.class, bindingFactoryProviderImplBuilder);
+        serviceImplBuilders.put(ButtonFactory.class, buttonFactoryImplBuilder);
+        serviceImplBuilders.put(MenuFactory.class, menuFactoryImplBuilder);
+        serviceImplBuilders.put(CommandServices.class, commandServicesImplBuilder);
         serviceImplBuilders.put(CommandConfigurer.class, commandConfigurerImplBuilder);
         serviceImplBuilders.put(ComponentFactory.class, componentFactoryImplBuilder);
         serviceImplBuilders.put(ConversionService.class, conversionServiceImplBuilder);

@@ -40,5 +40,5 @@ public interface ApplicationServices {
      * @param serviceType Type of service to locate
      * @return true if service is available, false if not
      */
-    boolean hasService( Class serviceType );
+    boolean containsService( Class serviceType );
 }

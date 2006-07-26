@@ -45,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -69,7 +70,7 @@ import org.springframework.util.comparator.CompoundComparator;
  * 
  * @author Keith Donald
  */
-public class DefaultComponentFactory implements ComponentFactory {
+public class DefaultComponentFactory implements ComponentFactory, MessageSourceAware {
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -252,7 +253,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     protected ButtonFactory getButtonFactory() {
         if (buttonFactory == null) {
-            return DefaultButtonFactory.instance();
+            buttonFactory = (ButtonFactory) ApplicationServicesLocator.services().getService(ButtonFactory.class);
         }
         return buttonFactory;
     }
@@ -279,7 +280,7 @@ public class DefaultComponentFactory implements ComponentFactory {
 
     protected MenuFactory getMenuFactory() {
         if (menuFactory == null) {
-            return DefaultMenuFactory.instance();
+            menuFactory = (MenuFactory) ApplicationServicesLocator.services().getService(MenuFactory.class);
         }
         return menuFactory;
     }

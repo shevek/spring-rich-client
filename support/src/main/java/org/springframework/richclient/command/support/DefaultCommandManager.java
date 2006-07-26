@@ -22,6 +22,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
@@ -37,7 +38,6 @@ import org.springframework.richclient.command.TargetableActionCommand;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
-import org.springframework.richclient.command.config.DefaultCommandConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
@@ -52,9 +52,9 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
 
     private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
 
-    private CommandServices commandServices = DefaultCommandServices.instance();
+    private CommandServices commandServices;
 
-    private CommandConfigurer commandConfigurer = new DefaultCommandConfigurer(this);
+    private CommandConfigurer commandConfigurer;
 
     public DefaultCommandManager() {
 
@@ -72,9 +72,28 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
         Assert.notNull(commandServices, "A command services implementation is required");
         this.commandServices = commandServices;
     }
+    
+    public CommandServices getCommandServices() {
+        if(commandServices == null) {
+            commandServices = (CommandServices) ApplicationServicesLocator.services().getService(CommandServices.class);
+        }
+        return commandServices;
+    }
 
     public void setParent(CommandRegistry parent) {
         commandRegistry.setParent(parent);
+    }
+
+    public CommandConfigurer getCommandConfigurer() {
+        if(commandConfigurer == null) {
+            commandConfigurer = (CommandConfigurer) ApplicationServicesLocator.services().getService(CommandConfigurer.class);
+        }
+        return commandConfigurer;
+    }
+
+    public void setCommandConfigurer(CommandConfigurer commandConfigurer) {
+        Assert.notNull(commandConfigurer, "command configurer must not be null");
+        this.commandConfigurer = commandConfigurer;
     }
 
     public void setBeanFactory(BeanFactory beanFactory) {
@@ -82,27 +101,27 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
     }
 
     public ButtonFactory getButtonFactory() {
-        return commandServices.getButtonFactory();
+        return getCommandServices().getButtonFactory();
     }
 
     public MenuFactory getMenuFactory() {
-        return commandServices.getMenuFactory();
+        return getCommandServices().getMenuFactory();
     }
 
     public CommandButtonConfigurer getDefaultButtonConfigurer() {
-        return commandServices.getDefaultButtonConfigurer();
+        return getCommandServices().getDefaultButtonConfigurer();
     }
 
     public CommandButtonConfigurer getToolBarButtonConfigurer() {
-        return commandServices.getToolBarButtonConfigurer();
+        return getCommandServices().getToolBarButtonConfigurer();
     }
 
     public CommandButtonConfigurer getMenuItemButtonConfigurer() {
-        return commandServices.getMenuItemButtonConfigurer();
+        return getCommandServices().getMenuItemButtonConfigurer();
     }
 
     public CommandButtonConfigurer getPullDownMenuButtonConfigurer() {
-        return commandServices.getPullDownMenuButtonConfigurer();
+        return getCommandServices().getPullDownMenuButtonConfigurer();
     }
 
     public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorId) {
@@ -192,7 +211,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
     }
 
     public AbstractCommand configure(AbstractCommand command) {
-        return commandConfigurer.configure(command);
+        return getCommandConfigurer().configure(command);
     }
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -216,5 +235,4 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
         }
         return bean;
     }
-
 }

@@ -35,7 +35,7 @@ public class StaticApplicationServices implements ApplicationServices {
         return service;
     }
 
-    public boolean hasService(Class serviceType) {
+    public boolean containsService(Class serviceType) {
         Assert.required(serviceType, "serviceType");
         return services.containsKey(serviceType);
     }

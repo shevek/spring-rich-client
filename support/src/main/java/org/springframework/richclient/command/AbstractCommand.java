@@ -36,13 +36,13 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.CommandFaceDescriptorRegistry;
 import org.springframework.richclient.command.support.CommandFaceButtonManager;
-import org.springframework.richclient.command.support.DefaultCommandServices;
 import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
@@ -248,7 +248,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     protected CommandServices getCommandServices() {
         if (commandServices == null) {
-            return DefaultCommandServices.instance();
+            commandServices = (CommandServices) ApplicationServicesLocator.services().getService(CommandServices.class);
         }
         return this.commandServices;
     }

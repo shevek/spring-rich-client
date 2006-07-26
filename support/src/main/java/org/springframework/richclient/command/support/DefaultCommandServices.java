@@ -21,30 +21,26 @@ import java.awt.Insets;
 import javax.swing.AbstractButton;
 import javax.swing.SwingConstants;
 
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.DefaultCommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
-import org.springframework.richclient.factory.DefaultButtonFactory;
-import org.springframework.richclient.factory.DefaultMenuFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.richclient.image.ArrowIcon;
-import org.springframework.util.Assert;
 
 /**
  * @author Keith Donald
  */
 public class DefaultCommandServices implements CommandServices {
 
-    private static DefaultCommandServices INSTANCE = new DefaultCommandServices();
-
     private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, Color.BLACK);
 
-    private ButtonFactory buttonFactory = DefaultButtonFactory.instance();
+    private ButtonFactory buttonFactory;
 
-    private MenuFactory menuFactory = DefaultMenuFactory.instance();
+    private MenuFactory menuFactory;
 
     private CommandButtonConfigurer defaultButtonConfigurer;
 
@@ -53,15 +49,6 @@ public class DefaultCommandServices implements CommandServices {
     private CommandButtonConfigurer menuItemButtonConfigurer;
 
     private CommandButtonConfigurer pullDownMenuButtonConfigurer;
-
-    public static DefaultCommandServices instance() {
-        return INSTANCE;
-    }
-
-    public static void load(DefaultCommandServices instance) {
-        Assert.notNull(instance, "The sole default command services instance is required");
-        INSTANCE = instance;
-    }
 
     public void setButtonFactory(ButtonFactory buttonFactory) {
         this.buttonFactory = buttonFactory;
@@ -88,10 +75,16 @@ public class DefaultCommandServices implements CommandServices {
     }
 
     public ButtonFactory getButtonFactory() {
+        if(buttonFactory == null) {
+            buttonFactory = (ButtonFactory) ApplicationServicesLocator.services().getService(ButtonFactory.class);
+        }
         return buttonFactory;
     }
 
     public MenuFactory getMenuFactory() {
+        if(menuFactory == null) {
+            menuFactory = (MenuFactory) ApplicationServicesLocator.services().getService(MenuFactory.class);
+        }
         return menuFactory;
     }
 
