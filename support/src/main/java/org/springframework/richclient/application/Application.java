@@ -208,4 +208,13 @@ public class Application implements InitializingBean, ApplicationContextAware {
             }
         }
     }
+
+    /**
+     * Starts this application.
+     */
+    public void start() {
+        getLifecycleAdvisor().onPreStartup();
+        openWindow(getLifecycleAdvisor().getStartingPageId());
+        getLifecycleAdvisor().onPostStartup();
+    }
 }

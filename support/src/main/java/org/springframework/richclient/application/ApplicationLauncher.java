@@ -28,8 +28,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * The main driver for a Spring Rich Client application. This class displays a
- * configurable splash screen and instantiates the rich client
- * <code>Application</code> instance.
+ * configurable splash screen and instantiates the rich client <code>Application</code>
+ * instance.
  * 
  * @author Keith Donald
  * @see Application
@@ -39,7 +39,7 @@ public class ApplicationLauncher {
 
     public static final String APPLICATION_BEAN_ID = "application";
 
-    private final Log logger = LogFactory.getLog(getClass());
+    private final Log logger = LogFactory.getLog( getClass() );
 
     private ApplicationContext startupContext;
 
@@ -48,177 +48,158 @@ public class ApplicationLauncher {
     private ApplicationContext rootApplicationContext;
 
     /**
-     * Launch the application using the spring application context at the
-     * provided path for configuration.
+     * Launch the application using the spring application context at the provided path
+     * for configuration.
      * 
-     * @param rootContextPath
-     *            the classpath application context path
+     * @param rootContextPath the classpath application context path
      */
-    public ApplicationLauncher(String rootContextPath) {
-        this(new String[] { rootContextPath });
+    public ApplicationLauncher( String rootContextPath ) {
+        this( new String[] { rootContextPath } );
     }
 
     /**
-     * Launch the application using the spring application context at the
-     * provided paths for configuration.
+     * Launch the application using the spring application context at the provided paths
+     * for configuration.
      * 
-     * @param rootContextPath
-     *            the classpath application context paths
+     * @param rootContextPath the classpath application context paths
      */
-    public ApplicationLauncher(String[] rootContextPath) {
-        this(null, rootContextPath);
+    public ApplicationLauncher( String[] rootContextPath ) {
+        this( null, rootContextPath );
     }
 
     /**
-     * Launch the application using the spring application context at the
-     * provided paths for configuration. The startup context path is loaded
-     * first to allow for quick loading of the application splash screen.
+     * Launch the application using the spring application context at the provided paths
+     * for configuration. The startup context path is loaded first to allow for quick
+     * loading of the application splash screen.
      * 
-     * @param startupContext
-     *            the startup context classpath
-     * @param contextPaths
-     *            the classpath application context paths
+     * @param startupContext the startup context classpath
+     * @param contextPaths the classpath application context paths
      */
-    public ApplicationLauncher(String startupContext, String rootContextPath) {
-        this(startupContext, new String[] { rootContextPath });
+    public ApplicationLauncher( String startupContext, String rootContextPath ) {
+        this( startupContext, new String[] { rootContextPath } );
     }
 
     /**
-     * Launch the application using the spring application context at the
-     * provided paths for configuration. The startup context path is loaded
-     * first to allow for quick loading of the application splash screen.
+     * Launch the application using the spring application context at the provided paths
+     * for configuration. The startup context path is loaded first to allow for quick
+     * loading of the application splash screen.
      * 
-     * @param startupContextPath
-     *            the startup context classpath
-     * @param rootContextPath
-     *            the classpath application context paths
+     * @param startupContextPath the startup context classpath
+     * @param rootContextPath the classpath application context paths
      */
-    public ApplicationLauncher(String startupContextPath, String[] rootContextPath) {
-        Assert.notEmpty(rootContextPath, "One or more root rich client application context paths must be provided");
-        this.startupContext = loadStartupContext(startupContextPath);
-        if (startupContext != null) {
-            displaySplashScreen(startupContext);
+    public ApplicationLauncher( String startupContextPath, String[] rootContextPath ) {
+        Assert.notEmpty( rootContextPath, "One or more root rich client application context paths must be provided" );
+        this.startupContext = loadStartupContext( startupContextPath );
+        if( startupContext != null ) {
+            displaySplashScreen( startupContext );
         }
-        this.rootApplicationContext = loadRootApplicationContext(rootContextPath);
+        this.rootApplicationContext = loadRootApplicationContext( rootContextPath );
         launchMyRichClient();
     }
 
     /**
      * Launch the application from the pre-loaded application context.
      * 
-     * @param context
-     *            the application context.
+     * @param context the application context.
      */
-    public ApplicationLauncher(String startupContextPath, ApplicationContext rootApplicationContext) {
-        this.startupContext = loadStartupContext(startupContextPath);
-        if (startupContext != null) {
-            displaySplashScreen(startupContext);
+    public ApplicationLauncher( String startupContextPath, ApplicationContext rootApplicationContext ) {
+        this.startupContext = loadStartupContext( startupContextPath );
+        if( startupContext != null ) {
+            displaySplashScreen( startupContext );
         }
-        setRootApplicationContext(rootApplicationContext);
+        setRootApplicationContext( rootApplicationContext );
         launchMyRichClient();
     }
 
     /**
      * Launch the application from the pre-loaded application context.
      * 
-     * @param context
-     *            the application context.
+     * @param context the application context.
      */
-    public ApplicationLauncher(ApplicationContext rootApplicationContext) {
-        setRootApplicationContext(rootApplicationContext);
+    public ApplicationLauncher( ApplicationContext rootApplicationContext ) {
+        setRootApplicationContext( rootApplicationContext );
         launchMyRichClient();
     }
 
-    private void setRootApplicationContext(ApplicationContext context) {
-        Assert.notNull(context, "The root rich client application context is required");
+    private void setRootApplicationContext( ApplicationContext context ) {
+        Assert.notNull( context, "The root rich client application context is required" );
         this.rootApplicationContext = context;
     }
 
-    private ApplicationContext loadStartupContext(String startupContextPath) {
-        logger.info("Loading startup context...");
+    private ApplicationContext loadStartupContext( String startupContextPath ) {
+        logger.info( "Loading startup context..." );
         try {
-            if (StringUtils.hasText(startupContextPath)) {
-                return new ClassPathXmlApplicationContext(startupContextPath);
+            if( StringUtils.hasText( startupContextPath ) ) {
+                return new ClassPathXmlApplicationContext( startupContextPath );
             }
-        }
-        catch (Exception e) {
-            logger.warn("Exception occured initializing startup context.", e);
+        } catch( Exception e ) {
+            logger.warn( "Exception occured initializing startup context.", e );
         }
         return null;
     }
 
-    private ApplicationContext loadRootApplicationContext(String[] contextPaths) {
+    private ApplicationContext loadRootApplicationContext( String[] contextPaths ) {
         try {
-            return new ClassPathXmlApplicationContext(contextPaths);
-        }
-        catch (Exception e) {
-            logger.warn("Exception occured initializing application startup context.", e);
-            destroySplashScreen(); // when app context fails to load, destroy splashscreen
-            throw new ApplicationException("Unable to start rich client application", e);
+            return new ClassPathXmlApplicationContext( contextPaths );
+        } catch( Exception e ) {
+            logger.warn( "Exception occured initializing application startup context.", e );
+            destroySplashScreen(); // when app context fails to load, destroy
+                                    // splashscreen
+            throw new ApplicationException( "Unable to start rich client application", e );
         }
     }
 
     /**
-     * Launch this rich client application; with the startup context loading
-     * first, built from the <code>startupContextPath</code> location in the
-     * classpath.
+     * Launch this rich client application; with the startup context loading first, built
+     * from the <code>startupContextPath</code> location in the classpath.
      * <p>
-     * It is recommended that the startup context contain contain a splash
-     * screen definition for quick loading & display.
+     * It is recommended that the startup context contain contain a splash screen
+     * definition for quick loading & display.
      * <p>
      * Once the splash screen is displayed, the main application context is then
-     * initialized, built from the <code>contextPaths</code> location(s) in
-     * the classpath. The root application bean is retrieved and the startup
-     * lifecycle begins.
+     * initialized, built from the <code>contextPaths</code> location(s) in the
+     * classpath. The root application bean is retrieved and the startup lifecycle begins.
      */
     private void launchMyRichClient() {
-        if (startupContext == null) {
-            displaySplashScreen(rootApplicationContext);
+        if( startupContext == null ) {
+            displaySplashScreen( rootApplicationContext );
         }
 
         try {
-            Application application = (Application)rootApplicationContext.getBean(APPLICATION_BEAN_ID,
-                    Application.class);
-
-            application.getLifecycleAdvisor().onPreStartup();
-            application.openWindow(application.getLifecycleAdvisor().getStartingPageId());
-            application.getLifecycleAdvisor().onPostStartup();
-        }
-        catch (NoSuchBeanDefinitionException e) {
-            logger.error("A single org.springframework.richclient.Application bean definition must be defined "
-                    + "in the main application context", e);
+            Application application = (Application) rootApplicationContext.getBean( APPLICATION_BEAN_ID,
+                    Application.class );
+            application.start();
+        } catch( NoSuchBeanDefinitionException e ) {
+            logger.error( "A single org.springframework.richclient.Application bean definition must be defined "
+                    + "in the main application context", e );
             throw e;
-        }
-        catch (RuntimeException e) {
-            logger.error("Exception occured initializing Application bean", e);
-            throw new ApplicationException("Unable to start rich client application", e);
-        }
-        finally {
+        } catch( RuntimeException e ) {
+            logger.error( "Exception occured initializing Application bean", e );
+            throw new ApplicationException( "Unable to start rich client application", e );
+        } finally {
             destroySplashScreen();
-            logger.debug("Launcher thread exiting...");
+            logger.debug( "Launcher thread exiting..." );
         }
     }
 
-    private void displaySplashScreen(BeanFactory beanFactory) {
+    private void displaySplashScreen( BeanFactory beanFactory ) {
         try {
-            if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
-                this.splashScreen = (SplashScreen)beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
-                logger.info("Displaying application splash screen...");
+            if( beanFactory.containsBean( SPLASH_SCREEN_BEAN_ID ) ) {
+                this.splashScreen = (SplashScreen) beanFactory.getBean( SPLASH_SCREEN_BEAN_ID, SplashScreen.class );
+                logger.info( "Displaying application splash screen..." );
                 this.splashScreen.splash();
+            } else {
+                logger.info( "No splash screen bean found to display--continuing..." );
             }
-            else {
-                logger.info("No splash screen bean found to display--continuing...");
-            }
-        }
-        catch (Exception e) {
-            logger.warn("Unable to load and display startup splash screen.", e);
+        } catch( Exception e ) {
+            logger.warn( "Unable to load and display startup splash screen.", e );
         }
     }
 
     private void destroySplashScreen() {
-        if (splashScreen != null) {
-            logger.debug("Closing splash screen...");
-            new SplashScreenCloser(splashScreen);
+        if( splashScreen != null ) {
+            logger.debug( "Closing splash screen..." );
+            new SplashScreenCloser( splashScreen );
         }
     }
 
@@ -235,20 +216,19 @@ public class ApplicationLauncher {
          * 
          * @param splashScreen
          */
-        public SplashScreenCloser(final SplashScreen splashScreen) {
+        public SplashScreenCloser( final SplashScreen splashScreen ) {
 
             /*
              * Removes the splash screen.
              * 
-             * Invoke this <code> Runnable </code> using <code>
-             * EventQueue.invokeLater </code> , in order to remove the splash
-             * screen in a thread-safe manner.
+             * Invoke this <code> Runnable </code> using <code> EventQueue.invokeLater
+             * </code> , in order to remove the splash screen in a thread-safe manner.
              */
-            EventQueue.invokeLater(new Runnable() {
+            EventQueue.invokeLater( new Runnable() {
                 public void run() {
                     splashScreen.dispose();
                 }
-            });
+            } );
         }
     }
 }
