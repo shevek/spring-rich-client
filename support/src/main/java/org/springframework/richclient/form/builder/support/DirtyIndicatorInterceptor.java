@@ -97,7 +97,7 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
                     }
                 });
 
-        InterceptorOverlayHelper.attachOverlay(overlay.getControl(), component, OverlayHelper.NORTH_WEST, 3, 0);
+        InterceptorOverlayHelper.attachOverlay(overlay.getControl(), component, OverlayHelper.NORTH_WEST, 5, 0);
         overlay.setVisible(false);
     }
 
@@ -127,7 +127,7 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
             JPanel control = new JPanel(new BorderLayout());
             control.setName("dirtyOverlay");
 
-            control.setOpaque(false);
+            control.setOpaque(true);
 
             IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
             Icon icon = iconSource.getIcon(DIRTY_ICON_KEY);
@@ -161,6 +161,7 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
             getControl().setVisible(visible);
             // manually set the size, otherwise sometimes the overlay is not shown (it has size 0,0)
             getControl().setSize(getControl().getPreferredSize());
+            
 
             if (visible) {
                 MessageSource messageSource =
