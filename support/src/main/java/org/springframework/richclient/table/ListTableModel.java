@@ -35,7 +35,7 @@ public abstract class ListTableModel extends BaseTableModel {
     }
 
     protected Object getValueAtInternal(Object row, int columnIndex) {
-        if (getDataColumnCount() > 1) {
+        if (row != null && getDataColumnCount() > 1) {            
             if (row.getClass().isArray()) {
                 Object[] arrayRow = (Object[])row;
                 return arrayRow[columnIndex];
@@ -48,7 +48,7 @@ public abstract class ListTableModel extends BaseTableModel {
             }
         }
 
-        if (row != null & row.getClass().isArray())
+        if (row != null && row.getClass().isArray())
             return ((Object[])row)[0];
 
         return row;
