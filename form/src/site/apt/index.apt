@@ -1,0 +1,13 @@
+ -----
+ Spring-richclient Form
+ -----
+ Peter De Bruycker
+ -----
+ 
+Spring-richclient Form Module
+
+    This module contains the Form module.
+
+Mechanisms
+
+    {{{interceptors.html}FormComponentInterceptors}}

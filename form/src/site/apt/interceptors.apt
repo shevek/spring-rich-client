@@ -1,0 +1,165 @@
+ -----
+ Form Component Interceptors
+ -----
+ Peter De Bruycker
+ -----
+ 
+Rationale
+ 
+    Form Component Interceptors provide a way to intercept and add extra
+    functionality to input components on a form.
+    
+    The application context specifies the list of interceptors to attach to controls 
+    constructed by the platform.  This allows for a declarative model for specifying 
+    "additional" functionality to be added to various components.
+
+    Examples are interceptors to overlay validation error images and background color 
+    changes, provide popup menus in text fields, and autocompletion (as you type) for 
+    comboboxes.
+
+Configuration
+
+	The configuration of the interceptors in the application context is done by
+	defining the <<<FormComponentInterceptorFactory>>>.
+
+	Sample configuration:
+	
++---+
+<bean id="formComponentInterceptorFactory" 
+	class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+	<property name="interceptorFactories">
+		<list>
+			<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+				<property name="errorColor" value="255,200,200"/>
+			</bean>
+			<bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
+			<bean class="org.springframework.richclient.form.builder.support.DirtyIndicatorInterceptorFactory"/>
+			<bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
+			<bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory"/>
+		</list>
+	</property>
+</bean>
++---+
+    
+Existing Interceptors
+    
+    The framework contains some interceptors ready to use.
+    
+* Overlay Validation Interceptor
+
+	Shows an error image in the lower left corner of the component if the contents 
+	of the component is invalid. The image also has a tooltip showing the validation message.
+	
+	<<Factory class>>: <<<org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory>>>
+
+		
+[screenshots/OverlayValidationInterceptor.png] Overlay Validation Interceptor screenshot
+
+* Color Validation Interceptor
+
+	Changes the background color of the form component.
+	
+	<<Factory class>>: <<<org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory>>>
+	
+	<<Properties>>:
+	
+	* <<<errorColor>>>: the background color
+	
+	[]
+	
+	Sample configuration:
+	
++---+
+<!-- This sets the error color to a nice "reddish" tint -->
+<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+	<property name="errorColor" value="255,200,200"/>
+</bean>
++---+
+
+		
+[screenshots/ColorValidationInterceptor.png] Color Validation Interceptor screenshot
+
+* Text Component Interceptor
+
+	Adds more advanced text editing functionality to text components. It adds a
+	popup menu with "undo/redo/cut/copy/paste/select all" items. It also adds
+	the standard keyboard accelerators for these commands to the component.
+	
+	<<Factory class>>: <<<org.springframework.richclient.text.TextComponentPopupInterceptorFactory>>>
+
+[screenshots/TextComponentInterceptor.png] Text Component Interceptor screenshot
+
+* Combobox Autocompletion Interceptor
+
+	Adds autocompletion to a combobox.
+	
+	<<Factory class>>: <<<org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory>>>
+
+[screenshots/ComboboxAutocompletionInterceptor.png] Combobox Autocompletion Interceptor screenshot
+
+* Dirty Indicator Interceptor
+
+	Shows an image in the top left corder of the component if the contents of the
+	component has been changed by the user. The image also has a tooltip showing the
+	original value. To the right of the image is a small revert button. Pushing this
+	button restores the original value in the component.
+
+	<<Factory class>>: <<<org.springframework.richclient.form.builder.support.DirtyIndicatorInterceptorFactory>>>
+
+	<<Properties>>:
+	
+	* <<<includedFormModelIds>>>: list of form models that should display the Dirty Indicator.
+	
+	Only one of <<<includedFormModelIds>>> or <<<excludedFormModelIds>>> can be specified.
+	
+	* <<<excludedFormModelIds>>>: list of form models that should not display the Dirty Indicator
+	
+	Only one of <<<includedFormModelIds>>> or <<<excludedFormModelIds>>> can be specified.
+
+	[]
+
++---+
+<!-- The login form will not show the Dirty Indicator -->
+
+<bean class="org.springframework.richclient.form.builder.support.DirtyIndicatorInterceptorFactory">
+	<property name="excludedFormModelIds">
+		<list>
+			<value>loginForm</value>
+		</list>
+	</property>
+</bean>
++---+
+
+[screenshots/DirtyIndicatorInterceptor.png] Dirty Indicator Interceptor screenshot
+
+Interceptors in Sandbox
+
+	Note: it's likely that these interceptors will change as they are still in the
+	sandbox. This can go from a simple rename to a complete change in implementation
+	and/or behaviour.
+
+* Show Caption in StatusBar Interceptor
+
+	Displays the caption of the component that has focus in the statusbar.
+	For this to work, the form property must have a caption in the message source.
+	
+	<<Factory class>>: <<<org.springframework.richclient.form.builder.support.ShowCaptionInStatusBarInterceptorFactory>>>
+	
+[screenshots/ShowCaptionInStatusBarInterceptor.png] Show Caption in StatusBar screenshot
+
+* Select All Interceptor
+
+	Selects all the text in text fields and spinners when they receive focus.
+
+	<<Factory class>>: <<<org.springframework.richclient.text.SelectAllInterceptorFactory>>>
+	
+[screenshots/SelectAllInterceptor.png] Select All Interceptor screenshot
+
+
+Ideas for Interceptors
+
+	Possible new interceptors:
+
+	* Help Interceptor: use the form id + form property path to show help using the java help system.
+	
+	* ...
