@@ -4,10 +4,6 @@
  Peter De Bruycker
  -----
  
-Spring-richclient Form Module
-
-    This module contains the Form module.
-
-Mechanisms
-
-    {{{interceptors.html}FormComponentInterceptors}}
+Spring-richclient Form
+ 
+    Everything related to forms.

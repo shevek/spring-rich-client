@@ -4,7 +4,7 @@
  Peter De Bruycker
  -----
  
-Rationale
+Form Component Interceptors
  
     Form Component Interceptors provide a way to intercept and add extra
     functionality to input components on a form.
