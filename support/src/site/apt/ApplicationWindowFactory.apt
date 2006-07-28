@@ -1,0 +1,26 @@
+ -----
+ Application Window Factory
+ -----
+ Peter De Bruycker
+ -----
+ 
+Application Window Factory
+ 
+    The Application Window Factory creates new Application Window instances.
+    
+    If you have a custom <<<ApplicationWindow>>> implementation, you need to create a corresponding
+    <<<ApplicationWindowFactory>>>, and register it with the application services.
+
++---
+<bean id="applicationServices" class="org.springframework.richclient.application.support.DefaultApplicationServices">
+    ...
+    
+    <!-- register the CustomApplicationWindowFactory as a service -->
+    <property name="applicationWindowFactory"><idref bean="customApplicationWindowFactory"/></property>
+    
+</bean>
+
+<bean id="customApplicationWindowFactory" class="foo.bar.CustomApplicationWindowFactory">
+    ...
+</bean>
++---
