@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.layout.TableLayoutBuilder;
@@ -58,6 +59,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
     public JComponent[] add(Binding binding, String attributes) {
         Assert.isTrue(getFormModel() == binding.getFormModel(),
                 "Binding's form model must match FormBuilder's form model");
+        FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory)ApplicationServicesLocator.services().getService(FormComponentInterceptorFactory.class);
+        factory.getInterceptor(getFormModel()).processComponent(binding.getProperty(), binding.getControl());
         return addBinding(binding, attributes, getLabelAttributes());
     }
 

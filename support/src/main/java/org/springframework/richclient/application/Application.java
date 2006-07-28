@@ -20,12 +20,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
-import org.springframework.richclient.application.support.DefaultApplicationWindow;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -41,8 +39,6 @@ import org.springframework.util.StringUtils;
 public class Application implements InitializingBean, ApplicationContextAware {
 
     private static final String DEFAULT_APPLICATION_IMAGE_KEY = "applicationInfo.image";
-
-    private static final String APPLICATION_WINDOW_BEAN_ID = "applicationWindowPrototype";
 
     private static Application SOLE_INSTANCE;
 
@@ -140,7 +136,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public Image getImage() {
-        if( descriptor != null && descriptor.getImage() != null ) 
+        if( descriptor != null && descriptor.getImage() != null )
             return descriptor.getImage();
 
         ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
@@ -158,12 +154,9 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     protected ApplicationWindow createNewWindow() {
-        try {
-            return (ApplicationWindow) getApplicationContext().getBean(APPLICATION_WINDOW_BEAN_ID,
-                    ApplicationWindow.class);
-        } catch( NoSuchBeanDefinitionException e ) {
-            return new DefaultApplicationWindow();
-        }
+        ApplicationWindowFactory windowFactory = (ApplicationWindowFactory) services().getService(
+                ApplicationWindowFactory.class);
+        return windowFactory.createApplicationWindow();
     }
 
     public WindowManager getWindowManager() {
@@ -171,8 +164,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     /**
-     * ActiveWindow is tracked by windowManager. When a window gains focus, the
-     * manager will receive this window as the active one.
+     * ActiveWindow is tracked by windowManager. When a window gains focus, the manager
+     * will receive this window as the active one.
      * 
      * @return the activeWindow.
      */

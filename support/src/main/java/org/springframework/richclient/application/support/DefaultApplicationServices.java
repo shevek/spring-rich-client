@@ -36,6 +36,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.core.enums.StaticLabeledEnumResolver;
 import org.springframework.richclient.application.ApplicationServices;
+import org.springframework.richclient.application.ApplicationWindowFactory;
 import org.springframework.richclient.application.DefaultConversionService;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
@@ -263,6 +264,25 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     public void setApplicationSecurityManagerId( String applicationSecurityManagerId ) {
         services.put(ApplicationSecurityManager.class, applicationSecurityManagerId);
     }
+
+    /**
+     * Set the <code>ApplicationWindow</code> factory service implementation
+     * 
+     * @param factory
+     */
+    public void setApplicationWindowFactory( ApplicationWindowFactory factory ) {
+        services.put( ApplicationWindowFactory.class, factory );
+    }
+
+    /**
+     * Set the <code>ApplicationWindow</code> factory service implementation bean id
+     * 
+     * @param factoryId bean id
+     */
+    public void setApplicationWindowFactoryId( String factoryId ) {
+        services.put( ApplicationWindowFactory.class, factoryId );
+    }
+
 
     /**
      * Set the binder selection strategy service implementation
@@ -846,6 +866,13 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
             return new MessageSourceAccessor((MessageSource) applicationServices.getService(MessageSource.class));
         }
     };
+    
+    protected static final ImplBuilder applicationWindowFactoryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info( "Creating default service impl: ApplicationWindowFactory" );
+            return new DefaultApplicationWindowFactory();
+        }
+    };
 
     /**
      * Static initializer to construct the implementation builder map.
@@ -855,6 +882,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put(ApplicationContext.class, applicationContextImplBuilder);        
         serviceImplBuilders.put(ApplicationObjectConfigurer.class, applicationObjectConfigurerImplBuilder);
         serviceImplBuilders.put(ApplicationSecurityManager.class, applicationSecurityManagerImplBuilder);
+        serviceImplBuilders.put(ApplicationWindowFactory.class, applicationWindowFactoryImplBuilder);
         serviceImplBuilders.put(BinderSelectionStrategy.class, binderSelectionStrategyImplBuilder);
         serviceImplBuilders.put(BindingFactoryProvider.class, bindingFactoryProviderImplBuilder);
         serviceImplBuilders.put(ButtonFactory.class, buttonFactoryImplBuilder);
