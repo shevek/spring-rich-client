@@ -9,6 +9,8 @@ import org.acegisecurity.Authentication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.ApplicationWindowFactory;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.support.DefaultApplicationWindow;
@@ -161,6 +163,12 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertTrue( "Object should be authorized", cmdWrite.isAuthorized() );
         assertFalse( "Object should not be enabled", cmdWrite.isEnabled() );
 
+    }
+    
+    public static class TestApplicationWindowFactory implements ApplicationWindowFactory {
+        public ApplicationWindow createApplicationWindow() {
+            return new TestApplicationWindow();
+        }
     }
 
     /**

@@ -5,8 +5,8 @@
 
     <bean id="securityAwareConfigurer" class="org.springframework.richclient.security.SecurityAwareConfigurer" lazy-init="false" />
 
-    <bean id="applicationWindowPrototype"
-        class="org.springframework.richclient.security.support.DefaultSecurityControllerManagerTests$TestApplicationWindow"
+    <bean id="applicationWindowFactory"
+        class="org.springframework.richclient.security.support.DefaultSecurityControllerManagerTests$TestApplicationWindowFactory"
         lazy-init="true"/>
         
     <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
@@ -20,6 +20,7 @@
         <property name="applicationObjectConfigurerId">
             <idref bean="applicationObjectConfigurer" />
         </property>
+        <property name="applicationWindowFactoryId"><idref bean="applicationWindowFactory"/></property>
     </bean>
 
     <bean id="applicationObjectConfigurer" depends-on="serviceLocator"
