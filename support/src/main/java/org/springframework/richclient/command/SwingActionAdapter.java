@@ -31,6 +31,7 @@ public class SwingActionAdapter extends AbstractAction implements PropertyChange
         super();
         this.command = command;
         command.addPropertyChangeListener(this);
+        command.addEnabledListener(this);
         update();
     }
 
