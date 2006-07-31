@@ -52,7 +52,7 @@ Abstract
     * A command framework that provides centralized configuration of Swing actions
     and appropriate handler registration based on the current active view.
     Command configuration, as well as action bar contribution policies (to menus or toolbars),
-    can be defined centrally and externalized in Spring bean defintiions.
+    can be defined centrally and externalized in Spring bean defintions.
 
     * A forms data binding and validation framework, for connecting edits made in your UI controls
     with your domain model automatically--with <as you type> feedback.
@@ -64,7 +64,7 @@ Abstract
 
     * Common support classes addressing various rich client requirements including:
     well formed dialogs, wizards, input validation (typing hints and validation results reporting),
-    button bars,internationalization, image/icon caching, progress  monitoring,
+    button bars, internationalization, image/icon caching, progress  monitoring,
     UI threading (classes cleanly promoting responsive UIs), treetable/property sheet,
     table sorting/high-volume table updates, GUI standards builders/helpers, help/about, etc.
 
