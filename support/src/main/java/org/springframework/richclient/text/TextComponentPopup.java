@@ -22,9 +22,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
+import javax.swing.Action;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -47,21 +52,21 @@ import org.springframework.richclient.command.support.DefaultCommandManager;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 
 /**
- * Helper class that decorates a <code>JTextComponent</code> with a standard
- * popup menu. Support for undo/redo is also provided.
+ * Helper class that decorates a <code>JTextComponent</code> with a standard popup menu. Support for undo/redo is also
+ * provided.
  * 
- * @author Oliver Hutchison 
+ * @author Oliver Hutchison
  */
 public class TextComponentPopup extends MouseAdapter implements FocusListener, CaretListener, UndoableEditListener {
 
     /**
-     * Delay in ms between updates of the paste commands status. We only update the paste
-     * command's status occasionally as this is a quite expensive operation.
+     * Delay in ms between updates of the paste commands status. We only update the paste command's status occasionally
+     * as this is a quite expensive operation.
      */
     private static final int PAST_REFRESH_TIMER_DELAY = 100;
 
-    private static final String[] COMMANDS = new String[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
-            GlobalCommandIds.COPY, GlobalCommandIds.CUT, GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL};
+    private static final String[] COMMANDS = new String[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO,
+            GlobalCommandIds.COPY, GlobalCommandIds.CUT, GlobalCommandIds.PASTE, GlobalCommandIds.SELECT_ALL };
 
     public static void attachPopup(JTextComponent textComponent, CommitTrigger resetUndoHistoryTrigger) {
         new TextComponentPopup(textComponent, resetUndoHistoryTrigger);
@@ -135,8 +140,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
                 localCommandManager = new DefaultCommandManager();
             }
             commandManager = localCommandManager;
-        }
-        else {
+        } else {
             commandManager = appWindow.getCommandManager();
         }
         for (int i = 0; i < COMMANDS.length; i++) {
@@ -149,10 +153,13 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
 
     public void registerAccelerators() {
         CommandManager commandManager = getCommandManager();
-        Keymap keymap = textComponent.getKeymap();
+        Keymap keymap = new DefaultKeymap(getClass().getName(), textComponent.getKeymap());
         for (int i = 0; i < COMMANDS.length; i++) {
             ActionCommand command = commandManager.getActionCommand(COMMANDS[i]);
             keymap.addActionForKeyStroke(command.getAccelerator(), command.getActionAdapter());
+        }
+        if (COMMANDS.length > 0) {
+            textComponent.setKeymap(keymap);
         }
     }
 
@@ -200,7 +207,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     private JPopupMenu createPopup() {
         if (textComponent instanceof JPasswordField)
             return getPasswordCommandGroup().createPopupMenu();
-        
+
         if (isEditable())
             return getEditableCommandGroup().createPopupMenu();
 
@@ -215,8 +222,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         cut.setEnabled(hasSelection && isEditable);
         if (isEditable) {
             scheduleUpdatePasteStatus();
-        }
-        else {
+        } else {
             paste.setEnabled(false);
         }
         updateUndoRedoState();
@@ -228,7 +234,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
     }
 
     private void scheduleUpdatePasteStatus() {
-        // we do this using a timer as the method canPasteFromClipboard() 
+        // we do this using a timer as the method canPasteFromClipboard()
         // can be a schedule significant bottle neck when there's lots of typing
         // going on
         if (!updatePasteStatusTimer.isRunning()) {
@@ -264,8 +270,8 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         if (editGroup == null) {
             editGroup = getCommandManager().createCommandGroup(
                     "textEditMenu",
-                    new Object[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO, "separator", GlobalCommandIds.CUT,
-                            GlobalCommandIds.COPY, GlobalCommandIds.PASTE, "separator", GlobalCommandIds.SELECT_ALL});
+                    new Object[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO, "separator", GlobalCommandIds.CUT,
+                            GlobalCommandIds.COPY, GlobalCommandIds.PASTE, "separator", GlobalCommandIds.SELECT_ALL });
         }
         return editGroup;
     }
@@ -274,7 +280,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         CommandGroup passwordGroup = getCommandManager().getCommandGroup("passwordTextEditMenu");
         if (passwordGroup == null) {
             passwordGroup = getCommandManager().createCommandGroup("passwordTextEditMenu",
-                    new Object[] {GlobalCommandIds.UNDO, GlobalCommandIds.REDO});
+                    new Object[] { GlobalCommandIds.UNDO, GlobalCommandIds.REDO });
         }
         return passwordGroup;
     }
@@ -283,7 +289,7 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         CommandGroup readOnlyGroup = getCommandManager().getCommandGroup("readOnlyTextEditMenu");
         if (readOnlyGroup == null) {
             readOnlyGroup = getCommandManager().createCommandGroup("readOnlyTextEditMenu",
-                    new Object[] {GlobalCommandIds.COPY, "separator", GlobalCommandIds.SELECT_ALL});
+                    new Object[] { GlobalCommandIds.COPY, "separator", GlobalCommandIds.SELECT_ALL });
         }
         return readOnlyGroup;
     }
@@ -342,5 +348,164 @@ public class TextComponentPopup extends MouseAdapter implements FocusListener, C
         public void execute() {
             textComponent.selectAll();
         }
+    }
+
+    /**
+     * We need this class since keymaps are shared in jvm This class is a 100% copy of the jdk class
+     * {@link JTextComponent#DefaultKeymap
+     */
+    public static class DefaultKeymap implements Keymap {
+
+        String nm;
+
+        Keymap parent;
+
+        Hashtable bindings;
+
+        Action defaultAction;
+
+        DefaultKeymap(String nm, Keymap parent) {
+            this.nm = nm;
+            this.parent = parent;
+            bindings = new Hashtable();
+        }
+
+        /**
+         * Fetch the default action to fire if a key is typed (ie a KEY_TYPED KeyEvent is received) and there is no
+         * binding for it. Typically this would be some action that inserts text so that the keymap doesn't require an
+         * action for each possible key.
+         */
+        public Action getDefaultAction() {
+            if (defaultAction != null) {
+                return defaultAction;
+            }
+            return (parent != null) ? parent.getDefaultAction() : null;
+        }
+
+        /**
+         * Set the default action to fire if a key is typed.
+         */
+        public void setDefaultAction(Action a) {
+            defaultAction = a;
+        }
+
+        public String getName() {
+            return nm;
+        }
+
+        public Action getAction(KeyStroke key) {
+            Action a = (Action) bindings.get(key);
+            if ((a == null) && (parent != null)) {
+                a = parent.getAction(key);
+            }
+            return a;
+        }
+
+        public KeyStroke[] getBoundKeyStrokes() {
+            KeyStroke[] keys = new KeyStroke[bindings.size()];
+            int i = 0;
+            for (Enumeration e = bindings.keys(); e.hasMoreElements();) {
+                keys[i++] = (KeyStroke) e.nextElement();
+            }
+            return keys;
+        }
+
+        public Action[] getBoundActions() {
+            Action[] actions = new Action[bindings.size()];
+            int i = 0;
+            for (Enumeration e = bindings.elements(); e.hasMoreElements();) {
+                actions[i++] = (Action) e.nextElement();
+            }
+            return actions;
+        }
+
+        public KeyStroke[] getKeyStrokesForAction(Action a) {
+            if (a == null) {
+                return null;
+            }
+            KeyStroke[] retValue = null;
+            // Determine local bindings first.
+            Vector keyStrokes = null;
+            for (Enumeration enum_ = bindings.keys(); enum_.hasMoreElements();) {
+                Object key = enum_.nextElement();
+                if (bindings.get(key) == a) {
+                    if (keyStrokes == null) {
+                        keyStrokes = new Vector();
+                    }
+                    keyStrokes.addElement(key);
+                }
+            }
+            // See if the parent has any.
+            if (parent != null) {
+                KeyStroke[] pStrokes = parent.getKeyStrokesForAction(a);
+                if (pStrokes != null) {
+                    // Remove any bindings defined in the parent that
+                    // are locally defined.
+                    int rCount = 0;
+                    for (int counter = pStrokes.length - 1; counter >= 0; counter--) {
+                        if (isLocallyDefined(pStrokes[counter])) {
+                            pStrokes[counter] = null;
+                            rCount++;
+                        }
+                    }
+                    if (rCount > 0 && rCount < pStrokes.length) {
+                        if (keyStrokes == null) {
+                            keyStrokes = new Vector();
+                        }
+                        for (int counter = pStrokes.length - 1; counter >= 0; counter--) {
+                            if (pStrokes[counter] != null) {
+                                keyStrokes.addElement(pStrokes[counter]);
+                            }
+                        }
+                    } else if (rCount == 0) {
+                        if (keyStrokes == null) {
+                            retValue = pStrokes;
+                        } else {
+                            retValue = new KeyStroke[keyStrokes.size() + pStrokes.length];
+                            keyStrokes.copyInto(retValue);
+                            System.arraycopy(pStrokes, 0, retValue, keyStrokes.size(), pStrokes.length);
+                            keyStrokes = null;
+                        }
+                    }
+                }
+            }
+            if (keyStrokes != null) {
+                retValue = new KeyStroke[keyStrokes.size()];
+                keyStrokes.copyInto(retValue);
+            }
+            return retValue;
+        }
+
+        public boolean isLocallyDefined(KeyStroke key) {
+            return bindings.containsKey(key);
+        }
+
+        public void addActionForKeyStroke(KeyStroke key, Action a) {
+            bindings.put(key, a);
+        }
+
+        public void removeKeyStrokeBinding(KeyStroke key) {
+            bindings.remove(key);
+        }
+
+        public void removeBindings() {
+            bindings.clear();
+        }
+
+        public Keymap getResolveParent() {
+            return parent;
+        }
+
+        public void setResolveParent(Keymap parent) {
+            this.parent = parent;
+        }
+
+        /**
+         * String representation of the keymap... potentially a very long string.
+         */
+        public String toString() {
+            return "Keymap[" + nm + "]" + bindings;
+        }
+
     }
 }
