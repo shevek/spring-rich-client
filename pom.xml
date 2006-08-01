@@ -461,7 +461,7 @@
         </repository>
     </repositories>
     <pluginRepositories/>
-    
+
     <properties>
       <spring.version>1.2.7</spring.version>
     </properties>
@@ -476,7 +476,7 @@
             <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
-    
+
     <dependencyManagement>
         <dependencies>
             <!--
@@ -831,7 +831,6 @@
                 <groupId>net.java.dev.glazedlists</groupId>
                 <artifactId>glazedlists</artifactId>
                 <version>1.5.0</version>
-                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.jdesktop</groupId>
