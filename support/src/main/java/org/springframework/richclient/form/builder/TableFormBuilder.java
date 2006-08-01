@@ -133,7 +133,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
         return builder.getPanel();
     }
 
-    protected String getLabelAttributes() {
+    public String getLabelAttributes() {
         return labelAttributes;
     }
 
@@ -141,7 +141,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
         this.labelAttributes = labelAttributes;
     }
 
-    private JComponent[] addBinding(Binding binding, String attributes, String labelAttributes) {
+    public JComponent[] addBinding(Binding binding, String attributes, String labelAttributes) {
         return addBinding(binding, binding.getControl(), attributes, labelAttributes);
     }
 
