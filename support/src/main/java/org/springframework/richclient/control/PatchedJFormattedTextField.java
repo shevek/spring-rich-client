@@ -60,7 +60,6 @@ public class PatchedJFormattedTextField extends JFormattedTextField {
 
     private void customInit() {
         setFocusLostBehavior(COMMIT);
-        setColumns(25);
         if (getFormatter() instanceof DefaultFormatter) {
             final DefaultFormatter d = (DefaultFormatter)getFormatter();
             AbstractAction toggleOverwrite = new AbstractAction() {
