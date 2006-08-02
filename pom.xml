@@ -465,7 +465,18 @@
             <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
         </repository>
     </repositories>
-    <pluginRepositories/>
+
+    <pluginRepositories>
+        <!-- currently only needed to use jdepend report -->
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>codehaus-snapshots</id>
+            <name>Snapshot repository from codehaus</name>
+            <url>http://snapshots.maven.codehaus.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <properties>
       <spring.version>1.2.7</spring.version>
