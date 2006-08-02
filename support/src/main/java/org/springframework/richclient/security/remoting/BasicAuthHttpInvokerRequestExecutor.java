@@ -125,8 +125,8 @@ public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerReques
 
         Authentication auth = getAuthenticationToken();
 
-        if( (auth != null) && (auth.getPrincipal() != null) && (auth.getCredentials() != null) ) {
-            String base64 = auth.getPrincipal().toString() + ":" + auth.getCredentials().toString();
+        if( (auth != null) && (auth.getName() != null) && (auth.getCredentials() != null) ) {
+            String base64 = auth.getName() + ":" + auth.getCredentials().toString();
             con.setRequestProperty( "Authorization", "Basic " + new String( Base64.encodeBase64( base64.getBytes() ) ) );
 
             if( _logger.isDebugEnabled() ) {
