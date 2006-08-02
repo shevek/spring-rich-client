@@ -111,11 +111,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-binding</artifactId>
         </dependency>
-        
+
         <!-- only required when ValangRichValidator is used -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-modules-sandbox</artifactId>
+            <groupId>org.springmodules</groupId>
+            <artifactId>spring-modules-validation</artifactId>
             <optional>true</optional>
         </dependency>
 

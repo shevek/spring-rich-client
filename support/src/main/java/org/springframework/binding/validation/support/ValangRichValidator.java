@@ -46,14 +46,14 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
-import org.springmodules.validation.ValangValidator;
-import org.springmodules.validation.functions.AbstractFunction;
-import org.springmodules.validation.functions.AbstractMathFunction;
-import org.springmodules.validation.functions.BeanPropertyFunction;
-import org.springmodules.validation.functions.Function;
-import org.springmodules.validation.functions.MapEntryFunction;
-import org.springmodules.validation.predicates.BasicValidationRule;
-import org.springmodules.validation.predicates.GenericTestPredicate;
+import org.springmodules.validation.valang.ValangValidator;
+import org.springmodules.validation.valang.functions.AbstractFunction;
+import org.springmodules.validation.valang.functions.AbstractMathFunction;
+import org.springmodules.validation.valang.functions.BeanPropertyFunction;
+import org.springmodules.validation.valang.functions.Function;
+import org.springmodules.validation.valang.functions.MapEntryFunction;
+import org.springmodules.validation.valang.predicates.BasicValidationRule;
+import org.springmodules.validation.valang.predicates.GenericTestPredicate;
 
 /**
  * Implementation of <code>RichValidator</code> that delegates to a
