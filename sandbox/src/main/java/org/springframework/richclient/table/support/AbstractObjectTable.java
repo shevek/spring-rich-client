@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.samples.simple.ui;
+package org.springframework.richclient.table.support;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,13 +32,13 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
+import org.springframework.richclient.application.support.ApplicationEventRedispatcher;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
 import org.springframework.richclient.list.ListSelectionValueModelAdapter;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
-import org.springframework.richclient.table.support.GlazedTableModel;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -61,9 +61,6 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
  * <li>It offers simple, delegated handling of how to handle a double-click on a row, by
  * setting a command executor. See {@link #setDoubleClickHandler(ActionCommandExecutor)}.</li>
  * <li>It supports display of a configured pop-up context menu.</li>
- * <li>Offers the selection model up as a ValueModel, using
- * {@link #getTableSelectionHolder()} so that Guards can be constructed based on the
- * selection contents.</li>
  * <li>It can report on row counts (after filtering) and selection counts to a status bar</li>
  * </ol>
  * <p>
@@ -309,13 +306,6 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
     }
 
     /**
-     * Get the value model holding the table selection.
-     */
-    protected ValueModel getTableSelectionHolder() {
-        return new ListSelectionValueModelAdapter(getTable().getSelectionModel());
-    }
-
-    /**
      * Handle a double click on a row of the table. The row will already be selected.
      */
     protected void onDoubleClick() {
@@ -512,7 +502,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      * 
      * @param statusBar to update
      */
-    protected void reportToStatusBar( StatusBarCommandGroup statusBar ) {
+    public void setStatusBar( StatusBarCommandGroup statusBar ) {
         this.statusBar = statusBar;
     }
 

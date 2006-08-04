@@ -20,6 +20,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.springframework.richclient.samples.simple.domain.Contact;
 import org.springframework.richclient.samples.simple.domain.ContactDataStore;
+import org.springframework.richclient.table.support.AbstractObjectTable;
 
 /**
  * This class provides a concrete implementation of a table showing {@link Contact}

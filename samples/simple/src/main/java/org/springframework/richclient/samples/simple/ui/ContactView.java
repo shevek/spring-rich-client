@@ -38,6 +38,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
+import org.springframework.richclient.list.ListSelectionValueModelAdapter;
 import org.springframework.richclient.list.ListSingleSelectionGuard;
 import org.springframework.richclient.samples.simple.domain.Contact;
 import org.springframework.richclient.samples.simple.domain.ContactDataStore;
@@ -229,7 +230,7 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
         contactTable.setFinalEventList(filterList);
 
         // Register to get notified when the filtered list changes
-        contactTable.reportToStatusBar(getStatusBar());
+        contactTable.setStatusBar(getStatusBar());
 
         // Ensure our commands are only active when something is selected.
         // These guard objects operate by inspecting a list selection model
@@ -238,7 +239,7 @@ public class ContactView extends AbstractView implements InitializingBean, Appli
         // This configuration greatly simplifies the interaction between commands
         // that require a selection on which to operate.
 
-        ValueModel selectionHolder = contactTable.getTableSelectionHolder();
+        ValueModel selectionHolder = new ListSelectionValueModelAdapter(contactTable.getSelectionModel());
         new ListSingleSelectionGuard(selectionHolder, deleteExecutor);
         new ListSingleSelectionGuard(selectionHolder, propertiesExecutor);
     }
