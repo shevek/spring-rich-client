@@ -97,7 +97,9 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
                     }
                 });
 
-        InterceptorOverlayHelper.attachOverlay(overlay.getControl(), component, OverlayHelper.NORTH_WEST, 5, 0);
+        JComponent overlayControl = overlay.getControl();
+        InterceptorOverlayHelper.attachOverlay(overlayControl, component, OverlayHelper.NORTH_WEST, overlayControl
+                .getPreferredSize().height / 2, 0);
         overlay.setVisible(false);
     }
 

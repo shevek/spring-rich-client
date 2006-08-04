@@ -33,8 +33,8 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
 import javax.swing.JViewport;
-import javax.swing.SwingConstants;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 
 /**
  * A helper class that attaches one component (the overlay) on top of another
@@ -164,15 +164,16 @@ public class OverlayHelper implements SwingConstants {
         try {
             isUpdating = true;
             Container overlayCapableParent = getOverlayCapableParent(overlayTarget);
+            if (overlayCapableParent != null) {
+                JLayeredPane layeredPane = getLayeredPane(overlayCapableParent);
+                if (overlay.getParent() == null || overlay.getParent() != layeredPane) {
+                    putOverlay(layeredPane);
+                }
+            }
             if (overlayCapableParent == null || !overlayTarget.isShowing() || !overlay.isVisible()) {
                 hideOverlay();
-            }
-            else {
-                JLayeredPane layeredPane = getLayeredPane(overlayCapableParent);
-                if( layeredPane.isVisible() && layeredPane.isShowing() ) {
-                    putOverlay(layeredPane);
-                    positionOverlay(layeredPane);
-                }
+            } else {
+                positionOverlay(overlayCapableParent);
             }
         }
         finally {
@@ -191,27 +192,26 @@ public class OverlayHelper implements SwingConstants {
         }
     }
 
-    private void positionOverlay(JLayeredPane layeredPane) {
-        Point layOffset = layeredPane.getLocationOnScreen();
-        Point targetOffset = overlayTarget.getParent().getLocationOnScreen();
-        int centerX = xOffset + (targetOffset.x - layOffset.x);
-        int centerY = yOffset + (targetOffset.y - layOffset.y);
-        Rectangle overlayTargetBounds = overlayTarget.getBounds();
+    private void positionOverlay(Container overlayCapableParent) {
+        Point position = determineComponentLocation(overlayTarget, overlayCapableParent);
+        Rectangle targetBounds = overlayTarget.getBounds();
+        Dimension overlayBounds = overlay.getPreferredSize();
+        int tlx = xOffset + position.x - overlayBounds.width / 2;
+        int tly = yOffset + position.y - overlayBounds.height / 2;;
         switch (center) {
         case SwingConstants.NORTH:
         case SwingConstants.NORTH_WEST:
         case SwingConstants.NORTH_EAST:
-            centerY += overlayTargetBounds.y;
             break;
         case SwingConstants.CENTER:
         case SwingConstants.EAST:
         case SwingConstants.WEST:
-            centerY += overlayTargetBounds.y + (overlayTargetBounds.height / 2);
+            tly += targetBounds.height / 2;
             break;
         case SwingConstants.SOUTH:
         case SwingConstants.SOUTH_EAST:
         case SwingConstants.SOUTH_WEST:
-            centerY += overlayTargetBounds.y + overlayTargetBounds.height;
+            tly += targetBounds.height;
             break;
         default:
             throw new IllegalArgumentException("Unknown value for center [" + center + "]");
@@ -220,28 +220,44 @@ public class OverlayHelper implements SwingConstants {
         case SwingConstants.WEST:
         case SwingConstants.NORTH_WEST:
         case SwingConstants.SOUTH_WEST:
-            centerX += overlayTargetBounds.x;
             break;
         case SwingConstants.CENTER:
         case SwingConstants.NORTH:
         case SwingConstants.SOUTH:
-            centerX += overlayTargetBounds.x + (overlayTargetBounds.width / 2);
+            tlx += targetBounds.width / 2;
             break;
         case SwingConstants.EAST:
         case SwingConstants.NORTH_EAST:
         case SwingConstants.SOUTH_EAST:
-            centerX += overlayTargetBounds.x + overlayTargetBounds.width;
+            tlx += targetBounds.width;
             break;
         default:
             throw new IllegalArgumentException("Unknown value for center [" + center + "]");
         }
         Dimension size = overlay.getPreferredSize();
-        Rectangle newBound = new Rectangle(centerX - (size.width / 2), centerY - (size.height / 2), size.width,
-                                           size.height);
+        Rectangle newBound = new Rectangle(tlx, tly, size.width, size.height);
         setOverlayBounds(newBound);
     }
 
-    private void setOverlayBounds(Rectangle newBounds) {
+    /**
+     * Determine the location of a component in the given container.
+     * The component must be in the component tree of the container
+     * 
+     * @param parent
+     * @param component
+     * @return
+     */
+    private Point determineComponentLocation(Component component, Container parent) {
+        Point location = component.getLocation();
+        if(component.getParent() == parent) {
+            return location;
+        }
+        Point parentLocation = determineComponentLocation(component.getParent(), parent);
+        location.translate(parentLocation.x, parentLocation.y);
+        return location;
+    }
+
+    private void setOverlayBounds(Rectangle newBounds) {        
         if (!newBounds.equals(overlay.getBounds())) {
             overlay.setBounds(newBounds);
         }
