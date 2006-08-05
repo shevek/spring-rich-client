@@ -280,7 +280,7 @@
             documentation for why this is needed.
     -->
     <bean id="applicationEventRedispatcher"
-        class="org.springframework.richclient.samples.simple.ui.ApplicationEventRedispatcher">
+        class="org.springframework.richclient.application.support.ApplicationEventRedispatcher">
     </bean>
 
     <!-- 
