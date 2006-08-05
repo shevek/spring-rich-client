@@ -36,10 +36,11 @@ import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;
 
 /**
- * Adds an "overlay" to a component that is triggered by a validation event. The overlaid image is retrieved by the
- * image key "severity.{severityShortCode}.overlay", where {severityShortCode} is the number returned by
- * {@link Severity#getShortCode()}. The image is placed at the bottom-left corner of the component, and the image's
- * tooltip is set to the validation message.
+ * Adds an "overlay" to a component that is triggered by a validation event. The overlaid
+ * image is retrieved by the image key "severity.{severityShortCode}.overlay", where
+ * {severityShortCode} is the number returned by {@link Severity#getShortCode()}. The
+ * image is placed at the bottom-left corner of the component, and the image's tooltip is
+ * set to the validation message.
  * 
  * @author Oliver Hutchison
  * @see OverlayHelper#attachOverlay
@@ -52,30 +53,26 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
         textCompHeight = new JTextField().getPreferredSize().height;
     }
 
-    public FormComponentInterceptor getInterceptor(FormModel formModel) {
+    public FormComponentInterceptor getInterceptor( FormModel formModel ) {
         return new OverlayValidationInterceptor(formModel);
     }
 
     public class OverlayValidationInterceptor extends ValidationInterceptor {
 
-        public OverlayValidationInterceptor(FormModel formModel) {
+        public OverlayValidationInterceptor( FormModel formModel ) {
             super(formModel);
         }
 
-        public void processComponent(String propertyName, final JComponent component) {
+        public void processComponent( String propertyName, final JComponent component ) {
             final ErrorReportingOverlay overlay = new ErrorReportingOverlay();
-
-            if (component.getName() == null) {
-                component.setName(propertyName);
-            }
 
             registerGuarded(propertyName, overlay);
             registerMessageReceiver(propertyName, overlay);
 
-            if (component.getParent() == null) {
+            if( component.getParent() == null ) {
                 PropertyChangeListener waitUntilHasParentListener = new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent e) {
-                        if (component.getParent() != null) {
+                    public void propertyChange( PropertyChangeEvent e ) {
+                        if( component.getParent() != null ) {
                             component.removePropertyChangeListener("ancestor", this);
                             attachOverlay(overlay, component);
                         }
@@ -87,9 +84,10 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             }
         }
 
-        private void attachOverlay(ErrorReportingOverlay overlay, JComponent component) {
+        private void attachOverlay( ErrorReportingOverlay overlay, JComponent component ) {
             int yOffset = component.getPreferredSize().height;
-            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.SOUTH_WEST, 0, 0);
+            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.NORTH_WEST, 0, Math.min(yOffset,
+                    textCompHeight));
         }
     }
 
@@ -100,17 +98,17 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
             return true;
         }
 
-        public void setEnabled(final boolean enabled) {
+        public void setEnabled( boolean enabled ) {
             setVisible(!enabled);
         }
 
-        public void setMessage(Message message) {
+        public void setMessage( Message message ) {
             messageBuffer.setMessage(message);
             message = messageBuffer.getMessage();
             setToolTipText(message.getText());
             Severity severity = message.getSeverity();
 
-            if (severity != null) {
+            if( severity != null ) {
                 IconSource iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
                 setIcon(iconSource.getIcon("severity." + severity.getLabel() + ".overlay"));
             } else {
