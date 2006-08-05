@@ -236,6 +236,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
      */
     public void addChild(HierarchicalFormModel child) {
         Assert.required(child, "child");
+        if(child.getParent() == this)
+            return;
         Assert.isTrue(child.getParent() == null, "Child form model '" + child + "' already has a parent");
         child.setParent(this);
         children.add(child);
