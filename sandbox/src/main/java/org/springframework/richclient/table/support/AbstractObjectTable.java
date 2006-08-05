@@ -457,7 +457,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      * @return selection model
      */
     public ListSelectionModel getSelectionModel() {
-        return table.getSelectionModel();
+        return getTable().getSelectionModel();
     }
 
     /**
