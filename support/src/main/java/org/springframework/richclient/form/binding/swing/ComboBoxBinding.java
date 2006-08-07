@@ -17,10 +17,12 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -28,10 +30,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.support.CustomBinding;
 
 /**
@@ -48,6 +52,8 @@ public class ComboBoxBinding extends CustomBinding {
     private final SelectableItemsChangeHandler selectableItemsChangeHandler = new SelectableItemsChangeHandler();
 
     private ValueModel selectableItemsHolder;
+
+    private Constraint filter;
 
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -68,25 +74,34 @@ public class ComboBoxBinding extends CustomBinding {
     }
 
     /**
-     * @return Collections.EMPTY_LIST if SelectableItemHolder's value was null,
-     *         a created List if value was an instance of Object[] or a
-     *         Collection if the value was already a collection.
+     * @return Collections.EMPTY_LIST if SelectableItemHolder's value was null, a created List if value was an instance
+     *         of Object[] or a Collection if the value was already a collection.
      * @exception UnsupportedOperationException
      *                if none the SelectableItemholder's value wasn't any of the above
      */
     protected Collection getSelectableItems() {
         final Object selectableItems = getSelectableItemsHolder().getValue();
+        Collection items;
         if (selectableItems == null) {
-            return Collections.EMPTY_LIST;
+            items = Collections.EMPTY_LIST;
         } else if (selectableItems instanceof Object[]) {
-            return Arrays.asList((Object[])selectableItems);
-        }
-        else if (selectableItems instanceof Collection) {
-            return (Collection)selectableItems;
-        }
-        else {
+            items = Arrays.asList((Object[]) selectableItems);
+        } else if (selectableItems instanceof Collection) {
+            items = (Collection) selectableItems;
+        } else {
             throw new UnsupportedOperationException("selectableItemsHolder must contain an array or a Collection");
         }
+        if (filter != null) {
+            Collection filteredItems = new ArrayList(items.size());
+            for (Iterator iter = items.iterator(); iter.hasNext();) {
+                Object item = iter.next();
+                if (filter.test(item)) {
+                    filteredItems.add(item);
+                }
+            }
+            items = filteredItems;
+        }
+        return items;
     }
 
     protected void updateSelectableItems() {
@@ -171,5 +186,16 @@ public class ComboBoxBinding extends CustomBinding {
         public void propertyChange(PropertyChangeEvent evt) {
             updateSelectableItems();
         }
+    }
+
+    public void setFilter(Constraint filter) {
+        if (!new EqualsBuilder().append(this.filter, filter).isEquals()) {
+            this.filter = filter;
+            updateSelectableItems();
+        }
+    }
+
+    public Constraint getFilter() {
+        return filter;
     }
 }

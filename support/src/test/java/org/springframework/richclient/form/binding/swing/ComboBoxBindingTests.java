@@ -15,7 +15,11 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -23,9 +27,12 @@ import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 
-public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
+public class ComboBoxBindingTests extends BindingAbstractTests {
+
+    private static final Object[] SELECTABLEITEMS = new Object[] { "0", "1", "2", "3", "4" };
 
     private ValueModel sih;
 
@@ -35,19 +42,19 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
 
     protected String setUpBinding() {
         cbb = new ComboBoxBinding(fm, "simpleProperty");
-        cb = (JComboBox)cbb.getControl();
-        sih = new ValueHolder(new Object[] {"0", "1", "2", "3", "4"});
+        cb = (JComboBox) cbb.getControl();
+        sih = new ValueHolder(SELECTABLEITEMS);
         cbb.setSelectableItemsHolder(sih);
         return "simpleProperty";
     }
 
-    public void testValueModelUpdatesComponent() {        
+    public void testValueModelUpdatesComponent() {
         TestListDataListener tldl = new TestListDataListener();
         cb.getModel().addListDataListener(tldl);
-        
+
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
-        tldl.assertCalls(0);        
+        tldl.assertCalls(0);
 
         vm.setValue("1");
         assertEquals("1", cb.getSelectedItem());
@@ -63,7 +70,7 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
         tldl.assertEvent(3, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-        
+
         vm.setValue(null);
         tldl.assertCalls(3);
     }
@@ -82,7 +89,7 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
     public void testSelectableValueChangeUpdatesComboBoxModel() {
         assertEquals("0", cb.getModel().getElementAt(0));
 
-        sih.setValue(new Object[] {"1"});
+        sih.setValue(new Object[] { "1" });
         assertEquals("1", cb.getModel().getElementAt(0));
     }
 
@@ -105,9 +112,8 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
         fm.getFieldMetadata("simpleProperty").setReadOnly(false);
         assertTrue(cb.isEnabled());
     }
-    
-    public void testSelectableItemHolderNullValue()
-    {
+
+    public void testSelectableItemHolderNullValue() {
         ComboBoxBinding binding = new ComboBoxBinding(fm, "simpleProperty");
         binding.getControl();
         ValueHolder valueHolder = new ValueHolder();
@@ -115,13 +121,36 @@ public class ComboBoxBindingAbstractTests extends BindingAbstractTests {
         assertEquals(binding.getSelectableItems(), Collections.EMPTY_LIST);
     }
 
-    public void testExistingModel() 
-    {
-        JComboBox cb = new JComboBox(new DefaultComboBoxModel(new Object[] {
-                "1", "2", "3" }));
+    public void testExistingModel() {
+        JComboBox cb = new JComboBox(new DefaultComboBoxModel(new Object[] { "1", "2", "3" }));
         ComboBoxBinder binder = new ComboBoxBinder();
-        Binding binding = binder.bind(cb, fm, "simpleProperty",
-                Collections.EMPTY_MAP);
+        Binding binding = binder.bind(cb, fm, "simpleProperty", Collections.EMPTY_MAP);
         assertEquals(3, ((JComboBox) binding.getControl()).getModel().getSize());
+    }
+
+    public void testFilter() {
+        setUpBinding();
+        Collection selectableItems = cbb.getSelectableItems();
+        assertEquals(Arrays.asList(SELECTABLEITEMS), selectableItems);
+        cbb.setFilter(new Constraint() {
+            public boolean test(Object argument) {
+                return "1".equals(argument) || "4".equals(argument);
+            }
+        });
+        selectableItems = cbb.getSelectableItems();
+        assertEquals(Arrays.asList(new Object[] { "1", "4" }), selectableItems);
+    }
+
+    public void testFilterWithContext() {
+        ComboBoxBinder binder = new ComboBoxBinder();
+        Map context = new HashMap();
+        Constraint filter = new Constraint() {
+            public boolean test(Object argument) {
+                return true;
+            }
+        };
+        context.put(ComboBoxBinder.FILTER_KEY, filter);
+        ComboBoxBinding binding = (ComboBoxBinding) binder.bind(fm, "simpleProperty", context);
+        assertEquals(filter, binding.getFilter());
     }
 }

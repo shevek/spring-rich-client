@@ -25,6 +25,7 @@ import javax.swing.ComboBoxEditor;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
@@ -63,6 +64,9 @@ public class ComboBoxBinder extends AbstractBinder  {
     protected void applyContext(ComboBoxBinding binding, Map context) {
         if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
             binding.setSelectableItemsHolder((ValueModel)context.get(SELECTABLE_ITEMS_HOLDER_KEY));
+        }
+        if (context.containsKey(FILTER_KEY)) {
+            binding.setFilter((Constraint)context.get(FILTER_KEY));
         }
         if (context.containsKey(RENDERER_KEY)) {
             binding.setRenderer((ListCellRenderer)context.get(RENDERER_KEY));
