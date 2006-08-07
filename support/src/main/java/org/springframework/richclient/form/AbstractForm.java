@@ -101,7 +101,7 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     }
 
     protected AbstractForm(FormModel pageFormModel) {
-        this(pageFormModel, null);
+        this(pageFormModel, pageFormModel.getId());
     }
 
     protected AbstractForm(FormModel formModel, String formId) {
