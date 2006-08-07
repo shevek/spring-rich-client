@@ -82,7 +82,7 @@
 
         <!-- Components -->
         <dependency>
-            <groupId>jgoodies</groupId>
+            <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
         </dependency>
         <dependency>

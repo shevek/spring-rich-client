@@ -53,7 +53,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>jgoodies</groupId>
+            <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
             <optional>true</optional>
         </dependency>
