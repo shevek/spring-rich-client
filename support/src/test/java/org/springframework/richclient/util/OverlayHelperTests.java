@@ -15,11 +15,14 @@
  */
 package org.springframework.richclient.util;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,11 +38,6 @@ import org.springframework.richclient.test.SpringRichTestCase;
  * @since May 12, 2006 8:32:27 AM
  */
 public class OverlayHelperTests extends SpringRichTestCase {
-    /**
-     * how long we have to sleep to wait for the asynchronously handled attachement of overlays
-     * mathiasbr: I don't know how it comes but on my system a value of 0 is almost sufficient
-     */
-    private static final int SLEEPTIME = 100;
 
     /**
      * OverlayHelper installs the overlay as the View of a JScrollPane viewport, if the component is in a JScrollPane,
@@ -75,9 +73,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
 
         final JScrollPane scrollPane = new JScrollPane(view);
 
-        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
-        Thread.currentThread().sleep(SLEEPTIME);
+        waitUnitlEventQueueIsEmpty();
 
         final Component viewportView = scrollPane.getViewport().getView();
 
@@ -93,6 +89,17 @@ public class OverlayHelperTests extends SpringRichTestCase {
         assertEquals(30, ((Scrollable) viewportView).getScrollableBlockIncrement(null, 0, 0));
         assertEquals(view.getPreferredScrollableViewportSize(), ((Scrollable) viewportView)
                 .getPreferredScrollableViewportSize());
+    }
+
+    private void waitUnitlEventQueueIsEmpty() throws InterruptedException {
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        EventQueue eventQueue = Toolkit.getDefaultToolkit().getSystemEventQueue();
+        AWTEvent peekEvent;
+        while((peekEvent = eventQueue.peekEvent()) != null) {
+            System.out.println("got event in queue: " + peekEvent);
+            Thread.currentThread().sleep(0);
+        }
     }
 
     /**
@@ -112,9 +119,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
 
         final JScrollPane scrollPane = new JScrollPane(view);
 
-        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
-        Thread.currentThread().sleep(SLEEPTIME);
+        waitUnitlEventQueueIsEmpty();
 
         final Component viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
@@ -133,9 +138,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
 
         final JScrollPane scrollPane = new JScrollPane(view);
 
-        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
-        Thread.currentThread().sleep(SLEEPTIME);
+        waitUnitlEventQueueIsEmpty();
 
         Component viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
@@ -146,9 +149,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
         view.add(someField);
         scrollPane.setViewportView(view);
 
-        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
-        Thread.currentThread().sleep(SLEEPTIME);
+        waitUnitlEventQueueIsEmpty();
 
         viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
@@ -159,9 +160,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
         view.add(someField);
         scrollPane.setViewportView(view);
 
-        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
-        Thread.currentThread().sleep(SLEEPTIME);
+        waitUnitlEventQueueIsEmpty();
 
         viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
