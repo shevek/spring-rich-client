@@ -174,6 +174,10 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
         getControl().setVisible(visible);
         firePropertyChange("visible", oldValue, visible);
     }
+    
+    public boolean isVisible() {
+        return getControl().isVisible();
+    }
 
     public boolean isPageComplete() {
         return pageComplete;

@@ -77,6 +77,13 @@ public interface DialogPage extends ControlFactory, Messagable, Guarded, Propert
      *            <code>false</code> to hide it
      */
     public void setVisible(boolean visible);
+    
+    /**
+     * Returns the visibility of this dialog page.
+     * 
+     * @return <code>true</code> this page is visible, or <code>false</code> if this page is hidden
+     */
+    public boolean isVisible();
 
     /**
      * Returns whether this page is complete or not.
