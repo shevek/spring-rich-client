@@ -15,18 +15,18 @@
  */
 package org.springframework.richclient.util;
 
-import java.awt.LayoutManager;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.LayoutManager;
+import java.awt.Rectangle;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Scrollable;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JComponent;
+import javax.swing.Scrollable;
 
 import org.springframework.richclient.test.SpringRichTestCase;
 
@@ -36,39 +36,49 @@ import org.springframework.richclient.test.SpringRichTestCase;
  */
 public class OverlayHelperTests extends SpringRichTestCase {
     /**
-    * OverlayHelper installs the overlay as the View of a JScrollPane viewport,
-    * if the component is in a JScrollPane, so that the overlay is shown in
-    * the proper location when scrolled.  However, to accomplish this, it will
-    * remove the component that was in the viewport, add it to a JLayeredPane,
-    * and then add that JLayeredPane to the viewport instead. This introduced
-    * a bug if the viewport's view happened to implement the Scrollable
-    * interface, since JScrollPane does <i>not</i> implement the Scrollable
-    * interface.  See issue RCP-344.
-    */
-    public void testRegressionScrollableProxy() {
+     * how long we have to sleep to wait for the asynchronously handled attachement of overlays
+     * mathiasbr: I don't know how it comes but on my system a value of 0 is almost sufficient
+     */
+    private static final int SLEEPTIME = 20;
+
+    /**
+     * OverlayHelper installs the overlay as the View of a JScrollPane viewport, if the component is in a JScrollPane,
+     * so that the overlay is shown in the proper location when scrolled. However, to accomplish this, it will remove
+     * the component that was in the viewport, add it to a JLayeredPane, and then add that JLayeredPane to the viewport
+     * instead. This introduced a bug if the viewport's view happened to implement the Scrollable interface, since
+     * JScrollPane does <i>not</i> implement the Scrollable interface. See issue RCP-344.
+     * 
+     * @throws Exception
+     */
+    public void testRegressionScrollableProxy() throws Exception {
         performScrollableTest();
         performNonScrollableTest();
     }
 
     /**
-     * Ensures that OverlayHelper supports the Scrollable interface and
-     * properly proxies Scrollable methods.
+     * Ensures that OverlayHelper supports the Scrollable interface and properly proxies Scrollable methods.
+     * 
+     * @throws Exception
      */
-    private void performScrollableTest() {
+    private void performScrollableTest() throws Exception {
         final ScrollablePanel view = new ScrollablePanel(new BorderLayout());
         view.setScrollableUnitIncrement(5);
         view.setScrollableBlockIncrement(30);
         view.setScrollableTracksViewportWidth(true);
-        
+
         final JComponent overlay = createTestOverlay();
         final JComponent someField = createTestComponent();
 
         OverlayHelper.attachOverlay(overlay, someField, 0, 0, 0);
-        
+
         view.add(someField);
-        
+
         final JScrollPane scrollPane = new JScrollPane(view);
-        
+
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        Thread.currentThread().sleep(SLEEPTIME);
+
         final Component viewportView = scrollPane.getViewport().getView();
 
         // If OverlayHelper changes the way it handles scrollable overlays,
@@ -77,82 +87,86 @@ public class OverlayHelperTests extends SpringRichTestCase {
         assertFalse(viewportView == view);
 
         assertTrue(viewportView instanceof Scrollable);
-        assertTrue(((Scrollable)viewportView).getScrollableTracksViewportWidth());
-        assertFalse(((Scrollable)viewportView).getScrollableTracksViewportHeight());
-        assertEquals(5, ((Scrollable)viewportView).getScrollableUnitIncrement(null, 0, 0));
-        assertEquals(30, ((Scrollable)viewportView).getScrollableBlockIncrement(null, 0, 0));
-        assertEquals(view.getPreferredScrollableViewportSize(), ((Scrollable)viewportView).getPreferredScrollableViewportSize());
+        assertTrue(((Scrollable) viewportView).getScrollableTracksViewportWidth());
+        assertFalse(((Scrollable) viewportView).getScrollableTracksViewportHeight());
+        assertEquals(5, ((Scrollable) viewportView).getScrollableUnitIncrement(null, 0, 0));
+        assertEquals(30, ((Scrollable) viewportView).getScrollableBlockIncrement(null, 0, 0));
+        assertEquals(view.getPreferredScrollableViewportSize(), ((Scrollable) viewportView)
+                .getPreferredScrollableViewportSize());
     }
 
     /**
-     * Ensures that OverlayHelper will NOT implement the Scrollable
-     * interface if the view component does not implement the Scrollable
-     * interface.
+     * Ensures that OverlayHelper will NOT implement the Scrollable interface if the view component does not implement
+     * the Scrollable interface.
+     * 
+     * @throws Exception
      */
-    private void performNonScrollableTest() {
+    private void performNonScrollableTest() throws Exception {
         final JPanel view = new JPanel(new BorderLayout());
         final JComponent overlay = createTestOverlay();
         final JComponent someField = createTestComponent();
-        
+
         OverlayHelper.attachOverlay(overlay, someField, 0, 0, 0);
-        
+
         view.add(someField);
+
         final JScrollPane scrollPane = new JScrollPane(view);
-        
+
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        Thread.currentThread().sleep(SLEEPTIME);
+
         final Component viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
         assertFalse(viewportView instanceof Scrollable);
     }
-    
-    
-    
-    
-    
-    public void testSwapScrollableForNonScrollable() {
+
+    public void testSwapScrollableForNonScrollable() throws Exception {
         JComponent view = new ScrollablePanel(new BorderLayout());
-        
+
         final JComponent overlay = createTestOverlay();
         final JComponent someField = createTestComponent();
 
         OverlayHelper.attachOverlay(overlay, someField, 0, 0, 0);
-        
+
         view.add(someField);
-        
+
         final JScrollPane scrollPane = new JScrollPane(view);
-        
+
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        Thread.currentThread().sleep(SLEEPTIME);
+
         Component viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
         assertTrue(viewportView instanceof Scrollable);
-        
+
         view.remove(someField);
         view = new JPanel(new BorderLayout());
         view.add(someField);
         scrollPane.setViewportView(view);
-        
+
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        Thread.currentThread().sleep(SLEEPTIME);
+
         viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
         assertFalse(viewportView instanceof Scrollable);
-        
+
         view.remove(someField);
         view = new ScrollablePanel(new BorderLayout());
         view.add(someField);
         scrollPane.setViewportView(view);
-        
+
+        // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
+        // todo find a better way since it could be possible that this is not the case on slow machines
+        Thread.currentThread().sleep(SLEEPTIME);
+
         viewportView = scrollPane.getViewport().getView();
         assertFalse(viewportView == view);
         assertTrue(viewportView instanceof Scrollable);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     private JComponent createTestComponent() {
         return new JTextField("Hello, world!") {
@@ -161,6 +175,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
             public boolean isVisible() {
                 return true;
             }
+
             public boolean isShowing() {
                 return true;
             }
@@ -174,6 +189,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
             public boolean isVisible() {
                 return true;
             }
+
             public boolean isShowing() {
                 return true;
             }
@@ -182,21 +198,13 @@ public class OverlayHelperTests extends SpringRichTestCase {
         return overlay;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
     public static class ScrollablePanel extends JPanel implements Scrollable {
         private int scrollableUnitIncrement = 10;
+
         private int scrollableBlockIncrement = 40;
+
         private boolean scrollableTracksViewportWidth = false;
+
         private boolean scrollableTracksViewportHeight = false;
 
         public ScrollablePanel(LayoutManager layout, boolean isDoubleBuffered) {
@@ -214,7 +222,6 @@ public class OverlayHelperTests extends SpringRichTestCase {
         public ScrollablePanel() {
         }
 
-
         public void setScrollableUnitIncrement(final int scrollableUnitIncrement) {
             this.scrollableUnitIncrement = scrollableUnitIncrement;
         }
@@ -230,8 +237,6 @@ public class OverlayHelperTests extends SpringRichTestCase {
         public void setScrollableTracksViewportHeight(final boolean scrollableTracksViewportHeight) {
             this.scrollableTracksViewportHeight = scrollableTracksViewportHeight;
         }
-
-
 
         public Dimension getPreferredScrollableViewportSize() {
             return getPreferredSize();
