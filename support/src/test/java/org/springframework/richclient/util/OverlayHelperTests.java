@@ -39,7 +39,7 @@ public class OverlayHelperTests extends SpringRichTestCase {
      * how long we have to sleep to wait for the asynchronously handled attachement of overlays
      * mathiasbr: I don't know how it comes but on my system a value of 0 is almost sufficient
      */
-    private static final int SLEEPTIME = 20;
+    private static final int SLEEPTIME = 100;
 
     /**
      * OverlayHelper installs the overlay as the View of a JScrollPane viewport, if the component is in a JScrollPane,
