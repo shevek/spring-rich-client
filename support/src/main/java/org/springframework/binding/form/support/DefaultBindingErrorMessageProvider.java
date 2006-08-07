@@ -48,7 +48,7 @@ public class DefaultBindingErrorMessageProvider implements BindingErrorMessagePr
     public ValidationMessage getErrorMessage(FormModel formModel, String propertyName, Object valueBeingSet, Exception e) {
         String messageCode = getMessageCodeForException(e);
         Object[] args = new Object[] {formModel.getFieldFace(propertyName).getDisplayName(),
-                valueBeingSet};
+                UserMetadata.isFieldProtected(formModel, propertyName) ? "***" : valueBeingSet};
         String message = getMessageSourceAccessor().getMessage(messageCode, args, messageCode);
         return new DefaultValidationMessage(propertyName, Severity.ERROR, message);
     }
@@ -73,4 +73,4 @@ public class DefaultBindingErrorMessageProvider implements BindingErrorMessagePr
             return "unknown";
         }
     }
-}
+    }

@@ -1,0 +1,49 @@
+/*
+ * Copyright 2002-2006 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.springframework.binding.form.support;
+
+import org.springframework.binding.form.FieldMetadata;
+import org.springframework.binding.form.FormModel;
+
+
+/**
+ * Class which holds keys for user metadata used in spring rich
+ * 
+ * @author Mathias Broekelmann
+ * 
+ */
+public abstract class UserMetadata {
+    /**
+     * The name of a user metadata value which is used to determine if a value for a form field is protected and should
+     * be hidden on logging or error messages.
+     * <p>
+     * The value must be an instance of {@link Boolean}, if true any value of the field will not be displayed either
+     * through logging or showing value errors
+     */
+    public static final String PROTECTED_FIELD = UserMetadata.class.getName() + ".ProtectedField";
+
+    /**
+     * tests if the usermetadata of the field has a boolean value true for the key {@value #PROTECTED_FIELD}
+     * 
+     * @param fieldName
+     *            the fieldname
+     * @return true if the field is protected, otherwise false
+     */
+    public static boolean isFieldProtected(FormModel formModel, String fieldName) {
+        FieldMetadata metaData = formModel.getFieldMetadata(fieldName);
+        return Boolean.TRUE.equals(metaData.getUserMetadata(UserMetadata.PROTECTED_FIELD));
+    }
+}

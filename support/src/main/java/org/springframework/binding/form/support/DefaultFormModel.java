@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.BindingErrorMessageProvider;
+import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.DefaultValidationResults;
 import org.springframework.binding.validation.DefaultValidationResultsModel;
@@ -64,7 +65,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     private boolean oldValidating = true;
 
     private Validator validator;
-
+    
     private BindingErrorMessageProvider bindingErrorMessageProvider = new DefaultBindingErrorMessageProvider();
 
     public DefaultFormModel() {
@@ -305,8 +306,9 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             try {
                 if (logger.isDebugEnabled()) {
                     Class valueClass = (value != null ? value.getClass() : null);
-                    logger.debug("Setting '" + formProperty + "' value to convert/validate '" + value + "', class="
-                            + valueClass);
+                    logger.debug("Setting '" + formProperty + "' value to convert/validate '"
+                            + (UserMetadata.isFieldProtected(DefaultFormModel.this, formProperty) ? "***" : value)
+                            + "', class=" + valueClass);
                 }
                 super.setValueSilently(value, listenerToSkip);
                 clearBindingError(this);
