@@ -20,8 +20,8 @@ import java.awt.Dimension;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import com.jgoodies.looks.FontSizeHints;
 import com.jgoodies.looks.Options;
+import com.jgoodies.looks.FontPolicy;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 
@@ -62,8 +62,8 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
         Options.setUseSystemFonts(enabled);
     }
 
-    public void setFontSizeHints(FontSizeHints fontSize) {
-        PlasticLookAndFeel.setFontSizeHints(fontSize);
+    public void setFontSizeHints(FontPolicy fontPolicy) {
+        PlasticLookAndFeel.setFontPolicy(fontPolicy);
     }
 
     public void set3DEnabled(boolean threeDEnabled) {
