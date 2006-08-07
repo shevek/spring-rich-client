@@ -93,7 +93,6 @@ public class OverlayHelperTests extends SpringRichTestCase {
 
     private void waitUnitlEventQueueIsEmpty() throws InterruptedException {
         // we have to sleep here until the asynchronously attachement of JLayeredPane and the overlay is finished
-        // todo find a better way since it could be possible that this is not the case on slow machines
         EventQueue eventQueue = Toolkit.getDefaultToolkit().getSystemEventQueue();
         AWTEvent peekEvent;
         while((peekEvent = eventQueue.peekEvent()) != null) {
