@@ -73,6 +73,18 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
         return pageComponent;
     }
 
+    protected void setActiveComponent() {
+        for (Object object : getPageComponents()) {
+            PageComponent pageComponent = (PageComponent) object;
+            if (!((JInternalFrame) pageComponent.getContext().getPane().getControl()).isIcon()) {
+                setActiveComponent(pageComponent);
+                return;
+            }
+        }
+        //no page component found that is not iconified
+
+    }
+
     public JComponent getControl() {
         if (control == null) {
             control = new ScrollingDesktopPane();
