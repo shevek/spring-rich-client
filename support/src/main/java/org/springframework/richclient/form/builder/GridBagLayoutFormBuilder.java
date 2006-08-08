@@ -16,6 +16,7 @@
 package org.springframework.richclient.form.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.springframework.richclient.factory.ComponentFactory;
@@ -34,7 +35,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
 
     public GridBagLayoutFormBuilder(BindingFactory bindingFactory) {
         super(bindingFactory);
-        this.builder = new GridBagLayoutBuilder();
+        this.builder = new FormModelAwareGridBagLayoutBuilder();
     }
 
     /**
@@ -261,4 +262,11 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
         builder.setAutoSpanLastComponent(autoSpanLastComponent);
     }
 
+    protected final class FormModelAwareGridBagLayoutBuilder extends GridBagLayoutBuilder {
+        protected JLabel createLabel(String propertyName) {
+            JLabel label = getComponentFactory().createLabel("");
+            getFormModel().getFieldFace(propertyName).configure(label);
+            return label;
+        }
+    }
 }

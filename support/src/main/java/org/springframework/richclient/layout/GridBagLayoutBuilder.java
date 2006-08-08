@@ -318,8 +318,12 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      */
     public GridBagLayoutBuilder appendLabeledField(String propertyName, final JComponent field,
             LabelOrientation labelOrientation, int colSpan, int rowSpan, boolean expandX, boolean expandY) {
-        final JLabel label = getComponentFactory().createLabel(propertyName);
+        JLabel label = createLabel(propertyName);
         return appendLabeledField(label, field, labelOrientation, colSpan, rowSpan, expandX, expandY);
+    }
+
+    protected JLabel createLabel(String propertyName) {
+        return getComponentFactory().createLabel(propertyName);
     }
 
     /**
@@ -513,7 +517,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      * @return "this" to make it easier to string together append calls
      */
     public GridBagLayoutBuilder appendRightLabel(String labelKey, int colSpan) {
-        final JLabel label = getComponentFactory().createLabel(labelKey);
+        final JLabel label = createLabel(labelKey);
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         return appendLabel(label, colSpan);
     }
@@ -546,7 +550,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
      * @return "this" to make it easier to string together append calls
      */
     public GridBagLayoutBuilder appendLeftLabel(String labelKey, int colSpan) {
-        final JLabel label = getComponentFactory().createLabel(labelKey);
+        final JLabel label = createLabel(labelKey);
         label.setHorizontalAlignment(SwingConstants.LEFT);
         return appendLabel(label, colSpan);
     }
