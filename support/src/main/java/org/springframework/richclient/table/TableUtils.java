@@ -127,10 +127,25 @@ public class TableUtils {
 		return getUnfilteredTableModel(table.getModel());
 	}
 
+    /**
+     * resizes the column widths to optimally fit the row data.
+     * <p>
+     * this method only tests the first row (if it exists) 
+     * @param table the table whose columns should be resized, not null
+     */
     public static void sizeColumnsToFitRowData(JTable table) {
         sizeColumnsToFitRowData(table, 1);
     }
 
+    /**
+     * resizes the column widths to optimally fit the row data.
+     * 
+     * @param table
+     *            the table whose columns should be resized, not null
+     * @param maxNumberOfRows
+     *            specifies the maximum number of rows to evaluate the column widths. If it is lower or equals 0 all rows
+     *            will be evaluated
+     */
     public static void sizeColumnsToFitRowData(JTable table, int maxNumberOfRows) {
 		if (table.getRowCount() > 0) {
             int rowSize = maxNumberOfRows <= 0 ? table.getRowCount() : Math
