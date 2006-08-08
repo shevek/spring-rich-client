@@ -16,6 +16,7 @@
 package org.springframework.richclient.application.mdi;
 
 import java.beans.PropertyVetoException;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
@@ -74,8 +75,8 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
     }
 
     protected void setActiveComponent() {
-        for (Object object : getPageComponents()) {
-            PageComponent pageComponent = (PageComponent) object;
+        for (Iterator iter = getPageComponents().iterator(); iter.hasNext();) {
+            PageComponent pageComponent = (PageComponent) iter.next();
             if (!((JInternalFrame) pageComponent.getContext().getPane().getControl()).isIcon()) {
                 setActiveComponent(pageComponent);
                 return;
