@@ -19,7 +19,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -43,7 +47,8 @@ import org.springframework.richclient.util.WindowUtils;
  * @author Keith Donald
  */
 public class TableUtils {
-	public static void scrollToRow(JTable table, int row) {
+
+    public static void scrollToRow(JTable table, int row) {
 		if (!(table.getParent() instanceof JViewport)) {
 			return;
 		}
@@ -122,26 +127,34 @@ public class TableUtils {
 		return getUnfilteredTableModel(table.getModel());
 	}
 
-	public static void sizeColumnsToFitRowData(JTable table) {
+    public static void sizeColumnsToFitRowData(JTable table) {
+        sizeColumnsToFitRowData(table, false);
+    }
+
+    public static void sizeColumnsToFitRowData(JTable table, boolean onlyFirstRow) {
 		if (table.getRowCount() > 0) {
-			for (int col = 0; col < table.getColumnCount(); col++) {
-				TableColumn column = table.getColumnModel().getColumn(col);
-				TableCellRenderer r = table.getColumnModel().getColumn(col).getCellRenderer();
-				if (r == null) {
-					Object val = table.getValueAt(0, col);
-					if (val != null) {
-						r = table.getDefaultRenderer(val.getClass());
-					}
-				}
-				if (r != null) {
-					Component c = r
-							.getTableCellRendererComponent(table, table.getValueAt(0, col), false, false, 0, col);
-					int cWidth = column.getPreferredWidth();
-					if (c.getPreferredSize().width > cWidth) {
-						column.setPreferredWidth(c.getPreferredSize().width + UIConstants.ONE_SPACE);
-						column.setWidth(column.getPreferredWidth());
-					}
-				}
+			for (int col = 0, colSize = table.getColumnCount(); col < colSize; col++) {
+                int width = 0;
+                TableColumn column = table.getColumnModel().getColumn(col);
+                TableCellRenderer r = table.getColumnModel().getColumn(col).getCellRenderer();
+                for (int row = 0, rowSize = onlyFirstRow ? 1 : table.getRowCount(); row < rowSize; row++) {
+                    Object val = table.getValueAt(row, col);
+    				if (r == null) {
+    					if (val != null) {
+    						r = table.getDefaultRenderer(val.getClass());
+    					}
+    				}
+    				if (r != null) {
+    					Component c = r
+                                .getTableCellRendererComponent(table, val, false, false, row, col);
+    					int cWidth = c.getPreferredSize().width;
+                        if(cWidth > width) {
+                            width = cWidth;
+                        }
+    				}
+    			}
+                column.setPreferredWidth(width + UIConstants.ONE_SPACE);
+                column.setWidth(column.getPreferredWidth());
 			}
 		}
 		int width = Math.min(table.getColumnModel().getTotalColumnWidth(), (int)(WindowUtils.getScreenWidth() * .75));
@@ -170,5 +183,4 @@ public class TableUtils {
 			}
 		}
 	}
-
 }
