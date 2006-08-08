@@ -168,7 +168,6 @@ public class TableListCellRenderer extends JTable implements ListCellRenderer {
             boolean cellHasFocus) {
         if (index == -1) {
             Component comp = cellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            comp.setPreferredSize(getPreferredSize());
             return comp;
         }
         getTableListCellRendererModel().setRow(index);
