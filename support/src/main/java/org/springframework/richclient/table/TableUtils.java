@@ -128,16 +128,18 @@ public class TableUtils {
 	}
 
     public static void sizeColumnsToFitRowData(JTable table) {
-        sizeColumnsToFitRowData(table, false);
+        sizeColumnsToFitRowData(table, 1);
     }
 
-    public static void sizeColumnsToFitRowData(JTable table, boolean onlyFirstRow) {
+    public static void sizeColumnsToFitRowData(JTable table, int maxNumberOfRows) {
 		if (table.getRowCount() > 0) {
+            int rowSize = maxNumberOfRows <= 0 ? table.getRowCount() : Math
+                    .min(maxNumberOfRows, table.getRowCount());
 			for (int col = 0, colSize = table.getColumnCount(); col < colSize; col++) {
                 int width = 0;
                 TableColumn column = table.getColumnModel().getColumn(col);
                 TableCellRenderer r = table.getColumnModel().getColumn(col).getCellRenderer();
-                for (int row = 0, rowSize = onlyFirstRow ? 1 : table.getRowCount(); row < rowSize; row++) {
+                for (int row = 0; row < rowSize; row++) {
                     Object val = table.getValueAt(row, col);
     				if (r == null) {
     					if (val != null) {
