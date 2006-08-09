@@ -18,13 +18,14 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 
 /**
- * Binds a Tiger enum in a combobox and supports i18n.
- * The i18n key of an enum is the full classname + "." + enumfield.
- * For example:
- * x.y.Season.WINTER = Winter
- *
+ * Binds a Tiger enum in a combobox and supports i18n.<br/>
+ * The i18n key of an enum is the full classname + "." + enumfield.<br/>
+ * For example:<br/>
+ * x.y.Season.WINTER = Winter<br/>
+ *<p>
  * configuration happens like this:
- *
+ *</p>
+ *<pre>
  *  &lt;bean id="binderSelectionStrategy"
  *          class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy"&gt;
  *      &lt;property name="bindersForPropertyTypes"&gt;
@@ -38,7 +39,7 @@ import java.util.Map;
  *          &lt;/map&gt;
  *      &lt;/property&gt;
  *  &lt;/bean&gt;
- *
+ *</pre>
  * @author Geoffrey De Smet
  */
 public class TigerEnumComboBoxBinder extends ComboBoxBinder {
