@@ -45,4 +45,16 @@ public abstract class UserMetadata {
         FieldMetadata metaData = formModel.getFieldMetadata(fieldName);
         return Boolean.TRUE.equals(metaData.getUserMetadata(UserMetadata.PROTECTED_FIELD));
     }
+
+    /**
+     * defines the protectable state for a field
+     * 
+     * @param formModel the formmodel
+     * @param fieldName the field to protect
+     * @param protectedField if true the field will be defined as protectable otherwise false
+     */
+    public static void setFieldProtected(FormModel formModel, String fieldName, boolean protectedField) {
+        FieldMetadata metaData = formModel.getFieldMetadata(fieldName);
+        metaData.getAllUserMetadata().put(PROTECTED_FIELD, Boolean.valueOf(protectedField));
+    }
 }
