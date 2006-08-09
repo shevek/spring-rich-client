@@ -18,7 +18,6 @@ package org.springframework.binding.form.support;
 import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.form.FormModel;
 
-
 /**
  * Class which holds keys for user metadata used in spring rich
  * 
@@ -33,7 +32,7 @@ public abstract class UserMetadata {
      * The value must be an instance of {@link Boolean}, if true any value of the field will not be displayed either
      * through logging or showing value errors
      */
-    public static final String PROTECTED_FIELD = UserMetadata.class.getName() + ".ProtectedField";
+    public static final String PROTECTED_FIELD = "org.springframework.binding.support.ProtectedField";
 
     /**
      * tests if the usermetadata of the field has a boolean value true for the key {@value #PROTECTED_FIELD}
