@@ -20,140 +20,437 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;
 
 /**
+ * A TableFormBuilder builds a form by using a {@link TableLayoutBuilder}
+ * 
  * @author oliverh
+ * @author Mathias Broekelmann
  */
 public class TableFormBuilder extends AbstractFormBuilder {
+
+    private static final String VALIGN_TOP = TableLayoutBuilder.VALIGN + "=top";
 
     private TableLayoutBuilder builder;
 
     private String labelAttributes = TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES;
 
+    /**
+     * Creates an instances of the TableFormBuilder by using a {@link BindingFactory}
+     * 
+     * @param bindingFactory
+     *            the binding factory to use to create field bindings.
+     */
     public TableFormBuilder(BindingFactory bindingFactory) {
+        this(bindingFactory, null);
+    }
+
+    /**
+     * Creates an instances of the TableFormBuilder by using a {@link BindingFactory} and a given {@ TableLayoutBuilder}
+     * 
+     * @param bindingFactory
+     *            the binding factory to use to create field bindings.
+     */
+    public TableFormBuilder(BindingFactory bindingFactory, TableLayoutBuilder tableLayoutBuilder) {
         super(bindingFactory);
-        this.builder = new TableLayoutBuilder(getComponentFactory().createPanel());
+        this.builder = tableLayoutBuilder;
     }
 
+    /**
+     * adds a row to the form. All subsequent field additions will be placed in a new row
+     */
     public void row() {
-        builder.relatedGapRow();
+        getLayoutBuilder().relatedGapRow();
     }
 
-    public JComponent[] add(String propertyName) {
-        return add(propertyName, "");
+    /**
+     * Adds the field to the form. {@link #createDefaultBinding(String)} is used to create the binding for the field
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param attributes
+     *            optional layout attributes for the component. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label and the component which where added to the form
+     */
+    public JComponent[] add(String fieldName) {
+        return add(fieldName, "");
     }
 
+    /**
+     * Adds the field binding to the form.
+     * 
+     * @param binding
+     *            the field binding to add
+     * @return an array containing the label and the component of the binding which where added to the form
+     */
     public JComponent[] add(Binding binding) {
         return add(binding, "");
     }
 
-    public JComponent[] add(String propertyName, String attributes) {
-        return addBinding(getDefaultBinding(propertyName), attributes, getLabelAttributes());
+    /**
+     * Adds the field to the form. {@link #createDefaultBinding(String)} is used to create the binding for the field
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param attributes
+     *            optional layout attributes for the component. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label and the component which where added to the form
+     */
+    public JComponent[] add(String fieldName, String attributes) {
+        return addBinding(createDefaultBinding(fieldName), attributes, getLabelAttributes());
     }
 
+    /**
+     * Adds the field binding to the form.
+     * 
+     * @param binding
+     *            the field binding to add
+     * @param attributes
+     *            optional layout attributes for the component. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label and the component which where added to the form
+     */
     public JComponent[] add(Binding binding, String attributes) {
-        Assert.isTrue(getFormModel() == binding.getFormModel(),
-                "Binding's form model must match FormBuilder's form model");
-        FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory)ApplicationServicesLocator.services().getService(FormComponentInterceptorFactory.class);
-        factory.getInterceptor(getFormModel()).processComponent(binding.getProperty(), binding.getControl());
+        // mathiasbr: this is out of scope for the form builder!
+        // FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory) ApplicationServicesLocator
+        // .services().getService(FormComponentInterceptorFactory.class);
+        // factory.getInterceptor(getFormModel()).processComponent(binding.getProperty(), binding.getControl());
         return addBinding(binding, attributes, getLabelAttributes());
     }
 
-    public JComponent[] add(String propertyName, JComponent component) {
-        return add(propertyName, component, "");
+    /**
+     * Adds the field to the form by using the provided component.
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param component
+     *            the component for the field
+     * @return an array containing the label and the component which where added to the form
+     */
+    public JComponent[] add(String fieldName, JComponent component) {
+        return add(fieldName, component, "");
     }
 
-    public JComponent[] add(String propertyName, JComponent component, String attributes) {
-        return addBinding(getBinding(propertyName, component), attributes, getLabelAttributes());
+    /**
+     * Adds the field to the form by using the provided component. {@link #createBinding(String, JComponent)} is used to
+     * create the binding of the field
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param component
+     *            the component for the field
+     * @param attributes
+     *            optional layout attributes for the component. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label and the component which where added to the form
+     */
+    public JComponent[] add(String fieldName, JComponent component, String attributes) {
+        return addBinding(createBinding(fieldName, component), attributes, getLabelAttributes());
     }
 
-    public JComponent[] addSelector(String propertyName, Constraint filter) {
-        return addSelector(propertyName, filter, "");
+    /**
+     * Adds the field to the form by using a selector component. {@link #createSelector(String, Constraint)} is used to
+     * create the component for the selector
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param filter
+     *            optional filter constraint for the items of the selector
+     * @param attributes
+     *            optional layout attributes for the selector component. See {@link TableLayoutBuilder} for syntax
+     *            details
+     * @return an array containing the label and the selector component which where added to the form
+     * 
+     * @see #createSelector(String, Constraint)
+     */
+    public JComponent[] addSelector(String fieldName, Constraint filter) {
+        return addSelector(fieldName, filter, "");
     }
 
-    public JComponent[] addSelector(String propertyName, Constraint filter, String attributes) {
-        return addBinding(getBinding(propertyName, getSelector(propertyName, filter)), attributes, getLabelAttributes());
+    /**
+     * Adds the field to the form by using a selector component. {@link #createSelector(String, Constraint)} is used to
+     * create the component for the selector
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param filter
+     *            optional filter constraint for the items of the selector
+     * @param attributes
+     *            optional layout attributes for the selector component. See {@link TableLayoutBuilder} for syntax
+     *            details
+     * @return an array containing the label and the selector component which where added to the form
+     * 
+     * @see #createSelector(String, Constraint)
+     */
+    public JComponent[] addSelector(String fieldName, Constraint filter, String attributes) {
+        return addBinding(createBinding(fieldName, createSelector(fieldName, filter)), attributes, getLabelAttributes());
     }
 
-    public JComponent[] addPasswordField(String propertyName) {
-        return addPasswordField(propertyName, "");
+    /**
+     * Adds the field to the form by using a password component. {@link #createPasswordField(String)} is used to create
+     * the component for the password field
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @return an array containing the label and the password component which where added to the form
+     * 
+     * @see #createPasswordField(String)
+     */
+    public JComponent[] addPasswordField(String fieldName) {
+        return addPasswordField(fieldName, "");
     }
 
-    public JComponent[] addPasswordField(String propertyName, String attributes) {
-        return addBinding(getBinding(propertyName, getPasswordField(propertyName)), attributes, getLabelAttributes());
+    /**
+     * Adds the field to the form by using a password component. {@link #createPasswordField(String)} is used to create
+     * the component for the password field
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param attributes
+     *            optional layout attributes for the password component. See {@link TableLayoutBuilder} for syntax
+     *            details
+     * @return an array containing the label and the password component which where added to the form
+     * 
+     * @see #createPasswordField(String)
+     */
+    public JComponent[] addPasswordField(String fieldName, String attributes) {
+        return addBinding(createBinding(fieldName, createPasswordField(fieldName)), attributes, getLabelAttributes());
     }
 
-    public JComponent[] addTextArea(String propertyName) {
-        return addTextArea(propertyName, "");
+    /**
+     * Adds the field to the form by using a text area component which is wrapped inside a scrollpane.
+     * <p>
+     * Note: this method ensures that the the label of the textarea has a top vertical alignment if <code>valign</code>
+     * is not defined in the default label attributes
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @return an array containing the label, the textarea and the scrollpane which where added to the form
+     * 
+     * @see #createTextArea(String)
+     */
+    public JComponent[] addTextArea(String fieldName) {
+        return addTextArea(fieldName, "");
     }
 
-    public JComponent[] addTextArea(String propertyName, String attributes) {
-        JComponent textArea = getTextArea(propertyName);
-        return addBinding(getBinding(propertyName, textArea), new JScrollPane(textArea), attributes,
-                getLabelAttributes() + " valign=top");
+    /**
+     * Adds the field to the form by using a text area component which is wrapped inside a scrollpane.
+     * {@link #createTextArea(String)} is used to create the component for the text area field
+     * <p>
+     * Note: this method ensures that the the label of the textarea has a top vertical alignment if <code>valign</code>
+     * is not defined in the default label attributes
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param attributes
+     *            optional layout attributes for the scrollpane. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label, the textarea and the scrollpane and which where added to the form
+     * 
+     * @see #createTextArea(String)
+     */
+    public JComponent[] addTextArea(String fieldName, String attributes) {
+        JComponent textArea = createTextArea(fieldName);
+        String labelAttributes = getLabelAttributes();
+        if (labelAttributes == null) {
+            labelAttributes = VALIGN_TOP;
+        } else if (!labelAttributes.contains(TableLayoutBuilder.VALIGN)) {
+            labelAttributes += " " + VALIGN_TOP;
+        }
+        return addBinding(createBinding(fieldName, textArea), new JScrollPane(textArea), attributes, labelAttributes);
     }
 
-    public JComponent[] addInScrollPane(String propertyName) {
-        return addInScrollPane(propertyName, "");
+    /**
+     * Adds the field to the form by using the default binding. The component will be placed inside a scrollpane.
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @return an array containing the label, the component of the field binding and the scrollpane which where added to
+     *         the form
+     */
+    public JComponent[] addInScrollPane(String fieldName) {
+        return addInScrollPane(fieldName, "");
     }
 
-    public JComponent[] addInScrollPane(String propertyName, String attributes) {
-        return addInScrollPane(getDefaultBinding(propertyName), attributes);
+    /**
+     * Adds the field to the form by using the default binding. The component will be placed inside a scrollpane.
+     * 
+     * @param fieldName
+     *            the name of the field to add
+     * @param attributes
+     *            optional layout attributes for the scrollpane. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label, the component of the field binding and the scrollpane binding which where
+     *         added to the form
+     * 
+     * @see #createScrollPane(String, JComponent)
+     */
+    public JComponent[] addInScrollPane(String fieldName, String attributes) {
+        return addInScrollPane(createDefaultBinding(fieldName), attributes);
     }
 
+    /**
+     * Adds the field binding to the form. The component will be placed inside a scrollpane.
+     * 
+     * @param binding
+     *            the binding to use
+     * @return an array containing the label, the component of the field binding and the scrollpane and the component of
+     *         the binding which where added to the form
+     * 
+     * @see #createScrollPane(String, JComponent)
+     */
     public JComponent[] addInScrollPane(Binding binding) {
         return addInScrollPane(binding, "");
     }
 
+    /**
+     * Adds the field binding to the form. The component will be placed inside a scrollpane.
+     * {@link #createScrollPane(String, JComponent)} is used to create the component for the scrollpane
+     * 
+     * @param binding
+     *            the binding to use
+     * @param attributes
+     *            optional layout attributes for the scrollpane. See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label, the component of the field binding and the scrollpane and the component of
+     *         the binding which where added to the form
+     * 
+     * @see #createScrollPane(String, JComponent)
+     */
     public JComponent[] addInScrollPane(Binding binding, String attributes) {
         Assert.isTrue(getFormModel() == binding.getFormModel(),
-        "Binding's form model must match FormBuilder's form model");
-        return add(binding.getProperty(), getComponentFactory().createScrollPane(binding.getControl()), attributes);
+                "Binding's form model must match FormBuilder's form model");
+        return add(binding.getProperty(), createScrollPane(binding.getProperty(), binding.getControl()), attributes);
     }
 
+    /**
+     * Adds a labeled separator to the form.
+     * 
+     * @param text
+     *            the key for the label. Must not be null
+     */
     public void addSeparator(String text) {
-        builder.separator(text);
+        getLayoutBuilder().separator(text);
     }
 
+    /**
+     * Adds a labeled separator to the form
+     * 
+     * @param text
+     *            the key for the label. Must not be null
+     * @param attributes
+     *            optional attributes. See {@link TableLayoutBuilder} for syntax details
+     */
     public void addSeparator(String text, String attributes) {
-        builder.separator(text, attributes);
+        getLayoutBuilder().separator(text, attributes);
     }
 
+    /**
+     * Returns the layout builder which is used to build the layout of the added fields and labels
+     * 
+     * @return The form containing the added fields, components and labels in the defined layout. Not null
+     */
     public TableLayoutBuilder getLayoutBuilder() {
+        if (builder == null) {
+            builder = new TableLayoutBuilder(getComponentFactory().createPanel());
+        }
         return builder;
     }
 
+    /**
+     * Returns the form which has been created by this builder
+     * 
+     * @return The form containing the added fields and labels in the defined layout. Not null
+     */
     public JComponent getForm() {
         getBindingFactory().getFormModel().revert();
-        return builder.getPanel();
+        return getLayoutBuilder().getPanel();
     }
 
+    /**
+     * returns the default label layout attributes for the form.
+     * 
+     * @return layout attributes for the labels, can be null.
+     */
     public String getLabelAttributes() {
         return labelAttributes;
     }
 
+    /**
+     * defines the default label layout attributes for the form.
+     * 
+     * @param labelAttributes
+     *            layout attributes for the labels, if null no layout attributes will be applied to the labels. See
+     *            {@link TableLayoutBuilder} for syntax details.
+     */
     public void setLabelAttributes(String labelAttributes) {
         this.labelAttributes = labelAttributes;
     }
 
+    /**
+     * adds a field binding to the form. This method does not use the default label attributes which may have been set
+     * through {@link #setLabelAttributes(String)}
+     * 
+     * @param binding
+     *            the binding of the field
+     * @param attributes
+     *            optional layout attributes for the label. If null no layout attributes will be applied to the label.
+     *            See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label and the component of the binding
+     */
     public JComponent[] addBinding(Binding binding, String attributes, String labelAttributes) {
         return addBinding(binding, binding.getControl(), attributes, labelAttributes);
     }
 
-    private JComponent[] addBinding(Binding binding, JComponent wrappedControl, String attributes,
+    /**
+     * adds a field binding to the form
+     * 
+     * @param binding
+     *            the binding of the field
+     * @param wrappedControl
+     *            the optional wrapped component. If null the component of the binding is used. This Parameter should be
+     *            used if the component of the binding is being wrapped inside this component
+     * @param attributes
+     *            optional layout attributes for the label. If null no layout attributes will be applied to the label.
+     *            See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label, the component of the field binding and the wrapped component
+     */
+    public JComponent[] addBinding(Binding binding, JComponent wrappedControl, String attributes) {
+        return addBinding(binding, wrappedControl, attributes, getLabelAttributes());
+    }
+
+    /**
+     * adds a field binding to the form
+     * 
+     * @param binding
+     *            the binding of the field
+     * @param wrappedComponent
+     *            the optional wrapped component. If null the component of the binding is used. This Parameter should be
+     *            used if the component of the binding is being wrapped inside this component
+     * @param attributes
+     *            optional layout attributes for the wrapped component. If null no layout attributes will be applied to
+     *            the component. See {@link TableLayoutBuilder} for syntax details
+     * @param attributes
+     *            optional layout attributes for the label. If null no layout attributes will be applied to the label.
+     *            See {@link TableLayoutBuilder} for syntax details
+     * @return an array containing the label, the component of the field binding and the wrapped component
+     */
+    public JComponent[] addBinding(Binding binding, JComponent wrappedComponent, String attributes,
             String labelAttributes) {
-        final JLabel label = getLabelFor(binding.getProperty(), binding.getControl());
-        if (!builder.hasGapToLeft()) {
-            builder.gapCol();
+        Assert.notNull(binding, "binding is null");
+        Assert.isTrue(getFormModel() == binding.getFormModel(),
+                "Binding's form model must match FormBuilder's form model");
+        JComponent component = binding.getControl();
+        final JLabel label = createLabelFor(binding.getProperty(), component);
+        if (wrappedComponent == null) {
+            wrappedComponent = component;
         }
-        builder.cell(label, labelAttributes);
-        builder.labelGapCol();
-        builder.cell(wrappedControl, attributes);
-        return new JComponent[] {label, wrappedControl};
+        TableLayoutBuilder layoutBuilder = getLayoutBuilder();
+        if (!layoutBuilder.hasGapToLeft()) {
+            layoutBuilder.gapCol();
+        }
+        layoutBuilder.cell(label, labelAttributes);
+        layoutBuilder.labelGapCol();
+        layoutBuilder.cell(wrappedComponent, attributes);
+        return new JComponent[] { label, component, wrappedComponent };
     }
 }

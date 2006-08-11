@@ -133,7 +133,7 @@ public class GridBagLayoutFormBuilder extends AbstractFormBuilder implements Lay
      */
     public GridBagLayoutFormBuilder appendLabeledField(String propertyName, LabelOrientation labelOrientation,
             int colSpan) {
-        final JComponent field = getDefaultBinding(propertyName).getControl();
+        final JComponent field = createDefaultBinding(propertyName).getControl();
 
         return appendLabeledField(propertyName, field, labelOrientation, colSpan);
     }

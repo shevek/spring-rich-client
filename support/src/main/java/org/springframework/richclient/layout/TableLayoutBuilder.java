@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -708,6 +709,9 @@ public class TableLayoutBuilder implements LayoutBuilder {
     }
 
     private Map getAttributes(String attributes) {
+        if(!StringUtils.hasText(attributes))
+            return Collections.EMPTY_MAP;
+        
         Map attributeMap = new HashMap();
         try {
             StreamTokenizer st = new StreamTokenizer(new StringReader(attributes));

@@ -22,7 +22,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.core.closure.Constraint;
@@ -31,11 +30,11 @@ import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
-import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 
 /**
  * @author oliverh
+ * @author Mathias Broekelmann
  */
 public abstract class AbstractFormBuilder {
 
@@ -68,32 +67,93 @@ public abstract class AbstractFormBuilder {
         return bindingFactory.getFormModel();
     }
 
-    protected Binding getDefaultBinding(String propertyName) {
-        return getBindingFactory().createBinding(propertyName);
+    /**
+     * @deprecated Use {@link #createDefaultBinding(String)} instead
+     */
+    protected Binding getDefaultBinding(String fieldName) {
+        return createDefaultBinding(fieldName);
+    }
+
+    protected Binding createDefaultBinding(String fieldName) {
+        return getBindingFactory().createBinding(fieldName);
     }
     
-    protected Binding getBinding(String propertyName, JComponent component) {
-        return getBindingFactory().bindControl(component, propertyName);
+    /**
+     * @deprecated Use {@link #createBinding(String,JComponent)} instead
+     */
+    protected Binding getBinding(String fieldName, JComponent component) {
+        return createBinding(fieldName, component);
     }
 
-    protected JComponent getSelector(String propertyName, Constraint filter) {
+    protected Binding createBinding(String fieldName, JComponent component) {
+        return getBindingFactory().bindControl(component, fieldName);
+    }
+
+    /**
+     * @deprecated Use {@link #createSelector(String,Constraint)} instead
+     */
+    protected JComponent getSelector(String fieldName, Constraint filter) {
+        return createSelector(fieldName, filter);
+    }
+
+    /**
+     * Creates a component which is used as a selector in the form. This implementation creates a {@link JComboBox}
+     * 
+     * @param fieldName
+     *            the name of the field for the selector
+     * @param filter
+     *            an optional filter constraint
+     * @return the component to use for a selector, not null
+     */
+    protected JComponent createSelector(String fieldName, Constraint filter) {
         Map context = new HashMap();
         context.put(ComboBoxBinder.FILTER_KEY, filter);
-        return getBindingFactory().createBinding(JComboBox.class, propertyName).getControl();
+        return getBindingFactory().createBinding(JComboBox.class, fieldName).getControl();
+    }
+    
+    /**
+     * Creates a component which is used as a scrollpane for a component 
+     * 
+     * @param fieldName the fieldname for the scrollpane
+     * @param component the component to place into the scrollpane
+     * @return the scrollpane component
+     */
+    protected JComponent createScrollPane(String fieldName, JComponent component) {
+        return getComponentFactory().createScrollPane(component);
     }
 
-    protected JPasswordField getPasswordField(String propertyName) {
-        return new JPasswordField(8);
+    /**
+     * @deprecated Use {@link #createPasswordField(String)} instead
+     */
+    protected JPasswordField getPasswordField(String fieldName) {
+        return createPasswordField(fieldName);
     }
 
-    protected JComponent getTextArea(String propertyName) {
-        JTextArea textArea = GuiStandardUtils.createStandardTextArea(5, 40);
-        return textArea;
+    protected JPasswordField createPasswordField(String fieldName) {
+        return componentFactory.createPasswordField();
     }
 
-    protected JLabel getLabelFor(String propertyName, JComponent component) {
+    /**
+     * @deprecated Use {@link #createTextArea(String)} instead
+     */
+    protected JComponent getTextArea(String fieldName) {
+        return createTextArea(fieldName);
+    }
+
+    protected JComponent createTextArea(String fieldName) {
+        return componentFactory.createTextArea(5, 40);
+    }
+
+    /**
+     * @deprecated Use {@link #createLabelFor(String,JComponent)} instead
+     */
+    protected JLabel getLabelFor(String fieldName, JComponent component) {
+        return createLabelFor(fieldName, component);
+    }
+
+    protected JLabel createLabelFor(String fieldName, JComponent component) {
         JLabel label = getComponentFactory().createLabel("");
-        getFormModel().getFieldFace(propertyName).configure(label);
+        getFormModel().getFieldFace(fieldName).configure(label);
         label.setLabelFor(component);
         return label;
     }
