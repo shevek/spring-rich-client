@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -276,6 +277,13 @@ public interface ComponentFactory {
      * @return the new text field.
      */
     public JTextField createTextField();
+
+    /**
+     * Create a standard password field using this component factory.
+     * 
+     * @return the new password field.
+     */
+    public JPasswordField createPasswordField();
 
     /**
      * Create a text area using this component factory.

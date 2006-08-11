@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -61,6 +62,7 @@ import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.comparator.ComparableComparator;
 import org.springframework.util.comparator.CompoundComparator;
 
@@ -87,6 +89,8 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
     private MessageSource messageSource;
 
     private TableFactory tableFactory;
+
+    private int textFieldColumns = 25;
 
     public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -323,14 +327,53 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
         comboBox.setEditor(new LabeledEnumComboBoxEditor(messageSource, comboBox.getEditor()));
     }
 
+    /**
+     * Returns the default column count for new text fields (including formatted text and password fields)
+     * 
+     * @return the default column count. Must not be lower than 0
+     * @see JTextField
+     */
+    public int getTextFieldColumns() {
+        return textFieldColumns;
+    }
+
+    /**
+     * Defines the default column count for new text fields (including formatted text and password fields)
+     * 
+     * @param the default column count. Must not be lower than 0
+     * @see JTextField
+     */
+    public void setTextFieldColumns(int columns) {
+        if (columns < 0)
+            throw new IllegalArgumentException("text field columns must not be lower than 0. Value was: " + columns);
+        this.textFieldColumns = columns;
+    }
+
     public JFormattedTextField createFormattedTextField(AbstractFormatterFactory formatterFactory) {
-        return new PatchedJFormattedTextField(formatterFactory);
+        PatchedJFormattedTextField patchedJFormattedTextField = new PatchedJFormattedTextField(formatterFactory);
+        configureTextField(patchedJFormattedTextField);
+        return patchedJFormattedTextField;
     }
 
     public JTextField createTextField() {
-        JTextField tf = new JTextField();
-        tf.setColumns(25);
-        return tf;
+        JTextField textField = new JTextField();
+        configureTextField(textField);
+        return textField;
+    }
+
+    /**
+     * Configures the text field. 
+     * 
+     * @param textField the field to configure. Must not be null
+     */
+    protected void configureTextField(JTextField textField) {
+        textField.setColumns(getTextFieldColumns());
+    }
+
+    public JPasswordField createPasswordField() {
+        JPasswordField passwordField = new JPasswordField();
+        configureTextField(passwordField);
+        return passwordField;
     }
 
     public JTextArea createTextArea() {
