@@ -166,6 +166,17 @@ public class DefaultApplicationWindow implements ApplicationWindow, WindowFocusL
         }
     }
 
+    public void showPage(PageDescriptor pageDescriptor) {
+        Assert.notNull(pageDescriptor, "pageDescriptor == null");
+        
+        if(getPage() == null || !getPage().getId().equals(pageDescriptor.getId())) {
+            showPage(createPage(pageDescriptor));
+        }
+        else {
+            // asking for the same page, so ignore
+        }
+    }
+
     /**
      * Show the given page in this window.
      *
@@ -173,7 +184,7 @@ public class DefaultApplicationWindow implements ApplicationWindow, WindowFocusL
      *
      * @throws IllegalArgumentException if page == null
      */
-    protected void showPage(ApplicationPage page) {
+    public void showPage(ApplicationPage page) {
         if (page == null) throw new IllegalArgumentException("page == null");
 
         if (this.currentPage == null) {

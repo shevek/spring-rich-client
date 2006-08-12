@@ -46,6 +46,10 @@ public interface ApplicationWindow {
 
     public void showPage(String pageDescriptorId);
 
+    public void showPage(PageDescriptor pageDescriptor);
+
+    public void showPage(ApplicationPage page);
+
     public boolean close();
 
     public void setWindowManager(WindowManager windowManager);
@@ -53,4 +57,5 @@ public interface ApplicationWindow {
     public void addPageListener(PageListener listener);
 
     public void removePageListener(PageListener listener);
+
 }
