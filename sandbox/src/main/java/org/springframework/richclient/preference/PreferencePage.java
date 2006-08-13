@@ -41,7 +41,11 @@ public abstract class PreferencePage extends AbstractDialogPage {
 		super(id);
 	}
 
-	/**
+    public PreferencePage(String id, boolean autoconfigure) {
+        super(id, autoconfigure);
+    }
+
+    /**
 	 * @return array containing "Restore defaults" and "Apply" commands
 	 */
 	protected ActionCommand[] getCommands() {

@@ -28,7 +28,11 @@ public abstract class FormBackedPreferencePage extends PreferencePage {
 		super(id);
 	}
 
-	protected final JComponent createContents() {
+    public FormBackedPreferencePage(String id, boolean autoconfigure) {
+        super(id, autoconfigure);
+    }
+
+    protected final JComponent createContents() {
 		form = createForm();
 		Assert.notNull(form,
 				"You must set the form before contents are created.");

@@ -31,8 +31,12 @@ public class PreferenceDialog extends TitledPageApplicationDialog {
 
 	private Settings settings;
 
-	public PreferenceDialog() {
-		super(new TreeCompositeDialogPage("preferenceDialog"));
+    public PreferenceDialog() {
+        this("preferenceDialog");
+    }
+
+    public PreferenceDialog(String dialogId) {
+		super(new TreeCompositeDialogPage(dialogId));
 	}
 
 	private void addPage(PreferencePage page) {

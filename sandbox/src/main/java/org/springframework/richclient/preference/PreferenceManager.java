@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.binding.validation.Severity;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.MessageDialog;
 import org.springframework.richclient.settings.SettingsException;
@@ -32,49 +34,71 @@ import org.springframework.richclient.settings.SettingsManager;
  */
 public class PreferenceManager {
 
-	private PreferenceDialog dialog;
+    private PreferenceDialog dialog;
 
-	private List preferencePages = new ArrayList();
+    private List preferencePages = new ArrayList();
 
-	private SettingsManager settingsManager;
+    private SettingsManager settingsManager;
 
-	public void showDialog() {
-		if (dialog == null) {
-			dialog = new PreferenceDialog();
+    private ApplicationObjectConfigurer objectConfigurer;
 
-			for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
-				PreferencePage page = (PreferencePage) iter.next();
-				if (page.getParent() == null) {
-					dialog.addPreferencePage(page);
-				} else {
-					dialog.addPreferencePage(page.getParent(), page);
-				}
-			}
+    public void showDialog() {
+        if (dialog == null) {
+            dialog = createDialog();
 
-			dialog.setTitle("Preferences");
-			try {
-				dialog.setSettings(settingsManager.getUserSettings());
-			} catch (SettingsException e) {
-				new MessageDialog("Error", new Message(e.getMessage(), Severity.ERROR)).showDialog();
-				e.printStackTrace();
-			}
-		}
+            for (Iterator iter = preferencePages.iterator(); iter.hasNext();) {
+                PreferencePage page = (PreferencePage) iter.next();
+                if (page.getParent() == null) {
+                    dialog.addPreferencePage(page);
+                } else {
+                    dialog.addPreferencePage(page.getParent(), page);
+                }
+            }
 
-		// dialog creation can fail
-		if (dialog != null) {
-			dialog.showDialog();
-		}
-	}
+            try {
+                dialog.setSettings(settingsManager.getUserSettings());
+            } catch (SettingsException e) {
+                new MessageDialog("Error", new Message(e.getMessage(), Severity.ERROR)).showDialog();
+                e.printStackTrace();
+            }
+        }
 
-	public void setPreferencePages(List pages) {
-		preferencePages = pages;
-	}
+        // dialog creation can fail
+        if (dialog != null) {
+            dialog.showDialog();
+        }
+    }
 
-	public SettingsManager getSettingsManager() {
-		return settingsManager;
-	}
+    /**
+     * @return
+     */
+    protected PreferenceDialog createDialog() {
+        PreferenceDialog dialog = new PreferenceDialog();
+        getObjectConfigurer().configure(dialog, "preferenceDialog");
+        return dialog;
+    }
 
-	public void setSettingsManager(SettingsManager settingsManager) {
-		this.settingsManager = settingsManager;
-	}
+    public ApplicationObjectConfigurer getObjectConfigurer() {
+        if (objectConfigurer == null) {
+            objectConfigurer = (ApplicationObjectConfigurer) ApplicationServicesLocator.services().getService(
+                    ApplicationObjectConfigurer.class);
+        }
+        return objectConfigurer;
+    }
+
+    public void setObjectConfigurer(ApplicationObjectConfigurer objectConfigurer) {
+        this.objectConfigurer = objectConfigurer;
+    }
+
+    public void setPreferencePages(List pages) {
+        preferencePages = pages;
+    }
+
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
+
+    public void setSettingsManager(SettingsManager settingsManager) {
+        this.settingsManager = settingsManager;
+    }
 }
