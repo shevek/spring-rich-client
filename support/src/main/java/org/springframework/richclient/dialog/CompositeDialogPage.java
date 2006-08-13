@@ -65,7 +65,11 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
     private DialogPage activePage;
 
     public CompositeDialogPage(String pageId) {
-        super(pageId);
+        super(pageId, true);
+    }
+
+    public CompositeDialogPage(String pageId, boolean autoConfigure) {
+        super(pageId, autoConfigure);
     }
 
     public void setAutoConfigureChildPages(boolean autoConfigure) {

@@ -79,7 +79,11 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
      *            the pageId
      */
     public TreeCompositeDialogPage(String pageId) {
-        super(pageId);
+        this(pageId, true);
+    }
+    
+    public TreeCompositeDialogPage(String pageId, boolean autoConfigure) {
+        super(pageId, autoConfigure);
         nodes = new HashMap();
         nodes.put(ROOT_PAGE, new DefaultMutableTreeNode("pages"));
     }
