@@ -19,7 +19,7 @@ import java.awt.Component;
 import java.util.Locale;
 
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
@@ -27,27 +27,25 @@ import org.springframework.core.enums.LabeledEnum;
 
 /**
  * @author Keith Donald
+ * @author Mathias Broekelmann
  */
-public class LabeledEnumTableCellRenderer extends OptimizedTableCellRenderer implements TableCellRenderer {
-	private MessageSource messages;
+public class LabeledEnumTableCellRenderer extends DefaultTableCellRenderer {
+    private MessageSource messages;
 
-	public void setMessages(MessageSource messages) {
-		this.messages = messages;
-	}
+    public void setMessages(MessageSource messages) {
+        this.messages = messages;
+    }
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (value == null) {
-			return this;
-		}
-		if (messages != null && value instanceof MessageSourceResolvable) {
-			setText(messages.getMessage((MessageSourceResolvable)value, Locale.getDefault()));
-		}
-		else {
-			setText(((LabeledEnum)value).getLabel());
-		}
-		return this;
-	}
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        if (value != null) {
+            if (messages != null && value instanceof MessageSourceResolvable) {
+                value = messages.getMessage((MessageSourceResolvable) value, Locale.getDefault());
+            } else {
+                value = ((LabeledEnum) value).getLabel();
+            }
+        }
+        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    }
 
 }

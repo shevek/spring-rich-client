@@ -86,10 +86,8 @@ public class TableUtils {
 	}
 
 	public static void installDefaultRenderers(JTable table) {
-		OptimizedTableCellRenderer defaultRenderer = new OptimizedTableCellRenderer();
 		BeanTableCellRenderer beanRenderer = new BeanTableCellRenderer();
 		table.setDefaultRenderer(Object.class, beanRenderer);
-		table.setDefaultRenderer(String.class, defaultRenderer);
 		LabeledEnumTableCellRenderer er = new LabeledEnumTableCellRenderer();
 		table.setDefaultRenderer(ShortCodedLabeledEnum.class, er);
 		table.setDefaultRenderer(StringCodedLabeledEnum.class, er);

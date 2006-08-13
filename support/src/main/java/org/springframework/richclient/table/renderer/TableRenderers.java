@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.table.renderer;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.TimeZone;
 
 /**
@@ -24,9 +24,11 @@ import java.util.TimeZone;
 public class TableRenderers {
     public static final DateTimeTableCellRenderer LOCAL_DATE = new DateTimeTableCellRenderer();
 
-    public static final DateTimeTableCellRenderer GMT_DATE = new DateTimeTableCellRenderer(new SimpleDateFormat(
-            "EEE M/d/yyyy H:mm:ss z"));
+    private static final DateFormat GMT_DATE_FORMAT = DateFormat.getInstance();
+
     static {
-        GMT_DATE.getDateFormat().setTimeZone(TimeZone.getTimeZone("GMT"));
+        GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
+
+    public static final DateTimeTableCellRenderer GMT_DATE = new DateTimeTableCellRenderer(GMT_DATE_FORMAT);
 }

@@ -16,18 +16,18 @@
 package org.springframework.richclient.table.renderer;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 /**
  * Renders a date/time in the standard format.
  * 
  * @author Keith Donald
+ * @author Mathias Broekelmann
  */
 public class DateTimeTableCellRenderer extends FormatTableCellRenderer {
-    
+
     public DateTimeTableCellRenderer() {
-        super(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss"));
+        super(DateFormat.getInstance());
     }
 
     public DateTimeTableCellRenderer(DateFormat formatter) {
@@ -44,11 +44,10 @@ public class DateTimeTableCellRenderer extends FormatTableCellRenderer {
     }
 
     public void useGMTTime() {
-        setFormat(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss z"));
         getDateFormat().setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     public void useLocalTime() {
-        setFormat(new SimpleDateFormat("EEE M/d/yyyy H:mm:ss"));
+        getDateFormat().setTimeZone(TimeZone.getDefault());
     }
 }

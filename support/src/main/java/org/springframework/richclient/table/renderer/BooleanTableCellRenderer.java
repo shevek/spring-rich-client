@@ -18,24 +18,27 @@ package org.springframework.richclient.table.renderer;
 import java.awt.Component;
 
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald
+ * @author Mathias Broekelmann
  */
-public class BooleanTableCellRenderer extends OptimizedTableCellRenderer implements TableCellRenderer {
-
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-            int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        this.setText(StringUtils.capitalize(((Boolean)value).toString()));
-        return this;
-    }
+public class BooleanTableCellRenderer extends DefaultTableCellRenderer {
 
     public BooleanTableCellRenderer() {
         super();
+    }
+
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        if (value != null) {
+            // TODO: localize value
+            value = StringUtils.capitalize(value.toString());
+        }
+        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
 
 }

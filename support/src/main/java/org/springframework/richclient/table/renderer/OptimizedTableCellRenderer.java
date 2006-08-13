@@ -28,6 +28,12 @@ import javax.swing.table.DefaultTableCellRenderer;
  * A table cell renderer that has been optimized for performance
  * 
  * @author Keith Donald
+ * <p>
+ * XXX: please describe what is being optimized here and how it should be used.
+ * 
+ * @deprecated OptimizedTableCellRenderer messes up cell rendering see
+ *             {@linkplain http://opensource.atlassian.com/projects/spring/browse/RCP-354}
+ * 
  */
 public class OptimizedTableCellRenderer extends DefaultTableCellRenderer {
     protected Border focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");

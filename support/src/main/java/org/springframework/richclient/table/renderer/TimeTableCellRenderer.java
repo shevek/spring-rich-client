@@ -18,6 +18,7 @@ package org.springframework.richclient.table.renderer;
 import java.awt.Component;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.springframework.richclient.text.TimeFormat;
 
@@ -26,7 +27,7 @@ import org.springframework.richclient.text.TimeFormat;
  * 
  * @author Keith Donald
  */
-public class TimeTableCellRenderer extends OptimizedTableCellRenderer {
+public class TimeTableCellRenderer extends DefaultTableCellRenderer {
     public TimeFormat formatter;
 
     public TimeTableCellRenderer() {
@@ -39,8 +40,9 @@ public class TimeTableCellRenderer extends OptimizedTableCellRenderer {
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        doPrepareRenderer(table, isSelected, hasFocus, row, column);
-        setValue(formatter.format(((Number)value).longValue()));
-        return this;
+        if (value != null && value instanceof Number) {
+            value = formatter.format(((Number) value).longValue());
+        }
+        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
 }

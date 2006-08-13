@@ -19,35 +19,33 @@ import java.awt.Component;
 import java.text.Format;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * @author Oliver Hutchison
+ * @author Mathias Broekelmann
  */
-public class FormatTableCellRenderer extends OptimizedTableCellRenderer {
-    
+public class FormatTableCellRenderer extends DefaultTableCellRenderer {
+
     private Format format;
-    
+
     public FormatTableCellRenderer(Format format) {
         setFormat(format);
     }
-    
+
     protected Format getFormat() {
         return format;
     }
-    
+
     protected void setFormat(Format format) {
-        this.format = format;        
+        this.format = format;
     }
-    
+
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        doPrepareRenderer(table, isSelected, hasFocus, row, column);
         if (value != null) {
-            setValue(format.format(value));
+            value = format.format(value);
         }
-        else {
-            setValue(null);
-        }
-        return this;
+        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
 }

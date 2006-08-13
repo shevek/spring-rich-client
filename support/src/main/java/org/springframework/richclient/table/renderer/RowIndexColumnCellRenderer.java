@@ -19,34 +19,21 @@ import java.awt.Component;
 import java.awt.SystemColor;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Renders a date/time in the standard format.
  * 
  * @author Keith Donald
  */
-public class RowIndexColumnCellRenderer extends OptimizedTableCellRenderer {
-
-    public RowIndexColumnCellRenderer() {
-    }
+public class RowIndexColumnCellRenderer extends DefaultTableCellRenderer {
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        if (isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
+        Component comp = super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
+        if (!isSelected) {
+            comp.setBackground(SystemColor.controlHighlight);
         }
-        else {
-            setForeground(table.getForeground());
-            setBackground(SystemColor.controlHighlight);
-        }
-        if (hasFocus) {
-            setBorder(focusBorder);
-        }
-        else {
-            setBorder(noFocusBorder);
-        }
-        setValue(value);
-        return this;
+        return comp;
     }
 }
