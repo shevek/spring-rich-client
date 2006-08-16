@@ -86,6 +86,18 @@ public class FilteredListModelTests extends TestCase {
         assertEquals("4", filteredModel.getElementAt(1));
     }
 
+    public void testRedefineFilter() throws Exception {
+        filter.elements = Arrays.asList(new Object[] { "2", "4", "9999" });
+        FilteredListModel filteredModel = new FilteredListModel(listModel, filter);
+        assertEquals(2, filteredModel.getSize());
+        assertEquals("2", filteredModel.getElementAt(0));
+        assertEquals("4", filteredModel.getElementAt(1));
+        TestConstraint newFilter = new TestConstraint();
+        newFilter.filter = false;
+        filteredModel.setConstraint(newFilter);
+        assertEquals(listModel.getSize(), filteredModel.getSize());
+    }
+
     public void testFilterWithUpdatingModel() throws Exception {
         filter.elements = Arrays.asList(new Object[] { "2", "4", "9999" });
         ListModel filteredModel = new FilteredListModel(listModel, filter);

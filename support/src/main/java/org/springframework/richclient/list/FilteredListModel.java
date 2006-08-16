@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
  */
 public class FilteredListModel extends AbstractFilteredListModel implements Observer {
 
-    private final Constraint constraint;
+    private Constraint constraint;
 
     private int[] indexes;
 
@@ -52,12 +52,37 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
      */
     public FilteredListModel(ListModel listModel, Constraint constraint) {
         super(listModel);
+        setConstraint(constraint);
+    }
+
+    /**
+     * Defines the constraint which is applied to the list model elements
+     * 
+     * @param constraint
+     *            the constraint to set
+     * 
+     * @throws IllegalArgumentException
+     *             if constraint is null
+     */
+    public final void setConstraint(Constraint constraint) {
         Assert.notNull(constraint);
-        this.constraint = constraint;
-        if (this.constraint instanceof Observable) {
-            ((Observable) this.constraint).addObserver(this);
+        if (!constraint.equals(this.constraint)) {
+            if (this.constraint instanceof Observable) {
+                ((Observable) constraint).deleteObserver(this);
+            }
+            this.constraint = constraint;
+            if (constraint instanceof Observable) {
+                ((Observable) constraint).addObserver(this);
+            }
+            reallocateIndexes();
         }
-        reallocateIndexes();
+    }
+
+    /**
+     * @return the constraint
+     */
+    public Constraint getConstraint() {
+        return constraint;
     }
 
     /**
