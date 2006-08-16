@@ -22,32 +22,57 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
 import org.springframework.core.closure.Constraint;
+import org.springframework.util.Assert;
 
 /**
+ * Decorates an existing {@link ListModel} by applying a constraint. The constraint can implement {@link Observable} to
+ * notify a change of the filter condition.
+ * 
  * @author Keith Donald
+ * @author Mathias Broekelmann
  */
 public class FilteredListModel extends AbstractFilteredListModel implements Observer {
 
-    private Constraint constraint;
+    private final Constraint constraint;
 
     private int[] indexes;
 
     private int filteredSize;
 
+    /**
+     * Constructs a new instance
+     * 
+     * @param listModel
+     *            the list model to filter.
+     * @param constraint
+     *            the constraint which is applied to the list model elements
+     * 
+     * @throws IllegalArgumentException
+     *             if list model or constraint parameters where null
+     */
     public FilteredListModel(ListModel listModel, Constraint constraint) {
         super(listModel);
+        Assert.notNull(constraint);
         this.constraint = constraint;
         if (this.constraint instanceof Observable) {
-            ((Observable)this.constraint).addObserver(this);
+            ((Observable) this.constraint).addObserver(this);
         }
         reallocateIndexes();
     }
 
+    /**
+     * Internally called to reallocate the indexes. This method should be called when the filtered model changes its
+     * element size
+     */
     protected void reallocateIndexes() {
         this.indexes = new int[getFilteredModel().getSize()];
         applyConstraint();
     }
 
+    /**
+     * If the constraint implements {@link Observable} this method is called and will apply the constraint to the list
+     * model elements
+     */
     public void update(Observable changed, Object arg) {
         applyConstraint();
         fireContentsChanged(this, -1, -1);
@@ -56,32 +81,56 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
     private void applyConstraint() {
         filteredSize = 0;
         ListModel filteredListModel = getFilteredModel();
-        for (int i = 0, j = 0; i < filteredListModel.getSize(); i++) {
+        for (int i = 0, size = filteredListModel.getSize(); i < size; i++) {
             Object element = filteredListModel.getElementAt(i);
             if (constraint.test(element)) {
-                indexes[j] = i;
-                j++;
-                filteredSize++;
+                indexes[filteredSize++] = i;
                 onMatchingElement(element);
             }
         }
         postConstraintApplied();
     }
 
+    /**
+     * Called to notify that an element has matched the filter constraint. This implementation does nothing.
+     * 
+     * @param element
+     *            the element which was accepted by the filter
+     */
     protected void onMatchingElement(Object element) {
 
     }
 
+    /**
+     * Called to notify that the constraint was applied to all elements. This implementation does nothing.
+     */
     protected void postConstraintApplied() {
 
     }
 
+    /**
+     * Returns the size of the elements which passes the filter constraint.
+     */
     public int getSize() {
         return filteredSize;
     }
 
-    public Object getElementAt(int index) {
-        return getFilteredModel().getElementAt(indexes[index]);
+    /**
+     * Returns the filtered element at a given position
+     */
+    public Object getElementAt(int filteredIndex) {
+        return getFilteredModel().getElementAt(getElementIndex(filteredIndex));
+    }
+
+    /**
+     * Returns the element index for a filtered index
+     * 
+     * @param filteredIndex
+     *            the filtered index
+     * @return the unfiltered index of the filtered model
+     */
+    protected int getElementIndex(int filteredIndex) {
+        return indexes[filteredIndex];
     }
 
     public void contentsChanged(ListDataEvent e) {
