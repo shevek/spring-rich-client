@@ -16,14 +16,14 @@
         Support code to make it easier to use the other modules.
     </description>
 
-    <reporting>
+    <!--reporting>
         <plugins>
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>jdepend-maven-plugin</artifactId>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting-->
 
     <dependencies>
         <!-- Internal -->
