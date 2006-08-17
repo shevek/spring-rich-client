@@ -35,6 +35,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.core.enums.StaticLabeledEnumResolver;
+import org.springframework.richclient.application.ApplicationPageFactory;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindowFactory;
 import org.springframework.richclient.application.DefaultConversionService;
@@ -282,7 +283,24 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     public void setApplicationWindowFactoryId( String factoryId ) {
         services.put( ApplicationWindowFactory.class, factoryId );
     }
+    
+    /**
+     * Set the <code>ApplicationPage</code> factory service implementation
+     * 
+     * @param factory
+     */
+    public void setApplicationPageFactory( ApplicationPageFactory factory ) {
+        services.put( ApplicationPageFactory.class, factory );
+    }
 
+    /**
+     * Set the <code>ApplicationPage</code> factory service implementation bean id
+     * 
+     * @param factoryId bean id
+     */
+    public void setApplicationPageFactoryId( String factoryId ) {
+        services.put( ApplicationPageFactory.class, factoryId );
+    }
 
     /**
      * Set the binder selection strategy service implementation
@@ -874,6 +892,13 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         }
     };
 
+    protected static final ImplBuilder applicationPageFactoryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info( "Creating default service impl: ApplicationPageFactory" );
+            return new DefaultApplicationPageFactory();
+        }
+    };
+
     /**
      * Static initializer to construct the implementation builder map.
      */
@@ -882,6 +907,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put(ApplicationContext.class, applicationContextImplBuilder);        
         serviceImplBuilders.put(ApplicationObjectConfigurer.class, applicationObjectConfigurerImplBuilder);
         serviceImplBuilders.put(ApplicationSecurityManager.class, applicationSecurityManagerImplBuilder);
+        serviceImplBuilders.put(ApplicationPageFactory.class, applicationPageFactoryImplBuilder);
         serviceImplBuilders.put(ApplicationWindowFactory.class, applicationWindowFactoryImplBuilder);
         serviceImplBuilders.put(BinderSelectionStrategy.class, binderSelectionStrategyImplBuilder);
         serviceImplBuilders.put(BindingFactoryProvider.class, bindingFactoryProviderImplBuilder);
