@@ -72,10 +72,6 @@
         <!-- Logging -->
         <dependency>
             <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
         <!-- TODO test cases should use log4j transparently -->
