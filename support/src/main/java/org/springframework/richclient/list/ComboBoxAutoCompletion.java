@@ -59,6 +59,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
 
     private ComboBoxModel model;
 
+    private boolean selectingValue;
+
     /**
      * Adds autocompletion support to the given <code>JComboBox</code>.
      * 
@@ -126,6 +128,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         // ignore empty insert
         if (str == null || str.length() == 0)
             return;
+        if(selectingValue)
+            return;
         // check offset position
         if (offs < 0 || offs > getLength())
             throw new BadLocationException("Invalid offset - must be >= 0 and <= " + getLength(), offs);
@@ -139,7 +143,12 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         // lookup and select a matching item
         Object item = lookupItem(futureText);
         if (item != null) {
-            comboBox.setSelectedItem(item);
+            selectingValue = true; 
+            try {
+                comboBox.setSelectedItem(item);
+            } finally {
+                selectingValue = false;
+            }            
         }
         else {
             // keep old item selected if there is no match
@@ -282,7 +291,8 @@ public class ComboBoxAutoCompletion extends PlainDocument {
         }
 
         public void contentsChanged(ListDataEvent e) {
-            fillItem2StringMap();
+            if(!selectingValue)
+                fillItem2StringMap();
         }
 
         public void intervalAdded(ListDataEvent e) {
