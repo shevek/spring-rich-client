@@ -24,6 +24,7 @@ import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.format.FormatterLocator;
 import org.springframework.binding.format.support.SimpleFormatterLocator;
 import org.springframework.richclient.convert.support.CollectionConverter;
+import org.springframework.richclient.convert.support.ListModelConverter;
 import org.springframework.util.StringUtils;
 
 public class DefaultConversionService extends org.springframework.binding.convert.support.DefaultConversionService {
@@ -41,6 +42,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
         addConverter(new BooleanToText());
         addConverter(new TextToBoolean());
         addConverter(new CollectionConverter());
+        addConverter(new ListModelConverter());
     }
 
     private FormatterLocator getFormatterLocator() {
@@ -57,16 +59,16 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {Date.class};
+            return new Class[] { Date.class };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterLocator().getDateTimeFormatter()
-                    .parseValue((String)source, Date.class) : null;
+            return (!allowEmpty || StringUtils.hasText((String) source)) ? getFormatterLocator().getDateTimeFormatter()
+                    .parseValue((String) source, Date.class) : null;
         }
     }
 
@@ -80,16 +82,16 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {Date.class};
+            return new Class[] { Date.class };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || source != null) ? getFormatterLocator().getDateTimeFormatter().formatValue(
-                    source) : "";
+            return (!allowEmpty || source != null) ? getFormatterLocator().getDateTimeFormatter().formatValue(source)
+                    : "";
         }
     }
 
@@ -103,17 +105,17 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
-                    BigInteger.class, BigDecimal.class,};
+            return new Class[] { Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
+                    BigInteger.class, BigDecimal.class, };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterLocator().getNumberFormatter(
-                    targetClass).parseValue((String)source, targetClass) : null;
+            return (!allowEmpty || StringUtils.hasText((String) source)) ? getFormatterLocator().getNumberFormatter(
+                    targetClass).parseValue((String) source, targetClass) : null;
         }
     }
 
@@ -127,12 +129,12 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
-                    BigInteger.class, BigDecimal.class,};
+            return new Class[] { Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
+                    BigInteger.class, BigDecimal.class, };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
@@ -172,35 +174,30 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {Boolean.class};
+            return new Class[] { Boolean.class };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
-            String text = (String)source;
+            String text = (String) source;
             if (!StringUtils.hasText(text)) {
                 return null;
-            }
-            else if (this.trueString != null && text.equalsIgnoreCase(this.trueString)) {
+            } else if (this.trueString != null && text.equalsIgnoreCase(this.trueString)) {
                 return Boolean.TRUE;
-            }
-            else if (this.falseString != null && text.equalsIgnoreCase(this.falseString)) {
+            } else if (this.falseString != null && text.equalsIgnoreCase(this.falseString)) {
                 return Boolean.FALSE;
-            }
-            else if (this.trueString == null
+            } else if (this.trueString == null
                     && (text.equalsIgnoreCase(VALUE_TRUE) || text.equalsIgnoreCase(VALUE_ON)
                             || text.equalsIgnoreCase(VALUE_YES) || text.equals(VALUE_1))) {
                 return Boolean.TRUE;
-            }
-            else if (this.falseString == null
+            } else if (this.falseString == null
                     && (text.equalsIgnoreCase(VALUE_FALSE) || text.equalsIgnoreCase(VALUE_OFF)
                             || text.equalsIgnoreCase(VALUE_NO) || text.equals(VALUE_0))) {
                 return Boolean.FALSE;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid boolean value [" + text + "]");
             }
         }
@@ -225,25 +222,22 @@ public class DefaultConversionService extends org.springframework.binding.conver
         }
 
         public Class[] getSourceClasses() {
-            return new Class[] {Boolean.class};
+            return new Class[] { Boolean.class };
         }
 
         public Class[] getTargetClasses() {
-            return new Class[] {String.class};
+            return new Class[] { String.class };
         }
 
         protected Object doConvert(Object source, Class targetClass) throws Exception {
-            Boolean bool = (Boolean)source;
+            Boolean bool = (Boolean) source;
             if (this.trueString != null && bool.booleanValue()) {
                 return trueString;
-            }
-            else if (this.falseString != null && !bool.booleanValue()) {
+            } else if (this.falseString != null && !bool.booleanValue()) {
                 return falseString;
-            }
-            else if (bool.booleanValue()) {
+            } else if (bool.booleanValue()) {
                 return VALUE_YES;
-            }
-            else {
+            } else {
                 return VALUE_NO;
             }
         }

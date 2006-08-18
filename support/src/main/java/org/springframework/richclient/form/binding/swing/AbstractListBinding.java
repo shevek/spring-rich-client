@@ -17,20 +17,16 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 
+import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ListListModel;
 import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
@@ -174,10 +170,6 @@ public abstract class AbstractListBinding extends AbstractBinding {
 
     protected class SelectableItemsVisitor {
 
-        ListModel visit(ListModel listModel) {
-            return listModel;
-        }
-
         ListModel visit(ValueModel valueModel) {
             Assert.notNull(valueModel.getValue(),
                     "value of ValueModel must not be null. Use an empty Collection or Array");
@@ -185,20 +177,8 @@ public abstract class AbstractListBinding extends AbstractBinding {
             return new ValueModelFilteredListModel(model, valueModel);
         }
 
-        ListModel visit(List list) {
-            return new ListListModel(list);
-        }
-
-        ListModel visit(Collection collection) {
-            return visit(new ArrayList(collection));
-        }
-
-        ListModel visit(Object[] array) {
-            return visit(Arrays.asList(array));
-        }
-
         ListModel visit(Object object) {
-            return visit(new Object[] { object });
+            return (ListModel) convertValue(object, ListModel.class);
         }
 
         ListModel visitNull() {
@@ -224,6 +204,24 @@ public abstract class AbstractListBinding extends AbstractBinding {
 
     public Comparator getComparator() {
         return comparator;
+    }
+
+    /**
+     * Converts the given object value into the given targetClass
+     * 
+     * @param value
+     *            the value to convert
+     * @param targetClass
+     *            the target class to convert the value to
+     * @return the converted value
+     * 
+     * @throws ConversionException
+     *             if the value can not be converted
+     */
+    protected Object convertValue(Object value, Class targetClass) throws ConversionException {
+        Assert.notNull(value);
+        Assert.notNull(targetClass);
+        return getConversionService().getConversionExecutor(value.getClass(), targetClass).execute(value);
     }
 
     protected abstract ListModel getDefaultModel();

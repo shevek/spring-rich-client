@@ -30,20 +30,17 @@ import javax.swing.event.ListSelectionListener;
 
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.form.FormModel;
-import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.util.Assert;
 
 public class ListBinding extends AbstractListBinding {
+
+    private static final Object[] EMPTY_VALUES = new Object[0];
 
     private final ListSelectionListener selectionListener = new SelectionListener();
 
     private final PropertyChangeListener valueModelListener = new ValueModelListener();
 
     private ConversionExecutor conversionExecutor;
-
-    private final ReflectiveVisitorHelper visitorHelper = new ReflectiveVisitorHelper();
-
-    private final Object selectedValuesVisitor = new SelectedValuesVisitor();
 
     boolean selectingValues;
 
@@ -150,7 +147,11 @@ public class ListBinding extends AbstractListBinding {
      * Updates the selection model with the selected values from the value model.
      */
     protected void updateSelectedItemsFromValueModel() {
-        Object[] selectedValues = (Object[]) visitorHelper.invokeVisit(selectedValuesVisitor, getValue());
+        Object value = getValue();        
+        Object[] selectedValues = EMPTY_VALUES;
+        if(value != null) {
+            selectedValues = (Object[]) convertValue(value, Object[].class);
+        }
 
         // flag is used to avoid a round trip while we are selecting the values
         selectingValues = true;
@@ -231,26 +232,6 @@ public class ListBinding extends AbstractListBinding {
             updateSelectedItemsFromValueModel();
         }
 
-    }
-
-    protected static class SelectedValuesVisitor {
-        private static final Object[] EMPTY_VALUES = new Object[0];
-
-        Object[] visit(Object[] values) {
-            return values;
-        }
-
-        Object[] visit(Collection values) {
-            return values.toArray();
-        }
-
-        Object[] visit(Object value) {
-            return new Object[] { value };
-        }
-
-        Object[] visitNull() {
-            return EMPTY_VALUES;
-        }
     }
 
     protected ListModel getDefaultModel() {
