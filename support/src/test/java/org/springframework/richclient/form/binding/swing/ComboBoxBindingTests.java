@@ -16,19 +16,24 @@
 package org.springframework.richclient.form.binding.swing;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
+import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
+import org.springframework.util.comparator.ComparableComparator;
 
 public class ComboBoxBindingTests extends BindingAbstractTests {
 
@@ -44,8 +49,45 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
         cbb = new ComboBoxBinding(fm, "simpleProperty");
         cb = (JComboBox) cbb.getControl();
         sih = new ValueHolder(SELECTABLEITEMS);
-        cbb.setSelectableItemsHolder(sih);
+        cbb.setSelectableItems(sih);
         return "simpleProperty";
+    }
+
+    public void testWithListModel() throws Exception {
+        DefaultListModel model = new DefaultListModel();
+        model.addElement("1");
+        model.addElement("2");
+        model.addElement("3");
+        model.addElement("4");
+        cbb.setSelectableItems(model);
+        cbb.doBindControl();
+        ComboBoxModel cbmodel = cb.getModel();
+        assertEquals(model.getSize(), cbmodel.getSize());
+        for (int i = 0, size = model.size(); i < size; i++) {
+            assertEquals(model.getElementAt(i), cbmodel.getElementAt(i));
+        }
+    }
+
+    public void testWithList() throws Exception {
+        List model = Arrays.asList(SELECTABLEITEMS);
+        cbb.setSelectableItems(model);
+        cbb.doBindControl();
+        ComboBoxModel cbmodel = cb.getModel();
+        assertEquals(model.size(), cbmodel.getSize());
+        for (int i = 0, size = model.size(); i < size; i++) {
+            assertEquals(model.get(i), cbmodel.getElementAt(i));
+        }
+    }
+
+    public void testWithArray() throws Exception {
+        Object[] model = SELECTABLEITEMS;
+        cbb.setSelectableItems(model);
+        cbb.doBindControl();
+        ComboBoxModel cbmodel = cb.getModel();
+        assertEquals(model.length, cbmodel.getSize());
+        for (int i = 0, size = model.length; i < size; i++) {
+            assertEquals(model[i], cbmodel.getElementAt(i));
+        }
     }
 
     public void testValueModelUpdatesComponent() {
@@ -84,6 +126,9 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
 
         cb.setSelectedIndex(-1);
         assertEquals(null, vm.getValue());
+
+        cb.setSelectedItem(null);
+        assertEquals(null, vm.getValue());
     }
 
     public void testSelectableValueChangeUpdatesComboBoxModel() {
@@ -117,8 +162,12 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
         ComboBoxBinding binding = new ComboBoxBinding(fm, "simpleProperty");
         binding.getControl();
         ValueHolder valueHolder = new ValueHolder();
-        binding.setSelectableItemsHolder(valueHolder);
-        assertEquals(binding.getSelectableItems(), Collections.EMPTY_LIST);
+        try {
+            binding.setSelectableItems(valueHolder);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testExistingModel() {
@@ -130,27 +179,83 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
 
     public void testFilter() {
         setUpBinding();
-        Collection selectableItems = cbb.getSelectableItems();
-        assertEquals(Arrays.asList(SELECTABLEITEMS), selectableItems);
+        ListModel model = cb.getModel();
         cbb.setFilter(new Constraint() {
             public boolean test(Object argument) {
                 return "1".equals(argument) || "4".equals(argument);
             }
         });
-        selectableItems = cbb.getSelectableItems();
-        assertEquals(Arrays.asList(new Object[] { "1", "4" }), selectableItems);
+        assertEquals(2, model.getSize());
+        assertEquals("1", model.getElementAt(0));
+        assertEquals("4", model.getElementAt(1));
+    }
+
+    public void testUpdatingFilter() {
+        setUpBinding();
+        ListModel model = cb.getModel();
+        TestConstraint testConstraint = new TestConstraint();
+        cbb.setFilter(testConstraint);
+        assertEquals(2, model.getSize());
+        assertEquals("1", model.getElementAt(0));
+        assertEquals("4", model.getElementAt(1));
+
+        testConstraint.testCalled = 0;
+        testConstraint.setFilterValues(new Object[] { "2" });
+        //assertEquals(SELECTABLEITEMS.length, testConstraint.testCalled);
+        assertEquals(testConstraint.filterValues.length, model.getSize());
+        assertEquals("2", model.getElementAt(0));
     }
 
     public void testFilterWithContext() {
         ComboBoxBinder binder = new ComboBoxBinder();
+        binder.setSelectableItems(SELECTABLEITEMS);
         Map context = new HashMap();
         Constraint filter = new Constraint() {
             public boolean test(Object argument) {
-                return true;
+                return "1".equals(argument) || "4".equals(argument);
             }
         };
         context.put(ComboBoxBinder.FILTER_KEY, filter);
         ComboBoxBinding binding = (ComboBoxBinding) binder.bind(fm, "simpleProperty", context);
+        ListModel bindingModel = binding.getBindingModel();
         assertEquals(filter, binding.getFilter());
+        assertEquals(2, bindingModel.getSize());
+        assertEquals("1", bindingModel.getElementAt(0));
+        assertEquals("4", bindingModel.getElementAt(1));
+    }
+
+    public void testComparator() {
+        ComboBoxBinder binder = new ComboBoxBinder();
+        binder.setSelectableItems(new Object[] { "2", "4", "1", "2", "3" });
+        binder.setComparator(new ComparableComparator());
+        ComboBoxBinding binding = (ComboBoxBinding) binder.bind(fm, "simpleProperty", Collections.EMPTY_MAP);
+        ListModel bindingModel = binding.getBindingModel();
+        assertEquals(5, bindingModel.getSize());
+        assertEquals("1", bindingModel.getElementAt(0));
+        assertEquals("2", bindingModel.getElementAt(1));
+        assertEquals("2", bindingModel.getElementAt(2));
+        assertEquals("3", bindingModel.getElementAt(3));
+        assertEquals("4", bindingModel.getElementAt(4));
+    }
+
+    private static class TestConstraint extends Observable implements Constraint {
+        Object[] filterValues = new Object[] { "1", "4" };
+
+        int testCalled = 0;
+
+        public boolean test(Object argument) {
+            testCalled++;
+            for (int i = 0; i < filterValues.length; i++) {
+                if (filterValues[i].equals(argument))
+                    return true;
+            }
+            return false;
+        }
+
+        public void setFilterValues(Object[] objects) {
+            filterValues = objects;
+            setChanged();
+            notifyObservers();
+        }
     }
 }

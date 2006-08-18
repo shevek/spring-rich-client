@@ -15,8 +15,11 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -35,10 +38,12 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
+import org.springframework.core.closure.Closure;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.util.Assert;
 
 /**
  * A convenient implementation of <code>BindingFactory</code>. Provides a set
@@ -103,7 +108,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder) {
-        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItemsHolder);
         return createBinding(JComboBox.class, formProperty, context);
     }
 
@@ -113,9 +118,9 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder, String renderedProperty) {
-        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItemsHolder);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
-        context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyValueComboBoxEditor(renderedProperty));
+        context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyEditorClosure(renderedProperty));
         context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
         return createBinding(JComboBox.class, formProperty, context);
     }
@@ -138,7 +143,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     public Binding createBoundList(String formProperty) {
-        Map context = createContext(ListBinder.MODEL_KEY, createBoundListModel(formProperty));
+        Map context = createContext(ListBinder.SELECTABLE_ITEMS_KEY, createBoundListModel(formProperty));
         return createBinding(JList.class, formProperty, context);
     }
 
@@ -257,8 +262,8 @@ public class SwingBindingFactory extends AbstractBindingFactory {
     }
 
     /**
-     * Binds the values specified in the collection contained within
-     * <code>selectableItemsHolder</code> to a {@link JList}, with any
+     * Binds the value(s) specified in <code>selectableItems</code> to 
+     * a {@link JList}, with any
      * user selection being placed in the form property referred to by
      * <code>selectionFormProperty</code>.  Each item in the list will be
      * rendered by looking up a property on the item by the name contained
@@ -278,8 +283,10 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      *                              sense), or must be a
      *                              <code>Collection</code> type, which allows
      *                              for multiple selection.
-     * @param selectableItemsHolder <code>ValueModel</code> containing the
-     *                              items with which to populate the list. 
+     * @param selectableItems       <code>Object</code> containing the
+     *                              item(s) with which to populate the list. 
+     *                              Can be an instance Collection, Object[], 
+     *                              a ValueModel or Object 
      * @param renderedProperty      the property to be queried for each item
      *                              in the list, the result of which will be
      *                              used to render that item in the UI.
@@ -300,24 +307,36 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      *                              
      * @return
      */
-    public Binding createBoundList(String selectionFormProperty, ValueModel selectableItemsHolder,
+    public Binding createBoundList(String selectionFormProperty, Object selectableItems,
             String renderedProperty, Integer forceSelectMode) {
-        final ConfigurableFormModel formModel = (ConfigurableFormModel)getFormModel();
-
-        final ValueModel selectionValueModel = formModel.getValueModel(selectionFormProperty);
-        final Map context = createContext(ListBinder.SELECTED_ITEM_HOLDER_KEY, selectionValueModel);
-        final Class selectionPropertyType = formModel.getFieldMetadata(selectionFormProperty).getPropertyType();
-        if (selectionPropertyType != null) {
-            context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
-        }
+        final Map context = new HashMap();
         if (forceSelectMode != null) {
             context.put(ListBinder.SELECTION_MODE_KEY, forceSelectMode);
         }
-        context.put(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        context.put(ListBinder.SELECTABLE_ITEMS_KEY, selectableItems);
         if (renderedProperty != null) {
             context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
             context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
         }
         return createBinding(JList.class, selectionFormProperty, context);
+    }
+
+    protected static class BeanPropertyEditorClosure implements Closure {
+
+        private final String renderedProperty;
+
+        public BeanPropertyEditorClosure(String renderedProperty) {
+            this.renderedProperty = renderedProperty;
+        }
+
+        public Object call(Object argument) {
+            Assert.isInstanceOf(ComboBoxEditor.class, argument);
+            return new BeanPropertyValueComboBoxEditor((ComboBoxEditor) argument, renderedProperty);
+        }
+        
+        String getRenderedProperty() {
+            return renderedProperty;
+        }
+
     }
 }

@@ -38,12 +38,20 @@ public abstract class AbstractFilteredListModel extends AbstractListModel implem
         this.filteredModel.addListDataListener(this);
     }
 
-    protected ListModel getFilteredModel() {
+    public ListModel getFilteredModel() {
         return filteredModel;
     }
 
+    public void setFilteredModel(ListModel model) {
+        Assert.notNull(model);
+        this.filteredModel.removeListDataListener(this);
+        this.filteredModel = model;
+        this.filteredModel.addListDataListener(this);
+        fireContentsChanged(this, -1, -1);
+    }
+
     public Object getElementAt(int index) {
-        return filteredModel.getElementAt(index);
+        return filteredModel.getElementAt(getElementIndex(index));
     }
 
     public int getSize() {
@@ -62,4 +70,14 @@ public abstract class AbstractFilteredListModel extends AbstractListModel implem
         fireIntervalRemoved(e.getSource(), e.getIndex0(), e.getIndex1());
     }
 
+    /**
+     * Returns the element index for a filtered index. This implementation returns the given value filteredIndex
+     * 
+     * @param filteredIndex
+     *            the filtered index
+     * @return the value of filteredIndex
+     */
+    public int getElementIndex(int filteredIndex) {
+        return filteredIndex;
+    }
 }

@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.Collections;
+
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
 
@@ -27,18 +29,18 @@ public class EnumComboBoxBindingAbstractTests extends BindingAbstractTests {
     private JComboBox cb;
 
     protected String setUpBinding() {
-        cbb = new EnumComboBoxBinding(fm, "enumProperty");
-        cb = (JComboBox)cbb.getControl();
+        cbb = (EnumComboBoxBinding) new EnumComboBoxBinder().bind(fm, "enumProperty", Collections.EMPTY_MAP);
+        cb = (JComboBox) cbb.getControl();
         return "enumProperty";
     }
 
-    public void testValueModelUpdatesComponent() {        
+    public void testValueModelUpdatesComponent() {
         TestListDataListener tldl = new TestListDataListener();
         cb.getModel().addListDataListener(tldl);
-        
+
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
-        tldl.assertCalls(0);        
+        tldl.assertCalls(0);
 
         vm.setValue(TestLabeledEnum.ONE);
         assertEquals(TestLabeledEnum.ONE, cb.getSelectedItem());
@@ -54,7 +56,7 @@ public class EnumComboBoxBindingAbstractTests extends BindingAbstractTests {
         assertEquals(null, cb.getSelectedItem());
         assertEquals(-1, cb.getSelectedIndex());
         tldl.assertEvent(3, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-        
+
         vm.setValue(null);
         tldl.assertCalls(3);
     }

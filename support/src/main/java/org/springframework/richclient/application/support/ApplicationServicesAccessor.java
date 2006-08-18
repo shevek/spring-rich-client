@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.binding.convert.ConversionService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
@@ -89,6 +90,10 @@ public class ApplicationServicesAccessor {
 
     protected ApplicationWindow getActiveWindow() {
         return getApplication().getActiveWindow();
+    }
+    
+    protected ConversionService getConversionService() {
+        return (ConversionService)getService(ConversionService.class);
     }
 
     protected String getMessage(String messageCode) {

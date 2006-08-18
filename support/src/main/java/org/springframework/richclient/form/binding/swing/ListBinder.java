@@ -15,118 +15,95 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import java.util.Comparator;
 import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
-import org.springframework.richclient.form.binding.Binding;
-import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.util.Assert;
 
 /**
  * @author Oliver Hutchison
  */
-public class ListBinder extends AbstractBinder {
-    public static final String SELECTABLE_ITEMS_HOLDER_KEY = "selectableItemsHolder";
-
-    public static final String SELECTED_ITEM_HOLDER_KEY = "selectedItemHolder";
-
-    public static final String SELECTED_ITEM_TYPE_KEY = "selectedItemType";
-
-    public static final String MODEL_KEY = "model";
-
-    public static final String COMPARATOR_KEY = "comparator";
-
+public class ListBinder extends AbstractListBinder {
     public static final String RENDERER_KEY = "renderer";
-
-    public static final String FILTER_KEY = "filter";
 
     public static final String SELECTION_MODE_KEY = "selectionMode";
 
+    private ListCellRenderer renderer;
+
+    private Integer selectionMode;
+
     public ListBinder() {
-        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY, SELECTED_ITEM_HOLDER_KEY, SELECTED_ITEM_TYPE_KEY, MODEL_KEY, COMPARATOR_KEY,
-                RENDERER_KEY, FILTER_KEY, SELECTION_MODE_KEY});
+        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, FILTER_KEY, SELECTION_MODE_KEY });
     }
 
     public ListBinder(String[] supportedContextKeys) {
-        super(null, supportedContextKeys);
+        this(null, supportedContextKeys);
     }
 
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        Assert.isTrue(control instanceof JList, formPropertyPath);
-        ListBinding binding = new ListBinding((JList)control, formModel, formPropertyPath);
-        applyContext(binding, context);
-        return binding;
+    public ListBinder(Class requiredSourceClass, String[] supportedContextKeys) {
+        super(requiredSourceClass, supportedContextKeys);
+    }
+
+    protected AbstractListBinding createListBinding(JComponent control, FormModel formModel, String formPropertyPath) {
+        Assert.isInstanceOf(JList.class, control);
+        return new ListBinding((JList) control, formModel, formPropertyPath, getRequiredSourceClass());
+    }
+
+    protected void applyContext(AbstractListBinding binding, Map context) {
+        super.applyContext(binding, context);
+        ListBinding listBinding = (ListBinding) binding;
+        if (context.containsKey(RENDERER_KEY)) {
+            listBinding.setRenderer((ListCellRenderer) decorate(context.get(RENDERER_KEY), listBinding.getRenderer()));
+        } else if (renderer != null) {
+            listBinding.setRenderer((ListCellRenderer) decorate(renderer, listBinding.getRenderer()));
+        }
+        if (context.containsKey(SELECTION_MODE_KEY)) {
+            Object contextSelectionMode = context.get(SELECTION_MODE_KEY);
+            if (contextSelectionMode instanceof Integer) {
+                listBinding.setSelectionMode(((Integer) contextSelectionMode).intValue());
+            } else {
+                try {
+                    listBinding.setSelectionMode(((Integer) ListSelectionModel.class.getField(
+                            (String) contextSelectionMode).get(null)).intValue());
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("Unable to access selection mode field in ListSelectionModel", e);
+                } catch (NoSuchFieldException e) {
+                    throw new IllegalArgumentException("Unknown selection mode '" + contextSelectionMode + "'", e);
+                }
+            }
+        } else if (selectionMode != null) {
+            listBinding.setSelectionMode(selectionMode.intValue());
+        }
     }
 
     protected void applyContext(ListBinding binding, Map context) {
-        // Validate that we have enough context to function
-        boolean haveModel = context.containsKey(MODEL_KEY);
-        boolean haveSelectableItems = context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY);
-        boolean haveSelectedItem = context.containsKey(SELECTED_ITEM_HOLDER_KEY);
-
-        if( !(haveModel || haveSelectableItems) ) {
-            throw new IllegalArgumentException("Context must contain value for one of: "
-                + MODEL_KEY + " or " + SELECTABLE_ITEMS_HOLDER_KEY );
-        }
-
-        if( !haveSelectedItem ) {
-            throw new IllegalArgumentException("Context must contain a value for: " + SELECTED_ITEM_HOLDER_KEY);
-        }
-
-        if (haveModel) {
-            binding.setModel((ListModel)context.get(MODEL_KEY));
-        }
-        if (haveSelectableItems) {
-            binding.setSelectableItemsHolder((ValueModel)context.get(SELECTABLE_ITEMS_HOLDER_KEY));
-        }
-        if (haveSelectedItem) {
-            binding.setSelectedItemHolder((ValueModel)context.get(SELECTED_ITEM_HOLDER_KEY));
-        }
-        if (context.containsKey(RENDERER_KEY)) {
-            binding.setRenderer((ListCellRenderer)context.get(RENDERER_KEY));
-        }
-        if (context.containsKey(COMPARATOR_KEY)) {
-            binding.setComparator((Comparator)context.get(COMPARATOR_KEY));
-        }
-        if (context.containsKey(SELECTED_ITEM_TYPE_KEY)) {
-            binding.setSelectedItemType((Class)context.get(SELECTED_ITEM_TYPE_KEY));
-        }
         if (context.containsKey(SELECTION_MODE_KEY)) {
-            if (context.get(SELECTION_MODE_KEY) instanceof Integer) {
-                binding.setSelectionMode((Integer)context.get(SELECTION_MODE_KEY));
-            }
-            else {
-                try {
-                    binding.setSelectionMode((Integer)ListSelectionModel.class.getField(
-                            (String)context.get(SELECTION_MODE_KEY)).get(null));
-                }
-                catch (IllegalAccessException e) {
-                    final IllegalArgumentException iae = new IllegalArgumentException(
-                            "Unable to access selection mode field in ListSelectionModel");
-                    iae.initCause(e);
-                    throw iae;
-                }
-                catch (NoSuchFieldException e) {
-                    final IllegalArgumentException iae = new IllegalArgumentException("Unknown selection mode '"
-                            + context.get(SELECTION_MODE_KEY) + "'");
-                    iae.initCause(e);
-                    throw iae;
-                }
-            }
         }
     }
 
     protected JComponent createControl(Map context) {
-        JList list = getComponentFactory().createList();
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        return list;
+        return getComponentFactory().createList();
     }
+
+    public ListCellRenderer getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(ListCellRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public Integer getSelectionMode() {
+        return selectionMode;
+    }
+
+    public void setSelectionMode(Integer selectionMode) {
+        this.selectionMode = selectionMode;
+    }
+
 }

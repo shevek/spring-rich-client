@@ -16,13 +16,11 @@
 package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.ListModel;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.core.enums.LabeledEnum;
-import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
@@ -34,38 +32,20 @@ import org.springframework.util.comparator.CompoundComparator;
  */
 public class EnumComboBoxBinding extends ComboBoxBinding {
 
-    private LabeledEnumResolver enumResolver;
-
     private MessageSource messageSource;
-
-    public EnumComboBoxBinding(FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath);
-    }
 
     public EnumComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
         super(comboBox, formModel, formPropertyPath);
     }
 
-    protected JComponent doBindControl() {
-        setSelectableItemsHolder(new ValueHolder(getEnumResolver().getLabeledEnumSet(getPropertyType())));
+    protected void doBindControl(ListModel bindingModel) {
         setRenderer(new LabeledEnumListRenderer(getMessageSource()));
         setEditor(new LabeledEnumComboBoxEditor(getMessageSource(), getEditor()));
         CompoundComparator comparator = new CompoundComparator();
         comparator.addComparator(LabeledEnum.LABEL_ORDER);
         comparator.addComparator(new ComparableComparator());
         setComparator(comparator);
-        return super.doBindControl();
-    }
-
-    public void setEnumResolver(LabeledEnumResolver enumResolver) {
-        this.enumResolver = enumResolver;
-    }
-
-    protected LabeledEnumResolver getEnumResolver() {
-        if (enumResolver == null) {
-            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
-        }
-        return enumResolver;
+        super.doBindControl(bindingModel);
     }
 
     public void setMessageSource(MessageSource messageSource) {
@@ -74,7 +54,7 @@ public class EnumComboBoxBinding extends ComboBoxBinding {
 
     protected MessageSource getMessageSource() {
         if (messageSource == null) {
-            messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
+            messageSource = (MessageSource) ApplicationServicesLocator.services().getService(MessageSource.class);
         }
         return messageSource;
     }

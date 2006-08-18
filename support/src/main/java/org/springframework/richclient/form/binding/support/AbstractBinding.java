@@ -119,8 +119,7 @@ public abstract class AbstractBinding extends AbstractControlFactory implements 
     protected Object getValue() {
         return getValueModel().getValue();
     }
-
-
+    
     private class FieldMetadataChangeHandler implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
             if (FieldMetadata.ENABLED_PROPERTY.equals(evt.getPropertyName())) {

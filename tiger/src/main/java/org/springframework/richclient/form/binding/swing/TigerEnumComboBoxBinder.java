@@ -1,45 +1,41 @@
 package org.springframework.richclient.form.binding.swing;
 
+import java.awt.Component;
+import java.awt.event.ActionListener;
+
+import javax.swing.ComboBoxEditor;
+import javax.swing.JComponent;
+
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.form.binding.Binding;
-import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
-import org.springframework.richclient.form.binding.swing.ComboBoxBinding;
 import org.springframework.richclient.list.TextValueListRenderer;
 import org.springframework.util.Assert;
 
-import javax.swing.ComboBoxEditor;
-import javax.swing.JComponent;
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.util.Map;
-
 /**
- * Binds a Tiger enum in a combobox and supports i18n.<br/>
- * The i18n key of an enum is the full classname + "." + enumfield.<br/>
- * For example:<br/>
- * x.y.Season.WINTER = Winter<br/>
- *<p>
+ * Binds a Tiger enum in a combobox and supports i18n.<br/> The i18n key of an enum is the full classname + "." +
+ * enumfield.<br/> For example:<br/> x.y.Season.WINTER = Winter<br/>
+ * <p>
  * configuration happens like this:
- *</p>
- *<pre>
- *  &lt;bean id="binderSelectionStrategy"
- *          class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy"&gt;
- *      &lt;property name="bindersForPropertyTypes"&gt;
- *          &lt;map&gt;
- *              &lt;entry&gt;
- *                  &lt;key&gt;
- *                      &lt;value type="java.lang.Class"&gt;java.lang.Enum&lt;/value&gt;
- *                  &lt;/key&gt;
- *                  &lt;bean class="be.kahosl.thot.swingui.util.TigerEnumComboBoxBinder" /&gt;
- *              &lt;/entry&gt;
- *          &lt;/map&gt;
- *      &lt;/property&gt;
- *  &lt;/bean&gt;
- *</pre>
+ * </p>
+ * 
+ * <pre>
+ *   &lt;bean id=&quot;binderSelectionStrategy&quot;
+ *           class=&quot;org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy&quot;&gt;
+ *       &lt;property name=&quot;bindersForPropertyTypes&quot;&gt;
+ *           &lt;map&gt;
+ *               &lt;entry&gt;
+ *                   &lt;key&gt;
+ *                       &lt;value type=&quot;java.lang.Class&quot;&gt;java.lang.Enum&lt;/value&gt;
+ *                   &lt;/key&gt;
+ *                   &lt;bean class=&quot;be.kahosl.thot.swingui.util.TigerEnumComboBoxBinder&quot; /&gt;
+ *               &lt;/entry&gt;
+ *           &lt;/map&gt;
+ *       &lt;/property&gt;
+ *   &lt;/bean&gt;
+ * </pre>
+ * 
  * @author Geoffrey De Smet
  */
 public class TigerEnumComboBoxBinder extends ComboBoxBinder {
@@ -48,11 +44,10 @@ public class TigerEnumComboBoxBinder extends ComboBoxBinder {
         super();
     }
 
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        ComboBoxBinding binding = (ComboBoxBinding) super.doBind(control, formModel, formPropertyPath, context);
+    protected AbstractListBinding createListBinding(JComponent control, FormModel formModel, String formPropertyPath) {
+        ComboBoxBinding binding = (ComboBoxBinding) super.createListBinding(control, formModel, formPropertyPath);
         binding.setSelectableItemsHolder(createEnumSelectableItemsHolder(formModel, formPropertyPath));
-        MessageSourceAccessor messageSourceAccessor = (MessageSourceAccessor)
-                ApplicationServicesLocator.services().getService(MessageSourceAccessor.class);
+        MessageSourceAccessor messageSourceAccessor = getMessages();
         binding.setRenderer(new TigerEnumListRenderer(messageSourceAccessor));
         binding.setEditor(new TigerEnumComboBoxEditor(messageSourceAccessor, binding.getEditor()));
         return binding;
@@ -64,7 +59,6 @@ public class TigerEnumComboBoxBinder extends ComboBoxBinder {
         Enum[] enumConstants = enumPropertyType.getEnumConstants();
         return new ValueHolder(enumConstants);
     }
-
 
     public class TigerEnumListRenderer extends TextValueListRenderer {
 
@@ -132,4 +126,3 @@ public class TigerEnumComboBoxBinder extends ComboBoxBinder {
     }
 
 }
-

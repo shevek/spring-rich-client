@@ -1,24 +1,25 @@
 package org.springframework.richclient.list;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import java.awt.Component;
+import java.awt.event.ActionListener;
 
 import javax.swing.ComboBoxEditor;
-import java.awt.event.ActionListener;
-import java.awt.Component;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 /**
  * @author Geoffrey De Smet
  */
 public class BeanPropertyValueComboBoxEditor implements ComboBoxEditor {
 
-    private BeanWrapper beanWrapper = new BeanWrapperImpl();
+    private final BeanWrapper beanWrapper = new BeanWrapperImpl();
 
     private Object current;
 
-    private ComboBoxEditor innerEditor;
+    private final ComboBoxEditor innerEditor;
 
-    private String renderedProperty;
+    private final String renderedProperty;
 
     /**
      * Constructs a new <code>BeanPropertyValueComboBoxEditor</code>
@@ -37,7 +38,7 @@ public class BeanPropertyValueComboBoxEditor implements ComboBoxEditor {
      * instance.
      *
      * @param innerEditor
-     *            the <code>ComboBoxEditor</code> to use internally
+     *            the <code>ComboBoxEditor</code> which is used to render the value of the property
      * @param renderedProperty
      *            the property used to render the items
      */
@@ -53,10 +54,6 @@ public class BeanPropertyValueComboBoxEditor implements ComboBoxEditor {
      */
     public BeanPropertyValueComboBoxEditor(String renderedProperty) {
         this(null, renderedProperty);
-    }
-
-    public void setInnerEditor(ComboBoxEditor innerEditor) {
-        this.innerEditor = innerEditor;
     }
 
     /**

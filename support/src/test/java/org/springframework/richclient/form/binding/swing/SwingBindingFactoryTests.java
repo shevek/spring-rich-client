@@ -36,6 +36,7 @@ import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.FormModelHelper;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory.BeanPropertyEditorClosure;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.test.SpringRichTestCase;
@@ -91,7 +92,7 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", items);
         assertBindingProperties(b, JComboBox.class, null, "name");
         assertEquals(1, b.getContext().size(), 1);
-        assertEquals(items, ((ValueModel)b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY)).getValue());
+        assertEquals(items, ((ValueModel)b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY)).getValue());
     }
 
     public void testCreateBoundComboBoxStringValueModel() {
@@ -99,7 +100,7 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", valueHolder);
         assertBindingProperties(b, JComboBox.class, null, "name");
         assertEquals(1, b.getContext().size(), 1);
-        assertEquals(valueHolder, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY));
+        assertEquals(valueHolder, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY));
     }
 
     public void testCreateBoundComboBoxStringStringString() {
@@ -107,11 +108,11 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         assertBindingProperties(b, JComboBox.class, null, "name");
         assertEquals(4, b.getContext().size());
         assertEquals(sbf.getFormModel().getValueModel("listProperty"), b.getContext().get(
-                ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY));
+                ComboBoxBinder.SELECTABLE_ITEMS_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty",
-                ((BeanPropertyValueComboBoxEditor)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getPropertyName());
+                ((BeanPropertyEditorClosure)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getRenderedProperty());
         assertEquals("displayProperty", getComparatorProperty(b));
 
         try {
@@ -128,11 +129,11 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", selectableItemsHolder, "displayProperty");
         assertBindingProperties(b, JComboBox.class, null, "name");
         assertEquals(4, b.getContext().size());
-        assertEquals(selectableItemsHolder, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY));
+        assertEquals(selectableItemsHolder, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ComboBoxBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty",
-                ((BeanPropertyValueComboBoxEditor)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getPropertyName());
+                ((BeanPropertyEditorClosure)b.getContext().get(ComboBoxBinder.EDITOR_KEY)).getRenderedProperty());
         assertEquals("displayProperty", getComparatorProperty(b));
     }
 
@@ -156,7 +157,6 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         assertBindingProperties(b, JList.class, null, "listProperty");
 
         assertEquals(1, b.getContext().size());
-        assertTrue(b.getContext().get(ListBinder.MODEL_KEY) instanceof ListListModel);
     }
 
     public void testCreateBoundListStringObjectString() {
@@ -164,13 +164,12 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundList("listProperty", selectableItems, "displayProperty");
         assertBindingProperties(b, JList.class, null, "listProperty");
 
-        assertEquals(5, b.getContext().size());
+        assertEquals(3, b.getContext().size());
         assertEquals(selectableItems,
-                ((ValueModel)b.getContext().get(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY)).getValue());
+                ((ValueModel)b.getContext().get(ListBinder.SELECTABLE_ITEMS_KEY)).getValue());
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ListBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty", getComparatorProperty(b));
-        assertEquals(List.class, b.getContext().get(ListBinder.SELECTED_ITEM_TYPE_KEY));
         assertFalse(b.getContext().containsKey(ListBinder.SELECTION_MODE_KEY));
     }
 
@@ -180,8 +179,8 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
                 "displayProperty");
         assertBindingProperties(b, JList.class, null, "listProperty");
 
-        assertEquals(5, b.getContext().size());
-        assertEquals(selectableItemsHolder, b.getContext().get(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY));
+        assertEquals(3, b.getContext().size());
+        assertEquals(selectableItemsHolder, b.getContext().get(ListBinder.SELECTABLE_ITEMS_KEY));
         assertEquals("displayProperty",
                 ((BeanPropertyValueListRenderer)b.getContext().get(ListBinder.RENDERER_KEY)).getPropertyName());
         assertEquals("displayProperty", getComparatorProperty(b));

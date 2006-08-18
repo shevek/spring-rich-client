@@ -17,6 +17,8 @@ package org.springframework.richclient.list;
 
 import java.util.List;
 
+import javax.swing.ListModel;
+
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.command.ActionCommand;
 
@@ -29,7 +31,7 @@ public class ListUtils {
     public static ActionCommand createRemoveRowCommand(final List list, final ValueModel selectionIndexHolder) {
         ActionCommand removeCommand = new ActionCommand("removeCommand") {
             protected void doExecuteCommand() {
-                int selectedRowIndex = ((Integer)selectionIndexHolder.getValue()).intValue();
+                int selectedRowIndex = ((Integer) selectionIndexHolder.getValue()).intValue();
                 list.remove(selectedRowIndex);
             }
         };
@@ -37,4 +39,34 @@ public class ListUtils {
         return removeCommand;
     }
 
+    /**
+     * Returns the list model of a filter chain.
+     * 
+     * @param listModel
+     *            the filtered list model chain
+     * @return the (unfiltered) list model
+     */
+    public static ListModel getFilteredListModel(ListModel listModel) {
+        if (listModel instanceof AbstractFilteredListModel) {
+            return getFilteredListModel(((AbstractFilteredListModel) listModel).getFilteredModel());
+        }
+        return listModel;
+    }
+
+    /**
+     * Returns the unfiltered element index from a chained filtered list model
+     * 
+     * @param listModel
+     *            the chained filtered list model
+     * @param filteredIndex
+     *            the index of the element to return the unfiltered index for
+     * @return the element index of the unfiltered list model
+     */
+    public static int getElementIndex(ListModel listModel, int filteredIndex) {
+        if (listModel instanceof AbstractFilteredListModel) {
+            AbstractFilteredListModel filteredModel = (AbstractFilteredListModel) listModel;
+            return getElementIndex(filteredModel.getFilteredModel(), filteredModel.getElementIndex(filteredIndex));
+        }
+        return filteredIndex;
+    }
 }

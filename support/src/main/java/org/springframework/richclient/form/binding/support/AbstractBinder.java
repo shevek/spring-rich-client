@@ -27,8 +27,7 @@ import javax.swing.JComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.factory.ComponentFactory;
+import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.util.Assert;
@@ -36,7 +35,7 @@ import org.springframework.util.Assert;
 /**
  * @author Oliver Hutchison
  */
-public abstract class AbstractBinder implements Binder {
+public abstract class AbstractBinder extends ApplicationServicesAccessor implements Binder {
 
     /**
      * The client property key that is used to save a copy of a binding in its bound 
@@ -99,10 +98,6 @@ public abstract class AbstractBinder implements Binder {
     }
 
     protected abstract Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context);
-
-    protected ComponentFactory getComponentFactory() {
-        return (ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class);
-    }
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
         return formModel.getFieldMetadata(formPropertyPath).getPropertyType();

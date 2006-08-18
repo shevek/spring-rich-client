@@ -15,78 +15,79 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import java.util.Comparator;
 import java.util.Map;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
-import javax.swing.ComboBoxEditor;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.form.binding.Binding;
-import org.springframework.richclient.form.binding.support.AbstractBinder;
-import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.util.Assert;
 
 /**
  * @author Oliver Hutchison
  */
-public class ComboBoxBinder extends AbstractBinder  {
-    public static final String SELECTABLE_ITEMS_HOLDER_KEY = "selectableItemsHolder";
-
-    public static final String COMPARATOR_KEY = "comparator";
-
+public class ComboBoxBinder extends AbstractListBinder {
     public static final String RENDERER_KEY = "renderer";
 
     public static final String EDITOR_KEY = "editor";
 
-    public static final String FILTER_KEY = "filter";
-    
+    private ListCellRenderer renderer;
+
+    private ComboBoxEditor editor;
+
     public ComboBoxBinder() {
-        super(null, new String[] {SELECTABLE_ITEMS_HOLDER_KEY,
-            COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY});
-    }
-    
-    public ComboBoxBinder(String[] supportedContextKeys) {
-        super(null, supportedContextKeys);        
-    }
-    
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        Assert.isTrue(control instanceof JComboBox, formPropertyPath);
-        ComboBoxBinding binding = new ComboBoxBinding((JComboBox)control, formModel, formPropertyPath);
-        applyContext(binding, context);
-        return binding;
+        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY });
     }
 
-    protected void applyContext(ComboBoxBinding binding, Map context) {
-        if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
-            binding.setSelectableItemsHolder((ValueModel)context.get(SELECTABLE_ITEMS_HOLDER_KEY));
-        }
-        if (context.containsKey(FILTER_KEY)) {
-            binding.setFilter((Constraint)context.get(FILTER_KEY));
-        }
+    public ComboBoxBinder(String[] supportedContextKeys) {
+        this(null, supportedContextKeys);
+    }
+
+    public ComboBoxBinder(Class requiredSourceClass, String[] supportedContextKeys) {
+        super(requiredSourceClass, supportedContextKeys);
+    }
+
+    protected AbstractListBinding createListBinding(JComponent control, FormModel formModel, String formPropertyPath) {
+        Assert.isInstanceOf(JComboBox.class, control, formPropertyPath);
+        return new ComboBoxBinding((JComboBox) control, formModel, formPropertyPath, getRequiredSourceClass());
+    }
+
+    protected void applyContext(AbstractListBinding binding, Map context) {
+        super.applyContext(binding, context);
+        ComboBoxBinding comboBoxBinding = (ComboBoxBinding) binding;
         if (context.containsKey(RENDERER_KEY)) {
-            binding.setRenderer((ListCellRenderer)context.get(RENDERER_KEY));
+            comboBoxBinding.setRenderer((ListCellRenderer) decorate(context.get(RENDERER_KEY), comboBoxBinding
+                    .getRenderer()));
+        } else if (renderer != null) {
+            comboBoxBinding.setRenderer((ListCellRenderer) decorate(renderer, comboBoxBinding.getRenderer()));
         }
         if (context.containsKey(EDITOR_KEY)) {
-            ComboBoxEditor comboBoxEditor = (ComboBoxEditor) context.get(EDITOR_KEY);
-            if (comboBoxEditor instanceof BeanPropertyValueComboBoxEditor) {
-                // HACK because SwingBindingFactory that made the editor hadn't access to the inner editor yet
-                BeanPropertyValueComboBoxEditor beanPropertyValueComboBoxEditor
-                        = (BeanPropertyValueComboBoxEditor) comboBoxEditor;
-                beanPropertyValueComboBoxEditor.setInnerEditor(binding.getEditor());
-            }
-            binding.setEditor(comboBoxEditor);
-        }
-        if (context.containsKey(COMPARATOR_KEY)) {
-            binding.setComparator((Comparator)context.get(COMPARATOR_KEY));
+            comboBoxBinding.setEditor((ComboBoxEditor) decorate(context.get(EDITOR_KEY), comboBoxBinding.getEditor()));
+        } else if (editor != null) {
+            comboBoxBinding.setEditor((ComboBoxEditor) decorate(editor, comboBoxBinding.getEditor()));
         }
     }
 
     protected JComponent createControl(Map context) {
         return getComponentFactory().createComboBox();
     }
+
+    public ListCellRenderer getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(ListCellRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public ComboBoxEditor getEditor() {
+        return editor;
+    }
+
+    public void setEditor(ComboBoxEditor editor) {
+        this.editor = editor;
+    }
+
 }

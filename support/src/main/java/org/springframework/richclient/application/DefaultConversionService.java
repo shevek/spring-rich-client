@@ -23,6 +23,7 @@ import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.format.FormatterLocator;
 import org.springframework.binding.format.support.SimpleFormatterLocator;
+import org.springframework.richclient.convert.support.CollectionConverter;
 import org.springframework.util.StringUtils;
 
 public class DefaultConversionService extends org.springframework.binding.convert.support.DefaultConversionService {
@@ -39,6 +40,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
         addConverter(new NumberToText(getFormatterLocator(), true));
         addConverter(new BooleanToText());
         addConverter(new TextToBoolean());
+        addConverter(new CollectionConverter());
     }
 
     private FormatterLocator getFormatterLocator() {

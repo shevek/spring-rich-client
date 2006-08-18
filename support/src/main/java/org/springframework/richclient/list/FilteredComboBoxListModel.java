@@ -16,8 +16,10 @@
 package org.springframework.richclient.list;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.ListModel;
 
 import org.springframework.core.closure.Constraint;
+import org.springframework.util.Assert;
 
 /**
  * @author kdonald
@@ -26,12 +28,19 @@ public class FilteredComboBoxListModel extends FilteredListModel implements Comb
 
     private boolean matchedSelected;
 
+    private boolean selectingItem;
+
     public FilteredComboBoxListModel(ComboBoxModel filteredModel, Constraint filter) {
         super(filteredModel, filter);
     }
 
+    public void setFilteredModel(ListModel model) {
+        Assert.isInstanceOf(ComboBoxModel.class, model);
+        super.setFilteredModel(model);
+    }
+
     protected ComboBoxModel getComboBoxModel() {
-        return (ComboBoxModel)getFilteredModel();
+        return (ComboBoxModel) getFilteredModel();
     }
 
     protected void onMatchingElement(Object element) {
@@ -44,8 +53,7 @@ public class FilteredComboBoxListModel extends FilteredListModel implements Comb
         if (!matchedSelected) {
             if (getSize() > 0) {
                 setSelectedItem(getElementAt(0));
-            }
-            else {
+            } else {
                 setSelectedItem(null);
             }
         }
@@ -60,7 +68,14 @@ public class FilteredComboBoxListModel extends FilteredListModel implements Comb
     }
 
     public void setSelectedItem(Object anItem) {
-        getComboBoxModel().setSelectedItem(anItem);
+        if (!selectingItem) {
+            selectingItem = true;
+            try {
+                getComboBoxModel().setSelectedItem(anItem);
+            } finally {
+                selectingItem = false;
+            }
+        }
     }
 
 }

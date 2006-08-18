@@ -35,6 +35,8 @@ public class TestBean {
 
     private List listProperty;
 
+    private Object[] arrayProperty;
+
     private Object singleSelectListProperty;
 
     private TestBean nestedProperty;
@@ -115,6 +117,14 @@ public class TestBean {
 
     public void setWriteOnly(Object writeOnly) {
         this.writeOnly = writeOnly;
+    }
+
+    public Object[] getArrayProperty() {
+        return arrayProperty;
+    }
+
+    public void setArrayProperty(Object[] arrayProperty) {
+        this.arrayProperty = arrayProperty;
     }
 
 }

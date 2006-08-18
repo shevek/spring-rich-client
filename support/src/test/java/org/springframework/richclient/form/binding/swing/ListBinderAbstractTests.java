@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,8 +29,6 @@ import javax.swing.ListSelectionModel;
 
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.FieldMetadata;
-import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 /**
  * Tests for ListBinder and ListBinding
@@ -44,8 +43,6 @@ public class ListBinderAbstractTests extends BindingAbstractTests {
 
     private List selectableItems;
 
-    private ValueModel selectableItemsHolder;
-
     private ListBinding b;
 
     private JList c;
@@ -58,22 +55,15 @@ public class ListBinderAbstractTests extends BindingAbstractTests {
         selectableItems = Arrays.asList(new Object[] {new Item("A"), new Item("B"), new Item("C"), new Item("D"),
                 new Item("E")});
 
-        selectableItemsHolder = new ValueHolder(selectableItems);
-
-        context.put(ListBinder.SELECTABLE_ITEMS_HOLDER_KEY, selectableItemsHolder);
+        context.put(ListBinder.SELECTABLE_ITEMS_KEY, selectableItems);
         context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer("name"));
         context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator("name", true, false));
 
         return "listProperty";
     }
 
-    protected void setupBinding(final String formPropertyPath) {
+    protected void setupBinding(String formPropertyPath) {
         vm = fm.getValueModel(formPropertyPath);
-        context.put(ListBinder.SELECTED_ITEM_HOLDER_KEY, vm);
-        final Class selectionPropertyType = fm.getFieldMetadata(formPropertyPath).getPropertyType();
-        if (selectionPropertyType != null) {
-            context.put(ListBinder.SELECTED_ITEM_TYPE_KEY, selectionPropertyType);
-        }
     }
 
     protected void setupMultipleSelectionBinding() {
@@ -201,22 +191,21 @@ public class ListBinderAbstractTests extends BindingAbstractTests {
         final Object[] selection = c.getSelectedValues();
         assertNotNull(selection);
         assertEquals(2, selection.length);
-        assertTrue(selection[0] == selectableItems.get(1));
-        assertTrue(selection[1] == selectableItems.get(4));
+        assertTrue(selectableItems.contains(selection[0]));
+        assertTrue(selectableItems.contains(selection[1]));
     }
 
     public void testInitialForcedSingleSelection() {
         setupMultipleSelectionBinding();
         context.put(ListBinder.SELECTION_MODE_KEY, "SINGLE_SELECTION");
-        final List originalList = Arrays.asList(new Object[] {new Item("E"), new Item("B")});
+        final List originalList = new ArrayList(Arrays.asList(new Object[] {new Item("E"), new Item("B")}));
         vm.setValue(originalList);
         doMultipleSelectionBinding();
 
         // The original list should now be modified to contain only the first
-        // selection.  Also, the code currently creates a new list instead of
-        // reusing the original list.
+        // selection.
         assertNotNull(vm.getValue());
-        assertFalse(vm.getValue() == originalList);
+        assertTrue(vm.getValue() == originalList);
         assertEquals(1, ((List)vm.getValue()).size());
         assertEquals(new Item("E"), ((List)vm.getValue()).get(0));
 
@@ -291,16 +280,8 @@ public class ListBinderAbstractTests extends BindingAbstractTests {
             assertNotNull(selectedValue);
             assertEquals(original.size(), selected.length);
             assertEquals(original.size(), selectedValue.size());
-            int i = 0;
-            final Iterator iSelectedValue = selectedValue.iterator();
-            for (final Iterator iOriginal = original.iterator(); iOriginal.hasNext(); i++) {
-                final Object object = iOriginal.next();
-                final Object selectionHolderValue = iSelectedValue.next();
-                final Object sourceObject = selectableItems.get(selectableItems.indexOf(object));
-                assertTrue(selected[i] == sourceObject);
-                assertEquals(sourceObject, selectionHolderValue);
-            }
-            assertFalse(iSelectedValue.hasNext());
+            assertTrue(selectedValue.containsAll(original));
+            assertTrue(original.containsAll(selectedValue));
         }
     }
 

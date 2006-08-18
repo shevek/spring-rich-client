@@ -17,13 +17,10 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashSet;
 
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
@@ -31,305 +28,232 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.BufferedCollectionValueModel;
-import org.springframework.binding.value.support.ListListModel;
-import org.springframework.richclient.form.binding.support.AbstractBinding;
-import org.springframework.richclient.list.DynamicListModel;
+import org.springframework.core.ReflectiveVisitorHelper;
+import org.springframework.util.Assert;
 
-public class ListBinding extends AbstractBinding {
+public class ListBinding extends AbstractListBinding {
 
-    private final SelectedItemChangeHandler selectedItemChangeHandler = new SelectedItemChangeHandler();
+    private final ListSelectionListener selectionListener = new SelectionListener();
 
-    private final JList list;
+    private final PropertyChangeListener valueModelListener = new ValueModelListener();
 
-    private ListModel model;
+    private ConversionExecutor conversionExecutor;
 
-    private ValueModel selectedItemHolder;
+    private final ReflectiveVisitorHelper visitorHelper = new ReflectiveVisitorHelper();
 
-    private ValueModel selectableItemsHolder;
+    private final Object selectedValuesVisitor = new SelectedValuesVisitor();
 
-    private ListCellRenderer renderer;
+    boolean selectingValues;
 
-    private Comparator comparator;
-
-    private Integer selectionMode = null;
-
-    private Class selectedItemType;
-
-    private Class concreteSelectedType;
-
-    public ListBinding(JList list, FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath, null);
-        this.list = list;
+    public ListBinding(JList list, FormModel formModel, String formFieldPath, Class requiredSourceClass) {
+        super(list, formModel, formFieldPath, requiredSourceClass);
     }
 
-    public void setComparator(Comparator comparator) {
-        this.comparator = comparator;
+    public JList getList() {
+        return (JList) getComponent();
     }
 
-    public void setModel(ListModel model) {
-        this.model = model;
+    public void setSelectionMode(int selectionMode) {
+        Assert.isTrue(ListSelectionModel.SINGLE_SELECTION == selectionMode || isPropertyConversionExecutorAvailable());
+        getList().setSelectionMode(selectionMode);
+    }
+
+    public int getSelectionMode() {
+        return getList().getSelectionMode();
+    }
+
+    /**
+     * Returns a conversion executor which converts a value of the given sourceType into the fieldType
+     * 
+     * @param sourceType
+     *            the sourceType
+     * @return true if a converter is available, otherwise false
+     * 
+     * @see #getPropertyType()
+     */
+    protected ConversionExecutor getPropertyConversionExecutor() {
+        if (conversionExecutor == null) {
+            conversionExecutor = getConversionService().getConversionExecutor(Object[].class, getPropertyType());
+        }
+        return conversionExecutor;
+    }
+
+    protected boolean isPropertyConversionExecutorAvailable() {
+        try {
+            getConversionService().getConversionExecutor(Object[].class, getPropertyType());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return true;
+    }
+
+    protected void updateSelectedItemsFromSelectionModel() {
+        if (getSelectionMode() == ListSelectionModel.SINGLE_SELECTION) {
+            Object singleValue = getList().getSelectedValue();
+            if (!updateCollectionValue(new Object[] { singleValue }))
+                getValueModel().setValueSilently(singleValue, valueModelListener);
+        } else {
+            Object[] values = getList().getSelectedValues();
+            if (!updateCollectionValue(values))
+                getValueModel().setValueSilently(convertSelectedValues(getList().getSelectedValues()),
+                        valueModelListener);
+        }
+    }
+
+    private boolean updateCollectionValue(Object[] selectedValues) {
+        if (Collection.class.isAssignableFrom(getPropertyType())) {
+            Collection value = (Collection) getValue();
+            if (value != null) {
+                try {
+                    value.clear();
+                    value.addAll(Arrays.asList(selectedValues));
+                    return true;
+                } catch (UnsupportedOperationException e) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Converts the given values into a type that matches the fieldType
+     * 
+     * @param selectedValues
+     *            the selected values
+     * @return the value which can be assigned to the type of the field
+     */
+    protected Object convertSelectedValues(Object[] selectedValues) {
+        return getPropertyConversionExecutor().execute(selectedValues);
+    }
+
+    protected void doBindControl(ListModel bindingModel) {
+        JList list = getList();
+        list.setModel(bindingModel);
+        list.getSelectionModel().addListSelectionListener(selectionListener);
+        getValueModel().addValueChangeListener(valueModelListener);
+        if (!isPropertyConversionExecutorAvailable() && getSelectionMode() != ListSelectionModel.SINGLE_SELECTION) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("Selection mode for list field " + getProperty() + " forced to single selection."
+                        + " If multiple selection is needed use a collection type (List, Collection, Object[])"
+                        + " or provide a suitable converter to convert Object[] instances to property type "
+                        + getPropertyType());
+            }
+            setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+        updateSelectedItemsFromValueModel();
+    }
+
+    /**
+     * Updates the selection model with the selected values from the value model.
+     */
+    protected void updateSelectedItemsFromValueModel() {
+        Object[] selectedValues = (Object[]) visitorHelper.invokeVisit(selectedValuesVisitor, getValue());
+
+        // flag is used to avoid a round trip while we are selecting the values
+        selectingValues = true;
+        try {
+            ListSelectionModel selectionModel = getList().getSelectionModel();
+            selectionModel.setValueIsAdjusting(true);
+            try {
+                int[] valueIndexes = determineValueIndexes(selectedValues);
+                int selectionMode = getSelectionMode();
+                if (selectionMode == ListSelectionModel.SINGLE_SELECTION && valueIndexes.length > 1) {
+                    getList().setSelectedIndex(valueIndexes[0]);
+                } else {
+                    getList().setSelectedIndices(valueIndexes);
+                }
+
+                // update value model if selectedValues contain elements which where not found in the list model
+                // elements
+                if (valueIndexes.length != selectedValues.length && !isReadOnly() && isEnabled()
+                        || (selectionMode == ListSelectionModel.SINGLE_SELECTION && valueIndexes.length > 1)) {
+                    updateSelectedItemsFromSelectionModel();
+                }
+            } finally {
+                selectionModel.setValueIsAdjusting(false);
+            }
+        } finally {
+            selectingValues = false;
+        }
+    }
+
+    /**
+     * @param values
+     * @return
+     */
+    protected int[] determineValueIndexes(Object[] values) {
+        int[] indexes = new int[values.length];
+        if (values.length == 0)
+            return indexes;
+
+        Collection lookupValues = new HashSet(Arrays.asList(values));
+        ListModel model = getList().getModel();
+        int i = 0;
+        for (int index = 0, size = model.getSize(); index < size && !lookupValues.isEmpty(); index++) {
+            if (lookupValues.remove(model.getElementAt(index))) {
+                indexes[i++] = index;
+            }
+        }
+        int[] result;
+        if (i != values.length) {
+            result = new int[i];
+            System.arraycopy(indexes, 0, result, 0, i);
+        } else {
+            result = indexes;
+        }
+        return result;
     }
 
     public void setRenderer(ListCellRenderer renderer) {
-        this.renderer = renderer;
+        getList().setCellRenderer(renderer);
     }
 
-    public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
-        this.selectableItemsHolder = selectableItemsHolder;
+    public ListCellRenderer getRenderer() {
+        return getList().getCellRenderer();
     }
 
-    public void setSelectedItemHolder(ValueModel selectedItemHolder) {
-        this.selectedItemHolder = selectedItemHolder;
-    }
-
-    public void setSelectionMode(final Integer selectionMode) {
-        this.selectionMode = selectionMode;
-    }
-
-    public void setSelectedItemType(final Class selectedItemType) {
-        this.selectedItemType = selectedItemType;
-    }
-
-    protected Class getSelectedItemType() {
-        if (this.selectedItemType == null) {
-            if (this.selectedItemHolder != null && this.selectedItemHolder.getValue() != null) {
-                setSelectedItemType(this.selectedItemHolder.getValue().getClass());
-            }
-        }
-
-        return this.selectedItemType;
-    }
-
-    /**
-     * Determine if the selected item type can be multi-valued (is a collection
-     * or an array.
-     * @return boolean <code>true</code> if the <code>selectedItemType</code> is a
-     * Collection or an Array.
-     */
-    protected boolean isSelectedItemMultiValued() {
-        return isSelectedItemACollection() || isSelectedItemAnArray();
-    }
-
-    /**
-     * Determine if the selected item type can be multi-valued (is a collection
-     * or an array.
-     * @return boolean <code>true</code> if the <code>selectedItemType</code> is a
-     * Collection or an Array.
-     */
-    protected boolean isSelectedItemAnArray() {
-        Class itemType = getSelectedItemType();
-        return itemType != null && itemType.isArray();
-    }
-
-    protected boolean isSelectedItemACollection() {
-        return getSelectedItemType() != null && Collection.class.isAssignableFrom(getSelectedItemType());
-    }
-
-    protected boolean isTrulyMultipleSelect() {
-        return list.getSelectionMode() != ListSelectionModel.SINGLE_SELECTION && isSelectedItemMultiValued();
-    }
-
-    protected Class getConcreteSelectedType() {
-        if (concreteSelectedType == null) {
-            if (isSelectedItemACollection()) {
-                concreteSelectedType = BufferedCollectionValueModel.getConcreteCollectionType(getSelectedItemType());
-            }
-            else if (isSelectedItemAnArray()) {
-                concreteSelectedType = getSelectedItemType().getComponentType();
-            }
-        }
-        return concreteSelectedType;
-    }
-
-    protected JComponent doBindControl() {
-        list.setModel(createModel());
-        if (selectedItemHolder != null) {
-            if (this.selectionMode != null) {
-                list.setSelectionMode(this.selectionMode.intValue());
-            }
-            else if (isSelectedItemMultiValued()) {
-                list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-            }
-            selectedValueChanged();
-            selectedItemHolder.addValueChangeListener(selectedItemChangeHandler);
-            list.addListSelectionListener(selectedItemChangeHandler);
-        }
-        if (renderer != null) {
-            list.setCellRenderer(renderer);
-        }
-        return list;
-    }
-
-    protected void selectedValueChanged() {
-        if (isSelectedItemMultiValued()) {
-            final int[] indices = indicesOf(selectedItemHolder.getValue());
-            if (indices.length < 1) {
-                list.clearSelection();
-            }
-            else if (isTrulyMultipleSelect()) {
-                list.setSelectedIndices(indices);
-                // The selection may now be different than what is reflected in
-                // collection property if this is SINGLE_INTERVAL_SELECTION, so
-                // modify if needed...
-                updateSelectionHolderFromList();
-            }
-            else {
-                // If it is a collection value but multiple selection is not enabled
-                // then use the first item in the collection to select.  This can
-                // only be the case if the selection property is a Collection type
-                // but client code explicitly set the SELECTION_MODE_KEY context
-                // flag to SINGLE_SELECTION.
-                list.setSelectedIndex(indices[0]);
-                // The selection may now be different than what is reflected in
-                // collection property, so modify if needed...
-                updateSelectionHolderFromList();
-            }
-        }
-        else {
-            if (selectedItemHolder.getValue() != null) {
-                list.setSelectedValue(selectedItemHolder.getValue(), true);
-            }
-            else {
-                list.clearSelection();
-            }
-        }
-    }
-
-    /**
-     * Return an array of indices in the selectableItems for each element in the provided set.  The set can
-     * be either a Collection or an Array.
-     * @param itemSet Either an array or a Collection of items
-     * @return array of indices of the elements in itemSet within the selectableItems
-     */
-    protected int[] indicesOf(final Object itemSet) {
-        int[] ret = null;
-
-        if (itemSet instanceof Collection) {
-            Collection collection = (Collection)itemSet;
-            ret = new int[collection.size()];
-            int i = 0;
-            for (Iterator iter = collection.iterator(); iter.hasNext(); i++) {
-                ret[i] = indexOf(iter.next());
-            }
-        }
-        else if (itemSet != null && itemSet.getClass().isArray()) {
-            Object[] items = (Object[])itemSet;
-            ret = new int[items.length];
-            for (int i = 0; i < items.length; i++) {
-                ret[i] = indexOf(items[i]);
-            }
-        }
-        else if (itemSet == null) {
-            ret = new int[0];
-        }
-        else {
-            throw new IllegalArgumentException("itemSet must be an array or a Collection");
-        }
-
-        return ret;
-    }
-
-    protected int indexOf(final Object o) {
-        final ListModel listModel = list.getModel();
-        final int size = listModel.getSize();
-        for (int i = 0; i < size; i++) {
-            if (comparator == null) {
-                if (o.equals(listModel.getElementAt(i))) {
-                    return i;
-                }
-            }
-            else if (comparator.compare(o, listModel.getElementAt(i)) == 0) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private ListModel createModel() {
-        if (model != null)
-            return model;
-
-        ListListModel model;
-        if (selectableItemsHolder != null) {
-            model = new DynamicListModel(selectableItemsHolder);
-        }
-        else {
-            model = new ListListModel();
-        }
-        model.setComparator(comparator);
-        return model;
-    }
-
-    protected void readOnlyChanged() {
-        list.setEnabled(isEnabled() && !isReadOnly());
-    }
-
-    protected void enabledChanged() {
-        list.setEnabled(isEnabled() && !isReadOnly());
-    }
-
-    protected void updateSelectionHolderFromList() {
-        final Object[] selected = list.getSelectedValues();
-
-        if (isSelectedItemACollection()) {
-            try {
-                // In order to properly handle buffered forms, we will
-                // create a new collection to hold the new selection.
-                final Collection newSelection = (Collection)getConcreteSelectedType().newInstance();
-                if (selected != null && selected.length > 0) {
-                    for (int i = 0; i < selected.length; i++) {
-                        newSelection.add(selected[i]);
-                    }
-                }
-
-                // Only modify the selectedItemHolder if the selection is actually
-                // changed.
-                final Collection oldSelection = (Collection)selectedItemHolder.getValue();
-                if (oldSelection == null || !oldSelection.containsAll(newSelection)
-                        || oldSelection.size() != newSelection.size()) {
-                    selectedItemHolder.setValueSilently(newSelection, selectedItemChangeHandler);
-                }
-            }
-            catch (InstantiationException e1) {
-                throw new RuntimeException("Unable to instantiate new concrete collection class for new selection.", e1);
-            }
-            catch (IllegalAccessException e1) {
-                throw new RuntimeException(e1);
-            }
-        }
-        else if (isSelectedItemAnArray()) {
-
-            final Object[] newSelection = (Object[])Array.newInstance(getConcreteSelectedType(), selected.length);
-            for (int i = 0; i < selected.length; i++) {
-                newSelection[i] = selected[i];
-            }
-
-            // Only modify the selectedItemHolder if the selection is actually
-            // changed.
-            final Object[] oldSelection = (Object[])selectedItemHolder.getValue();
-            if (oldSelection == null || oldSelection.length != newSelection.length
-                    || !Arrays.equals(oldSelection, newSelection)) {
-                selectedItemHolder.setValueSilently(newSelection, selectedItemChangeHandler);
-            }
-        }
-        else {
-            selectedItemHolder.setValueSilently(list.getSelectedValue(), selectedItemChangeHandler);
-        }
-    }
-
-    private class SelectedItemChangeHandler implements PropertyChangeListener, ListSelectionListener {
-        public void propertyChange(PropertyChangeEvent evt) {
-            selectedValueChanged();
-        }
+    protected class SelectionListener implements ListSelectionListener {
 
         public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                updateSelectionHolderFromList();
+            if (!selectingValues && !e.getValueIsAdjusting()) {
+                updateSelectedItemsFromSelectionModel();
             }
         }
+
+    }
+
+    protected class ValueModelListener implements PropertyChangeListener {
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            updateSelectedItemsFromValueModel();
+        }
+
+    }
+
+    protected static class SelectedValuesVisitor {
+        private static final Object[] EMPTY_VALUES = new Object[0];
+
+        Object[] visit(Object[] values) {
+            return values;
+        }
+
+        Object[] visit(Collection values) {
+            return values.toArray();
+        }
+
+        Object[] visit(Object value) {
+            return new Object[] { value };
+        }
+
+        Object[] visitNull() {
+            return EMPTY_VALUES;
+        }
+    }
+
+    protected ListModel getDefaultModel() {
+        return getList().getModel();
     }
 }

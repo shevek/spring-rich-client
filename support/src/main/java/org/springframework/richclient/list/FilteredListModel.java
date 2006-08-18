@@ -55,6 +55,11 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
         setConstraint(constraint);
     }
 
+    protected void fireContentsChanged(Object source, int index0, int index1) {
+        reallocateIndexes();
+        super.fireContentsChanged(source, index0, index1);
+    }
+
     /**
      * Defines the constraint which is applied to the list model elements
      * 
@@ -74,7 +79,7 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
             if (constraint instanceof Observable) {
                 ((Observable) constraint).addObserver(this);
             }
-            reallocateIndexes();
+            fireContentsChanged(this, -1, -1);
         }
     }
 
@@ -90,7 +95,9 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
      * element size
      */
     protected void reallocateIndexes() {
-        this.indexes = new int[getFilteredModel().getSize()];
+        if (this.indexes == null || this.indexes.length != getFilteredModel().getSize()) {
+            this.indexes = new int[getFilteredModel().getSize()];
+        }
         applyConstraint();
     }
 
@@ -99,7 +106,6 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
      * model elements
      */
     public void update(Observable changed, Object arg) {
-        applyConstraint();
         fireContentsChanged(this, -1, -1);
     }
 
@@ -141,24 +147,18 @@ public class FilteredListModel extends AbstractFilteredListModel implements Obse
     }
 
     /**
-     * Returns the filtered element at a given position
-     */
-    public Object getElementAt(int filteredIndex) {
-        return getFilteredModel().getElementAt(getElementIndex(filteredIndex));
-    }
-
-    /**
      * Returns the element index for a filtered index
      * 
      * @param filteredIndex
      *            the filtered index
      * @return the unfiltered index of the filtered model
      */
-    protected int getElementIndex(int filteredIndex) {
+    public int getElementIndex(int filteredIndex) {
         return indexes[filteredIndex];
     }
 
     public void contentsChanged(ListDataEvent e) {
+        reallocateIndexes();
         super.contentsChanged(e);
     }
 

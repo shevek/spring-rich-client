@@ -17,185 +17,122 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ListListModel;
-import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.core.closure.Constraint;
-import org.springframework.richclient.form.binding.support.CustomBinding;
+import org.springframework.richclient.list.AbstractFilteredListModel;
 
 /**
  * TODO: support for filters
  * 
  * @author Oliver Hutchison
  */
-public class ComboBoxBinding extends CustomBinding {
-
-    private final JComboBox comboBox;
-
-    private final BoundComboBoxModel model = new BoundComboBoxModel();
-
-    private final SelectableItemsChangeHandler selectableItemsChangeHandler = new SelectableItemsChangeHandler();
-
-    private ValueModel selectableItemsHolder;
-
-    private Constraint filter;
+public class ComboBoxBinding extends AbstractListBinding {
 
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath, null);
-        this.comboBox = createComboBox();
-        updateSelectableItems();
+        this(new JComboBox(), formModel, formPropertyPath, null);
     }
 
     public ComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
-        super(formModel, formPropertyPath, null);
-        this.comboBox = comboBox;
-        updateSelectableItems();
+        this(comboBox, formModel, formPropertyPath, null);
     }
 
-    protected JComponent doBindControl() {
-        comboBox.setModel(model);
-        comboBox.setSelectedItem(getValueModel().getValue());
-        return comboBox;
+    public ComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath, Class requiredSourceClass) {
+        super(comboBox, formModel, formPropertyPath, requiredSourceClass);
     }
 
-    /**
-     * @return Collections.EMPTY_LIST if SelectableItemHolder's value was null, a created List if value was an instance
-     *         of Object[] or a Collection if the value was already a collection.
-     * @exception UnsupportedOperationException
-     *                if none the SelectableItemholder's value wasn't any of the above
-     */
-    protected Collection getSelectableItems() {
-        final Object selectableItems = getSelectableItemsHolder().getValue();
-        Collection items;
-        if (selectableItems == null) {
-            items = Collections.EMPTY_LIST;
-        } else if (selectableItems instanceof Object[]) {
-            items = Arrays.asList((Object[]) selectableItems);
-        } else if (selectableItems instanceof Collection) {
-            items = (Collection) selectableItems;
-        } else {
-            throw new UnsupportedOperationException("selectableItemsHolder must contain an array or a Collection");
-        }
-        if (filter != null) {
-            Collection filteredItems = new ArrayList(items.size());
-            for (Iterator iter = items.iterator(); iter.hasNext();) {
-                Object item = iter.next();
-                if (filter.test(item)) {
-                    filteredItems.add(item);
-                }
-            }
-            items = filteredItems;
-        }
-        return items;
+    protected void doBindControl(ListModel bindingModel) {
+        getComboBox().setModel(new BoundComboBoxModel(bindingModel));
     }
 
-    protected void updateSelectableItems() {
-        model.replaceWith(getSelectableItems());
-        model.sort();
-    }
-
-    public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
-        if (this.selectableItemsHolder != null) {
-            this.selectableItemsHolder.removeValueChangeListener(selectableItemsChangeHandler);
-        }
-        this.selectableItemsHolder = selectableItemsHolder;
-        selectableItemsHolder.addValueChangeListener(selectableItemsChangeHandler);
-        updateSelectableItems();
-    }
-
-    public ValueModel getSelectableItemsHolder() {
-        if (selectableItemsHolder != null) {
-            return selectableItemsHolder;
-        }
-        // copy the existing Model
-        Object[] items = new Object[comboBox.getModel().getSize()];
-        for (int i = 0; i < comboBox.getModel().getSize(); i++) {
-            items[i] = comboBox.getModel().getElementAt(i);
-        }
-        return new ValueHolder(items);
-    }
-
-    public void setComparator(Comparator comparator) {
-        model.setComparator(comparator);
+    protected ListModel getDefaultModel() {
+        return getComboBox().getModel();
     }
 
     public ListCellRenderer getRenderer() {
-        return comboBox.getRenderer();
+        return getComboBox().getRenderer();
+    }
+
+    public JComboBox getComboBox() {
+        return (JComboBox) getComponent();
     }
 
     public void setRenderer(ListCellRenderer renderer) {
-        comboBox.setRenderer(renderer);
+        getComboBox().setRenderer(renderer);
     }
 
     public void setEditor(ComboBoxEditor comboBoxEditor) {
-        comboBox.setEditor(comboBoxEditor);
+        getComboBox().setEditor(comboBoxEditor);
     }
 
     public ComboBoxEditor getEditor() {
-        return comboBox.getEditor();
+        return getComboBox().getEditor();
     }
 
-    protected JComboBox createComboBox() {
-        return getComponentFactory().createComboBox();
-    }
+    private class BoundComboBoxModel extends AbstractFilteredListModel implements ComboBoxModel, PropertyChangeListener {
 
-    protected void readOnlyChanged() {
-        comboBox.setEnabled(isEnabled() && !isReadOnly());
-    }
+        public BoundComboBoxModel(ListModel listModel) {
+            super(listModel);
+            getValueModel().addValueChangeListener(this);
+        }
 
-    protected void enabledChanged() {
-        comboBox.setEnabled(isEnabled() && !isReadOnly());
-    }
+        private boolean updateSelectedItem() {
+            Object selectedItem = getSelectedItem();
+            if (selectedItem != null) {
+                boolean found = false;
+                for (int i = 0, size = getSize(); i < size && !found; i++) {
+                    found = selectedItem.equals(getElementAt(i));
+                }
+                if (!found) {
+                    setSelectedItem(null);
+                    return true;
+                }
+            }
+            return false;
+        }
 
-    private class BoundComboBoxModel extends ListListModel implements ComboBoxModel {
+        public void contentsChanged(ListDataEvent e) {
+            if (updateSelectedItem()) {
+                fireContentsChanged(this, -1, -1);
+            } else {
+                super.contentsChanged(e);
+            }
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+            if (updateSelectedItem()) {
+                fireContentsChanged(this, -1, -1);
+            } else {
+                super.intervalRemoved(e);
+            }
+        }
 
         public void setSelectedItem(Object selectedItem) {
-            getValueModel().setValue(selectedItem);
+            getValueModel().setValueSilently(selectedItem, this);
+            fireContentsChanged(this, -1, -1);
         }
 
         public Object getSelectedItem() {
-            return getValueModel().getValue();
+            return getValue();
         }
-
-        protected void selectedValueChanged() {
-            fireContentsChanged(-1, -1);
-        }
-    }
-
-    protected void valueModelChanged(Object newValue) {
-        model.selectedValueChanged();
-    }
-
-    private class SelectableItemsChangeHandler implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
-            updateSelectableItems();
+            fireContentsChanged(this, -1, -1);
         }
     }
 
-    public void setFilter(Constraint filter) {
-        if (!new EqualsBuilder().append(this.filter, filter).isEquals()) {
-            this.filter = filter;
-            updateSelectableItems();
-        }
-    }
-
-    public Constraint getFilter() {
-        return filter;
+    /**
+     * @param valueHolder
+     * @deprecated use {@link #setSelectableItems(Object)} instead
+     */
+    public void setSelectableItemsHolder(ValueModel valueModel) {
+        setSelectableItems(valueModel);
     }
 }
