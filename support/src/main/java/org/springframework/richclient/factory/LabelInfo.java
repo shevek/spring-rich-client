@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.factory;
 
+import javax.swing.AbstractButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -102,6 +103,17 @@ public class LabelInfo {
         }
         label.setLabelFor(component);
         return label;
+    }
+    
+    public AbstractButton configureLabelFor(AbstractButton button) {
+        Assert.notNull(button);
+        button.setText(text);
+        button.setMnemonic(getMnemonic());
+        int index = getMnemonicIndex();
+        if (index > 0) {
+            button.setDisplayedMnemonicIndex(index);
+        }
+        return button;
     }
 
     public String getText() {
