@@ -15,6 +15,7 @@
  */
 package org.springframework.binding.form;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
@@ -59,4 +60,9 @@ public interface FieldFace extends DescribedElement, VisualizedElement {
      * Configures the supplied JLabel using LabelInfo and Icon.
      */
     void configure(JLabel label);
+
+    /**
+     * Configures the supplied button using LabelInfo and Icon.
+     */
+    void configure(AbstractButton button);
 }

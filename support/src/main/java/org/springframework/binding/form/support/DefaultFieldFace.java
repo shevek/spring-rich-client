@@ -17,6 +17,7 @@ package org.springframework.binding.form.support;
 
 import java.awt.Image;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -88,5 +89,11 @@ public class DefaultFieldFace extends AbstractPropertyChangePublisher implements
         Assert.notNull(label, "The JLabel to configure is required");
         labelInfo.configureLabel(label);
         label.setIcon(icon);
+    }
+
+    public void configure(AbstractButton button) {
+        Assert.notNull(button, "The AbstractButton to configure is required");
+        labelInfo.configureButton(button);
+        button.setIcon(icon);
     }
 }
