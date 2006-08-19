@@ -105,7 +105,7 @@ public class LabelInfo {
         return label;
     }
     
-    public AbstractButton configureLabelFor(AbstractButton button) {
+    public AbstractButton configureButton(AbstractButton button) {
         Assert.notNull(button);
         button.setText(text);
         button.setMnemonic(getMnemonic());
