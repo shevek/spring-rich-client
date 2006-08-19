@@ -2,6 +2,7 @@
  Upgrading
  -----
  Geoffrey De Smet
+ Mathias Broekelmann
  -----
 
 Introduction
@@ -253,6 +254,18 @@ Method name changes
 
     * JGoodies looks has been upgraded from 1.x to 2.x.
     If you used <<<com.jgoodies.looks.FontSizeHints>>>, you should now use <<<com.jgoodies.looks.FontPolicy>>>.
+
+    * Binder for JComboBox and JList changed.
+    
+    Context parameter <<<selectableItemsHolder>>> changed to <<<selectableItems>>>.
+    The value of this property can now be any type as long as a converter is available to convert the type to <<<javax.swing.ListModel>>>.
+    The getter/setter for selectableItemsHolder changed to selectableItems and have type Object instead of ValueModel now.
+    
+    ListBinding does not support context keys or properties <<<selectedItemHolder>>>, <<<selectedItemType>>> and <<<model>>> any more. 
+    <<<model>>> is replaced with <<<selectableItems>>> which accepts instances of <<<javax.swing.ListModel>>>. 
+    <<<selectedItemHolder>>> and <<<selectedItemType>>> where now determined from the field to which the list is bound to. 
+    The field type can be any type as long as a converter is available to convert instances of <<<Object[]>>> to the field type and 
+    the field type to <<<Object[]>>>.
 
 pre-0.1.0 to 0.1.0
 
