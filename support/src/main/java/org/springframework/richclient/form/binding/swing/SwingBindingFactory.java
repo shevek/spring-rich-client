@@ -28,6 +28,7 @@ import javax.swing.JList;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 
 import org.springframework.beans.support.PropertyComparator;
@@ -87,6 +88,10 @@ public class SwingBindingFactory extends AbstractBindingFactory {
 
     public Binding createBoundLabel(String formProperty) {
         return createBinding(JLabel.class, formProperty);
+    }
+
+    public Binding createBoundToggleButton(String formProperty) {
+        return createBinding(JToggleButton.class, formProperty);
     }
 
     public Binding createBoundCheckBox(String formProperty) {

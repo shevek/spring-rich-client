@@ -23,6 +23,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.core.enums.LabeledEnum;
@@ -45,6 +46,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
         registerBinderForControlType(JTextComponent.class, new TextComponentBinder());
         registerBinderForControlType(JFormattedTextField.class, new FormattedTextFieldBinder(null));
         registerBinderForControlType(JTextArea.class, new TextAreaBinder());
+        registerBinderForControlType(JToggleButton.class, new ToggleButtonBinder());
         registerBinderForControlType(JCheckBox.class, new CheckBoxBinder());
         registerBinderForControlType(JComboBox.class, new ComboBoxBinder());
         registerBinderForControlType(JList.class, new ListBinder());

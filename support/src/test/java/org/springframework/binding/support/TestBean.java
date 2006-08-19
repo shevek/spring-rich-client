@@ -46,6 +46,8 @@ public class TestBean {
     public Object writeOnly;
 
     public Number numberProperty;
+    
+    private boolean booleanProperty;
 
     public Number getNumberProperty() {
         return numberProperty;
@@ -125,6 +127,14 @@ public class TestBean {
 
     public void setArrayProperty(Object[] arrayProperty) {
         this.arrayProperty = arrayProperty;
+    }
+
+    public boolean isBooleanProperty() {
+        return booleanProperty;
+    }
+
+    public void setBooleanProperty(boolean booleanProperty) {
+        this.booleanProperty = booleanProperty;
     }
 
 }

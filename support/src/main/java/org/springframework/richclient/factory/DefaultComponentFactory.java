@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.table.TableModel;
 
@@ -276,6 +278,18 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
 
     protected JCheckBox createNewCheckBox() {
         return new JCheckBox();
+    }
+
+    public JToggleButton createToggleButton(String labelKey) {
+        return (JToggleButton)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(createNewToggleButton());
+    }
+
+    public JToggleButton createToggleButton(String[] labelKeys) {
+        return (JToggleButton)getButtonLabelInfo(getRequiredMessage(labelKeys)).configure(createNewToggleButton());
+    }
+
+    protected AbstractButton createNewToggleButton() {
+        return new JToggleButton();
     }
 
     public JMenuItem createMenuItem(String labelKey) {

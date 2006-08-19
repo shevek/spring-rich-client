@@ -33,6 +33,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.table.TableModel;
 
@@ -263,6 +264,26 @@ public interface ComponentFactory {
     public JCheckBox createCheckBox(String[] labelKeys);
 
     /**
+     * Create a configured toggle button.
+     * 
+     * @param labelKey
+     *            The label message code; may also be the label text if no
+     *            message source is configured.
+     * @return The toggle button.
+     */
+    public JToggleButton createToggleButton(String labelKey);
+
+    /**
+     * Create a configured toggle button.
+     * 
+     * @param labelKeys
+     *            The label message codes; may also be the label text if no
+     *            message source is configured.
+     * @return The toggle button.
+     */
+    public JToggleButton createToggleButton(String[] labelKeys);
+
+    /**
      * Create a formatted text field using this component factory.
      * 
      * @param formatterFactory
@@ -386,4 +407,5 @@ public interface ComponentFactory {
      * @return new table instance
      */
     public JTable createTable(TableModel model);
+
 }

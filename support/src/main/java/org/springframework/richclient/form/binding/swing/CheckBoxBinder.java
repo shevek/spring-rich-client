@@ -17,26 +17,27 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.util.Map;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-
-import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.form.binding.Binding;
-import org.springframework.richclient.form.binding.support.AbstractBinder;
-import org.springframework.util.Assert;
 
 /**
  * @author Oliver Hutchison
  */
-public class CheckBoxBinder extends AbstractBinder  {
+public class CheckBoxBinder extends ToggleButtonBinder {
 
     public CheckBoxBinder() {
-        super(null);
+        super();
     }
 
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        Assert.isTrue(control instanceof JCheckBox, "Control must be an instance of JCheckBox.");
-        return new CheckBoxBinding((JCheckBox) control, formModel, formPropertyPath);
+    protected CheckBoxBinder(Class requiredSourceClass, String[] supportedContextKeys) {
+        super(requiredSourceClass, supportedContextKeys);
+    }
+
+    protected CheckBoxBinder(Class requiredSourceClass) {
+        super(requiredSourceClass);
+    }
+
+    protected CheckBoxBinder(String[] supportedContextKeys) {
+        super(supportedContextKeys);
     }
 
     protected JComponent createControl(Map context) {
