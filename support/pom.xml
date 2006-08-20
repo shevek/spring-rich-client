@@ -141,6 +141,11 @@
             <artifactId>nachocalendar</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.glazedlists</groupId>
+            <artifactId>glazedlists_java15</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Utils -->
         <dependency>
