@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.UIManager;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.text.AttributeSet;
@@ -158,9 +159,9 @@ public class ComboBoxAutoCompletion extends PlainDocument {
             offs = offs - str.length();
             // provide feedback to the user that his input has been received but
             // can not be accepted
-            comboBox.getToolkit().beep();
+            // comboBox.getToolkit().beep();
             // when available use:
-            // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+            UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
         }
 
         // display the completed string
