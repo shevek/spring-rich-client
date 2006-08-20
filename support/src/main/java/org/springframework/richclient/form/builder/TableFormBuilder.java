@@ -15,6 +15,10 @@
  */
 package org.springframework.richclient.form.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -22,6 +26,7 @@ import javax.swing.JScrollPane;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
+import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;
 
@@ -158,9 +163,6 @@ public class TableFormBuilder extends AbstractFormBuilder {
      *            the name of the field to add
      * @param filter
      *            optional filter constraint for the items of the selector
-     * @param attributes
-     *            optional layout attributes for the selector component. See {@link TableLayoutBuilder} for syntax
-     *            details
      * @return an array containing the label and the selector component which where added to the form
      * 
      * @see #createSelector(String, Constraint)
@@ -170,8 +172,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
     }
 
     /**
-     * Adds the field to the form by using a selector component. {@link #createSelector(String, Constraint)} is used to
-     * create the component for the selector
+     * Adds the field to the form by using a selector component.
      * 
      * @param fieldName
      *            the name of the field to add
@@ -182,10 +183,12 @@ public class TableFormBuilder extends AbstractFormBuilder {
      *            details
      * @return an array containing the label and the selector component which where added to the form
      * 
-     * @see #createSelector(String, Constraint)
      */
     public JComponent[] addSelector(String fieldName, Constraint filter, String attributes) {
-        return addBinding(createBinding(fieldName, createSelector(fieldName, filter)), attributes, getLabelAttributes());
+        Map context = new HashMap();
+        context.put(ComboBoxBinder.FILTER_KEY, filter);
+        return addBinding(getBindingFactory().createBinding(JComboBox.class, fieldName), attributes,
+                getLabelAttributes());
     }
 
     /**

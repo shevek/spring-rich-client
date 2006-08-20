@@ -89,6 +89,10 @@ public abstract class AbstractFormBuilder {
         return getBindingFactory().bindControl(component, fieldName);
     }
 
+    protected Binding createBinding(String fieldName, JComponent component, Map context) {
+        return getBindingFactory().bindControl(component, fieldName, context);
+    }
+
     /**
      * @deprecated Use {@link #createSelector(String,Constraint)} instead
      */
