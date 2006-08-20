@@ -15,6 +15,16 @@
         <href>http://www.springframework.org</href>
     </bannerRight>
     <publishDate format="yyyy-MM-dd HH:mm"/>
+
+    <poweredBy>
+        <logo name="Spring Framework" href="http://www.springframework.org/"
+            img="http://www.springframework.org/buttons/spring_small.png"/>
+        <logo name="Hosted on SourceForge.net" href="http://sourceforge.net"
+            img="http://sflogo.sourceforge.net/sflogo.php?group_id=113660&amp;type=2"/>
+        <logo name="Build with Maven 2" href="http://maven.apache.org/"
+            img="images/logos/maven-feather.png"/>
+    </poweredBy>
+
     <body>
         <links>
             <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
