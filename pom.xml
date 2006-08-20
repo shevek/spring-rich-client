@@ -211,7 +211,7 @@
         <name>The Spring Framework</name>
         <url>http://www.springframework.org</url>
     </organization>
-
+    
     <build>
         <pluginManagement>
             <plugins>
@@ -623,14 +623,7 @@
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.0.4</version>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.12</version>
-                <scope>runtime</scope>
-                <optional>true</optional>
+                <version>1.1</version> <!-- 1.0.1 <= x -->
             </dependency>
 
             <!-- Dependency injection -->
@@ -841,8 +834,8 @@
             </dependency>
             <dependency>
                 <groupId>net.java.dev.glazedlists</groupId>
-                <artifactId>glazedlists</artifactId>
-                <version>1.6.0-jdk14</version>
+                <artifactId>glazedlists_java15</artifactId>
+                <version>1.7.0</version>
             </dependency>
             <dependency>
                 <groupId>org.jdesktop</groupId>

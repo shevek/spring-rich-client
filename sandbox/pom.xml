@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>net.java.dev.glazedlists</groupId>
-            <artifactId>glazedlists</artifactId>
+            <artifactId>glazedlists_java15</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
