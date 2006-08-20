@@ -4,7 +4,7 @@
  Alan McAuley
  -----
 
-  <<This document is work in progress. Comments, improvements and additional content is welcomed>>
+  <<This document is work in progress. Comments, improvements and additional content are welcomed.>>
 
 Spring Rich Client Command Framework
 
@@ -22,12 +22,12 @@ Spring Rich Client Command Framework
   * Actionable commands - these are generally used to implement <<<local>>> commands, that is, commands that only have a meaning to
     one view of the application.
 
-  * Targetable commands – the <<<target>>> of the commands is decided dynamically, based on the currently displayed view.
+  * Targetable commands ï¿½ the <<<target>>> of the commands is decided dynamically, based on the currently displayed view.
     We can think of these as Global commands shared throughout the application.
 
   * Command Groups - commands are grouped together for use in menus, toolbars, drop down menus, popup menus, button bars etc.
 
-  * Command configuration – commands can be automatically configured by the framework or programmatically.
+  * Command configuration ï¿½ commands can be automatically configured by the framework or programmatically.
     Configuration includes such things as providing labels, tooltips, icons etc for command rendering.
 
   * Further command framework functionality includes command interceptors, (that is interception before and after the command is executed),
@@ -133,13 +133,13 @@ Spring Rich Client Command Framework
   Looking at the menuBar bean, we are defining an application menuBar with three command elements, fileMenu, windowMenu and helpMenu.
   Each of these menus forms a member of a Command Group and the CommandGroupFactoryBean class is used to create the actual command group,
   made up of the elements of the list in the <<<members>>> property.  Similarly for the toolbar bean, we have a command factory bean that
-  creates a toolbar group that has two members – exportCommand and propertiesCommand. Note that the members of the toolbar group are
+  creates a toolbar group that has two members ï¿½ exportCommand and propertiesCommand. Note that the members of the toolbar group are
   global commands as defined above and we will cover how to interact with these commands later. But first a few observations.
 
   In our menubar, the commands appear as <<<File>>>, <<<Window>>> and <<<Help>>>. Also note that the <<<Help>>> member appears
   to the right of the menubar. Where does the text and icon image come from for the commands and how did we layout
   the <<<Help>>> menu member to the right. Clicking on each main menu command displays drop down menus which may
-  contain submenus – how do we define these elements? Note also the presence of command mnemonics and keyboard accelerators.
+  contain submenus ï¿½ how do we define these elements? Note also the presence of command mnemonics and keyboard accelerators.
 
   Here is how the menu members look when you click on them:
 
@@ -206,7 +206,7 @@ Spring Rich Client Command Framework
 
   We can see in the commands-context file that our menubar  has four entries in its list of members. <<<fileMenu>>>, <<<windowMenu>>>,
   <<<glue>>> and <<<helpMenu>>>.  Three of these come with predefined messages in the application framework,
-  so we don’t need to add any text (in English that is, you would if you wanted to loclaise the text to a language not already included).
+  so we donï¿½t need to add any text (in English that is, you would if you wanted to loclaise the text to a language not already included).
   The remaining member <<<glue>>> is a configuration layout hint that behaves the same as the Glue component of the standard Box layout.
   By adding this member, it fills out all available space between the Window and Help menu members and causes the Help menu element
   to be displayed to the right of the menubar. We can also see that each of these menu bar entries has its own bean definition.
