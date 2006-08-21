@@ -68,6 +68,9 @@ public class ListModelConverter extends AbstractConverter {
     }
 
     ListModel visit(Object object) {
+        if(object instanceof Object[]) {
+            return visit((Object[])object);
+        }
         return visit(new Object[] { object });
     }
 }
