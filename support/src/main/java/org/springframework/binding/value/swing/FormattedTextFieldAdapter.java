@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.value.swing;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
@@ -27,21 +29,22 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractValueModelAdapter;
 
 /**
- * Sets the value of the value model associated with a formatted text field when
- * the text field changes according to the value commit policy. 
+ * Sets the value of the value model associated with a formatted text field when the text field changes according to the
+ * value commit policy.
  * 
- * This setter will also update the formatted text field value when the
- * underlying value model value changes.
+ * This setter will also update the formatted text field value when the underlying value model value changes.
  * 
  * @author Oliver Hutchison
  * @author Keith Donald
  */
 public class FormattedTextFieldAdapter extends AbstractValueModelAdapter implements PropertyChangeListener,
-        DocumentListener {
+        DocumentListener, FocusListener {
 
     private final JFormattedTextField component;
 
     private boolean settingValue;
+
+    private boolean ignoreValue;
 
     public FormattedTextFieldAdapter(JFormattedTextField component, ValueModel valueModel,
             ValueCommitPolicy commitPolicy) {
@@ -52,6 +55,20 @@ public class FormattedTextFieldAdapter extends AbstractValueModelAdapter impleme
         if (commitPolicy == ValueCommitPolicy.AS_YOU_TYPE) {
             component.getDocument().addDocumentListener(this);
         }
+        
+        // mathiasbr: register focus listener to avoid a race condition.
+        // If the formatted text field lost its focus the value will be replaced.
+        // This results into two events: the first one sets the value to null
+        // the second one sets the value to its value before it was set to null.
+        // If the focus is moved to the button which is bound to the validation
+        // and the field has a constraint (like required) the button will be disabled
+        // while it is pressed. Although the button will be enabled when the second 
+        // event with the previous value is set again but the button will lost its 
+        // armed and pressed state when it is disabled. 
+        // The result is that a user has to click the button twice 
+        // before the button fires the actionPerformed event
+        component.addFocusListener(this);
+        
         initalizeAdaptedValue();
     }
 
@@ -59,8 +76,7 @@ public class FormattedTextFieldAdapter extends AbstractValueModelAdapter impleme
         settingValue = true;
         try {
             component.setValue(value);
-        }
-        finally {
+        } finally {
             settingValue = false;
         }
     }
@@ -79,7 +95,10 @@ public class FormattedTextFieldAdapter extends AbstractValueModelAdapter impleme
     }
 
     public void removeUpdate(DocumentEvent e) {
-        tryToCommitEdit();
+        if (!ignoreValue)
+            tryToCommitEdit();
+        else
+            ignoreValue = false;
     }
 
     public void changedUpdate(DocumentEvent e) {
@@ -90,10 +109,17 @@ public class FormattedTextFieldAdapter extends AbstractValueModelAdapter impleme
         if (!settingValue) {
             try {
                 component.commitEdit();
-            }
-            catch (ParseException e) {
+            } catch (ParseException e) {
                 // ignore
             }
         }
+    }
+
+    public void focusGained(FocusEvent e) {
+        ignoreValue = false;
+    }
+
+    public void focusLost(FocusEvent e) {
+        ignoreValue = true;
     }
 }
