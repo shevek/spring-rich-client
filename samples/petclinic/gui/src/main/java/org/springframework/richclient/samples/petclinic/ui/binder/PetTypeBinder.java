@@ -69,7 +69,7 @@ public class PetTypeBinder extends AbstractBinder implements InitializingBean {
                 return new PetTypeAdapter(super.getValueModel(), petTypes);
             }
         };
-        binding.setSelectableItemsHolder(new ValueHolder(petTypes.keySet()));
+        binding.setSelectableItems(petTypes.keySet());
         return binding;
     }
 

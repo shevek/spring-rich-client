@@ -46,18 +46,17 @@ public class TigerEnumComboBoxBinder extends ComboBoxBinder {
 
     protected AbstractListBinding createListBinding(JComponent control, FormModel formModel, String formPropertyPath) {
         ComboBoxBinding binding = (ComboBoxBinding) super.createListBinding(control, formModel, formPropertyPath);
-        binding.setSelectableItemsHolder(createEnumSelectableItemsHolder(formModel, formPropertyPath));
+        binding.setSelectableItems(createEnumSelectableItems(formModel, formPropertyPath));
         MessageSourceAccessor messageSourceAccessor = getMessages();
         binding.setRenderer(new TigerEnumListRenderer(messageSourceAccessor));
         binding.setEditor(new TigerEnumComboBoxEditor(messageSourceAccessor, binding.getEditor()));
         return binding;
     }
 
-    private ValueModel createEnumSelectableItemsHolder(FormModel formModel, String formPropertyPath) {
+    private Enum[] createEnumSelectableItems(FormModel formModel, String formPropertyPath) {
         Class propertyType = getPropertyType(formModel, formPropertyPath);
         Class<Enum> enumPropertyType = propertyType;
-        Enum[] enumConstants = enumPropertyType.getEnumConstants();
-        return new ValueHolder(enumConstants);
+        return enumPropertyType.getEnumConstants();
     }
 
     public class TigerEnumListRenderer extends TextValueListRenderer {

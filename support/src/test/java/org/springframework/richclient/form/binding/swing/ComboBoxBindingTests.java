@@ -38,7 +38,7 @@ import org.springframework.util.comparator.ComparableComparator;
 
 public class ComboBoxBindingTests extends BindingAbstractTests {
 
-    private static final Object[] SELECTABLEITEMS = new Object[] { "0", "1", "2", "3", "4" };
+    private static final String[] SELECTABLEITEMS = new String[] { "0", "1", "2", "3", "4" };
 
     private ValueModel sih;
 
