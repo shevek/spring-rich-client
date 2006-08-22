@@ -21,8 +21,9 @@ import java.util.Date;
 
 import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
-import org.springframework.binding.format.FormatterLocator;
-import org.springframework.binding.format.support.SimpleFormatterLocator;
+import org.springframework.binding.format.FormatterFactory;
+import org.springframework.binding.format.support.SimpleFormatterFactory;
+import org.springframework.binding.util.MapAccessor;
 import org.springframework.richclient.convert.support.CollectionConverter;
 import org.springframework.richclient.convert.support.ListModelConverter;
 import org.springframework.util.StringUtils;
@@ -30,11 +31,11 @@ import org.springframework.util.StringUtils;
 public class DefaultConversionService extends org.springframework.binding.convert.support.DefaultConversionService {
 
     public DefaultConversionService() {
-        super(false);
         addDefaultConverters();
     }
 
     protected void addDefaultConverters() {
+        super.addDefaultConverters();
         addConverter(new TextToDate(getFormatterLocator(), true));
         addConverter(new DateToText(getFormatterLocator(), true));
         addConverter(new TextToNumber(getFormatterLocator(), true));
@@ -45,16 +46,16 @@ public class DefaultConversionService extends org.springframework.binding.conver
         addConverter(new ListModelConverter());
     }
 
-    private FormatterLocator getFormatterLocator() {
-        return new SimpleFormatterLocator();
+    private FormatterFactory getFormatterLocator() {
+        return new SimpleFormatterFactory();
     }
 
     public static final class TextToDate extends AbstractFormattingConverter {
 
         private final boolean allowEmpty;
 
-        protected TextToDate(FormatterLocator formatterLocator, boolean allowEmpty) {
-            super(formatterLocator);
+        protected TextToDate(FormatterFactory formatterFactory, boolean allowEmpty) {
+            super(formatterFactory);
             this.allowEmpty = allowEmpty;
         }
 
@@ -66,8 +67,8 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { Date.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || StringUtils.hasText((String) source)) ? getFormatterLocator().getDateTimeFormatter()
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+            return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterFactory().getDateTimeFormatter()
                     .parseValue((String) source, Date.class) : null;
         }
     }
@@ -76,7 +77,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         private final boolean allowEmpty;
 
-        protected DateToText(FormatterLocator formatterLocator, boolean allowEmpty) {
+        protected DateToText(FormatterFactory formatterLocator, boolean allowEmpty) {
             super(formatterLocator);
             this.allowEmpty = allowEmpty;
         }
@@ -89,8 +90,8 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || source != null) ? getFormatterLocator().getDateTimeFormatter().formatValue(source)
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+            return (!allowEmpty || source != null) ? getFormatterFactory().getDateTimeFormatter().formatValue(source)
                     : "";
         }
     }
@@ -99,7 +100,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         private final boolean allowEmpty;
 
-        protected TextToNumber(FormatterLocator formatterLocator, boolean allowEmpty) {
+        protected TextToNumber(FormatterFactory formatterLocator, boolean allowEmpty) {
             super(formatterLocator);
             this.allowEmpty = allowEmpty;
         }
@@ -113,8 +114,8 @@ public class DefaultConversionService extends org.springframework.binding.conver
                     BigInteger.class, BigDecimal.class, };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || StringUtils.hasText((String) source)) ? getFormatterLocator().getNumberFormatter(
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+            return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterFactory().getNumberFormatter(
                     targetClass).parseValue((String) source, targetClass) : null;
         }
     }
@@ -123,7 +124,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
 
         private final boolean allowEmpty;
 
-        protected NumberToText(FormatterLocator formatterLocator, boolean allowEmpty) {
+        protected NumberToText(FormatterFactory formatterLocator, boolean allowEmpty) {
             super(formatterLocator);
             this.allowEmpty = allowEmpty;
         }
@@ -137,8 +138,8 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return (!allowEmpty || source != null) ? getFormatterLocator().getNumberFormatter(source.getClass())
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+            return (!allowEmpty || source != null) ? getFormatterFactory().getNumberFormatter(source.getClass())
                     .formatValue(source) : "";
         }
     }
@@ -181,7 +182,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { Boolean.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
             String text = (String) source;
             if (!StringUtils.hasText(text)) {
                 return null;
@@ -229,7 +230,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
             Boolean bool = (Boolean) source;
             if (this.trueString != null && bool.booleanValue()) {
                 return trueString;

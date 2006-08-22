@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.springframework.binding.convert.Converter;
 import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.util.MapAccessor;
 import org.springframework.core.ReflectiveVisitorHelper;
 
 /**
@@ -43,7 +44,7 @@ public class CollectionConverter extends AbstractConverter implements Converter 
 
     private Object visitor = new ValuesVisitor();
 
-    protected Object doConvert(Object sourceValue, Class targetClass) throws Exception {
+    protected Object doConvert(Object sourceValue, Class targetClass, MapAccessor context) throws Exception {
         List values = (List) visitorHelper.invokeVisit(visitor, sourceValue);
         if (Object[].class == targetClass) {
             return values.toArray();

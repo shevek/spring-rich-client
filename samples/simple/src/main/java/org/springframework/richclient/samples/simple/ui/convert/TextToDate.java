@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.format.support.DateFormatter;
+import org.springframework.binding.util.MapAccessor;
 import org.springframework.util.StringUtils;
 
 /**
@@ -60,7 +61,7 @@ public class TextToDate extends AbstractConverter {
      * @return converted Date
      * @throws Exception on parsing failure
      */
-    protected Object doConvert( Object source, Class targetClass ) throws Exception {
+    protected Object doConvert( Object source, Class targetClass, MapAccessor context ) throws Exception {
         String src = (String) source;
 
         // If the user entered slashes, convert them to dashes

@@ -15,10 +15,13 @@
  */
 package org.springframework.binding.form.support;
 
+import java.util.Map;
 import java.util.Set;
 
+import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.convert.ConversionExecutor;
-import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.convert.Converter;
+import org.springframework.binding.convert.support.GenericConversionService.NoOpConverter;
 import org.springframework.binding.form.BindingErrorMessageProvider;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidatingFormModel;
@@ -38,7 +41,7 @@ import org.springframework.binding.value.support.ValueHolder;
 /**
  * Tests for @link DefaultFormModel
  * 
- * @author  Oliver Hutchison
+ * @author Oliver Hutchison
  */
 public class DefaultFormModelTests extends AbstractFormModelTests {
 
@@ -51,11 +54,11 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testPropertyChangeCausesValidation() {
-        DefaultFormModel fm = (DefaultFormModel)getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         TestConversionService cs = new TestConversionService();
-        cs.executer = new ConversionExecutor(new NoOpConverter(String.class, String.class), String.class);
+        cs.executer = new ConversionExecutor(String.class, String.class, new NoOpConverter(String.class, String.class));
         fm.setConversionService(cs);
         ValueModel vm = fm.getValueModel("simpleProperty");
         assertEquals(1, v.count);
@@ -90,7 +93,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         v.results = getValidationResults("message1");
         vm.setValue("1");
         assertEquals(2, v.count);
-        assertEquals(1, r.getMessageCount());        
+        assertEquals(1, r.getMessageCount());
         assertContainsMessage("message1", r.getMessages());
 
         v.results = getValidationResults("message2");
@@ -117,7 +120,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testRaiseClearValidationMessage() {
-        TestDefaultFormModel fm = (TestDefaultFormModel)getFormModel(new TestBean());
+        TestDefaultFormModel fm = (TestDefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -150,7 +153,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testChangingValidatingClearsMessagesOrValidates() {
-        DefaultFormModel fm = (DefaultFormModel)getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         v.results = getValidationResults("message1");
@@ -193,7 +196,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testSetThrowsExceptionRaisesValidationMessage() {
         final ErrorBean errorBean = new ErrorBean();
-        DefaultFormModel fm = (DefaultFormModel)getFormModel(errorBean);
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(errorBean);
         final ValueModel vm = fm.getValueModel("error");
 
         vm.setValue("test");
@@ -205,9 +208,10 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testTypeConversionThrowsExceptionRaisesValidationMessage() {
-        DefaultFormModel fm = (DefaultFormModel)getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         TestConversionService cs = new TestConversionService();
-        cs.executer = new ConversionExecutor(null, null);
+        cs.executer = new ConversionExecutor(String.class, Integer.class, new ExceptionConverter(String.class,
+                Integer.class));
         fm.setConversionService(cs);
         final ValueModel vm = fm.getValueModel("simpleProperty", Integer.class);
 
@@ -217,7 +221,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testValidatingEvents() {
         TestPropertyChangeListener pcl = new TestPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY);
-        DefaultFormModel fm = (DefaultFormModel)getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         fm.addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY, pcl);
         assertTrue(fm.isEnabled());
 
@@ -245,8 +249,8 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
         // no additional asserts, this test should just not throw an exception!
     }
-    
-    public void testDefaultFormModelFromValueModel() throws Exception {        
+
+    public void testDefaultFormModelFromValueModel() throws Exception {
         TestBean testBean = new TestBean();
         ValueModel valueModel = new ValueHolder(testBean);
         DefaultFormModel model = new DefaultFormModel(valueModel);
@@ -260,8 +264,8 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     private void assertContainsMessage(String message, Set messages) {
-        assertTrue("Set of messages does not contain expected message '" + message + "'",
-                messages.contains(new DefaultValidationMessage("simpleProperty", Severity.ERROR, message)));
+        assertTrue("Set of messages does not contain expected message '" + message + "'", messages
+                .contains(new DefaultValidationMessage("simpleProperty", Severity.ERROR, message)));
     }
 
     public static class TestValidator implements Validator {
@@ -287,30 +291,6 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
             if (errorToThrow != null) {
                 throw errorToThrow;
             }
-        }
-    }
-
-    public static class NoOpConverter extends AbstractConverter {
-
-        private Class sourceClass;
-
-        private Class targetClass;
-
-        public NoOpConverter(Class sourceClass, Class targetClass) {
-            this.sourceClass = sourceClass;
-            this.targetClass = targetClass;
-        }
-
-        protected Object doConvert(Object source, Class targetClass) throws Exception {
-            return source;
-        }
-
-        public Class[] getSourceClasses() {
-            return new Class[] {sourceClass};
-        }
-
-        public Class[] getTargetClasses() {
-            return new Class[] {targetClass};
         }
     }
 
@@ -343,5 +323,30 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         public void clearValdationMessage(ValidationMessage validationMessage) {
             super.clearValidationMessage(validationMessage);
         }
+    }
+
+    private static class ExceptionConverter implements Converter {
+
+        private final Class sourceClass;
+
+        private final Class targetClass;
+
+        public ExceptionConverter(Class sourceClass, Class targetClass) {
+            this.sourceClass = sourceClass;
+            this.targetClass = targetClass;
+        }
+
+        public Object convert(Object source, Class targetClass, Map context) throws ConversionException {
+            throw new ConversionException("test", targetClass);
+        }
+
+        public Class[] getSourceClasses() {
+            return new Class[] { sourceClass };
+        }
+
+        public Class[] getTargetClasses() {
+            return new Class[] { targetClass };
+        }
+
     }
 }

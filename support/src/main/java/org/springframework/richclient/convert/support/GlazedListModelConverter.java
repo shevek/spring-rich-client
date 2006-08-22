@@ -18,6 +18,7 @@ package org.springframework.richclient.convert.support;
 import javax.swing.ListModel;
 
 import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.util.MapAccessor;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
@@ -33,7 +34,7 @@ public class GlazedListModelConverter extends AbstractConverter {
     private static final Class[] TARGET_CLASSES = new Class[] {ListModel.class};
     private static final Class[] SOURCE_CLASSES = new Class[] {EventList.class};
 
-    protected Object doConvert(Object source, Class targetClass) throws Exception {
+    protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
         return new EventListModel((EventList) source);
     }
 

@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.ListModel;
 
 import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.util.MapAccessor;
 import org.springframework.binding.value.support.ListListModel;
 import org.springframework.core.ReflectiveVisitorHelper;
 
@@ -39,7 +40,7 @@ public class ListModelConverter extends AbstractConverter {
 
     private final ReflectiveVisitorHelper visitorHelper = new ReflectiveVisitorHelper();
 
-    protected Object doConvert(Object sourceValue, Class targetClass) throws Exception {
+    protected Object doConvert(Object sourceValue, Class targetClass, MapAccessor context) throws Exception {
         return visitorHelper.invokeVisit(this, sourceValue);
     }
 
