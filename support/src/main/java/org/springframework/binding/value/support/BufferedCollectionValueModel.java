@@ -34,6 +34,7 @@ import javax.swing.event.ListDataListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.util.ClassUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -121,7 +122,7 @@ public class BufferedCollectionValueModel extends BufferedValueModel {
     public static Class getConcreteCollectionType(Class wrappedType) {
         Class class2Create;
         if (wrappedType.isArray()) {
-            if (BeanUtils.isPrimitiveArray(wrappedType)) {
+            if (ClassUtils.isPrimitiveArray(wrappedType)) {
                 throw new IllegalArgumentException("wrappedType can not be an array of primitive types");
             }
             class2Create = wrappedType;
