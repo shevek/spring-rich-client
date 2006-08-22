@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.style.StylerUtils;
 
@@ -186,14 +187,14 @@ public class ClassUtils {
 	 * Check if the given class represents a primitive wrapper array.
 	 */
 	public static boolean isPrimitiveWrapperArray(Class clazz) {
-		return org.springframework.beans.BeanUtils.isPrimitiveWrapperArray(clazz);
+		return BeanUtils.isPrimitiveWrapperArray(clazz);
 	}
 
 	/**
 	 * Check if the given class represents a primitive array.
 	 */
 	public static boolean isPrimitiveArray(Class clazz) {
-		return org.springframework.beans.BeanUtils.isPrimitiveArray(clazz);
+		return BeanUtils.isPrimitiveArray(clazz);
 	}
 
 	/**
