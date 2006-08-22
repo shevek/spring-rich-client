@@ -873,14 +873,14 @@
             </dependency>
 
             <!-- JNLP -->
-            <!--<dependency>-->
-                <!--<groupId>javax.jnlp</groupId>-->
-                <!--<artifactId>jnlp</artifactId>-->
-                <!--<version>1.5.0</version>-->
-                <!--<scope>system</scope>-->
-                <!--<systemPath>${java.home}/lib/javaws.jar</systemPath>-->
+            <dependency>
+                <groupId>javax.jnlp</groupId>
+                <artifactId>jnlp</artifactId>
+                <version>1.5.0</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/lib/javaws.jar</systemPath>
                 <!-- This isn't purely jnlp, it contains sun files... -->
-            <!--</dependency>-->
+            </dependency>
 
             <!-- Persistence (for samples) -->
             <dependency>

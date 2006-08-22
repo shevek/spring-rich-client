@@ -41,7 +41,8 @@
     </reporting>
 
     <dependencies>
-    
+
+        <!-- Internal -->
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-support</artifactId>
@@ -53,9 +54,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Dependency injection -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- JNLP -->
+        <dependency>
+            <groupId>javax.jnlp</groupId>
+            <artifactId>jnlp</artifactId>
         </dependency>
         
     </dependencies>
