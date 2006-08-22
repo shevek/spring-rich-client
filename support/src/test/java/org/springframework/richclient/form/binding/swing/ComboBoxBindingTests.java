@@ -28,6 +28,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
@@ -45,11 +46,15 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
 
     private JComboBox cb;
 
+    private TestDataListener testListener;
+
     protected String setUpBinding() {
         cbb = new ComboBoxBinding(fm, "simpleProperty");
         cb = (JComboBox) cbb.getControl();
         sih = new ValueHolder(SELECTABLEITEMS);
         cbb.setSelectableItems(sih);
+        testListener = new TestDataListener();
+        cb.getModel().addListDataListener(testListener);
         return "simpleProperty";
     }
 
@@ -201,7 +206,7 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
 
         testConstraint.testCalled = 0;
         testConstraint.setFilterValues(new Object[] { "2" });
-        //assertEquals(SELECTABLEITEMS.length, testConstraint.testCalled);
+        // assertEquals(SELECTABLEITEMS.length, testConstraint.testCalled);
         assertEquals(testConstraint.filterValues.length, model.getSize());
         assertEquals("2", model.getElementAt(0));
     }
@@ -238,6 +243,42 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
         assertEquals("4", bindingModel.getElementAt(4));
     }
 
+    public void testEmptySelectionValue() throws Exception {
+        ComboBoxModel model = cb.getModel();
+        int modelSize = model.getSize();
+        testListener.contentsChanged = null;
+        testListener.intervalAdded = null;
+        testListener.intervalRemoved = null;
+        String emptyValue = "select a Value";
+        cbb.setEmptySelectionValue(emptyValue);
+        assertEquals(modelSize + 1, model.getSize());
+        assertEquals(emptyValue, model.getElementAt(0));
+        assertNotNull(testListener.contentsChanged);
+        assertNull(testListener.intervalAdded);
+        assertNull(testListener.intervalRemoved);
+        cb.setSelectedItem(SELECTABLEITEMS[0]);
+        assertEquals(SELECTABLEITEMS[0], model.getSelectedItem());
+        assertEquals(SELECTABLEITEMS[0], vm.getValue());
+        cb.setSelectedItem(emptyValue);
+        assertEquals(emptyValue, model.getSelectedItem());
+        assertEquals(null, vm.getValue());
+        cb.setSelectedItem(null);
+        assertEquals(emptyValue, model.getSelectedItem());
+        assertEquals(null, vm.getValue());
+        
+        cb.setSelectedItem(emptyValue);
+        testListener.contentsChanged = null;
+        testListener.intervalAdded = null;
+        testListener.intervalRemoved = null;
+        cbb.setEmptySelectionValue(null);
+        assertNotNull(testListener.contentsChanged);
+        assertNull(testListener.intervalAdded);
+        assertNull(testListener.intervalRemoved);
+        assertEquals(modelSize, model.getSize());
+        assertEquals(SELECTABLEITEMS[0], model.getElementAt(0));
+        assertNull(vm.getValue());
+    }
+
     private static class TestConstraint extends Observable implements Constraint {
         Object[] filterValues = new Object[] { "1", "4" };
 
@@ -257,5 +298,27 @@ public class ComboBoxBindingTests extends BindingAbstractTests {
             setChanged();
             notifyObservers();
         }
+    }
+
+    private class TestDataListener implements ListDataListener {
+
+        private ListDataEvent contentsChanged;
+
+        private ListDataEvent intervalAdded;
+
+        private ListDataEvent intervalRemoved;
+
+        public void contentsChanged(ListDataEvent e) {
+            contentsChanged = e;
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+            intervalAdded = e;
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+            intervalRemoved = e;
+        }
+
     }
 }

@@ -26,7 +26,6 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.list.AbstractFilteredListModel;
 
 /**
@@ -35,6 +34,10 @@ import org.springframework.richclient.list.AbstractFilteredListModel;
  * @author Oliver Hutchison
  */
 public class ComboBoxBinding extends AbstractListBinding {
+
+    private Object emptySelectionValue;
+
+    private BoundComboBoxModel boundModel;
 
     public ComboBoxBinding(FormModel formModel, String formPropertyPath) {
         this(new JComboBox(), formModel, formPropertyPath, null);
@@ -49,7 +52,8 @@ public class ComboBoxBinding extends AbstractListBinding {
     }
 
     protected void doBindControl(ListModel bindingModel) {
-        getComboBox().setModel(new BoundComboBoxModel(bindingModel));
+        boundModel = new BoundComboBoxModel(bindingModel);
+        getComboBox().setModel(boundModel);
     }
 
     protected ListModel getDefaultModel() {
@@ -81,6 +85,22 @@ public class ComboBoxBinding extends AbstractListBinding {
         public BoundComboBoxModel(ListModel listModel) {
             super(listModel);
             getValueModel().addValueChangeListener(this);
+        }
+
+        public int getSize() {
+            if (emptySelectionValue != null) {
+                return super.getSize() + 1;
+            }
+            return super.getSize();
+        }
+
+        public Object getElementAt(int index) {
+            if (emptySelectionValue != null) {
+                if (index == 0)
+                    return emptySelectionValue;
+                return super.getElementAt(index - 1);
+            }
+            return super.getElementAt(index);
         }
 
         private boolean updateSelectedItem() {
@@ -115,24 +135,43 @@ public class ComboBoxBinding extends AbstractListBinding {
         }
 
         public void setSelectedItem(Object selectedItem) {
+            if (selectedItem == emptySelectionValue) {
+                selectedItem = null;
+            }
             getValueModel().setValueSilently(selectedItem, this);
             fireContentsChanged(this, -1, -1);
         }
 
         public Object getSelectedItem() {
-            return getValue();
+            Object value = getValue();
+            if(emptySelectionValue != null && value == null) {
+                return emptySelectionValue;
+            }
+            return value;
         }
 
         public void propertyChange(PropertyChangeEvent evt) {
             fireContentsChanged(this, -1, -1);
         }
+
+        public void emptySelectionValueChanged() {
+            fireContentsChanged(this, -1, -1);
+        }
     }
 
     /**
-     * @param valueHolder
-     * @deprecated use {@link #setSelectableItems(Object)} instead
+     * @param value
      */
-    public void setSelectableItemsHolder(ValueModel valueModel) {
-        setSelectableItems(valueModel);
+    public void setEmptySelectionValue(Object value) {
+        if (value != emptySelectionValue && boundModel != null) {
+            emptySelectionValue = value;
+            boundModel.emptySelectionValueChanged();
+        } else {
+            emptySelectionValue = value;
+        }
+    }
+
+    public Object getEmptySelectionValue() {
+        return emptySelectionValue;
     }
 }

@@ -33,12 +33,20 @@ public class ComboBoxBinder extends AbstractListBinder {
 
     public static final String EDITOR_KEY = "editor";
 
+    /**
+     * context key for a value which is used to mark an empty Selection.
+     * If this value is selected null will be assigned to the fields value
+     */
+    public static final String EMPTY_SELECTION_VALUE = "emptySelectionValue";
+
     private ListCellRenderer renderer;
 
     private ComboBoxEditor editor;
+    
+    private Object emptySelectionValue;
 
     public ComboBoxBinder() {
-        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY });
+        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY, EMPTY_SELECTION_VALUE });
     }
 
     public ComboBoxBinder(String[] supportedContextKeys) {
@@ -68,6 +76,11 @@ public class ComboBoxBinder extends AbstractListBinder {
         } else if (editor != null) {
             comboBoxBinding.setEditor((ComboBoxEditor) decorate(editor, comboBoxBinding.getEditor()));
         }
+        if (context.containsKey(EMPTY_SELECTION_VALUE)) {
+            comboBoxBinding.setEmptySelectionValue(context.get(EMPTY_SELECTION_VALUE));
+        } else if (emptySelectionValue != null) {
+            comboBoxBinding.setEmptySelectionValue(emptySelectionValue);
+        }
     }
 
     protected JComponent createControl(Map context) {
@@ -90,4 +103,11 @@ public class ComboBoxBinder extends AbstractListBinder {
         this.editor = editor;
     }
 
+    public Object getEmptySelectionValue() {
+        return emptySelectionValue;
+    }
+
+    public void setEmptySelectionValue(Object emptySelectionValue) {
+        this.emptySelectionValue = emptySelectionValue;
+    }
 }
