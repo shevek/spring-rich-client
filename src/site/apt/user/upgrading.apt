@@ -267,6 +267,26 @@ Method name changes
     The field type can be any type as long as a converter is available to convert instances of <<<Object[]>>> to the field type and 
     the field type to <<<Object[]>>>.
 
+    Rename <<<ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY>>> to <<<ComboBoxBinder.SELECTABLE_ITEMS_KEY>>>.
+
+    If you used custom renderers or editors, update them to use closures and pass the value:
+
++--
+    context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyValueComboBoxEditor("fullName"));
++--
+
+    changes into:
+
++--
+    context.put(ComboBoxBinder.EDITOR_KEY, new Closure() {
+        public Object call(Object value) {
+            return new BeanPropertyValueComboBoxEditor((ComboBoxEditor) value, "fullName");
+        }
+    });
++--
+
+    * Spring binding jar updated. Note that this jar is not part of the spring jars or the spring-richclient jars.
+
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
