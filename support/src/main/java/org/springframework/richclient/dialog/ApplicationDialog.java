@@ -78,7 +78,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     protected static final String DEFAULT_CANCEL_COMMAND_ID = "cancelCommand";
 
-    protected static final String DEFAULT_SUCCESS_MESSAGE_KEY = "defaultFinishSuccessMessage";
+    protected static final String DEFAULT_FINISH_SUCCESS_MESSAGE_KEY = "defaultFinishSuccessMessage";
+    protected static final String DEFAULT_FINISH_SUCCESS_TITLE_KEY = "defaultFinishSuccessTitle";
+
+    protected static final String SUCCESS_FINISH_MESSAGE_KEY = "finishSuccessMessage";
+    protected static final String SUCCESS_FINISH_TITLE_KEY = "finishSuccessTitle";
 
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -394,12 +398,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected String getFinishSuccessMessage() {
         ActionCommand callingCommand = getCallingCommand();
         if (callingCommand != null) {
-            String[] successMessageKeys = new String[] {callingCommand.getId() + ".successMessage",
-                    DEFAULT_SUCCESS_MESSAGE_KEY};
+            String[] successMessageKeys = new String[] {callingCommand.getId() + "." + SUCCESS_FINISH_MESSAGE_KEY,
+                    DEFAULT_FINISH_SUCCESS_MESSAGE_KEY};
             return getMessage(successMessageKeys, getFinishSuccessMessageArguments());
         }
-
-        return getMessage(DEFAULT_SUCCESS_MESSAGE_KEY);
+        return getMessage(DEFAULT_FINISH_SUCCESS_MESSAGE_KEY);
     }
 
     protected ActionCommand getCallingCommand() {
@@ -411,7 +414,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected String getFinishSuccessTitle() {
-        return getMessage("finishSuccessTitle", getFinishSuccessTitleArguments());
+        ActionCommand callingCommand = getCallingCommand();
+        if (callingCommand != null) {
+            String[] successTitleKeys = new String[] {callingCommand.getId() + "." + SUCCESS_FINISH_TITLE_KEY,
+                    DEFAULT_FINISH_SUCCESS_TITLE_KEY};
+            return getMessage(successTitleKeys, getFinishSuccessTitleArguments());
+        }
+        return getMessage(DEFAULT_FINISH_SUCCESS_TITLE_KEY);
     }
 
     protected Object[] getFinishSuccessTitleArguments() {
