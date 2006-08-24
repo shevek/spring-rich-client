@@ -17,6 +17,7 @@ package org.springframework.richclient.list;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Rectangle;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -205,4 +206,96 @@ public class TableListCellRenderer extends JTable implements ListCellRenderer {
         return this;
     }
 
+    /**
+     * Overridden for performance reasons.
+     */
+    public void validate() {
+    }
+    
+    /**
+     * Overridden for performance reasons.
+     */
+    protected void validateTree() {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void revalidate() {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void repaint(long tm, int x, int y, int width, int height) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void repaint(Rectangle r) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    protected void firePropertyChange(String propertyName, Object oldValue,
+        Object newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, byte oldValue,
+        byte newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, char oldValue,
+        char newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, short oldValue,
+        short newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, int oldValue,
+        int newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, long oldValue,
+        long newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, float oldValue,
+        float newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, double oldValue,
+        double newValue) {
+    }
+
+    /**
+     * Overridden for performance reasons.
+     */
+    public void firePropertyChange(String propertyName, boolean oldValue,
+        boolean newValue) {
+    }
 }
