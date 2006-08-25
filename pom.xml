@@ -915,25 +915,28 @@
 
             <!-- Persistence (for samples) -->
             <dependency>
+                <!-- TODO once hibernate's validator doesn't need persistence-api, exclude it -->
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
                 <version>3.2.0.cr1</version>
                 <exclusions>
-                    <!-- TODO once hibernate's validator doesn't need hibernate, exclude hibernate -->
+                    <!-- TODO once hibernate's validator doesn't need hibernate, exclude it -->
                     <!--<exclusion>-->
                         <!--<groupId>org.hibernate</groupId>-->
                         <!--<artifactId>hibernate</artifactId>-->
                     <!--</exclusion>-->
-                    <exclusion>
-                        <groupId>lucene</groupId>
-                        <artifactId>lucene</artifactId>
-                    </exclusion>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
                         <artifactId>ejb</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>

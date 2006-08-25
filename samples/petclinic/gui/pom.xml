@@ -98,7 +98,11 @@
             <artifactId>nachocalendar</artifactId>
         </dependency>
 
-        <!-- Validation -->
+        <!-- Validation with Hibernate validator -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
