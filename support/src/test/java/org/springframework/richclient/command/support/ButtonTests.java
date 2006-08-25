@@ -11,7 +11,7 @@ import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.test.SpringRichTestCase;
 
 
-public class ButtonEnablingTests extends SpringRichTestCase
+public class ButtonTests extends SpringRichTestCase
 {
     
     /**
@@ -42,10 +42,34 @@ public class ButtonEnablingTests extends SpringRichTestCase
         assertEquals(command.isEnabled(), enable);
         for (int i = 0; i < buttons.length; ++i)
         {
-            assertEquals(((AbstractButton)buttons[i]).isEnabled(), enable);    
+            assertEquals(enable, ((AbstractButton)buttons[i]).isEnabled());    
         }        
     }
     
+    public void testButtonVisible()
+    {
+        TestCommand testCommand = new TestCommand();
+        AbstractButton button = testCommand.createButton();
+        AbstractButton button2 = testCommand.createButton();
+        visibleTests(testCommand, new Object[]{button, button2});
+    }
+    
+    public void visibleTests(AbstractCommand command, Object[] buttons)
+    {
+        enableTest(command, buttons, false);
+        enableTest(command, buttons, true);
+    }
+    
+    public void visibleTest(AbstractCommand command, Object[] buttons, boolean visible)
+    {
+        command.setVisible(visible);
+        assertEquals(command.isVisible(), visible);
+        for (int i = 0; i < buttons.length; ++i)
+        {
+            assertEquals(visible, ((AbstractButton)buttons[i]).isVisible());    
+        }        
+    }
+
     // testing different sequences because error was in sequence of hashmap:
     public void testMultipleFaceDescriptorsEnabling()
     {
@@ -82,5 +106,37 @@ public class ButtonEnablingTests extends SpringRichTestCase
         ApplicationObjectConfigurer configurer = (ApplicationObjectConfigurer)ApplicationServicesLocator.services().getService(ApplicationObjectConfigurer.class);
         configurer.configure(face, faceId);
         command.setFaceDescriptor(faceId, face);        
+    }
+    
+    /**
+     * Tests if a command subclass can use an additional condition when enable is enabled or not
+     * @throws Exception
+     */
+    public void testAdditionalConditionToEnable() throws Exception {
+        AdditionalStateTestCommand testCommand = new AdditionalStateTestCommand();
+        AbstractButton button = testCommand.createButton();
+        assertEquals(testCommand.isEnabled(), button.isEnabled());
+        testCommand.setMyenabledState(false);
+        assertEquals(false, testCommand.isEnabled());
+        assertEquals(testCommand.isEnabled(), button.isEnabled());
+        testCommand.setMyenabledState(true);
+        assertEquals(true, testCommand.isEnabled());
+        assertEquals(testCommand.isEnabled(), button.isEnabled());
+    }
+
+    /**
+     * Tests if a command subclass can use an additional condition when visible is enabled or not
+     * @throws Exception
+     */
+    public void testAdditionalConditionToVisible() throws Exception {
+        AdditionalStateTestCommand testCommand = new AdditionalStateTestCommand();
+        AbstractButton button = testCommand.createButton();
+        assertEquals(testCommand.isVisible(), button.isVisible());
+        testCommand.setMyvisibleState(false);
+        assertEquals(false, testCommand.isVisible());
+        assertEquals(testCommand.isVisible(), button.isVisible());
+        testCommand.setMyvisibleState(true);
+        assertEquals(true, testCommand.isVisible());
+        assertEquals(testCommand.isVisible(), button.isVisible());
     }
 }

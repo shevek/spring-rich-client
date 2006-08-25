@@ -32,9 +32,7 @@ import javax.swing.SwingUtilities;
 
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
-import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
@@ -47,6 +45,7 @@ import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
+import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.StringUtils;
 
@@ -63,14 +62,12 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     private String defaultFaceDescriptorId = DEFAULT_FACE_DESCRIPTOR_ID;
 
-    private ValueModel enabled = new ValueHolder(Boolean.TRUE);
+    private boolean enabled = true;
 
     private boolean visible = true;
     
     private boolean authorized = true;
     
-    private boolean maskedEnabledState = true;
-
     private String securityControllerId = null;
 
     private Map faceButtonManagers;
@@ -79,12 +76,19 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
+    private boolean oldEnabledState = enabled;
+
+    private boolean oldVisibleState = visible;
+
     protected AbstractCommand() {
         this(null);
     }
 
     protected AbstractCommand(String id) {
-        this(id, (CommandFaceDescriptor)null);
+        super();
+        setId(id);
+        addEnabledListener(new ButtonEnablingListener()); // keep track of enable state for buttons
+        addPropertyChangeListener(VISIBLE_PROPERTY_NAME, new ButtonVisibleListener()); // keep track of visible state for buttons
     }
 
     protected AbstractCommand(String id, String encodedLabel) {
@@ -96,18 +100,14 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     }
 
     protected AbstractCommand(String id, CommandFaceDescriptor faceDescriptor) {
-        super();
-        setId(id);
-        addEnabledListener(new ButtonEnablingListener()); // keep track of enable state for buttons
+        this(id);
         if (faceDescriptor != null) {
             setFaceDescriptor(faceDescriptor);
         }
     }
 
     protected AbstractCommand(String id, Map faceDescriptors) {
-        super();
-        setId(id);
-        addEnabledListener(new ButtonEnablingListener()); // keep track of enable state for buttons
+        this(id);
         setFaceDescriptors(faceDescriptors);
     }
 
@@ -137,6 +137,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     }
 
     public void setFaceDescriptors(Map faceDescriptors) {
+        Assert.notNull(faceDescriptors);
         Iterator it = faceDescriptors.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
@@ -275,25 +276,12 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
      * it can not be enabled.
      * @param authorized Pass <code>true</code> if the object is to be authorized
      */
-    public void setAuthorized( boolean authorized ) {
+    public void setAuthorized(boolean authorized) {
         boolean wasAuthorized = isAuthorized();
-
-        if( hasChanged(isAuthorized(), authorized)) {
-            
+        if (hasChanged(wasAuthorized, authorized)) {
             this.authorized = authorized;
-
-            // We need to apply a change to our enabled state depending on our
-            // new authorized state.
-            if( authorized ) {
-                // install the last requested enabled state
-                setEnabled(maskedEnabledState);
-            } else {
-                // Record the current enabled state and then disable
-                maskedEnabledState = isEnabled();
-                internalSetEnabled(false);
-            }
-            
-            firePropertyChange(AUTHORIZED_PROPERTY, !wasAuthorized, authorized);
+            firePropertyChange(AUTHORIZED_PROPERTY, wasAuthorized, authorized);
+            updatedEnabledState();
         }
     }
     
@@ -305,8 +293,28 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         return authorized;
     }
 
+    /**
+     * Get the enabled state
+     * @return if the command is enabled and {@link #isAuthorized()} returns true
+     * @see #isAuthorized()
+     */
     public boolean isEnabled() {
-        return ((Boolean)enabled.getValue()).booleanValue();
+        return enabled && isAuthorized();
+    }
+    
+    /**
+     * This method is called when any predicate for enabled state has changed. This implemetation fires the enabled
+     * changed event if the return value of {@link #isEnabled()} has changed.
+     * <p>
+     * Sublcasses which have an additional predicate to enabled state must call this method if the state of the
+     * predicate changes.
+     */
+    protected void updatedEnabledState() {
+        boolean isEnabled = isEnabled();
+        if(hasChanged(oldEnabledState, isEnabled)) {
+            firePropertyChange(ENABLED_PROPERTY_NAME, oldEnabledState, isEnabled);
+        }
+        oldEnabledState = isEnabled;
     }
 
     /**
@@ -316,24 +324,12 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
      * @param enabled state
      */
     public void setEnabled(boolean enabled) {
-        maskedEnabledState = enabled;
-        if( isAuthorized() ) {
-            internalSetEnabled( enabled );
+        if( hasChanged(this.enabled, enabled)) {
+            this.enabled = enabled;
+            updatedEnabledState();
         }
     }
 
-    /**
-     * Internal method to set the enabled state.  This is needed so that calls
-     * made to the public setEnabled and this method can be handled differently.
-     * @param enabled state
-     * @see #setAuthorized(boolean)
-     */
-    protected void internalSetEnabled( boolean enabled ) {
-        if (hasChanged(isEnabled(), enabled)) {
-            this.enabled.setValue(Boolean.valueOf(enabled));
-        }
-    }
-    
     /**
      * Listener to keep track of enabled state. When enable on command changes,
      * each button has to be checked and set.
@@ -350,17 +346,38 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
             while (it.hasNext()) 
             {
                  AbstractButton button = (AbstractButton)it.next();
-                   button.setEnabled(enabled);
+                 button.setEnabled(enabled);
+            }
+        }
+    }
+
+    /**
+     * Listener to keep track of visible state. When visible on command changes,
+     * each button has to be checked and set.
+     */
+    private class ButtonVisibleListener implements PropertyChangeListener
+    {
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+            // We need to keep the buttons in sync with the command, so go through the buttons and set visible state.
+            // alternative is to add a listener to the visible value and change buttons in that listener 
+            // NOT redundant
+            boolean enabled = evt.getNewValue() == Boolean.TRUE ? true : false;
+            Iterator it = buttonIterator();
+            while (it.hasNext()) 
+            {
+                 AbstractButton button = (AbstractButton)it.next();
+                 button.setVisible(enabled);
             }
         }
     }
 
     public void addEnabledListener(PropertyChangeListener listener) {
-        enabled.addValueChangeListener(listener);
+        addPropertyChangeListener(ENABLED_PROPERTY_NAME, listener);
     }
 
     public void removeEnabledListener(PropertyChangeListener listener) {
-        enabled.removeValueChangeListener(listener);
+        removePropertyChangeListener(ENABLED_PROPERTY_NAME, listener);
     }
 
     protected final Iterator defaultButtonIterator() {
@@ -442,12 +459,23 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
     public void setVisible(boolean value) {
         if (visible != value) {
             this.visible = value;
-            for (Iterator it = buttonIterator(); it.hasNext();) {
-                AbstractButton button = (AbstractButton)it.next();
-                button.setVisible(visible);
-            }
-            firePropertyChange(VISIBLE_PROPERTY_NAME, !visible, visible);
+            updatedVisibleState();
         }
+    }
+    
+    /**
+     * This method is called when any predicate for visible state has changed. This implemetation fires the visible
+     * changed event if the return value of {@link #isVisible()} has changed.
+     * <p>
+     * Sublcasses which have an additional predicate to visible state must call this method if the state of the
+     * predicate changes.
+     */
+    protected void updatedVisibleState() {
+        boolean isVisible = isVisible();
+        if(hasChanged(oldVisibleState, isVisible)) {
+            firePropertyChange(VISIBLE_PROPERTY_NAME, oldVisibleState, isVisible);
+        }
+        oldVisibleState = isVisible;
     }
 
     public final AbstractButton createButton() {
