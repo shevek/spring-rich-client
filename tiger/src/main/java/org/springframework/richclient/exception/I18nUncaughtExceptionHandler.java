@@ -112,9 +112,11 @@ public class I18nUncaughtExceptionHandler implements Thread.UncaughtExceptionHan
         }
         String[] parameters = new String[]{formatMessage(e.getMessage())};
         String caption = messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
-                messageCaptionKeyList.toArray(new String[]{}), parameters, messageCaptionKeyList.get(0)));
+                messageCaptionKeyList.toArray(new String[messageCaptionKeyList.size()]),
+                parameters, messageCaptionKeyList.get(0)));
         String description = messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
-                messageDescriptionKeyList.toArray(new String[]{}), parameters, messageDescriptionKeyList.get(0)));
+                messageDescriptionKeyList.toArray(new String[messageDescriptionKeyList.size()]),
+                parameters, messageDescriptionKeyList.get(0)));
         showExceptionToUser(e, caption, description);
     }
 
