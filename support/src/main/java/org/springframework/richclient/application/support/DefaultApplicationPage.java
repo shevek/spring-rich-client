@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageComponent;
-import org.springframework.richclient.application.PageComponentDescriptor;
 import org.springframework.richclient.application.PageComponentPane;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
@@ -36,47 +35,46 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
     private JComponent control;
 
     public DefaultApplicationPage() {
-    	
-    }
-    
-    public DefaultApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
-        super(window, pageDescriptor);
+
     }
 
-    public JComponent getControl() {
-        if (control == null) {
-            this.control = new JPanel(new BorderLayout());
-            this.getPageDescriptor().buildInitialLayout(this);
-            setActiveComponent();
-        }
-        return control;
+    public DefaultApplicationPage( ApplicationWindow window, PageDescriptor pageDescriptor ) {
+        super( window, pageDescriptor );
     }
 
-    protected boolean giveFocusTo(PageComponent pageComponent) {
-        PageComponentPane pane = pageComponent.getContext().getPane();
-        this.control.removeAll();
-        this.control.add(pane.getControl());
-        this.control.validate();
-        this.control.repaint();
-        pane.requestFocusInWindow();
-
-        return true;
+    // Initial Application Page Layout Builder methods
+    public void addView( String viewDescriptorId ) {
+        showView( viewDescriptorId );
     }
 
-    protected PageComponent createPageComponent(PageComponentDescriptor pageComponentDescriptor) {
-        PageComponent pageComponent = pageComponentDescriptor.createPageComponent();
-        pageComponent.setContext(new DefaultViewContext(this, new PageComponentPane(pageComponent)));
-
+    protected void doAddPageComponent( PageComponent pageComponent ) {
         // trigger the createControl method of the PageComponent, so if a
         // PageComponentListener is added
         // in the createControl method, the componentOpened event is received.
         pageComponent.getControl();
-
-        return pageComponent;
     }
 
-    // Initial Application Page Layout Builder methods
-    public void addView(String viewDescriptorId) {
-        showView(viewDescriptorId);
+    protected void doRemovePageComponent( PageComponent pageComponent ) {
+        this.control.removeAll();
+        this.control.validate();
+        this.control.repaint();
+    }
+
+    protected boolean giveFocusTo( PageComponent pageComponent ) {
+        PageComponentPane pane = pageComponent.getContext().getPane();
+        this.control.removeAll();
+        this.control.add( pane.getControl() );
+        this.control.validate();
+        this.control.repaint();
+        pane.getControl().requestFocusInWindow();
+
+        return true;
+    }
+
+    protected JComponent createControl() {
+        this.control = new JPanel( new BorderLayout() );
+        this.getPageDescriptor().buildInitialLayout( this );
+        
+        return control;
     }
 }
