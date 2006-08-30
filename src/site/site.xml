@@ -45,6 +45,9 @@
                 <item name="Master-detail" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Master-Detail+Forms"/>
                 <item name="Acegi security" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Security"/>
                 <item name="Command Framework" href="/user/commandFramework.html"/>
+                <item name="Form Framework" href="/user/formFramework.html" collapse="false">
+	                <item name="Form Component Interceptors" href="/user/interceptors.html"/>
+                </item>
             </item>
             <item name="Support" href="/user/support.html"/>
             <item name="Upgrading" href="/user/upgrading.html"/>
