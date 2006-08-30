@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeListener;
 
 import org.springframework.util.Assert;
+import org.springframework.binding.value.PropertyChangePublisher;
 
 /**
  * A manager for a group of windows. Window managers are needed in applications
@@ -37,7 +40,7 @@ import org.springframework.util.Assert;
  * 
  * @see Window
  */
-public class WindowManager extends Observable {
+public class WindowManager extends Observable implements PropertyChangePublisher {
 
     /**
      * List of windows managed by this window manager (element type:
@@ -60,6 +63,8 @@ public class WindowManager extends Observable {
      * Holds the currently active window.
      */
     private ApplicationWindow activeWindow;
+    
+    private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     /**
      * Creates an empty window manager without a parent window manager (that is,
@@ -179,15 +184,15 @@ public class WindowManager extends Observable {
      * Set the currently active window. When a window gets focus, it will set itself
      * as the current window of it's manager.
      * 
-     * TODO maybe provide a way to listen to activeWindow changes?
-     * 
      * @param window
      */
     public final void setActiveWindow(ApplicationWindow window)
     {
+        final ApplicationWindow old = this.activeWindow;
         this.activeWindow = window;
         if (getParent() != null) // let things ripple up
             getParent().setActiveWindow(window);
+        getChangeSupport().firePropertyChange("activeWindow", old, window);
     }
     
     /**
@@ -203,5 +208,34 @@ public class WindowManager extends Observable {
      */
     public int size() {
         return windows.size();
+    }
+    
+    
+    protected PropertyChangeSupport getChangeSupport() {
+        return changeSupport;
+    }
+
+    
+    
+    
+    //
+    // METHODS FROM INTERFACE PropertyChangePublisher
+    //
+
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        getChangeSupport().addPropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        getChangeSupport().addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        getChangeSupport().removePropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        getChangeSupport().removePropertyChangeListener(propertyName, listener);
     }
 }
