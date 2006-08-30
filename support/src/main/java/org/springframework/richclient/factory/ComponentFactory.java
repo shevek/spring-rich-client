@@ -28,6 +28,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -282,6 +283,26 @@ public interface ComponentFactory {
      * @return The toggle button.
      */
     public JToggleButton createToggleButton(String[] labelKeys);
+
+    /**
+     * Create a configured radio button.
+     * 
+     * @param labelKey
+     *            The label message code; may also be the label text if no
+     *            message source is configured.
+     * @return The radio button.
+     */
+    public JRadioButton createRadioButton(String labelKey);
+
+    /**
+     * Create a configured radio button.
+     * 
+     * @param labelKeys
+     *            The label message codes; may also be the label text if no
+     *            message source is configured.
+     * @return The radio button.
+     */
+    public JRadioButton createRadioButton(String[] labelKeys);
 
     /**
      * Create a formatted text field using this component factory.

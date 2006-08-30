@@ -35,6 +35,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -290,6 +291,21 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
 
     protected AbstractButton createNewToggleButton() {
         return new JToggleButton();
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.richclient.factory.ComponentFactory#createRadioButton(java.lang.String)
+     */
+    public JRadioButton createRadioButton(String labelKey) {
+        return (JRadioButton)getButtonLabelInfo(getRequiredMessage(labelKey)).configure(createNewRadioButton());
+    }
+
+    protected JRadioButton createNewRadioButton() {
+        return new JRadioButton();
+    }
+
+    public JRadioButton createRadioButton(String[] labelKeys) {
+        return (JRadioButton)getButtonLabelInfo(getRequiredMessage(labelKeys)).configure(createNewRadioButton());
     }
 
     public JMenuItem createMenuItem(String labelKey) {
