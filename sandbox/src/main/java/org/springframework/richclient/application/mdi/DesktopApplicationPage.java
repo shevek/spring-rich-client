@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,88 +16,137 @@
 package org.springframework.richclient.application.mdi;
 
 import java.beans.PropertyVetoException;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageComponent;
-import org.springframework.richclient.application.PageComponentDescriptor;
-import org.springframework.richclient.application.PageComponentPane;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
+import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.support.AbstractApplicationPage;
-import org.springframework.richclient.application.support.DefaultViewContext;
 
 /**
  * @author Peter De Bruycker
  */
-public class DesktopApplicationPage extends AbstractApplicationPage implements PageLayoutBuilder{
+public class DesktopApplicationPage extends AbstractApplicationPage implements PageLayoutBuilder {
 
     private ScrollingDesktopPane control;
 
     private JScrollPane scrollPane;
 
-    public DesktopApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
-        super(window, pageDescriptor);
+    private Map frames = new HashMap();
+
+    public DesktopApplicationPage( ApplicationWindow window, PageDescriptor pageDescriptor ) {
+        super( window, pageDescriptor );
     }
 
-    protected boolean giveFocusTo(PageComponent pageComponent) {
-        if(getActiveComponent() == pageComponent) {
+    protected boolean giveFocusTo( PageComponent pageComponent ) {
+        if( getActiveComponent() == pageComponent ) {
             return true;
         }
-        
-        PageComponentPane pane = pageComponent.getContext().getPane();
-        JInternalFrame internalFrame = (JInternalFrame) pane.getControl();
+
+        JInternalFrame frame = (JInternalFrame) frames.get( pageComponent );
+        if( frame == null ) {
+            return false;
+        }
 
         try {
-            internalFrame.setSelected(true);
-        }
-        catch (PropertyVetoException e) {
+            if( frame.isIcon() ) {
+                frame.setIcon( false );
+            }
+
+            frame.setSelected( true );
+        } catch( PropertyVetoException e ) {
             // ignore
         }
 
-        pane.requestFocusInWindow();
-        return true;
+        return pageComponent.getControl().requestFocusInWindow();
     }
 
-    protected PageComponent createPageComponent(PageComponentDescriptor descriptor) {
-        final PageComponent pageComponent = descriptor.createPageComponent();
-        pageComponent.setContext(new DefaultViewContext(this, new DesktopPageComponentPane(this, pageComponent)));
-
-        JInternalFrame internalFrame = (JInternalFrame) pageComponent.getContext().getPane().getControl();
-        internalFrame.setVisible(true);
-        control.add(internalFrame);
-
-        return pageComponent;
+    public void addView( String viewDescriptorId ) {
+        showView( viewDescriptorId );
     }
 
-    protected void setActiveComponent() {
-        for (Iterator iter = getPageComponents().iterator(); iter.hasNext();) {
-            PageComponent pageComponent = (PageComponent) iter.next();
-            if (!((JInternalFrame) pageComponent.getContext().getPane().getControl()).isIcon()) {
-                setActiveComponent(pageComponent);
-                return;
+    protected void doAddPageComponent( PageComponent pageComponent ) {
+        JInternalFrame frame = createInternalFrame( pageComponent );
+        frames.put( pageComponent, frame );
+
+        frame.setVisible( true );
+        control.add( frame );
+    }
+
+    protected JInternalFrame createInternalFrame( final PageComponent pageComponent ) {
+        JInternalFrame internalFrame = new JInternalFrame( pageComponent.getDisplayName() );
+
+        configureFrame( pageComponent, internalFrame );
+        
+        internalFrame.addInternalFrameListener( new InternalFrameAdapter() {
+            public void internalFrameClosing( InternalFrameEvent e ) {
+                close( pageComponent );
             }
-        }
-        //no page component found that is not iconified
 
+            public void internalFrameActivated( InternalFrameEvent e ) {
+                setActiveComponent( pageComponent );
+            }
+        } );
+
+        internalFrame.getContentPane().add( pageComponent.getControl() );
+        internalFrame.pack();
+        return internalFrame;
+    }
+    
+    protected void configureFrame(PageComponent component, JInternalFrame frame) {
+        if( component.getIcon() != null ) {
+            frame.setFrameIcon( component.getIcon() );
+        }
+
+        ViewDescriptor descriptor = getViewDescriptor( component.getId() );
+        if(descriptor instanceof DesktopViewDescriptor) {
+            DesktopViewDescriptor desktopViewDescriptor = (DesktopViewDescriptor) descriptor;
+            frame.setResizable( desktopViewDescriptor.isResizable() );
+            frame.setMaximizable( desktopViewDescriptor.isMaximizable() );
+            frame.setIconifiable( desktopViewDescriptor.isIconifiable() );
+            frame.setClosable( desktopViewDescriptor.isClosable() );
+        }
+        else {
+            frame.setResizable( true );
+            frame.setMaximizable( true );
+            frame.setIconifiable( true );
+            frame.setClosable( true );
+        }
     }
 
-    public JComponent getControl() {
-        if (control == null) {
-            control = new ScrollingDesktopPane();
-            scrollPane = new JScrollPane(control);
-
-            this.getPageDescriptor().buildInitialLayout(this);
-            setActiveComponent();
+    protected void doRemovePageComponent( PageComponent pageComponent ) {
+        // not used
+        JInternalFrame frame = (JInternalFrame) frames.get( pageComponent );
+        if( frame != null ) {
+            frame.dispose();
         }
+    }
+
+    protected JComponent createControl() {
+        control = new ScrollingDesktopPane();
+        scrollPane = new JScrollPane( control );
+
+        getPageDescriptor().buildInitialLayout( this );
+
         return scrollPane;
     }
 
-    public void addView(String viewDescriptorId) {
-        showView(viewDescriptorId);
+    protected void updatePageComponentProperties( PageComponent pageComponent ) {
+        JInternalFrame frame = (JInternalFrame) frames.get( pageComponent );
+
+        if( pageComponent.getIcon() != null ) {
+            frame.setFrameIcon( pageComponent.getIcon() );
+        }
+        frame.setTitle( pageComponent.getDisplayName() );
+        frame.setToolTipText( pageComponent.getCaption() );
     }
 }

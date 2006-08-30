@@ -1,19 +1,19 @@
 /*
  * Copyright 2002-2006 the original author or authors.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application.mdi;
+package org.springframework.richclient.application.tabbed;
 
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationPageFactory;
@@ -21,12 +21,42 @@ import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageDescriptor;
 
 /**
+ * Factory for <code>TabbedApplicationPage</code> instances.
+ * 
  * @author Peter De Bruycker
  */
-public class DesktopApplicationPageFactory implements ApplicationPageFactory {
+public class TabbedApplicationPageFactory implements ApplicationPageFactory {
+
+    private int tabPlacement = -1;
+    private int tabLayoutPolicy = -1;
 
     public ApplicationPage createApplicationPage( ApplicationWindow window, PageDescriptor descriptor ) {
-        return new DesktopApplicationPage( window, descriptor );
+        TabbedApplicationPage page = new TabbedApplicationPage();
+        page.setApplicationWindow( window );
+        page.setDescriptor( descriptor );
+        if( tabPlacement != -1 ) {
+            page.setTabPlacement( tabPlacement );
+        }
+        if( tabLayoutPolicy != -1 ) {
+            page.setTabLayoutPolicy( tabLayoutPolicy );
+        }
+
+        return page;
     }
 
+    public void setTabPlacement( int tabPlacement ) {
+        this.tabPlacement = tabPlacement;
+    }
+
+    public int getTabPlacement() {
+        return tabPlacement;
+    }
+
+    public int getTabLayoutPolicy() {
+        return tabLayoutPolicy;
+    }
+
+    public void setTabLayoutPolicy( int tabLayoutPolicy ) {
+        this.tabLayoutPolicy = tabLayoutPolicy;
+    }
 }
