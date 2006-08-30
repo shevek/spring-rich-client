@@ -287,6 +287,17 @@ Method name changes
 
     * Spring binding jar updated. Note that this jar is not part of the spring jars or the spring-richclient jars.
 
+    * ApplicationWindow/ApplicationPage/PageComponentPane updates
+    The magic bean name <<<applicationWindowPrototype>>> for instantiating a <<<ApplicationWindow>>> has been removed. Now you have to
+    create a <<<ApplicationWindowFactory>>> implementation and register it as a service in the <<<applicationServices>>>.
+
+    Implementing a custom <<<ApplicationWindow>>> just to create a custom <<<ApplicationPage>>> is no longer necessary, see the next paragraph
+    
+    The magic bean name <<<defaultApplicationPagePrototype>>> for instantiating a <<<ApplicationPage>>> has been removed. Now you have to
+    create a <<<ApplicationPageFactory>>> implementation and register it as a service in the <<<applicationServices>>>.
+
+    <<<PageComponentPane>>> has become an interface. The previous implementation has moved to <<<DefaultPageComponentPane>>>
+    
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
