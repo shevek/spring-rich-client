@@ -28,10 +28,9 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.core.closure.Constraint;
 import org.springframework.core.style.StylerUtils;
-import org.springframework.rules.constraint.And;
 import org.springframework.rules.constraint.ClosureResultConstraint;
+import org.springframework.rules.constraint.CompoundConstraint;
 import org.springframework.rules.constraint.Not;
-import org.springframework.rules.constraint.Or;
 import org.springframework.rules.constraint.ParameterizedBinaryConstraint;
 import org.springframework.rules.constraint.Range;
 import org.springframework.rules.constraint.StringLengthConstraint;
@@ -53,8 +52,6 @@ public class DefaultMessageTranslator implements MessageTranslator,
 			.getLog(DefaultMessageTranslator.class);
 
 	private ReflectiveVisitorHelper visitorSupport = new ReflectiveVisitorHelper();
-
-	private boolean appendValue = false;
 
 	private List args = new ArrayList();
 
@@ -128,12 +125,6 @@ public class DefaultMessageTranslator implements MessageTranslator,
 		if (objectName != null) {
 			buf.append(resolveObjectName(objectName));
 			buf.append(' ');
-			if (appendValue) {
-				if (rejectedValue != null) {
-					buf.append("'" + rejectedValue + "'");
-					buf.append(' ');
-				}
-			}
 		}
 		for (int i = 0; i < args.length - 1; i++) {
 			MessageSourceResolvable arg = args[i];
@@ -189,24 +180,21 @@ public class DefaultMessageTranslator implements MessageTranslator,
 		visitorSupport.invokeVisit(this, valueConstraint.getConstraint());
 	}
 
-	void visit(And and) {
-		Iterator it = and.iterator();
+    /**
+     * Visit function for compound constraints like And/Or/XOr.
+     * 
+     * <p>syntax: <code>CONSTRAINT MESSAGE{code} CONSTRAINT</code></p>
+     * 
+     * @param compoundConstraint
+     */
+	void visit(CompoundConstraint compoundConstraint) {
+		Iterator it = compoundConstraint.iterator();
+        String compoundMessage = getMessageCode(compoundConstraint);
 		while (it.hasNext()) {
 			Constraint p = (Constraint) it.next();
 			visitorSupport.invokeVisit(this, p);
 			if (it.hasNext()) {
-				add("and", null, "add");
-			}
-		}
-	}
-
-	void visit(Or or) {
-		Iterator it = or.iterator();
-		while (it.hasNext()) {
-			Constraint p = (Constraint) it.next();
-			visitorSupport.invokeVisit(this, p);
-			if (it.hasNext()) {
-				add("or", null, "or");
+				add(compoundMessage, null, compoundMessage);
 			}
 		}
 	}
@@ -258,7 +246,15 @@ public class DefaultMessageTranslator implements MessageTranslator,
 		}
 	}
 
-	private String getMessageCode(Object o) {
+    /**
+     * Determines the messageCode (key in messageSource) to look up.
+     * If <code>TypeResolvable</code> is implemented, user can give a custom code,
+     * otherwise the short className is used.
+     * 
+     * @param o
+     * @return
+     */
+	protected String getMessageCode(Object o) {
 		if (o instanceof TypeResolvable) {
 			String type = ((TypeResolvable) o).getType();
 			if (type != null) {
