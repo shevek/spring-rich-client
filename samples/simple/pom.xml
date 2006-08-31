@@ -86,7 +86,24 @@
             <groupId>net.java.dev.glazedlists</groupId>
             <artifactId>glazedlists_java15</artifactId>
         </dependency>
-
+        
+        <!-- Runtime Dependencies -->
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>forms</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>looks</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+         <dependency>
+            <groupId>javax.help</groupId>
+            <artifactId>jhelp</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
     </dependencies>
 
 </project>
