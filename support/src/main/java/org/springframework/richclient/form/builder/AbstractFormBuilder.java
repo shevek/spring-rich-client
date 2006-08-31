@@ -134,7 +134,7 @@ public abstract class AbstractFormBuilder {
     }
 
     protected JPasswordField createPasswordField(String fieldName) {
-        return componentFactory.createPasswordField();
+        return getComponentFactory().createPasswordField();
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class AbstractFormBuilder {
     }
 
     protected JComponent createTextArea(String fieldName) {
-        return componentFactory.createTextArea(5, 40);
+        return getComponentFactory().createTextArea(5, 40);
     }
 
     /**
