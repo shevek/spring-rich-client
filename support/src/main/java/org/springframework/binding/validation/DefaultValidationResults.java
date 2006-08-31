@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.springframework.binding.validation.support.RulesValidator;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.ObjectUtils;
@@ -35,7 +36,7 @@ public class DefaultValidationResults implements ValidationResults {
             Set messagesSubSet = new HashSet();
             for (Iterator i = messages.iterator(); i.hasNext();) {
                 ValidationMessage message = (ValidationMessage)i.next();
-                if (key instanceof Severity && message.getSeverity().equals((Severity)key)) {
+                if (key instanceof Severity && message.getSeverity().equals(key)) {
                     messagesSubSet.add(message);
                 }
                 else if (ObjectUtils.nullSafeEquals(message.getProperty(), key)) {
@@ -121,6 +122,17 @@ public class DefaultValidationResults implements ValidationResults {
 
     public String toString() {
         return new ToStringCreator(this).append("messages", getMessages()).toString();
+    }
+    
+    /**
+     * Clear all messages.
+     * 
+     * @see RulesValidator#clearMessages()
+     */
+    public void clearMessages()
+    {
+        messages.clear();
+        messagesSubSets.clear();
     }
 
 }

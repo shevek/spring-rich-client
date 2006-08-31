@@ -58,6 +58,8 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
 
     private String rulesContextId = null;
 
+    private Class objectClass;
+
     /**
      * Creates a RulesValidator for the given formModel. When no RulesSource is
      * given, a default/global RulesSource is retrieved by the ApplicationServices class.
@@ -85,6 +87,13 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
     }
 
     public ValidationResults validate(Object object, String propertyName) {
+        // Forms can have different types of objects, so when type of object
+        // changes, messages that are already listed on the previous type must
+        // be removed.
+        if (objectClass != null && objectClass != object.getClass()) {
+            clearMessages();
+        }
+        objectClass = object.getClass();
         Rules rules = null;
         if (object instanceof PropertyConstraintProvider) {
             PropertyConstraint validationRule = ((PropertyConstraintProvider)object).getPropertyConstraint(propertyName);
@@ -94,7 +103,7 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
         }
         else {
             if (getRulesSource() != null) {
-                rules = getRulesSource().getRules(object.getClass(), getRulesContextId());
+                rules = getRulesSource().getRules(objectClass, getRulesContextId());
                 if (rules != null) {
                     for (Iterator i = rules.iterator(); i.hasNext();) {
                         PropertyConstraint validationRule = (PropertyConstraint)i.next();
@@ -190,4 +199,15 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
 	public String resolveObjectName(String objectName) {
 		return formModel.getFieldFace(objectName).getDisplayName();
 	}
+    
+    /**
+     * Clear the current validationMessages and the errors.
+     * 
+     * @see #validate(Object, String)
+     */
+    public void clearMessages()
+    {
+        this.results.clearMessages();
+        this.validationErrors.clear();
+    }
 }
