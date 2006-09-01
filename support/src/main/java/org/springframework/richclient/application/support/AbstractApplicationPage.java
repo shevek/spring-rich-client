@@ -172,7 +172,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 
         settingActiveComponent = false;
     }
-    
+
     protected void fireFocusLost( PageComponent component ) {
         component.componentFocusLost();
         pageComponentListeners.fire( "componentFocusLost", component );
@@ -296,9 +296,12 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 
     protected void addPageComponent( PageComponent pageComponent ) {
         pageComponents.add( pageComponent );
-        fireOpened( pageComponent );
         doAddPageComponent( pageComponent );
         pageComponent.addPropertyChangeListener( pageComponentUpdater );
+
+        fireOpened( pageComponent );
+
+        giveFocusTo( pageComponent );
     }
 
     /**
