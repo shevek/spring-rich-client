@@ -43,7 +43,9 @@ public class TabbedApplicationPage extends AbstractApplicationPage implements Pa
     private JTabbedPane tabbedPane;
     private List components = new ArrayList();
     private int tabPlacement = -1;
-    private int tabLayoutPolicy= -1;
+    private int tabLayoutPolicy = -1;
+
+    private boolean addingComponent;
 
     protected JComponent createControl() {
         tabbedPane = new JTabbedPane();
@@ -56,7 +58,8 @@ public class TabbedApplicationPage extends AbstractApplicationPage implements Pa
 
         tabbedPane.addChangeListener( new ChangeListener() {
             public void stateChanged( ChangeEvent e ) {
-                if( tabbedPane.getSelectedIndex() >= 0 ) {
+                // if we're adding a component, ignore change of active component
+                if( !addingComponent && tabbedPane.getSelectedIndex() >= 0 ) {
                     setActiveComponent( getComponent( tabbedPane.getSelectedIndex() ) );
                 }
             }
@@ -89,9 +92,14 @@ public class TabbedApplicationPage extends AbstractApplicationPage implements Pa
     }
 
     protected void doAddPageComponent( PageComponent pageComponent ) {
-        components.add( pageComponent );
-        tabbedPane.addTab( pageComponent.getDisplayName(), pageComponent.getIcon(), pageComponent.getContext()
-                .getPane().getControl(), pageComponent.getCaption() );
+        try {
+            addingComponent = true;
+            components.add( pageComponent );
+            tabbedPane.addTab( pageComponent.getDisplayName(), pageComponent.getIcon(), pageComponent.getContext()
+                    .getPane().getControl(), pageComponent.getCaption() );
+        } finally {
+            addingComponent = false;
+        }
     }
 
     protected void doRemovePageComponent( PageComponent pageComponent ) {
