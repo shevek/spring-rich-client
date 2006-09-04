@@ -111,6 +111,15 @@
             <artifactId>spring-binding</artifactId>
         </dependency>
 
+				<!-- Needed for SortedListModel to work 
+					Is actually added by spring-modules-validation in 
+					a transitive way, but when not using validation, 
+					this package is also needed -->        
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
         <!-- only required when ValangRichValidator is used -->
         <dependency>
             <groupId>org.springmodules</groupId>
