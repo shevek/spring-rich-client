@@ -39,7 +39,7 @@ public class EqualTo extends ComparisonBinaryPredicate {
 	}
 
 	public static BinaryConstraint instance(Comparator c) {
-		return new GreaterThan(c);
+		return new EqualTo(c);
 	}
 
 	public static Constraint value(Object value) {
