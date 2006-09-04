@@ -72,8 +72,8 @@ public class Like implements Constraint {
 		}
 	}
 
-	public String getType() {
-		return type.getStringCode();
+	public LikeType getType() {
+		return type;
 	}
 
 	public String getString() {
