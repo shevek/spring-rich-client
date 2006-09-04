@@ -56,7 +56,12 @@ public abstract class ComparisonBinaryPredicate extends AbstractBinaryConstraint
 		}
 	}
 
-	protected Comparator getComparator() {
+    /**
+     * Returns the comparator which is used to compare the arguments
+     * 
+     * @return null if no custom comparator is defined
+     */
+	public Comparator getComparator() {
 		return comparator;
 	}
 
