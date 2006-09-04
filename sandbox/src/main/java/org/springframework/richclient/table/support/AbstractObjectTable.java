@@ -33,14 +33,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.ApplicationEventRedispatcher;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
-import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
