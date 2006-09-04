@@ -16,6 +16,7 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Window;
+import java.beans.PropertyChangeSupport;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -40,6 +41,8 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     private DefaultMessageAreaPane messageAreaPane;
 
     private String confirmationMessage;
+    
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ConfirmationDialog() {
         this("Confirmation Required", null, "Are you sure you wish to perform this action?");
@@ -57,6 +60,9 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     public void setConfirmationMessage(String message) {
         Assert.hasText(message, "The confirmation message is required");
         this.confirmationMessage = message;
+        if(this.messageAreaPane != null) {
+            messageAreaPane.setMessage(new Message(message));
+        }
     }
 
     protected String getFinishCommandId() {
