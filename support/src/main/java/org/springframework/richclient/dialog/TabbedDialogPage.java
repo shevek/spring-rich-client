@@ -41,6 +41,10 @@ public class TabbedDialogPage extends CompositeDialogPage {
     public TabbedDialogPage(String pageId) {
         super(pageId);
     }
+    
+    public TabbedDialogPage(String pageId, boolean autoConfigure) {
+        super(pageId, autoConfigure);
+    }
 
     protected JComponent createControl() {
         createPageControls();
@@ -108,5 +112,6 @@ public class TabbedDialogPage extends CompositeDialogPage {
         if (page instanceof LabeledObjectSupport) {
             tabbedPane.setMnemonicAt(pageIndex, ((LabeledObjectSupport) page).getMnemonic());
         }
+        tabbedPane.setIconAt( pageIndex, page.getIcon() );
     }
 }

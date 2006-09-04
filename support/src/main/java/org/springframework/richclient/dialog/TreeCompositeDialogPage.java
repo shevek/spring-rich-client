@@ -333,7 +333,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
                 DialogPage page = (DialogPage)node.getUserObject();
         
                 this.setText(decoratePageTitle(page));
-                this.setIcon(null);
+                this.setIcon(page.getIcon());
             }
         
             return this;
