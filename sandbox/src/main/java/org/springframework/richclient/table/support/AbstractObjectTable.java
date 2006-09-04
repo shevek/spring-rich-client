@@ -28,24 +28,25 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.support.PropertyComparator;
-import org.springframework.binding.value.ValueModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.ApplicationEventRedispatcher;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
+import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
-import org.springframework.richclient.list.ListSelectionValueModelAdapter;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
@@ -114,11 +115,11 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
  * 
  * @author Larry Streepy
  */
-public abstract class AbstractObjectTable extends ApplicationServicesAccessor implements ListEventListener {
+public abstract class AbstractObjectTable extends ApplicationServicesAccessor {
 
     private final Log _logger = LogFactory.getLog(getClass());
 
-    private String modelId;
+    private final String modelId;
     private String objectSingularName;
     private String objectPluralName;
     private Object[] initialData = null;
@@ -130,6 +131,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
     private ActionCommandExecutor doubleClickHandler;
     private CommandGroup popupCommandGroup;
     private StatusBarCommandGroup statusBar;
+    private TableComparatorChooser tableSorter;
 
     public static final String SHOWINGALL_MSG_KEY = "objectTable.showingAll.message";
     public static final String SHOWINGN_MSG_KEY = "objectTable.showingN.message";
@@ -191,15 +193,19 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
             // Construct on demand
             Object[] data = getInitialData();
 
-            if( _logger.isInfoEnabled() ) {
-                _logger.info("Table data: got " + data.length + " entries");
+            if( _logger.isDebugEnabled() ) {
+                _logger.debug("Table data: got " + data.length + " entries");
             }
 
             // Construct the event list of all our data and layer on the sorting
-            EventList rawList = new BasicEventList();
-            rawList.addAll(Arrays.asList(data));
-            String sortProperty = getColumnPropertyNames()[getInitialSortColumn()];
-            baseList = new SortedList(rawList, new PropertyComparator(sortProperty, false, true));
+            EventList rawList = GlazedLists.eventList(Arrays.asList(data));
+            int initialSortColumn = getInitialSortColumn();
+            if (initialSortColumn >= 0) {
+                String sortProperty = getColumnPropertyNames()[initialSortColumn];
+                baseList = new SortedList(rawList, new PropertyComparator(sortProperty, false, true));
+            } else {
+                baseList = new SortedList(rawList);
+            }
         }
         return baseList;
     }
@@ -238,6 +244,21 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
         }
         return table;
     }
+    
+    /**
+     * @return the modelId
+     */
+    public String getModelId() {
+        return modelId;
+    }
+    
+    /**
+     * Returns the sorter which is used to sort the content of the table
+     * @return the sorter, null if {@link #getTable()} or {@link #createTable()} is not called before
+     */
+    protected AbstractTableComparatorChooser getTableSorter() {
+        return tableSorter;
+    }
 
     /**
      * Create our control.
@@ -248,61 +269,33 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
         EventList finalEventList = getFinalEventList();
         model = createTableModel(finalEventList);
 
-        table = new JTable(model);
+        table = getComponentFactory().createTable(model);
         table.setSelectionModel(new EventSelectionModel(finalEventList));
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Install the sorter
-        TableComparatorChooser tableSorter = new TableComparatorChooser(table, baseList, true);
+        tableSorter = new TableComparatorChooser(table, baseList, true);
+        
 
         // Allow the derived type to configure the table
         configureTable(table);
 
-        // Sort on the last name by default
-        tableSorter.clearComparator();
-        tableSorter.appendComparator(getInitialSortColumn(), 0, false);
+        int initialSortColumn = getInitialSortColumn();
+        if(initialSortColumn >= 0) {
+            tableSorter.clearComparator();
+            tableSorter.appendComparator(initialSortColumn, 0, false);
+        }
 
         // Add the context menu listener
-        table.addMouseListener(new PopupMenuMouseListener() {
-            protected JPopupMenu getPopupMenu() {
-                return createPopupContextMenu();
-            }
-        });
+        table.addMouseListener(new ContextPopupMenuListener());
 
         // Add our mouse handlers to setup our desired selection mechanics
-        table.addMouseListener(new MouseAdapter() {
-            public void mousePressed( MouseEvent e ) {
-                // If the user right clicks on a row other than the selection,
-                // then move
-                // the selection to the current row
-                int rowUnderMouse = table.rowAtPoint(e.getPoint());
-                if( e.getButton() == MouseEvent.BUTTON3 && !table.isRowSelected(rowUnderMouse) ) {
-                    // Select the row under the mouse
-                    if( rowUnderMouse != -1 ) {
-                        table.getSelectionModel().setSelectionInterval(rowUnderMouse, rowUnderMouse);
-                    }
-                }
-            }
-
-            /**
-             * Handle double click.
-             */
-            public void mouseClicked( MouseEvent e ) {
-                // If the user double clicked on a row, then open the properties
-                if( e.getClickCount() == 2 ) {
-                    onDoubleClick();
-                }
-            }
-        });
+        table.addMouseListener(new DoubleClickListener());
 
         // Keep our status line up to date with the selections and filtering
-        getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged( ListSelectionEvent e ) {
-                updateStatusBar();
-            }
-        });
-
-        getFinalEventList().addListEventListener(this);
+        StatusBarUpdateListener statusBarUpdateListener = new StatusBarUpdateListener();
+        getSelectionModel().addListSelectionListener(statusBarUpdateListener);
+        getFinalEventList().addListEventListener(statusBarUpdateListener);
     }
 
     /**
@@ -330,7 +323,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      * @return table model
      */
     protected GlazedTableModel createTableModel( EventList eventList ) {
-        return new GlazedTableModel(eventList, getMessageSource(), getColumnPropertyNames()) {
+        return new GlazedTableModel(eventList, getMessageSource(), getColumnPropertyNames(), modelId) {
             protected TableFormat createTableFormat() {
                 return new DefaultAdvancedTableFormat();
             }
@@ -339,8 +332,10 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
 
     /**
      * Get the data model for the table.
+     * <p>
+     * <em>Note:</em> This method returns null unless {@link #getTable()} or {@link #createTable()} is called
      * 
-     * @return model
+     * @return model the table model which is used for the table
      */
     public GlazedTableModel getTableModel() {
         return model;
@@ -443,6 +438,19 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
     }
 
     /**
+     * Create the context popup menu, if any, for this table. The default operation is to
+     * create the popup from the command group if one has been specified. If not, then
+     * null is returned.
+     * 
+     * @param e the event which contains information about the current context. 
+     * 
+     * @return popup menu to show, or null if none
+     */
+    protected JPopupMenu createPopupContextMenu(MouseEvent e) {
+        return createPopupContextMenu();
+    }
+
+    /**
      * Get the default sort column. Defaults to 0.
      * 
      * @return column to sort on
@@ -504,16 +512,6 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
      */
     public void setStatusBar( StatusBarCommandGroup statusBar ) {
         this.statusBar = statusBar;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ca.odell.glazedlists.event.ListEventListener#listChanged(ca.odell.glazedlists.event.ListEvent)
-     */
-    public void listChanged( ListEvent listChanges ) {
-        // Our object list has changed, so update the status bar
-        updateStatusBar();
     }
 
     /**
@@ -593,6 +591,47 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor im
                     }
                 }
             }
+        }
+    }
+
+    final class ContextPopupMenuListener extends PopupMenuMouseListener {
+        protected JPopupMenu getPopupMenu(MouseEvent e) {
+            return createPopupContextMenu(e);
+        }
+    }
+
+    final class DoubleClickListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            // If the user right clicks on a row other than the selection,
+            // then move
+            // the selection to the current row
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                int rowUnderMouse = table.rowAtPoint(e.getPoint());
+                if (rowUnderMouse != -1 && !table.isRowSelected(rowUnderMouse)) {
+                    // Select the row under the mouse
+                    table.getSelectionModel().setSelectionInterval(rowUnderMouse, rowUnderMouse);
+                }
+            }
+        }
+
+        /**
+         * Handle double click.
+         */
+        public void mouseClicked(MouseEvent e) {
+            // If the user double clicked on a row, then call onDoubleClick
+            if (e.getClickCount() == 2) {
+                onDoubleClick();
+            }
+        }
+    }
+
+    final class StatusBarUpdateListener implements ListSelectionListener, ListEventListener {
+        public void valueChanged( ListSelectionEvent e ) {
+            updateStatusBar();
+        }
+
+        public void listChanged(ListEvent listChanges) {
+            updateStatusBar();
         }
     }
 }
