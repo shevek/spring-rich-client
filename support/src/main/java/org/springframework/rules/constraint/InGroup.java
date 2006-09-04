@@ -17,37 +17,47 @@ package org.springframework.rules.constraint;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.springframework.core.closure.Constraint;
 
 /**
- * A constraint that tests if an argument is one of a group.  Similiar to
- * a database's 'in' operator, and more convenient than using a bunch of ORs.
+ * A constraint that tests if an argument is one of a group. Similiar to a database's 'in' operator, and more convenient
+ * than using a bunch of ORs.
  * 
- * @author  Keith Donald
+ * @author Keith Donald
  */
 public class InGroup implements Constraint {
-	private Set group;
+    private Set group;
 
-	public InGroup(Set group) {
-		this.group = new HashSet(group);
-	}
+    public InGroup(Set group) {
+        this.group = new HashSet(group);
+    }
 
-	public InGroup(Object[] group) {
-		this.group = new HashSet(Arrays.asList(group));
-	}
+    public InGroup(Object[] group) {
+        this.group = new HashSet(Arrays.asList(group));
+    }
 
-	/**
-	 * Tests the variable argument value is in this group.
-	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
-	 */
-	public boolean test(Object value) {
-		return group.contains(value);
-	}
+    /**
+     * returns an iterator of the group elements
+     * 
+     * @return iterator containing the elements of the group.
+     */
+    public Iterator iterator() {
+        return group.iterator();
+    }
 
-	public String toString() {
-		return "inGroup [" + group + "]";
-	}
+    /**
+     * Tests the variable argument value is in this group.
+     * 
+     * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+     */
+    public boolean test(Object value) {
+        return group.contains(value);
+    }
+
+    public String toString() {
+        return "inGroup [" + group + "]";
+    }
 }
