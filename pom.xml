@@ -480,7 +480,7 @@
     </pluginRepositories>
 
     <properties>
-      <spring.version>1.2.7</spring.version>
+      <spring.version>1.2.8</spring.version>
     </properties>
 
     <dependencies>
@@ -613,7 +613,11 @@
                 <artifactId>spring-binding</artifactId>
                 <version>1.0-rc3</version>
                 <exclusions>
-                    <exclusion>
+                <!-- bug: http://jira.codehaus.org/browse/MNG-1797 
+                when dependency is listed elsewhere with a version,
+                 that one will override a transitive one, so no exclusions of listed dependencies.
+                -->
+                    <!--exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-beans</artifactId>
                     </exclusion>
@@ -624,7 +628,7 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-core</artifactId>
-                    </exclusion>
+                    </exclusion-->
                     <exclusion>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
@@ -639,6 +643,19 @@
                 <groupId>org.springmodules</groupId>
                 <artifactId>spring-modules-validation</artifactId>
                 <version>0.5</version>
+                <exclusions>
+                	<exclusion>
+                		<groupId>org.springframework</groupId>
+                		<artifactId>spring</artifactId>
+                	</exclusion>
+                </exclusions>
+            </dependency>
+
+			<!-- Collections -->
+			<dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.1</version>
             </dependency>
 
             <!-- Logging -->
@@ -771,10 +788,14 @@
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-webmvc</artifactId>
                     </exclusion>
-                    <exclusion>
+                    <!-- bug: http://jira.codehaus.org/browse/MNG-1797 
+                when dependency is listed elsewhere with a version,
+                 that one will override a transitive one, so no exclusions of listed dependencies.
+                -->
+                    <!--exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-dao</artifactId>
-                    </exclusion>
+                    </exclusion-->
                 </exclusions>
             </dependency>
             <dependency>
@@ -803,7 +824,7 @@
             <dependency><!-- TODO verify that the one in repository indeed is 1.2.6 -->
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-petclinic</artifactId>
-                <version>1.2.6</version>
+                <version>${spring.version}</version>
             </dependency>
 
             <dependency>
