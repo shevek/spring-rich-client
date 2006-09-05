@@ -76,9 +76,9 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 
     private CommandFaceDescriptorRegistry faceDescriptorRegistry;
 
-    private boolean oldEnabledState = enabled;
+    private Boolean oldEnabledState;
 
-    private boolean oldVisibleState = visible;
+    private Boolean oldVisibleState;
 
     protected AbstractCommand() {
         this(null);
@@ -311,10 +311,11 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
      */
     protected void updatedEnabledState() {
         boolean isEnabled = isEnabled();
-        if(hasChanged(oldEnabledState, isEnabled)) {
-            firePropertyChange(ENABLED_PROPERTY_NAME, oldEnabledState, isEnabled);
+        if(oldEnabledState == null || hasChanged(oldEnabledState.booleanValue(), isEnabled)) {
+            firePropertyChange(ENABLED_PROPERTY_NAME, oldEnabledState == null ? !isEnabled : oldEnabledState
+                    .booleanValue(), isEnabled);
         }
-        oldEnabledState = isEnabled;
+        oldEnabledState = Boolean.valueOf(isEnabled);
     }
 
     /**
@@ -472,10 +473,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
      */
     protected void updatedVisibleState() {
         boolean isVisible = isVisible();
-        if(hasChanged(oldVisibleState, isVisible)) {
-            firePropertyChange(VISIBLE_PROPERTY_NAME, oldVisibleState, isVisible);
+        if(oldVisibleState == null || hasChanged(oldVisibleState.booleanValue(), isVisible)) {
+            firePropertyChange(VISIBLE_PROPERTY_NAME, oldVisibleState == null ? !isVisible : oldVisibleState.booleanValue(), isVisible);
         }
-        oldVisibleState = isVisible;
+        oldVisibleState = Boolean.valueOf(isVisible);
     }
 
     public final AbstractButton createButton() {
