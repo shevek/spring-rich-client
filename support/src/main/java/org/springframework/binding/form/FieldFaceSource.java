@@ -15,21 +15,53 @@
  */
 package org.springframework.binding.form;
 
+import java.util.Map;
+
 /**
- * Interface to be implemented by objects that can resolve a FieldFace 
- * for a given form model and form property path.
- *  
+ * Interface to be implemented by objects that can resolve a FieldFace for a given form model or context id and a field path.
+ * 
  * @author Oliver Hutchison
- * @see org.springframework.binding.form.support.MessageSourceFieldFaceSource 
+ * @author Mathias Broekelmann
+ * @see org.springframework.binding.form.support.MessageSourceFieldFaceSource
  */
 public interface FieldFaceSource {
 
     /**
      * Return the FieldFace for the given form model and form field.
      * 
-     * @param formModel the form model for which the FieldFace is being resolved
-     * @param field the form field
-     * @return the FieldFace for the given form model and field (never null). 
+     * @param formModel
+     *            the form model for which the FieldFace is being resolved
+     * @param field
+     *            the form field
+     * @return the FieldFace for the given form model and field (never null).
      */
     FieldFace getFieldFace(FormModel formModel, String field);
+
+    /**
+     * Return the FieldFace for the given field name and a context.
+     * 
+     * @param field
+     *            the field name
+     * @param contextId
+     *            optional context id for the field face
+     * @return the FieldFace for the given field (never null).
+     * @throws IllegalArgumentException
+     *             if field is null or empty
+     */
+    FieldFace getFieldFace(String field, String contextId);
+
+    /**
+     * Return the FieldFace for the given field name a context and a map containing values to create the field face.
+     * 
+     * @param field
+     *            the field name
+     * @param contextId
+     *            optional context id for the field face
+     * @param context
+     *            contains optional context values
+     * @return the FieldFace for the given field (never null).
+     * @throws IllegalArgumentException
+     *             if field is null or empty
+     */
+    FieldFace getFieldFace(String field, String contextId, Map context);
 }
