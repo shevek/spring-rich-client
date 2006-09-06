@@ -20,10 +20,16 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -58,16 +64,18 @@ import org.springframework.util.StringUtils;
  * <P>
  * Services of a <code>ApplicationDialog</code> include:
  * <ul>
- * <li>centering on the parent frame
- * <li>reusing the parent's icon
+ * <li>centering on the parent frame</li>
+ * <li>reusing the parent's icon</li>
  * <li>standard layout and border spacing, based on Java Look and Feel
- * guidelines.
- * <li>uniform naming style for dialog title
+ * guidelines.</li>
+ * <li>uniform naming style for dialog title</li>
  * <li><code>OK</code> and <code>Cancel</code> buttons at the bottom of the
  * dialog -<code>OK</code> is the default, and the <code>Escape</code> key
  * activates <code>Cancel</code> (the latter works only if the dialog receives
- * the escape keystroke, and not one of its components)
- * <li>by default, modal enabling & disabling of resizing
+ * the escape keystroke, and not one of its components)</li>
+ * <li>by default, modal</li>
+ * <li>enabling & disabling of resizing</li>
+ * <li>will be shown in taskbar if no parent window has been set, and no applicationwindow is open</li>
  * </ul>
  */
 public abstract class ApplicationDialog extends ApplicationServicesAccessor implements TitleConfigurable, Guarded {
@@ -271,20 +279,75 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         if (!isControlCreated()) {
             createDialog();
             onAboutToShow();
-            if (getLocation() != null)
+            if (getLocation() != null) {
                 dialog.setLocation(getLocation());
-            else
+            }
+            else {
                 dialog.setLocationRelativeTo(parent);
-            dialog.setVisible(true);
+            }
+
+            doShowDialog();
         }
         else {
             if (!isShowing()) {
                 onAboutToShow();
-                dialog.setVisible(true);
+                doShowDialog();
             }
         }
     }
 
+    protected void doShowDialog() {
+        if (parent == null) {
+            // get the dummy frame that got created
+            final JFrame frame = (JFrame)dialog.getParent();
+            
+            // update the frame
+            frame.setTitle(dialog.getTitle());
+            frame.setLocation(dialog.getLocation());
+            frame.setSize(dialog.getSize());
+            frame.setIconImage(getApplication().getImage());
+
+            final ComponentListener componentListener = new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) {
+                    // if the dialog is hidden, hide the frame
+                    frame.setVisible(false);
+                }
+
+                public void componentMoved(ComponentEvent e) {
+                    // make sure the frame stays hidden behind the dialog
+                    frame.setLocation(dialog.getLocation());
+                }
+
+                public void componentResized(ComponentEvent e) {
+                    // make sure the frame stays hidden behind the dialog
+                    frame.setSize(dialog.getSize());
+                }
+            };
+            dialog.addComponentListener(componentListener);
+
+            final List closeHandlerHolder = new ArrayList();
+            WindowListener closeHandler = new WindowAdapter() {
+                public void windowClosed(WindowEvent e) {
+                    // if the dialog is closed, dispose the frame
+                    frame.dispose();
+
+                    // dirty stuff to get this compiled
+                    WindowListener closeHandler = (WindowListener)closeHandlerHolder.get(0);
+                    dialog.removeWindowListener(closeHandler);
+
+                    // cleanup
+                    dialog.removeComponentListener(componentListener);
+                }
+            };
+            closeHandlerHolder.add(closeHandler);
+            dialog.addWindowListener(closeHandler);
+            
+            frame.setVisible(true);
+        }
+
+        dialog.setVisible(true);
+    }
+    
     /**
      * Subclasses should call if layout of the dialog components changes.
      */
@@ -326,7 +389,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                 dialog = new JDialog(getActiveWindow().getControl(), getTitle(), modal);
             }
             else {
-                dialog = new JDialog((JFrame)null, getTitle(), modal);
+                // create a dummy frame to be used as its parent
+                dialog = new JDialog(new JFrame(), getTitle(), modal);
             }
         }
         dialog.getContentPane().setLayout(new BorderLayout());
