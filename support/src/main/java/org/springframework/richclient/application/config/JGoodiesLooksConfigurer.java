@@ -20,8 +20,8 @@ import java.awt.Dimension;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import com.jgoodies.looks.Options;
 import com.jgoodies.looks.FontPolicy;
+import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 
@@ -43,7 +43,7 @@ public class JGoodiesLooksConfigurer implements InitializingBean {
     }
 
     public void setTheme(PlasticTheme theme) {
-        PlasticLookAndFeel.setMyCurrentTheme(theme);
+        PlasticLookAndFeel.setPlasticTheme(theme);
     }
 
     public void setPopupDropShadowEnabled(boolean enabled) {
