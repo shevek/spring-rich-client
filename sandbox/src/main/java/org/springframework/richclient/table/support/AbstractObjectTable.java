@@ -38,6 +38,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
+import org.springframework.util.Assert;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
@@ -129,7 +130,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor {
     private ActionCommandExecutor doubleClickHandler;
     private CommandGroup popupCommandGroup;
     private StatusBarCommandGroup statusBar;
-    private TableComparatorChooser tableSorter;
+    private AbstractTableComparatorChooser tableSorter;
 
     public static final String SHOWINGALL_MSG_KEY = "objectTable.showingAll.message";
     public static final String SHOWINGN_MSG_KEY = "objectTable.showingN.message";
@@ -272,7 +273,8 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor {
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Install the sorter
-        tableSorter = new TableComparatorChooser(table, baseList, true);
+        Assert.notNull(baseList);
+        tableSorter = createTableSorter(table, baseList);
         
 
         // Allow the derived type to configure the table
@@ -296,6 +298,14 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor {
         getFinalEventList().addListEventListener(statusBarUpdateListener);
     }
 
+    protected AbstractTableComparatorChooser createTableSorter(JTable table, SortedList sortedList) {
+        return new TableComparatorChooser(table, sortedList, isMultipleColumnSort());
+    }
+
+    protected boolean isMultipleColumnSort() {
+        return true;
+    }
+    
     /**
      * Handle a double click on a row of the table. The row will already be selected.
      */
@@ -321,7 +331,7 @@ public abstract class AbstractObjectTable extends ApplicationServicesAccessor {
      * @return table model
      */
     protected GlazedTableModel createTableModel( EventList eventList ) {
-        return new GlazedTableModel(eventList, getMessageSource(), getColumnPropertyNames(), modelId) {
+        return new GlazedTableModel(eventList, getColumnPropertyNames(), modelId) {
             protected TableFormat createTableFormat() {
                 return new DefaultAdvancedTableFormat();
             }

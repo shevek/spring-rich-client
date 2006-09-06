@@ -243,7 +243,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     protected TableModel createTableModel() {
         // Make this table model read-only
-        return new GlazedTableModel( _eventList, getMessageSource(), getColumnPropertyNames(), getId() ) {
+        return new GlazedTableModel( _eventList, getColumnPropertyNames(), getId() ) {
             protected boolean isEditable(Object row, int column) {
                 return false;
             }
