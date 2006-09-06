@@ -49,13 +49,17 @@ public class DefaultFieldFace extends AbstractPropertyChangePublisher implements
      * Constructs a new DefaultFieldFace with the provided values.
      */
     public DefaultFieldFace(String displayName, String caption, String description, String encodedLabel, Icon icon) {
+        this(displayName, caption, description, LabelInfoFactory.createLabelInfo(encodedLabel), icon);
+    }
+
+    public DefaultFieldFace(String displayName, String caption, String description, LabelInfo labelInfo, Icon icon) {
         this.displayName = displayName;
         this.caption = caption;
         this.description = description;
-        this.labelInfo = LabelInfoFactory.createLabelInfo(encodedLabel);
+        this.labelInfo = labelInfo;
         this.icon = icon;
     }
-
+    
     public String getDisplayName() {
         return displayName;
     }

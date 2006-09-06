@@ -28,6 +28,8 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.factory.LabelInfo;
+import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.util.StringUtils;
 
@@ -129,17 +131,23 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
         return iconSource;
     }
 
+    protected String getMessage(String contextId, String formPropertyPath, Map context, String[] faceDescriptorProperty) {
+        return getMessage(contextId, formPropertyPath, context, faceDescriptorProperty, null);        
+    }
     /**
      * Returns the value of the required property of the FieldFace. Delegates to the getMessageKeys for the message key
      * generation strategy.
      */
-    protected String getMessage(String contextId, String formPropertyPath, Map context, String[] faceDescriptorProperty) {
+    protected String getMessage(String contextId, String formPropertyPath, Map context, String[] faceDescriptorProperty, String defaultValue) {
         String[] keys = getMessageKeys(contextId, formPropertyPath, faceDescriptorProperty);
         Object[] arguments = null;
         if (faceDescriptorProperty != null) {
             arguments = (Object[]) context.get(faceDescriptorProperty);
         }
-        return getMessageSourceAccessor().getMessage(new DefaultMessageSourceResolvable(keys, arguments, keys[0]));
+        if(defaultValue == null) {
+            defaultValue = keys[0];
+        }
+        return getMessageSourceAccessor().getMessage(new DefaultMessageSourceResolvable(keys, arguments, defaultValue));
     }
 
     /**
@@ -184,7 +192,6 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
     }
 
     protected FieldFace loadFieldFace(String field, String contextId, Map context) {
-        String displayName = getMessage(contextId, field, context, DISPLAY_NAME_PROPERTY);
         String caption = getMessage(contextId, field, context, CAPTION_PROPERTY);
         String description = getMessage(contextId, field, context, DESCRIPTION_PROPERTY);
         String encodedLabel = getMessage(contextId, field, context, ENCODED_LABEL_PROPERTY);
@@ -193,7 +200,9 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
             encodedLabel = getMessage(contextId, field, context, null);
         }
         Icon icon = getIconSource().getIcon(getMessage(contextId, field, context, ICON_PROPERTY));
-        return new DefaultFieldFace(displayName, caption, description, encodedLabel, icon);
+        LabelInfo labelInfo = LabelInfoFactory.createLabelInfo(encodedLabel);
+        String displayName = getMessage(contextId, field, context, DISPLAY_NAME_PROPERTY, labelInfo.getText());
+        return new DefaultFieldFace(displayName, caption, description, labelInfo, icon);
     }
 
     protected FieldFace loadFieldFace(String field, String contextId) {
