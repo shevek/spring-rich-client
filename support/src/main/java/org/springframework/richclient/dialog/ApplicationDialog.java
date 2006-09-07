@@ -55,27 +55,26 @@ import org.springframework.util.StringUtils;
 /**
  * Abstract Base Class for a dialog with standard layout, buttons, and behavior.
  * <p>
- * Use of this class will apply a standard appearance to dialogs in the
- * application.
+ * Use of this class will apply a standard appearance to dialogs in the application.
  * <P>
- * Subclasses implement the body of the dialog (wherein business objects are
- * manipulated), and the action taken by the <code>OK</code> button.
+ * Subclasses implement the body of the dialog (wherein business objects are manipulated),
+ * and the action taken by the <code>OK</code> button.
  * 
  * <P>
  * Services of a <code>ApplicationDialog</code> include:
  * <ul>
  * <li>centering on the parent frame</li>
  * <li>reusing the parent's icon</li>
- * <li>standard layout and border spacing, based on Java Look and Feel
- * guidelines.</li>
+ * <li>standard layout and border spacing, based on Java Look and Feel guidelines.</li>
  * <li>uniform naming style for dialog title</li>
- * <li><code>OK</code> and <code>Cancel</code> buttons at the bottom of the
- * dialog -<code>OK</code> is the default, and the <code>Escape</code> key
- * activates <code>Cancel</code> (the latter works only if the dialog receives
- * the escape keystroke, and not one of its components)</li>
+ * <li><code>OK</code> and <code>Cancel</code> buttons at the bottom of the dialog -<code>OK</code>
+ * is the default, and the <code>Escape</code> key activates <code>Cancel</code> (the
+ * latter works only if the dialog receives the escape keystroke, and not one of its
+ * components)</li>
  * <li>by default, modal</li>
  * <li>enabling & disabling of resizing</li>
- * <li>will be shown in taskbar if no parent window has been set, and no applicationwindow is open</li>
+ * <li>will be shown in taskbar if no parent window has been set, and no
+ * applicationwindow is open</li>
  * </ul>
  */
 public abstract class ApplicationDialog extends ApplicationServicesAccessor implements TitleConfigurable, Guarded {
@@ -138,13 +137,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * Creates a new application dialog; the actual UI is not initialized until
      * showDialog() is called.
      * 
-     * @param title
-     *            text which appears in the title bar after the name of the
-     *            application, and satisfies
-     * @param parent
-     *            frame to which this dialog is attached.
-     * @param closeAction
-     *            sets the behaviour of the dialog upon close.
+     * @param title text which appears in the title bar after the name of the application,
+     *        and satisfies
+     * @param parent frame to which this dialog is attached.
+     * @param closeAction sets the behaviour of the dialog upon close.
      */
     public ApplicationDialog(String title, Window parent, CloseAction closeAction) {
         setTitle(title);
@@ -200,8 +196,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Should the finish button be enabled by default?
      * 
-     * @param enabled
-     *            true or false
+     * @param enabled true or false
      */
     public void setDefaultEnabled(boolean enabled) {
         this.defaultEnabled = enabled;
@@ -272,8 +267,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Show the dialog. If the dialog has not already been initialized it will
-     * be here.
+     * Show the dialog. If the dialog has not already been initialized it will be here.
      */
     public void showDialog() {
         if (!isControlCreated()) {
@@ -297,10 +291,12 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected void doShowDialog() {
-        if (parent == null) {
+        // if the parent is not set, and there is no active window, the parent of the
+        // dialog is the dummy frame we created
+        if (parent == null && getActiveWindow() == null) {
             // get the dummy frame that got created
             final JFrame frame = (JFrame)dialog.getParent();
-            
+
             // update the frame
             frame.setTitle(dialog.getTitle());
             frame.setLocation(dialog.getLocation());
@@ -341,13 +337,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             };
             closeHandlerHolder.add(closeHandler);
             dialog.addWindowListener(closeHandler);
-            
+
             frame.setVisible(true);
         }
 
         dialog.setVisible(true);
     }
-    
+
     /**
      * Subclasses should call if layout of the dialog components changes.
      */
@@ -424,8 +420,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Subclasses may override to return a custom message key, default is
-     * "okCommand", corresponding to the "&OK" label.
+     * Subclasses may override to return a custom message key, default is "okCommand",
+     * corresponding to the "&OK" label.
      * 
      * @return The message key to use for the finish ("ok") button
      */
@@ -434,8 +430,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Subclasses may override to return a security controller id to be
-     * attached to the finish command.  The default is null, no controller.
+     * Subclasses may override to return a security controller id to be attached to the
+     * finish command. The default is null, no controller.
+     * 
      * @return security controller id, or null if none
      */
     protected String getFinishSecurityControllerId() {
@@ -443,8 +440,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Request invocation of the action taken when the user hits the
-     * <code>OK</code> (finish) button.
+     * Request invocation of the action taken when the user hits the <code>OK</code>
+     * (finish) button.
      * 
      * @return true if action completed successfully; false otherwise.
      */
@@ -455,8 +452,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     protected void showFinishSuccessMessageDialog() {
-		MessageDialog messageDialog = new MessageDialog(getFinishSuccessTitle(), getDialog(), getFinishSuccessMessage());
-		messageDialog.showDialog();
+        MessageDialog messageDialog = new MessageDialog(getFinishSuccessTitle(), getDialog(), getFinishSuccessMessage());
+        messageDialog.showDialog();
     }
 
     protected String getFinishSuccessMessage() {
@@ -511,8 +508,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Force the escape key to call the same action as pressing the Cancel
-     * button. This does not always work. See class comment.
+     * Force the escape key to call the same action as pressing the Cancel button. This
+     * does not always work. See class comment.
      */
     private void addCancelByEscapeKey() {
         int noModifiers = 0;
@@ -567,9 +564,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Return the GUI which allows the user to manipulate the business objects
-     * related to this dialog; this GUI will be placed above the <code>OK</code>
-     * and <code>Cancel</code> buttons, in a standard manner.
+     * Return the GUI which allows the user to manipulate the business objects related to
+     * this dialog; this GUI will be placed above the <code>OK</code> and
+     * <code>Cancel</code> buttons, in a standard manner.
      */
     protected abstract JComponent createDialogContentPane();
 
@@ -579,9 +576,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Return a standardized row of command buttons, right-justified and all of
-     * the same size, with OK as the default button, and no mnemonics used, as
-     * per the Java Look and Feel guidelines.
+     * Return a standardized row of command buttons, right-justified and all of the same
+     * size, with OK as the default button, and no mnemonics used, as per the Java Look
+     * and Feel guidelines.
      */
     protected JComponent createButtonBar() {
         this.dialogCommandGroup = CommandGroup.createCommandGroup(null, getCommandGroupMembers());
@@ -591,11 +588,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Template getter method to return the commands to populate the dialog
-     * button bar.
+     * Template getter method to return the commands to populate the dialog button bar.
      * 
-     * @return The array of commands (may also be a separator or glue
-     *         identifier)
+     * @return The array of commands (may also be a separator or glue identifier)
      */
     protected Object[] getCommandGroupMembers() {
         return new AbstractCommand[] {getFinishCommand(), getCancelCommand()};
@@ -620,11 +615,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Register the provided button as the default dialog button. The button
-     * must be present on the dialog.
+     * Register the provided button as the default dialog button. The button must be
+     * present on the dialog.
      * 
-     * @param button
-     *            The button to become the default.
+     * @param button The button to become the default.
      */
     protected final void registerDefaultCommand(ActionCommand command) {
         if (isControlCreated()) {
@@ -633,15 +627,13 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Template lifecycle method invoked after the dialog control is
-     * initialized.
+     * Template lifecycle method invoked after the dialog control is initialized.
      */
     protected void onInitialized() {
     }
 
     /**
-     * Template lifecycle method invoked right before the dialog is to become
-     * visible.
+     * Template lifecycle method invoked right before the dialog is to become visible.
      */
     protected void onAboutToShow() {
     }
@@ -687,11 +679,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Close and dispose of the editor dialog. This forces the dialog to be
-     * re-built on the next show.
+     * Close and dispose of the editor dialog. This forces the dialog to be re-built on
+     * the next show.
      */
     protected final void dispose() {
-        if(dialog != null) {
+        if (dialog != null) {
             onWindowClosing();
             this.dialog.dispose();
             this.dialog = null;
@@ -699,8 +691,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Hide the dialog. This differs from dispose in that the dialog control
-     * stays cached in memory.
+     * Hide the dialog. This differs from dispose in that the dialog control stays cached
+     * in memory.
      */
     protected final void hide() {
         onWindowClosing();
