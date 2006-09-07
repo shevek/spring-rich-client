@@ -22,8 +22,12 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.form.FieldFace;
 import org.springframework.binding.form.FormModel;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.ApplicationServices;
@@ -45,19 +49,31 @@ import org.springframework.util.StringUtils;
  * <p>
  * <code>{formModelId}.{formPropertyPath}.{faceDescriptorProperty}</code><br>
  * <code>{formPropertyPath}.{faceDescriptorProperty}</code><br>
- * 
  * <p>
  * Where <code>{formModelId}</code> is the id of the form model, <code>{formPropertyPath}</code> is the form
  * property path being resolved and <code>{faceDescriptorProperty}</code> is one of <code>displayName, caption, 
  * description</code>
  * or <code>label</code>.
  * <p>
- * If required the strategy for generating these key can be overridden be providing an alternative implementation of the
- * getMessageKeys method.
+ * if contextId is used
+ * <p>
+ * <code>{contextId}.{formPropertyPath}.{faceDescriptorProperty}</code><br>
+ * <code>{formPropertyPath}.{faceDescriptorProperty}</code><br>
+ * <p>
+ * {@link #getFieldFace(String, String, Map)} can be used to provide context arguments when resolving the
+ * <code>{faceDescriptorProperty}</code> values. If the map contains for a <code>{faceDescriptorProperty}</code> key
+ * a value it must be an instance of <code>Object[]</code> or null. The value is used as the argument property while
+ * resolving the message through {@link MessageSourceResolvable}
+ * <p>
+ * If required the strategy for generating these keys can be overridden be providing an alternative implementation of the
+ * {@link #getMessageKeys(String, String, String[])} method.
  * 
  * @author Oliver Hutchison
+ * @author Mathias Broekelmann
  */
 public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
+
+    private static final Log log = LogFactory.getLog(MessageSourceFieldFaceSource.class);
 
     /**
      * Name for the FieldFace's <code>displayName</code> property.
@@ -132,22 +148,34 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
     }
 
     protected String getMessage(String contextId, String formPropertyPath, Map context, String[] faceDescriptorProperty) {
-        return getMessage(contextId, formPropertyPath, context, faceDescriptorProperty, null);        
-    }
-    /**
-     * Returns the value of the required property of the FieldFace. Delegates to the getMessageKeys for the message key
-     * generation strategy.
-     */
-    protected String getMessage(String contextId, String formPropertyPath, Map context, String[] faceDescriptorProperty, String defaultValue) {
         String[] keys = getMessageKeys(contextId, formPropertyPath, faceDescriptorProperty);
         Object[] arguments = null;
         if (faceDescriptorProperty != null) {
             arguments = (Object[]) context.get(faceDescriptorProperty);
         }
-        if(defaultValue == null) {
-            defaultValue = keys[0];
+        return getMessageSourceAccessor().getMessage(new DefaultMessageSourceResolvable(keys, arguments, keys[0]));
+    }
+
+    /**
+     * Returns the value of the required property of the FieldFace. Delegates to the getMessageKeys for the message key
+     * generation strategy.
+     */
+    protected String getMessage(String contextId, String fieldPath, Map context, String[] faceDescriptorProperties,
+            String defaultValue) {
+        String[] keys = getMessageKeys(contextId, fieldPath, faceDescriptorProperties);
+        Object[] arguments = null;
+        if (faceDescriptorProperties.length > 0) {
+            arguments = (Object[]) context.get(faceDescriptorProperties[0]);
         }
-        return getMessageSourceAccessor().getMessage(new DefaultMessageSourceResolvable(keys, arguments, defaultValue));
+        try {
+            return getMessageSourceAccessor().getMessage(
+                    new DefaultMessageSourceResolvable(keys, arguments, defaultValue));
+        } catch (NoSuchMessageException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getMessage());
+            }
+            return null;
+        }
     }
 
     /**
@@ -157,10 +185,11 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
      * Subclasses my override this method to provide an alternative to the default message key generation strategy.
      */
     protected String[] getMessageKeys(String contextId, String fieldPath, String[] faceDescriptorProperties) {
-        boolean hasFormId = StringUtils.hasText(contextId);
+        boolean hasContextId = StringUtils.hasText(contextId);
         String[] fieldPathElements = StringUtils.delimitedListToStringArray(fieldPath, ".");
-        Collection keys = new ArrayList(hasFormId ? 2 * fieldPathElements.length : fieldPathElements.length);
-        if (hasFormId) {
+        Collection keys = new ArrayList((hasContextId ? 2 * fieldPathElements.length : fieldPathElements.length)
+                * faceDescriptorProperties.length);
+        if (hasContextId) {
             String prefix = contextId + '.';
             addKeys(keys, prefix, fieldPathElements, faceDescriptorProperties);
         }
@@ -169,8 +198,8 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
     }
 
     private void addKeys(Collection keys, String prefix, String[] fieldPathElements, String[] suffix) {
-        int size = fieldPathElements.length;
-        int suffixSize = suffix.length;
+        final int size = fieldPathElements.length;
+        final int suffixSize = suffix.length;
         for (int i = 0; i < size; i++) {
             StringBuffer path = new StringBuffer(prefix);
             for (int j = i; j < size; j++) {
@@ -186,20 +215,24 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
                 } else {
                     keys.add(path.toString());
                 }
-                    
+
             }
         }
     }
 
     protected FieldFace loadFieldFace(String field, String contextId, Map context) {
-        String caption = getMessage(contextId, field, context, CAPTION_PROPERTY);
-        String description = getMessage(contextId, field, context, DESCRIPTION_PROPERTY);
+        String caption = getMessage(contextId, field, context, CAPTION_PROPERTY, null);
+        String description = getMessage(contextId, field, context, DESCRIPTION_PROPERTY, null);
         String encodedLabel = getMessage(contextId, field, context, ENCODED_LABEL_PROPERTY);
         if (encodedLabel == null) {
             // try loading the default value
             encodedLabel = getMessage(contextId, field, context, null);
         }
-        Icon icon = getIconSource().getIcon(getMessage(contextId, field, context, ICON_PROPERTY));
+        String iconName = getMessage(contextId, field, context, ICON_PROPERTY, null);
+        Icon icon = null;
+        if (iconName != null) {
+            icon = getIconSource().getIcon(iconName);
+        }
         LabelInfo labelInfo = LabelInfoFactory.createLabelInfo(encodedLabel);
         String displayName = getMessage(contextId, field, context, DISPLAY_NAME_PROPERTY, labelInfo.getText());
         return new DefaultFieldFace(displayName, caption, description, labelInfo, icon);
