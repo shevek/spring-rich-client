@@ -932,11 +932,8 @@
             <!-- JNLP -->
             <dependency>
                 <groupId>javax.jnlp</groupId>
-                <artifactId>jnlp</artifactId>
-                <version>1.5.0</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/lib/javaws.jar</systemPath>
-                <!-- This isn't purely jnlp, it contains sun files... -->
+                <artifactId>jnlp-api</artifactId>
+                <version>1.5</version>
             </dependency>
 
             <!-- Persistence (for samples) -->
@@ -996,15 +993,11 @@
     <distributionManagement>
         <repository>
             <id>shell.sourceforge.net</id>
-            <url>
-                scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2repository
-            </url>
+            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2repository</url>
         </repository>
         <site>
             <id>shell.sourceforge.net</id>
-            <url>
-                scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/
-            </url>
+            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/</url>
         </site>
         <!-- Archive deployment -->
         <!--<site>-->

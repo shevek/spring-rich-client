@@ -71,7 +71,7 @@
         <!-- JNLP -->
         <dependency>
             <groupId>javax.jnlp</groupId>
-            <artifactId>jnlp</artifactId>
+            <artifactId>jnlp-api</artifactId>
         </dependency>
         
     </dependencies>
