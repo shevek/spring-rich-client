@@ -1,0 +1,46 @@
+/*
+ * Copyright 2002-2006 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.richclient.application.splash;
+
+import org.springframework.richclient.progress.ProgressMonitor;
+
+/**
+ * A <code>SplashScreen</code> is shown to the user during application startup.
+ * Optionally implementations can provide visual feedback of startup progress to the user
+ * using the <code>ProgressMonitor</code>.
+ * 
+ * @author Peter De Bruycker
+ */
+public interface SplashScreen {
+    /**
+     * Shows this <code>SplashScreen</code>.
+     */
+    void splash();
+
+    /**
+     * Disposes this <code>SplashScreen</code>.
+     */
+    void dispose();
+
+    /**
+     * Gets this <code>SplashScreen</code>s <code>ProgressMonitor</code>.
+     * Implementors wishing to show the progress to the user should return a
+     * <code>ProgressMonitor</code> that updates the ui.
+     * 
+     * @return the <code>ProgressMonitor</code>
+     */
+    ProgressMonitor getProgressMonitor();
+}
