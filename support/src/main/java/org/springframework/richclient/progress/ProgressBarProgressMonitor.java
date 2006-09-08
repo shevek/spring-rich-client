@@ -17,6 +17,8 @@ package org.springframework.richclient.progress;
 
 import javax.swing.JProgressBar;
 
+import org.springframework.util.Assert;
+
 /**
  * <code>ProgressMonitor</code> implementation that delegates to a
  * <code>JProgressBar</code>.
@@ -29,6 +31,7 @@ public class ProgressBarProgressMonitor implements ProgressMonitor {
     private boolean canceled;
 
     public ProgressBarProgressMonitor(JProgressBar progressBar) {
+        Assert.notNull(progressBar, "ProgressBar cannot be null.");
         this.progressBar = progressBar;
     }
 
