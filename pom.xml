@@ -19,6 +19,7 @@
         and easier to use, and a limited number of design best practices.
         The goal of spring-richclient is to provide that.
     </description>
+    <url>http://spring-rich-c.sf.net/</url>
 
     <issueManagement>
         <system>jira</system>
