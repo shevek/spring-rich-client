@@ -17,7 +17,10 @@ package org.springframework.richclient.form.binding.swing;
 
 import javax.swing.JToggleButton;
 
+import org.springframework.binding.support.TestBean;
 import org.springframework.binding.form.FieldMetadata;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.support.DefaultFormModel;
 
 /**
  * @author Mathias Broekelmann
@@ -33,6 +36,15 @@ public class ToggleButtonBindingTests extends BindingAbstractTests {
         tbb = new ToggleButtonBinding(new JToggleButton(), fm, "booleanProperty");
         tb = (JToggleButton) tbb.getControl();
         return "booleanProperty";
+    }
+
+    public void testInitialValue() {
+        TestBean bean = new TestBean();
+        bean.setBooleanProperty(true);
+        FormModel fm = new DefaultFormModel(bean);
+        ToggleButtonBinding binding = new ToggleButtonBinding(new JToggleButton(), fm, "booleanProperty");
+        JToggleButton control = (JToggleButton) binding.getControl();
+        assertEquals(true, control.isSelected());
     }
 
     public void testComponentTracksEnabledChanges() {

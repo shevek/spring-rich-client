@@ -42,6 +42,7 @@ public class ToggleButtonBinding extends CustomBinding {
     protected JComponent doBindControl() {
         getFieldFace().configure(toggleButton);
         toggleButton.getModel().addItemListener(selectionListener);
+        toggleButton.setSelected(Boolean.TRUE.equals(getValue()));
         return toggleButton;
     }
 
