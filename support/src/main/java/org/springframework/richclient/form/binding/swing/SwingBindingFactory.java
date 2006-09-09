@@ -126,7 +126,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItemsHolder);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
         context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyEditorClosure(renderedProperty));
-        context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
+        context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, true));
         return createBinding(JComboBox.class, formProperty, context);
     }
 
@@ -321,7 +321,7 @@ public class SwingBindingFactory extends AbstractBindingFactory {
         context.put(ListBinder.SELECTABLE_ITEMS_KEY, selectableItems);
         if (renderedProperty != null) {
             context.put(ListBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
-            context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, false));
+            context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, true));
         }
         return createBinding(JList.class, selectionFormProperty, context);
     }
