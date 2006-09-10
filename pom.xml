@@ -361,9 +361,11 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
+                    <!-- Aggregate doesn't work due to classpath (or sourcepath?) issues in javadoc plugin 2.0 -->
                     <!--<aggregate>true</aggregate>-->
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://static.springframework.org/spring/docs/1.2.x/api</link>
                     </links>
                 </configuration>
             </plugin>
