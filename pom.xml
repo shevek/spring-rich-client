@@ -343,61 +343,6 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <version>2.0-beta-5</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <!--<plugin>-->
-                    <!--<groupId>org.codehaus.mojo</groupId>-->
-                    <!--<artifactId>taglist-maven-plugin</artifactId>-->
-                    <!--<version>???</version>-->
-                <!--</plugin>-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <!--plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>jdepend-maven-plugin</artifactId>
-                  <version>2.0-beta-1-SNAPSHOT</version>
-                </plugin-->
-                <!--
-                    TODO checkstyle rules must be configured so it no longer
-                    generates a 4 mb file which is hard to site-deploy...
-                -->
-                <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-                    <!--<version>2.1</version>-->
-                <!--</plugin>-->
-                <!--
-                    TODO Changelog is unfinished:
-                    - has also a problem with the netbeans (cvs)lib dependency
-                    - is moving from mojo.codehaus.org to maven.apache.org
-                -->
-                <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-changelog-plugin</artifactId>-->
-                    <!--<version>???</version>-->
-                <!--</plugin>-->
-
             </plugins>
         </pluginManagement>
         <plugins>
@@ -405,30 +350,67 @@
     </build>
     <reporting>
         <plugins>
+            <!-- Note: It's not possible to configure reporting plugins in pluginManagement in m2.0.4 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.0.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <!--<aggregate>true</aggregate>-->
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <!--
+                TODO Changelog is unfinished:
+                - has also a problem with the netbeans (cvs)lib dependency
+                - is moving from mojo.codehaus.org to maven.apache.org
+            -->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-changelog-plugin</artifactId>-->
+                <!--<version>2.0-beta-1</version>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.0</version>
             </plugin>
+            <!--
+                TODO checkstyle rules must be configured so it no longer
+                generates a 4 mb file which is hard to site-deploy...
+            -->
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
                 <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+                <!--<version>2.1</version>-->
             <!--</plugin>-->
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-changelog-plugin</artifactId>-->
+                <!--<artifactId>maven-jxr-plugin</artifactId>-->
+                <!--<version>2.0</version>-->
             <!--</plugin>-->
+            <!--plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>jdepend-maven-plugin</artifactId>
+              <version>2.0-beta-1</version>
+            </plugin-->
         </plugins>
     </reporting>
 
