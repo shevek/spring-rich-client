@@ -444,11 +444,19 @@
     <repositories>
         <repository>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
             <id>springRichclientRepository</id>
             <name>Spring rich client repository</name>
             <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>springRichclientSnapshotRepository</id>
+            <name>Spring rich client snapshot repository</name>
+            <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
         </repository>
     </repositories>
 
@@ -980,6 +988,10 @@
             <id>shell.sourceforge.net</id>
             <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2repository</url>
         </repository>
+        <snapshotRepository>
+            <id>shell.sourceforge.net</id>
+            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2snapshotrepository</url>
+        </snapshotRepository>
         <site>
             <id>shell.sourceforge.net</id>
             <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/</url>

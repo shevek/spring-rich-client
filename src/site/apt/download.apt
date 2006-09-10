@@ -12,9 +12,13 @@ Latest stable release
 Maven 2 releases
 
     Add this in your pom.xml and run <<<mvn compile>>> or <<<mvn install>>>.
-    Replace <<<VERSION>>> with the latest version or a snapshot version.
+    Replace <<<VERSION>>> with the latest version.
 
 +--
+<properties>
+  <springRichclient.version>VERSION</springRichclient.version>
+</properties>
+...
 <repositories>
     <repository>
         <id>springRichclientRepository</id>
@@ -27,37 +31,37 @@ Maven 2 releases
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-resources</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-core</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-binding</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-form</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-support</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-tiger</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-sandbox</artifactId>
-        <version>VERSION</version>
+        <version>${springRichclient.version}</version>
     </dependency>
 </dependencies>
 +--
@@ -70,7 +74,8 @@ Maven 2 releases
 Nightly builds (unstable)
 
     The latest snapshots are available in
-    {{{http://spring-rich-c.sourceforge.net/maven2repository/org/springframework/richclient}the snapshot repository}}.
+    {{{http://spring-rich-c.sourceforge.net/maven2snapshotrepository/org/springframework/richclient}the snapshot repository}}.
+    You can also configure this in your pom.xml if like to live on the edge (and shoot yourself in the foot).
 
 Source repository
 
