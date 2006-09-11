@@ -212,7 +212,7 @@
         <name>The Spring Framework</name>
         <url>http://www.springframework.org</url>
     </organization>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -361,7 +361,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
-                    <!-- Aggregate doesn't work due to classpath (or sourcepath?) issues in javadoc plugin 2.0 -->
+                    <!-- Aggregate breaks in javadoc plugin 2.0, fixed for upcoming 2.1 -->
                     <!--<aggregate>true</aggregate>-->
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
@@ -389,6 +389,11 @@
                 <artifactId>taglist-maven-plugin</artifactId>
                 <version>2.0</version>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>findbugs-maven-plugin</artifactId>-->
+                <!--<version>1.0-beta-1</version>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -404,15 +409,21 @@
                 <!--<version>2.1</version>-->
             <!--</plugin>-->
             <!--<plugin>-->
+              <!--<groupId>org.codehaus.mojo</groupId>-->
+              <!--<artifactId>jdepend-maven-plugin</artifactId>-->
+              <!--<version>2.0-beta-1</version>-->
+            <!--</plugin>-->
+            <plugin>
+                <!-- In 2.0-beta-1 an aggegate works after running "mvn site" twice -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.0-beta-1</version>
+            </plugin>
+            <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
                 <!--<artifactId>maven-jxr-plugin</artifactId>-->
                 <!--<version>2.0</version>-->
             <!--</plugin>-->
-            <!--plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>jdepend-maven-plugin</artifactId>
-              <version>2.0-beta-1</version>
-            </plugin-->
         </plugins>
     </reporting>
 
@@ -606,7 +617,7 @@
                 <artifactId>spring-binding</artifactId>
                 <version>1.0-rc3</version>
                 <exclusions>
-                <!-- bug: http://jira.codehaus.org/browse/MNG-1797 
+                <!-- bug: http://jira.codehaus.org/browse/MNG-1797
                 when dependency is listed elsewhere with a version,
                  that one will override a transitive one, so no exclusions of listed dependencies.
                 -->
@@ -781,7 +792,7 @@
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-webmvc</artifactId>
                     </exclusion>
-                    <!-- bug: http://jira.codehaus.org/browse/MNG-1797 
+                    <!-- bug: http://jira.codehaus.org/browse/MNG-1797
                 when dependency is listed elsewhere with a version,
                  that one will override a transitive one, so no exclusions of listed dependencies.
                 -->
