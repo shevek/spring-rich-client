@@ -297,7 +297,9 @@ Method name changes
     create a <<<ApplicationPageFactory>>> implementation and register it as a service in the <<<applicationServices>>>.
 
     <<<PageComponentPane>>> has become an interface. The previous implementation has moved to <<<DefaultPageComponentPane>>>
-    
+
+    * The <<<GlazedTableModel>>> contructor no longer requires or wants a <<<MessageSource>>>.
+
 pre-0.1.0 to 0.1.0
 
     * Switch from CVS with ANT to Subversion with Maven 2:
