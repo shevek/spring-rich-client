@@ -202,10 +202,7 @@ public class ListBinderAbstractTests extends BindingAbstractTests {
         vm.setValue(originalList);
         doMultipleSelectionBinding();
 
-        // The original list should now be modified to contain only the first
-        // selection.
         assertNotNull(vm.getValue());
-        assertTrue(vm.getValue() == originalList);
         assertEquals(1, ((List)vm.getValue()).size());
         assertEquals(new Item("E"), ((List)vm.getValue()).get(0));
 

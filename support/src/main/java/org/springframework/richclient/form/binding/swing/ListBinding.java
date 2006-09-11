@@ -89,30 +89,16 @@ public class ListBinding extends AbstractListBinding {
     protected void updateSelectedItemsFromSelectionModel() {
         if (getSelectionMode() == ListSelectionModel.SINGLE_SELECTION) {
             Object singleValue = getList().getSelectedValue();
-            if (!updateCollectionValue(new Object[] { singleValue }))
+            Class propertyType = getPropertyType();
+            if(singleValue == null || propertyType.isAssignableFrom(singleValue.getClass())) {
                 getValueModel().setValueSilently(singleValue, valueModelListener);
+            } else {
+                getValueModel().setValueSilently(convertValue(singleValue, propertyType), valueModelListener);
+            }
         } else {
             Object[] values = getList().getSelectedValues();
-            if (!updateCollectionValue(values))
-                getValueModel().setValueSilently(convertSelectedValues(getList().getSelectedValues()),
-                        valueModelListener);
+            getValueModel().setValueSilently(convertSelectedValues(values), valueModelListener);
         }
-    }
-
-    private boolean updateCollectionValue(Object[] selectedValues) {
-        if (Collection.class.isAssignableFrom(getPropertyType())) {
-            Collection value = (Collection) getValue();
-            if (value != null) {
-                try {
-                    value.clear();
-                    value.addAll(Arrays.asList(selectedValues));
-                    return true;
-                } catch (UnsupportedOperationException e) {
-                    return false;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -147,9 +133,9 @@ public class ListBinding extends AbstractListBinding {
      * Updates the selection model with the selected values from the value model.
      */
     protected void updateSelectedItemsFromValueModel() {
-        Object value = getValue();        
+        Object value = getValue();
         Object[] selectedValues = EMPTY_VALUES;
-        if(value != null) {
+        if (value != null) {
             selectedValues = (Object[]) convertValue(value, Object[].class);
         }
 
