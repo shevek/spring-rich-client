@@ -118,12 +118,13 @@ public class ApplicationLauncher {
                         public Object postProcessBeforeInitialization(Object bean, String beanName)
                                 throws BeansException {
                             if (max == -1) {
+                                max = 0;
                                 String[] beanNames = applicationContext.getBeanDefinitionNames();
                                 for (int i = 0; i < beanNames.length; i++) {
                                     if (applicationContext.isSingleton(beanNames[i]))
                                         max++;
                                 }
-                                tracker.taskStarted("Loading Application Context ...", max + 1);
+                                tracker.taskStarted("Loading Application Context ...", max);
                             }
 
                             if (applicationContext.containsLocalBean(beanName)) {
