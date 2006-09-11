@@ -119,9 +119,13 @@ public class ApplicationLauncher {
                                 throws BeansException {
                             if (max == -1) {
                                 max = 0;
+                                ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
                                 String[] beanNames = applicationContext.getBeanDefinitionNames();
                                 for (int i = 0; i < beanNames.length; i++) {
-                                    if (applicationContext.isSingleton(beanNames[i]))
+                                    // using beanDefinition to check singleton property because when accessing through
+                                    // context (applicationContext.isSingleton(beanName)), bean will be created already,
+                                    // possibly bypassing other BeanFactoryPostProcessors
+                                    if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
                                         max++;
                                 }
                                 tracker.taskStarted("Loading Application Context ...", max);
