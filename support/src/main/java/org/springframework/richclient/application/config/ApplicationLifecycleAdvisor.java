@@ -49,8 +49,6 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
     private String startingPageId;
 
-    private boolean introShown;
-
     private Class eventExceptionHandler;
 
     /**
@@ -147,17 +145,6 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     }
 
     public void onWindowCreated(ApplicationWindow window) {
-
-    }
-
-    public void showIntroComponentIfNecessary(ApplicationWindow window) {
-        if( !introShown ) {
-            showIntro(window);
-            introShown = true;
-        }
-    }
-
-    protected void showIntro(ApplicationWindow window) {
 
     }
 

@@ -187,8 +187,13 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
         if( this.currentPage == null ) {
             this.currentPage = page;
-            initWindow();
+            this.control = createNewWindowControl();
+            this.control.addWindowFocusListener( this );
+            initWindowControl( this.control );
+            getAdvisor().onWindowCreated( this );
             setActivePage( page );
+            this.control.setVisible( true );
+            getAdvisor().onWindowOpened( this );
         } else {
             if( !currentPage.getId().equals( page.getId() ) ) {
                 final ApplicationPage oldPage = this.currentPage;
@@ -234,16 +239,6 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
             throw new IllegalArgumentException( "Page id '" + pageDescriptorId
                     + "' is not backed by an ApplicationPageDescriptor" );
         }
-    }
-
-    private void initWindow() {
-        this.control = createNewWindowControl();
-        this.control.addWindowFocusListener( this );
-        initWindowControl( this.control );
-        getAdvisor().onWindowCreated( this );
-        getAdvisor().showIntroComponentIfNecessary( this );
-        this.control.setVisible( true );
-        getAdvisor().onWindowOpened( this );
     }
 
     protected void initWindowControl( JFrame windowControl ) {
