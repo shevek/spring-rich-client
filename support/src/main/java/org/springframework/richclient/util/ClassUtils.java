@@ -184,17 +184,10 @@ public class ClassUtils {
 	}
 
 	/**
-	 * Check if the given class represents a primitive wrapper array.
-	 */
-	public static boolean isPrimitiveWrapperArray(Class clazz) {
-		return BeanUtils.isPrimitiveWrapperArray(clazz);
-	}
-
-	/**
 	 * Check if the given class represents a primitive array.
 	 */
 	public static boolean isPrimitiveArray(Class clazz) {
-		return BeanUtils.isPrimitiveArray(clazz);
+		return (clazz.isArray() && clazz.getComponentType().isPrimitive());
 	}
 
 	/**
