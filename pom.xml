@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -8,7 +7,7 @@
     <artifactId>spring-richclient</artifactId>
     <packaging>pom</packaging>
     <name>Spring richclient</name>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
     <description>
         Spring-rich adds value for people needing to develop Swing applications
         and do so in a way that promotes consistent, well-designed, configurable Swing applications.
@@ -72,23 +71,23 @@
             <!-- TODO verify and complete -->
             <id>ohutchison</id>
             <name>Oliver Hutchison</name>
-            <email/>
+            <email />
             <roles>
                 <role>Former project leader</role>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone />
         </developer>
         <developer>
             <!-- TODO verify and complete -->
             <id>kdonald</id>
             <name>Keith Donald</name>
-            <email/>
+            <email />
             <roles>
                 <role>Former project leader</role>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone />
         </developer>
         <developer>
             <id>lstreepy</id>
@@ -104,21 +103,21 @@
             <!-- TODO verify and complete -->
             <id>peterdb</id>
             <name>Peter De Bruycker</name>
-            <email/>
+            <email />
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone />
         </developer>
         <developer>
             <!-- TODO verify and complete -->
             <id>benalex</id>
             <name>Ben Alex</name>
-            <email/>
+            <email />
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone />
         </developer>
         <developer>
             <id>anodos</id>
@@ -162,11 +161,11 @@
             <!-- TODO verify and complete -->
             <id>scottdelap</id>
             <name>Scott Delap</name>
-            <email/>
+            <email />
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone/>
+            <timezone />
         </developer>
         <developer>
             <id>ge0ffrey</id>
@@ -188,7 +187,7 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
-    <contributors/>
+    <contributors />
 
     <licenses>
         <license>
@@ -198,15 +197,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>
-            scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
-        </connection>
-        <developerConnection>
-            scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
-        </developerConnection>
-        <url>
-            http://svn.sourceforge.net/viewcvs.cgi/spring-rich-c/trunk/spring-richclient/
-        </url>
+        <connection>scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/tags/spring-richclient-0.2.0</connection>
+        <developerConnection>scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/tags/spring-richclient-0.2.0</developerConnection>
+        <url>https://svn.sourceforge.net/svnroot/spring-rich-c/tags/spring-richclient-0.2.0</url>
     </scm>
     <organization>
         <name>The Spring Framework</name>
