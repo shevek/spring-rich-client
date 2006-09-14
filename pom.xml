@@ -31,7 +31,7 @@
             <notifier>
                 <type>mail</type>
                 <configuration>
-                    <address>spring-rich-c-cvs@lists.sourceforge.net</address>
+                    <address>build@interface21.com</address>
                 </configuration>
             </notifier>
         </notifiers>
