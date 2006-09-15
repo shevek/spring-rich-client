@@ -137,7 +137,6 @@
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.jgoodies</groupId>
