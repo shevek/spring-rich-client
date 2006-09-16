@@ -52,7 +52,11 @@
                 </item>
             </item>
             <item name="Support" href="/user/support.html"/>
-            <item name="Upgrading" href="/user/upgrading.html"/>
+            <item name="Upgrading" href="/user/upgrading/index.html" collapse="true">
+                <item name="To 0.3.x" href="/user/upgrading/upgradingTo0.3.x.html"/>
+                <item name="To 0.2.x" href="/user/upgrading/upgradingTo0.2.x.html"/>
+                <item name="To 0.1.x" href="/user/upgrading/upgradingTo0.1.x.html"/>
+            </item>
             <item name="Powered by" href="/user/poweredBy.html"/>
             <item name="Articles" href="/user/articles.html"/>
             <item name="Related projects" href="/user/relatedProjects.html"/>

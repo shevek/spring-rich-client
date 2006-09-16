@@ -1,0 +1,294 @@
+ -----
+ Upgrading
+ -----
+ Geoffrey De Smet
+ Mathias Broekelmann
+ -----
+
+Upgrading from 0.1.x to 0.2.x
+
+    * Major Refactoring of application services configuration
+
+    A major refactoring of the way that application services (like ImageSource, RulesSource, etc.)
+    are handled/located was introduced in version 0.2.0.  This change is <<NOT>> backward
+    compatible and it requires changes to both the application context XML file and to
+    source code that used the ApplicationServices class.
+
+    A new <<<ApplicationServicesLocator>>> singleton has been introduced in order to
+    remove the coupling with the <<<Application>>> object (this improves the modularity
+    of the overall framework.  The <<<ApplicationServices>>> class has been changed into
+    an interface and a new <<<DefaultApplicationServices>>> class has been created to
+    provide the basic functionality.  The new <<<DefaultApplicationServices>>> class
+    must be configured in the application context (or programatically) to register the
+    needed runtime services.  The application context will no longer be searched for
+    beans with magic names.  A typical configuration would look something like this:
+
++---
+    <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+        <property name="applicationServices" ref="applicationServices"/>
+    </bean>
+
+    <bean id="applicationServices" singleton="true"
+            class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="imageSource" ref="imageSource"/>
+        <property name="rulesSource" ref="rulesSource"/>
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer"/></property>
+    </bean>
++---
+
+    Note that the <<<DefaultApplicationServices>>> implementation provides setter methods
+    for each of the standard platform services.  It also contains a mechanism to register
+    a whole set of services using the <<<registryEntries>>> property.  The entryMap
+    parameter must be a map with keys that are either class instances (the serviceType) or
+    the String name of the class and values that are the implementation to use for that service.
+
+    <<It is critical that any services that you are using be registered on the applicationServices
+    instance, as they will no longer be located using the old magic bean names.>>
+
+    Also, many of the core services have been updated to use the new service locator pattern
+    to locate other services instead of requiring explicit configuration in the application
+    context.  For example, previously, to define the IconSource, you had to configure a bean
+    with a constructor argument referencing the ImageSource, like this:
+
++---
+    <bean id="iconSource"
+        class="org.springframework.richclient.image.DefaultIconSource">
+        <constructor-arg index="0" ref="imageSource"/>
+    </bean>
++---
+
+    With the new service resolution, this is no longer necessary.  In fact, since the
+    default IconSource references the registered ImageSource there isn't even a need to
+    define the iconSource bean in the context any more.  This kind of runtime resolution
+    also applies to the <<<applicationObjectConfigurer>>>, which used to require 3
+    constructor arguments.  It no longer requires this explicit configuration, you can
+    simply declare the bean like this:
+
++---
+    <bean id="applicationObjectConfigurer" depends-on="serviceLocator"
+        class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
+    </bean>
++---
+
+    Note the "depends-on" attribute.  This is necessary in order to ensure that the
+    service locator is constructed before the AOC.
+
+    There is a subtle chicken and egg problem with the service locator and the AOC.
+    Since the AOC needs the service locator to be constructed before it and the AOC
+    also needs to be registered as a runtime service, we have to play a subtle game
+    to break the circular dependency.  This is accomplished by registering the AOC
+    runtime service (in the <<<applicationServices>>> configuration, using its bean
+    id, not a direct reference to the bean.  You can see this in the code (repeated
+    from above):
+
++---
+    <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer"/></property>
++---
+
+    The best way to see how the application context should now be configured is to look
+    at the simple sample.
+
+    Ok, enough with the application context, let's talk about the changes to how services
+    are accessed at runtime.  In version 0.1.0, you would access a service by using a
+    simple getter method on the <<<ApplicationServices>>> class, like this:
+
++---
+    IconSource iconSource = Application.services().getIconSource();
++---
+
+    In the new version, there are no specific getters for the individual services.  Instead,
+    there is a general <<<Object getServices( Class serviceType )>>> method.  You pass it
+    the type of the service you need and it returns the implementation.  So, the new way
+    to make the same request as above would be:
+
++---
+    IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
++---
+
+    Note that that <<<ApplicationServicesAccessor>>> base class has been updated to make
+    appropriate delegated calls, so it can continue to be used as is.  Also, the
+    <<<Application.services()>>> method still exists, it just delegates to
+    <<<ApplicationServicesLocator.services()>>>.
+
+    One final note.  The order of object initialization has gotten a little more sensitive
+    with this change.  Previously, several classes used a member initializer to obtain
+    a reference to a needed service (like LabeledEnumResolver).  This can be a problem
+    now if the class in question is itself a service that needs to be registered with
+    the service locator.  If so (as was the DefaultComponentFactory for example), then
+    you need to refactor the member initializer to use runtime resolution instead.  As
+    a concrete example, the code in DefaultFormFactory used to have this initializer:
+
++---
+    private LabeledEnumResolver enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
++---
+
+    Now, this code should be used (and all references to the <<<eunumResolver>>> member
+    should be replaced with calls to <<<getEnumResolver>>>):
+
++---
+    public void setEnumResolver(LabeledEnumResolver enumResolver) {
+        this.enumResolver = enumResolver;
+    }
+
+    protected LabeledEnumResolver getEnumResolver() {
+        if (enumResolver == null) {
+            enumResolver = (LabeledEnumResolver)ApplicationServicesLocator.services().getService(LabeledEnumResolver.class);
+        }
+        return enumResolver;
+    }
++---
+
++--
+    Application.instance().getServices().configure(command)
++--
+
+    should now be
+
++--
+    CommandConfigurer commandConfigurer = (CommandConfigurer) ApplicationServicesLocator.services()
+            .getService(CommandConfigurer.class);
+    commandConfigurer.configure(command);
++--
+
+    In order to support simple programmatic use of the <<<ApplicationServices>>>, a new
+    <<<StaticApplicationServices>>> class has been provided.  It has a simple
+    <<<registerService(Object service, Class serviceInterface)>>> method for registering
+    a service.
+
+    And lastly, there is a new test case base class that makes getting the proper application
+    and services locator configured, named <<<SpringRichTestClass>>>.  Take a look at how
+    it's used in the existing test classes for more details.  All new tests should use this
+    class as their base class.
+
+    * Change of "property" to "field" on forms and form models
+
+    In order to remove confusion regarding form fields and object properties, the
+    use of the word "property" has been replaced with "field" in all the Form and FormModel
+    contexts.  This should make clear the distinction between a property (in the java beans
+    sense) on a model object and the fields (visual abstractions and value models) in a form
+    or form model that are generally derived from (bound to) object properties.
+
+    The following tables list the changes made the names of classes and methods.
+
+*---------+----------+
+|<<Old Class Name>> | <<New Class Name>> |
+*---------+----------+
+| FormPropertyFaceDescriptor | FieldFace |
+*---------+----------+
+| DefaultFormPropertyFaceDescriptor | DefaultFieldFace |
+*---------+----------+
+| FormPropertyFaceDescriptorSource | FieldFaceSource |
+*---------+----------+
+| MessageSourceFormPropertyFaceDescriptorSource | MessageSourceFieldFaceSource |
+*---------+----------+
+| AbstractCachingPropertyFaceDescriptorSource | CachingFieldFaceSource |
+*---------+----------+
+| PropertyMetaData | FieldMetadata |
+*---------+----------+
+| PropertyMetaDataImpl | DefaultFieldMetadata |
+*---------+----------+
+| PropertyMetadataImplTests | DefaultFieldMetadataTests |
+*---------+----------+
+Class name changes
+
+
+*---------+----------+
+|<<Old method Name>> | <<New Method Name>> |
+*---------+----------+
+| FormModel.getPropertyMetadata | FormModel.getFieldMetadata |
+*---------+----------+
+| FormModel.getFormPropertyFaceDescriptor | FormModel.getFieldFace |
+*---------+----------+
+| AbstractFormModel.setFormPropertyFaceDescriptorSource | AbstractFormModel.setFieldFaceSource |
+*---------+----------+
+| AbstractFormModel.getFormPropertyFaceDescriptorSource | AbstractFormModel.getFieldFaceSource |
+*---------+----------+
+| FormPropertyFaceDescriptorSource.getFormPropertyFaceDescriptor | FieldFaceSource.getFieldFace |
+*---------+----------+
+| AbstractCachingPropertyFaceDescriptorSource.loadFormPropertyFaceDescriptor | CachingFieldFaceSource.loadFieldFace |
+*---------+----------+
+| DefaultApplicationServices.setFormPropertyFaceDescriptorSource | DefaultApplicationServices.setFieldFaceSource |
+*---------+----------+
+| AbstractBinding.getFormPropertyFaceDescriptor | AbstractBinding.getFieldFace |
+*---------+----------+
+Method name changes
+
+    * Already changed in a previous upgrade item: DefaultApplicationServices's applicationObjectConfigurerBeanId
+    renamed to applicationObjectConfigurerId
+
+    * Inject id's into applicationServices instead of the beans itself (to avoid chicken-and-egg problems).
+
+    Before:
+
++--
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="applicationObjectConfigurer" ref="applicationObjectConfigurer"/>
+        <property name="binderSelectionStrategy" ref="binderSelectionStrategy"/>
+        <property name="formComponentInterceptorFactory" ref="formComponentInterceptorFactory"/>
+        <property name="imageSource" ref="imageSource"/>
+        <property name="rulesSource" ref="rulesSource"/>
+    </bean>
++--
+
+    After:
+
++--
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
+        <property name="binderSelectionStrategyId"><idref bean="binderSelectionStrategy"/></property>
+        <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
+        <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
+    </bean>
++--
+
+    * JGoodies looks has been upgraded from 1.x to 2.x.
+    If you used <<<com.jgoodies.looks.FontSizeHints>>>, you should now use <<<com.jgoodies.looks.FontPolicy>>>.
+
+    * Binder for JComboBox and JList changed.
+
+    Context parameter <<<selectableItemsHolder>>> changed to <<<selectableItems>>>.
+    The value of this property can now be any type as long as a converter is available to convert the type to <<<javax.swing.ListModel>>>.
+    The getter/setter for selectableItemsHolder changed to selectableItems and have type Object instead of ValueModel now.
+
+    ListBinding does not support context keys or properties <<<selectedItemHolder>>>, <<<selectedItemType>>> and <<<model>>> any more.
+    <<<model>>> is replaced with <<<selectableItems>>> which accepts instances of <<<javax.swing.ListModel>>>.
+    <<<selectedItemHolder>>> and <<<selectedItemType>>> where now determined from the field to which the list is bound to.
+    The field type can be any type as long as a converter is available to convert instances of <<<Object[]>>> to the field type and
+    the field type to <<<Object[]>>>.
+
+    Rename <<<ComboBoxBinder.SELECTABLE_ITEMS_HOLDER_KEY>>> to <<<ComboBoxBinder.SELECTABLE_ITEMS_KEY>>>.
+
+    If you used custom renderers or editors, update them to use closures and pass the value:
+
++--
+    context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyValueComboBoxEditor("fullName"));
++--
+
+    changes into:
+
++--
+    context.put(ComboBoxBinder.EDITOR_KEY, new Closure() {
+        public Object call(Object value) {
+            return new BeanPropertyValueComboBoxEditor((ComboBoxEditor) value, "fullName");
+        }
+    });
++--
+
+    * Spring binding jar updated. Note that this jar is not part of the spring jars or the spring-richclient jars.
+
+    * ApplicationWindow/ApplicationPage/PageComponentPane updates
+    The magic bean name <<<applicationWindowPrototype>>> for instantiating a <<<ApplicationWindow>>> has been removed. Now you have to
+    create a <<<ApplicationWindowFactory>>> implementation and register it as a service in the <<<applicationServices>>>.
+
+    Implementing a custom <<<ApplicationWindow>>> just to create a custom <<<ApplicationPage>>> is no longer necessary, see the next paragraph
+
+    The magic bean name <<<defaultApplicationPagePrototype>>> for instantiating a <<<ApplicationPage>>> has been removed. Now you have to
+    create a <<<ApplicationPageFactory>>> implementation and register it as a service in the <<<applicationServices>>>.
+
+    <<<PageComponentPane>>> has become an interface. The previous implementation has moved to <<<DefaultPageComponentPane>>>
+
+    * The <<<GlazedTableModel>>> contructor no longer requires or wants a <<<MessageSource>>>.

@@ -1,0 +1,17 @@
+ -----
+ Upgrading
+ -----
+ Geoffrey De Smet
+ Mathias Broekelmann
+ -----
+
+Upgrading from pre-0.1.x to 0.1.x
+
+    * A lot of changes which aren't recorded... Later migrations should have everything recorded.
+
+    * Switch from CVS with ANT to Subversion with Maven 2:
+
+    If you have made local changes to the spring rich code,
+    take a <<<cvs diff \> file.patch>>> in <<</src>>> and <<</sandbox>>>
+    and patch it in <<</support/src/main/java>>> or <<</support/src/main/resources>>>
+    and <<</sandbox/src/main/java>>> or <<</sandbox/src/main/resources>>>

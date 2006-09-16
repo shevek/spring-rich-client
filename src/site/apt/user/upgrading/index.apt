@@ -1,0 +1,17 @@
+ -----
+ Upgrading
+ -----
+ Geoffrey De Smet
+ Mathias Broekelmann
+ -----
+
+Upgrading
+
+    Because the project is still in an alpha stage, backwards compability is sometimes broken
+    to create a better overall framework design.
+
+    To ease the upgrading path of our users, the most user-impacting upgrades are noted here.
+    By following these recipes it should be fairly straight-forward to upgrade to the latest version.
+    If you had to do extra things during an upgrade, please notify us, so we can add it here.
+
+    Use the left side menu.
