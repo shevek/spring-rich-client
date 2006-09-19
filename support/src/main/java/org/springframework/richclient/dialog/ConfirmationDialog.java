@@ -41,8 +41,6 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
     private DefaultMessageAreaPane messageAreaPane;
 
     private String confirmationMessage;
-    
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ConfirmationDialog() {
         this("Confirmation Required", null, "Are you sure you wish to perform this action?");
