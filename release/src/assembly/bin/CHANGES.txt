@@ -1,3 +1,118 @@
+Release Notes - Spring Framework Rich Client Project - Version 0.2.1
+====================================================================
+
+Bug
+
+    * [RCP-400] - jgoodie forms not included as spring-rich dependencies
+
+Release Notes - Spring Framework Rich Client Project - Version 0.2.0
+====================================================================
+
+Bug
+
+    * [RCP-95] - Application window hidden by other windows on startup
+    * [RCP-106] - ComboBoxAutoCompletion startsWithIgnoreCase() NullPointerException
+    * [RCP-158] - ValidatingFormModel validationEnabled property does not respect enabled property
+    * [RCP-173] - TextComponentPopupInterceptorFactory breaks copy and paste in non intercepted text components
+    * [RCP-216] - ArrayIndexOutOfBoundsException with TabbedDialogPage
+    * [RCP-232] - Revert should clear the child form models
+    * [RCP-233] - EnumComboBoxBinder with ComboBoxAutoCompletion fails when popup is opened and closed without change
+    * [RCP-242] - focusRequestInWindow lost with MDI/JInternalFrame
+    * [RCP-265] - Master/detail: i18n: don't hard code "masterForm"
+    * [RCP-268] - Master/Detail table. Detail form receive twice the call due to object change...
+    * [RCP-273] - NPE in ApplicationDialog
+    * [RCP-280] - ListListModel.addAll(Collection) fires wrong intervall (patch)
+    * [RCP-281] - ClassCastException in RequiredIfOthersPresent (patch)
+    * [RCP-282] - ComboBoxAutoCompletion handles the initial selected object wrong (patch)
+    * [RCP-297] - Test failing: HandlerTest
+    * [RCP-300] - BaseTableModel.setValueAt should call fireTableDataChanged()
+    * [RCP-301] - Test code can depend on testcode of dependend modules
+    * [RCP-310] - Generated website contains invalid link for javadoc in the samples module
+    * [RCP-311] - Button from ComponentFactory and ButtonFactory...
+    * [RCP-312] - Debug Log reveals the password
+    * [RCP-313] - java.lang.NoClassDefFoundError: org/springframework/binding/convert/ConversionService
+    * [RCP-317] - FormBackedPreferencePage Apply Button should be Guarded
+    * [RCP-319] - ApplicationDialog's okCommand shouldn't handle exceptions
+    * [RCP-322] - Error message in Validation
+    * [RCP-329] - recent change to AbstractFormModel.reset introduced a negative side effect
+    * [RCP-330] - Error in the "developmentSetup" page.
+    * [RCP-332] - simple sample: use global command deleteCommand
+    * [RCP-333] - simple sample: handleUpdatedObject should not use the SortedList, but the BaseList
+    * [RCP-335] - NPE in the petclinic when clicking on a pet.
+    * [RCP-341] - Typo in upgrading.apt
+    * [RCP-342] - First release of DirtyIndicatorInterceptor
+    * [RCP-344] - OverlayHelper does not proxy Scrollable interface when inserting overlay (JLayeredPane)
+    * [RCP-346] - Archetype broken since service locator refactor
+    * [RCP-347] - Name all testcases ending with suffix "Tests"
+    * [RCP-354] - OptimizedCellRenderer messes up cell highlighting
+    * [RCP-355] - Archetype artifactId has a typo: spring-richchlient-archetype (the h)
+    * [RCP-356] - Missing i18n in PreferenceManager
+    * [RCP-358] - package name mismatch: captialization of /spring-richclient-petclinic-gui/src/main/java/org/springframework/richclient/samples/petclinic/exceptionHandling
+    * [RCP-360] - run.sh script for PetClinicStandalone fails on Mac OS X
+    * [RCP-361] - BaseTableModel causes NullPointerExeptions
+    * [RCP-362] - Creating a full jar creates a 1kb jar
+    * [RCP-363] - ApplicationWindow.showPage cannot accept a manually created PageDescriptor
+    * [RCP-364] - ComboBox binder don´t copy existing model if selectableitemholder is not used
+    * [RCP-365] - Bugs in CommandFaceDescriptor property handling
+    * [RCP-366] - When an exception occures during ApplicationLauncher.loadRootApplicationContext the splash screen is not disposed.
+    * [RCP-367] - FormattedTextFieldBinding tries to set initial value as String instead von Object
+    * [RCP-369] - PatchedJFormattedTextField should not set columns
+    * [RCP-374] - using spring-rich POM causes spring-mvc and spring-web to be included transitively
+    * [RCP-375] - Changes in a ConfirmationDialog's message do not propagate to the widget if it has already been created
+    * [RCP-377] - ShuttleList Panel doesn't grow or resize
+    * [RCP-382] - Support package fails to compile with Java 1.4
+    * [RCP-383] - DefaultApplicationWindow.removePageListener will always fail with IllegalArgumentException.
+    * [RCP-384] - Ctrl-C, Ctrl-V, Ctrl-X don't work in forms (patch included)
+    * [RCP-385] - "mvn install" failed for "support" module / JDK1.5 dependences not resolved
+    * [RCP-386] - Problem with latest change (r1179) in AbstractForm
+    * [RCP-387] - BasicAuthHttpInvokerRequestExecutor does not handle Authentication's principal object correctly
+
+Improvement
+
+    * [RCP-89] - Have ActionCommand implement GuardedActionCommandExecutor
+    * [RCP-130] - Remove the title bar from ApplicationPage
+    * [RCP-134] - Missing i18n in the PreferencePage
+    * [RCP-168] - Allow the ability to specify what MessageTranslator to use
+    * [RCP-174] - Show icon in nodes of TreeCompositeDialogPage
+    * [RCP-193] - Allowing a dialog-backed form to be displayed in an internal frame.
+    * [RCP-208] - menu & tool bar should be mutable for dynamic security ACL.
+    * [RCP-243] - make ApplicationLifecycleAdvisor lifecycle methods empty...
+    * [RCP-244] - Adding default constructors to DefaultApplicationWindow
+    * [RCP-253] - DefaultApplicationPage (and AbstractApplicationPage) should have a default constructor
+    * [RCP-283] - Rules don't understand interfaces
+    * [RCP-290] - Lock down all maven 2 plugin versions
+    * [RCP-305] - It would be nice if TabbedDialogPage made it easy to provide a different JTabbedPane or use ComponentFactory.getTabbedPane
+    * [RCP-321] - Improvement suggestions for german translation
+    * [RCP-326] - Update to Spring 2.0 when it is released
+    * [RCP-334] - FormModel.hasProperty method name should be more descriptive
+    * [RCP-338] - Allow string array for RequiredIfOthersPresent Constraint
+    * [RCP-357] - Decoupling MessageTranslator & better support for custom constraints (incl. Patch)
+    * [RCP-368] - Allow changing layout of PreferencePage
+    * [RCP-370] - XOr support for constraints
+    * [RCP-371] - Upgrade to spring-binding 10.-rc2 available on Ibiblio
+    * [RCP-378] - Make the use of the edit button in the shuttle list optional
+    * [RCP-392] - Strange behaviour when a DesktopApplicationPage (from the sandbox) is asked to set an active component via setActiveComponent.
+    * [RCP-393] - When a form property is read-only or disabled the corresponding view component (i.e. JTextfield) is disabled, but the corresponding label is not, when created with a Subclass of AbstractFormBuilder.
+    * [RCP-395] - Add Active Window notification to WindowManager
+
+New Feature
+
+    * [RCP-185] - Add height restriction to MessageDialog
+    * [RCP-204] - NachoCalendar as datapicker (patch attached)
+    * [RCP-289] - Please add Larry's ShuttleList & co in sandbox...
+    * [RCP-336] - Support JDK 1.5 annotations as property level user metadata for FormModels
+    * [RCP-340] - DirtyIndicatorInterceptor
+
+Task
+
+    * [RCP-328] - Lead for Spring RC on JIRA should be changed...
+    * [RCP-337] - Maven 's archetype alpha 4 has been released an our archetype depended on the snapshot
+    * [RCP-343] - make some TableFormBuilder methods public
+    * [RCP-349] - Add TigerEnumComboBoxBinder to spring-richclient
+    * [RCP-350] - Add flex jars to our remote maven repo
+    * [RCP-352] - Conventionalize <optional> attribute of dependencies
+    * [RCP-397] - Show the SF image on every website page, as required by SF. Also show it for spring.
+
 Release Notes - Spring Framework Rich Client Project - Version 0.1.0
 ====================================================================
 
