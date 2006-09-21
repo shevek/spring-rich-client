@@ -89,16 +89,4 @@ public class SimpleApp {
         }
     }
 
-    /**
-     * A class to handle uncaught exceptions on the AWT event thread. This is registered
-     * (wired in) in the application context as part of the definition of the application
-     * lifecycle advisor.
-     */
-    public static class AWTExceptionHandler {
-
-        public void handle( Throwable e ) {
-            // You should probably do something more clever than this.
-            _logger.error("Exception on AWT Event Thread", e);
-        }
-    }
 }

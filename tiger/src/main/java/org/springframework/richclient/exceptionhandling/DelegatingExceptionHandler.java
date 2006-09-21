@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Geoffrey De Smet
  */
-public class DelegatingExceptionHandler implements Thread.UncaughtExceptionHandler, InitializingBean {
+public class DelegatingExceptionHandler extends AbstractRegisterableExceptionHandler implements InitializingBean {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
 

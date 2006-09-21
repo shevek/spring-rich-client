@@ -33,6 +33,8 @@ import org.springframework.richclient.application.support.ApplicationWindowComma
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
+import org.springframework.richclient.exceptionhandling.DefaultRegisterableExceptionHandler;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -49,7 +51,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
     private String startingPageId;
 
-    private Class eventExceptionHandler;
+    private RegisterableExceptionHandler registerableExceptionHandler;
 
     /**
      * This is used to allow the ViewDescriptor to be lazily created when the
@@ -66,23 +68,19 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
     }
 
     /**
-     * Sets the class to use to handle exceptions that happen in the
-     * {@link java.awt.EventDispatchThread}. The class must have a no-arg
-     * public constructor and a method "public void handle(Throwable)".
-     * 
-     * @param eventExceptionHandler the class to use
-     * 
-     * @see java.awt.EventDispatchThread#handleException(Throwable)
+     * Sets the exception handler which will be registered upon initialization to handle uncaught throwables.
+     *
+     * By default this is a DefaultRegisterableExceptionHandler,
+     * which is inferiour to a well configured DelegatingExceptionHandler (java 1.5 only).
+     *
+     * @param registerableExceptionHandler the exception handler which will handle uncaught throwables
      */
-    public void setEventExceptionHandler(Class eventExceptionHandler) {
-        this.eventExceptionHandler = eventExceptionHandler;
+    public void setRegisterableExceptionHandler(RegisterableExceptionHandler registerableExceptionHandler) {
+        this.registerableExceptionHandler = registerableExceptionHandler;
     }
 
     public void afterPropertiesSet() throws Exception {
-        final Properties systemProperties = System.getProperties();
-        if (systemProperties.get(EXCEPTION_HANDLER_KEY) == null) {
-            systemProperties.put(EXCEPTION_HANDLER_KEY, getEventExceptionHandler().getName());
-        }
+        getRegisterableExceptionHandler().registerExceptionHandler();
         Assert.state(startingPageId != null,
                 "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");
     }
@@ -156,39 +154,11 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
         return true;
     }
 
-    /**
-     * Logs any event loop exception not caught.
-     * 
-     * @see ApplicationLifecycleAdvisor#setEventExceptionHandler(Class)
-     */
-    public static class DefaultEventExceptionHandler {
-        public void handle(Throwable t) {
-            LogFactory.getLog(ApplicationLifecycleAdvisor.class).error(t.getMessage(), t);
-            String exceptionMessage;
-            if (t instanceof MessageSourceResolvable) {
-                exceptionMessage = ((MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class))
-                        .getMessage((MessageSourceResolvable) t);
-            } else {
-                exceptionMessage = t.getLocalizedMessage();
-            }
-            if (!StringUtils.hasText(exceptionMessage)) {
-                String defaultMessage = "An application exception occurred.\nPlease contact your administrator.";
-                exceptionMessage = ((MessageSourceAccessor)ApplicationServicesLocator.services().getService(MessageSourceAccessor.class))
-                        .getMessage("applicationDialog.defaultException", defaultMessage);
-            }
-
-            Message message = new Message(exceptionMessage, Severity.ERROR);
-            ApplicationWindow activeWindow = Application.instance().getActiveWindow();
-            JFrame parentFrame = (activeWindow == null) ? null : activeWindow.getControl();
-            JOptionPane.showMessageDialog(parentFrame, message.getText(), "Error", JOptionPane.ERROR_MESSAGE);
+    public RegisterableExceptionHandler getRegisterableExceptionHandler() {
+        if (registerableExceptionHandler == null) {
+            this.registerableExceptionHandler = new DefaultRegisterableExceptionHandler();
         }
-    }
-
-    public Class getEventExceptionHandler() {
-        if (this.eventExceptionHandler == null) {
-            this.eventExceptionHandler = DefaultEventExceptionHandler.class;
-        }
-        return this.eventExceptionHandler;
+        return registerableExceptionHandler;
     }
 
 	public void setApplication(Application application) {

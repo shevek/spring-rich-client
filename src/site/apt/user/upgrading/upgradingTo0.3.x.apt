@@ -7,4 +7,25 @@
 
 Upgrading from 0.2.x to 0.3.x
 
-    * Nothing yet
+    * Exception handling refactor
+
+    <Take a look at the Petclinic's exceptionHandling view and it's application context.>
+    BadCredentialsException shouldn't be logged as an error (but a warn or info), while
+    OutOfMemoryError should be logged as an error and force an application shutdown.
+    This is now configurable, with the support classes in the tiger module.
+    There is an inferiour default, that works in 1.4.
+
+    It's no longer possible to wire in a eventExceptionHandler Class into the lifecycleAdvisor.
+
++--
+<bean id="lifecycleAdvisor"
+    class="org.springframework.richclient.samples.simple.app.SimpleLifecycleAdvisor">
+    ...
+    <property name="eventExceptionHandler" ... <!-- No longer possible -->
+</bean>
++--
+
+    Instead there is the much finer grained system, by injecting a registerableExceptionHandler.
+
+    * Exception catching improvements in ApplicationLauncher TODO
+    

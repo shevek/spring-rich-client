@@ -69,8 +69,6 @@
         <property name="windowCommandBarDefinitions"
                   value="org/springframework/richclient/samples/simple/ui/commands-context.xml"/>
         <property name="startingPageId" value="initialView"/>
-        <property name="eventExceptionHandler"
-                  value="org.springframework.richclient.samples.simple.app.SimpleApp$AWTExceptionHandler"/>
     </bean>
 
     <!-- 

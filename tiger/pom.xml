@@ -53,6 +53,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Lang -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Dependency injection -->
         <dependency>
             <groupId>org.springframework</groupId>

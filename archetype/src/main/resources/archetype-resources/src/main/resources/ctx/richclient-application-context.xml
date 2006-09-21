@@ -68,8 +68,6 @@
         class="${package}.SimpleLifecycleAdvisor">
         <property name="windowCommandBarDefinitions" value="ui/commands-context.xml"/>
         <property name="startingPageId" value="initialView"/>
-        <property name="eventExceptionHandler"
-                  value="${package}.SimpleApp$AWTExceptionHandler"/>
     </bean>
 
     <!-- 
