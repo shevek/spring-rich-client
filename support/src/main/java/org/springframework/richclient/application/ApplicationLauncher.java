@@ -99,8 +99,12 @@ public class ApplicationLauncher {
         if (startupContext != null) {
             displaySplashScreen(startupContext);
         }
-        setRootApplicationContext(loadRootApplicationContext(rootContextPath));
-        launchMyRichClient();
+        try {
+            setRootApplicationContext(loadRootApplicationContext(rootContextPath));
+            launchMyRichClient();
+        } finally {
+            destroySplashScreen();
+        }
     }
 
     /**
@@ -122,8 +126,12 @@ public class ApplicationLauncher {
         if (startupContext != null) {
             displaySplashScreen(startupContext);
         }
-        setRootApplicationContext(rootApplicationContext);
-        launchMyRichClient();
+        try {
+            setRootApplicationContext(rootApplicationContext);
+            launchMyRichClient();
+        } finally {
+            destroySplashScreen();
+        }
     }
 
     private ApplicationContext loadStartupContext(String startupContextPath) {
@@ -136,59 +144,51 @@ public class ApplicationLauncher {
     }
 
     private ApplicationContext loadRootApplicationContext(String[] contextPaths) {
-        try {
-            final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
-                    false);
+        final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
+                false);
 
-            final ProgressMonitor tracker = splashScreen.getProgressMonitor();
+        final ProgressMonitor tracker = splashScreen.getProgressMonitor();
 
-            applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
-                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-                    beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
-                        private int max = -1;
+        applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
+            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+                beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
+                    private int max = -1;
 
-                        public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                throws BeansException {
-                            if (max == -1) {
-                                max = 0;
-                                ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
-                                String[] beanNames = applicationContext.getBeanDefinitionNames();
-                                for (int i = 0; i < beanNames.length; i++) {
-                                    // using beanDefinition to check singleton property because when accessing through
-                                    // context (applicationContext.isSingleton(beanName)), bean will be created already,
-                                    // possibly bypassing other BeanFactoryPostProcessors
-                                    if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
-                                        max++;
-                                }
-                                tracker.taskStarted("Loading Application Context ...", max);
+                    public Object postProcessBeforeInitialization(Object bean, String beanName)
+                            throws BeansException {
+                        if (max == -1) {
+                            max = 0;
+                            ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
+                            String[] beanNames = applicationContext.getBeanDefinitionNames();
+                            for (int i = 0; i < beanNames.length; i++) {
+                                // using beanDefinition to check singleton property because when accessing through
+                                // context (applicationContext.isSingleton(beanName)), bean will be created already,
+                                // possibly bypassing other BeanFactoryPostProcessors
+                                if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
+                                    max++;
                             }
-
-                            if (applicationContext.containsLocalBean(beanName)) {
-                                tracker.subTaskStarted("Loading " + beanName + " ...");
-                                tracker.worked(1);
-                            }
-
-                            return bean;
+                            tracker.taskStarted("Loading Application Context ...", max);
                         }
 
-                        public Object postProcessAfterInitialization(Object bean, String beanName)
-                                throws BeansException {
-                            return bean;
+                        if (applicationContext.containsLocalBean(beanName)) {
+                            tracker.subTaskStarted("Loading " + beanName + " ...");
+                            tracker.worked(1);
                         }
-                    });
-                }
-            });
 
-            applicationContext.refresh();
+                        return bean;
+                    }
 
-            return applicationContext;
-        }
-        catch (RuntimeException e) {
-            logger.warn("Exception occured initializing application startup context.", e);
-            destroySplashScreen(); // when app context fails to load, destroy
-            // splashscreen
-            throw new ApplicationException("Unable to start rich client application", e);
-        }
+                    public Object postProcessAfterInitialization(Object bean, String beanName)
+                            throws BeansException {
+                        return bean;
+                    }
+                });
+            }
+        });
+
+        applicationContext.refresh();
+
+        return applicationContext;
     }
 
     private void setRootApplicationContext(ApplicationContext context) {
@@ -212,39 +212,26 @@ public class ApplicationLauncher {
             displaySplashScreen(rootApplicationContext);
         }
 
+        Application application;
         try {
-            Application application = (Application)rootApplicationContext.getBean(APPLICATION_BEAN_ID,
-                    Application.class);
-            application.start();
+            application = (Application)rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
         }
         catch (NoSuchBeanDefinitionException e) {
-            logger.error("A single org.springframework.richclient.Application bean definition must be defined "
+            throw new IllegalArgumentException(
+                    "A single org.springframework.richclient.Application bean definition must be defined "
                     + "in the main application context", e);
-            throw e;
         }
-        catch (RuntimeException e) {
-            logger.error("Exception occured initializing Application bean", e);
-            throw new ApplicationException("Unable to start rich client application", e);
-        }
-        finally {
-            destroySplashScreen();
-            logger.debug("Launcher thread exiting...");
-        }
+        application.start();
+        logger.debug("Launcher thread exiting...");
     }
 
     private void displaySplashScreen(BeanFactory beanFactory) {
-        try {
-            if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
-                this.splashScreen = (SplashScreen)beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
-                logger.info("Displaying application splash screen...");
-                this.splashScreen.splash();
-            }
-            else {
-                logger.info("No splash screen bean found to display--continuing...");
-            }
-        }
-        catch (RuntimeException e) {
-            logger.warn("Unable to load and display startup splash screen.", e);
+        if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
+            this.splashScreen = (SplashScreen)beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
+            logger.debug("Displaying application splash screen...");
+            this.splashScreen.splash();
+        } else {
+            logger.info("No splash screen bean found to display. Continuing...");
         }
     }
 

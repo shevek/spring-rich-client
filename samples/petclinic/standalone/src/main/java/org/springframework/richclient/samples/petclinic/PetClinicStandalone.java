@@ -16,6 +16,7 @@
 package org.springframework.richclient.samples.petclinic;
 
 import org.springframework.richclient.application.ApplicationLauncher;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Main driver that starts the pet clinic rich client sample application.
@@ -34,8 +35,12 @@ public class PetClinicStandalone {
 
         String securityContextPath = rootContextDirectoryClassPath + "/standalone/security-context.xml";
 
-        new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath,
-                businessLayerContextPath, securityContextPath });
+        try {
+            new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath,
+                    businessLayerContextPath, securityContextPath });
+        } catch (RuntimeException e) {
+            LogFactory.getLog(PetClinicStandalone.class).error("RuntimeException during startup", e);
+        }
     }
-    
+
 }

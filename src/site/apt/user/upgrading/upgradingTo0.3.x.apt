@@ -27,5 +27,21 @@ Upgrading from 0.2.x to 0.3.x
 
     Instead there is the much finer grained system, by injecting a registerableExceptionHandler.
 
-    * Exception catching improvements in ApplicationLauncher TODO
+    * Exception catching improvements in ApplicationLauncher
+
+    ApplicationLauncher no longer wraps it's runtime exceptions in an <<<ApplicationException>>>
+    and it no longer logs them either before throwing.
+    This is to avoid double logging when both logging and throwing - the thrown will probably be logged too.
+
+    So you might want to try-catch your ApplicationLauncher startup:
+
++--
+try {
+    new ApplicationLauncher(...);
+} catch (RuntimeException e) {
+    logger.error("RuntimeException during startup", e);
+}
++--
+
+    Or you could initialize an <<<LoggingExceptionHandler>>> on your main thread before using ApplicationLauncher.
     
