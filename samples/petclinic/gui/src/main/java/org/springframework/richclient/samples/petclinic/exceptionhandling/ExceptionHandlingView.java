@@ -65,9 +65,9 @@ public class ExceptionHandlingView extends AbstractView {
         layoutBuilder.row();
         layoutBuilder.relatedGapRow();
 
-        JButton nullPointer = new JButton(new AbstractAction("Cause a null pointer exception"){
+        JButton nullPointer = new JButton(new AbstractAction("Cause a NumberFormatException"){
             public void actionPerformed(ActionEvent e) {
-                causeNullPointerException();
+                causeNumberFormatException();
             }
         });
         layoutBuilder.cell(nullPointer);
@@ -127,9 +127,8 @@ public class ExceptionHandlingView extends AbstractView {
 
     }
 
-    private void causeNullPointerException() {
-        String s = null;
-        s = s.replace(" ", "");
+    private void causeNumberFormatException() {
+        Integer.parseInt("eight");
     }
 
     /**

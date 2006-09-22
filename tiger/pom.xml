@@ -74,10 +74,23 @@
             <artifactId>spring-context</artifactId>
         </dependency>
 
+        <!-- Validation with Hibernate validator -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- JNLP -->
         <dependency>
             <groupId>javax.jnlp</groupId>
             <artifactId>jnlp-api</artifactId>
+            <optional>true</optional>
         </dependency>
         
     </dependencies>

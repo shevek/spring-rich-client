@@ -58,12 +58,29 @@
                         <value type="java.lang.Class">org.hibernate.validator.InvalidStateException</value>
                     </property>
                     <property name="exceptionHandler">
-                        <bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">
+                        <bean class="org.springframework.richclient.exceptionhandling.HibernateValidatorDialogExceptionHandler">
                             <property name="logLevel" value="INFO"/>
                             <property name="shutdownPolicy" value="NONE"/>
                         </bean>
                     </property>
                 </bean>
+                <!--
+                    Warning: When validating non-null columns with Hibernate's DAO based validation,
+                    Hibernate's can also throws org.hibernate.PropertyValueException which are wrapped by spring
+                    See http://opensource.atlassian.com/projects/hibernate/browse/ANN-396
+                -->
+                <!--<bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">-->
+                    <!--<property name="throwableClass">-->
+                        <!--<value type="java.lang.Class">org.springframework.orm.hibernate3.HibernateSystemException</value>-->
+                    <!--</property>-->
+                    <!--<property name="exceptionHandler">-->
+                        <!--<bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">-->
+                            <!--<property name="logLevel" value="INFO"/>-->
+                            <!--<property name="shutdownPolicy" value="NONE"/>-->
+                            <!--<property name="evaluatedChainedIndex" value="1"/>-->
+                        <!--</bean>-->
+                    <!--</property>-->
+                <!--</bean>-->
                 <bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">
                     <property name="throwableClass">
                         <value type="java.lang.Class">java.lang.Error</value>
