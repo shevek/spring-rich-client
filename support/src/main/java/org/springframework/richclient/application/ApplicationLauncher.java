@@ -79,7 +79,7 @@ public class ApplicationLauncher {
      * loading of the application splash screen.
      * 
      * @param startupContext the startup context classpath
-     * @param contextPaths the classpath application context paths
+     * @param rootContextPath the classpath application context path
      */
     public ApplicationLauncher(String startupContext, String rootContextPath) {
         this(startupContext, new String[] {rootContextPath});
@@ -101,6 +101,38 @@ public class ApplicationLauncher {
         }
         setRootApplicationContext(loadRootApplicationContext(rootContextPath));
         launchMyRichClient();
+    }
+
+    /**
+     * Launch the application from the pre-loaded application context.
+     *
+     * @param rootApplicationContext the application context.
+     */
+    public ApplicationLauncher(ApplicationContext rootApplicationContext) {
+        this(null, rootApplicationContext);
+    }
+
+    /**
+     * Launch the application from the pre-loaded application context.
+     *
+     * @param rootApplicationContext the application context.
+     */
+    public ApplicationLauncher(String startupContextPath, ApplicationContext rootApplicationContext) {
+        this.startupContext = loadStartupContext(startupContextPath);
+        if (startupContext != null) {
+            displaySplashScreen(startupContext);
+        }
+        setRootApplicationContext(rootApplicationContext);
+        launchMyRichClient();
+    }
+
+    private ApplicationContext loadStartupContext(String startupContextPath) {
+        if (StringUtils.hasText(startupContextPath)) {
+            logger.info("Loading startup context...");
+            return new ClassPathXmlApplicationContext(startupContextPath);
+        } else {
+            return null;
+        }
     }
 
     private ApplicationContext loadRootApplicationContext(String[] contextPaths) {
@@ -151,7 +183,7 @@ public class ApplicationLauncher {
 
             return applicationContext;
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             logger.warn("Exception occured initializing application startup context.", e);
             destroySplashScreen(); // when app context fails to load, destroy
             // splashscreen
@@ -159,46 +191,9 @@ public class ApplicationLauncher {
         }
     }
 
-    /**
-     * Launch the application from the pre-loaded application context.
-     * 
-     * @param context the application context.
-     */
-    public ApplicationLauncher(String startupContextPath, ApplicationContext rootApplicationContext) {
-        this.startupContext = loadStartupContext(startupContextPath);
-        if (startupContext != null) {
-            displaySplashScreen(startupContext);
-        }
-        setRootApplicationContext(rootApplicationContext);
-        launchMyRichClient();
-    }
-
-    /**
-     * Launch the application from the pre-loaded application context.
-     * 
-     * @param context the application context.
-     */
-    public ApplicationLauncher(ApplicationContext rootApplicationContext) {
-        setRootApplicationContext(rootApplicationContext);
-        launchMyRichClient();
-    }
-
     private void setRootApplicationContext(ApplicationContext context) {
         Assert.notNull(context, "The root rich client application context is required");
         this.rootApplicationContext = context;
-    }
-
-    private ApplicationContext loadStartupContext(String startupContextPath) {
-        logger.info("Loading startup context...");
-        try {
-            if (StringUtils.hasText(startupContextPath)) {
-                return new ClassPathXmlApplicationContext(startupContextPath);
-            }
-        }
-        catch (Exception e) {
-            logger.warn("Exception occured initializing startup context.", e);
-        }
-        return null;
     }
 
     /**
@@ -248,7 +243,7 @@ public class ApplicationLauncher {
                 logger.info("No splash screen bean found to display--continuing...");
             }
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             logger.warn("Unable to load and display startup splash screen.", e);
         }
     }
