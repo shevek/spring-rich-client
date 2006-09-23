@@ -70,15 +70,12 @@
             <item name="Help out" href="/development/helpOut.html"/>
             <item name="Release checklist" href="/development/releaseChecklist.html"/>
             <item name="FAQ" href="/development/faq.html"/>
+            <item name="Maven2ization (TMP)" href="/development/maven2ization.html"/> <!-- TODO deleteme -->
         </menu>
 
-        <menu name="Archived website">
-            <item name="0.1.0" href="/archive/0.1.0/index.html"/>
-        </menu>
-
-        <menu name="tmp">
-            <item name="Maven2ization" href="/development/maven2ization.html"/>
-        </menu>
+        <!--<menu name="Archived website">-->
+            <!--<item name="0.1.0" href="/archive/0.1.0/index.html"/>-->
+        <!--</menu>-->
 
         <menu ref="modules" inherit="bottom"/>
 
