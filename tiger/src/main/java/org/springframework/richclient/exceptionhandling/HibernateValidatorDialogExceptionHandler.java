@@ -4,6 +4,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.hibernate.validator.InvalidStateException;
+import org.hibernate.validator.InvalidValue;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -42,7 +43,16 @@ public class HibernateValidatorDialogExceptionHandler extends AbstractDialogExce
         JPanel panel = new JPanel(new BorderLayout());
         JLabel explanationLabel = new JLabel(explanation);
         panel.add(explanationLabel, BorderLayout.NORTH);
-        JList invalidValuesJList = new JList(invalidStateException.getInvalidValues());
+        List<String> invalidValueMessageList = new ArrayList<String>();
+        for (InvalidValue invalidValue : invalidStateException.getInvalidValues()) {
+            StringBuffer messageBuffer = new StringBuffer();
+            String propertyName = invalidValue.getPropertyName();
+            messageBuffer.append(messageSourceAccessor.getMessage(propertyName + ".label", propertyName));
+            messageBuffer.append(" ");
+            messageBuffer.append(invalidValue.getMessage());
+            invalidValueMessageList.add(messageBuffer.toString());
+        }
+        JList invalidValuesJList = new JList(invalidValueMessageList.toArray());
         JScrollPane invalidValuesScrollPane = new JScrollPane(invalidValuesJList,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         panel.add(invalidValuesScrollPane, BorderLayout.CENTER);
