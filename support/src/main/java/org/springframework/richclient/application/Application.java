@@ -174,12 +174,22 @@ public class Application implements InitializingBean, ApplicationContextAware {
     }
 
     public void close() {
-        if( windowManager.close() ) {
-            if( getApplicationContext() instanceof ConfigurableApplicationContext ) {
-                ((ConfigurableApplicationContext) getApplicationContext()).close();
-            }
+        close(false, 0);
+    }
 
-            System.exit(0);
+    public void close(boolean force, int exitCode) {
+        boolean exitInFinally = force;
+        try {
+            if (windowManager.close() ) {
+                exitInFinally = true;
+                if( getApplicationContext() instanceof ConfigurableApplicationContext ) {
+                    ((ConfigurableApplicationContext) getApplicationContext()).close();
+                }
+            }
+        } finally {
+            if (exitInFinally) {
+                System.exit(exitCode);
+            }
         }
     }
 

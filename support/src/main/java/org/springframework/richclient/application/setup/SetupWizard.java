@@ -45,6 +45,7 @@ public class SetupWizard extends AbstractWizard implements ActionCommandExecutor
 
     public boolean onCancel() {
         if (cancelConfirmed()) {
+            // TODO use org.springframework.richclient.application.Application.close(b, i) instead (if initialized?)
             System.exit(1);
         }
         return false;

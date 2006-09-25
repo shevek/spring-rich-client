@@ -85,8 +85,12 @@ public abstract class AbstractDialogExceptionHandler extends AbstractLoggingExce
         if ((shutdownPolicy == ShutdownPolicy.ASK && result == 0)
                 || shutdownPolicy == ShutdownPolicy.OBLIGATE) {
             logger.info("Shutting down due to uncaught exception.");
-            // TODO shut down in a cleaner way if posssible. Wrap that with try-finally to force exit if needed
-            System.exit(1);
+            try {
+                Application.instance().close(true, 1);
+            } finally {
+                // In case the instance() method throws an exception and an exit didn't occur
+                System.exit(2);
+            }
         }
     }
 

@@ -101,7 +101,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
      * Indicates whether an information message is displayed to the user upon successful
      * authentication. Defaults to true.
      * 
-     * @param displaySuccess displays an information message upon successful login if
+     * @param displaySuccessMessage displays an information message upon successful login if
      *            true, otherwise false
      */
     public void setDisplaySuccess(boolean displaySuccessMessage) {
@@ -132,17 +132,13 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                 try {
                     sm.doLogin( authentication );
                     postLogin();
-                } catch( AcegiSecurityException e ) {
-                    // Any exception here means that the authentication failed
-                    // Report it and return false
-                    boolean rtn = handleLoginFailure( authentication, e );
+                    return true;
+                } finally {
                     if( isClearPasswordOnFailure() ) {
-                        loginForm.setPassword( "" );
+                        loginForm.setPassword("");
                     }
                     loginForm.requestFocusInWindow();
-                    return rtn;
                 }
-                return true;
             }
 
             protected void onCancel() {
@@ -194,22 +190,6 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
     }
 
     /**
-     * Report a login failure. Base implementation just displays a message dialog with the
-     * localized message from the security exception.
-     * @param authentication token that failed to authenticate
-     * @param exception The exception indicating the authentication failure
-     * @return true if the login dialog should be closed, base implementation always
-     *         returns false
-     */
-    protected boolean handleLoginFailure(Authentication authentication, AcegiSecurityException exception) {
-        String exceptionMessage = exception.getLocalizedMessage();
-        JOptionPane.showMessageDialog( getDialog().getDialog(), exceptionMessage, Application.instance().getName(),
-            JOptionPane.ERROR_MESSAGE );
-
-        return false;
-    }
-
-    /**
      * Get the "close on cancel" setting.
      * @return close on cancel
      */
@@ -253,9 +233,10 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
 
     /**
      * Set the default user name.
-     * @param userName to use as default, null indicates no default
+     * @param defaultUserName to use as default, null indicates no default
      */
     public void setDefaultUserName(String defaultUserName) {
         this.defaultUserName = defaultUserName;
     }
+
 }

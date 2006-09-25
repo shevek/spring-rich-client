@@ -26,12 +26,56 @@ Upgrading from 0.2.x to 0.3.x
 +--
 
     Instead there is the much finer grained system, by injecting a registerableExceptionHandler.
+    If you are using java 1.5, use at least this:
+
++--
+<bean id="petclinicLifecycleAdvisor" ...>
+    ...
+    <property name="registerableExceptionHandler" ref="exceptionHandler"/>
+</bean>
+
+<bean id="exceptionHandler" class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">
+    <property name="logLevel" value="ERROR"/>
+    <property name="shutdownPolicy" value="NONE"/>
+</bean>
++--
+
+    With this in your <<<messages.properties>>>:
+
++--
+java.lang.RuntimeException.caption = Unexpected general bug
+java.lang.RuntimeException.description = \
+  The application experienced an unexpected bug,\n\
+  due to a programming error.\n\
+  \n\
+  The application is possibly in an inconsistent state.\n\
+  It's recommended to reboot the application.\n\
+  \n\
+  The exact bug is:\n\
+  {0}\n\
+  \n\
+  Please report this bug.
+
+java.lang.Error.caption = Unexpected serious system failure
+java.lang.Error.description = \
+  A serious system failure occured.\n\
+  \n\
+  The application is possibly in an inconsistent state.\n\
+  Reboot the application.\n\
+  \n\
+  The exact bug is:\n\
+  {0}\n\
+  \n\
+  Please report this bug.
++--
+
+    See Petclinic for an advanced features example using the delegating exception handler.
 
     * Exception catching improvements in ApplicationLauncher
 
     ApplicationLauncher no longer wraps it's runtime exceptions in an <<<ApplicationException>>>
     and it no longer logs them either before throwing.
-    This is to avoid double logging when both logging and throwing - the thrown will probably be logged too.
+    This is to avoid double logging when both logging and throwing - as the thrown will probably be logged too.
 
     So you might want to try-catch your ApplicationLauncher startup:
 
@@ -44,4 +88,25 @@ try {
 +--
 
     Or you could initialize an <<<LoggingExceptionHandler>>> on your main thread before using ApplicationLauncher.
-    
+
+    * In <<<LoginCommand>>>, the method
+    <<<handleLoginFailure(Authentication authentication, AcegiSecurityException e)>>> has been removed.
+
+    <<<LoginCommand>>> no longer handles an authentication exception, but lets the global exception handler handle it.
+
+    To get a decent i18n based bad credentials message, you 'll probably want to enable a
+    <<<MessagesDialogExceptionHandler>>> (see petclinic) and configure this in your <<<messages.properties>>>:
+
++--
+org.acegisecurity.BadCredentialsException.caption = Authentication failed
+org.acegisecurity.BadCredentialsException.description = \
+  Your username did not match your password.\n\
+  \n\
+  Please verify your username and password.
+
+org.acegisecurity.AuthenticationException.caption = Authentication failed
+org.acegisecurity.AuthenticationException.description = \
+  You are not or no longer allowed to log in.\n\
+  \n\
+  Please verify your username.
++--
