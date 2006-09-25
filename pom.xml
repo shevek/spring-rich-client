@@ -950,7 +950,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
-                <version>3.2.0.cr1</version>
+                <version>3.2.0.cr2</version>
                 <exclusions>
                     <!-- TODO once hibernate's validator doesn't need hibernate, exclude it -->
                     <!--<exclusion>-->
@@ -967,7 +967,7 @@
             <dependency>
                 <groupId>hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>1.8.0.1</version>
+                <version>1.8.0.5</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
