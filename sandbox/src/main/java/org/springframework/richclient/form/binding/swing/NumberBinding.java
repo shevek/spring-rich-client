@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.binding.support.CustomBinding;
@@ -70,7 +69,6 @@ public class NumberBinding extends CustomBinding implements UserInputListener
     {
         super(formModel, formPropertyPath, requiredClass);
         this.numberField = component;
-        this.numberField.setHorizontalAlignment(SwingConstants.RIGHT);
         this.readOnly = readOnly;
         this.leftDecoration = leftDecoration;
         this.rightDecoration = rightDecoration;

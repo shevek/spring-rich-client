@@ -264,6 +264,8 @@ public class NumberBinder extends AbstractBinder
         if (scale != null) {
             component.setScale(scale);
         }
+        
+        component.setHorizontalAlignment(this.alignment);
 
         return component;
     }
