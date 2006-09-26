@@ -6,16 +6,15 @@ package org.springframework.core.closure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ValueHolder;
+import junit.framework.TestCase;
+
 import org.springframework.core.closure.support.Block;
 import org.springframework.core.closure.support.IteratorTemplate;
-import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
  * @author Keith Donald
  */
-public class ClosureTests extends SpringRichTestCase {
+public class ClosureTests extends TestCase {
 	public void testIteratorProcessTemplateRunOnce() {
 		List collection = new ArrayList();
 		collection.add("Item 1");
@@ -132,6 +131,9 @@ public class ClosureTests extends SpringRichTestCase {
 		});
 	}
 
+    // using a simple int instead of a ValueHolder to have no extra dependencies.
+    int runUntilCounter;
+    
 	public void testRunUntil() {
 		List collection = new ArrayList();
 		collection.add("Item 1");
@@ -140,16 +142,16 @@ public class ClosureTests extends SpringRichTestCase {
 		collection.add("Item 4");
 		collection.add("Item 5");
 		IteratorTemplate template = new IteratorTemplate(collection);
-		final ValueModel countHolder = new ValueHolder(new Integer(0));
-		template.runUntil(new Block() {
-			protected void handle(Object o) {
-				countHolder.setValue(new Integer(((Integer)countHolder.getValue()).intValue() + 1));
-			}
-		}, new Constraint() {
+        runUntilCounter = 0;
+        template.runUntil(new Block() {
+            protected void handle(Object o) {
+                runUntilCounter++;
+            }
+        }, new Constraint() {
 			public boolean test(Object o) {
 				return o.equals("Item 4");
 			}
 		});
-		assertEquals(new Integer(3), countHolder.getValue());
+		assertEquals(3, runUntilCounter);
 	}
 }
