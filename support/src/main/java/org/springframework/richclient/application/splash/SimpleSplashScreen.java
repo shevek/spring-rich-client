@@ -118,6 +118,7 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
         }
 
         public void paint(Graphics g) {
+            g.clearRect(0, 0, getWidth(), getHeight());
             g.drawImage(image, 0, 0, this);
         }
     }
