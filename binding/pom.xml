@@ -19,10 +19,13 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-core</artifactId>
         </dependency>    
+        
+        <!-- Binding and validation -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
+            <artifactId>spring-binding</artifactId>
         </dependency>
+        
     </dependencies>
 
 </project>
