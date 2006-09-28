@@ -15,7 +15,6 @@
  */
 package org.springframework.binding.form;
 
-import org.springframework.binding.form.support.DefaultBindingErrorMessageProvider;
 import org.springframework.binding.validation.ValidationMessage;
 
 /**
@@ -23,7 +22,7 @@ import org.springframework.binding.validation.ValidationMessage;
  * during a form model's binding process.
  * 
  * @author  Oliver Hutchison
- * @see DefaultBindingErrorMessageProvider
+ * @see org.springframework.binding.form.support.DefaultBindingErrorMessageProvider
  */
 public interface BindingErrorMessageProvider {
     
