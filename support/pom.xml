@@ -104,12 +104,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Binding and validation -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-binding</artifactId>
-        </dependency>
-
 				<!-- Needed for SortedListModel to work 
 					Is actually added by spring-modules-validation in 
 					a transitive way, but when not using validation, 
