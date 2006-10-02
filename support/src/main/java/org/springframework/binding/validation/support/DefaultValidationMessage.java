@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.binding.validation;
+package org.springframework.binding.validation.support;
 
 import java.io.Serializable;
 
+import org.springframework.binding.validation.Severity;
+import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.util.Assert;
 import org.springframework.util.ObjectUtils;

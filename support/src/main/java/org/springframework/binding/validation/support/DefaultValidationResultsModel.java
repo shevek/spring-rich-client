@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.binding.validation;
+package org.springframework.binding.validation.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -22,6 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.binding.validation.Severity;
+import org.springframework.binding.validation.ValidationListener;
+import org.springframework.binding.validation.ValidationMessage;
+import org.springframework.binding.validation.ValidationResults;
+import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.EventListenerListHelper;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.binding.validation;
+package org.springframework.binding.validation.support;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.springframework.binding.validation.support.RulesValidator;
+import org.springframework.binding.validation.Severity;
+import org.springframework.binding.validation.ValidationMessage;
+import org.springframework.binding.validation.ValidationResults;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.ObjectUtils;

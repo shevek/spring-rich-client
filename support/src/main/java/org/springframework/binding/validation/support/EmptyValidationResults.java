@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.binding.validation;
+package org.springframework.binding.validation.support;
 
 import java.util.Collections;
 import java.util.Set;
 
+import org.springframework.binding.validation.Severity;
+import org.springframework.binding.validation.ValidationResults;
 import org.springframework.core.style.ToStringCreator;
 
 /**

@@ -34,8 +34,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.validation.DefaultValidationMessage;
-import org.springframework.binding.validation.DefaultValidationResults;
 import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
