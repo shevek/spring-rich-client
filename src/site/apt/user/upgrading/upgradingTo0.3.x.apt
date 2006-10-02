@@ -110,3 +110,12 @@ org.acegisecurity.AuthenticationException.description = \
   \n\
   Please verify your username.
 +--
+
+    * Automatic service bean lookup
+    
+    <<<DefaultApplicationServices>>> now searches for a bean with a name of the decapitalized short name of the requested service type,
+    if no bean was defined through direkt injection. <<<ApplicationServicesLocator>>> can be used to lookup custom services as well without 
+    injecting them through <<<registryEntries>>> property of <<<DefaultApplicationServices>>>.
+    
+    If the service type is <<<org.springframework.rules.RulesSource>>> the name to lookup will be <<<rulesSource>>>. If a bean can be found in 
+    the current application context and it implements <<<org.springframework.rules.RulesSource>>> it will be used as the implementation for it.
