@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.validation;
 
+import org.springframework.binding.validation.support.DefaultValidationMessage;
+
 import junit.framework.TestCase;
 
 public class DefaultValidationMessageTests extends TestCase {

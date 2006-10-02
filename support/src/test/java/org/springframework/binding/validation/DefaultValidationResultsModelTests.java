@@ -15,9 +15,11 @@
  */
 package org.springframework.binding.validation;
 
-import org.springframework.binding.support.TestPropertyChangeListener;
-
 import junit.framework.TestCase;
+
+import org.springframework.binding.support.TestPropertyChangeListener;
+import org.springframework.binding.validation.support.DefaultValidationResults;
+import org.springframework.binding.validation.support.DefaultValidationResultsModel;
 
 /**
  * Tests for @link DefaultValidationResultsModel

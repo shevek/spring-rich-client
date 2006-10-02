@@ -28,13 +28,13 @@ import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
-import org.springframework.binding.validation.DefaultValidationMessage;
-import org.springframework.binding.validation.DefaultValidationResults;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.binding.validation.Validator;
+import org.springframework.binding.validation.support.DefaultValidationMessage;
+import org.springframework.binding.validation.support.DefaultValidationResults;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 
