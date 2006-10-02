@@ -13,7 +13,7 @@ What is spring-richclient?
 
 News
 
-    * <<2006-04-21>>: Release 0.2.1 available: see {{{download.html}download}}
+    * <<2006-09-21>>: Release 0.2.1 available: see {{{download.html}download}}
 
     Spring-richclient 0.2.1 has several improvements, such as better view support,
     new binders (shuttlelist, nachocalendar, tiger enums), a new sample "simple",
