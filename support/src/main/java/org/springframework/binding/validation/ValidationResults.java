@@ -17,13 +17,12 @@ package org.springframework.binding.validation;
 
 import java.util.Set;
 
-
 /**
  * Interface to be implemented by objects that hold a list of validation results for
  * a specific object.
  *   
  * @author  Oliver Hutchison
- * @see DefaultValidationResults
+ * @see org.springframework.binding.validation.support.DefaultValidationResults
  */
 public interface ValidationResults {
     
