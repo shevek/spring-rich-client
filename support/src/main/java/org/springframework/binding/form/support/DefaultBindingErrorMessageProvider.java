@@ -19,9 +19,9 @@ import org.springframework.beans.PropertyAccessException;
 import org.springframework.binding.form.BindingErrorMessageProvider;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.format.InvalidFormatException;
-import org.springframework.binding.validation.DefaultValidationMessage;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
+import org.springframework.binding.validation.support.DefaultValidationMessage;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 
