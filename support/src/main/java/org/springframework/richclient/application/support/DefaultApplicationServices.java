@@ -72,42 +72,46 @@ import org.springframework.rules.RulesSource;
 import org.springframework.rules.reporting.DefaultMessageTranslatorFactory;
 import org.springframework.rules.reporting.MessageTranslatorFactory;
 import org.springframework.rules.support.DefaultRulesSource;
+import org.springframework.util.ClassUtils;
 
 /**
- * A default implementation of the ApplicationServices (service locator) interface. This
- * implementation allows for the direct registration of service implementations by using
- * various setter methods (like {@link #setImageSource(ImageSource)}). Service registry
- * entries can also be added in bulk using the {@link #setRegistryEntries(Map)} method.
+ * A default implementation of the ApplicationServices (service locator) interface. This implementation allows for the
+ * direct registration of service implementations by using various setter methods (like
+ * {@link #setImageSource(ImageSource)}). Service registry entries can also be added in bulk using the
+ * {@link #setRegistryEntries(Map)} method.
  * <p>
- * Except in testing environments, this class will typically be instantiated in the
- * application context and the various service implementations will be set <b>BY ID</b>.
- * The use of service bean ids instead of direct bean references is to avoid numerous
- * problems with cyclic dependencies and other order dependent operations. So, a typical
- * incarnation might look like this:
+ * Except in testing environments, this class will typically be instantiated in the application context and the various
+ * service implementations will be set <b>BY ID</b>. The use of service bean ids instead of direct bean references is
+ * to avoid numerous problems with cyclic dependencies and other order dependent operations. So, a typical incarnation
+ * might look like this:
  * 
  * <pre>
- *   &lt;bean id=&quot;applicationServices&quot;
- *       class=&quot;org.springframework.richclient.application.support.DefaultApplicationServices&quot;&gt;
- *       &lt;property name=&quot;applicationObjectConfigurerId&quot;&gt;&lt;idref bean=&quot;applicationObjectConfigurer&quot; /&gt;&lt;/property&gt;
- *       &lt;property name=&quot;imageSourceId&quot;&gt;&lt;idref bean=&quot;imageSource&quot;/&gt;&lt;/property&gt;
- *       &lt;property name=&quot;rulesSourceId&quot;&gt;&lt;idref bean=&quot;rulesSource&quot;/&gt;&lt;/property&gt;
- *       &lt;property name=&quot;conversionServiceId&quot;&gt;&lt;idref bean=&quot;conversionService&quot;/&gt;&lt;/property&gt;
- *       &lt;property name=&quot;formComponentInterceptorFactoryId&quot;&gt;&lt;idref bean=&quot;formComponentInterceptorFactory&quot;/&gt;&lt;/property&gt;
- *   &lt;/bean&gt;
+ *       &lt;bean id=&quot;applicationServices&quot;
+ *           class=&quot;org.springframework.richclient.application.support.DefaultApplicationServices&quot;&gt;
+ *           &lt;property name=&quot;applicationObjectConfigurerId&quot;&gt;&lt;idref bean=&quot;applicationObjectConfigurer&quot; /&gt;&lt;/property&gt;
+ *           &lt;property name=&quot;imageSourceId&quot;&gt;&lt;idref bean=&quot;imageSource&quot;/&gt;&lt;/property&gt;
+ *           &lt;property name=&quot;rulesSourceId&quot;&gt;&lt;idref bean=&quot;rulesSource&quot;/&gt;&lt;/property&gt;
+ *           &lt;property name=&quot;conversionServiceId&quot;&gt;&lt;idref bean=&quot;conversionService&quot;/&gt;&lt;/property&gt;
+ *           &lt;property name=&quot;formComponentInterceptorFactoryId&quot;&gt;&lt;idref bean=&quot;formComponentInterceptorFactory&quot;/&gt;&lt;/property&gt;
+ *       &lt;/bean&gt;
  * </pre>
  * 
- * Note the use of the <code>refid</code> form instead of just using a string value.
- * This is the preferred syntax in order to avoid having misspelled bean names go
- * unreported.
+ * Note the use of the <code>refid</code> form instead of just using a string value. This is the preferred syntax in
+ * order to avoid having misspelled bean names go unreported.
  * <p>
- * When a service is requested, via {@link #getService(Class)}, the current registry of
- * service implementations is consulted. If a registry entry was made using a bean id,
- * this is the point at which it will be dereferenced into the actual bean implementation.
- * So, the bean impementation will not be referenced until it is requested.
- * <p>
- * If a service is requested that has not been registered and a default implementation can
- * be provided, it will be constructed at that time. Default implementations are provided
- * for essentially all services referenced by the platform.
+ * Which service implementation is returned by {@link #getService(Class)} will be determined through the following
+ * steps:
+ * <ol>
+ * <li>Consult the current registry of service implementations which have been explicitly defined through bean
+ * definition. If a registry entry was made using a bean id, this is the point at which it will be dereferenced into the
+ * actual bean implementation. So, the bean impementation will not be referenced until it is requested.</li>
+ * <li>If the service impl. is not found yet the short string name of the service' Java class in decapitalized
+ * JavaBeans property format will be used to lookup the service implementation in the current application context.<br/>
+ * If the service class is <code>org.springframework.richclient.factory.MenuFactory</code> the bean name
+ * <code>menuFactory</code> will be used to find the bean</li>
+ * <li>If the service impl. is not found yet and a default implementation can be provided, it will be constructed at
+ * that time. Default implementations are provided for essentially all services referenced by the platform.</li>
+ * </ol>
  * 
  * @author Larry Streepy
  */
@@ -172,9 +176,12 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         Assert.required( serviceType, "serviceType" );
         Object service = services.get( serviceType );
         if( service == null ) {
-            service = getDefaultImplementation( serviceType );
-            if( service != null ) {
-                services.put( serviceType, service );
+            service = getServiceForClassType(serviceType);
+            if (service == null) {
+                service = getDefaultImplementation(serviceType);
+            }
+            if (service != null) {
+                services.put(serviceType, service);
             }
         } else {
             // Runtime derefence of refid's
@@ -193,7 +200,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     public boolean containsService( Class serviceType ) {
         Assert.required( serviceType, "serviceType" );
-        return services.containsKey( serviceType ) || containsDefaultImplementation( serviceType );
+        return services.containsKey( serviceType ) || containsServiceForClassType(serviceType) || containsDefaultImplementation( serviceType );
     }
 
     /**
@@ -684,6 +691,36 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Get the implementation of a service by using the decapitalized shortname of the serviceType class name.
+     * 
+     * @param serviceType
+     *            the service class to lookup the bean definition
+     * @return the found service implementation if a bean definition can be found and it implements the required service
+     *         type, otherwise null
+     * @see ClassUtils#getShortNameAsProperty(Class)
+     */
+    protected Object getServiceForClassType(Class serviceType) {
+        String lookupName = ClassUtils.getShortNameAsProperty(serviceType);
+        ApplicationContext ctx = getApplicationContext();
+        if (ctx.containsBean(lookupName)) {
+            Object bean = ctx.getBean(lookupName);
+            if (serviceType.isAssignableFrom(bean.getClass())) {
+                if(logger.isDebugEnabled()) {
+                    logger.debug("Using bean '" + lookupName + "' (" + bean.getClass().getName() + ") for service " + serviceType.getName());
+                }
+                return bean;
+            }
+            else if(logger.isDebugEnabled()){
+                logger.debug("Bean with id '" + lookupName + "' (" + bean.getClass().getName() + ") does not implement " + serviceType.getName());
+            }
+        } else if(logger.isDebugEnabled()){
+            logger.debug("No Bean with id '" + lookupName + "' found for service " + serviceType.getName());
+        }
+        return null;
+    }
+
+
+    /**
      * Get the default implementation of a service according to the service type. If no
      * default implementation is available, then a null is returned.
      * 
@@ -697,6 +734,17 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
             impl = builder.build( this );
         }
         return impl;
+    }
+
+    /**
+     * Tests if the application context contains a bean definition by using the decapitalized shortname of the serviceType class name
+     * @param serviceType the service class to lookup the bean definition
+     * @return true if a bean definition is found in the current application context, otherwise false
+     * 
+     * @see ClassUtils#getShortNameAsProperty(Class)
+     */
+    protected boolean containsServiceForClassType(Class serviceType) {
+        return getApplicationContext().containsBean(ClassUtils.getShortNameAsProperty(serviceType));
     }
 
     /**

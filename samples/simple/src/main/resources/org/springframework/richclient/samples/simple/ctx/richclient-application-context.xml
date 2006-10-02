@@ -94,7 +94,10 @@
     <bean id="applicationServices"
         class="org.springframework.richclient.application.support.DefaultApplicationServices">
         <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <!-- It is not required to define each service bean here if the bean name maches the service type name like rulesSource.
+             The service implementation will still be found if the bean name uses the decapitalized short name of the service type.
         <property name="rulesSourceId"><idref bean="rulesSource"/></property>
+         -->
         <property name="conversionServiceId"><idref bean="conversionService"/></property>
         <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
         <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
