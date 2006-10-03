@@ -294,14 +294,19 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         return true;
     }
 
+    /**
+     * Adds the pageComponent to the components list while registering listeners
+     * and firing appropriate events. (not yet setting the component as the active one)
+     * 
+     * @param pageComponent
+     *            the pageComponent to add.
+     */
     protected void addPageComponent( PageComponent pageComponent ) {
         pageComponents.add( pageComponent );
         doAddPageComponent( pageComponent );
         pageComponent.addPropertyChangeListener( pageComponentUpdater );
 
         fireOpened( pageComponent );
-
-        giveFocusTo( pageComponent );
     }
 
     /**
