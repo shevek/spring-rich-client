@@ -47,7 +47,7 @@ import org.springframework.richclient.security.AuthenticationAware;
  * Note that this configuration could lead to instances of this class receiving two
  * notifications of an authentication token change.  However, that would only happen
  * if both the {@link BasicAuthHttpInvokerProxyFactoryBean} is used and this class
- * is created as a bean in the applicaiton context.  This seemed unlikely enough
+ * is created as a bean in the application context.  This seemed unlikely enough
  * that I erred on the side of "ease of use".  Also, the current implementation
  * does nothing more than store a reference to the new token, so receiving two
  * notifications isn't a problem.
