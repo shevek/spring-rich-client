@@ -758,8 +758,16 @@
             <dependency>
                 <groupId>org.acegisecurity</groupId>
                 <artifactId>acegi-security</artifactId>
-                <version>1.0.1</version>
+                <version>1.0.2</version>
                 <exclusions>
+                    <!--
+                        TODO remove as soon as this issue is fixed and released:
+                        See http://opensource.atlassian.com/projects/spring/browse/SEC-369
+                    -->
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jdbc</artifactId>
+                    </exclusion>
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-mock</artifactId>
@@ -795,6 +803,14 @@
                     <exclusion>
                         <groupId>cas</groupId>
                         <artifactId>casclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>oro</groupId>
+                        <artifactId>oro</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-codec</groupId>
+                        <artifactId>commons-codec</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
