@@ -272,7 +272,7 @@ public class ValangRichValidator implements RichValidator {
      * properties.
      */
     private class FormModel2BeanWrapperAdapter implements BeanWrapper {
-        
+
         public Object getPropertyValue(String propertyName) throws BeansException {
             return formModel.getValueModel(propertyName).getValue();
         }
@@ -337,7 +337,12 @@ public class ValangRichValidator implements RichValidator {
             throw new UnsupportedOperationException("Not implemented");
         }
 
-        public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown) throws BeansException {
+        public void setPropertyValues(PropertyValues propertyValues, boolean ignoreUnknown) throws BeansException {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        public void setPropertyValues(PropertyValues propertyValues, boolean ignoreUnknown, boolean ignoreInvalid)
+                throws BeansException {
             throw new UnsupportedOperationException("Not implemented");
         }
 

@@ -477,7 +477,7 @@
     </pluginRepositories>
 
     <properties>
-      <spring.version>1.2.8</spring.version>
+      <spring.version>2.0</spring.version>
     </properties>
 
     <dependencies>
@@ -680,6 +680,10 @@
                         <groupId>avalon-framework</groupId>
                         <artifactId>avalon-framework</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -688,90 +692,16 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.transaction</groupId>
-                        <artifactId>jta</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.resource</groupId>
-                        <artifactId>connector</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>aopalliance</groupId>
-                        <artifactId>aopalliance</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xdoclet</groupId>
-                        <artifactId>xjavadoc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.servlets</groupId>
-                        <artifactId>cos</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>jstl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>taglibs</groupId>
-                        <artifactId>standard</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>quartz</groupId>
-                        <artifactId>quartz</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>jsp-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>oro</groupId>
-                        <artifactId>oro</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cglib</groupId>
-                        <artifactId>cglib</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>velocity</groupId>
-                        <artifactId>velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>freemarker</groupId>
-                        <artifactId>freemarker</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>jasperreports</groupId>
-                        <artifactId>jasperreports</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -790,26 +720,13 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
+                        <artifactId>spring-web</artifactId>
                     </exclusion>
-                    <!-- bug: http://jira.codehaus.org/browse/MNG-1797
-                when dependency is listed elsewhere with a version,
-                 that one will override a transitive one, so no exclusions of listed dependencies.
-                -->
-                    <!--exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-dao</artifactId>
-                    </exclusion-->
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-dao</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
@@ -820,15 +737,15 @@
             <!--<dependency>-->
                 <!--<groupId>org.springframework</groupId>-->
                 <!--<artifactId>spring-mock</artifactId>-->
-                <!--<version>1.2.6</version>-->
+                <!--<version>${spring.version}</version>-->
                 <!--<scope>test</scope>-->
             <!--</dependency>-->
 
             <!-- Spring's petclinic -->
-            <dependency><!-- TODO verify that the one in repository indeed is 1.2.6 -->
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-petclinic</artifactId>
-                <version>${spring.version}</version>
+                <version>1.2.8</version><!-- TODO Get in sync with ${spring.version} by deploying it in our repo -->
             </dependency>
 
             <dependency>
@@ -967,7 +884,7 @@
             <dependency>
                 <groupId>hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>1.8.0.5</version>
+                <version>1.8.0.7</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
