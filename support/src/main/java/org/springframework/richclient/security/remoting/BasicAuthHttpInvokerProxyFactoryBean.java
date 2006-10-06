@@ -46,8 +46,6 @@ import org.springframework.richclient.security.AuthenticationAware;
  */
 public class BasicAuthHttpInvokerProxyFactoryBean extends HttpInvokerProxyFactoryBean implements AuthenticationAware {
 
-    private final Log _logger = LogFactory.getLog( getClass() );
-
     /**
      * Constructor. Install the default executor.
      */
@@ -66,14 +64,14 @@ public class BasicAuthHttpInvokerProxyFactoryBean extends HttpInvokerProxyFactor
      * @see AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
-        if( _logger.isDebugEnabled() ) {
-            _logger.debug( "New authentication token: " + authentication );
+        if( logger.isDebugEnabled() ) {
+            logger.debug( "New authentication token: " + authentication );
         }
 
         final HttpInvokerRequestExecutor hire = getHttpInvokerRequestExecutor();
         if( hire instanceof BasicAuthHttpInvokerRequestExecutor ) {
-            if( _logger.isDebugEnabled() ) {
-                _logger.debug( "Pass it along to executor" );
+            if( logger.isDebugEnabled() ) {
+                logger.debug( "Pass it along to executor" );
             }
             ((BasicAuthHttpInvokerRequestExecutor) hire).setAuthenticationToken( authentication );
         }

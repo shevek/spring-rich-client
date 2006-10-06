@@ -20,8 +20,6 @@ import java.net.HttpURLConnection;
 
 import org.acegisecurity.Authentication;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor;
 import org.springframework.richclient.security.AuthenticationAware;
 
@@ -59,9 +57,7 @@ import org.springframework.richclient.security.AuthenticationAware;
 public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerRequestExecutor implements
         AuthenticationAware {
 
-    private final Log _logger = LogFactory.getLog( getClass() );
-
-    private Authentication _authentication;
+    private Authentication authentication;
 
     /**
      * Constructor.
@@ -74,15 +70,14 @@ public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerReques
      * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
-        _authentication = authentication;
+        this.authentication = authentication;
     }
 
     /**
      * Get the Authentication object for the current user, if any.
-     * @param current authentication object, null if none (i.e., user not logged in)
      */
     public Authentication getAuthenticationToken() {
-        return _authentication;
+        return authentication;
     }
 
     //
@@ -129,12 +124,12 @@ public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerReques
             String base64 = auth.getName() + ":" + auth.getCredentials().toString();
             con.setRequestProperty( "Authorization", "Basic " + new String( Base64.encodeBase64( base64.getBytes() ) ) );
 
-            if( _logger.isDebugEnabled() ) {
-                _logger.debug( "HttpInvocation now presenting via BASIC authentication with token:: " + auth );
+            if( logger.isDebugEnabled() ) {
+                logger.debug( "HttpInvocation now presenting via BASIC authentication with token:: " + auth );
             }
         } else {
-            if( _logger.isDebugEnabled() ) {
-                _logger.debug( "Unable to set BASIC authentication header as Authentication token is invalid: " + auth );
+            if( logger.isDebugEnabled() ) {
+                logger.debug( "Unable to set BASIC authentication header as Authentication token is invalid: " + auth );
             }
         }
 
