@@ -29,7 +29,7 @@
             <type>test-jar</type>
         </dependency>
 
-		<!-- Components -->
+        <!-- Components -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>

@@ -648,15 +648,15 @@
                 <artifactId>spring-modules-validation</artifactId>
                 <version>0.5</version>
                 <exclusions>
-                	<exclusion>
-                		<groupId>org.springframework</groupId>
-                		<artifactId>spring</artifactId>
-                	</exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
-			<!-- Collections -->
-			<dependency>
+            <!-- Collections -->
+            <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.1</version>
@@ -664,10 +664,10 @@
             
             <!-- Codec -->
             <dependency>
-      			<groupId>commons-codec</groupId>
-      			<artifactId>commons-codec</artifactId>
- 				<version>1.3</version>
-    		</dependency>
+                  <groupId>commons-codec</groupId>
+                  <artifactId>commons-codec</artifactId>
+                 <version>1.3</version>
+            </dependency>
 
             <!-- Logging -->
             <dependency>
@@ -918,6 +918,11 @@
             </dependency>
 
             <!-- Remoting -->
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.0.1</version>
+            </dependency>
             <dependency>
                 <groupId>com.caucho</groupId>
                 <artifactId>hessian</artifactId>

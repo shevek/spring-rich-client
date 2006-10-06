@@ -60,8 +60,8 @@
             <artifactId>acegi-security</artifactId>
         </dependency>
         <!-- following dependencies are added so they will override the ones in acegisecurity, 
-        	because of the bug with exclusion we cannot exclude them. When acegi is used 
-        	as a dependency we therefor need to overwrite the following spring modules-->
+            because of the bug with exclusion we cannot exclude them. When acegi is used 
+            as a dependency we therefor need to overwrite the following spring modules-->
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
