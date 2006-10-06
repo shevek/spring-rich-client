@@ -147,45 +147,50 @@ public class ApplicationLauncher {
         final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
                 false);
 
-        final ProgressMonitor tracker = splashScreen.getProgressMonitor();
-
-        applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
-            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-                beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
-                    private int max = -1;
-
-                    public Object postProcessBeforeInitialization(Object bean, String beanName)
-                            throws BeansException {
-                        if (max == -1) {
-                            max = 0;
-                            ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
-                            String[] beanNames = applicationContext.getBeanDefinitionNames();
-                            for (int i = 0; i < beanNames.length; i++) {
-                                // using beanDefinition to check singleton property because when accessing through
-                                // context (applicationContext.isSingleton(beanName)), bean will be created already,
-                                // possibly bypassing other BeanFactoryPostProcessors
-                                if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
-                                    max++;
+        if (splashScreen != null)
+        {
+                
+            final ProgressMonitor tracker = splashScreen.getProgressMonitor();
+    
+            applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
+                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+                    beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
+                        private int max = -1;
+    
+                        public Object postProcessBeforeInitialization(Object bean, String beanName)
+                                throws BeansException {
+                            if (max == -1) {
+                                max = 0;
+                                ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
+                                String[] beanNames = applicationContext.getBeanDefinitionNames();
+                                for (int i = 0; i < beanNames.length; i++) {
+                                    // using beanDefinition to check singleton property because when accessing through
+                                    // context (applicationContext.isSingleton(beanName)), bean will be created already,
+                                    // possibly bypassing other BeanFactoryPostProcessors
+                                    if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
+                                        max++;
+                                }
+                                tracker.taskStarted("Loading Application Context ...", max);
                             }
-                            tracker.taskStarted("Loading Application Context ...", max);
+    
+                            if (applicationContext.containsLocalBean(beanName)) {
+                                tracker.subTaskStarted("Loading " + beanName + " ...");
+                                tracker.worked(1);
+                            }
+    
+                            return bean;
                         }
-
-                        if (applicationContext.containsLocalBean(beanName)) {
-                            tracker.subTaskStarted("Loading " + beanName + " ...");
-                            tracker.worked(1);
+    
+                        public Object postProcessAfterInitialization(Object bean, String beanName)
+                                throws BeansException {
+                            return bean;
                         }
+                    });
+                }
+            });
 
-                        return bean;
-                    }
-
-                    public Object postProcessAfterInitialization(Object bean, String beanName)
-                            throws BeansException {
-                        return bean;
-                    }
-                });
-            }
-        });
-
+        }
+        
         applicationContext.refresh();
 
         return applicationContext;
