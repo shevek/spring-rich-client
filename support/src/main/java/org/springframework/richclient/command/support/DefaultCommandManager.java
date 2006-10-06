@@ -215,11 +215,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
     }
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof CommandGroupFactoryBean) {
-            CommandGroupFactoryBean factory = (CommandGroupFactoryBean)bean;
-            registerCommand(factory.getCommandGroup());
-        }
-        else if (bean instanceof AbstractCommand) {
+        if (bean instanceof AbstractCommand) {
             registerCommand((AbstractCommand)bean);
         }
         return bean;
