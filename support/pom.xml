@@ -127,6 +127,13 @@
             <optional>true</optional>
         </dependency>
 
+				<!-- Codec -->        
+        <dependency>
+      		<groupId>commons-codec</groupId>
+      		<artifactId>commons-codec</artifactId>
+      		<optional>true</optional>
+		    </dependency>
+
         <!-- Components -->
         <dependency>
             <groupId>com.jgoodies</groupId>
