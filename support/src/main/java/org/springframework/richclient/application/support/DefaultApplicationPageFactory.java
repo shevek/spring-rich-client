@@ -30,7 +30,7 @@ import org.springframework.richclient.application.PageDescriptor;
  * 
  */
 public class DefaultApplicationPageFactory implements ApplicationPageFactory{
-    private static final Log logger = LogFactory.getLog( DefaultApplicationWindowFactory.class );
+    private static final Log logger = LogFactory.getLog( DefaultApplicationPageFactory.class );
 
     public ApplicationPage createApplicationPage( ApplicationWindow window, PageDescriptor descriptor ) {
         logger.info( "Creating new DefaultApplicationPage" );
