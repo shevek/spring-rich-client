@@ -172,7 +172,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public void setFormObject(Object formObject) {
-        setDeliverValueChangeEvents(false);
+        setDeliverValueChangeEvents(false, false);
         if (formObject == null) {
             handleSetNullFormObject();
         }
@@ -183,14 +183,25 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         // this will cause all buffered value models to revert 
         // to the new form objects property values 
         commitTrigger.revert();
-        setDeliverValueChangeEvents(true);
+        setDeliverValueChangeEvents(true, true);
     }
 
-    private void setDeliverValueChangeEvents(boolean disconectViewFromData) {
-        formObjectHolder.setDeliverValueChangeEvents(disconectViewFromData);
+    /**
+     * Disconnect view from data in MediatingValueModels, possibly clearing them
+     * afterwards.
+     * 
+     * @param deliverValueChangeEvents
+     *            <code>true</code> if events should be delivered.
+     * @param clearValueModels
+     *            <code>true</code> if models should be cleared afterwards.
+     */
+    private void setDeliverValueChangeEvents(boolean deliverValueChangeEvents, boolean clearValueModels) {
+        formObjectHolder.setDeliverValueChangeEvents(deliverValueChangeEvents);
         for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
             FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel)i.next();
-            valueModel.setDeliverValueChangeEvents(disconectViewFromData);
+            valueModel.setDeliverValueChangeEvents(deliverValueChangeEvents);
+            if (clearValueModels)
+                valueModel.clearDirty();
         }        
     }
 
