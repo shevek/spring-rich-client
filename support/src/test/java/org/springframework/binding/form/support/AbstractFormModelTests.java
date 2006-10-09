@@ -29,6 +29,7 @@ import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
@@ -46,6 +47,10 @@ public class AbstractFormModelTests extends SpringRichTestCase {
         return new TestAbstractFormModel(pas, buffering);
     }
 
+    protected AbstractFormModel getFormModel(ValueModel valueModel, boolean buffering) {
+        return new TestAbstractFormModel(valueModel, buffering);
+    }
+    
     public void testGetValueModelFromPAS() {
         TestBean p = new TestBean();
         TestPropertyAccessStrategy tpas = new TestPropertyAccessStrategy(p);
@@ -468,5 +473,63 @@ public class AbstractFormModelTests extends SpringRichTestCase {
             fail("this method should never be called");
             return null;
         }
+    }
+    
+    /**
+     * <p>
+     * <b>Summary: </b>Setting a new FormObject should always result in a clean
+     * model (not dirty). Using buffered=<code>true</code>.
+     * </p>
+     * 
+     * <p>
+     * This test checks that when a valueModel is dirty and a new FormObject is
+     * set which has the same value for that valueModel, the formModel should
+     * not be dirty.
+     * </p>
+     */
+    public void testBufferedFormModelSetFormObjectNotDirty()
+    {
+        String someString = "someString";
+        FormModel model = getFormModel(new TestBean());
+        ValueModel valueModel = model.getValueModel("simpleProperty");
+
+        assertEquals("Initial check, formmodel not dirty.", false, model.isDirty());
+
+        valueModel.setValue(someString);
+        assertEquals("Value changed, model should be dirty.", true, model.isDirty());
+        
+        TestBean newFormObject = new TestBean();
+        newFormObject.setSimpleProperty(someString);
+        model.setFormObject(newFormObject);
+        assertEquals("New formObject is set, model should not be dirty.", false, model.isDirty());
+    }
+
+    /**
+     * <p>
+     * <b>Summary: </b>Setting a new FormObject should always result in a clean
+     * model (not dirty). Using buffered=<code>false</code>.
+     * </p>
+     * 
+     * <p>
+     * This test checks that when a valueModel is dirty and a new FormObject is
+     * set which has the same value for that valueModel, the formModel should
+     * not be dirty.
+     * </p>
+     */
+    public void testFormModelSetFormObjectNotDirty()
+    {
+        String someString = "someString";
+        FormModel model = getFormModel(new ValueHolder(new TestBean()), false);
+        ValueModel valueModel = model.getValueModel("simpleProperty");
+
+        assertEquals("Initial check, formmodel not dirty.", false, model.isDirty());
+
+        valueModel.setValue(someString);
+        assertEquals("Value changed, model should be dirty.", true, model.isDirty());
+        
+        TestBean newFormObject = new TestBean();
+        newFormObject.setSimpleProperty(someString);
+        model.setFormObject(newFormObject);
+        assertEquals("New formObject is set, model should not be dirty.", false, model.isDirty());
     }
 }
