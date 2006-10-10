@@ -352,13 +352,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
-                    <!-- Aggregate breaks in javadoc plugin 2.0, fixed for upcoming 2.1 -->
-                    <!--<aggregate>true</aggregate>-->
+                    <aggregate>true</aggregate>
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                        <link>http://static.springframework.org/spring/docs/1.2.x/api</link>
+                        <link>http://static.springframework.org/spring/docs/2.0.x/api</link>
                     </links>
                 </configuration>
             </plugin>
