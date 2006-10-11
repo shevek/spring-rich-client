@@ -13,19 +13,24 @@ Installation
 
     Download and install the following technologies:
 
-    * JDK 1.5+ from {{http://java.sun.com}}
+    * Sun JDK 1.5+ from {{http://java.sun.com}} (or from a Linux repository)
 
-        * Set the <<<JAVA_HOME>>> environment variable.
+        * Set the <<<JAVA_HOME>>> environment variable. Both Maven and JBoss need it.
 
-        * NOTE: Spring-richclient can be used in Java 1.4+,
-         but the tiger module and the petclinic sample require Java 1.5+.
+        On Linux open <<</etc/profile>>> or <<<~/.bash_profile>>> and add
+        <<<export JAVAHOME=...>>>. The JDK will probably be under <<</usr/lib/...>>>.
+        On Windows open <Control Panel/System/Advanced/Environment Variables>.
+        The JDK will probably be under <<<C:\Program Files\java\jdk1.x.x>>>.
+
+        * NOTE: Most of Spring-richclient can be run in Java 1.4 (except the tiger module and the petclinic sample),
+         but it requires a 1.5+ JDK to build.
 
     * Maven 2+ from {{http://maven.apache.org}}
 
         * Set the <<<M2_HOME>>> environment variable.
 
-        * Adjust the <<<PATH>>> environment variable to add <<<$M2_HOME/bin;>>> (Linux)
-        or <<<%M2_HOME%\bin;>>> (Windows)
+        * Adjust the <<<PATH>>> environment variable to add <<<;$M2_HOME/bin>>> (Linux)
+        or <<<;%M2_HOME%\bin>>> (Windows)
 
         * On Windows, the use of cygwin (with OpenSSH and Subversion) from {{http://www.cygwin.com}}
         to run maven is required for very advanced functionality (ssh repository deploy, ...)
