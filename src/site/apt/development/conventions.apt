@@ -18,6 +18,9 @@ Code style
     TODO: none yet, this has to be thoroughly discussed on the developer list:
     Sun code conventions or eclipse build-in? With or without 120 chars per line?
 
+    * Do not use subversion variables such as <<<$Revision$>>>,
+    if you need that information, use you IDE.
+
 Naming Conventions
 
 * Main code
@@ -46,7 +49,13 @@ Documentation
 
 * Javadocs
 
-    TODO
+    * Package javadocs should be added in <<<package-info.java>>> files, not in <<<package.html>>> files.
+
+    * Try to consistenly use the following javadoc tags:
+
+        * <<<@author Julius Caesar>>> <(to have an idea who knows that code best)>
+
+        * <<<@since 0.3>>> <(for a pom version of "0.3.0-SNAPSHOT")>
 
 * Site documentation
 
