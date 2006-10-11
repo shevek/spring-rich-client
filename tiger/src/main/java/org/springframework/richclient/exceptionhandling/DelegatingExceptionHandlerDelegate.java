@@ -7,6 +7,7 @@ import java.util.Collections;
  * A couple of a throwable class list and the appropriate exception handler.
  * Note: Also subclasses of the classes in the class list will be handled by the exception handler.
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public class DelegatingExceptionHandlerDelegate {
 

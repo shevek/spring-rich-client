@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
  * Subclasses determine how it's notified to the user.
  *
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterableExceptionHandler {
 

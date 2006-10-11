@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 /**
  * Logs a throwable and shows a dialog about it to the user.
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public abstract class AbstractDialogExceptionHandler extends AbstractLoggingExceptionHandler
         implements InitializingBean {

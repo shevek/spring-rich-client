@@ -10,6 +10,7 @@ import java.util.Properties;
  * So this effectively only works in Sun's JDK.
  *
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public class AwtExceptionHandlerAdapterHack {
 

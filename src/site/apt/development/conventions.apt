@@ -8,10 +8,15 @@ Introduction
 
    Conventions are important to keep the project consistent.
 
+Design
+
+    * Anything that breaks backwards compatibility should be recipe-like documentated
+    in <<</src/site/apt/user/upgrading/upgradingTo?.?.x.apt>>>
+
 Code style
 
     TODO: none yet, this has to be thoroughly discussed on the developer list:
-    Sun code conventions??? What is Spring doing?
+    Sun code conventions or eclipse build-in? With or without 120 chars per line?
 
 Naming Conventions
 
@@ -29,13 +34,20 @@ Build process
     The project root pom is the (in)direct parent pom of all module poms.
     Therefor dependency configuration is inherited.
 
-    * All versions should be specified in the project root pom: never in a child pom.
+    * All versions should be specified in the project root pom: never in a module pom.
 
     * All poms should only depend on their direct dependencies.
 
-    * Dependency scope is ussually defined in the projet root pom.xml
+    * Dependency scope is ussually defined in the project root pom.xml (under discussion)
+
+    * Dependencies should be marked optional (if they are optional) in the module pom. 
 
 Documentation
 
-    * All apt/fml/xdoc files should be in camelCase starting with a low letter.
+* Javadocs
 
+    TODO
+
+* Site documentation
+
+    * All apt/fml/xdoc files should be in camelCase starting with a low letter.

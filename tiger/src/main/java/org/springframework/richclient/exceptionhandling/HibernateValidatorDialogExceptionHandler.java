@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
  * Displays the validation errors to the user.
  *
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public class HibernateValidatorDialogExceptionHandler extends AbstractDialogExceptionHandler {
 

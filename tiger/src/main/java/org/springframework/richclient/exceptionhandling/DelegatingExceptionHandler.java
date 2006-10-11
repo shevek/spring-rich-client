@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
  * A thrown IllegalArgumentException will be handled by the (2) handler. The (3) handler is useless.
  *
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public class DelegatingExceptionHandler extends AbstractRegisterableExceptionHandler implements InitializingBean {
 

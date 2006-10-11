@@ -5,6 +5,7 @@ package org.springframework.richclient.exceptionhandling;
  * Normally it is a bad practice not to notify the user if something goes wrong.
  *
  * @author Geoffrey De Smet
+ * @since 0.3
  */
 public class SimpleLoggingExceptionHandler extends AbstractLoggingExceptionHandler {
 
