@@ -18,7 +18,7 @@ Installation
         * Set the <<<JAVA_HOME>>> environment variable. Both Maven and JBoss need it.
 
         On Linux open <<</etc/profile>>> or <<<~/.bash_profile>>> and add
-        <<<export JAVAHOME=...>>>. The JDK will probably be under <<</usr/lib/...>>>.
+        <<<export JAVAHOME=...>>>. The JDK might be under <<</usr/lib/sun-jdk-1.x.x>>>.
         On Windows open <Control Panel/System/Advanced/Environment Variables>.
         The JDK will probably be under <<<C:\Program Files\java\jdk1.x.x>>>.
 
