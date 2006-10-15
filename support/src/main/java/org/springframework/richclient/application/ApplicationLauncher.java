@@ -35,17 +35,42 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * The main driver for a Spring Rich Client application. This class displays a
- * configurable splash screen and instantiates the rich client <code>Application</code>
- * instance.
+ * The main driver for a Spring Rich Client application. 
+  * 
+ * <p>
+ * This class displays a configurable splash screen and launches a rich 
+ * client {@link Application}. Both the splash screen and the application to be 
+ * launched are expected to be defined as beans, under the names 
+ * {@value #SPLASH_SCREEN_BEAN_ID} and {@value #APPLICATION_BEAN_ID} respectively, 
+ * in one of the application contexts provided to the constructor.
+ * </p>
+ * 
+ * <p>
+ * For quick loading and display of the splash screen while the rest of the 
+ * application is being initialized, constructors are provided that take a 
+ * separate startup context. The startup context will be searched for the 
+ * {@value #SPLASH_SCREEN_BEAN_ID} bean, which will then be displayed before the
+ * main application context is loaded and the application launched. If no
+ * startup context is provided or it doesn't contain an appropriately named
+ * splash screen bean, an attempt will be made to load a splash screen from the
+ * main application context. This can only happen after the main application 
+ * context has been loaded in its entirety so it is not the recommended approach
+ * for displaying a splash screen.
+ * </p>
  * 
  * @author Keith Donald
  * @see Application
  */
 public class ApplicationLauncher {
 
+    /**
+     * The name of the bean that defines the application's splash screen.
+     */
     public static final String SPLASH_SCREEN_BEAN_ID = "splashScreen";
 
+    /**
+     * The name of the bean that defines the {@code Application} that this class will launch.
+     */
     public static final String APPLICATION_BEAN_ID = "application";
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -57,44 +82,65 @@ public class ApplicationLauncher {
     private ApplicationContext rootApplicationContext;
 
     /**
-     * Launch the application using the spring application context at the provided path
-     * for configuration.
+     * Launches the application defined by the Spring application context file 
+     * at the provided classpath-relative location.
      * 
-     * @param rootContextPath the classpath application context path
+     * @param rootContextPath The classpath-relative location of the application context file.
+     * 
+     * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
      */
     public ApplicationLauncher(String rootContextPath) {
         this(new String[] {rootContextPath});
     }
 
     /**
-     * Launch the application using the spring application context at the provided paths
-     * for configuration.
+     * Launches the application defined by the Spring application context files 
+     * at the provided classpath-relative locations.
      * 
-     * @param rootContextPath the classpath application context paths
+     * @param rootContextPath the classpath-relative locations of the application context files.
+     * 
+     * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
      */
     public ApplicationLauncher(String[] rootContextPath) {
         this(null, rootContextPath);
     }
 
     /**
-     * Launch the application using the spring application context at the provided paths
-     * for configuration. The startup context path is loaded first to allow for quick
-     * loading of the application splash screen.
+     * Launches the application defined by the Spring application context files
+     * at the provided classpath-relative locations. The application context file
+     * specified by {@code startupContext} is loaded first to allow for quick
+     * loading of the application splash screen. It is recommended that the 
+     * startup context only contains the bean definition for the splash screen
+     * and any other beans that it depends upon. Any beans defined in the 
+     * startup context will not be available to the main application once 
+     * launched.
      * 
-     * @param startupContext the startup context classpath
-     * @param rootContextPath the classpath application context path
+     * @param startupContextPath The classpath-relative location of the startup 
+     * application context file. May be null or empty.
+     * @param rootContextPath The classpath-relative location of the main application context file.
+     * 
+     * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
      */
-    public ApplicationLauncher(String startupContext, String rootContextPath) {
-        this(startupContext, new String[] {rootContextPath});
+    public ApplicationLauncher(String startupContextPath, String rootContextPath) {
+        this(startupContextPath, new String[] {rootContextPath});
     }
 
     /**
-     * Launch the application using the spring application context at the provided paths
-     * for configuration. The startup context path is loaded first to allow for quick
-     * loading of the application splash screen.
+     * Launches the application defined by the Spring application context files 
+     * at the provided classpath-relative locations. The application context file 
+     * specified by {@code startupContextPath} is loaded first to allow for quick 
+     * loading of the application splash screen. It is recommended that the 
+     * startup context only contains the bean definition for the splash screen
+     * and any other beans that it depends upon. Any beans defined in the 
+     * startup context will not be available to the main application once 
+     * launched.
      * 
-     * @param startupContextPath the startup context classpath
-     * @param rootContextPath the classpath application context paths
+     * @param startupContextPath The classpath-relative location of the startup 
+     * context file. May be null or empty.
+     * @param rootContextPath The classpath-relative locations of the main 
+     * application context files.
+     * 
+     * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
      */
     public ApplicationLauncher(String startupContextPath, String[] rootContextPath) {
         Assert.notEmpty(rootContextPath, "One or more root rich client application context paths must be provided");
@@ -111,18 +157,27 @@ public class ApplicationLauncher {
     }
 
     /**
-     * Launch the application from the pre-loaded application context.
+     * Launches the application from the pre-loaded application context.
      *
-     * @param rootApplicationContext the application context.
+     * @param rootApplicationContext The main application context.
+     * 
+     * @throws IllegalArgumentException if {@code rootApplicationContext} is null.
      */
     public ApplicationLauncher(ApplicationContext rootApplicationContext) {
         this(null, rootApplicationContext);
     }
 
     /**
-     * Launch the application from the pre-loaded application context.
+     * Launch the application using a startup context from the given location
+     * and a pre-loaded application context.
      *
-     * @param rootApplicationContext the application context.
+     * @param startupContextPath the classpath-relative location of the 
+     * starup application context file. If null or empty, no splash screen will
+     * be displayed.
+     * @param rootApplicationContext the main application context.
+     * 
+     * @throws IllegalArgumentException if {@code rootApplicationContext} is null.
+     * 
      */
     public ApplicationLauncher(String startupContextPath, ApplicationContext rootApplicationContext) {
         this.startupContext = loadStartupContext(startupContextPath);
@@ -137,6 +192,16 @@ public class ApplicationLauncher {
         }
     }
 
+    /**
+     * Returns an application context loaded from the bean definition file at
+     * the given classpath-relative location.
+     *
+     * @param startupContextPath The classpath-relative location of the 
+     * application context file to be loaded. May be null or empty.
+     * 
+     * @return An application context loaded from the given location, or null
+     * if {@code startupContextPath} is null or empty.
+     */
     private ApplicationContext loadStartupContext(String startupContextPath) {
         if (StringUtils.hasText(startupContextPath)) {
             logger.info("Loading startup context...");
@@ -146,6 +211,21 @@ public class ApplicationLauncher {
         }
     }
 
+    /**
+     * Returns an {@code ApplicationContext}, loaded from the bean definition 
+     * files at the classpath-relative locations specified by {@code contextPaths}.
+     * 
+     * <p>
+     * If a splash screen has been created, the application context will be 
+     * loaded with a bean post processor that will notify the splash screen's 
+     * progress monitor as each bean is initialized. 
+     * </p>
+     *
+     * @param contextPaths The classpath-relative locations of the files from 
+     * which the application context will be loaded.
+     * 
+     * @return The main application context, never null.
+     */
     private ApplicationContext loadRootApplicationContext(String[] contextPaths) {
         final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
                 false);
@@ -172,15 +252,13 @@ public class ApplicationLauncher {
     }
 
     /**
-     * Launch this rich client application; with the startup context loading first, built
-     * from the <code>startupContextPath</code> location in the classpath.
-     * <p>
-     * It is recommended that the startup context contain contain a splash screen
-     * definition for quick loading & display.
-     * <p>
-     * Once the splash screen is displayed, the main application context is then
-     * initialized, built from the <code>contextPaths</code> location(s) in the
-     * classpath. The root application bean is retrieved and the startup lifecycle begins.
+     * Launches the rich client application. If no startup context has so far
+     * been provided, the main application context will be searched for a 
+     * splash screen to display. The main application context will then be 
+     * searched for the {@link Application} to be launched, using the bean name
+     * {@value #APPLICATION_BEAN_ID}. If the application is found, it will be
+     * started. 
+     * 
      */
     private void launchMyRichClient() {
         if (startupContext == null) {
@@ -200,6 +278,18 @@ public class ApplicationLauncher {
         logger.debug("Launcher thread exiting...");
     }
 
+    /**
+     * Searches the given bean factory for a {@link SplashScreen} defined with the 
+     * bean name {@link #SPLASH_SCREEN_BEAN_ID} and displays it, if found. 
+     * 
+     * @param beanFactory The bean factory that is expected to contain the 
+     * splash screen bean definition. Must not be null.
+     * 
+     * @throws NullPointerException if {@code beanFactory} is null.
+     * @throws BeanNotOfRequiredTypeException if the bean found under the 
+     * splash screen bean name is not a {@link SplashScreen}.
+     * 
+     */
     private void displaySplashScreen(BeanFactory beanFactory) {
         if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
             this.splashScreen = (SplashScreen)beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
