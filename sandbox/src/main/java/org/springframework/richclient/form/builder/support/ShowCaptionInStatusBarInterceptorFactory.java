@@ -47,16 +47,8 @@ public class ShowCaptionInStatusBarInterceptorFactory implements FormComponentIn
             this.formModel = formModel;
         }
 
-        private String getCaption( String propertyName ) {
-            String caption = formModel.getFieldFace( propertyName ).getCaption();
-
-            if( caption.contains( ".caption" ) ) {
-                // FIXME dirty hack, otherwise "propertyName.caption" is shown in the
-                // status bar
-                return null;
-            }
-
-            return caption;
+        String getCaption( String propertyName ) {
+            return formModel.getFieldFace( propertyName ).getCaption();
         }
 
         public void processComponent( final String propertyName, final JComponent component ) {
