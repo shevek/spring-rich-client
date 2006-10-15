@@ -32,7 +32,7 @@ import org.springframework.util.Assert;
 /**
  * A lightweight splash-screen for display when a GUI application is being initialized.
  * <p>
- * The splash screen renders a image in a Frame. It minimizes class loading so it is
+ * The splash screen renders an image in a Frame. It minimizes class loading so it is
  * displayed immediately once the application is started.
  * 
  * @author Keith Donald
@@ -45,28 +45,47 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
 
     private static final Log logger = LogFactory.getLog(SimpleSplashScreen.class);
 
+    /**
+     * Creates a new uninitialized {@code SimpleSplashScreen}.
+     */
     public SimpleSplashScreen() {
+        //do nothing
     }
 
     /**
-     * Initialize and show a splash screen of the image at the specified URL.
+     * Creates a new {@code SimpleSplashScreen} that will display the image at
+     * the specified location. 
      * 
-     * @param imageURL the URL of the image to splash.
+     * @param imageResourcePath The location of the image file to be displayed
+     * by this splash screen. 
+     * 
+     * @see #setImageResourcePath(String)
      */
     public SimpleSplashScreen(String imageResourcePath) {
         setImageResourcePath(imageResourcePath);
     }
 
     /**
-     * Initialize and show a splash screen of the specified image.
+     * Creates a new {@code SimpleSplashScreen} that will display the given image. 
      * 
      * @param image the image to splash.
+     * 
+     * @throws IllegalArgumentException if {@code image} is null.
      */
     public SimpleSplashScreen(Image image) {
         Assert.notNull(image, "The splash screen image is required");
         this.image = image;
     }
 
+    /**
+     * Sets the location of the image to be displayed by this splash screen.
+     * If the given path starts with a '/', it is interpreted to be relative to 
+     * the root of the runtime classpath. Otherwise it is interpreted to be 
+     * relative to the subdirectory of the classpath root that corresponds to the
+     * package of this class. 
+     *
+     * @param path The path to the splash screen image.
+     */
     public void setImageResourcePath(String path) {
         Assert.hasText(path, "The splash screen image resource path is required");
         this.imageResourcePath = path;
@@ -77,6 +96,8 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
      * 
      * @param path Path to image.
      * @return Image
+     * 
+     * @throws NullPointerException if {@code path} is null.
      */
     private Image loadImage(String path) {
         URL url = this.getClass().getResource(path);
@@ -94,6 +115,14 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
         private static final long serialVersionUID = -5096223464173393949L;
         private Image image;
 
+        /**
+         * Creates a new {@code ImageCanvas} with the specified image. The size
+         * of the canvas will be set to the size of the image.
+         *
+         * @param image The image to be displayed by the canvas.
+         * 
+         * @throws NullPointerException if {@code image} is null.
+         */
         public ImageCanvas(Image image) {
             this.image = image;
 
@@ -123,6 +152,9 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
         }
     }
 
+    /**
+     * Returns a component that displays an image in a canvas.
+     */
     protected JComponent createSplashContentPane() {
         if (image == null) {
             image = loadImage(imageResourcePath);

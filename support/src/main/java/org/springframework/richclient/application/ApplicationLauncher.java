@@ -26,7 +26,9 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.richclient.application.splash.MonitoringSplashScreen;
 import org.springframework.richclient.application.splash.SplashScreen;
 import org.springframework.richclient.progress.ProgressMonitor;
 import org.springframework.util.Assert;
@@ -41,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @see Application
  */
 public class ApplicationLauncher {
+
     public static final String SPLASH_SCREEN_BEAN_ID = "splashScreen";
 
     public static final String APPLICATION_BEAN_ID = "application";
@@ -147,48 +150,15 @@ public class ApplicationLauncher {
         final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
                 false);
 
-        if (splashScreen != null)
-        {
-                
-            final ProgressMonitor tracker = splashScreen.getProgressMonitor();
+        if (splashScreen instanceof MonitoringSplashScreen)
+        {                
+            final ProgressMonitor tracker = ((MonitoringSplashScreen) splashScreen).getProgressMonitor();
     
             applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
                 public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-                    beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
-                        private int max = -1;
-    
-                        public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                throws BeansException {
-                            if (max == -1) {
-                                max = 0;
-                                ConfigurableListableBeanFactory configurableListBeanFactory = applicationContext.getBeanFactory();
-                                String[] beanNames = applicationContext.getBeanDefinitionNames();
-                                for (int i = 0; i < beanNames.length; i++) {
-                                    // using beanDefinition to check singleton property because when accessing through
-                                    // context (applicationContext.isSingleton(beanName)), bean will be created already,
-                                    // possibly bypassing other BeanFactoryPostProcessors
-                                    if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
-                                        max++;
-                                }
-                                tracker.taskStarted("Loading Application Context ...", max);
-                            }
-    
-                            if (applicationContext.containsLocalBean(beanName)) {
-                                tracker.subTaskStarted("Loading " + beanName + " ...");
-                                tracker.worked(1);
-                            }
-    
-                            return bean;
-                        }
-    
-                        public Object postProcessAfterInitialization(Object bean, String beanName)
-                                throws BeansException {
-                            return bean;
-                        }
-                    });
+                    beanFactory.addBeanPostProcessor(new MonitoringPostProcessor(tracker, applicationContext));
                 }
             });
-
         }
         
         applicationContext.refresh();
@@ -250,6 +220,48 @@ public class ApplicationLauncher {
                     splashScreen = null;
                 }
             });
+        }
+    }
+
+    protected static class MonitoringPostProcessor implements BeanPostProcessor {
+        private final ProgressMonitor tracker;
+
+        private final AbstractApplicationContext context;
+
+        private int max = -1;
+
+        public MonitoringPostProcessor(ProgressMonitor tracker, AbstractApplicationContext context) {
+            this.tracker = tracker;
+            this.context = context;
+        }
+
+        public Object postProcessBeforeInitialization(Object bean, String beanName)
+                throws BeansException {
+            if (max == -1) {
+                max = 0;
+                ConfigurableListableBeanFactory configurableListBeanFactory = context.getBeanFactory();
+                String[] beanNames = context.getBeanDefinitionNames();
+                for (int i = 0; i < beanNames.length; i++) {
+                    // using beanDefinition to check singleton property because when accessing through
+                    // context (applicationContext.isSingleton(beanName)), bean will be created already,
+                    // possibly bypassing other BeanFactoryPostProcessors
+                    if (configurableListBeanFactory.getBeanDefinition(beanNames[i]).isSingleton())
+                        max++;
+                }
+                tracker.taskStarted("Loading Application Context ...", max);
+            }
+        
+            if (context.containsLocalBean(beanName)) {
+                tracker.subTaskStarted("Loading " + beanName + " ...");
+                tracker.worked(1);
+            }
+        
+            return bean;
+        }
+
+        public Object postProcessAfterInitialization(Object bean, String beanName)
+                throws BeansException {
+            return bean;
         }
     }
 }

@@ -22,38 +22,114 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import org.springframework.richclient.progress.ProgressBarProgressMonitor;
+import org.springframework.richclient.progress.ProgressMonitor;
 
 /**
- * Splash screen implementation that shows the progress of the application startup.
+ * A lightweight splash-screen for displaying the progress of a GUI application startup process.
+ * 
+ * <p>
+ * The splash screen produced by this class will be an undecorated, centered frame containing an image above a progress
+ * bar. It minimizes class loading so it is displayed immediately once the application is started.
+ * </p>
+ * 
  * 
  * @author Peter De Bruycker
  */
-public class ProgressSplashScreen extends SimpleSplashScreen {
+public class ProgressSplashScreen extends SimpleSplashScreen implements MonitoringSplashScreen {
     private JProgressBar progressBar;
+
     private boolean showProgressLabel;
 
+    private ProgressMonitor progressMonitor;
+
+    private boolean indeterminate = true;
+
+    /**
+     * Creates a new {@code ProgressSplashScreen} that uses an underlying {@link ProgressBarProgressMonitor}.
+     */
     public ProgressSplashScreen() {
-        progressBar = new JProgressBar();
-        setProgressMonitor(new ProgressBarProgressMonitor(progressBar));
     }
 
+    /**
+     * Returns the flag that determines whether or not the progress bar will display updated textual info as it is
+     * provided by the progress monitor.
+     * 
+     * @return The showProgressLabel flag.
+     */
     public boolean getShowProgressLabel() {
         return showProgressLabel;
     }
 
+    /**
+     * Sets the flag that determines whether or not the progress bar will display updated textual info as it is provided
+     * by the progress monitor.
+     * 
+     * @param showProgressLabel
+     */
     public void setShowProgressLabel(boolean showProgressLabel) {
         this.showProgressLabel = showProgressLabel;
     }
 
+    /**
+     * Returns a component that displays an image above a progress bar.
+     * 
+     * @return A splash screen containing an image and a progress bar, never null.
+     */
     protected JComponent createSplashContentPane() {
         JPanel content = new JPanel(new BorderLayout());
         content.add(super.createSplashContentPane());
 
-        progressBar.setIndeterminate(true);
-        progressBar.setStringPainted(showProgressLabel);
+        JProgressBar progressBar = getProgressBar();
+        progressBar.setIndeterminate(isIndeterminate());
+        progressBar.setStringPainted(getShowProgressLabel());
 
         content.add(progressBar, BorderLayout.SOUTH);
 
         return content;
+    }
+
+    public ProgressMonitor getProgressMonitor() {
+        if (progressMonitor == null) {
+            progressMonitor = new ProgressBarProgressMonitor(getProgressBar());
+        }
+        return progressMonitor;
+    }
+
+    /**
+     * Sets the progress monitor used by this splash screen.
+     * 
+     * @param progressMonitor
+     *            The progress monitor.
+     */
+    public void setProgressMonitor(ProgressMonitor progressMonitor) {
+        this.progressMonitor = progressMonitor;
+    }
+
+    /**
+     * Returns the progress bar.
+     * 
+     * @return not null
+     */
+    protected JProgressBar getProgressBar() {
+        if (progressBar == null) {
+            progressBar = new JProgressBar();
+        }
+        return progressBar;
+    }
+
+    public boolean isIndeterminate() {
+        return indeterminate;
+    }
+
+    /**
+     * Determines whether the progress bar is in determinate or indeterminate mode. Default is true
+     * 
+     * @param indeterminate
+     *            <code>true</code> if the progress bar should change to indeterminate mode; <code>false</code> if
+     *            it should revert to normal.
+     * @see JProgressBar#setIndeterminate(boolean)
+     */
+    public void setIndeterminate(boolean indeterminate) {
+        this.indeterminate = indeterminate;
     }
 }

@@ -15,12 +15,9 @@
  */
 package org.springframework.richclient.application.splash;
 
-import org.springframework.richclient.progress.ProgressMonitor;
 
 /**
  * A <code>SplashScreen</code> is shown to the user during application startup.
- * Optionally implementations can provide visual feedback of startup progress to the user
- * using the <code>ProgressMonitor</code>.
  * 
  * @author Peter De Bruycker
  */
@@ -31,16 +28,8 @@ public interface SplashScreen {
     void splash();
 
     /**
-     * Disposes this <code>SplashScreen</code>.
+     * Disposes this <code>SplashScreen</code>, freeing any system resources 
+     * that it may be using.
      */
     void dispose();
-
-    /**
-     * Gets this <code>SplashScreen</code>s <code>ProgressMonitor</code>.
-     * Implementors wishing to show the progress to the user should return a
-     * <code>ProgressMonitor</code> that updates the ui.
-     * 
-     * @return the <code>ProgressMonitor</code>
-     */
-    ProgressMonitor getProgressMonitor();
 }
