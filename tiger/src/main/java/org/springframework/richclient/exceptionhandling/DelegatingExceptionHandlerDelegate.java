@@ -1,7 +1,7 @@
 package org.springframework.richclient.exceptionhandling;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * A couple of a throwable class list and the appropriate exception handler.
@@ -18,7 +18,7 @@ public class DelegatingExceptionHandlerDelegate {
     }
 
     public DelegatingExceptionHandlerDelegate(Class throwableClass,
-                                              Thread.UncaughtExceptionHandler exceptionHandler) {
+            Thread.UncaughtExceptionHandler exceptionHandler) {
         this(Collections.singletonList(throwableClass), exceptionHandler);
     }
 
@@ -47,7 +47,6 @@ public class DelegatingExceptionHandlerDelegate {
 
     /**
      * Returns true if thrownTrowable is an instance of one of the throwableClassList.
-     *
      * @param thrownTrowable the thrown exception or error.
      * @return true if thrownTrowable is an instance of one of the throwableClassList
      */

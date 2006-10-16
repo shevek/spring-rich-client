@@ -1,25 +1,24 @@
 package org.springframework.richclient.exceptionhandling;
 
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
  * Displays a message to the user which is fetched from the I18N files
  * based on the class and superclasses of the throwable.
- *
+ * <p/>
  * For example if an IllegalArgumentException is thrown, it will search for
  * java.lang.IllegalArgumentException.caption and java.lang.IllegalArgumentException.description first,
  * and if it cant find that it will try in order:
  * java.lang.RuntimeException.caption/description, java.lang.Exception.caption/description and
  * java.lang.Throwable.caption/description.
- *
+ * <p/>
  * The exception message is passed as a parameter, but is idented and wrapped first.
- *
  * @author Geoffrey De Smet
  * @since 0.3
  */

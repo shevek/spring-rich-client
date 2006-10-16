@@ -1,21 +1,21 @@
 package org.springframework.richclient.exceptionhandling;
 
-import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+
+import java.util.List;
 
 /**
  * An exception handler that selects an appropriate exception handler from a list
  * based on the class of the thrown exception and delegates the handling of the exception to it.
- *
+ * <p/>
  * This class works very similar to catch statements:
  * the first delegate which can handle the exception will handle it.
  * For example, consider 3 delegates for the following classes in this order:
  * NullPointerException (1), RuntimeException (2), IllegalArgumentException (3).
  * A thrown IllegalArgumentException will be handled by the (2) handler. The (3) handler is useless.
- *
  * @author Geoffrey De Smet
  * @since 0.3
  */

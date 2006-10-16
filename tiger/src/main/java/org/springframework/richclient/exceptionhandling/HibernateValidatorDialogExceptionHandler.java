@@ -1,24 +1,15 @@
 package org.springframework.richclient.exceptionhandling;
 
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import java.util.List;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.awt.BorderLayout;
+import java.util.List;
 
 /**
  * Displays the validation errors to the user.
- *
  * @author Geoffrey De Smet
  * @since 0.3
  */

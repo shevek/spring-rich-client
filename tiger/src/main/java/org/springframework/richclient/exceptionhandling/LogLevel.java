@@ -6,10 +6,12 @@ package org.springframework.richclient.exceptionhandling;
  * @since 0.3
  */
 public enum LogLevel {
+
     TRACE,
     DEBUG,
     INFO,
     WARN,
     ERROR,
     FATAL
+    
 }

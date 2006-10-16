@@ -2,14 +2,11 @@ package org.springframework.richclient.exceptionhandling;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 /**
  * Superclass of logging exception handlers.
  * It handles a throwable by logging it and notify it to the user.
  * Subclasses determine how it's notified to the user.
- *
  * @author Geoffrey De Smet
  * @since 0.3
  */

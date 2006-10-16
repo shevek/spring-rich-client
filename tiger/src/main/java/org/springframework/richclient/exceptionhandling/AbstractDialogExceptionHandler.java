@@ -1,14 +1,12 @@
 package org.springframework.richclient.exceptionhandling;
 
-import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.richclient.application.ApplicationWindow;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  * Logs a throwable and shows a dialog about it to the user.
