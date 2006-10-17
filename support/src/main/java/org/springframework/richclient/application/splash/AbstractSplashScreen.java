@@ -101,7 +101,7 @@ public abstract class AbstractSplashScreen implements SplashScreen {
         this.messageSource = messageSource;
     }
 
-    public final void dispose() {
+    public void dispose() {
         
         if (frame != null) {
             frame.dispose();
@@ -120,7 +120,7 @@ public abstract class AbstractSplashScreen implements SplashScreen {
      * on this instance and it is unable to find a message under the key
      * {@value #SPLASH_TITLE_KEY}. 
      */
-    public final void splash() {
+    public void splash() {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setUndecorated(true);

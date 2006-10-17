@@ -43,6 +43,8 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
 
     private String imageResourcePath;
 
+    private boolean imageLoaded = false;
+
     private static final Log logger = LogFactory.getLog(SimpleSplashScreen.class);
 
     /**
@@ -89,6 +91,13 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
     public void setImageResourcePath(String path) {
         Assert.hasText(path, "The splash screen image resource path is required");
         this.imageResourcePath = path;
+        this.imageLoaded = false;
+    }
+    
+    public void splash() {
+        if (getImage() != null) {
+            super.splash();
+        }
     }
 
     /**
@@ -107,7 +116,15 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
         }
         return Toolkit.getDefaultToolkit().createImage(url);
     }
-
+    
+    protected Image getImage() {
+        if(!imageLoaded && imageResourcePath != null) {
+            image = loadImage(imageResourcePath);
+            imageLoaded = true;
+        }
+        return image;
+    }
+    
     /**
      * Simple Canvas that paints an image.
      */
@@ -156,13 +173,6 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
      * Returns a component that displays an image in a canvas.
      */
     protected JComponent createSplashContentPane() {
-        if (image == null) {
-            image = loadImage(imageResourcePath);
-            if (image == null) {
-                return null;
-            }
-        }
-
-        return new ImageCanvas(image);
+        return new ImageCanvas(getImage());
     }
 }
