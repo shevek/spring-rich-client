@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application.splash;
 
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
@@ -35,7 +36,7 @@ import org.springframework.util.Assert;
  * 
  * <p>
  * The splash screen produced by this class will be an undecorated, centered
- * frame containing the component provided by {@link #createSplashContentPane()},
+ * frame containing the component provided by {@link #createContentPane()},
  * which is the only method that subclasses need to implement.
  * </p>
  * 
@@ -51,7 +52,8 @@ public abstract class AbstractSplashScreen implements SplashScreen {
     private JFrame frame;
     private MessageSource messageSource;
     private String iconResourcePath;
-    private static final Log logger = LogFactory.getLog(AbstractSplashScreen.class);
+    
+    protected final Log logger = LogFactory.getLog(getClass());
 
     /**
      * Returns the location of the image to be used as the icon for the splash
@@ -101,7 +103,7 @@ public abstract class AbstractSplashScreen implements SplashScreen {
         this.messageSource = messageSource;
     }
 
-    public void dispose() {
+    public final void dispose() {
         
         if (frame != null) {
             frame.dispose();
@@ -112,15 +114,11 @@ public abstract class AbstractSplashScreen implements SplashScreen {
 
     /**
      * Creates and displays an undecorated, centered splash screen containing the 
-     * component provided by {@link #createSplashContentPane()}. If this instance
+     * component provided by {@link #createContentPane()}. If this instance
      * has been provided with a {@link MessageSource}, it will be used to retrieve 
      * the splash screen's frame title under the key {@value #SPLASH_TITLE_KEY}. 
-     * 
-     * @throws NoSuchMessageException if a {@link MessageSource} has been set
-     * on this instance and it is unable to find a message under the key
-     * {@value #SPLASH_TITLE_KEY}. 
      */
-    public void splash() {
+    public final void splash() {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setUndecorated(true);
@@ -128,10 +126,10 @@ public abstract class AbstractSplashScreen implements SplashScreen {
         frame.setTitle(loadFrameTitle());
         frame.setIconImage(loadFrameIcon());
 
-        JComponent content = createSplashContentPane();
-        Assert.notNull(content, "Splash content cannot be null");
-
-        frame.getContentPane().add(content);
+        Component content = createContentPane();
+        if(content != null) {
+            frame.getContentPane().add(content);
+        }
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -166,9 +164,10 @@ public abstract class AbstractSplashScreen implements SplashScreen {
     }
 
     /**
-     * Returns the component to be displayed in the splash screen's main frame.
-     *
-     * @return The content pane component, never null.
+     * Returns the component to be displayed in the splash screen's main frame. If the returned value is null the frame
+     * for the splash screen will still be created but will not have any content
+     * 
+     * @return The content pane component. Can be null.
      */
-    protected abstract JComponent createSplashContentPane();
+    protected abstract Component createContentPane();
 }

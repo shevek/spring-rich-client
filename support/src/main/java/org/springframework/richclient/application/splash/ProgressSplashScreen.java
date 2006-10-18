@@ -16,6 +16,7 @@
 package org.springframework.richclient.application.splash;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -56,7 +57,7 @@ public class ProgressSplashScreen extends SimpleSplashScreen implements Monitori
      * 
      * @return The showProgressLabel flag.
      */
-    public boolean getShowProgressLabel() {
+    public boolean isShowProgressLabel() {
         return showProgressLabel;
     }
 
@@ -75,13 +76,15 @@ public class ProgressSplashScreen extends SimpleSplashScreen implements Monitori
      * 
      * @return A splash screen containing an image and a progress bar, never null.
      */
-    protected JComponent createSplashContentPane() {
+    protected Component createContentPane() {
         JPanel content = new JPanel(new BorderLayout());
-        content.add(super.createSplashContentPane());
+        Component component = super.createContentPane();
+        if(component != null)
+            content.add(component);
 
         JProgressBar progressBar = getProgressBar();
         progressBar.setIndeterminate(isIndeterminate());
-        progressBar.setStringPainted(getShowProgressLabel());
+        progressBar.setStringPainted(isShowProgressLabel());
 
         content.add(progressBar, BorderLayout.SOUTH);
 

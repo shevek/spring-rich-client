@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application.splash;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -42,8 +43,6 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
     private Image image;
 
     private String imageResourcePath;
-
-    private boolean imageLoaded = false;
 
     private static final Log logger = LogFactory.getLog(SimpleSplashScreen.class);
 
@@ -91,15 +90,8 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
     public void setImageResourcePath(String path) {
         Assert.hasText(path, "The splash screen image resource path is required");
         this.imageResourcePath = path;
-        this.imageLoaded = false;
     }
     
-    public void splash() {
-        if (getImage() != null) {
-            super.splash();
-        }
-    }
-
     /**
      * Load image from path.
      * 
@@ -118,9 +110,8 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
     }
     
     protected Image getImage() {
-        if(!imageLoaded && imageResourcePath != null) {
+        if(image == null && imageResourcePath != null) {
             image = loadImage(imageResourcePath);
-            imageLoaded = true;
         }
         return image;
     }
@@ -172,7 +163,11 @@ public class SimpleSplashScreen extends AbstractSplashScreen {
     /**
      * Returns a component that displays an image in a canvas.
      */
-    protected JComponent createSplashContentPane() {
-        return new ImageCanvas(getImage());
+    protected Component createContentPane() {
+        Image image = getImage();
+        if(image != null) {
+            return new ImageCanvas(image);
+        }
+        return null;
     }
 }
