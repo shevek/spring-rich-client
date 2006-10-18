@@ -6,47 +6,79 @@
 
 Contributions are welcome!
 
-    Contributions (code, docs, ...) are very welcome.
+    Contributions (code, docs, issue reports, ...) are very welcome.
     Feed-back and contributions to our code help to improve our open source project.
-    So we really appreciate it.
+    So we really appreciate it - even when we forget to say it or when we bounce issues.
 
     However...
 
-Well-formed contributions are more welcome
+Well-formed patches are more welcome
 
-    Well-formed contributions get priority because they are easier to apply.
-    Here's what defines a well-formed contribution:
+    Well-formed patches get priority because those issues are easier to solve.
+    <<It's the best way to get an issue fixed!>>
+    Here's what defines a well-formed patch:
 
 * Create a JIRA issue
 
     Make the title self-explaining and the summary helpfull.
+    Click on <Watch it> so you know about modifications.
 
 * Make the modifications
 
-    * Update before making the modifications
+    * Update before making the modifications - to avoid creating a stale patch.
 
     * All modifications should only apply to the current issue:
     make sure to separate patches for different issues.
 
-    * Follow {{conventions.html}}
+    * Follow {{{conventions.html}our conventions}}.
 
     * Test the modifications thoroughly:
-    bouncing a patch back and forth due to small bugs slows down the contribution process
+    bouncing a patch back and forth due to small bugs slows down the contribution process.
+    It also hurts your credibility.
+
+    * Write javadocs if you create a new class or method.
+
+    * Consider writing a unit test.
 
 * Create a patch
 
-    Create a patch <<from the project root>> and name it the JIRA issue number:
+    * Create a patch <<from the project root>> and name it the JIRA issue number:
 
 +--
 svn diff > RCP-123.patch
 +--
 
+    Note: you can also do this visually with some Subversion clients (TortoiseSVN, ...)
+
     Attach that file to the JIRA issue.
 
-    We will apply it like this:
+    * A developer will review your patch.
+    Feel free to poke the {{{../mail-lists.html}developer list}} to a maximum of once every 2 weeks
+    if no developer has reviewed your well-formed patch yet, so it doesn't go stale.
+
+    If the proposed patch isn't a good solution, the developer will bounce it by adding a comment on the JIRA issue.
+    Feel free to debate or add an improved patch (<<<RCP-123_1.patch>>>).
+    Otherwise he'll apply it like this:
 
 +--
 patch -p0 < RCP-123.patch
 +--
 
-    Note: you can also do both actions visually with some Subversion clients (Tortoise, ...)
+    Note: he can also do this visually with some Subversion clients (TortoiseSVN, ...)
+
+* Credits
+
+    Once you've created a couple of succesfully resolved issues, feel free to make an issue
+    which adjusts the <<</pom.xml>>> to list you as a contributor.
+
+Becoming a developer with commit access
+
+    To keep the project consistent, commit access isn't granted easily.
+    Ussually it's a current developer that proposes to the others to invite you.
+    You might get an invite to join the project as a developer with commit access if:
+
+    * You've created a good number of approved, good patches.
+
+    * You have a long term intrest to work on our project.
+
+    * You wrote a mail to the dev list with a very short bio. Experience in other open source projects really helps.
