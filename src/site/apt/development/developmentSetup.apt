@@ -113,8 +113,8 @@ mvn install
     will take a while. Run it again afterwards to see how fast it really is.
     Then take a look at the {{faq.html}} to run it even faster.
 
-    Once a multiproject install has been run, it's possible to build a single module
-    with the same command in the module root.
+    Once a multiproject install has been run, it's possible (not required) to build a single module
+    with the same command in a module root.
 
 * Other build commands
 
@@ -146,6 +146,8 @@ mvn site
     Common pitfall: the full jar does not include spring binding or modules: don't forget them on your classpath.
 
 Configuring your favorite IDE
+
+    Maven can do this for you.
 
 * Eclipse
 
@@ -228,7 +230,7 @@ Configuring your favorite IDE
 
     []
 
-** Using the plugin for Eclipse - <<THIS IS NOT RECOMMENDED AT THIS TIME!!!>>
+** Using the plugin for Eclipse - <<THIS IS NOT RECOMMENDED AT THIS TIME>>
 
     Install the <maven 2 plugin for Eclipse> referenced on {{http://maven.apache.org}}.
 
@@ -276,7 +278,7 @@ Maven 2 versus your favorite IDE
 
     []
 
-Samples
+Running the samples
 
 * Simple
 
@@ -318,15 +320,36 @@ org.springframework.richclient.samples.petclinic.PetClinicClientServer
 
     TODO NOTE: webstart doesn't work at this time, but will soon
 
-Testing
-
-* Running testcases
+Running testcases
 
     Either configure them in your IDE or do:
 
 +--
 mvn test
 +--
+
+Adding our code conventions to your favorite IDE
+
+* Eclipse
+
+    Open the menu <Window>\<Preferences...>, then the item <Java>\<Code Style>\<Formatter>
+    and <import> the Eclipse file from the bottom of
+    {{{http://www.springframework.org/development}Spring's conventions page}}.
+
+    Note: You can also set the conventions specifically only for the spring-richclient projects,
+    so your other Eclipse projects use your original code conventions.
+
+* NetBeans
+
+    TODO
+
+* IntelliJ IDEA
+
+    Copy the IntelliJ IDEA file from the bottom of
+    {{{http://www.springframework.org/development}Spring's conventions page}}
+    into the directory <<<USER_HOME/.IntelliJIdea60/config/codestyles>>>.
+
+    Open the menu <File>\<Settings...>, then <Project> or <Global> <Code Style> and select the Spring conventions.
 
 Website
 
@@ -379,3 +402,17 @@ mvn site
 +--
 mvn site-deploy
 +--
+
+Code style
+
+* Eclipse
+
+    Import this: TODO
+
+    * {{SunCodingConventionsWith120CharsPerLineForEclipse.xml}}
+
+* Idea
+
+    Copy this: TODO
+
+    * {{SunCodingConventionsWith120CharsPerLineForIdea.xml}}

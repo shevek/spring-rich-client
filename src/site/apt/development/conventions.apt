@@ -15,15 +15,28 @@ Design
 
 Code style
 
-    TODO: none yet, this has to be thoroughly discussed on the developer list:
-    Sun code conventions or eclipse build-in? With or without 120 chars per line?
+    See the development setup on how to install our code style in your IDE.
 
-    * Do not use subversion variables such as <<<$Revision$>>>,
-    if you need that information, use you IDE.
+    * We follow {{{http://www.springframework.org/development}Spring's conventions}}, which are a dialect of
+    {{{http://java.sun.com/docs/codeconv/}Sun coding conventions for Java}}, with these few differences:
+
+        * The maximum is line length is 120 chars instead of 80 chars.
+
+        * Identation is done by tabs of 4 spaces.
+
+        * A new line before <<<else>>>, <<<catch>>> and <<<finally>>>.
+
+        []
+
+    * Do not use subversion variables such as <<<$Revision$>>>:
+    if you need that information, use your IDE.
 
 Naming Conventions
 
 * Main code
+
+    * Do not use prefixes in instance variables, such as <<<this.>>> (unless they are shadowed) or <<<_>>>:
+    your IDE will color them differently anyway.
 
 * Test code
 
