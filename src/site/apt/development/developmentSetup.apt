@@ -337,7 +337,7 @@ Adding our code conventions to your favorite IDE
     {{{http://www.springframework.org/development}Spring's conventions page}}.
 
     Note: You can also set the conventions specifically only for the spring-richclient projects,
-    so your other Eclipse projects use your original code conventions.
+    so your other Eclipse projects still use your original code conventions.
 
 * NetBeans
 
@@ -349,7 +349,7 @@ Adding our code conventions to your favorite IDE
     {{{http://www.springframework.org/development}Spring's conventions page}}
     into the directory <<<USER_HOME/.IntelliJIdea60/config/codestyles>>>.
 
-    Open the menu <File>\<Settings...>, then <Project> or <Global> <Code Style> and select the Spring conventions.
+    Open the menu <File>\<Settings...>, then <Project> or <Global> <Code Style> and select the <Spring conventions>.
 
 Website
 
