@@ -27,7 +27,8 @@ import org.springframework.util.CachingMapDecorator;
 
 /**
  * The default implementation of ImageIconRegistry. This implementation caches
- * all icons using soft references. More specifically, cached icons will remain
+ * all icons using soft references (TODO it just lazy loads them, but it doesn't use SoftReference).
+ * More specifically, cached icons will remain
  * in memory unless there is a shortage of resources in the system.
  * 
  * @author Keith Donald

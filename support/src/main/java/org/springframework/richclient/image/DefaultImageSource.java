@@ -34,7 +34,7 @@ import org.springframework.util.CachingMapDecorator;
  * For example, <code>action.edit.copy = /images/edit/copy.gif</code>
  * <p>
  * This class by default performs caching of all loaded image resources using
- * soft references.
+ * soft references (TODO it just lazy loads them, but it doesn't use SoftReference).
  * 
  * @author Keith Donald
  */
