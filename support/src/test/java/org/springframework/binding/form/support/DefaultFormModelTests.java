@@ -45,7 +45,7 @@ import org.springframework.binding.value.support.ValueHolder;
  */
 public class DefaultFormModelTests extends AbstractFormModelTests {
 
-    protected AbstractFormModel getFormModel(Object formObject) {
+    protected DefaultFormModel getFormModel(Object formObject) {
         return new TestDefaultFormModel(formObject);
     }
 
@@ -54,7 +54,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testPropertyChangeCausesValidation() {
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
+        DefaultFormModel fm = getFormModel(new TestBean());
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         TestConversionService cs = new TestConversionService();
@@ -81,7 +81,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testValidationMessages() {
-        TestDefaultFormModel fm = new TestDefaultFormModel(new TestBean());
+    	DefaultFormModel fm = getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -120,7 +120,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testRaiseClearValidationMessage() {
-        TestDefaultFormModel fm = (TestDefaultFormModel) getFormModel(new TestBean());
+    	DefaultFormModel fm = getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -148,12 +148,12 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(3, v.count);
         assertEquals(2, r.getMessageCount());
 
-        fm.clearValdationMessage(message1);
+        fm.clearValidationMessage(message1);
         assertEquals(1, r.getMessageCount());
     }
 
     public void testChangingValidatingClearsMessagesOrValidates() {
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
+        DefaultFormModel fm = getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         v.results = getValidationResults("message1");
@@ -196,7 +196,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testSetThrowsExceptionRaisesValidationMessage() {
         final ErrorBean errorBean = new ErrorBean();
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(errorBean);
+        DefaultFormModel fm = getFormModel(errorBean);
         final ValueModel vm = fm.getValueModel("error");
 
         vm.setValue("test");
@@ -208,7 +208,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testTypeConversionThrowsExceptionRaisesValidationMessage() {
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
+        DefaultFormModel fm = getFormModel(new TestBean());
         TestConversionService cs = new TestConversionService();
         cs.executer = new ConversionExecutor(String.class, Integer.class, new ExceptionConverter(String.class,
                 Integer.class));
@@ -221,7 +221,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testValidatingEvents() {
         TestPropertyChangeListener pcl = new TestPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY);
-        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
+        DefaultFormModel fm = getFormModel(new TestBean());
         fm.addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY, pcl);
         assertTrue(fm.isEnabled());
 
@@ -241,7 +241,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertTrue(fm.isValidating());
         assertEquals(2, pcl.eventCount());
     }
-
+    
     public void testReadOnlyRevert() {
         FormModel fm = getFormModel(new TestBean());
         fm.getValueModel("readOnly");
@@ -314,14 +314,6 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
                 }
 
             });
-        }
-
-        public void raiseValidationMessage(ValidationMessage validationMessage) {
-            super.raiseValidationMessage(validationMessage);
-        }
-
-        public void clearValdationMessage(ValidationMessage validationMessage) {
-            super.clearValidationMessage(validationMessage);
         }
     }
 
