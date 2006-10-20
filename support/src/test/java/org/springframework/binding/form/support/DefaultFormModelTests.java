@@ -45,7 +45,7 @@ import org.springframework.binding.value.support.ValueHolder;
  */
 public class DefaultFormModelTests extends AbstractFormModelTests {
 
-    protected DefaultFormModel getFormModel(Object formObject) {
+    protected AbstractFormModel getFormModel(Object formObject) {
         return new TestDefaultFormModel(formObject);
     }
 
@@ -54,7 +54,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testPropertyChangeCausesValidation() {
-        DefaultFormModel fm = getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         TestConversionService cs = new TestConversionService();
@@ -81,7 +81,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testValidationMessages() {
-    	DefaultFormModel fm = getFormModel(new TestBean());
+    	DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -120,7 +120,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testRaiseClearValidationMessage() {
-    	DefaultFormModel fm = getFormModel(new TestBean());
+    	DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         fm.setValidator(v);
@@ -153,7 +153,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testChangingValidatingClearsMessagesOrValidates() {
-        DefaultFormModel fm = getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
         v.results = getValidationResults("message1");
@@ -196,7 +196,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testSetThrowsExceptionRaisesValidationMessage() {
         final ErrorBean errorBean = new ErrorBean();
-        DefaultFormModel fm = getFormModel(errorBean);
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(errorBean);
         final ValueModel vm = fm.getValueModel("error");
 
         vm.setValue("test");
@@ -208,7 +208,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
     }
 
     public void testTypeConversionThrowsExceptionRaisesValidationMessage() {
-        DefaultFormModel fm = getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         TestConversionService cs = new TestConversionService();
         cs.executer = new ConversionExecutor(String.class, Integer.class, new ExceptionConverter(String.class,
                 Integer.class));
@@ -221,7 +221,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
 
     public void testValidatingEvents() {
         TestPropertyChangeListener pcl = new TestPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY);
-        DefaultFormModel fm = getFormModel(new TestBean());
+        DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         fm.addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY, pcl);
         assertTrue(fm.isEnabled());
 
