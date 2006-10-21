@@ -34,18 +34,26 @@ public class ToggleButtonBinding extends CustomBinding {
 
     private ItemListener selectionListener = new SelectionListener();
 
+    private boolean configureFace = true;
+
     public ToggleButtonBinding(JToggleButton toggleButton, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, Boolean.class);
         this.toggleButton = toggleButton;
     }
 
     protected JComponent doBindControl() {
-        getFieldFace().configure(toggleButton);
+        if(configureFace) {
+            getFieldFace().configure(toggleButton);
+        }
         toggleButton.getModel().addItemListener(selectionListener);
         toggleButton.setSelected(Boolean.TRUE.equals(getValue()));
         return toggleButton;
     }
-
+    
+    void setConfigureFace(boolean configureFace) {
+        this.configureFace = configureFace;        
+    }
+    
     protected void readOnlyChanged() {
         toggleButton.setEnabled(isEnabled() && !isReadOnly());
     }

@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.swing.JComponent;
 
+import org.springframework.binding.form.FormModel;
+
 /**
  * @author Oliver Hutchison
  */
@@ -42,5 +44,10 @@ public class CheckBoxBinder extends ToggleButtonBinder {
 
     protected JComponent createControl(Map context) {
         return getComponentFactory().createCheckBox("");
+    }
+    
+    protected void applyContext(ToggleButtonBinding toggleButtonBinding, FormModel formModel, String formPropertyPath, Map context) {
+        super.applyContext(toggleButtonBinding, formModel, formPropertyPath, context);
+        toggleButtonBinding.setConfigureFace(false);
     }
 }
