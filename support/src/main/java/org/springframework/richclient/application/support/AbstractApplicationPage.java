@@ -48,306 +48,309 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractApplicationPage extends AbstractControlFactory implements ApplicationPage {
 
-    private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
-            PageComponentListener.class );
+	private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
+			PageComponentListener.class);
 
-    private final ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator
-            .services().getService( ViewDescriptorRegistry.class );
+	private final ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator
+			.services().getService(ViewDescriptorRegistry.class);
 
-    private final Set pageComponents = new LinkedHashSet();
+	private final Set pageComponents = new LinkedHashSet();
 
-    private PageComponent activeComponent;
+	private PageComponent activeComponent;
 
-    private SharedCommandTargeter sharedCommandTargeter;
+	private SharedCommandTargeter sharedCommandTargeter;
 
-    private PageDescriptor descriptor;
+	private PageDescriptor descriptor;
 
-    private ApplicationWindow window;
+	private ApplicationWindow window;
 
-    private boolean settingActiveComponent;
+	private boolean settingActiveComponent;
 
-    private PropertyChangeListener pageComponentUpdater = new PropertyChangeListener() {
-        public void propertyChange( PropertyChangeEvent evt ) {
-            updatePageComponentProperties( (PageComponent) evt.getSource() );
-        }
-    };
+	private PropertyChangeListener pageComponentUpdater = new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() instanceof PageComponent) {
+				updatePageComponentProperties((PageComponent) evt.getSource());
+			}
+		}
+	};
 
-    public AbstractApplicationPage() {
+	public AbstractApplicationPage() {
 
-    }
+	}
 
-    public AbstractApplicationPage( ApplicationWindow window, PageDescriptor pageDescriptor ) {
-        setApplicationWindow( window );
-        setDescriptor( pageDescriptor );
-    }
+	public AbstractApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
+		setApplicationWindow(window);
+		setDescriptor(pageDescriptor);
+	}
 
-    /**
-     * Called when the <code>PageComponent</code> changes any of its properties (display
-     * name, caption, icon, ...).
-     * <p>
-     * This method should be overridden when these changes must be reflected in the ui.
-     * 
-     * @param pageComponent the <code>PageComponent</code> that has changed
-     */
-    protected void updatePageComponentProperties( PageComponent pageComponent ) {
-        // do nothing by default
-    }
+	/**
+	 * Called when the <code>PageComponent</code> changes any of its
+	 * properties (display name, caption, icon, ...).
+	 * <p>
+	 * This method should be overridden when these changes must be reflected in
+	 * the ui.
+	 * 
+	 * @param pageComponent the <code>PageComponent</code> that has changed
+	 */
+	protected void updatePageComponentProperties(PageComponent pageComponent) {
+		// do nothing by default
+	}
 
-    protected PageComponent findPageComponent( final String viewDescriptorId ) {
-        return (PageComponent) new AbstractConstraint() {
+	protected PageComponent findPageComponent(final String viewDescriptorId) {
+		return (PageComponent) new AbstractConstraint() {
 
-            public boolean test( Object arg ) {
-                if( arg instanceof View ) {
-                    return ((View) arg).getId().equals( viewDescriptorId );
-                }
-                return false;
-            }
-        }.findFirst( pageComponents );
-    }
+			public boolean test(Object arg) {
+				if (arg instanceof View) {
+					return ((View) arg).getId().equals(viewDescriptorId);
+				}
+				return false;
+			}
+		}.findFirst(pageComponents);
+	}
 
-    public void addPageComponentListener( PageComponentListener listener ) {
-        pageComponentListeners.add( listener );
-    }
+	public void addPageComponentListener(PageComponentListener listener) {
+		pageComponentListeners.add(listener);
+	}
 
-    public void removePageComponentListener( PageComponentListener listener ) {
-        pageComponentListeners.remove( listener );
-    }
+	public void removePageComponentListener(PageComponentListener listener) {
+		pageComponentListeners.remove(listener);
+	}
 
-    protected void fireOpened( PageComponent component ) {
-        component.componentOpened();
-        pageComponentListeners.fire( "componentOpened", component );
-    }
+	protected void fireOpened(PageComponent component) {
+		component.componentOpened();
+		pageComponentListeners.fire("componentOpened", component);
+	}
 
-    protected void fireFocusGained( PageComponent component ) {
-        component.componentFocusGained();
-        pageComponentListeners.fire( "componentFocusGained", component );
-    }
+	protected void fireFocusGained(PageComponent component) {
+		component.componentFocusGained();
+		pageComponentListeners.fire("componentFocusGained", component);
+	}
 
-    protected void setActiveComponent() {
-        if( pageComponents.size() > 0 ) {
-            setActiveComponent( (PageComponent) pageComponents.iterator().next() );
-        }
-    }
+	protected void setActiveComponent() {
+		if (pageComponents.size() > 0) {
+			setActiveComponent((PageComponent) pageComponents.iterator().next());
+		}
+	}
 
-    protected ViewDescriptor getViewDescriptor( String viewDescriptorId ) {
-        return viewDescriptorRegistry.getViewDescriptor( viewDescriptorId );
-    }
+	protected ViewDescriptor getViewDescriptor(String viewDescriptorId) {
+		return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
+	}
 
-    /**
-     * Returns the active <code>PageComponent</code>, or <code>null</code> if none.
-     * 
-     * @return the active <code>PageComponent</code>
-     */
-    public PageComponent getActiveComponent() {
-        return activeComponent;
-    }
+	/**
+	 * Returns the active <code>PageComponent</code>, or <code>null</code>
+	 * if none.
+	 * 
+	 * @return the active <code>PageComponent</code>
+	 */
+	public PageComponent getActiveComponent() {
+		return activeComponent;
+	}
 
-    /**
-     * Activates the given <code>PageComponent</code>. Does nothing if it is already
-     * the active one.
-     * <p>
-     * Does nothing if this <code>ApplicationPage</code> doesn't contain the given
-     * <code>PageComponent</code>.
-     * 
-     * @param pageComponent the <code>PageComponent</code>
-     */
-    public void setActiveComponent( PageComponent pageComponent ) {
-        if( !pageComponents.contains( pageComponent ) ) {
-            return;
-        }
+	/**
+	 * Activates the given <code>PageComponent</code>. Does nothing if it is
+	 * already the active one.
+	 * <p>
+	 * Does nothing if this <code>ApplicationPage</code> doesn't contain the
+	 * given <code>PageComponent</code>.
+	 * 
+	 * @param pageComponent the <code>PageComponent</code>
+	 */
+	public void setActiveComponent(PageComponent pageComponent) {
+		if (!pageComponents.contains(pageComponent)) {
+			return;
+		}
 
-        // if pageComponent is already active, don't do anything
-        if( this.activeComponent == pageComponent || settingActiveComponent ) {
-            return;
-        }
+		// if pageComponent is already active, don't do anything
+		if (this.activeComponent == pageComponent || settingActiveComponent) {
+			return;
+		}
 
-        settingActiveComponent = true;
+		settingActiveComponent = true;
 
-        if( this.activeComponent != null ) {
-            fireFocusLost( this.activeComponent );
-        }
-        giveFocusTo( pageComponent );
-        this.activeComponent = pageComponent;
-        fireFocusGained( this.activeComponent );
+		if (this.activeComponent != null) {
+			fireFocusLost(this.activeComponent);
+		}
+		giveFocusTo(pageComponent);
+		this.activeComponent = pageComponent;
+		fireFocusGained(this.activeComponent);
 
-        settingActiveComponent = false;
-    }
+		settingActiveComponent = false;
+	}
 
-    protected void fireFocusLost( PageComponent component ) {
-        component.componentFocusLost();
-        pageComponentListeners.fire( "componentFocusLost", component );
-    }
+	protected void fireFocusLost(PageComponent component) {
+		component.componentFocusLost();
+		pageComponentListeners.fire("componentFocusLost", component);
+	}
 
-    /**
-     * This method must add the given <code>PageComponent</code> in the ui.
-     * <p>
-     * Implementors may choose to add the <code>PageComponent</code>'s control
-     * directly, or add the <code>PageComponentPane</code>'s control.
-     * 
-     * @param pageComponent the <code>PageComponent</code> to add
-     */
-    protected abstract void doAddPageComponent( PageComponent pageComponent );
+	/**
+	 * This method must add the given <code>PageComponent</code> in the ui.
+	 * <p>
+	 * Implementors may choose to add the <code>PageComponent</code>'s
+	 * control directly, or add the <code>PageComponentPane</code>'s control.
+	 * 
+	 * @param pageComponent the <code>PageComponent</code> to add
+	 */
+	protected abstract void doAddPageComponent(PageComponent pageComponent);
 
-    /**
-     * This method must remove the given <code>PageComponent</code> from the ui.
-     * 
-     * @param pageComponent the <code>PageComponent</code> to remove
-     */
-    protected abstract void doRemovePageComponent( PageComponent pageComponent );
+	/**
+	 * This method must remove the given <code>PageComponent</code> from the
+	 * ui.
+	 * 
+	 * @param pageComponent the <code>PageComponent</code> to remove
+	 */
+	protected abstract void doRemovePageComponent(PageComponent pageComponent);
 
-    /**
-     * This method must transfer the focus to the given <code>PageComponent</code>.
-     * This could involve making an internal frame visible, selecting a tab in a tabbed
-     * pane, ...
-     * 
-     * @param pageComponent the <code>PageComponent</code>
-     * @return <code>true</code> if the operation was successful, <code>false</code>
-     *         otherwise
-     */
-    protected abstract boolean giveFocusTo( PageComponent pageComponent );
+	/**
+	 * This method must transfer the focus to the given
+	 * <code>PageComponent</code>. This could involve making an internal
+	 * frame visible, selecting a tab in a tabbed pane, ...
+	 * 
+	 * @param pageComponent the <code>PageComponent</code>
+	 * @return <code>true</code> if the operation was successful,
+	 * <code>false</code> otherwise
+	 */
+	protected abstract boolean giveFocusTo(PageComponent pageComponent);
 
-    protected PageComponentPane createPageComponentPane( PageComponent pageComponent ) {
-        PageComponentPaneFactory paneFactory = (PageComponentPaneFactory) Application.services().getService(
-                PageComponentPaneFactory.class );
-        return paneFactory.createPageComponentPane( pageComponent );
-    }
+	protected PageComponentPane createPageComponentPane(PageComponent pageComponent) {
+		PageComponentPaneFactory paneFactory = (PageComponentPaneFactory) Application.services().getService(
+				PageComponentPaneFactory.class);
+		return paneFactory.createPageComponentPane(pageComponent);
+	}
 
-    protected void fireClosed( PageComponent component ) {
-        component.componentClosed();
-        pageComponentListeners.fire( "componentClosed", component );
-    }
+	protected void fireClosed(PageComponent component) {
+		component.componentClosed();
+		pageComponentListeners.fire("componentClosed", component);
+	}
 
-    public String getId() {
-        return descriptor.getId();
-    }
+	public String getId() {
+		return descriptor.getId();
+	}
 
-    public ApplicationWindow getWindow() {
-        return window;
-    }
+	public ApplicationWindow getWindow() {
+		return window;
+	}
 
-    /**
-     * Closes the given <code>PageComponent</code>. This method disposes the
-     * <code>PageComponent</code>, triggers all necessary events ("focus lost" and
-     * "closed"), and will activate another <code>PageComponent</code> (if there is
-     * one).
-     * <p>
-     * Does nothing if this <code>ApplicationPage</code> doesn't contain the given
-     * <code>PageComponent</code>.
-     * 
-     * @param pageComponent the <code>PageComponent</code>
-     */
-    public void close( PageComponent pageComponent ) {
-        if(!pageComponent.canClose()) {
-            return;
-        }
-        
-        if( !pageComponents.contains( pageComponent ) ) {
-            return;
-        }
-        
-        if( pageComponent == activeComponent ) {
-            fireFocusLost( pageComponent );
-            activeComponent = null;
-        }
-        pageComponents.remove( pageComponent );
-        doRemovePageComponent( pageComponent );
-        pageComponent.removePropertyChangeListener( pageComponentUpdater );
+	/**
+	 * Closes the given <code>PageComponent</code>. This method disposes the
+	 * <code>PageComponent</code>, triggers all necessary events ("focus
+	 * lost" and "closed"), and will activate another <code>PageComponent</code>
+	 * (if there is one).
+	 * <p>
+	 * Does nothing if this <code>ApplicationPage</code> doesn't contain the
+	 * given <code>PageComponent</code>.
+	 * 
+	 * @param pageComponent the <code>PageComponent</code>
+	 */
+	public void close(PageComponent pageComponent) {
+		if (!pageComponent.canClose()) {
+			return;
+		}
 
-        pageComponent.dispose();
-        fireClosed( pageComponent );
-        if( activeComponent == null ) {
-            setActiveComponent();
-        }
-    }
+		if (!pageComponents.contains(pageComponent)) {
+			return;
+		}
 
-    /**
-     * Closes this <code>ApplicationPage</code>. This method calls
-     * {@link #close(PageComponent)} for each open <code>PageComponent</code>.
-     * 
-     * @return <code>true</code> if the operation was successfull, <code>false</code>
-     *         otherwise.
-     */
-    public boolean close() {
-        for( Iterator iter = new HashSet( pageComponents ).iterator(); iter.hasNext(); ) {
-            PageComponent component = (PageComponent) iter.next();
-            close( component );
-        }
-        return true;
-    }
+		if (pageComponent == activeComponent) {
+			fireFocusLost(pageComponent);
+			activeComponent = null;
+		}
+		pageComponents.remove(pageComponent);
+		doRemovePageComponent(pageComponent);
+		pageComponent.removePropertyChangeListener(pageComponentUpdater);
 
-    public void showView( String viewDescriptorId ) {
-        showView( getViewDescriptor( viewDescriptorId ) );
-    }
+		pageComponent.dispose();
+		fireClosed(pageComponent);
+		if (activeComponent == null) {
+			setActiveComponent();
+		}
+	}
 
-    public void showView( ViewDescriptor viewDescriptor ) {
-        PageComponent component = findPageComponent( viewDescriptor.getId() );
-        if( component == null ) {
-            component = createPageComponent( viewDescriptor );
+	/**
+	 * Closes this <code>ApplicationPage</code>. This method calls
+	 * {@link #close(PageComponent)} for each open <code>PageComponent</code>.
+	 * 
+	 * @return <code>true</code> if the operation was successfull,
+	 * <code>false</code> otherwise.
+	 */
+	public boolean close() {
+		for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
+			PageComponent component = (PageComponent) iter.next();
+			close(component);
+		}
+		return true;
+	}
 
-            addPageComponent( component );
-        }
-        setActiveComponent( component );
-    }
+	public void showView(String viewDescriptorId) {
+		showView(getViewDescriptor(viewDescriptorId));
+	}
 
-    public void openEditor( Object editorInput ) {
-        // TODO implement editors
-    }
+	public void showView(ViewDescriptor viewDescriptor) {
+		PageComponent component = findPageComponent(viewDescriptor.getId());
+		if (component == null) {
+			component = createPageComponent(viewDescriptor);
 
-    public boolean closeAllEditors() {
-        // TODO implement editors
-        return true;
-    }
+			addPageComponent(component);
+		}
+		setActiveComponent(component);
+	}
 
-    /**
-     * Adds the pageComponent to the components list while registering listeners
-     * and firing appropriate events. (not yet setting the component as the active one)
-     * 
-     * @param pageComponent
-     *            the pageComponent to add.
-     */
-    protected void addPageComponent( PageComponent pageComponent ) {
-        pageComponents.add( pageComponent );
-        doAddPageComponent( pageComponent );
-        pageComponent.addPropertyChangeListener( pageComponentUpdater );
+	public void openEditor(Object editorInput) {
+		// TODO implement editors
+	}
 
-        fireOpened( pageComponent );
-    }
+	public boolean closeAllEditors() {
+		// TODO implement editors
+		return true;
+	}
 
-    /**
-     * Creates a PageComponent for the given PageComponentDescriptor.
-     * 
-     * @param descriptor the descriptor
-     * @return the created PageComponent
-     */
-    protected PageComponent createPageComponent( PageComponentDescriptor descriptor ) {
-        PageComponent pageComponent = descriptor.createPageComponent();
-        pageComponent.setContext( new DefaultViewContext( this, createPageComponentPane( pageComponent ) ) );
+	/**
+	 * Adds the pageComponent to the components list while registering listeners
+	 * and firing appropriate events. (not yet setting the component as the
+	 * active one)
+	 * 
+	 * @param pageComponent the pageComponent to add.
+	 */
+	protected void addPageComponent(PageComponent pageComponent) {
+		pageComponents.add(pageComponent);
+		doAddPageComponent(pageComponent);
+		pageComponent.addPropertyChangeListener(pageComponentUpdater);
 
-        return pageComponent;
-    }
+		fireOpened(pageComponent);
+	}
 
-    public Set getPageComponents() {
-        return Collections.unmodifiableSet( pageComponents );
-    }
+	/**
+	 * Creates a PageComponent for the given PageComponentDescriptor.
+	 * 
+	 * @param descriptor the descriptor
+	 * @return the created PageComponent
+	 */
+	protected PageComponent createPageComponent(PageComponentDescriptor descriptor) {
+		PageComponent pageComponent = descriptor.createPageComponent();
+		pageComponent.setContext(new DefaultViewContext(this, createPageComponentPane(pageComponent)));
 
-    public final void setApplicationWindow( ApplicationWindow window ) {
-        Assert.notNull( window, "The containing window is required" );
-        Assert
-                .state( this.window == null,
-                        "Page window already set: it should only be set once, during initialization" );
-        this.window = window;
-        sharedCommandTargeter = new SharedCommandTargeter( window );
-        addPageComponentListener( sharedCommandTargeter );
-    }
+		return pageComponent;
+	}
 
-    public final void setDescriptor( PageDescriptor descriptor ) {
-        Assert.notNull( descriptor, "The page's descriptor is required" );
-        Assert.state( this.descriptor == null,
-                "Page descriptor already set: it should only be set once, during initialization" );
-        this.descriptor = descriptor;
-    }
+	public Set getPageComponents() {
+		return Collections.unmodifiableSet(pageComponents);
+	}
 
-    protected PageDescriptor getPageDescriptor() {
-        return descriptor;
-    }
+	public final void setApplicationWindow(ApplicationWindow window) {
+		Assert.notNull(window, "The containing window is required");
+		Assert.state(this.window == null, "Page window already set: it should only be set once, during initialization");
+		this.window = window;
+		sharedCommandTargeter = new SharedCommandTargeter(window);
+		addPageComponentListener(sharedCommandTargeter);
+	}
+
+	public final void setDescriptor(PageDescriptor descriptor) {
+		Assert.notNull(descriptor, "The page's descriptor is required");
+		Assert.state(this.descriptor == null,
+				"Page descriptor already set: it should only be set once, during initialization");
+		this.descriptor = descriptor;
+	}
+
+	protected PageDescriptor getPageDescriptor() {
+		return descriptor;
+	}
 }
