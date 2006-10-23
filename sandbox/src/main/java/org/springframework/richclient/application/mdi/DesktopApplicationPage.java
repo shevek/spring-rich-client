@@ -84,6 +84,7 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
     protected JInternalFrame createInternalFrame( final PageComponent pageComponent ) {
         JInternalFrame internalFrame = new JInternalFrame( pageComponent.getDisplayName() );
+        internalFrame.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
 
         configureFrame( pageComponent, internalFrame );
         
