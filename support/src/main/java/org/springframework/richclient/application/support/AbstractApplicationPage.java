@@ -237,10 +237,14 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
      * @param pageComponent the <code>PageComponent</code>
      */
     public void close( PageComponent pageComponent ) {
+        if(!pageComponent.canClose()) {
+            return;
+        }
+        
         if( !pageComponents.contains( pageComponent ) ) {
             return;
         }
-
+        
         if( pageComponent == activeComponent ) {
             fireFocusLost( pageComponent );
             activeComponent = null;

@@ -137,5 +137,8 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
     public void dispose() {
 
     }
-
+    
+    public boolean canClose() {
+        return true;
+    }
 }
