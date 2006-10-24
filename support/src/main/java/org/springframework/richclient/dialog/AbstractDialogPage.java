@@ -33,197 +33,205 @@ import org.springframework.richclient.image.config.IconConfigurable;
 import org.springframework.util.Assert;
 
 /**
- * A convenience implementation of the DialogPage interface. Recommended to be used as a
- * base class for all GUI dialog pages (or panes.)
+ * A convenience implementation of the DialogPage interface. Recommended to be
+ * used as a base class for all GUI dialog pages (or panes.)
  * 
  * @author Keith Donald
  * @see DialogPage
  */
 public abstract class AbstractDialogPage extends LabeledObjectSupport implements DialogPage, ControlFactory, Guarded,
-        IconConfigurable {
+		IconConfigurable {
 
-    private final MessageChangeHandler messageChangeHandler = new MessageChangeHandler();
+	private final MessageChangeHandler messageChangeHandler = new MessageChangeHandler();
 
-    private String pageId;
+	private String pageId;
 
-    private Icon icon;
+	private Icon icon;
 
-    private boolean pageComplete = true;
+	private boolean pageComplete = true;
 
-    private DefaultMessageAreaModel messageBuffer;
+	private DefaultMessageAreaModel messageBuffer;
 
-    private AbstractControlFactory factory = new AbstractControlFactory() {
-        public JComponent createControl() {
-            return AbstractDialogPage.this.createControl();
-        }
-    };
+	private boolean visible = true;
 
-    protected AbstractDialogPage() {
+	private AbstractControlFactory factory = new AbstractControlFactory() {
+		public JComponent createControl() {
+			return AbstractDialogPage.this.createControl();
+		}
+	};
 
-    }
+	protected AbstractDialogPage() {
 
-    /**
-     * Creates a new dialog page. This titles of this dialog page will be configured using
-     * the default ObjectConfigurer.
-     * 
-     * @param pageId the id of this dialog page. This will be used to configure the page.
-     */
-    protected AbstractDialogPage( String pageId ) {
-        this( pageId, true );
-    }
+	}
 
-    /**
-     * Creates a new dialog page.
-     * 
-     * @param pageId the id of this dialog page
-     * @param autoConfigure whether or not to use an ObjectConfigurer to configure the
-     *        titles of this dialog page using the given pageId
-     */
-    protected AbstractDialogPage( String pageId, boolean autoConfigure ) {
-        this.messageBuffer = new DefaultMessageAreaModel( this );
-        this.messageBuffer.addPropertyChangeListener( messageChangeHandler );
-        setId( pageId, autoConfigure );
-    }
+	/**
+	 * Creates a new dialog page. This titles of this dialog page will be
+	 * configured using the default ObjectConfigurer.
+	 * 
+	 * @param pageId the id of this dialog page. This will be used to configure
+	 * the page.
+	 */
+	protected AbstractDialogPage(String pageId) {
+		this(pageId, true);
+	}
 
-    /**
-     * Creates a new dialog page with the given title.
-     * 
-     * @param pageId the id of this dialog page
-     * @param autoConfigure whether or not to use an ObjectConfigurer to configure the
-     *        titles of this dialog page using the given pageId
-     * @param title the title of this dialog page, or <code>null</code> if none
-     */
-    protected AbstractDialogPage( String pageId, boolean autoConfigure, String title ) {
-        this( pageId, autoConfigure );
-        if( title != null ) {
-            setTitle( title );
-        }
-    }
+	/**
+	 * Creates a new dialog page.
+	 * 
+	 * @param pageId the id of this dialog page
+	 * @param autoConfigure whether or not to use an ObjectConfigurer to
+	 * configure the titles of this dialog page using the given pageId
+	 */
+	protected AbstractDialogPage(String pageId, boolean autoConfigure) {
+		this.messageBuffer = new DefaultMessageAreaModel(this);
+		this.messageBuffer.addPropertyChangeListener(messageChangeHandler);
+		setId(pageId, autoConfigure);
+	}
 
-    /**
-     * Creates a new dialog page with the given title and image.
-     * 
-     * @param pageId the id of this dialog page
-     * @param autoConfigure whether or not to use an ObjectConfigurer to configure the
-     *        titles of this dialog page using the given pageId
-     * @param title the title of this dialog page, or <code>null</code> if none
-     * @param icon the image for this dialog page, or <code>null</code> if none
-     */
-    protected AbstractDialogPage( String pageId, boolean autoConfigure, String title, Image icon ) {
-        this( pageId, autoConfigure, title );
-        if( icon != null ) {
-            setImage( icon );
-        }
-    }
+	/**
+	 * Creates a new dialog page with the given title.
+	 * 
+	 * @param pageId the id of this dialog page
+	 * @param autoConfigure whether or not to use an ObjectConfigurer to
+	 * configure the titles of this dialog page using the given pageId
+	 * @param title the title of this dialog page, or <code>null</code> if
+	 * none
+	 */
+	protected AbstractDialogPage(String pageId, boolean autoConfigure, String title) {
+		this(pageId, autoConfigure);
+		if (title != null) {
+			setTitle(title);
+		}
+	}
 
-    public String getId() {
-        return pageId;
-    }
+	/**
+	 * Creates a new dialog page with the given title and image.
+	 * 
+	 * @param pageId the id of this dialog page
+	 * @param autoConfigure whether or not to use an ObjectConfigurer to
+	 * configure the titles of this dialog page using the given pageId
+	 * @param title the title of this dialog page, or <code>null</code> if
+	 * none
+	 * @param icon the image for this dialog page, or <code>null</code> if
+	 * none
+	 */
+	protected AbstractDialogPage(String pageId, boolean autoConfigure, String title, Image icon) {
+		this(pageId, autoConfigure, title);
+		if (icon != null) {
+			setImage(icon);
+		}
+	}
 
-    protected void setId( String pageId, boolean autoConfigure ) {
-        Assert.hasText( pageId, "pageId is required" );
-        String oldValue = this.pageId;
-        this.pageId = pageId;
-        firePropertyChange( "id", oldValue, pageId );
-        if( autoConfigure ) {
-            if( logger.isDebugEnabled() ) {
-                logger.debug( "Auto configuring dialog page with id " + pageId );
-            }
-            getObjectConfigurer().configure( this, pageId );
-        }
-    }
+	public String getId() {
+		return pageId;
+	}
 
-    public String getTitle() {
-        return getDisplayName();
-    }
+	protected void setId(String pageId, boolean autoConfigure) {
+		Assert.hasText(pageId, "pageId is required");
+		String oldValue = this.pageId;
+		this.pageId = pageId;
+		firePropertyChange("id", oldValue, pageId);
+		if (autoConfigure) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Auto configuring dialog page with id " + pageId);
+			}
+			getObjectConfigurer().configure(this, pageId);
+		}
+	}
 
-    public Message getMessage() {
-        return messageBuffer.getMessage();
-    }
+	public String getTitle() {
+		return getDisplayName();
+	}
 
-    /**
-     * Sets or clears the message for this page.
-     * 
-     * @param newMessage the message, or <code>null</code> to clear the message
-     */
-    public void setMessage( Message newMessage ) {
-        messageBuffer.setMessage( newMessage );
-    }
+	public Message getMessage() {
+		return messageBuffer.getMessage();
+	}
 
-    public boolean hasErrorMessage() {
-        return messageBuffer.hasErrorMessage();
-    }
+	/**
+	 * Sets or clears the message for this page.
+	 * 
+	 * @param newMessage the message, or <code>null</code> to clear the
+	 * message
+	 */
+	public void setMessage(Message newMessage) {
+		messageBuffer.setMessage(newMessage);
+	}
 
-    public boolean hasWarningMessage() {
-        return messageBuffer.hasWarningMessage();
-    }
+	public boolean hasErrorMessage() {
+		return messageBuffer.hasErrorMessage();
+	}
 
-    public boolean hasInfoMessage() {
-        return messageBuffer.hasInfoMessage();
-    }
+	public boolean hasWarningMessage() {
+		return messageBuffer.hasWarningMessage();
+	}
 
-    public void setVisible( boolean visible ) {
-        boolean oldValue = getControl().isVisible();
-        getControl().setVisible( visible );
-        firePropertyChange( "visible", oldValue, visible );
-    }
+	public boolean hasInfoMessage() {
+		return messageBuffer.hasInfoMessage();
+	}
 
-    public boolean isVisible() {
-        return getControl().isVisible();
-    }
+	public void setVisible(boolean visible) {
+		boolean oldValue = this.visible;
+		getControl().setVisible(visible);
+		this.visible = visible;
+		firePropertyChange("visible", oldValue, visible);
+	}
 
-    public boolean isPageComplete() {
-        return pageComplete;
-    }
+	public boolean isVisible() {
+		return visible;
+	}
 
-    public void setPageComplete( boolean pageComplete ) {
-        boolean oldValue = this.pageComplete;
-        this.pageComplete = pageComplete;
-        firePropertyChange( "pageComplete", oldValue, pageComplete );
-    }
+	public boolean isPageComplete() {
+		return pageComplete;
+	}
 
-    public boolean isEnabled() {
-        return isPageComplete();
-    }
+	public void setPageComplete(boolean pageComplete) {
+		boolean oldValue = this.pageComplete;
+		this.pageComplete = pageComplete;
+		firePropertyChange("pageComplete", oldValue, pageComplete);
+	}
 
-    public void setEnabled( boolean enabled ) {
-        setPageComplete( enabled );
-    }
+	public boolean isEnabled() {
+		return isPageComplete();
+	}
 
-    public JComponent getControl() {
-        return factory.getControl();
-    }
+	public void setEnabled(boolean enabled) {
+		setPageComplete(enabled);
+	}
 
-    public boolean isControlCreated() {
-        return factory.isControlCreated();
-    }
+	public JComponent getControl() {
+		return factory.getControl();
+	}
 
-    public Window getParentWindowControl() {
-        return SwingUtilities.getWindowAncestor( getControl() );
-    }
+	public boolean isControlCreated() {
+		return factory.isControlCreated();
+	}
 
-    /**
-     * This default implementation of an <code>AbstractDialogPage</code> method does
-     * nothing. Subclasses should override to take some action in response to a help
-     * request.
-     */
-    public void performHelp() {
-        // do nothing by default
-    }
+	public Window getParentWindowControl() {
+		return SwingUtilities.getWindowAncestor(getControl());
+	}
 
-    protected abstract JComponent createControl();
+	/**
+	 * This default implementation of an <code>AbstractDialogPage</code>
+	 * method does nothing. Subclasses should override to take some action in
+	 * response to a help request.
+	 */
+	public void performHelp() {
+		// do nothing by default
+	}
 
-    private class MessageChangeHandler implements PropertyChangeListener {
-        public void propertyChange( PropertyChangeEvent evt ) {
-            firePropertyChange( evt.getPropertyName(), evt.getOldValue(), evt.getNewValue() );
-        }
-    }
+	protected abstract JComponent createControl();
 
-    public void setIcon( Icon icon ) {
-        this.icon = icon;
-    }
+	private class MessageChangeHandler implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent evt) {
+			firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+		}
+	}
 
-    public Icon getIcon() {
-        return icon;
-    }
+	public void setIcon(Icon icon) {
+		this.icon = icon;
+	}
+
+	public Icon getIcon() {
+		return icon;
+	}
 }
