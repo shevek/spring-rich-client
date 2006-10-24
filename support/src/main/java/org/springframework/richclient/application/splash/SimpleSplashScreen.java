@@ -23,7 +23,6 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.net.URL;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
