@@ -21,6 +21,10 @@ import java.awt.Insets;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,6 +37,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import javax.swing.JPanel;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueChangeDetector;
@@ -44,162 +50,212 @@ import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;
 
 /**
- * Adds a "dirty overlay" to a component that is triggered by user editing. The overlaid
- * image is retrieved by the image key "dirty.overlay". The image is placed at the
- * top-left corner of the component, and the image's tooltip is set to a message
- * (retrieved with key "dirty.message") such as "{field} has changed, original value was
- * {value}.". It also adds a small revert button that resets the value of the field.
- *
+ * Adds a "dirty overlay" to a component that is triggered by user editing. The
+ * overlaid image is retrieved by the image key "dirty.overlay". The image is
+ * placed at the top-left corner of the component, and the image's tooltip is
+ * set to a message (retrieved with key "dirty.message") such as "{field} has
+ * changed, original value was {value}.". It also adds a small revert button
+ * that resets the value of the field.
+ * 
  * @author Peter De Bruycker
  */
 public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor {
-    private static final String DIRTY_ICON_KEY = "dirty.overlay";
-    private static final String DIRTY_MESSAGE_KEY = "dirty.message";
-    private static final String REVERT_ICON_KEY = "revert.overlay";
-    private static final String REVERT_MESSAGE_KEY = "revert.message";
+	private static final String DIRTY_ICON_KEY = "dirty.overlay";
 
-    private ValueChangeDetector valueChangeDetector;
+	private static final String DIRTY_MESSAGE_KEY = "dirty.message";
 
-    public DirtyIndicatorInterceptor(FormModel formModel) {
-        super(formModel);
-    }
+	private static final String REVERT_ICON_KEY = "revert.overlay";
 
-    public void processComponent(final String propertyName, final JComponent component) {
-        final OriginalValueHolder originalValueHolder = new OriginalValueHolder();
-        final DirtyOverlay overlay = new DirtyOverlay(getFormModel(), propertyName, originalValueHolder);
+	private static final String REVERT_MESSAGE_KEY = "revert.message";
 
-        final ValueHolder reset = new ValueHolder(Boolean.FALSE);
-        getFormModel().getValueModel(propertyName).addValueChangeListener(new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        if (reset.getValue() == Boolean.TRUE) {
-                            originalValueHolder.reset();
-                            reset.setValue(Boolean.FALSE);
+	private ValueChangeDetector valueChangeDetector;
 
-                            overlay.setVisible(false);
+	public DirtyIndicatorInterceptor(FormModel formModel) {
+		super(formModel);
+	}
 
-                            return;
-                        }
+	public void processComponent(final String propertyName, final JComponent component) {
+		final OriginalValueHolder originalValueHolder = new OriginalValueHolder();
+		final DirtyOverlay overlay = new DirtyOverlay(getFormModel(), propertyName, originalValueHolder);
 
-                        if (!originalValueHolder.isInitialized()) {
-                            originalValueHolder.setOriginalValue(evt.getOldValue());
-                        }
+		component.addComponentListener(new ComponentAdapter() {
 
-                        Object oldValue = originalValueHolder.getValue();
-                        Object newValue = evt.getNewValue();
-                        overlay.setVisible(getValueChangeDetector().hasValueChanged(oldValue, newValue));
-                    }
-                });
-        getFormModel().getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        // reset original value, new "original" value is in the form model as
-                        // the form object has changed
-                        reset.setValue(Boolean.TRUE);
-                    }
-                });
+			public void componentShown(ComponentEvent arg0) {
+				System.out.println("shown");
+			}
 
-        InterceptorOverlayHelper.attachOverlay(overlay.getControl(), component, OverlayHelper.NORTH_WEST, 5, 0);
-        overlay.setVisible(false);
-    }
+			public void componentHidden(ComponentEvent arg0) {
+				System.out.println("hidden");
+			}
 
-    private ValueChangeDetector getValueChangeDetector() {
-        if (valueChangeDetector == null) {
-            valueChangeDetector =
-                    (ValueChangeDetector)ApplicationServicesLocator.services().getService(ValueChangeDetector.class);
-        }
+		});
 
-        return valueChangeDetector;
-    }
+		final ValueHolder reset = new ValueHolder(Boolean.FALSE);
+		getFormModel().getValueModel(propertyName).addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (reset.getValue() == Boolean.TRUE) {
+					originalValueHolder.reset();
+					reset.setValue(Boolean.FALSE);
 
-    private static class DirtyOverlay extends AbstractControlFactory {
-        private JButton revertButton;
-        private JLabel dirtyLabel;
-        private FormModel formModel;
-        private String propertyName;
-        private OriginalValueHolder originalValueHolder;
+					overlay.setVisible(false);
 
-        public DirtyOverlay(FormModel formModel, String propertyName, OriginalValueHolder originalValueHolder) {
-            this.formModel = formModel;
-            this.propertyName = propertyName;
-            this.originalValueHolder = originalValueHolder;
-        }
+					return;
+				}
 
-        protected JComponent createControl() {
-            JPanel control = new JPanel(new BorderLayout());
-            control.setName("dirtyOverlay");
+				if (!originalValueHolder.isInitialized()) {
+					originalValueHolder.setOriginalValue(evt.getOldValue());
+				}
 
-            control.setOpaque(true);
+				Object oldValue = originalValueHolder.getValue();
+				Object newValue = evt.getNewValue();
+				overlay.setVisible(getValueChangeDetector().hasValueChanged(oldValue, newValue));
+			}
+		});
+		getFormModel().getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				// reset original value, new "original" value is in the form
+				// model as
+				// the form object has changed
+				reset.setValue(Boolean.TRUE);
+			}
+		});
 
-            IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
-            Icon icon = iconSource.getIcon(DIRTY_ICON_KEY);
-            dirtyLabel = new JLabel(icon);
-            control.add(dirtyLabel, BorderLayout.CENTER);
+		InterceptorOverlayHelper.attachOverlay(overlay.getControl(), component, OverlayHelper.NORTH_WEST, 5, 0);
+		overlay.setVisible(false);
+	}
 
-            createRevertButton();
-            control.add(revertButton, BorderLayout.LINE_END);
+	private ValueChangeDetector getValueChangeDetector() {
+		if (valueChangeDetector == null) {
+			valueChangeDetector = (ValueChangeDetector) ApplicationServicesLocator.services().getService(
+					ValueChangeDetector.class);
+		}
 
-            return control;
-        }
+		return valueChangeDetector;
+	}
 
-        private void createRevertButton() {
-            IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
-            Icon icon = iconSource.getIcon(REVERT_ICON_KEY);
+	private static class DirtyOverlay extends AbstractControlFactory {
+		private JButton revertButton;
 
-            revertButton = new JButton(icon);
-            revertButton.setBorderPainted(false);
-            revertButton.setContentAreaFilled(false);
-            revertButton.setFocusable(false);
-            revertButton.setMargin(new Insets(-3, -3, -3, -3));
-            revertButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            // reset
-                            formModel.getValueModel(propertyName).setValue(originalValueHolder.getValue());
-                        }
-                    });
-        }
+		private JLabel dirtyLabel;
 
-        public void setVisible(boolean visible) {
-            getControl().setVisible(visible);
-            // manually set the size, otherwise sometimes the overlay is not shown (it has size 0,0)
-            getControl().setSize(getControl().getPreferredSize());
-            
+		private FormModel formModel;
 
-            if (visible) {
-                MessageSource messageSource =
-                    (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
-                String dirtyTooltip =
-                    messageSource.getMessage(DIRTY_MESSAGE_KEY, new Object[] { formModel.getFieldFace(propertyName).getDisplayName(),
-                                                                               originalValueHolder.getValue() },
-                                             Locale.getDefault());
-                dirtyLabel.setToolTipText(dirtyTooltip);
+		private String propertyName;
 
-                String revertTooltip =
-                    messageSource.getMessage(REVERT_MESSAGE_KEY, new Object[] { formModel.getFieldFace(propertyName).getDisplayName() },
-                                             Locale.getDefault());
-                revertButton.setToolTipText(revertTooltip);
-            }
-        }
-    }
+		private OriginalValueHolder originalValueHolder;
 
-    private static class OriginalValueHolder {
-        private boolean initialized;
-        private Object originalValue;
+		public DirtyOverlay(FormModel formModel, String propertyName, OriginalValueHolder originalValueHolder) {
+			this.formModel = formModel;
+			this.propertyName = propertyName;
+			this.originalValueHolder = originalValueHolder;
+		}
 
-        public void setOriginalValue(Object value) {
-            initialized = true;
-            originalValue = value;
-        }
+		protected JComponent createControl() {
+			final JPanel control = new JPanel(new BorderLayout()) {
+				public void repaint() {
+					// hack for RCP-426: if the form component is on a tabbed
+					// pane, when switching between tabs when the overlay is
+					// visible, the overlay is not correctly repainted. When we
+					// trigger a revalidate here, everything is ok.
+					revalidate();
 
-        public void reset() {
-            initialized = false;
-            originalValue = null;
-        }
+					super.repaint();
+				}
+			};
+			control.addHierarchyListener(new HierarchyListener() {
 
-        public Object getValue() {
-            return originalValue;
-        }
+				public void hierarchyChanged(HierarchyEvent arg0) {
+					if (control.getParent() != null) {
+						control.getParent().addComponentListener(new ComponentAdapter() {
 
-        public boolean isInitialized() {
-            return initialized;
-        }
-    }
+							public void componentShown(ComponentEvent arg0) {
+								System.out.println("woohoo! shown");
+							}
+
+							public void componentHidden(ComponentEvent arg0) {
+								System.out.println("woohoo! hidden");
+							}
+
+						});
+					}
+				}
+
+			});
+
+			control.setName("dirtyOverlay");
+
+			control.setOpaque(true);
+
+			IconSource iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
+			Icon icon = iconSource.getIcon(DIRTY_ICON_KEY);
+			dirtyLabel = new JLabel(icon);
+			control.add(dirtyLabel, BorderLayout.CENTER);
+
+			createRevertButton();
+			control.add(revertButton, BorderLayout.LINE_END);
+
+			return control;
+		}
+
+		private void createRevertButton() {
+			IconSource iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
+			Icon icon = iconSource.getIcon(REVERT_ICON_KEY);
+
+			revertButton = new JButton(icon);
+			revertButton.setBorderPainted(false);
+			revertButton.setContentAreaFilled(false);
+			revertButton.setFocusable(false);
+			revertButton.setMargin(new Insets(-3, -3, -3, -3));
+			revertButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// reset
+					formModel.getValueModel(propertyName).setValue(originalValueHolder.getValue());
+				}
+			});
+		}
+
+		public void setVisible(boolean visible) {
+			getControl().setVisible(visible);
+			// manually set the size, otherwise sometimes the overlay is not
+			// shown (it has size 0,0)
+			getControl().setSize(getControl().getPreferredSize());
+
+			if (visible) {
+				MessageSource messageSource = (MessageSource) ApplicationServicesLocator.services().getService(
+						MessageSource.class);
+				String dirtyTooltip = messageSource.getMessage(DIRTY_MESSAGE_KEY, new Object[] {
+						formModel.getFieldFace(propertyName).getDisplayName(), originalValueHolder.getValue() }, Locale
+						.getDefault());
+				dirtyLabel.setToolTipText(dirtyTooltip);
+
+				String revertTooltip = messageSource.getMessage(REVERT_MESSAGE_KEY, new Object[] { formModel
+						.getFieldFace(propertyName).getDisplayName() }, Locale.getDefault());
+				revertButton.setToolTipText(revertTooltip);
+			}
+		}
+	}
+
+	private static class OriginalValueHolder {
+		private boolean initialized;
+
+		private Object originalValue;
+
+		public void setOriginalValue(Object value) {
+			initialized = true;
+			originalValue = value;
+		}
+
+		public void reset() {
+			initialized = false;
+			originalValue = null;
+		}
+
+		public Object getValue() {
+			return originalValue;
+		}
+
+		public boolean isInitialized() {
+			return initialized;
+		}
+	}
 }
