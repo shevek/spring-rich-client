@@ -96,7 +96,7 @@ public class ProgressMonitoringBeanFactoryPostProcessorTests extends TestCase {
 		messageSource.addMessage(ProgressMonitoringBeanFactoryPostProcessor.LOADING_BEAN_KEY, Locale.getDefault(),
 				loadingBeanMessage);
 
-		ProgressMonitor mockProgressMonitor = EasyMock.createStrictMock(ProgressMonitor.class);
+		ProgressMonitor mockProgressMonitor = (ProgressMonitor) EasyMock.createStrictMock(ProgressMonitor.class);
 		mockProgressMonitor.taskStarted(loadingAppCtxMessage, expectedSingletonBeanCount);
 		mockProgressMonitor.subTaskStarted(expectedLoadBean1Message);
 		mockProgressMonitor.worked(1);
@@ -142,7 +142,7 @@ public class ProgressMonitoringBeanFactoryPostProcessorTests extends TestCase {
 		appCtx.registerSingleton(beanName2, Object.class);
 		appCtx.registerPrototype(beanName3, Object.class);
 
-		ProgressMonitor mockProgressMonitor = EasyMock.createStrictMock(ProgressMonitor.class);
+		ProgressMonitor mockProgressMonitor = (ProgressMonitor) EasyMock.createStrictMock(ProgressMonitor.class);
 		mockProgressMonitor.taskStarted("Loading Application Context ...", expectedSingletonBeanCount);
 		mockProgressMonitor.subTaskStarted("Loading " + beanName1 + " ...");
 		mockProgressMonitor.worked(1);
