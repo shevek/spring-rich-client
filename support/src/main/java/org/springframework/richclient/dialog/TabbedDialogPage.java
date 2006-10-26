@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,15 +15,19 @@
  */
 package org.springframework.richclient.dialog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
 import org.springframework.richclient.core.LabeledObjectSupport;
+import org.springframework.richclient.dialog.control.ExtTabbedPane;
+import org.springframework.richclient.dialog.control.Tab;
 import org.springframework.richclient.util.LabelUtils;
-import org.springframework.util.Assert;
+
 
 /**
  * A concrete implementation of <code>CompositeDialogPage</code> that presents
@@ -32,12 +36,18 @@ import org.springframework.util.Assert;
  * Each child page is placed into a separate tab of the <code>JTabbedPane</code>.
  * This class also decorates the tab titles to indicate the page completed
  * status.
+ * <p>
+ * Has support for hiding/showing <code>DialogPage</code>s; on
+ * <code>DialogPage.setVisible(false)</code> the tab for the page is removed
+ * from the ui, on <code>DialogPage.setVisible(true)</code> it is shown again.
  * 
- * @author oliverh
+ * @author Oliver Hutchison
+ * @author Peter De Bruycker
  */
 public class TabbedDialogPage extends CompositeDialogPage {
-    private JTabbedPane tabbedPane;
-
+    private ExtTabbedPane tabbedPaneView;
+    private Map page2tab = new HashMap();
+    
     public TabbedDialogPage(String pageId) {
         super(pageId);
     }
@@ -48,14 +58,24 @@ public class TabbedDialogPage extends CompositeDialogPage {
 
     protected JComponent createControl() {
         createPageControls();
-        tabbedPane = getComponentFactory().createTabbedPane();
-        List pages = getPages();
-        for (int i = 0; i < pages.size(); i++) {
-            final DialogPage page = (DialogPage) pages.get(i);
-            JComponent control = page.getControl();
-            control.setPreferredSize(getLargestPageSize());
-            tabbedPane.add(control);
-            decorateTabTitle(tabbedPane, i, page);
+		JTabbedPane tabbedPane = getComponentFactory().createTabbedPane();
+		tabbedPaneView = new ExtTabbedPane(tabbedPane);
+
+		List pages = getPages();
+		for (int i = 0; i < pages.size(); i++) {
+			final DialogPage page = (DialogPage) pages.get(i);
+			final Tab tab = new Tab();
+
+			JComponent control = page.getControl();
+			control.setPreferredSize(getLargestPageSize());
+
+			tab.setComponent(control);
+			tab.setVisible(page.isVisible());
+			decorateTabTitle(tab, page);
+
+			page2tab.put(page, tab);
+			tabbedPaneView.addTab(tab);
+
         }
         tabbedPane.setModel(new DefaultSingleSelectionModel() {
             public void setSelectedIndex(int index) {
@@ -77,41 +97,44 @@ public class TabbedDialogPage extends CompositeDialogPage {
         return tabbedPane;
     }
 
-    /**
-     * Sets the active page of this TabbedDialogPage. This method will also
-     * select the tab wich displays the new active page.
-     * 
-     * @param activePage
-     *            the page to be made active. Must be one of the child pages.
-     */
-    public void setActivePage(DialogPage page) {
-        int pageIndex = page == null ? -1 : getPages().indexOf(page);
-        tabbedPane.setSelectedIndex(pageIndex);
-    }
+	/**
+	 * Sets the active page of this TabbedDialogPage. This method will also
+	 * select the tab wich displays the new active page.
+	 * 
+	 * @param activePage the page to be made active. Must be one of the child
+	 * pages.
+	 */
+	public void setActivePage(DialogPage page) {
+		Tab tab = (Tab) page2tab.get(page);
+		tabbedPaneView.selectTab(tab);
+	}
 
-    protected boolean canChangeTabs() {
-        return true;
-    }
+	protected boolean canChangeTabs() {
+		return true;
+	}
 
-    protected void updatePageComplete(DialogPage page) {
-        super.updatePageComplete(page);
+	protected void updatePageComplete(DialogPage page) {
+		super.updatePageComplete(page);
 
-        if (tabbedPane != null) {
-            int pageIndex = getPages().indexOf(page);
-            Assert.isTrue(pageIndex != -1);
+		if (tabbedPaneView != null) {
+			Tab tab = (Tab) page2tab.get(page);
+			decorateTabTitle(tab, page);
+		}
+	}
 
-            decorateTabTitle(tabbedPane, pageIndex, page);
-        }
-    }
-
-    protected void decorateTabTitle(JTabbedPane tabbedPane, int pageIndex, DialogPage page) {
-        String title = LabelUtils.htmlBlock("<center>" + page.getTitle() + "<sup><font size=-3 color=red>"
-                + (page.isPageComplete() ? "" : "*"));
-        tabbedPane.setTitleAt(pageIndex, title);
-        tabbedPane.setToolTipTextAt(pageIndex, page.getDescription());
-        if (page instanceof LabeledObjectSupport) {
-            tabbedPane.setMnemonicAt(pageIndex, ((LabeledObjectSupport) page).getMnemonic());
-        }
-        tabbedPane.setIconAt( pageIndex, page.getIcon() );
+	protected void decorateTabTitle(Tab tab, DialogPage page) {
+		String title = LabelUtils.htmlBlock("<center>" + page.getTitle() + "<sup><font size=-3 color=red>"
+				+ (page.isPageComplete() ? "" : "*"));
+		tab.setTitle(title);
+		tab.setTooltip(page.getDescription());
+		if (page instanceof LabeledObjectSupport) {
+			tab.setMnemonic(((LabeledObjectSupport) page).getMnemonic());
+		}
+		tab.setIcon(page.getIcon());
+	}
+    
+    protected void updatePageVisibility(DialogPage page) {
+    	Tab tab = (Tab) page2tab.get(page);
+    	tab.setVisible(page.isVisible());
     }
 }

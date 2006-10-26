@@ -230,6 +230,15 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
             else {
                 CompositeDialogPage.this.updatePageLabels((DialogPage)e.getSource());
             }
+            
+            if("visible".equals(e.getPropertyName())) {
+            	DialogPage page = (DialogPage) e.getSource();
+            	updatePageVisibility(page);
+            }
         }
+    }
+    
+    protected void updatePageVisibility(DialogPage page){
+    	
     }
 }
