@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,7 +16,6 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.Window;
-import java.beans.PropertyChangeSupport;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
