@@ -16,8 +16,6 @@
 package org.springframework.richclient.security.remoting;
 
 import org.acegisecurity.Authentication;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor;
 import org.springframework.richclient.security.AuthenticationAware;

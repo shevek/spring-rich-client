@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.BindingErrorMessageProvider;
-import org.springframework.binding.form.FieldMetadata;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.ValidationMessage;

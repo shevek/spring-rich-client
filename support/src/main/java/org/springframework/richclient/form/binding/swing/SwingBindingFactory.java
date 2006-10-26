@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

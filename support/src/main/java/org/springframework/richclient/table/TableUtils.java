@@ -19,11 +19,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -40,7 +36,6 @@ import org.springframework.richclient.table.renderer.BeanTableCellRenderer;
 import org.springframework.richclient.table.renderer.BooleanTableCellRenderer;
 import org.springframework.richclient.table.renderer.DateTimeTableCellRenderer;
 import org.springframework.richclient.table.renderer.LabeledEnumTableCellRenderer;
-import org.springframework.richclient.table.renderer.OptimizedTableCellRenderer;
 import org.springframework.richclient.util.WindowUtils;
 
 /**

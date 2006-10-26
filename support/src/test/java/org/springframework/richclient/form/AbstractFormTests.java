@@ -17,8 +17,6 @@ package org.springframework.richclient.form;
 
 import javax.swing.JComponent;
 
-import junit.framework.TestCase;
-
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;

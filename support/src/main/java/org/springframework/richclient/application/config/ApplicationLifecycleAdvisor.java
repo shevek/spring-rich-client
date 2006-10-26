@@ -15,28 +15,17 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.util.Properties;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.binding.validation.Severity;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.core.Message;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
-import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
 import org.springframework.richclient.exceptionhandling.DefaultRegisterableExceptionHandler;
+import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
+import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Keith Donald

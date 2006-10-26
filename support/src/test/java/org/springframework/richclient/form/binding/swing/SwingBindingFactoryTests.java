@@ -32,12 +32,10 @@ import org.springframework.beans.support.SortDefinition;
 import org.springframework.binding.form.support.DefaultFormModel;
 import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ListListModel;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory.BeanPropertyEditorClosure;
-import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.test.SpringRichTestCase;
 

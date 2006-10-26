@@ -65,7 +65,6 @@ import org.springframework.richclient.list.LabeledEnumComboBoxEditor;
 import org.springframework.richclient.list.LabeledEnumListRenderer;
 import org.springframework.richclient.util.Alignment;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.util.Assert;
 import org.springframework.util.comparator.ComparableComparator;
 import org.springframework.util.comparator.CompoundComparator;
 
