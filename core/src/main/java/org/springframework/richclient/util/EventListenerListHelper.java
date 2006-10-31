@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.core.style.ToStringCreator;
@@ -39,19 +40,19 @@ import org.springframework.util.CachingMapDecorator;
  * private ListenerListHelper fooListeners = new ListenerListHelper(FooListener.class);
  * 
  * public void addFooListener(FooListener listener) {
- * 	  fooListeners.add(listener);
+ * 	fooListeners.add(listener);
  * }
  * 
  * public void removeFooListener(FooListener listener) {
- * 	  fooListeners.remove(listener);
+ * 	fooListeners.remove(listener);
  * }
  * 
  * protected void fireFooXXX() {
- * 	  fooListeners.fire(&quot;fooXXX&quot;, new Event());
+ * 	fooListeners.fire(&quot;fooXXX&quot;, new Event());
  * }
  * 
  * protected void fireFooYYY() {
- * 	  fooListeners.fire(&quot;fooYYY&quot;);
+ * 	fooListeners.fire(&quot;fooYYY&quot;);
  * }
  * </pre>
  * 
@@ -78,7 +79,7 @@ public class EventListenerListHelper implements Serializable {
 
 	private static final Map methodCache = new CachingMapDecorator() {
 		protected Object create(Object o) {
-			MethodCacheKey key = (MethodCacheKey)o;
+			MethodCacheKey key = (MethodCacheKey) o;
 			Method fireMethod = null;
 
 			Method[] methods = key.listenerClass.getMethods();
@@ -139,11 +140,11 @@ public class EventListenerListHelper implements Serializable {
 
 	/**
 	 * Returns an array of all the listeners registered with this list. This
-	 * method is intended for use in subclasses that require the fastest possible
-	 * access to the listener list. It is recommended that unless performance is
-	 * absolutely critical access to the listener list should be through the
-	 * <code>iterator</code>,<code>forEach</code> and <code>fire</code>
-	 * methods only.
+	 * method is intended for use in subclasses that require the fastest
+	 * possible access to the listener list. It is recommended that unless
+	 * performance is absolutely critical access to the listener list should be
+	 * through the <code>iterator</code>,<code>forEach</code> and
+	 * <code>fire</code> methods only.
 	 * <p>
 	 * NOTE: The array returned by this method is used internally by this class
 	 * and must NOT be modified.
@@ -159,7 +160,7 @@ public class EventListenerListHelper implements Serializable {
 		if (listeners == EMPTY_OBJECT_ARRAY)
 			return EMPTY_ITERATOR;
 
-        return new ObjectArrayIterator(listeners);
+		return new ObjectArrayIterator(listeners);
 	}
 
 	/**
@@ -268,7 +269,7 @@ public class EventListenerListHelper implements Serializable {
 			if (listeners == EMPTY_OBJECT_ARRAY)
 				return;
 
-            int listenersLength = listeners.length;
+			int listenersLength = listeners.length;
 			int index = 0;
 			for (; index < listenersLength; index++) {
 				if (listeners[index] == listener) {
@@ -299,12 +300,12 @@ public class EventListenerListHelper implements Serializable {
 			if (this.listeners == EMPTY_OBJECT_ARRAY)
 				return;
 
-            this.listeners = EMPTY_OBJECT_ARRAY;
+			this.listeners = EMPTY_OBJECT_ARRAY;
 		}
 	}
 
 	private void fireEventByReflection(String eventName, Object[] events) {
-		Method fireMethod = (Method)methodCache.get(new MethodCacheKey(listenerClass, eventName, events.length));
+		Method fireMethod = (Method) methodCache.get(new MethodCacheKey(listenerClass, eventName, events.length));
 		Object[] listenersCopy = listeners;
 		for (int i = 0; i < listenersCopy.length; i++) {
 			try {
@@ -339,7 +340,6 @@ public class EventListenerListHelper implements Serializable {
 
 		public ObjectArrayIterator(Object[] array) {
 			this.array = array;
-			this.index = 0;
 		}
 
 		public boolean hasNext() {
@@ -347,6 +347,10 @@ public class EventListenerListHelper implements Serializable {
 		}
 
 		public Object next() {
+			if (index > array.length - 1) {
+				throw new NoSuchElementException();
+			}
+			
 			return array[index++];
 		}
 
@@ -363,16 +367,23 @@ public class EventListenerListHelper implements Serializable {
 		public final int numParams;
 
 		public MethodCacheKey(Class listenerClass, String methodName, int numParams) {
+			Assert.notNull(listenerClass);
+			Assert.notNull(methodName);
+
 			this.listenerClass = listenerClass;
 			this.methodName = methodName;
 			this.numParams = numParams;
 		}
 
 		public boolean equals(Object o2) {
+			if (!(o2 instanceof MethodCacheKey)) {
+				return false;
+			}
+
 			if (o2 == null) {
 				return false;
 			}
-			MethodCacheKey k2 = (MethodCacheKey)o2;
+			MethodCacheKey k2 = (MethodCacheKey) o2;
 			return listenerClass.equals(k2.listenerClass) && methodName.equals(k2.methodName)
 					&& numParams == k2.numParams;
 		}
@@ -386,7 +397,7 @@ public class EventListenerListHelper implements Serializable {
 		if (listeners == EMPTY_OBJECT_ARRAY)
 			return Array.newInstance(listenerClass, 0);
 
-        Object[] listenersCopy = listeners;
+		Object[] listenersCopy = listeners;
 		Object copy = Array.newInstance(listenerClass, listenersCopy.length);
 		System.arraycopy(listenersCopy, 0, copy, 0, listenersCopy.length);
 		return copy;
