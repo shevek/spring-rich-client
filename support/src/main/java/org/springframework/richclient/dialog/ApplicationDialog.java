@@ -695,8 +695,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * in memory.
      */
     protected final void hide() {
-        onWindowClosing();
-        this.dialog.setVisible(false);
+    	if(dialog != null) {
+    		onWindowClosing();
+    		this.dialog.setVisible(false);
+    	}
     }
 
     /**
