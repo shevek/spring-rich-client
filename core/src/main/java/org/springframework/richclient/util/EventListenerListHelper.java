@@ -37,7 +37,7 @@ import org.springframework.util.CachingMapDecorator;
  * Usage Example:
  * 
  * <pre>
- * private ListenerListHelper fooListeners = new ListenerListHelper(FooListener.class);
+ * private EventListenerListHelper fooListeners = new EventListenerListHelper(FooListener.class);
  * 
  * public void addFooListener(FooListener listener) {
  * 	fooListeners.add(listener);
@@ -64,20 +64,46 @@ public class EventListenerListHelper implements Serializable {
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
 	private static final Iterator EMPTY_ITERATOR = new Iterator() {
-		public boolean hasNext() {
+		
+        /**
+         * {@inheritDoc}
+         */
+        public boolean hasNext() {
 			return false;
 		}
 
+        /**
+         * Unsupported operation.
+         * 
+         * @throws UnsupportedOperationException always.
+         */
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 
+        /**
+         * {@inheritDoc}
+         */
 		public Object next() {
 			throw new UnsupportedOperationException();
 		}
 	};
 
 	private static final Map methodCache = new CachingMapDecorator() {
+        
+        /**
+         * Creates a value to cache under the given key {@code o}, which must be a 
+         * {@link MethodCacheKey}. The value to be created will be a {@link Method} object that is
+         * specified by the given key.
+         * 
+         * @param o The key that the newly created object will be stored under. This is expected to
+         * be an instance of {@link MethodCacheKey} that contains the class, method name and number
+         * of parameters of the {@link Method} to be created.
+         * 
+         * @throws ClassCastException if {@code o} can not be assigned to {@link MethodCacheKey}.
+         * @throws IllegalArgumentException if the listener class specified by {@code o}, does not 
+         * have an implementation of the method specified in the given key. 
+         */
 		protected Object create(Object o) {
 			MethodCacheKey key = (MethodCacheKey) o;
 			Method fireMethod = null;
@@ -109,8 +135,12 @@ public class EventListenerListHelper implements Serializable {
 	private volatile Object[] listeners = EMPTY_OBJECT_ARRAY;
 
 	/**
-	 * Create new <code>ListenerListHelper</code> instance that will maintain
+	 * Create new <code>EventListenerListHelper</code> instance that will maintain
 	 * a list of event listeners of the given class.
+	 * @param listenerClass The class of the listeners that will be maintained by this list helper.
+     * 
+     * @throws IllegalArgumentException if {@code listenerClass} is null.
+     * 
 	 */
 	public EventListenerListHelper(Class listenerClass) {
 		Assert.notNull(listenerClass, "The listenerClass argument is required");
@@ -119,6 +149,8 @@ public class EventListenerListHelper implements Serializable {
 
 	/**
 	 * Returns whether or not any listeners are registered with this list.
+     * 
+     * @return true if there are registered listeners.
 	 */
 	public boolean hasListeners() {
 		return listeners.length > 0;
@@ -126,6 +158,8 @@ public class EventListenerListHelper implements Serializable {
 
 	/**
 	 * Returns true if there are no listeners registered with this list.
+     * 
+     * @return true if there are no registered listeners.
 	 */
 	public boolean isEmpty() {
 		return !hasListeners();
@@ -133,6 +167,8 @@ public class EventListenerListHelper implements Serializable {
 
 	/**
 	 * Returns the total number of listeners registered with this list.
+     * 
+     * @return the total number of regisetered listeners.
 	 */
 	public int getListenerCount() {
 		return listeners.length;
@@ -154,7 +190,11 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Returns an iterator over the list of listeners registered with this list.
+	 * Returns an iterator over the list of listeners registered with this list. The returned 
+     * iterator does not allow removal of listeners. To remove a listener, use the 
+     * {@link #remove(Object)} method.
+     * 
+     * @return An iterator for the registered listeners, never null.
 	 */
 	public Iterator iterator() {
 		if (listeners == EMPTY_OBJECT_ARRAY)
@@ -164,10 +204,13 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Invokes the specified method on each of the listeners registered with
-	 * this list.
+	 * Invokes the method with the given name and no parameters on each of the listeners registered 
+     * with this list.
 	 * 
 	 * @param methodName the name of the method to invoke.
+     * 
+     * @throws IllegalArgumentException if no method with the given name and an empty parameter 
+     * list exists on the listener class maintained by this list helper.
 	 */
 	public void fire(String methodName) {
 		if (listeners != EMPTY_OBJECT_ARRAY) {
@@ -176,11 +219,14 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Invokes the specified method on each of the listeners registered with
-	 * this list.
+	 * Invokes the method with the given name and a single parameter on each of the listeners 
+     * registered with this list.
 	 * 
 	 * @param methodName the name of the method to invoke.
 	 * @param arg the single argument to pass to each invocation.
+     * 
+     * @throws IllegalArgumentException if no method with the given name and a single formal 
+     * parameter exists on the listener class managed by this list helper.
 	 */
 	public void fire(String methodName, Object arg) {
 		if (listeners != EMPTY_OBJECT_ARRAY) {
@@ -189,12 +235,15 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Invokes the specified method on each of the listeners registered with
-	 * this list.
+	 * Invokes the method with the given name and two parameters on each of the listeners 
+     * registered with this list.
 	 * 
 	 * @param methodName the name of the method to invoke.
 	 * @param arg1 the first argument to pass to each invocation.
 	 * @param arg2 the second argument to pass to each invocation.
+     * 
+     * @throws IllegalArgumentException if no method with the given name and 2 formal parameters
+     * exists on the listener class managed by this list helper.
 	 */
 	public void fire(String methodName, Object arg1, Object arg2) {
 		if (listeners != EMPTY_OBJECT_ARRAY) {
@@ -203,11 +252,14 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Invokes the specified method on each of the listeners registered with
-	 * this list.
+	 * Invokes the method with the given name and number of formal parameters on each of the 
+     * listeners registered with this list.
 	 * 
 	 * @param methodName the name of the method to invoke.
 	 * @param args an array of arguments to pass to each invocation.
+     * 
+     * @throws IllegalArgumentException if no method with the given name and number of formal 
+     * parameters exists on the listener class managed by this list helper.
 	 */
 	public void fire(String methodName, Object[] args) {
 		if (listeners != EMPTY_OBJECT_ARRAY) {
@@ -218,6 +270,14 @@ public class EventListenerListHelper implements Serializable {
 	/**
 	 * Adds <code>listener</code> to the list of registered listeners. If
 	 * listener is already registered this method will do nothing.
+     * 
+     * @param listener The event listener to be registered.
+     * 
+     * @return true if the listener was registered, false if {@code listener} was null or it is
+     * already registered with this list helper.
+     * 
+     * @throws IllegalArgumentException if {@code listener} is not assignable to the class of 
+     * listener that this instance manages. 
 	 */
 	public boolean add(Object listener) {
 		if (listener == null) {
@@ -245,15 +305,25 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * @param listeners
+     * Adds all the given listeners to the list of registered listeners. If any of the elements in
+     * the array are null or are listeners that are already registered, they will not be registered
+     * again. 
+     * 
+	 * @param listenersToAdd The collection of listeners to be added. May be null.
+     * 
+     * @return true if the list of registered listeners changed as a result of attempting to 
+     * register the given collection of listeners.
+     * 
+     * @throws IllegalArgumentException if any of the listeners in the given collection are of a 
+     * type that is not assignable to the class of listener that this instance manages.
 	 */
-	public boolean addAll(Object[] listeners) {
-		if (listeners == null) {
+	public boolean addAll(Object[] listenersToAdd) {
+		if (listenersToAdd == null) {
 			return false;
 		}
 		boolean changed = false;
-		for (int i = 0; i < listeners.length; i++) {
-			if (add(listeners[i])) {
+		for (int i = 0; i < listenersToAdd.length; i++) {
+			if (add(listenersToAdd[i])) {
 				changed = true;
 			}
 		}
@@ -262,6 +332,11 @@ public class EventListenerListHelper implements Serializable {
 
 	/**
 	 * Removes <code>listener</code> from the list of registered listeners.
+     * 
+     * @param listener The listener to be removed.
+     * 
+     * @throws IllegalArgumentException if {@code listener} is null or not assignable to the class
+     * of listener that is maintained by this instance.
 	 */
 	public void remove(Object listener) {
 		checkListenerType(listener);
@@ -293,7 +368,7 @@ public class EventListenerListHelper implements Serializable {
 	}
 
 	/**
-	 * Remove all listeners
+	 * Removes all registered listeners.
 	 */
 	public void clear() {
 		synchronized (this) {
@@ -304,12 +379,23 @@ public class EventListenerListHelper implements Serializable {
 		}
 	}
 
-	private void fireEventByReflection(String eventName, Object[] events) {
-		Method fireMethod = (Method) methodCache.get(new MethodCacheKey(listenerClass, eventName, events.length));
+    /**
+     * Invokes the method with the given name on each of the listeners registered with this list
+     * helper. The given arguments are passed to each method invocation. 
+     *
+     * @param methodName The name of the method to be invoked on the listeners.
+     * @param eventArgs The arguments that will be passed to each method invocation. The number 
+     * of arguments is also used to determine the method to be invoked.
+     * 
+     * @throws EventBroadCastException if an error occurs invoking the event method on any of the 
+     * listeners.
+     */
+	private void fireEventByReflection(String methodName, Object[] eventArgs) {
+		Method eventMethod = (Method)methodCache.get(new MethodCacheKey(listenerClass, methodName, eventArgs.length));
 		Object[] listenersCopy = listeners;
 		for (int i = 0; i < listenersCopy.length; i++) {
 			try {
-				fireMethod.invoke(listenersCopy[i], events);
+				eventMethod.invoke(listenersCopy[i], eventArgs);
 			}
 			catch (InvocationTargetException e) {
 				throw new EventBroadcastException("Exception thrown by listener", e.getCause());
@@ -320,10 +406,22 @@ public class EventListenerListHelper implements Serializable {
 		}
 	}
 
+    /**
+     * Indicates that an error has occurred attempting to broadcast an event to listeners.
+     */
 	public static class EventBroadcastException extends NestedRuntimeException {
+        
+        /**
+         * Creates a new {@code EventBroadcastException} with the given detail message and nested
+         * exception.
+         *
+         * @param msg The detail message.
+         * @param ex The nested exception.
+         */
 		public EventBroadcastException(String msg, Throwable ex) {
 			super(msg, ex);
 		}
+        
 	}
 
 	private void checkListenerType(Object listener) {
@@ -388,11 +486,19 @@ public class EventListenerListHelper implements Serializable {
 					&& numParams == k2.numParams;
 		}
 
+        /**
+         * {@inheritDoc}
+         */
 		public int hashCode() {
 			return listenerClass.hashCode() ^ methodName.hashCode() ^ numParams;
 		}
 	}
 
+    /**
+     * Returns an object which is a copy of the collection of listeners registered with this instance.
+     *
+     * @return A copy of the registered listeners array, never null.
+     */
 	public Object toArray() {
 		if (listeners == EMPTY_OBJECT_ARRAY)
 			return Array.newInstance(listenerClass, 0);
@@ -403,6 +509,9 @@ public class EventListenerListHelper implements Serializable {
 		return copy;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public String toString() {
 		return new ToStringCreator(this).append("listenerClass", listenerClass).append("listeners", listeners)
 				.toString();
