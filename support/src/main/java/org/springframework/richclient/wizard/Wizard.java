@@ -18,29 +18,32 @@ package org.springframework.richclient.wizard;
 import java.awt.Image;
 
 /**
- * Interface for a wizard. A wizard maintains a list of wizard pages, stacked on
- * top of each other in card layout fashion.
+ * A wizard is a collection of dialog components that guide the user through a sequence of steps 
+ * required to perform a particular task. This top-level interface defines the behaviour that is 
+ * common to all wizards in a Spring Rich Client application. 
+ * 
  * <p>
- * The class <code>AbstractWizard</code> provides an abstract implementation
- * of this interface. However, clients are also free to implement this interface
- * if <code>Wizard</code> does not suit their needs.
+ * The {@link AbstractWizard} class provides an abstract implementation of this interface. However, 
+ * clients are also free to implement this interface directly if {@link AbstractWizard} does not 
+ * suit their needs.
+ * </p>
  * 
  * @author Keith Donald
- * @see Wizard
  */
 public interface Wizard {
 
     /**
-     * Returns this wizards name.
+     * Returns this wizard's identifier. This value is intended to be unique within a given
+     * application.
      * 
-     * @return the name of this wizard
+     * @return the identifier of this wizard.
      */
     public String getId();
 
     /**
      * Returns the window title string for this wizard.
      * 
-     * @return the window title string, or <code>null</code> for no title
+     * @return the window title string, or <code>null</code> for no title.
      */
     public String getTitle();
 
@@ -57,8 +60,8 @@ public interface Wizard {
     /**
      * Adds any last-minute pages to this wizard.
      * <p>
-     * This method is called just before the wizard becomes visible, to give the
-     * wizard the opportunity to add any lazily created pages.
+     * This method is called by the wizard's container just before the wizard becomes visible, 
+     * to give it the opportunity to add any lazily created pages.
      * </p>
      */
     public void addPages();
@@ -113,8 +116,7 @@ public interface Wizard {
     public WizardPage[] getPages();
 
     /**
-     * Returns the container managing the display of this wizard. Generally a
-     * dialog.
+     * Returns the container managing the display of this wizard. Generally a dialog.
      * 
      * @return the wizard container
      */
@@ -174,11 +176,15 @@ public interface Wizard {
 
     /**
      * Add a listener to this wizard
+     * 
+     * @param wizardListener The listener to be added.
      */
     public void addWizardListener(WizardListener wizardListener);
 
     /**
-     * Remove a listener to this wizard
+     * Removes the given listener from this wizard. 
+     * 
+     * @param wizardListener The listener to be removed.
      */
     public void removeWizardListener(WizardListener wizardListener);
 
