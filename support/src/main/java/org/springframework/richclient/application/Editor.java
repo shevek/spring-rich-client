@@ -19,5 +19,17 @@ import org.springframework.richclient.core.Dirtyable;
 import org.springframework.richclient.core.Saveable;
 
 public interface Editor extends PageComponent, Dirtyable, Saveable {
+	/**
+	 * Sets the object for this editor to edit.
+	 * 
+	 * @param input the input
+	 */
+	void setEditorInput(Object input);
 
+	/**
+	 * Returns the object this editor is using.
+	 * 
+	 * @return theh input
+	 */
+	Object getEditorInput();
 }
