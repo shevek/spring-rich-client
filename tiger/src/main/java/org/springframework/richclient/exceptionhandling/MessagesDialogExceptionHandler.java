@@ -19,6 +19,8 @@ import java.util.StringTokenizer;
  * java.lang.Throwable.caption/description.
  * <p/>
  * The exception message is passed as a parameter, but is idented and wrapped first.
+ * Note for the repacing of {0} to work in a property file double quotes(") need to be escaped (\")
+ * and that single quotes (') should be avoided (escaping doesn't seem to work).
  * @author Geoffrey De Smet
  * @since 0.3
  */
