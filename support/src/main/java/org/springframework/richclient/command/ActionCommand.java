@@ -40,6 +40,8 @@ public abstract class ActionCommand extends AbstractCommand implements ActionCom
         ParameterizableActionCommandExecutor {
     public static final String ACTION_COMMAND_PROPERTY = "actionCommand";
 
+    public static final String ACTION_COMMAND_PARAMETER_KEY = "actionCommand";
+
     public static final String ACTION_EVENT_PARAMETER_KEY = "actionEvent";
 
     public static final String MODIFIERS_PARAMETER_KEY = "modifiers";
@@ -120,6 +122,7 @@ public abstract class ActionCommand extends AbstractCommand implements ActionCom
         public void actionPerformed(ActionEvent e) {
             addParameter(ACTION_EVENT_PARAMETER_KEY, e);
             addParameter(MODIFIERS_PARAMETER_KEY, new Integer(e.getModifiers()));
+            addParameter(ACTION_COMMAND_PARAMETER_KEY, ActionCommand.this);
             execute();
         }
     };
