@@ -90,7 +90,7 @@ public class SwingBindingFactoryTests extends SpringRichTestCase {
         TestableBinding b = (TestableBinding)sbf.createBoundComboBox("name", items);
         assertBindingProperties(b, JComboBox.class, null, "name");
         assertEquals(1, b.getContext().size(), 1);
-        assertEquals(items, ((ValueModel)b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY)).getValue());
+        assertEquals(items, b.getContext().get(ComboBoxBinder.SELECTABLE_ITEMS_KEY));
     }
 
     public void testCreateBoundComboBoxStringValueModel() {
