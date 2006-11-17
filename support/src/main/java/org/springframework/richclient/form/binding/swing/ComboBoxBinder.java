@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.core.closure.Closure;
 import org.springframework.util.Assert;
 
 /**
@@ -34,19 +35,20 @@ public class ComboBoxBinder extends AbstractListBinder {
     public static final String EDITOR_KEY = "editor";
 
     /**
-     * context key for a value which is used to mark an empty Selection.
-     * If this value is selected null will be assigned to the fields value
+     * context key for a value which is used to mark an empty Selection. If this value is selected null will be assigned
+     * to the fields value
      */
     public static final String EMPTY_SELECTION_VALUE = "emptySelectionValue";
 
-    private ListCellRenderer renderer;
+    private Object renderer;
 
-    private ComboBoxEditor editor;
-    
+    private Object editor;
+
     private Object emptySelectionValue;
 
     public ComboBoxBinder() {
-        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY, EMPTY_SELECTION_VALUE });
+        this(null, new String[] { SELECTABLE_ITEMS_KEY, COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY,
+                EMPTY_SELECTION_VALUE });
     }
 
     public ComboBoxBinder(String[] supportedContextKeys) {
@@ -87,20 +89,35 @@ public class ComboBoxBinder extends AbstractListBinder {
         return getComponentFactory().createComboBox();
     }
 
-    public ListCellRenderer getRenderer() {
-        return renderer;
-    }
-
     public void setRenderer(ListCellRenderer renderer) {
         this.renderer = renderer;
     }
 
-    public ComboBoxEditor getEditor() {
-        return editor;
+    /**
+     * Defines a closure which is called to create the renderer. The argument for the closure will be the default
+     * renderer (see {@link JComboBox#getRenderer()} of the combobox. The closure must create an instance of
+     * {@link ListCellRenderer}
+     * 
+     * @param rendererClosure
+     *            the closure which is used to create the renderer
+     */
+    public void setRendererClosure(Closure rendererClosure) {
+        this.renderer = rendererClosure;
     }
 
     public void setEditor(ComboBoxEditor editor) {
         this.editor = editor;
+    }
+
+    /**
+     * Defines a closure which is called to create the editor. The argument for the closure will be the default editor
+     * (see {@link JComboBox#getEditor()} of the combobox. The closure must create an instance of {@link ComboBoxEditor}
+     * 
+     * @param editorClosure
+     *            the closure which is used to create the editor
+     */
+    public void setEditorClosure(Closure editorClosure) {
+        this.editor = editorClosure;
     }
 
     public Object getEmptySelectionValue() {
