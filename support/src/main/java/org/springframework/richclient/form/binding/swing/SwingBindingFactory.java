@@ -108,12 +108,12 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      * that may be selected
      */
     public Binding createBoundComboBox(String formProperty, Object selectableItems) {
-        return createBoundComboBox(formProperty, new ValueHolder(selectableItems));
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItems);
+        return createBinding(JComboBox.class, formProperty, context);
     }
 
     public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder) {
-        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItemsHolder);
-        return createBinding(JComboBox.class, formProperty, context);
+        return createBoundComboBox(formProperty, (Object)selectableItemsHolder);
     }
 
     public Binding createBoundComboBox(String formProperty, String selectableItemsProperty, String renderedItemProperty) {
@@ -121,12 +121,16 @@ public class SwingBindingFactory extends AbstractBindingFactory {
                 renderedItemProperty);
     }
 
-    public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder, String renderedProperty) {
-        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItemsHolder);
+    public Binding createBoundComboBox(String formProperty, Object selectableItems, String renderedProperty) {
+        Map context = createContext(ComboBoxBinder.SELECTABLE_ITEMS_KEY, selectableItems);
         context.put(ComboBoxBinder.RENDERER_KEY, new BeanPropertyValueListRenderer(renderedProperty));
         context.put(ComboBoxBinder.EDITOR_KEY, new BeanPropertyEditorClosure(renderedProperty));
         context.put(ComboBoxBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, true));
         return createBinding(JComboBox.class, formProperty, context);
+    }
+
+    public Binding createBoundComboBox(String formProperty, ValueModel selectableItemsHolder, String renderedProperty) {
+        return createBoundComboBox(formProperty, (Object)selectableItemsHolder, renderedProperty);
     }
 
     /**
