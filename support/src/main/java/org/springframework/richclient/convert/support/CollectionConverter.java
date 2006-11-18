@@ -15,16 +15,16 @@
  */
 package org.springframework.richclient.convert.support;
 
+import org.springframework.binding.convert.ConversionContext;
+import org.springframework.binding.convert.Converter;
+import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.core.ReflectiveVisitorHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.springframework.binding.convert.Converter;
-import org.springframework.binding.convert.support.AbstractConverter;
-import org.springframework.binding.util.MapAccessor;
-import org.springframework.core.ReflectiveVisitorHelper;
 
 /**
  * This converter converts collection values from Object, Object[], Collection, List to Collection.class, List.class,
@@ -44,7 +44,7 @@ public class CollectionConverter extends AbstractConverter implements Converter 
 
     private Object visitor = new ValuesVisitor();
 
-    protected Object doConvert(Object sourceValue, Class targetClass, MapAccessor context) throws Exception {
+    protected Object doConvert(Object sourceValue, Class targetClass, ConversionContext context) throws Exception {
         List values = (List) visitorHelper.invokeVisit(visitor, sourceValue);
         if (Object[].class == targetClass) {
             return values.toArray();

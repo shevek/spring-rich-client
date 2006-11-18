@@ -15,17 +15,16 @@
  */
 package org.springframework.richclient.convert.support;
 
+import org.springframework.binding.convert.ConversionContext;
+import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.value.support.ListListModel;
+import org.springframework.core.ReflectiveVisitorHelper;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import javax.swing.ListModel;
-
-import org.springframework.binding.convert.support.AbstractConverter;
-import org.springframework.binding.util.MapAccessor;
-import org.springframework.binding.value.support.ListListModel;
-import org.springframework.core.ReflectiveVisitorHelper;
 
 /**
  * @author Mathias Broekelmann
@@ -40,7 +39,7 @@ public class ListModelConverter extends AbstractConverter {
 
     private final ReflectiveVisitorHelper visitorHelper = new ReflectiveVisitorHelper();
 
-    protected Object doConvert(Object sourceValue, Class targetClass, MapAccessor context) throws Exception {
+    protected Object doConvert(Object sourceValue, Class targetClass, ConversionContext context) throws Exception {
         return visitorHelper.invokeVisit(this, sourceValue);
     }
 

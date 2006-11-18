@@ -614,33 +614,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-binding</artifactId>
-                <version>1.0-rc3</version>
-                <exclusions>
-                <!-- bug: http://jira.codehaus.org/browse/MNG-1797
-                when dependency is listed elsewhere with a version,
-                 that one will override a transitive one, so no exclusions of listed dependencies.
-                -->
-                    <!--exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion-->
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ognl</groupId>
-                        <artifactId>ognl</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.springmodules</groupId>

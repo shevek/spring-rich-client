@@ -15,16 +15,16 @@
  */
 package org.springframework.richclient.samples.simple.ui.convert;
 
+import org.springframework.binding.convert.ConversionContext;
+import org.springframework.binding.convert.support.AbstractConverter;
+import org.springframework.binding.format.support.DateFormatter;
+import org.springframework.util.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.springframework.binding.convert.support.AbstractConverter;
-import org.springframework.binding.format.support.DateFormatter;
-import org.springframework.binding.util.MapAccessor;
-import org.springframework.util.StringUtils;
 
 /**
  * Value converter to handle text to date. Both MM-dd-yyyy and MM/dd/YYYY are supported.
@@ -61,7 +61,7 @@ public class TextToDate extends AbstractConverter {
      * @return converted Date
      * @throws Exception on parsing failure
      */
-    protected Object doConvert( Object source, Class targetClass, MapAccessor context ) throws Exception {
+    protected Object doConvert( Object source, Class targetClass, ConversionContext context ) throws Exception {
         String src = (String) source;
 
         // If the user entered slashes, convert them to dashes

@@ -15,13 +15,10 @@
  */
 package org.springframework.binding.form.support;
 
-import java.util.Map;
-import java.util.Set;
-
+import org.springframework.binding.convert.ConversionContext;
 import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.Converter;
-import org.springframework.binding.convert.support.GenericConversionService.NoOpConverter;
 import org.springframework.binding.form.BindingErrorMessageProvider;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidatingFormModel;
@@ -37,6 +34,8 @@ import org.springframework.binding.validation.support.DefaultValidationMessage;
 import org.springframework.binding.validation.support.DefaultValidationResults;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
+
+import java.util.Set;
 
 /**
  * Tests for @link DefaultFormModel
@@ -58,7 +57,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         TestConversionService cs = new TestConversionService();
-        cs.executer = new ConversionExecutor(String.class, String.class, new NoOpConverter(String.class, String.class));
+        cs.executer = new ConversionExecutor(String.class, String.class, new CopiedPublicNoOpConverter(String.class, String.class));
         fm.setConversionService(cs);
         ValueModel vm = fm.getValueModel("simpleProperty");
         assertEquals(1, v.count);
@@ -328,7 +327,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
             this.targetClass = targetClass;
         }
 
-        public Object convert(Object source, Class targetClass, Map context) throws ConversionException {
+        public Object convert(Object source, Class targetClass, ConversionContext context) throws ConversionException {
             throw new ConversionException("test", targetClass);
         }
 

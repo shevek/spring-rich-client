@@ -15,14 +15,10 @@
  */
 package org.springframework.binding.form.support;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.ConversionService;
-import org.springframework.binding.convert.support.GenericConversionService.NoOpConverter;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
@@ -31,6 +27,9 @@ import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.test.SpringRichTestCase;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Tests for @link AbstractFormModel
@@ -332,7 +331,7 @@ public class AbstractFormModelTests extends SpringRichTestCase {
         assertEquals(Integer.class, cs.lastTarget);
 
         cs.executer = new ConversionExecutor(String.class, Integer.class,
-                new NoOpConverter(String.class, Integer.class));
+                new CopiedPublicNoOpConverter(String.class, Integer.class));
         ValueModel cvm = fm.getValueModel("simpleProperty", Integer.class);
         assertEquals(3, cs.calls);
         assertEquals(Integer.class, cs.lastSource);
@@ -469,7 +468,7 @@ public class AbstractFormModelTests extends SpringRichTestCase {
             return null;
         }
 
-        public ConversionExecutor[] getConversionExecutorsFrom(Class sourceClass) throws ConversionException {
+        public ConversionExecutor[] getConversionExecutorsForSource(Class sourceClass) throws ConversionException {
             fail("this method should never be called");
             return null;
         }

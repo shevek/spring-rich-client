@@ -15,18 +15,18 @@
  */
 package org.springframework.richclient.application;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-
+import org.springframework.binding.convert.ConversionContext;
 import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.format.FormatterFactory;
 import org.springframework.binding.format.support.SimpleFormatterFactory;
-import org.springframework.binding.util.MapAccessor;
 import org.springframework.richclient.convert.support.CollectionConverter;
 import org.springframework.richclient.convert.support.ListModelConverter;
 import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 
 public class DefaultConversionService extends org.springframework.binding.convert.support.DefaultConversionService {
 
@@ -67,7 +67,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { Date.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterFactory().getDateTimeFormatter()
                     .parseValue((String) source, Date.class) : null;
         }
@@ -90,7 +90,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             return (!allowEmpty || source != null) ? getFormatterFactory().getDateTimeFormatter().formatValue(source)
                     : "";
         }
@@ -114,7 +114,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
                     BigInteger.class, BigDecimal.class, };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             return (!allowEmpty || StringUtils.hasText((String)source)) ? getFormatterFactory().getNumberFormatter(
                     targetClass).parseValue((String) source, targetClass) : null;
         }
@@ -138,7 +138,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             return (!allowEmpty || source != null) ? getFormatterFactory().getNumberFormatter(source.getClass())
                     .formatValue(source) : "";
         }
@@ -182,7 +182,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { Boolean.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             String text = (String) source;
             if (!StringUtils.hasText(text)) {
                 return null;
@@ -230,7 +230,7 @@ public class DefaultConversionService extends org.springframework.binding.conver
             return new Class[] { String.class };
         }
 
-        protected Object doConvert(Object source, Class targetClass, MapAccessor context) throws Exception {
+        protected Object doConvert(Object source, Class targetClass, ConversionContext context) throws Exception {
             Boolean bool = (Boolean) source;
             if (this.trueString != null && bool.booleanValue()) {
                 return trueString;

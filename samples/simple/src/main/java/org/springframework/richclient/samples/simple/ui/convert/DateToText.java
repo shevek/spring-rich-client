@@ -15,12 +15,12 @@
  */
 package org.springframework.richclient.samples.simple.ui.convert;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.springframework.binding.convert.ConversionContext;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.format.support.DateFormatter;
-import org.springframework.binding.util.MapAccessor;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Convert a Date value to a String. This will determine how all Date fields are rendered
@@ -63,7 +63,7 @@ public class DateToText extends AbstractFormattingConverter {
     /**
      * Convert the Date to a String using the configured format.
      */
-    protected Object doConvert( Object source, Class targetClass, MapAccessor context ) throws Exception {
+    protected Object doConvert( Object source, Class targetClass, ConversionContext context ) throws Exception {
         return (source == null) ? "" : format.formatValue(source);
     }
 
