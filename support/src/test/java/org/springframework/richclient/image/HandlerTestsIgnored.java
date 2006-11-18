@@ -15,20 +15,19 @@
  */
 package org.springframework.richclient.image;
 
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import junit.framework.TestCase;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Tests the "image:" URL protocol handler.
  * 
  * @author oliverh
  */
-public class HandlerTests extends TestCase {
+public class HandlerTestsIgnored extends TestCase {
 
     private static boolean imageHasNotBeenInstalledInThisJVM = true;
 
