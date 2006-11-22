@@ -196,8 +196,6 @@ public class ContactView extends AbstractView implements ApplicationListener {
 	 */
 	private class NewContactExecutor implements ActionCommandExecutor {
 		public void execute() {
-			// We know exactly one contact will be selected at this time because
-			// of the guards put in place in prepareTable.
 			new ContactPropertiesDialog(getContactDataStore()).showDialog();
 		}
 	}
