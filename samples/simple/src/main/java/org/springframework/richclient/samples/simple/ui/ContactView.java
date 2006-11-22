@@ -123,9 +123,9 @@ public class ContactView extends AbstractView implements ApplicationListener {
 		filterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		contactTable = new ContactTableFactory().createContactTable();
+
 		JPanel view = new JPanel(new BorderLayout());
 		JScrollPane sp = getComponentFactory().createScrollPane(contactTable.getControl());
-
 		view.add(filterPanel, BorderLayout.NORTH);
 		view.add(sp, BorderLayout.CENTER);
 		return view;
@@ -186,6 +186,7 @@ public class ContactView extends AbstractView implements ApplicationListener {
 			ValueModel selectionHolder = new ListSelectionValueModelAdapter(contactTable.getSelectionModel());
 			new ListSingleSelectionGuard(selectionHolder, deleteExecutor);
 			new ListSingleSelectionGuard(selectionHolder, propertiesExecutor);
+			
 			return contactTable;
 		}
 	}
