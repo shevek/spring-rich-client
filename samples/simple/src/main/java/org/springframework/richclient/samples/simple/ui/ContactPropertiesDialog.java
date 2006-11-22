@@ -37,13 +37,13 @@ import org.springframework.util.Assert;
  */
 public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 
-	/** The form that displays the form model. */
+	/** The form that allows for editing the contact. */
 	private Form form;
 
 	/** Are we creating a new Contact or editing an existing one? */
 	private boolean creatingNew = false;
 
-	/** The data store holding all our contacts. */
+	/** The data store holding all our contacts, used to add a new contact. */
 	private ContactDataStore dataStore;
 
 	public ContactPropertiesDialog(ContactDataStore dataStore) {
@@ -87,11 +87,11 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		String eventType;
 		if (creatingNew) {
 			eventType = LifecycleApplicationEvent.CREATED;
+			dataStore.add(getEditingContact());
 		}
 		else {
 			eventType = LifecycleApplicationEvent.MODIFIED;
 		}
-		dataStore.add(getEditingContact());
 		// And notify the rest of the application of the change
 		getApplicationContext().publishEvent(new LifecycleApplicationEvent(eventType, getEditingContact()));
 		return true;
