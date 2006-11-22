@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.AbstractForm;
-import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 
 /**
@@ -48,8 +47,7 @@ public class ContactForm extends AbstractForm {
 	 * @see org.springframework.richclient.form.AbstractForm#createFormControl()
 	 */
 	protected JComponent createFormControl() {
-		final SwingBindingFactory bf = (SwingBindingFactory) getBindingFactory();
-		TableFormBuilder formBuilder = new TableFormBuilder(bf);
+		TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
 		formBuilder.setLabelAttributes("colGrId=label colSpec=right:pref");
 
 		formBuilder.addSeparator("General");
