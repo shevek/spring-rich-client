@@ -12,10 +12,10 @@
             are "shared" among views.  This indicates to the manager that they
             will have different target executors in each view.
     -->
-	<bean id="windowCommandManager" 
-		class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+	<bean id="windowCommandManager" class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
 		<property name="sharedCommandIds">
 			<list>
+				<value>newContactCommand</value>
 				<value>propertiesCommand</value>
 				<value>deleteCommand</value>
 			</list>
@@ -31,8 +31,7 @@
             The "members" property is used to specify the top level menus in the
             menu bar.
     -->
-	<bean id="menuBar" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="menuBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<ref bean="fileMenu"/>
@@ -53,11 +52,10 @@
             as well and they will be rendered as a button that creates a drop down
             menu when pressed.
     -->
-	<bean id="toolBar" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="toolBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
-				<ref bean="newContactCommand"/>
+				<value>newContactCommand</value>
 				<value>deleteCommand</value>
                 <value>propertiesCommand</value>
 			</list>
@@ -72,8 +70,7 @@
             to shared (predefined) commands by name, directly including a bean (the
             ExitCommand), and including a sub-menu (newMenu).
     -->
-	<bean id="fileMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="fileMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<ref bean="newMenu"/>
@@ -93,11 +90,10 @@
         Usage: optional
         Description: This specifies the content of the "New" menu.
     -->
-	<bean id="newMenu"
-	    class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="newMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 	    <property name="members">
 	        <list>
-	            <ref bean="newContactCommand" />
+	            <value>newContactCommand</value>
 	        </list>
 	    </property>
 	</bean>
@@ -108,8 +104,7 @@
         Usage: optional
         Description: This specifies the content of the "Window" menu.
     -->
-	<bean id="windowMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="windowMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<bean class="org.springframework.richclient.command.support.NewWindowCommand"/>
@@ -125,8 +120,7 @@
         Usage: optional
         Description: This specifies the content of the "Help" menu.
     -->
-	<bean id="helpMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="helpMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<ref bean="helpContentsCommand"/>
@@ -136,47 +130,7 @@
 		</property>
 	</bean>
 
-    <!-- 
-        Bean: contactViewPopupMenu
-        Type: user named
-        Usage: optional
-        Description: This specifies the content of the popup (context) menu to be
-            used on the ContactView table.  See ContactView#prepareTable to see how
-            it is used.
-    -->
-    <bean id="contactViewPopupMenu" 
-        class="org.springframework.richclient.command.CommandGroupFactoryBean">
-        <property name="members">
-            <list>
-                <ref bean="newContactCommand"/>
-                <value>separator</value>
-                <value>deleteCommand</value>
-                <value>separator</value>
-                <value>propertiesCommand</value>
-            </list>
-        </property>
-    </bean>
-
-    <!-- 
-        Bean: newContactCommand
-        Type: user named
-        Usage: optional
-        Description: This creates an instance of a command.  The id of the command
-            will be used to obtain configuration data from the messageSource and the
-            imageSource.  This command uses a platform class that allows a command
-            to be targetted at an executor instead of having the command instance
-            embody the action code.  Note that the "contactPropertiesDialog" is
-            defined in the application context.
-    -->
-    <bean id="newContactCommand" 
-        class="org.springframework.richclient.command.TargetableActionCommand">
-        <property name="commandExecutor">
-            <ref bean="contactPropertiesDialog"/>
-        </property>
-    </bean>
-
-	<bean id="helpContentsCommand" 
-		class="org.springframework.richclient.command.support.HelpContentsCommand">
+	<bean id="helpContentsCommand" class="org.springframework.richclient.command.support.HelpContentsCommand">
         <property name="helpSetPath" value="help/simple.hs"/>
     </bean>
 		
@@ -188,8 +142,7 @@
             a platform class to generate an about box from the configured application
             data in the application context.
     -->
-	<bean id="aboutCommand" 
-		class="org.springframework.richclient.command.support.AboutCommand">
+	<bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand">
 	</bean>
 		
 </beans>

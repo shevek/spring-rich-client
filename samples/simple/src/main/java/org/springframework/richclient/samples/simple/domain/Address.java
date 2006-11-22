@@ -17,100 +17,103 @@ package org.springframework.richclient.samples.simple.domain;
 
 /**
  * This class provides a simple domain object to hold a single US address.
- * 
  * @author Larry Streepy
- * 
  */
 public class Address {
 
-    private String address1;
-    private String address2;
-    private String address3;
-    private String city;
-    private String state;
-    private String zip;
+	private String address1;
 
-    /**
-     * @return the city
-     */
-    public String getCity() {
-        return city;
-    }
+	private String address2;
 
-    /**
-     * @param city the city to set
-     */
-    public void setCity( String city ) {
-        this.city = city;
-    }
+	private String address3;
 
-    /**
-     * @return the address1
-     */
-    public String getAddress1() {
-        return address1;
-    }
+	private String city;
 
-    /**
-     * @param line1 the line1 to set
-     */
-    public void setAddress1( String address1 ) {
-        this.address1 = address1;
-    }
+	private String state;
 
-    /**
-     * @return the address2
-     */
-    public String getAddress2() {
-        return address2;
-    }
+	private String zip;
 
-    /**
-     * @param address2 the address2 to set
-     */
-    public void setAddress2( String address2 ) {
-        this.address2 = address2;
-    }
+	/**
+	 * @return the city
+	 */
+	public String getCity() {
+		return city;
+	}
 
-    /**
-     * @return the address3
-     */
-    public String getAddress3() {
-        return address3;
-    }
+	/**
+	 * @param city the city to set
+	 */
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    /**
-     * @param address3 the address3 to set
-     */
-    public void setAddress3( String line3 ) {
-        this.address3 = line3;
-    }
+	/**
+	 * @return the address1
+	 */
+	public String getAddress1() {
+		return address1;
+	}
 
-    /**
-     * @return the state
-     */
-    public String getState() {
-        return state;
-    }
+	/**
+	 * @param line1 the line1 to set
+	 */
+	public void setAddress1(String address1) {
+		this.address1 = address1;
+	}
 
-    /**
-     * @param state the state to set
-     */
-    public void setState( String state ) {
-        this.state = state;
-    }
+	/**
+	 * @return the address2
+	 */
+	public String getAddress2() {
+		return address2;
+	}
 
-    /**
-     * @return the zip
-     */
-    public String getZip() {
-        return zip;
-    }
+	/**
+	 * @param address2 the address2 to set
+	 */
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
 
-    /**
-     * @param zip the zip to set
-     */
-    public void setZip( String zip ) {
-        this.zip = zip;
-    }
+	/**
+	 * @return the address3
+	 */
+	public String getAddress3() {
+		return address3;
+	}
+
+	/**
+	 * @param address3 the address3 to set
+	 */
+	public void setAddress3(String line3) {
+		this.address3 = line3;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	/**
+	 * @return the zip
+	 */
+	public String getZip() {
+		return zip;
+	}
+
+	/**
+	 * @param zip the zip to set
+	 */
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
 }

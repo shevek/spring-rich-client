@@ -38,8 +38,7 @@
             Note that, currently, this object is not pluggable.  You must use the
             class specified below and configure it as needed.
     -->
-	<bean id="application" 
-		class="org.springframework.richclient.application.Application">
+	<bean id="application" class="org.springframework.richclient.application.Application">
 		<constructor-arg index="0" ref="applicationDescriptor"/>
 		<constructor-arg index="1" ref="lifecycleAdvisor"/>
 	</bean>
@@ -64,12 +63,60 @@
             AWT event thread as the handler to receive uncaught exceptions that occur
             on the event thread.
     -->
-    <bean id="lifecycleAdvisor"
-        class="org.springframework.richclient.samples.simple.app.SimpleLifecycleAdvisor">
-        <property name="windowCommandBarDefinitions"
-                  value="org/springframework/richclient/samples/simple/ui/commands-context.xml"/>
+    <bean id="lifecycleAdvisor" class="org.springframework.richclient.samples.simple.app.SimpleLifecycleAdvisor">
+        <property name="windowCommandBarDefinitions" value="org/springframework/richclient/samples/simple/ui/commands-context.xml"/>
         <property name="startingPageId" value="initialView"/>
     </bean>
+
+	<!-- 
+        Bean: initialView
+        Type: user named
+        Usage: application
+        Description: This specifies the component that describes the initial view
+            to present when the application is started.  The application window
+            uses a ViewDescriptor to define the view to be presented.  The
+            ViewDescriptor is then configured with the name of the class that
+            provides the view and any properties to be configured on the view instance
+            when it is created.
+    -->
+    <bean id="initialView" class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+        <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView"/>
+        <property name="viewProperties">
+            <map>
+                <entry key="firstMessage" value="firstMessage.text"/>
+                <entry key="descriptionTextPath" value="org/springframework/richclient/samples/simple/ui/initialViewText.html"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 
+        Bean: contactView
+        Type: user named
+        Usage: application
+        Description: This specifies the component that describes the Contact view.
+            As above with the initial view, we configure any view properties here.
+            Note the use of the contactTableFactory.  Since the actual contactView
+            instance is created by the platform (using data from the view descriptor),
+            we need a way to get a new instance of the contactTable plugged into each
+            instance of the view.  Using the factory takes care of that.
+    -->
+    <bean id="contactView" class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+        <property name="viewClass">
+            <value>org.springframework.richclient.samples.simple.ui.ContactView</value>
+        </property>
+        <property name="viewProperties">
+            <map>
+                <entry key="contactDataStore" value-ref="contactDataStore"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 
+        Bean: contactDataStore
+        Usage: application
+        Description: Defines the data store holding all the contacts.
+    -->
+    <bean id="contactDataStore" class="org.springframework.richclient.samples.simple.domain.ContactDataStore"/>
 
     <!-- 
         Bean: serviceLocator
@@ -91,17 +138,7 @@
             NOTE: The use of bean ids (idref) is preferred over using direct bean
             references to avoid startup problems with circular references.
     -->
-    <bean id="applicationServices"
-        class="org.springframework.richclient.application.support.DefaultApplicationServices">
-        <property name="imageSourceId"><idref bean="imageSource"/></property>
-        <!-- It is not required to define each service bean here if the bean name maches the service type name like rulesSource.
-             The service implementation will still be found if the bean name uses the decapitalized short name of the service type.
-        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
-         -->
-        <property name="conversionServiceId"><idref bean="conversionService"/></property>
-        <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
-        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
-    </bean>
+    <bean id="applicationServices" class="org.springframework.richclient.application.support.DefaultApplicationServices"/>
 
     <!-- 
         Bean: applicationEventMulticaster
@@ -120,8 +157,7 @@
             Application.  Note the reference to this bean in the constructor
             args in the application bean.
     -->
-    <bean id="applicationDescriptor" 
-		class="org.springframework.richclient.application.support.DefaultApplicationDescriptor">
+    <bean id="applicationDescriptor" class="org.springframework.richclient.application.support.DefaultApplicationDescriptor">
 		<property name="version" value="1.0"/>
 		<property name="buildId" value="20060408-001"/>
 	</bean>
@@ -145,8 +181,7 @@
             the context.  Take a look at the JGoodiesLooksConfigurer class for an
             example of this.
     -->
-	<bean id="lookAndFeelConfigurer" 
-		class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
+	<bean id="lookAndFeelConfigurer" class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
 		<property name="popupDropShadowEnabled" value="false" />
 		<property name="theme">	
 			<bean class="com.jgoodies.looks.plastic.theme.ExperienceBlue"/>
@@ -165,8 +200,7 @@
             text resources for the platform, you should include
             org.springframework.richclient.application.messages as the last base name.
     -->
-	<bean id="messageSource" 
-		class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
 				<value>org.springframework.richclient.samples.simple.ui.messages</value>
@@ -182,8 +216,7 @@
             image resources locations.  This factory uses the specified properties
             files to map image resource keys to image locations.
     -->
-	<bean id="imageResourcesFactory" 
-		class="org.springframework.context.support.ResourceMapFactoryBean">
+	<bean id="imageResourcesFactory" class="org.springframework.context.support.ResourceMapFactoryBean">
 		<property name="locations">
 			<list>
 				<value>classpath:org/springframework/richclient/image/images.properties</value>
@@ -203,8 +236,7 @@
             a "broken image" image for any requested image that can't be found or fails
             to load.
     -->
-	<bean id="imageSource" 
-		class="org.springframework.richclient.image.DefaultImageSource">
+	<bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
 		<constructor-arg index="0" ref="imageResourcesFactory"/>
 		<property name="brokenImageIndicator" value="images/alert/error_obj.gif"/>
 	</bean>
@@ -219,8 +251,7 @@
             images and background color changes, provide popup menus in text fields, 
             and autocompletion (as you type) for comboboxes.
     -->
-	<bean id="formComponentInterceptorFactory" 
-		class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+	<bean id="formComponentInterceptorFactory" class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
 		<property name="interceptorFactories">
 			<list>
 				<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
@@ -240,8 +271,7 @@
             for properties bound into forms.  This allows validation rules to be
             specified separately from the implementation of the business domain object.
     -->
-	<bean id="rulesSource" 
-		class="org.springframework.richclient.samples.simple.domain.SimpleValidationRulesSource"/>
+	<bean id="rulesSource" class="org.springframework.richclient.samples.simple.domain.SimpleValidationRulesSource"/>
 
     <!-- 
         Bean: conversionService
@@ -251,137 +281,10 @@
             for handling Dates, we need to have a reference to this service
             in the context.  See the next bean for how we use it.
     -->
-	<bean id="conversionService"
-	    class="org.springframework.richclient.application.DefaultConversionService" />
-
-    <!-- 
-        Bean: unnamed
-        Description: We need to add a couple of converter imlpementations to the
-            conversion service.  So, we make use of a standard Spring factory
-            bean in order to call an arbitrary method on another object (the conversion
-            service) to add the converters for Date handling.
-    -->
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject" ref="conversionService"/>
-	    <property name="targetMethod" value="addConverters"/>
-	    <property name="arguments">
-	        <list>
-                <list>
-   	               <bean class="org.springframework.richclient.samples.simple.ui.convert.TextToDate" />
-	               <bean class="org.springframework.richclient.samples.simple.ui.convert.DateToText" />
-                </list>
-	        </list>
-	    </property>
+	<bean id="conversionService" class="org.springframework.richclient.application.DefaultConversionServiceFactoryBean">
+		<property name="formatterFactory">
+			<bean class="org.springframework.richclient.samples.simple.ui.SimpleAppFormatterFactory"/>
+		</property>
 	</bean>
-
-    <!-- 
-        Bean: applicationEventRedispatcher
-        Usage: application
-        Description: An object to redispatch application events.  See it's class
-            documentation for why this is needed.
-    -->
-    <bean id="applicationEventRedispatcher"
-        class="org.springframework.richclient.application.support.ApplicationEventRedispatcher">
-    </bean>
-
-    <!-- 
-        Bean: contactDataStore
-        Usage: application
-        Description: Defines the data store holding all the contacts.
-    -->
-    <bean id="contactDataStore"
-        class="org.springframework.richclient.samples.simple.domain.ContactDataStore">
-    </bean>
-
-	<!-- 
-        Bean: initialView
-        Type: user named
-        Usage: application
-        Description: This specifies the component that describes the initial view
-            to present when the application is started.  The application window
-            uses a ViewDescriptor to define the view to be presented.  The
-            ViewDescriptor is then configured with the name of the class that
-            provides the view and any properties to be configured on the view instance
-            when it is created.
-    -->
-    <bean id="initialView"
-        class="org.springframework.richclient.application.support.DefaultViewDescriptor">
-        <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView"/>
-        <property name="viewProperties">
-            <map>
-                <entry key="firstMessage" value="firstMessage.text"/>
-                <entry key="descriptionTextPath"
-                       value="org/springframework/richclient/samples/simple/ui/initialViewText.html"/>
-            </map>
-        </property>
-    </bean>
-
-    <!-- 
-        Bean: contactView
-        Type: user named
-        Usage: application
-        Description: This specifies the component that describes the Contact view.
-            As above with the initial view, we configure any view properties here.
-            Note the use of the contactTableFactory.  Since the actual contactView
-            instance is created by the platform (using data from the view descriptor),
-            we need a way to get a new instance of the contactTable plugged into each
-            instance of the view.  Using the factory takes care of that.
-    -->
-    <bean id="contactView"
-        class="org.springframework.richclient.application.support.DefaultViewDescriptor">
-        <property name="viewClass">
-            <value>org.springframework.richclient.samples.simple.ui.ContactView</value>
-        </property>
-        <property name="viewProperties">
-            <map>
-                <entry key="contactTableFactory" value-ref="contactTableFactory"/>
-                <entry key="contactDataStore" value-ref="contactDataStore"/>
-            </map>
-        </property>
-    </bean>
-
-    <!-- 
-        Bean: contactTable
-        Type: user named
-        Usage: application
-        Description: This defines the prototype object for a table of Contact
-            objects.  It must be a prototype since it holds state.  Also, since
-            it is a prototype, we can't use the normal tag interface mechanism of
-            wiring it into the application events.  We have to use a redispatcher
-            to ensure that all created instances get wired in.
-    -->
-    <bean id="contactTable"
-        class="org.springframework.richclient.samples.simple.ui.ContactTable"
-        singleton="false">
-        <property name="applicationEventRedispatcher" ref="applicationEventRedispatcher"/>
-        <property name="contactDataStore" ref="contactDataStore"/>
-    </bean>
-
-    <!-- 
-        Bean: contactTableFactory
-        Type: user named
-        Usage: application
-        Description: This defines a fatory bean that will create new instances of
-            the contactTable prototype. We will then inject this into the contactView.
-            By using this pattern, we avoid the contactView code having to access
-            the bean factory directly even though instances of it are not being
-            directly managed in this context.
-    -->
-    <bean id="contactTableFactory"
-        class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
-        <property name="targetBeanName" value="contactTable"/>
-    </bean> 
-
-    <!-- 
-        Bean: contactPropertiesDialog
-        Type: user named
-        Usage: application
-        Description: This specifies a component to display the properties of a contact.
-            This component is referenced from the commads-context.xml.
-    -->
-    <bean id="contactPropertiesDialog" 
-        class="org.springframework.richclient.samples.simple.ui.ContactPropertiesDialog">
-        <property name="contactDataStore" ref="contactDataStore"/>
-    </bean>
-    
+ 
 </beans>

@@ -19,29 +19,27 @@ import org.springframework.core.enums.ShortCodedLabeledEnum;
 
 /**
  * This class provides the Enums to indicate the type of contact, personal or business.
- * 
  * @author Larry Streepy
- * 
  */
 public class ContactType extends ShortCodedLabeledEnum {
 
-    /** Indicates a personal contact. */
-    public static final ContactType PERSONAL = new ContactType(0, "Personal");
+	/** Indicates a personal contact. */
+	public static final ContactType PERSONAL = new ContactType(0, "Personal");
 
-    /** Indicates a business contact. */
-    public static final ContactType BUSINESS = new ContactType(1, "Business");
+	/** Indicates a business contact. */
+	public static final ContactType BUSINESS = new ContactType(1, "Business");
 
-    /**
-     * Private constructor because this is a typesafe enum!
-     */
-    private ContactType( int code, String label ) {
-        super(code, label);
-    }
+	/**
+	 * Private constructor because this is a typesafe enum!
+	 */
+	private ContactType(int code, String label) {
+		super(code, label);
+	}
 
-    /**
-     * Override this to provide a better name in the combobox.
-     */
-    public String toString() {
-        return getLabel();
-    }
+	/**
+	 * Override this to provide a better name in the combobox.
+	 */
+	public String toString() {
+		return getLabel();
+	}
 }

@@ -15,9 +15,7 @@
  */
 package org.springframework.richclient.samples.simple.ui;
 
-import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
-import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.dialog.CloseAction;
 import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.dialog.FormBackedDialogPage;
@@ -26,158 +24,100 @@ import org.springframework.richclient.form.Form;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.samples.simple.domain.Contact;
 import org.springframework.richclient.samples.simple.domain.ContactDataStore;
+import org.springframework.util.Assert;
 
 /**
- * This is a dialog for editing the properties of a Contact object. It is a simple "form
- * backed" dialog, meaning that the body of the dialog is provided from a "form backed"
- * dialog page. The Ok (finish) button will be wired into the "page complete" state of the
- * dialog page, which in turn gets its state from the automatic validation of the
+ * This is a dialog for editing the properties of a Contact object. It is a simple "form backed" dialog, meaning that
+ * the body of the dialog is provided from a "form backed" dialog page. The Ok (finish) button will be wired into the
+ * "page complete" state of the dialog page, which in turn gets its state from the automatic validation of the
  * properties on the form.
- * 
  * @author Larry Streepy
  * @see FormBackedDialogPage
  * @see ContactForm
- * 
  */
-public class ContactPropertiesDialog extends TitledPageApplicationDialog implements ActionCommandExecutor {
+public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 
-    /** Our page Id, used for configuring messages. */
-    private static final String PROPERTIES_PAGE_ID = "contactProperties";
+	/** The form that displays the form model. */
+	private Form form;
 
-    /** The form model used to manage instances of the Contact object. */
-    private ValidatingFormModel formModel;
+	/** Are we creating a new Contact or editing an existing one? */
+	private boolean creatingNew = false;
 
-    /** The form that displays the form model. */
-    private Form form;
+	/** The data store holding all our contacts. */
+	private ContactDataStore dataStore;
 
-    /** Are we creating a new Contact or editing an existing one? */
-    private boolean creatingNew = false;
+	public ContactPropertiesDialog(ContactDataStore dataStore) {
+		this(null, dataStore);
+	}
 
-    /** The contact object we are processing. */
-    private Contact contact;
+	public ContactPropertiesDialog(Contact contact, ContactDataStore dataStore) {
+		Assert.notNull(dataStore, "The data store is required to edit a contact");
+		if (contact == null) {
+			creatingNew = true;
+			contact = new Contact();
+		}
+		setCloseAction(CloseAction.DISPOSE);
+		form = new ContactForm(FormModelHelper.createFormModel(contact));
+		setDialogPage(new FormBackedDialogPage(form));
+		this.dataStore = dataStore;
+	}
 
-    /** The data store holding all our contacts. */
-    private ContactDataStore contactDataStore;
+	@Override
+	protected void onAboutToShow() {
+		if (creatingNew) {
+			getMessage("contactProperties.new.title");
+			setTitle(getMessage("contactProperties.new.title"));
+		}
+		else {
+			Contact contact = getEditingContact();
+			String title = getMessage("contactProperties.edit.title", new Object[] { contact.getFirstName(),
+					contact.getLastName() });
+			setTitle(title);
+		}
+	}
 
-    /**
-     * Constructor.
-     */
-    public ContactPropertiesDialog() {
-        setCloseAction(CloseAction.DISPOSE);
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
+	 */
+	protected boolean onFinish() {
+		// commit any buffered edits to the model
+		form.getFormModel().commit();
+		// Update the persistent store with the new/modified object.
+		String eventType;
+		if (creatingNew) {
+			eventType = LifecycleApplicationEvent.CREATED;
+		}
+		else {
+			eventType = LifecycleApplicationEvent.MODIFIED;
+		}
+		dataStore.add(getEditingContact());
+		// And notify the rest of the application of the change
+		getApplicationContext().publishEvent(new LifecycleApplicationEvent(eventType, getEditingContact()));
+		return true;
+	}
 
-        setContact(null);
-        formModel = FormModelHelper.createFormModel(contact);
-        form = new ContactForm(formModel);
-        FormBackedDialogPage page = new FormBackedDialogPage(form);
-        setDialogPage(page);
-    }
+	private Contact getEditingContact() {
+		return (Contact) form.getFormModel().getFormObject();
+	}
 
-    /**
-     * Initialize using the configured contact.
-     */
-    private void initFormObject() {
-        form.setFormObject(contact);
-
-        if( creatingNew ) {
-            getMessage("contactProperties.new.title");
-            setTitle(getMessage("contactProperties.new.title"));
-        } else {
-            String title = getMessage("contactProperties.edit.title", new Object[] { contact.getFirstName(),
-                    contact.getLastName() });
-            setTitle(title);
-        }
-    }
-
-    /**
-     * Set the Contact object on which to operate. If the provided objec is null, then
-     * configure to handle the creation of a new object.
-     * 
-     * @param contact to operate upon, may be null
-     */
-    public void setContact( Contact contact ) {
-        if( contact == null ) {
-            creatingNew = true;
-            this.contact = new Contact();
-        } else {
-            creatingNew = false;
-            this.contact = contact;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
-     */
-    protected boolean onFinish() {
-        formModel.commit(); // Commit all changes to the model object
-
-        Contact contact = (Contact) formModel.getFormObject();
-
-        // Update the persistent store with the new/modified object.
-        String eventType;
-        if( creatingNew ) {
-            eventType = LifecycleApplicationEvent.CREATED;
-            getContactDataStore().add(contact);
-        } else {
-            eventType = LifecycleApplicationEvent.MODIFIED;
-            getContactDataStore().update(contact);
-        }
-
-        // And notify the rest of the application of the change
-        getApplicationContext().publishEvent(new LifecycleApplicationEvent(eventType, contact));
-
-        return true;
-    }
-
-    /**
-     * Handle a dialog cancellation request. Get use confirmation before discarding
-     * unsaved changes.
-     */
-    protected void onCancel() {
-        // Warn the user if they are about to discard their changes
-        if( formModel.isDirty() ) {
-            String msg = getMessage(PROPERTIES_PAGE_ID + ".dirtyCancelMessage");
-            String title = getMessage(PROPERTIES_PAGE_ID + ".dirtyCancelTitle");
-            ConfirmationDialog dlg = new ConfirmationDialog(title, msg) {
-
-                protected void onConfirm() {
-                    ContactPropertiesDialog.super.onCancel();
-                }
-            };
-            dlg.showDialog();
-        } else {
-            super.onCancel();
-        }
-    }
-
-    /**
-     * Execute this dialog. Simply show the dialog using the configured object. Note that
-     * when execute gets called from the newContactCommand, no call to
-     * {@link #setContact(Contact)} will have been made. So, this method resets the edit
-     * state upon exit.
-     */
-    public void execute() {
-        setParent(getActiveWindow().getControl());
-        initFormObject();
-        showDialog();
-
-        // At this point, the user is done interacting with the dialog. So, we can
-        // reset our object.
-        setContact(null);
-    }
-
-    /**
-     * @return the contactDataStore
-     */
-    public ContactDataStore getContactDataStore() {
-        return contactDataStore;
-    }
-
-    /**
-     * @param contactDataStore the contactDataStore to set
-     */
-    public void setContactDataStore( ContactDataStore contactDataStore ) {
-        this.contactDataStore = contactDataStore;
-    }
+	/**
+	 * Handle a dialog cancellation request. Get use confirmation before discarding unsaved changes.
+	 */
+	protected void onCancel() {
+		// Warn the user if they are about to discard their changes
+		if (form.getFormModel().isDirty()) {
+			String msg = getMessage("contactProperties.dirtyCancelMessage");
+			String title = getMessage("contactProperties.dirtyCancelTitle");
+			ConfirmationDialog dlg = new ConfirmationDialog(title, msg) {
+				protected void onConfirm() {
+					ContactPropertiesDialog.super.onCancel();
+				}
+			};
+			dlg.showDialog();
+		}
+		else {
+			super.onCancel();
+		}
+	}
 }
