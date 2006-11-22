@@ -32,11 +32,8 @@ import org.springframework.richclient.application.event.LifecycleApplicationEven
 import org.springframework.richclient.application.support.AbstractView;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.command.CommandGroupFactoryBean;
-import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
 import org.springframework.richclient.command.support.AbstractActionCommandExecutor;
-import org.springframework.richclient.command.support.DefaultCommandRegistry;
 import org.springframework.richclient.command.support.GlobalCommandIds;
 import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.list.ListSelectionValueModelAdapter;
@@ -69,12 +66,24 @@ public class ContactView extends AbstractView implements ApplicationListener {
 	/** The data store holding all our contacts. */
 	private ContactDataStore contactDataStore;
 
+	/**
+	 * Handler for the "New Contact" action.
+	 */
 	private ActionCommandExecutor newContactExecutor = new NewContactExecutor();
 
+	/**
+	 * Handler for the "Properties" action.
+	 */
 	private GuardedActionCommandExecutor propertiesExecutor = new PropertiesExecutor();
 
+	/**
+	 * Handler for the "Delete" action.
+	 */
 	private GuardedActionCommandExecutor deleteExecutor = new DeleteExecutor();
 
+	/**
+	 * The text field allowing the user to filter the contents of the contact table.
+	 */
 	private JTextField filterField;
 
 	/**
