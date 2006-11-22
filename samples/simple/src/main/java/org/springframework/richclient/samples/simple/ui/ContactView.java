@@ -113,8 +113,8 @@ public class ContactView extends AbstractView implements ApplicationListener {
 	 */
 	protected JComponent createControl() {
 		JPanel filterPanel = new JPanel(new BorderLayout());
-		JLabel lblFilter = getComponentFactory().createLabel("nameAddressFilter.label");
-		filterPanel.add(lblFilter, BorderLayout.WEST);
+		JLabel filterLabel = getComponentFactory().createLabel("nameAddressFilter.label");
+		filterPanel.add(filterLabel, BorderLayout.WEST);
 
 		String tip = getMessage("nameAddressFilter.caption");
 		filterField = getComponentFactory().createTextField();
