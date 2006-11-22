@@ -142,7 +142,6 @@
             a platform class to generate an about box from the configured application
             data in the application context.
     -->
-	<bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand">
-	</bean>
+	<bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand"/>
 		
 </beans>
