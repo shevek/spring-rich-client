@@ -277,9 +277,9 @@
         Bean: conversionService
         Usage: platform optional
         Description: This specifies the component that will supply converters
-            for property values.  Since we are going to add a special converter
-            for handling Dates, we need to have a reference to this service
-            in the context.  See the next bean for how we use it.
+            for property values.  Since we are going to add a special formatter
+            for date fields, we need to have a reference to this service
+            in the context configured with a custom formatter factory.
     -->
 	<bean id="conversionService" class="org.springframework.richclient.application.DefaultConversionServiceFactoryBean">
 		<property name="formatterFactory">
