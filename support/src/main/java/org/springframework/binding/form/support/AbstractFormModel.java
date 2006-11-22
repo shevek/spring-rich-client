@@ -32,13 +32,15 @@ import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.convert.ConversionService;
 import org.springframework.binding.convert.Converter;
+import org.springframework.binding.convert.support.DefaultConversionService;
+import org.springframework.binding.convert.support.GenericConversionService;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.ConfigurableFormModel;
-import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.FieldFace;
 import org.springframework.binding.form.FieldFaceSource;
-import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.FieldMetadata;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
 import org.springframework.binding.value.CommitTrigger;
 import org.springframework.binding.value.ValueModel;
@@ -49,7 +51,6 @@ import org.springframework.binding.value.support.MethodInvokingDerivedValueModel
 import org.springframework.binding.value.support.TypeConverter;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.application.DefaultConversionService;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.ClassUtils;
 import org.springframework.richclient.util.EventListenerListHelper;
@@ -329,7 +330,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
         // Check for locally registered property converters
         if (propertyConversionServices.containsKey(formProperty)) {
-            final DefaultConversionService propertyConversionService = (DefaultConversionService)propertyConversionServices.get(formProperty);
+        	//TODO - extract ConfigurableConversionService interface...
+            final GenericConversionService propertyConversionService = (GenericConversionService)propertyConversionServices.get(formProperty);
 
             if (propertyConversionService != null) {
                 convertTo = propertyConversionService.getConversionExecutor(sourceClass, targetClass);

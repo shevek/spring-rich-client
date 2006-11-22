@@ -26,6 +26,11 @@ public interface PageComponentContext {
 
     public ActionCommandExecutor getLocalCommandExecutor(String commandId);
 
+    /**
+     * Register a local handler for a global command.
+     * @param commandId the global command id
+     * @param localExecutor the local handler
+     */
     public void register(String commandId, ActionCommandExecutor localExecutor);
 
 }

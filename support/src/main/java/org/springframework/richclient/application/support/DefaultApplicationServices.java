@@ -38,7 +38,7 @@ import org.springframework.core.enums.StaticLabeledEnumResolver;
 import org.springframework.richclient.application.ApplicationPageFactory;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindowFactory;
-import org.springframework.richclient.application.DefaultConversionService;
+import org.springframework.richclient.application.DefaultConversionServiceFactoryBean;
 import org.springframework.richclient.application.PageComponentPaneFactory;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
@@ -868,7 +868,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     protected static final ImplBuilder conversionServiceImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             logger.info( "Creating default service impl: ConversionService" );
-            return new DefaultConversionService();
+            return new DefaultConversionServiceFactoryBean().getConversionService();
         }
     };
 
