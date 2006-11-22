@@ -62,6 +62,10 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		this.dataStore = dataStore;
 	}
 
+	private Contact getEditingContact() {
+		return (Contact) form.getFormModel().getFormObject();
+	}
+
 	@Override
 	protected void onAboutToShow() {
 		if (creatingNew) {
@@ -76,10 +80,7 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.richclient.dialog.ApplicationDialog#onFinish()
-	 */
+	@Override
 	protected boolean onFinish() {
 		// commit any buffered edits to the model
 		form.getFormModel().commit();
@@ -97,13 +98,7 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		return true;
 	}
 
-	private Contact getEditingContact() {
-		return (Contact) form.getFormModel().getFormObject();
-	}
-
-	/**
-	 * Handle a dialog cancellation request. Get use confirmation before discarding unsaved changes.
-	 */
+	@Override
 	protected void onCancel() {
 		// Warn the user if they are about to discard their changes
 		if (form.getFormModel().isDirty()) {
