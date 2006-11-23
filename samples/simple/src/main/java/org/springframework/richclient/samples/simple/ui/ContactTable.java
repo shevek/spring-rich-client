@@ -40,7 +40,6 @@ public class ContactTable extends AbstractObjectTable {
 		this.dataStore = dataStore;
 	}
 
-	@Override
 	protected void configureTable(JTable table) {
 		// Adjust the table column widths
 		TableColumnModel tcm = table.getColumnModel();

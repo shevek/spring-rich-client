@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
  */
 public class SimpleAppFormatterFactory extends SimpleFormatterFactory {
 
-	@Override
 	public Formatter getDateTimeFormatter() {
 		return new AppDateFormatter();
 	}
@@ -38,12 +37,10 @@ public class SimpleAppFormatterFactory extends SimpleFormatterFactory {
 		/** Pattern to verify date contains full 4 digit year. */
 		private final Pattern MDY_PATTERN = Pattern.compile("[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}");
 
-		@Override
 		protected String doFormatValue(Object value) {
 			return (value == null) ? "" : format.formatValue(value);
 		}
 
-		@Override
 		protected Object doParseValue(String formattedString, Class targetClass) throws InvalidFormatException,
 				ParseException {
 			String src = (String) formattedString;

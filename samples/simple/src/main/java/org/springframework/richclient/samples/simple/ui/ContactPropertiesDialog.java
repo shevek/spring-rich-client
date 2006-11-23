@@ -66,7 +66,6 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		return (Contact) form.getFormModel().getFormObject();
 	}
 
-	@Override
 	protected void onAboutToShow() {
 		if (creatingNew) {
 			getMessage("contactProperties.new.title");
@@ -80,7 +79,6 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		}
 	}
 
-	@Override
 	protected boolean onFinish() {
 		// commit any buffered edits to the model
 		form.getFormModel().commit();
@@ -98,7 +96,6 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 		return true;
 	}
 
-	@Override
 	protected void onCancel() {
 		// Warn the user if they are about to discard their changes
 		if (form.getFormModel().isDirty()) {
