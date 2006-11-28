@@ -20,9 +20,9 @@ Code style
     * We follow {{{http://www.springframework.org/development}Spring's conventions}}, which are a dialect of
     {{{http://java.sun.com/docs/codeconv/}Sun coding conventions for Java}}, with these few differences:
 
-        * The maximum is line length is 120 chars instead of 80 chars.
+        * The maximum line length is 120 chars instead of 80 chars.
 
-        * Identation is done by tabs of 4 spaces.
+        * Indentation is done by tabs of 4 spaces.
 
         * A new line before <<<else>>>, <<<catch>>> and <<<finally>>>.
 
@@ -48,13 +48,13 @@ Naming Conventions
 Build process
 
     The project root pom is the (in)direct parent pom of all module poms.
-    Therefor dependency configuration is inherited.
+    Therefore dependency configuration is inherited.
 
     * All versions should be specified in the project root pom: never in a module pom.
 
     * All poms should only depend on their direct dependencies.
 
-    * Dependency scope is ussually defined in the project root pom.xml (under discussion)
+    * Dependency scope is usually defined in the project root pom.xml (under discussion)
 
     * Dependencies should be marked optional (if they are optional) in the module pom. 
 
@@ -72,4 +72,4 @@ Documentation
 
 * Site documentation
 
-    * All apt/fml/xdoc files should be in camelCase starting with a low letter.
+    * All apt/fml/xdoc files should be in camelCase starting with a lower case letter.
