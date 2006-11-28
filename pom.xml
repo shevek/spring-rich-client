@@ -186,6 +186,15 @@
             </roles>
             <timezone>+1</timezone>
         </developer>
+        <developer>
+            <id>kevinstembridge</id>
+            <name>Kevin Stembridge</name>
+            <email>kevin DOT stembridge AT gmail DOT com</email>
+            <roles>
+                <role>Java developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
     </developers>
     <contributors />
 
