@@ -35,7 +35,6 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-resources</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -45,7 +44,6 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-core</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -55,7 +53,6 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-binding</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
@@ -65,7 +62,6 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-form</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
 
         <!-- Logging -->
