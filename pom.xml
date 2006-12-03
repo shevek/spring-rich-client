@@ -457,6 +457,9 @@
             <!--</plugin>-->
         </plugins>
     </reporting>
+    <properties>
+      <spring.version>2.0</spring.version>
+    </properties>
 
     <profiles>
         <profile>
@@ -482,10 +485,6 @@
         <module>archetype</module>
         <!-- Module release is delibertly skipped -->
     </modules>
-
-    <properties>
-      <spring.version>2.0</spring.version>
-    </properties>
 
     <dependencies>
         <dependency>
