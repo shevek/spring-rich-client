@@ -215,6 +215,36 @@
         <url>http://www.springframework.org</url>
     </organization>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>springRichclientRepository</id>
+            <name>Spring rich client repository</name>
+            <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>springRichclientSnapshotRepository</id>
+            <name>Spring rich client snapshot repository</name>
+            <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <!-- currently only needed to use jdepend report -->
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>codehaus-snapshots</id>
+            <name>Snapshot repository from codehaus</name>
+            <url>http://snapshots.maven.codehaus.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -452,37 +482,6 @@
         <module>archetype</module>
         <!-- Module release is delibertly skipped -->
     </modules>
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>springRichclientRepository</id>
-            <name>Spring rich client repository</name>
-            <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>springRichclientSnapshotRepository</id>
-            <name>Spring rich client snapshot repository</name>
-            <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <!-- currently only needed to use jdepend report -->
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>codehaus-snapshots</id>
-            <name>Snapshot repository from codehaus</name>
-            <url>http://snapshots.maven.codehaus.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <properties>
       <spring.version>2.0</spring.version>
