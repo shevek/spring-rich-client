@@ -121,3 +121,11 @@ org.acegisecurity.AuthenticationException.description = \
     the current application context and it implements <<<org.springframework.rules.RulesSource>>> it will be used as the implementation for it.
 
     * Upgraded dependencies on spring 2.0 final.
+
+	* ApplicationDialog small refactoring
+	
+	<<<setParent(Window)>>> is replaced by <<<setParentComponent(Component)>>>. This allows to pass any component which has the appropriate Frame/Dialog in it's hierarchy.
+	Window can still be retrieved by <<<getParentWindow()>>>. 
+	
+	<<<setLocationRelativeTo(Component)>>> is added. Before this method, the parent component was always used (if given) to set the location, but this might not be the preferred way.
+	This method provides more flexibility as to where your dialog will be placed besides the <<<setLocation(point)>>> method.
