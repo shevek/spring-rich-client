@@ -16,8 +16,12 @@
 package org.springframework.richclient.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
@@ -37,6 +41,8 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
@@ -99,7 +105,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private JDialog dialog;
 
-    private Window parent;
+    private Component parentComponent;
+    
+    private Window parentWindow;
 
     private CloseAction closeAction = CloseAction.HIDE;
 
@@ -112,6 +120,8 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private Dimension preferredSize;
 
     private Point location;
+    
+    private Component locationRelativeTo;
 
     private ActionCommand finishCommand;
 
@@ -127,9 +137,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         init();
     }
 
-    public ApplicationDialog(String title, Window parent) {
+    public ApplicationDialog(String title, Component parent) {
         setTitle(title);
-        setParent(parent);
+        setParentComponent(parent);
         init();
     }
 
@@ -142,9 +152,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * @param parent frame to which this dialog is attached.
      * @param closeAction sets the behaviour of the dialog upon close.
      */
-    public ApplicationDialog(String title, Window parent, CloseAction closeAction) {
+    public ApplicationDialog(String title, Component parent, CloseAction closeAction) {
         setTitle(title);
-        setParent(parent);
+        setParentComponent(parent);
         setCloseAction(closeAction);
         init();
     }
@@ -170,24 +180,30 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         return this.title;
     }
 
-    public void setParent(Window parent) {
-        if (parent != null) {
-            if (parent instanceof JFrame || parent instanceof JDialog) {
-                if (this.parent != parent) {
-                    if (isControlCreated()) {
-                        dialog.setLocationRelativeTo(parent);
-                    }
-                    this.parent = parent;
-                }
-            }
-            else {
-                throw new IllegalArgumentException("Parent must be a JFrame or JDialog.");
-            }
-        }
-        else {
-            this.parent = null;
-        }
+    /**
+	 * The parent Component that will be used to extract the Frame/Dialog owner
+	 * for the JDialog at creation. You may pass a Window/Frame that will be
+	 * used directly as parent for the JDialog, or you can pass the component
+	 * which has one of both in it's parent hierarchy. The latter option can be
+	 * handy when you're locally implementing Components without a direct
+	 * -connection to/notion of- a Window/Frame.
+	 * 
+	 * @param parentComponent Component that is a Frame/Window or has one in its parent
+	 * hierarchy.
+	 */
+    public void setParentComponent(Component parentComponent) {
+        this.parentComponent = parentComponent;
     }
+    
+    /**
+     * Returns the parent Component.  
+     * 
+     * @return
+     * @see #setParentComponent(Component)
+     */
+    public Component getParentComponent() {
+		return this.parentComponent;
+	}
 
     public void setCloseAction(CloseAction action) {
         this.closeAction = action;
@@ -210,8 +226,20 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         this.resizable = resizable;
     }
 
+    /**
+     * Set a specific location for the JDialog to popup.
+     * 
+     * @param location point on screen where to place the JDialog.
+     */
     public void setLocation(Point location) {
         this.location = location;
+    }
+    
+    /**
+     * @see Window#setLocationRelativeTo(Component)
+     */
+    public void setLocationRelativeTo(Component locationRelativeTo) {
+    	this.locationRelativeTo = locationRelativeTo;
     }
 
     public void setPreferredSize(Dimension preferredSize) {
@@ -267,90 +295,40 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Show the dialog. If the dialog has not already been initialized it will be here.
-     */
+	 * <p>
+	 * Show the dialog. The dialog will be created if it doesn't exist yet.
+	 * Before setting the dialog visible, a hook method onAboutToShow is called
+	 * and the location will be set.
+	 * </p>
+	 * <p>
+	 * When showing the dialog several times, it will always be opened on the
+	 * location that has been set, or relative to the parent. (former location
+	 * will not persist)
+	 * </p>
+	 */
     public void showDialog() {
         if (!isControlCreated()) {
             createDialog();
+        }
+        if (!isShowing()) {
             onAboutToShow();
             if (getLocation() != null) {
                 dialog.setLocation(getLocation());
             }
             else {
-                dialog.setLocationRelativeTo(parent);
-            }
+				dialog.setLocationRelativeTo(getLocationRelativeTo());
+			}
 
-            doShowDialog();
+            dialog.setVisible(true);
         }
-        else {
-            if (!isShowing()) {
-                onAboutToShow();
-                doShowDialog();
-            }
-        }
-    }
-
-    protected void doShowDialog() {
-        // if the parent is not set, and there is no active window, the parent of the
-        // dialog is the dummy frame we created
-        if (parent == null && getActiveWindow() == null) {
-            // get the dummy frame that got created
-            final JFrame frame = (JFrame)dialog.getParent();
-
-            // update the frame
-            frame.setTitle(dialog.getTitle());
-            frame.setLocation(dialog.getLocation());
-            frame.setSize(dialog.getSize());
-            frame.setIconImage(getApplication().getImage());
-
-            final ComponentListener componentListener = new ComponentAdapter() {
-                public void componentHidden(ComponentEvent e) {
-                    // if the dialog is hidden, hide the frame
-                    frame.setVisible(false);
-                }
-
-                public void componentMoved(ComponentEvent e) {
-                    // make sure the frame stays hidden behind the dialog
-                    frame.setLocation(dialog.getLocation());
-                }
-
-                public void componentResized(ComponentEvent e) {
-                    // make sure the frame stays hidden behind the dialog
-                    frame.setSize(dialog.getSize());
-                }
-            };
-            dialog.addComponentListener(componentListener);
-
-            final List closeHandlerHolder = new ArrayList();
-            WindowListener closeHandler = new WindowAdapter() {
-                public void windowClosed(WindowEvent e) {
-                    // if the dialog is closed, dispose the frame
-                    frame.dispose();
-
-                    // dirty stuff to get this compiled
-                    WindowListener closeHandler = (WindowListener)closeHandlerHolder.get(0);
-                    dialog.removeWindowListener(closeHandler);
-
-                    // cleanup
-                    dialog.removeComponentListener(componentListener);
-                }
-            };
-            closeHandlerHolder.add(closeHandler);
-            dialog.addWindowListener(closeHandler);
-
-            frame.setVisible(true);
-        }
-
-        dialog.setVisible(true);
     }
 
     /**
-     * Subclasses should call if layout of the dialog components changes.
-     */
+	 * Subclasses should call if layout of the dialog components changes.
+	 */
     protected void componentsChanged() {
         if (isControlCreated()) {
             dialog.pack();
-            dialog.setLocationRelativeTo(parent);
         }
     }
 
@@ -370,32 +348,50 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     private void constructDialog() {
-        if (parent instanceof JFrame) {
-            dialog = new JDialog((JFrame)parent, getTitle(), modal);
-        }
-        else if (parent instanceof JDialog) {
-            dialog = new JDialog((JDialog)parent, getTitle(), modal);
+        if (getParentWindow() instanceof Frame) {
+            dialog = new JDialog((Frame)getParentWindow(), getTitle(), modal);
         }
         else {
-            if (logger.isInfoEnabled()) {
-                logger.warn("Parent is not a JFrame or JDialog, it is " + parent
-                        + ". Using current active window as parent by default.");
-            }
-            if (getActiveWindow() != null) {
-                dialog = new JDialog(getActiveWindow().getControl(), getTitle(), modal);
-            }
-            else {
-                // create a dummy frame to be used as its parent
-                dialog = new JDialog(new JFrame(), getTitle(), modal);
-            }
+            dialog = new JDialog((Dialog)getParentWindow(), getTitle(), modal);
         }
+
         dialog.getContentPane().setLayout(new BorderLayout());
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setResizable(resizable);
+        
         initStandardCommands();
         addCancelByEscapeKey();
     }
 
+    /**
+	 * <p>
+	 * --jh-- This method is copied from JOptionPane. I'm still trying to figure
+	 * out why they chose to have a static method with package visibility for
+	 * this one instead of just making it public.
+	 * </p>
+	 * 
+	 * Returns the specified component's toplevel <code>Frame</code> or
+	 * <code>Dialog</code>.
+	 * 
+	 * @param parentComponent the <code>Component</code> to check for a
+	 * <code>Frame</code> or <code>Dialog</code>
+	 * @return the <code>Frame</code> or <code>Dialog</code> that contains
+	 * the component, or the default frame if the component is <code>null</code>,
+	 * or does not have a valid <code>Frame</code> or <code>Dialog</code>
+	 * parent
+	 * @exception HeadlessException if
+	 * <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
+	 * @see java.awt.GraphicsEnvironment#isHeadless
+	 */
+    public static Window getWindowForComponent(Component parentComponent)
+        throws HeadlessException {
+        if (parentComponent == null)
+            return JOptionPane.getRootFrame();
+        if (parentComponent instanceof Frame || parentComponent instanceof Dialog)
+            return (Window)parentComponent;
+        return getWindowForComponent(parentComponent.getParent());
+    }
+    
     private void initStandardCommands() {
         finishCommand = new ActionCommand(getFinishCommandId()) {
             public void doExecuteCommand() {
@@ -558,6 +554,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected Point getLocation() {
         return location;
     }
+    
+    protected Component getLocationRelativeTo() {
+    	return locationRelativeTo;
+    }
 
     protected Dimension getPreferredSize() {
         return preferredSize;
@@ -702,12 +702,22 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-     * Returns the parent window.
-     * 
-     * @return the parent window
-     */
-    public Window getParent() {
-        return parent;
+	 * Returns the parent window based on the internal parent Component. Will
+	 * search for a Window in the parent hierarchy if needed (when parent
+	 * Component isn't a Window).
+	 * 
+	 * @return the parent window
+	 */
+    public Window getParentWindow() {
+    	if (parentWindow == null) {
+	    	if ((parentComponent == null) && (getActiveWindow() != null)) {
+	    		parentWindow = getActiveWindow().getControl();
+	    	}
+	    	else {
+	    		parentWindow = getWindowForComponent(parentComponent);
+	    	}
+    	}
+        return parentWindow;
     }
 
     private class DialogEventHandler extends WindowAdapter implements WindowFocusListener {
