@@ -356,7 +356,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             InputApplicationDialog renameDialog = new InputApplicationDialog(owner, "firstName");
             renameDialog.setTitle(getMessage("renameOwnerDialog.title"));
             renameDialog.setInputLabelMessage("renameOwnerDialog.label");
-            renameDialog.setParent(getWindowControl());
+            renameDialog.setParentComponent(getWindowControl());
             renameDialog.setFinishAction(new Block() {
 
                 public void handle(Object o) {
@@ -375,7 +375,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             InputApplicationDialog renameDialog = new InputApplicationDialog(pet, "name");
             renameDialog.setTitle(getMessage("renamePetDialog.title"));
             renameDialog.setInputLabelMessage("renamePetDialog.label");
-            renameDialog.setParent(getWindowControl());
+            renameDialog.setParentComponent(getWindowControl());
             renameDialog.setFinishAction(new Block() {
 
                 public void handle(Object o) {
