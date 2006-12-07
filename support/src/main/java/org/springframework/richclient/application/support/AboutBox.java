@@ -84,7 +84,7 @@ public class AboutBox {
 
     public void display(Window parent) {
         AboutDialog aboutMainDialog = new AboutDialog();
-        aboutMainDialog.setParent(parent);
+        aboutMainDialog.setParentComponent(parent);
         aboutMainDialog.showDialog();
     }
 
