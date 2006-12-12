@@ -305,6 +305,13 @@ public class ConstraintsAccessor extends AlgorithmsAccessor {
         return getConstraints().eq(propertyName, propertyValue);
     }
 
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint eq(String propertyName, Object propertyValue, Comparator comparator) {
+        return getConstraints().eq(propertyName, propertyValue, comparator);
+    }
+
     public PropertyConstraint gt(String propertyName, Comparable propertyValue) {
         return getConstraints().gt(propertyName, propertyValue);
     }
@@ -319,6 +326,55 @@ public class ConstraintsAccessor extends AlgorithmsAccessor {
 
     public PropertyConstraint lte(String propertyName, Comparable propertyValue) {
         return getConstraints().lte(propertyName, propertyValue);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint eqProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return getConstraints().eqProperty(propertyName, otherPropertyName, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint gtProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return getConstraints().gtProperty(propertyName, otherPropertyName, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint gteProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return getConstraints().gteProperty(propertyName, otherPropertyName, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint ltProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return getConstraints().ltProperty(propertyName, otherPropertyName, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint lteProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return getConstraints().lteProperty(propertyName, otherPropertyName, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint inRange(String propertyName, Comparable min, Comparable max, Comparator comparator) {
+        return getConstraints().inRange(propertyName, min, max, comparator);
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    public PropertyConstraint inRangeProperties(String propertyName, String minPropertyName, String maxPropertyName, Comparator comparator) {
+        return getConstraints().inRangeProperties(propertyName, minPropertyName, maxPropertyName, comparator);
     }
 
     public PropertyConstraint eqProperty(String propertyName, String otherPropertyName) {

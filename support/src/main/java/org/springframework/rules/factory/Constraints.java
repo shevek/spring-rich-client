@@ -592,6 +592,20 @@ public class Constraints extends AlgorithmsAccessor {
     }
 
     /**
+     * Apply a "equal to" constraint to a bean property.
+     * 
+     * @param propertyName The first property
+     * @param propertyValue The constraint value
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint eq(String propertyName, Object propertyValue, Comparator comparator) {
+        return new ParameterizedPropertyConstraint(propertyName, eq(propertyValue, comparator));
+    }
+
+    /**
      * Apply a "greater than" constraint to a bean property.
      * 
      * @param propertyName The first property
@@ -637,6 +651,109 @@ public class Constraints extends AlgorithmsAccessor {
 
     public PropertyConstraint valueProperties(String propertyName, BinaryConstraint constraint, String otherPropertyName) {
         return new PropertiesConstraint(propertyName, constraint, otherPropertyName);
+    }
+
+    /**
+     * Apply a "equal to" constraint to two bean properties.
+     * 
+     * @param propertyName The first property
+     * @param otherPropertyName The other property
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint eqProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return valueProperties(propertyName, EqualTo.instance(comparator), otherPropertyName);
+    }
+
+    /**
+     * Apply a "greater than" constraint to two properties
+     * 
+     * @param propertyName The first property
+     * @param otherPropertyName The other property
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint gtProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return valueProperties(propertyName, GreaterThan.instance(comparator), otherPropertyName);
+    }
+
+    /**
+     * Apply a "greater than or equal to" constraint to two properties.
+     * 
+     * @param propertyName The first property
+     * @param otherPropertyName The other property
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint gteProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return valueProperties(propertyName, GreaterThanEqualTo.instance(comparator), otherPropertyName);
+    }
+
+    /**
+     * Apply a "less than" constraint to two properties.
+     * 
+     * @param propertyName The first property
+     * @param otherPropertyName The other property
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint ltProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return valueProperties(propertyName, LessThan.instance(comparator), otherPropertyName);
+    }
+
+    /**
+     * Apply a "less than or equal to" constraint to two properties.
+     * 
+     * @param propertyName The first property
+     * @param otherPropertyName The other property
+     * @param comparator the comparator to use while comparing the values
+     * @return The constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint lteProperty(String propertyName, String otherPropertyName, Comparator comparator) {
+        return valueProperties(propertyName, LessThanEqualTo.instance(comparator), otherPropertyName);
+    }
+
+    /**
+     * Apply a inclusive "range" constraint to a bean property.
+     * 
+     * @param propertyName the property with the range constraint.
+     * @param min the low edge of the range
+     * @param max the high edge of the range
+     * @param comparator the comparator to use while comparing the values
+     * @return The range constraint constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint inRange(String propertyName, Object min, Object max, Comparator comparator) {
+        return value(propertyName, range(min, max, comparator));
+    }
+
+    /**
+     * Apply a inclusive "range" constraint between two other properties to a
+     * bean property.
+     * 
+     * @param propertyName the property with the range constraint.
+     * @param minPropertyName the low edge of the range
+     * @param maxPropertyName the high edge of the range
+     * @param comparator the comparator to use while comparing the values
+     * @return The range constraint constraint
+     * 
+     * @since 0.3.0
+     */
+    public PropertyConstraint inRangeProperties(String propertyName, String minPropertyName, String maxPropertyName, Comparator comparator) {
+        Constraint min = gteProperty(propertyName, minPropertyName, comparator);
+        Constraint max = lteProperty(propertyName, maxPropertyName, comparator);
+        return new CompoundPropertyConstraint(new And(min, max));
     }
 
     /**
@@ -716,9 +833,8 @@ public class Constraints extends AlgorithmsAccessor {
      * @return The range constraint constraint
      */
     public PropertyConstraint inRangeProperties(String propertyName, String minPropertyName, String maxPropertyName) {
-        PropertiesConstraint min = new PropertiesConstraint(propertyName, GreaterThanEqualTo.instance(),
-                minPropertyName);
-        PropertiesConstraint max = new PropertiesConstraint(propertyName, LessThanEqualTo.instance(), maxPropertyName);
+        Constraint min = gteProperty(propertyName, minPropertyName);
+        Constraint max = lteProperty(propertyName, maxPropertyName);
         return new CompoundPropertyConstraint(new And(min, max));
     }
 
