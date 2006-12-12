@@ -81,7 +81,6 @@ public class DefaultConversionServiceFactoryBean implements FactoryBean {
 	 */
 	protected ConversionService createConversionService() {
 		DefaultConversionService service = new DefaultConversionService();
-		service.addConverter(new TextToNumber(getFormatterFactory(), true));
 		service.addConverter(new TextToDate(getFormatterFactory(), true));
 		service.addConverter(new DateToText(getFormatterFactory(), true));
 		service.addConverter(new TextToNumber(getFormatterFactory(), true));
