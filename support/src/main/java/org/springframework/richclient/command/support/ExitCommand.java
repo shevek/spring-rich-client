@@ -18,14 +18,27 @@ package org.springframework.richclient.command.support;
 import org.springframework.richclient.application.Application;
 
 /**
+ * An action command that causes the application to exit.
+ * 
  * @author Keith Donald
  */
 public class ExitCommand extends ApplicationWindowAwareCommand {
+    
+    /** The identifier of this command. */
+    public static final String ID = "exitCommand";
 
+    /**
+     * Creates a new {@code ExitCommand} with an id of {@value #ID}.
+     */
     public ExitCommand() {
-        super("exitCommand");
+        super(ID);
     }
 
+    /**
+     * Closes the single {@link Application} instance.
+     * 
+     * @see Application#close()
+     */
     protected void doExecuteCommand() {
         Application.instance().close();
     }
