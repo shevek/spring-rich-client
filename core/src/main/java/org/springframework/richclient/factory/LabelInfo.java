@@ -27,10 +27,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * A parameter object for a labelable component; consists of the text, mnemonic,
- * mnemonicIndex, and accelerator that may be associated with a labeled
- * component. This class also acts a factory for producing control prototypes
- * which are preconfigured with a LabelInfo's properties.
+ * A parameter object for a labelable component; consists of the text, mnemonic, mnemonicIndex, and accelerator that may
+ * be associated with a labeled component. This class also acts a factory for producing control prototypes which are
+ * preconfigured with a LabelInfo's properties.
  * 
  * @author Keith Donald
  */
@@ -68,15 +67,32 @@ public class LabelInfo {
     }
 
     public int hashCode() {
-        return mnemonic + mnemonicIndex + text.hashCode();
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + mnemonic;
+        result = PRIME * result + mnemonicIndex;
+        result = PRIME * result + ((text == null) ? 0 : text.hashCode());
+        return result;
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof LabelInfo)) {
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
             return false;
-        }
-        LabelInfo info = (LabelInfo)o;
-        return text.equals(info.text) && mnemonic == info.mnemonic && mnemonicIndex == info.mnemonicIndex;
+        if (getClass() != obj.getClass())
+            return false;
+        final LabelInfo other = (LabelInfo) obj;
+        if (mnemonic != other.mnemonic)
+            return false;
+        if (mnemonicIndex != other.mnemonicIndex)
+            return false;
+        if (text == null) {
+            if (other.text != null)
+                return false;
+        } else if (!text.equals(other.text))
+            return false;
+        return true;
     }
 
     public JLabel configureLabel(JLabel label) {
@@ -104,7 +120,7 @@ public class LabelInfo {
         label.setLabelFor(component);
         return label;
     }
-    
+
     public AbstractButton configureButton(AbstractButton button) {
         Assert.notNull(button);
         button.setText(text);

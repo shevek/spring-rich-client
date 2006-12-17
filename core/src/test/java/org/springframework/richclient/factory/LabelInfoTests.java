@@ -42,6 +42,34 @@ public class LabelInfoTests extends TestCase {
         assertEquals('t', info.getMnemonic());
         assertEquals(3, info.getMnemonicIndex());
     }
+    
+    public void testEquals() throws Exception {
+        LabelInfo info1 = new LabelInfo("test", 0, 0);
+        LabelInfo info2 = new LabelInfo("test", 0, 0);
+        assertTrue(info1.equals(info2));
+        info2 = new LabelInfo("test", 1, 0);
+        assertFalse(info1.equals(info2));
+        info2 = new LabelInfo("test", 0, 1);
+        assertFalse(info1.equals(info2));
+        info2 = new LabelInfo("test2", 0, 0);
+        assertFalse(info1.equals(info2));
+        assertFalse(info1.equals(null));
+        info2 = new LabelInfo("test", 0,0) {};
+        assertFalse(info1.equals(info2));
+    }
+
+    public void testHashCode() throws Exception {
+        LabelInfo info1 = new LabelInfo("test", 0, 0);
+        LabelInfo info2 = new LabelInfo("test", 0, 0);
+        assertTrue(info1.hashCode() == info2.hashCode());
+        info2 = new LabelInfo("test", 1, 0);
+        assertFalse(info1.hashCode() == info2.hashCode());
+        LabelInfo info3 = new LabelInfo("test", 0, 1);
+        assertFalse(info1.hashCode() == info2.hashCode());
+        assertFalse(info2.hashCode() == info3.hashCode());
+        info2 = new LabelInfo("test2", 0, 0);
+        assertFalse(info1.hashCode() == info2.hashCode());
+    }
 
     public void testConstructorEmptyText() {
         LabelInfo info = new LabelInfo("", 'a', 5);
