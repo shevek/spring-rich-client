@@ -19,11 +19,21 @@ import java.util.List;
 
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 
+/**
+ * A command group member that represents a separator between other members of the group.
+ */
 public class SeparatorGroupMember extends GroupMember {
 
+    /**
+     * Creates a new {@code SeparatorGroupMember}.
+     */
     public SeparatorGroupMember() {
+        //do nothing
     }
 
+    /**
+     * Asks the given container to add a separator to itself.
+     */
     protected void fill(GroupContainerPopulator container, Object factory, CommandButtonConfigurer configurer,
             List previousButtons) {
         addSeparator(container);
