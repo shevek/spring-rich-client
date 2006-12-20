@@ -201,6 +201,10 @@ public class ConstraintsAccessor extends AlgorithmsAccessor {
         return getConstraints().present();
     }
 
+    public PropertyConstraint present(String property) {
+        return getConstraints().present(property);
+    }
+
     public Constraint ifTrue(Constraint constraint, Constraint mustAlsoBeTrue) {
         return getConstraints().ifTrue(constraint, mustAlsoBeTrue);
     }
