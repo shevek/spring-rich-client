@@ -36,7 +36,6 @@ import org.springframework.rules.constraint.MethodInvokingConstraint;
 import org.springframework.rules.constraint.Not;
 import org.springframework.rules.constraint.Or;
 import org.springframework.rules.constraint.ParameterizedBinaryConstraint;
-import org.springframework.rules.constraint.Present;
 import org.springframework.rules.constraint.Range;
 import org.springframework.rules.constraint.RegexpConstraint;
 import org.springframework.rules.constraint.RelationalOperator;
@@ -301,7 +300,7 @@ public class Constraints extends AlgorithmsAccessor {
     }
 
     public Constraint present() {
-        return Present.instance();
+        return Required.present();
     }
 
 	/**

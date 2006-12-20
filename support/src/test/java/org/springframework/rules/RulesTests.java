@@ -18,7 +18,9 @@ package org.springframework.rules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -162,63 +164,78 @@ public class RulesTests extends TestCase {
 	}
 
 	public void testRequired() {
-		Constraint req = Required.instance();
-		assertFalse(req.test(""));
-		assertFalse(req.test(null));
-        assertFalse(req.test(new ArrayList()));
-        assertFalse(req.test(new Object[0]));
-
-        assertTrue(req.test(new Integer(25)));
-		assertTrue(req.test("25"));
-        assertTrue(req.test(new Object[1]));
-        assertTrue(req.test(Arrays.asList(new Object[1])));
+		Required req = Required.instance();
+		assertEquals("required", req.getType());
+		emptyChecks(req);
 	}
 
-    public void testRequiredIfOthersPresent() {
-        Rules r = new Rules(Person.class);
-        PropertyConstraint c = new RequiredIfOthersPresent("zip", "city,state");
-        r.add(c);
+	public void testPresent() {
+		Required req = Required.present();
+		assertEquals("present", req.getType());
+		emptyChecks(req);
+	}
 
-        // Ensure that it properly reports all property dependencies
-        assertTrue(c.isDependentOn("zip"));
-        assertTrue(c.isDependentOn("city"));
-        assertTrue(c.isDependentOn("state"));
+	private void emptyChecks(Required req) {
+		assertFalse(req.test(""));
+		assertFalse(req.test(null));
+		assertFalse(req.test(new HashMap()));
+		assertFalse(req.test(new ArrayList()));
+		assertFalse(req.test(new Object[0]));
 
-        Person p = new Person();
-        
-        assertTrue(r.test(p)); // No city or state, so not required
-        
-        p.setCity("city");
-        assertTrue(r.test(p)); // Need both city and state, so not required
-        
-        p.setState("state");
-        assertFalse(r.test(p));
-        
-        p.setZip("zip");
-        assertTrue(r.test(p));
-        
-        // Now test the OR version
-        r = new Rules(Person.class);
-        c = new RequiredIfOthersPresent("zip", "city,state", LogicalOperator.OR);
-        r.add(c);
-        
-        assertTrue(c.isDependentOn("zip"));
-        assertTrue(c.isDependentOn("city"));
-        assertTrue(c.isDependentOn("state"));
+		assertTrue(req.test(new Integer(25)));
+		assertTrue(req.test("25"));
+		assertTrue(req.test(new Object[1]));
+		Map map = new HashMap();
+		map.put("1", "1");
+		assertTrue(req.test(map));
+		assertTrue(req.test(Arrays.asList(new Object[1])));
+	}
 
-        p = new Person();
-        
-        assertTrue(r.test(p)); // No city or state, so not required
-        
-        p.setCity("city");
-        assertFalse(r.test(p)); // Need either city and state, so required
-        
-        p.setState("state");
-        assertFalse(r.test(p));
-        
-        p.setZip("zip");
-        assertTrue(r.test(p));
-    }
+	public void testRequiredIfOthersPresent() {
+		Rules r = new Rules(Person.class);
+		PropertyConstraint c = new RequiredIfOthersPresent("zip", "city,state");
+		r.add(c);
+
+		// Ensure that it properly reports all property dependencies
+		assertTrue(c.isDependentOn("zip"));
+		assertTrue(c.isDependentOn("city"));
+		assertTrue(c.isDependentOn("state"));
+
+		Person p = new Person();
+
+		assertTrue(r.test(p)); // No city or state, so not required
+
+		p.setCity("city");
+		assertTrue(r.test(p)); // Need both city and state, so not required
+
+		p.setState("state");
+		assertFalse(r.test(p));
+
+		p.setZip("zip");
+		assertTrue(r.test(p));
+
+		// Now test the OR version
+		r = new Rules(Person.class);
+		c = new RequiredIfOthersPresent("zip", "city,state", LogicalOperator.OR);
+		r.add(c);
+
+		assertTrue(c.isDependentOn("zip"));
+		assertTrue(c.isDependentOn("city"));
+		assertTrue(c.isDependentOn("state"));
+
+		p = new Person();
+
+		assertTrue(r.test(p)); // No city or state, so not required
+
+		p.setCity("city");
+		assertFalse(r.test(p)); // Need either city and state, so required
+
+		p.setState("state");
+		assertFalse(r.test(p));
+
+		p.setZip("zip");
+		assertTrue(r.test(p));
+	}
 
 	public void testMaxLengthConstraint() {
 		Constraint p = new StringLengthConstraint(5);
@@ -264,17 +281,17 @@ public class RulesTests extends TestCase {
 		assertFalse(or.test("           "));
 	}
 
-  public void testXOr() {
-    XOr xor = new XOr();
-    xor.add(new InGroup(new String[] {"123", "12345"}));
-    xor.add(new InGroup(new String[] {"1234", "12345"}));
-    assertTrue(xor.test("123"));
-    assertTrue(xor.test("1234"));
-    assertFalse(xor.test("           "));
-    assertFalse(xor.test("12345"));
-  }
+	public void testXOr() {
+		XOr xor = new XOr();
+		xor.add(new InGroup(new String[] { "123", "12345" }));
+		xor.add(new InGroup(new String[] { "1234", "12345" }));
+		assertTrue(xor.test("123"));
+		assertTrue(xor.test("1234"));
+		assertFalse(xor.test("           "));
+		assertFalse(xor.test("12345"));
+	}
 
-  public void testNot() {
+	public void testNot() {
 		Number n = new Integer("25");
 		Constraint p = constraints.bind(EqualTo.instance(), n);
 		Not not = new Not(p);
@@ -340,8 +357,8 @@ public class RulesTests extends TestCase {
 		// test must be required, and have a length in range 3 to 25
 		// or test must just equal confirmTest
 		CompoundPropertyConstraint rules = new CompoundPropertyConstraint(constraints.or(constraints.all("test",
-				new Constraint[] { constraints.required(), constraints.maxLength(25), constraints.minLength(3) }), constraints
-				.eqProperty("test", "confirmTest")));
+				new Constraint[] { constraints.required(), constraints.maxLength(25), constraints.minLength(3) }),
+				constraints.eqProperty("test", "confirmTest")));
 		r.add(rules);
 		assertTrue(r.test(new TestBean()));
 		TestBean b = new TestBean();
@@ -360,7 +377,7 @@ public class RulesTests extends TestCase {
 	public void testDefaultRulesSource() {
 		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext(
 				"org/springframework/rules/rules-context.xml");
-		RulesSource rulesSource = (RulesSource)ac.getBean("rulesSource");
+		RulesSource rulesSource = (RulesSource) ac.getBean("rulesSource");
 		Rules rules = rulesSource.getRules(Person.class);
 		assertTrue(rules != null);
 		Person p = new Person();
@@ -371,7 +388,6 @@ public class RulesTests extends TestCase {
 		p.setLastName("Keith");
 		assertFalse(rules.test(p));
 	}
-
 
 	public class TestBean {
 
