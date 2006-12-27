@@ -23,41 +23,51 @@ import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.util.StringUtils;
 
 /**
- * A factory for creating a LabelInfo parameter object from a string descriptor.
+ * A factory for creating a {@link LabelInfo} parameter object from a given string descriptor.
  * The string is formatted as follows:
  * 
  * <pre>
- * 
- *  
  *   
- *    
- *                  te&amp;xt@ctrl-T
- *     
- *    
+ *   te&amp;xt@ctrl-T
  *   
- *  
  * </pre>
  * 
- * Where "&" represents the label's mnemonic and implied mnemonic index, and @<accelerator>
- * represents a key stroke accelerator to be set when this labelinfo is applied
+ * Where "&" represents the label's mnemonic and implied mnemonic index, and @&lt;accelerator&gt;
+ * represents a key stroke accelerator to be set when the {@code LabelInfo} is applied
  * to clickable buttons.
  * 
  * @author Keith Donald
  */
 public class LabelInfoFactory {
+    
     private static final Log logger = LogFactory.getLog(LabelInfoFactory.class);
 
     public String encodedLabel;
 
     public static final CommandButtonLabelInfo BLANK_BUTTON_LABEL = new CommandButtonLabelInfo("commandLabel");
 
+    /**
+     * Creates a new uninitialized {@code LabelInfoFactory}.
+     */
     public LabelInfoFactory() {
+        //do nothing
     }
 
+    /**
+     * Creates a new {@code LabelInfoFactory} that will create {@link LabelInfo} instances based 
+     * on the given string.
+     *
+     * @param encodedLabel The string that represents the label info parameters.
+     */
     public LabelInfoFactory(String encodedLabel) {
         setLabel(encodedLabel);
     }
 
+    /**
+     * Sets the string that uses an encoded syntax to represent label info parameters.
+     *
+     * @param encodedLabel The encoded representation of a {@code LabelInfo}. May be null.
+     */
     public void setLabel(String encodedLabel) {
         this.encodedLabel = encodedLabel;
     }
@@ -72,6 +82,11 @@ public class LabelInfoFactory {
         return parseLabelInfo(this.encodedLabel);
     }
 
+    /**
+     * Creates a new {@link CommandButtonLabelInfo} based on this instance's encoded label string. 
+     *
+     * @return A new CommandButtonLabelInfo.
+     */
     public CommandButtonLabelInfo createButtonLabelInfo() {
         return parseButtonLabelInfo(this.encodedLabel);
     }
@@ -151,7 +166,7 @@ public class LabelInfoFactory {
             }
             String keyStrokeString = text.substring(i + 1);
             accelerator = KeyStroke.getKeyStroke(keyStrokeString);
-            if (accelerator == null) {
+            if (accelerator == null && logger.isWarnEnabled()) {
                 logger.warn("Specified action accelerator string '" + keyStrokeString
                         + "' did not translate to a valid KeyStroke.");
             }
@@ -160,4 +175,5 @@ public class LabelInfoFactory {
         info = new LabelInfo(text, info.getMnemonic(), info.getMnemonicIndex());
         return new CommandButtonLabelInfo(info, accelerator);
     }
+    
 }
