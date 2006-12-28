@@ -25,22 +25,7 @@ import org.springframework.richclient.util.Assert;
  */
 public class ShowViewCommand extends ApplicationWindowAwareCommand {
     
-    /** The identifier of this command. */
-    public static final String ID = "showViewCommand";
-    
     private ViewDescriptor viewDescriptor;
-
-    /**
-     * Creates a new {@code ShowViewCommand} with an id of {@value #ID}. 
-     * The newly created command will be enabled by default.
-     */
-    //FIXME does this class need a no-args constructor? The class cannot operate without a 
-    //view descriptor and once set, the view descriptor ID will override the one set in this 
-    //constructor anyway.
-    public ShowViewCommand() {
-        super(ID);
-        setEnabled(true);
-    }
 
     /**
      * Creates a new {@code ShowViewCommand} with the given view descriptor and associated 
@@ -49,21 +34,21 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
      *
      * @param viewDescriptor The object describing the view that this command will be 
      * responsible for showing.
-     * @param window The application window that the command belongs to.
+     * @param applicationWindow The application window that the command belongs to.
      * 
-     * @throw IllegalArgumentException if {@code viewDescriptor} is null.
+     * @throw IllegalArgumentException if {@code viewDescriptor} or {@code applicationWindow} are null.
      */
-    public ShowViewCommand(ViewDescriptor viewDescriptor, ApplicationWindow window) {
-        this();
-        //FIXME does this really need to call this()? It only provides an ID that will be 
-        //overridden anyway when setViewDescriptor is called on the next line.
+    public ShowViewCommand(ViewDescriptor viewDescriptor, ApplicationWindow applicationWindow) {
+        Assert.required(applicationWindow, "applicationWindow");
         setViewDescriptor(viewDescriptor);
-        setApplicationWindow(window);
+        setApplicationWindow(applicationWindow);
         setEnabled(true);
     }
 
     /**
-     * Sets the object that describes the view that is to be opened by this command object.
+     * Sets the descriptor for the view that is to be opened by this command object. This
+     * command object will be assigned the id, label, icon, and caption from the given view
+     * descriptor.
      *
      * @param viewDescriptor The view descriptor, cannot be null.
      * 
@@ -83,9 +68,9 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
      */
     protected void doExecuteCommand() {
         //FIXME getApplicationWindow can potentially return null. This should probably be 
-        //made an invariant on the ApplicationWindowAwareCommand that it never returns null.
+        //made an invariant on the ApplicationWindowAwareCommand, that it never returns null.
         //Same applies to ApplicationWindow.getPage(), can also return null
-        getApplicationWindow().getPage().showView(viewDescriptor);
+        getApplicationWindow().getPage().showView(this.viewDescriptor);
     }
 
 }
