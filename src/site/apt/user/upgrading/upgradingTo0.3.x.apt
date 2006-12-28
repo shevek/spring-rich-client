@@ -129,3 +129,6 @@ org.acegisecurity.AuthenticationException.description = \
 	
 	<<<setLocationRelativeTo(Component)>>> is added. Before this method, the parent component was always used (if given) to set the location, but this might not be the preferred way.
 	This method provides more flexibility as to where your dialog will be placed besides the <<<setLocation(point)>>> method.
+
+    * ShowViewCommand no longer has a no-args constructor. See JIRA issue RCP-452 for details.
+
