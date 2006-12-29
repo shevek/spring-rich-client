@@ -462,7 +462,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
     }
 
     public FieldFace getFieldFace(String field) {
-        return getFieldFaceSource().getFieldFace(this, field);
+        return getFieldFaceSource().getFieldFace(field, this);
     }
 
     public ValueModel addMethod(String propertyMethodName, String derivedFromProperty) {
