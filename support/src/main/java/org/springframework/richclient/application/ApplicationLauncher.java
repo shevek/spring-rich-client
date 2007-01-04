@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.application;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
@@ -273,7 +275,7 @@ public class ApplicationLauncher {
 			displaySplashScreen(rootApplicationContext);
 		}
 
-		Application application;
+		final Application application;
 		try {
 			application = (Application) rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
 		}
@@ -282,7 +284,21 @@ public class ApplicationLauncher {
 					"A single org.springframework.richclient.Application bean definition must be defined "
 							+ "in the main application context", e);
 		}
-		application.start();
+		try {
+			// To avoid deadlocks when events fire during initialization of some swing components
+			// Possible to do: in theory not a single Swing component should be created (=modified) in the launcher thread...
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					application.start();
+				}
+			});
+		} catch (InterruptedException e) {
+			logger.warn("Application start interrupted", e);
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			throw new IllegalStateException("Application start thrown an exception: " + cause.getMessage(), cause);
+		}
+		// application.start();
 		logger.debug("Launcher thread exiting...");
 	}
 
