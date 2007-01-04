@@ -73,11 +73,22 @@ Maven 2 releases
 
 Nightly builds (unstable)
 
-    The latest snapshots are available in
+    There are 2 ways to get a nightly build
+
+    * The latest snapshots are sometimes available in
     {{{http://spring-rich-c.sourceforge.net/maven2snapshotrepository/org/springframework/richclient}the snapshot repository}}.
+    
     You can also configure this in your pom.xml if like to live on the edge (and shoot yourself in the foot).
 
-Source repository
+    * You can build the latest snapshots from source (RECOMMENDED).
+	
+    Checkout spring-richclient from {{{source-repository.html}the source repository}},
+    build it with <<<mvn -Dmaven.test.skip=true install>>>
+    and then optionally deployt it to your internal repo if other team members need it:
+	
++--
+mvn -DaltDeploymentRepository=myOwn::default::scp://myRepoIp/myRepoPath deploy:deploy
++--
 
-    More information at {{{source-repository.html}the source repository}},
-    but take a look at the development guide first.
+    This way you'll only update to the latest snapshot when you're ready (and have read the upgrading guide).
+	More information in the {{{development/developmentSetup.html}the development guide}}.
