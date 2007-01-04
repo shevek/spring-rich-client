@@ -87,7 +87,7 @@ Nightly builds (unstable)
     and then optionally deployt it to your internal repo if other team members need it:
 	
 +--
-mvn -DaltDeploymentRepository=myOwn::default::scp://myRepoIp/myRepoPath deploy:deploy
+mvn -Dmaven.skip.test -DaltDeploymentRepository=myOwn::default::scp://myRepoIp/myRepoPath deploy
 +--
 
     This way you'll only update to the latest snapshot when you're ready (and have read the upgrading guide).
