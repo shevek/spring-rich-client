@@ -27,6 +27,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.ServiceNotFoundException;
 import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
@@ -46,9 +47,24 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * The default implementation of the {@link ApplicationObjectConfigurer} interface. 
+ * 
+ * This class makes use of several application services in order to determine the property values 
+ * to be applied to objects being configured. For example, some string properties will be retrieved 
+ * from the application's message resource bundle using a {@link MessageSource}. To configure an
+ * object with images and icons, an {@link ImageSource} and {@link IconSource} respectively will
+ * be used. Subclasses can modify this behaviour by overriding the 
+ * {@link #configure(Object, String)} method but it may be more convenient to override some of
+ * the various methods that deal specificly with objects that implement certain 'configurable' 
+ * interfaces, such as {@link LabelConfigurable} or {@link TitleConfigurable}. See the javadoc of
+ * the {@link #configure(Object, String)} method for more details.
+ *   
+ *  
  * @author Keith Donald
+ * @author Kevin Stembridge
  */
 public class DefaultApplicationObjectConfigurer implements ApplicationObjectConfigurer, BeanPostProcessor {
+    
     private final Log logger = LogFactory.getLog(getClass());
 
     private static final String PRESSED_ICON_KEY = "pressedIcon";
@@ -76,208 +92,289 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
     private IconSource iconSource;
 
     /**
-     * Default constructor.  Will obtain services dependencies from the ApplicationServices
-     * locator.
+     * Creates a new {@code DefaultApplicationObjectConfigurer} that will obtain required services
+     * from the application services locator. 
      */
     public DefaultApplicationObjectConfigurer() {
+        //do nothing
     }
 
+    /**
+     * Creates a new {@code DefaultApplicationObjectConfigurer} that will use the given message 
+     * source. Other application services will be retrieved using the application services locator.
+     *
+     * @param messageSource The message source. May be null.
+     */
     public DefaultApplicationObjectConfigurer(MessageSource messageSource) {
         this(messageSource, null, null);
     }
 
+    /**
+     * Creates a new {@code DefaultApplicationObjectConfigurer} that will use the given message
+     * and image sources. Other application services will be retrieved using the application 
+     * services locator.
+     *
+     * @param messageSource The message source. May be null.
+     * @param imageSource The image source. May be null.
+     */
     public DefaultApplicationObjectConfigurer(MessageSource messageSource, ImageSource imageSource) {
         this(messageSource, imageSource, null);
     }
 
-    public DefaultApplicationObjectConfigurer(MessageSource messageSource, ImageSource imageSource,
-            IconSource iconSource) {
+    /**
+     * Creates a new {@code DefaultApplicationObjectConfigurer} that will use the given message,
+     * image and icon sources. If any of these services are null, they will be retrieved using the
+     * application services locator.
+     *
+     * @param messageSource The message source. May be null.
+     * @param imageSource The image source. May be null.
+     * @param iconSource The icon source. May be null.
+     */
+    public DefaultApplicationObjectConfigurer(MessageSource messageSource, 
+                                              ImageSource imageSource, 
+                                              IconSource iconSource) {
+        
         this.messageSource = messageSource;
         this.imageSource = imageSource;
         this.iconSource = iconSource;
+        
     }
 
     public void setLoadOptionalIcons(boolean loadOptionalIcons) {
         this.loadOptionalIcons = loadOptionalIcons;
     }
 
+    /**
+     * Returns this instance's message source. If a source was not provided at construction, it will
+     * be retrieved by the application services locator.
+     *
+     * @return The message source, never null.
+     * 
+     * @throws ServiceNotFoundException if a source was not provided at construction time and 
+     * the application services locator cannot find an instance of a message source.
+     */
     protected MessageSource getMessageSource() {
-        if( messageSource == null ) {
-            messageSource = (MessageSource)ApplicationServicesLocator.services().getService(MessageSource.class);
+        
+        if (messageSource == null) {
+            messageSource = (MessageSource) ApplicationServicesLocator.services().getService(MessageSource.class);
         }
+        
         return messageSource;
+        
     }
 
+    /**
+     * Returns this instance's icon source. If a source was not provided at construction, it will
+     * be retrieved by the application services locator.
+     *
+     * @return The icon source, never null.
+     * 
+     * @throws ServiceNotFoundException if a source was not provided at construction time and 
+     * the application services locator cannot find an instance of an icon source.
+     */
     protected IconSource getIconSource() {
-        if( iconSource == null ) {
-            iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
+        
+        if (iconSource == null) {
+            iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
         }
+        
         return iconSource;
+        
     }
 
+    /**
+     * Returns this instance's image source. If a source was not provided at construction, it will
+     * be retrieved by the application services locator.
+     *
+     * @return The image source, never null.
+     * 
+     * @throws ServiceNotFoundException if a source was not provided at construction time and 
+     * the application services locator cannot find an instance of an image source.
+     */
     protected ImageSource getImageSource() {
-        if( imageSource == null ) {
-            imageSource = (ImageSource)ApplicationServicesLocator.services().getService(ImageSource.class);
+        
+        if (imageSource == null) {
+            imageSource = (ImageSource) ApplicationServicesLocator.services().getService(ImageSource.class);
         }
+        
         return imageSource;
+        
     }
 
-    public Object configure(Object bean, String beanName) {
-        configureTitle(bean, beanName);
-        configureLabel(bean, beanName);
-        configureDescription(bean, beanName);
-        configureImageIcons(bean, beanName);
-        configureSecurityController(bean, beanName);
-        return bean;
+    public Object configure(Object object, String objectName) {
+        configureTitle(object, objectName);
+        configureLabel(object, objectName);
+        configureDescription(object, objectName);
+        configureImageIcons(object, objectName);
+        configureSecurityController(object, objectName);
+        return object;
     }
 
-    private void configureTitle(Object bean, String beanName) {
-        if (bean instanceof TitleConfigurable) {
-            TitleConfigurable titleable = (TitleConfigurable)bean;
-            titleable.setTitle(loadMessage(beanName, "title"));
+    private void configureTitle(Object object, String objectName) {
+        if (object instanceof TitleConfigurable) {
+            TitleConfigurable titleable = (TitleConfigurable)object;
+            titleable.setTitle(loadMessage(objectName, "title"));
         }
     }
 
-    private void configureLabel(Object bean, String beanName) {
-        if (bean instanceof LabelConfigurable) {
-            LabelConfigurable labelable = (LabelConfigurable)bean;
-            String labelStr = loadMessage(beanName, "label");
+    private void configureLabel(Object object, String objectName) {
+        if (object instanceof LabelConfigurable) {
+            LabelConfigurable labelable = (LabelConfigurable)object;
+            String labelStr = loadMessage(objectName, "label");
             labelable.setLabelInfo(new LabelInfoFactory(labelStr).createLabelInfo());
         }
         else {
-            if (bean instanceof CommandLabelConfigurable) {
-                CommandLabelConfigurable labelable = (CommandLabelConfigurable)bean;
-                String labelStr = loadMessage(beanName, "label");
+            if (object instanceof CommandLabelConfigurable) {
+                CommandLabelConfigurable labelable = (CommandLabelConfigurable)object;
+                String labelStr = loadMessage(objectName, "label");
                 labelable.setLabelInfo(new LabelInfoFactory(labelStr).createButtonLabelInfo());
             }
         }
     }
 
-    private void configureDescription(Object bean, String beanName) {
-        if (bean instanceof DescriptionConfigurable) {
-            DescriptionConfigurable config = (DescriptionConfigurable)bean;
-            String caption = loadMessage(beanName, CAPTION_KEY);
+    private void configureDescription(Object object, String objectName) {
+        if (object instanceof DescriptionConfigurable) {
+            DescriptionConfigurable config = (DescriptionConfigurable)object;
+            String caption = loadMessage(objectName, CAPTION_KEY);
             if (StringUtils.hasText(caption)) {
                 config.setCaption(caption);
             }
-            String description = loadMessage(beanName, DESCRIPTION_KEY);
+            String description = loadMessage(objectName, DESCRIPTION_KEY);
             if (StringUtils.hasText(description)) {
                 config.setDescription(description);
             }
         }
     }
 
-    private void configureImageIcons( Object bean, String beanName ) {
-        if( bean instanceof ImageConfigurable ) {
+    private void configureImageIcons( Object object, String objectName ) {
+        if( object instanceof ImageConfigurable ) {
             if( getImageSource() != null ) {
-                ImageConfigurable imageable = (ImageConfigurable) bean;
-                imageable.setImage(loadImage(beanName, IMAGE_KEY));
+                ImageConfigurable imageable = (ImageConfigurable) object;
+                imageable.setImage(loadImage(objectName, IMAGE_KEY));
             }
         }
-        if( bean instanceof IconConfigurable ) {
+        if( object instanceof IconConfigurable ) {
             if( getIconSource() != null ) {
-                IconConfigurable iconable = (IconConfigurable) bean;
-                iconable.setIcon(loadOptionalIcon(beanName, ICON_KEY));
+                IconConfigurable iconable = (IconConfigurable) object;
+                iconable.setIcon(loadOptionalIcon(objectName, ICON_KEY));
             }
         }
-        if( bean instanceof CommandIconConfigurable ) {
+        if( object instanceof CommandIconConfigurable ) {
             if( getIconSource() != null ) {
-                setIconInfo((CommandIconConfigurable) bean, beanName);
-                setLargeIconInfo((CommandIconConfigurable) bean, beanName);
+                setIconInfo((CommandIconConfigurable) object, objectName);
+                setLargeIconInfo((CommandIconConfigurable) object, objectName);
             }
         }
     }
 
     /**
-     * Associate an object with a security controller if it implements the
+     * Associates the given object with a security controller if it implements the
      * {@link SecurityControllable} interface.
-     * @param bean to configure
-     * @param beanName Name (id) of bean
+     * @param object The object to be configured.
+     * @param objectName The name (id) of the object.
      * @throws BeansException if a referenced security controller is not found or is of
      *             the wrong type
      */
-    private void configureSecurityController(Object bean, String beanName) throws BeansException {
-        if( bean instanceof SecurityControllable ) {
-            SecurityControllable controllable = (SecurityControllable) bean;
+    private void configureSecurityController(Object object, String objectName) throws BeansException {
+        
+        if (object instanceof SecurityControllable) {
+            SecurityControllable controllable = (SecurityControllable) object;
             String controllerId = controllable.getSecurityControllerId();
 
-            if( controllerId != null ) {
+            if (controllerId != null) {
                 // Find the referenced controller.
                 SecurityControllerManager manager = (SecurityControllerManager)ApplicationServicesLocator.services().getService(SecurityControllerManager.class);
                 SecurityController controller = manager.getSecurityController( controllerId );
 
-                if( logger.isDebugEnabled() ) {
-                    logger.debug( "Lookup SecurityController with id [" + controllerId + "]" );
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Lookup SecurityController with id [" + controllerId + "]");
                 }
 
-                // And add the bean to the controlled object set
-                if( controller != null ) {
-                    if( logger.isDebugEnabled() ) {
-                        logger.debug( "configuring SecurityControllable [" + beanName + "]; security controller id='"
-                                + controllerId + "'" );
+                // And add the object to the controlled object set
+                if (controller != null) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("configuring SecurityControllable [" 
+                                     + objectName 
+                                     + "]; security controller id='"
+                                     + controllerId 
+                                     + "'");
                     }
                     controller.addControlledObject( controllable );
                 } else {
-                    if( logger.isDebugEnabled() ) {
-                        logger.debug( "configuring SecurityControllable [" + beanName + "]; no security controller for id='"
-                                + controllerId + "'" );
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("configuring SecurityControllable [" 
+                                     + objectName 
+                                     + "]; no security controller for id='"
+                                     + controllerId 
+                                     + "'");
                     }
                 }
             } else {
-                if( logger.isDebugEnabled() ) {
-                    logger.debug( "configuring SecurityControllable [" + beanName
-                            + "]; no security controller Id specified" );
+                
+                if (logger.isDebugEnabled()) {
+                    logger.debug("configuring SecurityControllable [" 
+                                 + objectName
+                                 + "]; no security controller Id specified");
                 }
+                
             }
+            
         }
+        
     }
 
-    public void setIconInfo(CommandIconConfigurable bean, String beanName) {
-        Icon icon = loadOptionalIcon(beanName, ICON_KEY);
+    public void setIconInfo(CommandIconConfigurable object, String objectName) {
+        Icon icon = loadOptionalIcon(objectName, ICON_KEY);
         if (icon != null) {
             CommandButtonIconInfo iconInfo;
             if (loadOptionalIcons) {
-                Icon selectedIcon = loadOptionalIcon(beanName, SELECTED_ICON_KEY);
-                Icon rolloverIcon = loadOptionalIcon(beanName, ROLLOVER_ICON_KEY);
-                Icon disabledIcon = loadOptionalIcon(beanName, DISABLED_ICON_KEY);
-                Icon pressedIcon = loadOptionalIcon(beanName, PRESSED_ICON_KEY);
+                Icon selectedIcon = loadOptionalIcon(objectName, SELECTED_ICON_KEY);
+                Icon rolloverIcon = loadOptionalIcon(objectName, ROLLOVER_ICON_KEY);
+                Icon disabledIcon = loadOptionalIcon(objectName, DISABLED_ICON_KEY);
+                Icon pressedIcon = loadOptionalIcon(objectName, PRESSED_ICON_KEY);
                 iconInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
             }
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            bean.setIconInfo(iconInfo);
+            object.setIconInfo(iconInfo);
         }
     }
 
-    public void setLargeIconInfo(CommandIconConfigurable bean, String beanName) {
-        Icon icon = loadOptionalLargeIcon(beanName, ICON_KEY);
+    public void setLargeIconInfo(CommandIconConfigurable object, String objectName) {
+        Icon icon = loadOptionalLargeIcon(objectName, ICON_KEY);
         if (icon != null) {
             CommandButtonIconInfo iconInfo;
             if (loadOptionalIcons) {
-                Icon selectedIcon = loadOptionalLargeIcon(beanName, SELECTED_ICON_KEY);
-                Icon rolloverIcon = loadOptionalLargeIcon(beanName, ROLLOVER_ICON_KEY);
-                Icon disabledIcon = loadOptionalLargeIcon(beanName, DISABLED_ICON_KEY);
-                Icon pressedIcon = loadOptionalIcon(beanName, PRESSED_ICON_KEY);
+                Icon selectedIcon = loadOptionalLargeIcon(objectName, SELECTED_ICON_KEY);
+                Icon rolloverIcon = loadOptionalLargeIcon(objectName, ROLLOVER_ICON_KEY);
+                Icon disabledIcon = loadOptionalLargeIcon(objectName, DISABLED_ICON_KEY);
+                Icon pressedIcon = loadOptionalIcon(objectName, PRESSED_ICON_KEY);
                 iconInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
             }
             else {
                 iconInfo = new CommandButtonIconInfo(icon);
             }
-            bean.setLargeIconInfo(iconInfo);
+            object.setLargeIconInfo(iconInfo);
         }
     }
 
+    /**
+     * Configures the given object.
+     * @see #configure(Object, String)
+     */
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         return configure(bean, beanName);
     }
 
-    private String loadMessage(String beanName, String messageType) {
-        Assert.notNull(beanName, "The bean's object name must be provided");
-        String labelCode = beanName + "." + messageType;
+    private String loadMessage(String objectName, String messageType) {
+        Assert.notNull(objectName, "The bean's object name must be provided");
+        String labelCode = objectName + "." + messageType;
+        
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving label with code '" + labelCode + "'");
         }
+        
         try {
             return getMessageSource().getMessage(labelCode, null, getLocale());
         }
@@ -290,22 +387,27 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         }
     }
 
+    /**
+     * Returns the system default locale.
+     *
+     * @return The system default locale, never null.
+     */
     protected Locale getLocale() {
         return Locale.getDefault();
     }
 
-    private Icon loadOptionalIcon(String beanName, String iconType) {
-        String key = beanName + "." + iconType;
+    private Icon loadOptionalIcon(String objectName, String iconType) {
+        String key = objectName + "." + iconType;
         return getIconSource().getIcon(key);
     }
 
-    private Icon loadOptionalLargeIcon(String beanName, String iconType) {
-        String key = beanName + ".large." + iconType;
+    private Icon loadOptionalLargeIcon(String objectName, String iconType) {
+        String key = objectName + ".large." + iconType;
         return getIconSource().getIcon(key);
     }
 
-    private Image loadImage(String beanName, String imageType) {
-        String key = beanName + "." + imageType;
+    private Image loadImage(String objectName, String imageType) {
+        String key = objectName + "." + imageType;
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Resolving optional image with code '" + key + "'");
@@ -314,12 +416,15 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         }
         catch (NoSuchImageResourceException e) {
             if (logger.isInfoEnabled()) {
-                logger.info("Labelable bean's image '" + key + "' does not exist in image bundle; continuing...");
+                logger.info("Labelable object's image '" + key + "' does not exist in image bundle; continuing...");
             }
             return null;
         }
     }
 
+    /**
+     * A default implemenation, performing no operation.
+     */
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
