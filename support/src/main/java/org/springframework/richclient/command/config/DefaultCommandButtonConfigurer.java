@@ -21,9 +21,16 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.util.Assert;
 
 /**
+ * The default implementation of the {@link CommandButtonConfigurer} interface. This implementation
+ * ignores the command object and only configures the button.
+ * 
  * @author Keith Donald
  */
 public class DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
+
+    /**
+     * {@inheritDoc}
+     */
     public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
         Assert.notNull(button, "The button to configure cannot be null.");
         Assert.notNull(faceDescriptor, "The command face descriptor cannot be null.");
@@ -31,4 +38,5 @@ public class DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
         faceDescriptor.configureIcon(button);
         button.setToolTipText(faceDescriptor.getCaption());
     }
+    
 }
