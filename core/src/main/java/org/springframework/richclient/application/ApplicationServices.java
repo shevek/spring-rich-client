@@ -16,21 +16,19 @@
 package org.springframework.richclient.application;
 
 /**
- * Service locator
+ * A service locator that can retrieve instances of a service by class type. 
  * 
  * @author Larry Streepy
  */
 public interface ApplicationServices {
 
     /**
-     * Get a service of the requested type (class).
-     * <p>
-     * TODO change to use a more specific exception like NoServiceImplementationException
+     * Returns the application service of the requested type (class).
      * 
      * @param serviceType Type of service to locate
-     * @return service implementation
-     * @throws UnsupportedOperationException if there is no service known for the given
-     *         serviceType.
+     * @return A service implementation of the requested type. Never null.
+     * @throws IllegalArgumentException if {@code serviceType} is null.
+     * @throws ServiceNotFoundException if there is no service known for the given serviceType.
      */
     Object getService( Class serviceType );
 
@@ -39,6 +37,8 @@ public interface ApplicationServices {
      * 
      * @param serviceType Type of service to locate
      * @return true if service is available, false if not
+     * @throws IllegalArgumentException if {@code serviceType} is null.
      */
     boolean containsService( Class serviceType );
+    
 }
