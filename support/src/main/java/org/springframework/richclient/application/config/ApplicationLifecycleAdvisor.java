@@ -60,7 +60,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
      * Sets the exception handler which will be registered upon initialization to handle uncaught throwables.
      *
      * By default this is a DefaultRegisterableExceptionHandler,
-     * which is inferiour to a well configured DelegatingExceptionHandler (java 1.5 only).
+     * which is inferior to a well configured DelegatingExceptionHandler (java 1.5 only).
      *
      * @param registerableExceptionHandler the exception handler which will handle uncaught throwables
      */
