@@ -40,6 +40,7 @@ import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindowFactory;
 import org.springframework.richclient.application.DefaultConversionServiceFactoryBean;
 import org.springframework.richclient.application.PageComponentPaneFactory;
+import org.springframework.richclient.application.ServiceNotFoundException;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer;
@@ -96,7 +97,7 @@ import org.springframework.util.ClassUtils;
  *       &lt;/bean&gt;
  * </pre>
  * 
- * Note the use of the <code>refid</code> form instead of just using a string value. This is the preferred syntax in
+ * Note the use of the <code>idref</code> form instead of just using a string value. This is the preferred syntax in
  * order to avoid having misspelled bean names go unreported.
  * <p>
  * Which service implementation is returned by {@link #getService(Class)} will be determined through the following
@@ -169,7 +170,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * 
      * @param serviceType Type of service being requested
      * @return Service instance
-     * @throws UnsupportedOperationException if the service is not found and no suitable
+     * @throws ServiceNotFoundException if the service is not found and no suitable
      *         default implementation is available.
      */
     public synchronized Object getService( Class serviceType ) {
@@ -193,7 +194,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
         // If we still don't have an implementation, then it's a bust
         if( service == null ) {
-            throw new UnsupportedOperationException( "No service of type '" + serviceType + "' found." );
+            throw new ServiceNotFoundException(serviceType);
         }
         return service;
     }
