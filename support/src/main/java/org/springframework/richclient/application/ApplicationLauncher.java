@@ -30,7 +30,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.splash.MonitoringSplashScreen;
 import org.springframework.richclient.application.splash.SplashScreen;
 import org.springframework.richclient.progress.ProgressMonitor;
-import org.springframework.util.Assert;
+import org.springframework.richclient.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -85,11 +85,9 @@ public class ApplicationLauncher {
 	 * Launches the application defined by the Spring application context file
 	 * at the provided classpath-relative location.
 	 * 
-	 * @param rootContextPath The classpath-relative location of the application
-	 * context file.
+	 * @param rootContextPath The classpath-relative location of the application context file.
 	 * 
-	 * @throws IllegalArgumentException if {@code rootContextPath} is null or
-	 * empty.
+	 * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
 	 */
 	public ApplicationLauncher(String rootContextPath) {
 		this(new String[] { rootContextPath });
@@ -99,14 +97,13 @@ public class ApplicationLauncher {
 	 * Launches the application defined by the Spring application context files
 	 * at the provided classpath-relative locations.
 	 * 
-	 * @param rootContextPath the classpath-relative locations of the
+	 * @param rootContextConfigLocations the classpath-relative locations of the
 	 * application context files.
 	 * 
-	 * @throws IllegalArgumentException if {@code rootContextPath} is null or
-	 * empty.
+	 * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
 	 */
-	public ApplicationLauncher(String[] rootContextPath) {
-		this(null, rootContextPath);
+	public ApplicationLauncher(String[] rootContextConfigLocations) {
+		this(null, rootContextConfigLocations);
 	}
 
 	/**
@@ -124,8 +121,7 @@ public class ApplicationLauncher {
 	 * @param rootContextPath The classpath-relative location of the main
 	 * application context file.
 	 * 
-	 * @throws IllegalArgumentException if {@code rootContextPath} is null or
-	 * empty.
+	 * @throws IllegalArgumentException if {@code rootContextPath} is null or empty.
 	 */
 	public ApplicationLauncher(String startupContextPath, String rootContextPath) {
 		this(startupContextPath, new String[] { rootContextPath });
@@ -143,20 +139,23 @@ public class ApplicationLauncher {
 	 * 
 	 * @param startupContextPath The classpath-relative location of the startup
 	 * context file. May be null or empty.
-	 * @param rootContextPath The classpath-relative locations of the main
+	 * @param rootContextConfigLocations The classpath-relative locations of the main
 	 * application context files.
 	 * 
-	 * @throws IllegalArgumentException if {@code rootContextPath} is null or
-	 * empty.
+	 * @throws IllegalArgumentException if {@code rootContextConfigLocations} is null or empty.
 	 */
-	public ApplicationLauncher(String startupContextPath, String[] rootContextPath) {
-		Assert.notEmpty(rootContextPath, "One or more root rich client application context paths must be provided");
+	public ApplicationLauncher(String startupContextPath, String[] rootContextConfigLocations) {
+        
+        Assert.noElementsNull(rootContextConfigLocations, "rootContextConfigLocations");
+        Assert.notEmpty(rootContextConfigLocations, 
+                        "One or more root rich client application context paths must be provided");
+        
 		this.startupContext = loadStartupContext(startupContextPath);
 		if (startupContext != null) {
 			displaySplashScreen(startupContext);
 		}
 		try {
-			setRootApplicationContext(loadRootApplicationContext(rootContextPath, startupContext));
+			setRootApplicationContext(loadRootApplicationContext(rootContextConfigLocations, startupContext));
 			launchMyRichClient();
 		}
 		finally {
@@ -214,19 +213,28 @@ public class ApplicationLauncher {
 	 * {@code startupContextPath} is null or empty.
 	 */
 	private ApplicationContext loadStartupContext(String startupContextPath) {
-		if (StringUtils.hasText(startupContextPath)) {
-			logger.info("Loading startup context...");
+		
+        if (StringUtils.hasText(startupContextPath)) {
+            
+            if (logger.isInfoEnabled()) {
+                logger.info("Loading startup context from classpath resource [" 
+                            + startupContextPath
+                            + "]");
+            }
+            
 			return new ClassPathXmlApplicationContext(startupContextPath);
+            
 		}
 		else {
 			return null;
 		}
+        
 	}
 
 	/**
 	 * Returns an {@code ApplicationContext}, loaded from the bean definition
 	 * files at the classpath-relative locations specified by
-	 * {@code contextPaths}.
+	 * {@code configLocations}.
 	 * 
 	 * <p>
 	 * If a splash screen has been created, the application context will be
@@ -234,20 +242,20 @@ public class ApplicationLauncher {
 	 * progress monitor as each bean is initialized.
 	 * </p>
 	 * 
-	 * @param contextPaths The classpath-relative locations of the files from
+	 * @param configLocations The classpath-relative locations of the files from
 	 * which the application context will be loaded.
 	 * 
 	 * @return The main application context, never null.
 	 */
-	private ApplicationContext loadRootApplicationContext(String[] contextPaths, MessageSource messageSource) {
-		final ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextPaths,
-				false);
+	private ApplicationContext loadRootApplicationContext(String[] configLocations, MessageSource messageSource) {
+		final ClassPathXmlApplicationContext applicationContext 
+                = new ClassPathXmlApplicationContext(configLocations, false);
 
 		if (splashScreen instanceof MonitoringSplashScreen) {
 			final ProgressMonitor tracker = ((MonitoringSplashScreen) splashScreen).getProgressMonitor();
 
-			applicationContext.addBeanFactoryPostProcessor(new ProgressMonitoringBeanFactoryPostProcessor(tracker,
-					messageSource));
+			applicationContext.addBeanFactoryPostProcessor(
+                    new ProgressMonitoringBeanFactoryPostProcessor(tracker, messageSource));
 
 		}
 
@@ -271,19 +279,26 @@ public class ApplicationLauncher {
 	 * 
 	 */
 	private void launchMyRichClient() {
+        
 		if (startupContext == null) {
 			displaySplashScreen(rootApplicationContext);
 		}
-
-		final Application application;
+		
+        final Application application;
+        
 		try {
-			application = (Application) rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
+		    application = (Application) rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
 		}
 		catch (NoSuchBeanDefinitionException e) {
 			throw new IllegalArgumentException(
-					"A single org.springframework.richclient.Application bean definition must be defined "
-							+ "in the main application context", e);
+					"A single bean definition with id "
+                    + APPLICATION_BEAN_ID
+                    + ", of type "
+                    + Application.class.getName()
+                    + " must be defined in the main application context", 
+                    e);
 		}
+        
 		try {
 			// To avoid deadlocks when events fire during initialization of some swing components
 			// Possible to do: in theory not a single Swing component should be created (=modified) in the launcher thread...
@@ -292,14 +307,17 @@ public class ApplicationLauncher {
 					application.start();
 				}
 			});
-		} catch (InterruptedException e) {
+		} 
+        catch (InterruptedException e) {
 			logger.warn("Application start interrupted", e);
-		} catch (InvocationTargetException e) {
+		} 
+        catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
 			throw new IllegalStateException("Application start thrown an exception: " + cause.getMessage(), cause);
 		}
-		// application.start();
+        
 		logger.debug("Launcher thread exiting...");
+        
 	}
 
 	/**
