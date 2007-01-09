@@ -58,7 +58,7 @@ public abstract class CommandGroupModelBuilder
      * Allows the implementation subclass to build a mapping object-model
      * corresponding to a visited leaf node in the command-group structure.
      * <i>(Note: for non-leaf nodes the
-     * {@link #buildGroupModel(Object, CommandGroup, int) version is called)</i>
+     * {@link #buildGroupModel(Object, CommandGroup, int) version is called)}</i>
      * 
      * Since the parentModel is also passed in, the implementation can use it to
      * downcast that and possibly hook up the new client-structure.
@@ -77,7 +77,7 @@ public abstract class CommandGroupModelBuilder
      * Allows the implementation subclass to build a mapping object-model
      * corresponding to a visited non-leaf node in the command-group structure.
      * <i>(Note: for leaf nodes the
-     * {@link #buildChildModel(Object, CommandGroup, int) version is called)</i>
+     * {@link #buildChildModel(Object, CommandGroup, int) version is called)}</i>
      * 
      * Since the parentModel is also passed in, this implementation can use it
      * to downcast and decide to hook up the new client-structure.
