@@ -24,13 +24,13 @@ package org.springframework.richclient.application.config;
 public interface ApplicationObjectConfigurer {
 
     /**
-     * Configure the specified object with the provided object name.
+     * Configure the specified object.
      * 
-     * @param applicationObject
-     *            the object to configure
-     * @param objectName
-     *            a unique name for the object
-     * @return the configured object
+     * @param applicationObject The object to be configured. Must not be null.
+     * @param objectName A name for the object that is unique within the application. Must not be null.
+     * 
+     * @throws IllegalArgumentException if either argument is null.
      */
-    public Object configure(Object applicationObject, String objectName);
+    public void configure(Object applicationObject, String objectName);
+    
 }

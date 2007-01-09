@@ -79,7 +79,8 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
             logger.debug("Configuring faces (aka visual appearance descriptors) for " + command);
         }
         CommandFaceDescriptor face = new CommandFaceDescriptor();
-        command.setFaceDescriptor((CommandFaceDescriptor)configurer.configure(face, objectName));
+        configurer.configure(face, objectName);
+        command.setFaceDescriptor(face);
         if (face.isBlank()) {
             face.setButtonLabelInfo("&" + command.getId());
         }
