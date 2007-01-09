@@ -6,6 +6,7 @@ import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.DefaultValueChangeDetector;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.StaticMessageSource;
+import org.springframework.richclient.application.ServiceNotFoundException;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.RulesSource;
@@ -32,7 +33,7 @@ public class DefaultApplicationServicesTests extends SpringRichTestCase {
         try {
             getApplicationServices().getService(getClass());
             fail("Unknown service should have caused an exception");
-        } catch( UnsupportedOperationException e ) {
+        } catch( ServiceNotFoundException e ) {
             ; // expected
         }
     }
