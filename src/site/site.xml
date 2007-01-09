@@ -6,8 +6,8 @@
         <version>1.0</version>
     </skin>
     <bannerLeft>
-        <name>Spring Rich Client</name>
-        <href>http://spring-rich-c.sf.net</href>
+        <name>${project.name}</name>
+        <href>${project.url}</href>
     </bannerLeft>
     <bannerRight>
         <name>Spring framework</name>
