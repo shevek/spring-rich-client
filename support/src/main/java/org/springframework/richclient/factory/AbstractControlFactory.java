@@ -22,26 +22,63 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 
 /**
- * A control factory that only creates it's control when requested.
+ * A skeleton implementation of the {@link ControlFactory} interface that only creates it's control 
+ * when requested.
+ * 
+ * <p>
+ * The factory may operate in singleton mode, which is the default. In this case, the control
+ * will be created the first time it is requested and the same instance will be returned for each
+ * subsequent request. When operating in non-singleton mode, a new control instance is created each 
+ * time it is requested.
+ * </p>
  * 
  * @author Keith Donald
  */
 public abstract class AbstractControlFactory extends ApplicationServicesAccessor implements ControlFactory {
 
+    /** Class logger, available to subclasses. */
     protected Log logger = LogFactory.getLog(getClass());
 
     private boolean singleton = true;
 
     private JComponent control;
+    
+    /**
+     * Creates a new uninitialized {@code AbstractControlFactory}.
+     */
+    protected AbstractControlFactory() {
+        //do nothing
+    }
 
+    /**
+     * Returns true (the default) if this factory is to create a single instance of its control. 
+     *
+     * @return true if this factory returns a singleton instance of its control.
+     */
     protected final boolean isSingleton() {
         return singleton;
     }
 
+    /**
+     * Sets the flag that determines if this factory is to create a single instance of its control.
+     * By default, this flag is true.
+     *
+     * @param singleton The singleton flag.
+     */
     protected final void setSingleton(boolean singleton) {
         this.singleton = singleton;
     }
 
+    /**
+     * Returns an instance of the control that this factory produces. 
+     * 
+     * <p>
+     * This implementation is a template method, calling the abstract {@link #createControl()} 
+     * method if operating in non-singleton mode or if the control has not yet been created when 
+     * operating in singleton mode.
+     * </p>
+     * 
+     */
     public final JComponent getControl() {
         if (isSingleton()) {
             if (control == null) {
@@ -53,6 +90,14 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
         return createControl();
     }
 
+    /**
+     * Returns true if the control for this factory has been created. If this factory is set 
+     * to non-singleton mode, this method will always return false even if an instance of the 
+     * control has previously been created.
+     *
+     * @return true if operating in singleton mode and an instance of the control has already 
+     * been created, false otherwise.
+     */
     public final boolean isControlCreated() {
         if (isSingleton()) {
             return control != null;
@@ -61,11 +106,22 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
         return false;
     }
 
+    /**
+     * Creates an instance of the control produced by this factory if operating in singleton mode
+     * and the control instance has not already been created.
+     */
     protected void createControlIfNecessary() {
         if (isSingleton() && control == null) {
             getControl();
         }
     }
 
+    /**
+     * Subclasses must override this method to create a new instance of the control that this 
+     * factory produces.
+     *
+     * @return The newly created control, never null.
+     */
     protected abstract JComponent createControl();
+    
 }
