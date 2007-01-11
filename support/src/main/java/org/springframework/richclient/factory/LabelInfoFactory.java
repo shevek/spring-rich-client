@@ -37,6 +37,9 @@ import org.springframework.util.StringUtils;
  * to clickable buttons.
  * 
  * @author Keith Donald
+ * 
+ * @deprecated Replaced by factory methods on {@link org.springframework.richclient.core.LabelInfo} 
+ * and {@link CommandButtonLabelInfo}.
  */
 public class LabelInfoFactory {
     
@@ -44,6 +47,9 @@ public class LabelInfoFactory {
 
     public String encodedLabel;
 
+    /**
+     * @deprecated Replaced by {@link CommandButtonLabelInfo#BLANK_BUTTON_LABEL}
+     */
     public static final CommandButtonLabelInfo BLANK_BUTTON_LABEL = new CommandButtonLabelInfo("commandLabel");
 
     /**
@@ -77,18 +83,10 @@ public class LabelInfoFactory {
      * Returns a new instance on each invocation.
      * 
      * @return A new LabelInfo instance.
+     * @deprecated Replaced by {@link org.springframework.richclient.core.LabelInfo#valueOf(String)}
      */
     public LabelInfo createLabelInfo() {
         return parseLabelInfo(this.encodedLabel);
-    }
-
-    /**
-     * Creates a new {@link CommandButtonLabelInfo} based on this instance's encoded label string. 
-     *
-     * @return A new CommandButtonLabelInfo.
-     */
-    public CommandButtonLabelInfo createButtonLabelInfo() {
-        return parseButtonLabelInfo(this.encodedLabel);
     }
 
     /**
@@ -96,22 +94,10 @@ public class LabelInfoFactory {
      * Returns a new instance on each invocation.
      * 
      * @return A new LabelInfo instance.
+     * @deprecated Replaced by {@link org.springframework.richclient.core.LabelInfo#valueOf(String)}
      */
     public static LabelInfo createLabelInfo(String encodedLabel) {
         return new LabelInfoFactory(encodedLabel).createLabelInfo();
-    }
-
-    /**
-     * Create a new button label info instance from the configured label string.
-     * Returns a new instance on each invocation.
-     * 
-     * @return A new LabelInfo instance.
-     */
-    public static CommandButtonLabelInfo createButtonLabelInfo(String encodedLabel) {
-        if (StringUtils.hasText(encodedLabel))
-            return new LabelInfoFactory(encodedLabel).createButtonLabelInfo();
-
-        return BLANK_BUTTON_LABEL;
     }
 
     /**
@@ -153,27 +139,4 @@ public class LabelInfoFactory {
         return new LabelInfo(text, mnemonic, mnemonicIndex);
     }
 
-    private CommandButtonLabelInfo parseButtonLabelInfo(String text) {
-        LabelInfo info = parseLabelInfo(text);
-        text = info.getText();
-
-        KeyStroke accelerator = null;
-
-        int i = text.indexOf('@');
-        if (i != -1) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found accelerator for label '" + text + "' at index " + i);
-            }
-            String keyStrokeString = text.substring(i + 1);
-            accelerator = KeyStroke.getKeyStroke(keyStrokeString);
-            if (accelerator == null && logger.isWarnEnabled()) {
-                logger.warn("Specified action accelerator string '" + keyStrokeString
-                        + "' did not translate to a valid KeyStroke.");
-            }
-            text = text.substring(0, i);
-        }
-        info = new LabelInfo(text, info.getMnemonic(), info.getMnemonicIndex());
-        return new CommandButtonLabelInfo(info, accelerator);
-    }
-    
 }

@@ -123,19 +123,25 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
     }
 
     public JLabel createLabel(String labelKey) {
-        return getLabelInfo(getRequiredMessage(labelKey)).configureLabel(createNewLabel());
+        JLabel label = createNewLabel();
+        getLabelInfo(getRequiredMessage(labelKey)).configureLabel(label);
+        return label;
     }
 
     public JLabel createLabel(String[] labelKeys) {
-        return getLabelInfo(getRequiredMessage(labelKeys)).configureLabel(createNewLabel());
+        JLabel label = createNewLabel();
+        getLabelInfo(getRequiredMessage(labelKeys)).configureLabel(label);
+        return label;
     }
 
     public JLabel createLabel(String labelKey, Object[] arguments) {
-        return getLabelInfo(getRequiredMessage(labelKey, arguments)).configureLabel(createNewLabel());
+        JLabel label = createNewLabel();
+        getLabelInfo(getRequiredMessage(labelKey, arguments)).configureLabel(label);
+        return label;
     }
 
-    protected LabelInfo getLabelInfo(String label) {
-        return new LabelInfoFactory(label).createLabelInfo();
+    protected org.springframework.richclient.core.LabelInfo getLabelInfo(String label) {
+        return org.springframework.richclient.core.LabelInfo.valueOf(label);
     }
 
     protected String getRequiredMessage(String messageKey) {
@@ -238,11 +244,15 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
     }
 
     public JLabel createLabelFor(String labelKey, JComponent component) {
-        return getLabelInfo(getRequiredMessage(labelKey)).configureLabelFor(createNewLabel(), component);
+        JLabel label = createNewLabel();
+        getLabelInfo(getRequiredMessage(labelKey)).configureLabelFor(label, component);
+        return label;
     }
 
     public JLabel createLabelFor(String[] labelKeys, JComponent component) {
-        return getLabelInfo(getRequiredMessage(labelKeys)).configureLabelFor(createNewLabel(), component);
+        JLabel label = createNewLabel();
+        getLabelInfo(getRequiredMessage(labelKeys)).configureLabelFor(label, component);
+        return label;
     }
 
     protected JLabel createNewLabel() {
@@ -254,7 +264,7 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
     }
 
     protected CommandButtonLabelInfo getButtonLabelInfo(String label) {
-        return new LabelInfoFactory(label).createButtonLabelInfo();
+        return CommandButtonLabelInfo.valueOf(label);
     }
 
     protected ButtonFactory getButtonFactory() {
@@ -425,7 +435,7 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
     }
 
     public void addConfiguredTab(JTabbedPane tabbedPane, String labelKey, JComponent tabComponent) {
-        LabelInfo info = getLabelInfo(getRequiredMessage(labelKey));
+        org.springframework.richclient.core.LabelInfo info = getLabelInfo(getRequiredMessage(labelKey));
         tabbedPane.addTab(info.getText(), tabComponent);
         int tabIndex = tabbedPane.getTabCount() - 1;
         tabbedPane.setMnemonicAt(tabIndex, info.getMnemonic());

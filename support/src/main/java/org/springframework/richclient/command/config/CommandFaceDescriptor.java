@@ -64,7 +64,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     }
 
     public CommandFaceDescriptor(String encodedLabel, Icon icon, String caption) {
-        this.labelInfo = LabelInfoFactory.createButtonLabelInfo(encodedLabel);
+        this.labelInfo = CommandButtonLabelInfo.valueOf(encodedLabel);
         if (icon != null) {
             this.iconInfo = new CommandButtonIconInfo(icon);
         }
@@ -72,7 +72,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     }
 
     public CommandFaceDescriptor() {
-        this(LabelInfoFactory.BLANK_BUTTON_LABEL);
+        this(CommandButtonLabelInfo.BLANK_BUTTON_LABEL);
     }
 
     public CommandFaceDescriptor(CommandButtonLabelInfo labelInfo) {
@@ -81,7 +81,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     }
 
     public boolean isBlank() {
-        return labelInfo == LabelInfoFactory.BLANK_BUTTON_LABEL;
+        return labelInfo == CommandButtonLabelInfo.BLANK_BUTTON_LABEL;
     }
 
     public String getText() {
@@ -149,12 +149,13 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     }
 
     public void setButtonLabelInfo(String encodedLabelInfo) {
-        setLabelInfo(LabelInfoFactory.createButtonLabelInfo(encodedLabelInfo));
+        CommandButtonLabelInfo labelInfo = CommandButtonLabelInfo.valueOf(encodedLabelInfo);
+        setLabelInfo(labelInfo);
     }
 
     public void setLabelInfo(CommandButtonLabelInfo labelInfo) {
         if (labelInfo == null) {
-            labelInfo = LabelInfoFactory.BLANK_BUTTON_LABEL;
+            labelInfo = CommandButtonLabelInfo.BLANK_BUTTON_LABEL;
         }
         CommandButtonLabelInfo old = this.labelInfo;
         this.labelInfo = labelInfo;

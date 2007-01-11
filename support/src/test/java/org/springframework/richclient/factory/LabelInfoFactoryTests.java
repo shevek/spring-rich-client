@@ -42,31 +42,31 @@ public class LabelInfoFactoryTests extends TestCase {
         assertEquals(5, info.getMnemonicIndex());
     }
 
-    public void testCreateButtonLabelInfoNoAccelerator() {
-        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as");
-
-        assertEquals("Save as", info.getText());
-        assertEquals('A', info.getMnemonic());
-        assertEquals(5, info.getMnemonicIndex());
-        assertNull(info.getAccelerator());
-    }
-
-    public void testCreateButtonLabelInfo() {
-        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as@ctrl A");
-
-        assertEquals("Save as", info.getText());
-        assertEquals('A', info.getMnemonic());
-        assertEquals(5, info.getMnemonicIndex());
-        assertNotNull("ctrl A is invalid keystroke", info.getAccelerator());
-        assertEquals(KeyStroke.getKeyStroke("ctrl A"), info.getAccelerator());
-    }
-
-    public void testCreateButtonLabelInfoInvalidAccelerator() {
-        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as@Bogus keystroke");
-
-        assertEquals("Save as", info.getText());
-        assertEquals('A', info.getMnemonic());
-        assertEquals(5, info.getMnemonicIndex());
-        assertNull(info.getAccelerator());
-    }
+//    public void testCreateButtonLabelInfoNoAccelerator() {
+//        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as");
+//
+//        assertEquals("Save as", info.getText());
+//        assertEquals('A', info.getMnemonic());
+//        assertEquals(5, info.getMnemonicIndex());
+//        assertNull(info.getAccelerator());
+//    }
+//
+//    public void testCreateButtonLabelInfo() {
+//        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as@ctrl A");
+//
+//        assertEquals("Save as", info.getText());
+//        assertEquals('A', info.getMnemonic());
+//        assertEquals(5, info.getMnemonicIndex());
+//        assertNotNull("ctrl A is invalid keystroke", info.getAccelerator());
+//        assertEquals(KeyStroke.getKeyStroke("ctrl A"), info.getAccelerator());
+//    }
+//
+//    public void testCreateButtonLabelInfoInvalidAccelerator() {
+//        CommandButtonLabelInfo info = LabelInfoFactory.createButtonLabelInfo("Save &as@Bogus keystroke");
+//
+//        assertEquals("Save as", info.getText());
+//        assertEquals('A', info.getMnemonic());
+//        assertEquals(5, info.getMnemonicIndex());
+//        assertNull(info.getAccelerator());
+//    }
 }

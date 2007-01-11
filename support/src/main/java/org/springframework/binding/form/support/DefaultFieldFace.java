@@ -24,8 +24,7 @@ import javax.swing.JLabel;
 
 import org.springframework.binding.form.FieldFace;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
-import org.springframework.richclient.factory.LabelInfo;
-import org.springframework.richclient.factory.LabelInfoFactory;
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.util.Assert;
 
 /**
@@ -49,7 +48,7 @@ public class DefaultFieldFace extends AbstractPropertyChangePublisher implements
      * Constructs a new DefaultFieldFace with the provided values.
      */
     public DefaultFieldFace(String displayName, String caption, String description, String encodedLabel, Icon icon) {
-        this(displayName, caption, description, LabelInfoFactory.createLabelInfo(encodedLabel), icon);
+        this(displayName, caption, description, LabelInfo.valueOf(encodedLabel), icon);
     }
 
     public DefaultFieldFace(String displayName, String caption, String description, LabelInfo labelInfo, Icon icon) {

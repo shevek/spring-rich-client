@@ -20,8 +20,8 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import org.springframework.richclient.core.DescribedElement;
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.core.VisualizedElement;
-import org.springframework.richclient.factory.LabelInfo;
 
 /**
  * Provides metadata related to the visualization of a form property and convenience methods

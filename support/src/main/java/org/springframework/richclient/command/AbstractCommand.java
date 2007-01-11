@@ -122,6 +122,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         this.id = id;
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public void setBeanName(String name) {
         if (getId() == null) {
             setId(name);
@@ -179,6 +183,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         getOrCreateFaceDescriptor().setIconInfo(iconInfo);
     }
 
+    /**
+     * Performs initialization and validation of this instance after its dependencies have been set.
+     * If subclasses override this method, they should begin by calling {@code super.afterPropertiesSet()}.
+     */
     public void afterPropertiesSet() {
         if (getId() == null) {
             logger.info("Command " + this + " has no set id; note: anonymous commands cannot be used in registries.");
@@ -219,28 +227,28 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
         if (isFaceConfigured()) {
             return getFaceDescriptor().getText();
         }
-        return LabelInfoFactory.BLANK_BUTTON_LABEL.getText();
+        return CommandButtonLabelInfo.BLANK_BUTTON_LABEL.getText();
     }
 
     public int getMnemonic() {
         if (isFaceConfigured()) {
             return getFaceDescriptor().getMnemonic();
         }
-        return LabelInfoFactory.BLANK_BUTTON_LABEL.getMnemonic();
+        return CommandButtonLabelInfo.BLANK_BUTTON_LABEL.getMnemonic();
     }
 
     public int getMnemonicIndex() {
         if (isFaceConfigured()) {
             return getFaceDescriptor().getMnemonicIndex();
         }
-        return LabelInfoFactory.BLANK_BUTTON_LABEL.getMnemonicIndex();
+        return CommandButtonLabelInfo.BLANK_BUTTON_LABEL.getMnemonicIndex();
     }
 
     public KeyStroke getAccelerator() {
         if (isFaceConfigured()) {
             return getFaceDescriptor().getAccelerator();
         }
-        return LabelInfoFactory.BLANK_BUTTON_LABEL.getAccelerator();
+        return CommandButtonLabelInfo.BLANK_BUTTON_LABEL.getAccelerator();
     }
 
     public CommandFaceDescriptorRegistry getFaceDescriptorRegistry() {

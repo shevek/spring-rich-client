@@ -15,7 +15,6 @@
  */
 package org.springframework.richclient.core;
 
-import org.springframework.richclient.factory.LabelInfo;
 
 /**
  * An object that can be labeled; where a label consists of text and mnemonic.
@@ -23,5 +22,11 @@ import org.springframework.richclient.factory.LabelInfo;
  * @author Keith Donald
  */
 public interface LabelConfigurable {
+    
+    /**
+     * Sets the label information.
+     * @param label The label information.
+     */
     public void setLabelInfo(LabelInfo label);
+    
 }

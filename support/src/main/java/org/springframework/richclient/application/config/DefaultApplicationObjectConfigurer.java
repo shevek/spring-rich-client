@@ -34,9 +34,9 @@ import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.LabelConfigurable;
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.image.NoSuchImageResourceException;
@@ -350,7 +350,8 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         Assert.required(configurable, "configurable");
         Assert.required(objectName, "objectName");
         String labelStr = loadMessage(objectName + ".label");
-        configurable.setLabelInfo(new LabelInfoFactory(labelStr).createLabelInfo());
+        LabelInfo labelInfo = LabelInfo.valueOf(labelStr);
+        configurable.setLabelInfo(labelInfo);
     }
     
 
@@ -369,7 +370,8 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
         Assert.required(configurable, "configurable");
         Assert.required(objectName, "objectName");
         String labelStr = loadMessage(objectName + ".label");
-        configurable.setLabelInfo(new LabelInfoFactory(labelStr).createButtonLabelInfo());
+        CommandButtonLabelInfo labelInfo = CommandButtonLabelInfo.valueOf(labelStr);
+        configurable.setLabelInfo(labelInfo);
     }
 
     /**

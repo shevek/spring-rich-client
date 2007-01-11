@@ -34,10 +34,9 @@ import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.LabelConfigurable;
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.core.TitleConfigurable;
-import org.springframework.richclient.factory.LabelInfo;
-import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.image.ImageSource;
 import org.springframework.richclient.image.config.IconConfigurable;
@@ -149,7 +148,7 @@ public class DefaultApplicationObjectConfigurerTests extends TestCase {
         String objectName = "bogusLabelable";
         String messageCode = objectName + ".label";
         String message = "bogusLabelInfo";
-        LabelInfo expectedLabelInfo = LabelInfoFactory.createLabelInfo(message);
+        LabelInfo expectedLabelInfo = LabelInfo.valueOf(message);
         
         messageSource.addMessage(messageCode, configurer.getLocale(), message);
         
@@ -174,7 +173,7 @@ public class DefaultApplicationObjectConfigurerTests extends TestCase {
         String objectName = "bogusLabelable";
         String messageCode = objectName + ".label";
         String message = "bogusLabelInfo";
-        CommandButtonLabelInfo expectedLabelInfo = LabelInfoFactory.createButtonLabelInfo(message);
+        CommandButtonLabelInfo expectedLabelInfo = CommandButtonLabelInfo.valueOf(message);
         
         messageSource.addMessage(messageCode, configurer.getLocale(), message);
         

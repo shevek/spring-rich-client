@@ -46,9 +46,9 @@ public class CommandFaceDescriptorTests extends TestCase {
     public void testDefaultConstructor() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor();
 
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
+        assertEquals(CommandButtonLabelInfo.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
         assertTrue(descriptor.isBlank());
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL.getText(), descriptor.getText());
+        assertEquals(CommandButtonLabelInfo.BLANK_BUTTON_LABEL.getText(), descriptor.getText());
         assertNull(descriptor.getDescription());
         assertEquals(CommandButtonIconInfo.BLANK_ICON_INFO, descriptor.getIconInfo());
         assertNull(descriptor.getCaption());
@@ -67,7 +67,7 @@ public class CommandFaceDescriptorTests extends TestCase {
     public void testConstructorWithEncodedLabel() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("&Test@ctrl T");
         assertEquals("Test", descriptor.getText());
-        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
+        assertFalse(CommandButtonLabelInfo.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
         assertFalse(descriptor.isBlank());
         assertNull(descriptor.getDescription());
         assertNull(descriptor.getCaption());
@@ -76,14 +76,14 @@ public class CommandFaceDescriptorTests extends TestCase {
 
     public void testConstructorWithEmptyEncodedLabel() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("");
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
+        assertEquals(CommandButtonLabelInfo.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
     }
 
     public void testConstructorWithEncodedLabelAndIcon() {
         CommandFaceDescriptor descriptor = new CommandFaceDescriptor("&Test@ctrl T", EmptyIcon.SMALL, "caption");
 
         assertEquals("Test", descriptor.getText());
-        assertFalse(LabelInfoFactory.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
+        assertFalse(CommandButtonLabelInfo.BLANK_BUTTON_LABEL.equals(descriptor.getLabelInfo()));
         assertFalse(descriptor.isBlank());
         assertNull(descriptor.getDescription());
         assertEquals("caption", descriptor.getCaption());
@@ -172,7 +172,7 @@ public class CommandFaceDescriptorTests extends TestCase {
 
     public void testSetNullLabelInfo() {
         descriptor.setLabelInfo(null);
-        assertEquals(LabelInfoFactory.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
+        assertEquals(CommandButtonLabelInfo.BLANK_BUTTON_LABEL, descriptor.getLabelInfo());
     }
 
     public void testConfigureWithConfigurer() {
@@ -217,7 +217,7 @@ public class CommandFaceDescriptorTests extends TestCase {
         CommandButtonLabelInfo oldLabelInfo = descriptor.getLabelInfo();
         descriptor.setButtonLabelInfo("&Other Test@ctrl O");
         CommandButtonLabelInfo newLabelInfo = descriptor.getLabelInfo();
-        assertEquals(LabelInfoFactory.createButtonLabelInfo("&Other Test@ctrl O"), newLabelInfo);
+        assertEquals(CommandButtonLabelInfo.valueOf("&Other Test@ctrl O"), newLabelInfo);
 
         assertTrue(propertyChangeListener.changed);
         assertEquals(descriptor, propertyChangeListener.source);
@@ -233,7 +233,7 @@ public class CommandFaceDescriptorTests extends TestCase {
 
     public void testSetLabelInfo() {
         CommandButtonLabelInfo oldLabelInfo = descriptor.getLabelInfo();
-        CommandButtonLabelInfo newLabelInfo = LabelInfoFactory.createButtonLabelInfo("&Other Test@ctrl O");
+        CommandButtonLabelInfo newLabelInfo = CommandButtonLabelInfo.valueOf("&Other Test@ctrl O");
         descriptor.setLabelInfo(newLabelInfo);
         assertEquals(newLabelInfo, descriptor.getLabelInfo());
 
@@ -369,7 +369,7 @@ public class CommandFaceDescriptorTests extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        buttonLabelInfo = LabelInfoFactory.createButtonLabelInfo("&Test@ctrl T");
+        buttonLabelInfo = CommandButtonLabelInfo.valueOf("&Test@ctrl T");
         descriptor = new CommandFaceDescriptor("&Test@ctrl T", EmptyIcon.SMALL, "caption");
         descriptor.setDescription("long description");
         assertNotNull(descriptor.getLabelInfo().getAccelerator());

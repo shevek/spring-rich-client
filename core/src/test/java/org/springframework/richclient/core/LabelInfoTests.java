@@ -13,29 +13,160 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.factory;
+package org.springframework.richclient.core;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+
 /**
+ * Provides a suite of unit tests for the {@link LabelInfo} class.
+ * 
  * @author Peter De Bruycker
+ * @author Kevin Stembridge
  */
 public class LabelInfoTests extends TestCase {
+    
+    private static final int DEFAULT_MNEMONIC_INDEX = -1;
+    
+    private Map invalidLabelDescriptors;
+    
+    /**
+     * Creates a new {@code LabelInfoTests}.
+     */
+    public LabelInfoTests() {
+        this.invalidLabelDescriptors = new HashMap();
+        this.invalidLabelDescriptors.put("&", "A mnemonic indicator must be followed by a character.");
+        this.invalidLabelDescriptors.put("\\", "A backslash must be followed by an escapable character.");
+        this.invalidLabelDescriptors.put("abcd& abcd", "A space character is not a valid mnemonic character.");
+        this.invalidLabelDescriptors.put("&ab&cd", "A label descriptor can only contain a single non-escaped &");
+        this.invalidLabelDescriptors.put("abcd&", "A mnemonic indicator must be followed by a character.");
+        this.invalidLabelDescriptors.put("\\abcd", "Only an ampersand or a backslash can be escaped.");
+    }
+    
+    /**
+     * Confirms that null or empty input will result in a LabelInfo instance with a blank 
+     * text label and no specified mnemonic.
+     */
+    public void testForNullOrEmptyInput() {
 
+        LabelInfo info = LabelInfo.valueOf(null);
+
+        Assert.assertEquals("", info.getText());
+        Assert.assertEquals(0, info.getMnemonic());
+        Assert.assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
+        
+        info = LabelInfo.valueOf("");
+
+        Assert.assertEquals("", info.getText());
+        Assert.assertEquals(0, info.getMnemonic());
+        Assert.assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
+        
+    }
+
+    /**
+     * Confirms that a label descriptor with various special characters produces a LabelInfo 
+     * with expected values for mnemonic and mnemonicIndex.
+     */
+    public void testValueOfWithValidSyntax() {
+        LabelInfo info = LabelInfo.valueOf("Save As");
+
+        Assert.assertEquals("Save As", info.getText());
+        Assert.assertEquals(0, info.getMnemonic());
+        Assert.assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
+        
+        info = LabelInfo.valueOf("S\\&ave @&as");
+        Assert.assertEquals("S&ave @as", info.getText());
+        Assert.assertEquals('a', info.getMnemonic());
+        Assert.assertEquals(7, info.getMnemonicIndex());
+        
+    }
+    
+    /**
+     * Confirms that exceptions are thrown for label descriptors that violate the syntax rules.
+     */
+    public void testInvalidSyntax() {
+        
+        Iterator entryIterator = this.invalidLabelDescriptors.entrySet().iterator();
+        
+        while (entryIterator.hasNext()) {
+            
+            Map.Entry entry = (Map.Entry) entryIterator.next();
+            
+            try {
+                LabelInfo.valueOf((String) entry.getKey());
+                Assert.fail("Should have thrown an IllegalArgumentException for label descriptor [" 
+                            + entry.getKey()
+                            + "] due to "
+                            + entry.getValue());
+            }
+            catch (IllegalArgumentException e) {
+                //do nothing, test succeeded
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * Confirms that any ampersands escaped with a backslash character appear as text in the label.
+     *
+     */
+    public void testForEscapedAmpersands() {
+        
+        LabelInfo info = LabelInfo.valueOf("&Save \\& Run");
+        
+        Assert.assertEquals(0, info.getMnemonicIndex());
+        Assert.assertEquals('S', info.getMnemonic());
+        Assert.assertEquals("Save & Run", info.getText());
+        
+    }
+    
+    /**
+     * Confirms that any backslashes escaped with a backslash character appear as text in the label.
+     *
+     */
+    public void testForEscapedBackslashes() {
+        
+        LabelInfo info = LabelInfo.valueOf("This is a backslash (\\\\)");
+        Assert.assertEquals("This is a backslash (\\)", info.getText());
+        
+    }
+    
+    /**
+     * Confirms that any @ symbols, used by the CommandButtonLabelInfo, will not be given special 
+     * treatment by a LabelInfo.
+     */
+    public void testForAtSymbols() {
+        
+        LabelInfo info = LabelInfo.valueOf("Something with an @ in it");
+        Assert.assertEquals("Something with an @ in it", info.getText());
+        info = LabelInfo.valueOf("S\\&ave with an @ &as");
+        Assert.assertEquals("S&ave with an @ as", info.getText());
+        Assert.assertEquals('a', info.getMnemonic());
+        Assert.assertEquals(16, info.getMnemonicIndex());
+        
+    }
+    
     public void testConstructor() {
         LabelInfo info = new LabelInfo("test");
         assertEquals("test", info.getText());
         assertEquals(0, info.getMnemonic());
-        assertEquals(0, info.getMnemonicIndex());
+        assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
 
         info = new LabelInfo("test", 't');
         assertEquals("test", info.getText());
         assertEquals('t', info.getMnemonic());
-        assertEquals(0, info.getMnemonicIndex());
+        assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
 
         info = new LabelInfo("test", 't', 3);
         assertEquals("test", info.getText());
@@ -54,8 +185,6 @@ public class LabelInfoTests extends TestCase {
         info2 = new LabelInfo("test2", 0, 0);
         assertFalse(info1.equals(info2));
         assertFalse(info1.equals(null));
-        info2 = new LabelInfo("test", 0,0) {};
-        assertFalse(info1.equals(info2));
     }
 
     public void testHashCode() throws Exception {
@@ -72,10 +201,10 @@ public class LabelInfoTests extends TestCase {
     }
 
     public void testConstructorEmptyText() {
-        LabelInfo info = new LabelInfo("", 'a', 5);
+        LabelInfo info = new LabelInfo("", 'a', -1);
         assertEquals("", info.getText());
         assertEquals('a', info.getMnemonic());
-        assertEquals(-1, info.getMnemonicIndex());
+        assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
     }
 
     public void testConstructorNullText() {
@@ -110,13 +239,15 @@ public class LabelInfoTests extends TestCase {
 
     public void testConfigureLabelNull() {
         LabelInfo info = new LabelInfo("Test");
+        
         try {
             info.configureLabel(null);
-            fail("Should throw IllegalArgumentException");
+            Assert.fail("Should have thrown an IllegalArgumentException");
         }
         catch (IllegalArgumentException e) {
-            pass();
+            //do nothing, test succeeded
         }
+        
     }
 
     public void testConfigureLabelFor() {
@@ -175,4 +306,5 @@ public class LabelInfoTests extends TestCase {
     public static final void pass() {
         // test passes
     }
+        
 }

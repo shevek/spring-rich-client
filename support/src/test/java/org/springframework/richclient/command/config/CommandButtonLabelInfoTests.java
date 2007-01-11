@@ -15,25 +15,42 @@
  */
 package org.springframework.richclient.command.config;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.springframework.richclient.factory.LabelInfo;
+import org.springframework.richclient.core.LabelInfo;
 
 /**
  * @author Peter De Bruycker
+ * @author Kevin Stembridge
  */
 public class CommandButtonLabelInfoTests extends TestCase {
 
     private LabelInfo labelInfo;
 
     private KeyStroke accelerator;
+    
+    private Map invalidLabelDescriptors;
 
     public static void pass() {
         // test passes
+    }
+    
+    /**
+     * Creates a new {@code LabelInfoTests}.
+     */
+    public CommandButtonLabelInfoTests() {
+        this.invalidLabelDescriptors = new HashMap();
+        this.invalidLabelDescriptors.put("@", "An @ symbol must be followed by a KeyStroke.");
+        this.invalidLabelDescriptors.put("Test@Bogus", "Invalid KeyStroke format.");
     }
 
     /**
@@ -71,7 +88,7 @@ public class CommandButtonLabelInfoTests extends TestCase {
 
         assertEquals("Test", info.getText());
         assertEquals(0, info.getMnemonic());
-        assertEquals(0, info.getMnemonicIndex());
+        assertEquals(-1, info.getMnemonicIndex());
         assertNull(info.getAccelerator());
     }
 
@@ -119,6 +136,65 @@ public class CommandButtonLabelInfoTests extends TestCase {
         assertEquals(info.getMnemonic(), button.getMnemonic());
         assertEquals(info.getMnemonicIndex(), button.getDisplayedMnemonicIndex());
         assertEquals(accelerator, button.getAccelerator());
+    }
+    
+
+    public void testCreateButtonLabelInfoNoAccelerator() {
+        CommandButtonLabelInfo info = CommandButtonLabelInfo.valueOf("S\\&ave with an \\@ &as");
+        System.out.println("XXXXXXXXXXXXXXX " + info.getText());
+        System.out.println("XXXXXXXXXXX 16th char = " + info.getText().charAt(16));
+        assertEquals("S&ave with an @ as", info.getText());
+        assertEquals('a', info.getMnemonic());
+        assertEquals(16, info.getMnemonicIndex());
+        assertNull(info.getAccelerator());
+    }
+
+    public void testCreateButtonLabelInfo() {
+        CommandButtonLabelInfo info = CommandButtonLabelInfo.valueOf("S\\@ve &as@ctrl A");
+
+        assertEquals("S@ve as", info.getText());
+        assertEquals('a', info.getMnemonic());
+        assertEquals(5, info.getMnemonicIndex());
+        assertNotNull("ctrl A is invalid keystroke", info.getAccelerator());
+        assertEquals(KeyStroke.getKeyStroke("ctrl A"), info.getAccelerator());
+    }
+
+    public void testCreateButtonLabelInfoInvalidAccelerator() {
+        
+        try {
+            CommandButtonLabelInfo.valueOf("Save &as@Bogus keystroke");
+            Assert.fail("Should have thrown an IllegalArgumentException for invalid KeyStroke format");
+        }
+        catch (IllegalArgumentException e) {
+            //do nothing, test succeeded
+        }
+
+    }
+    
+    /**
+     * Confirms that exceptions are thrown for label descriptors that violate the syntax rules.
+     */
+    public void testInvalidSyntax() {
+        
+        Iterator entryIterator = this.invalidLabelDescriptors.entrySet().iterator();
+        
+        while (entryIterator.hasNext()) {
+            
+            Map.Entry entry = (Map.Entry) entryIterator.next();
+            
+            try {
+                CommandButtonLabelInfo.valueOf((String) entry.getKey());
+                Assert.fail("Should have thrown an IllegalArgumentException for label descriptor [" 
+                            + entry.getKey()
+                            + "] due to "
+                            + entry.getValue());
+            }
+            catch (IllegalArgumentException e) {
+                //do nothing, test succeeded
+            }
+            
+        }
+        
     }
 
 }

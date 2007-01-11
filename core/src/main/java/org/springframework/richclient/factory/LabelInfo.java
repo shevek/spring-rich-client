@@ -27,29 +27,63 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * A parameter object for a labelable component; consists of the text, mnemonic, mnemonicIndex, and accelerator that may
- * be associated with a labeled component. This class also acts a factory for producing control prototypes which are
- * preconfigured with a LabelInfo's properties.
+ * A parameter object for a labelable component; consists of the text, mnemonic, mnemonicIndex and 
+ * accelerator that may be associated with a labeled component. This class also acts as a 
+ * configurer for {@link JLabel}s, using the properties of .
  * 
  * @author Keith Donald
+ * 
+ * @deprecated Replaced by {@link org.springframework.richclient.core.LabelInfo}
  */
 public class LabelInfo {
     private static final Log logger = LogFactory.getLog(LabelInfo.class);
 
-    private String text = "";
+    private final String text;
 
-    private int mnemonic;
+    private final int mnemonic;
 
-    private int mnemonicIndex;
+    private final int mnemonicIndex;
 
+    /**
+     * Creates a new {@code LabelInfo} with the given text and no specified mnemonic.
+     *
+     * @param text The text to be displayed by the label. This may be an empty string but 
+     * cannot be null.
+     * 
+     * @throws IllegalArgumentException if {@code text} is null.
+     */
     public LabelInfo(String text) {
         this(text, 0, 0);
+        //TODO isn't -1 supposed to be the default value for a mnemonic index?
     }
 
+    /**
+     * Creates a new {@code LabelInfo} with the given text and mnemonic character.
+     *
+     * @param text The text to be displayed by the label. This may be an empty string but cannot
+     * be null.
+     * @param mnemonic The character from the label text that acts as a mnemonic.
+     * 
+     * @throws IllegalArgumentException if {@code text} is null or if {@code mnemonic} is a 
+     * negative value.
+     */
     public LabelInfo(String text, int mnemonic) {
         this(text, mnemonic, 0);
+        //TODO isn't -1 supposed to be the default value for a mnemonic index?
     }
 
+    /**
+     * Creates a new {@code LabelInfo} with the given text, mnemonic character and mnemonic index.
+     *
+     * @param text The text to be displayed by the label. This may be an empty string but cannot 
+     * be null.
+     * @param mnemonic The character from the label text that acts as a mnemonic.
+     * @param mnemonicIndex The zero-based index of the mnemonic character within the label text. 
+     * If the specified label text is an empty string, this property will be ignored and set to -1.
+     * 
+     * @throws IllegalArgumentException if {@code text} is null, if {@code mnemonic} is a negative
+     * value or if {@code mnemonicIndex} is less than -1.
+     */
     public LabelInfo(String text, int mnemonic, int mnemonicIndex) {
         Assert.notNull(text);
         this.text = text;
@@ -61,11 +95,19 @@ public class LabelInfo {
                     + ", mnemonicIndex=" + mnemonicIndex);
         }
         Assert.isTrue(mnemonic >= 0 && mnemonicIndex >= -1);
-        Assert.isTrue(mnemonicIndex < text.length(), "The mnemonic index cannot be greater than the text length.");
+        Assert.isTrue(mnemonicIndex < text.length(), 
+                      "The mnemonic index must be less than the text length; mnemonicIndex = "
+                      + mnemonicIndex
+                      + ", text length = "
+                      + text.length());
+        
         this.mnemonic = mnemonic;
         this.mnemonicIndex = mnemonicIndex;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -75,6 +117,9 @@ public class LabelInfo {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -100,6 +145,8 @@ public class LabelInfo {
         label.setText(text);
         label.setDisplayedMnemonic(getMnemonic());
         int index = getMnemonicIndex();
+        
+        //TODO aren't zero and -1 valid index values?
         if (index > 0) {
             label.setDisplayedMnemonicIndex(index);
         }
@@ -122,6 +169,7 @@ public class LabelInfo {
     }
 
     public AbstractButton configureButton(AbstractButton button) {
+        //TODO this seems to be implemented in CommandButtonLabelInfo as well
         Assert.notNull(button);
         button.setText(text);
         button.setMnemonic(getMnemonic());
@@ -132,19 +180,40 @@ public class LabelInfo {
         return button;
     }
 
+    /**
+     * Returns the text to be displayed by the label.
+     * @return The label text, possibly an empty string but never null.
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Returns the character that is to be
+     *
+     * @return
+     */
     public int getMnemonic() {
         return mnemonic;
     }
 
+    /**
+     * Returns the index within the label text of the mnemonic character.
+     * @return The index of the mnemonic character.
+     */
     public int getMnemonicIndex() {
         return mnemonicIndex;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-        return new ToStringCreator(this).toString();
+        return new ToStringCreator(this)
+                .append("text", this.text)
+                .append("mnemonic", this.mnemonic)
+                .append("mnemonicIndex", this.mnemonicIndex)
+                .toString();
     }
+    
 }

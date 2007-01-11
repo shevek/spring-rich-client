@@ -20,6 +20,7 @@ import javax.swing.JButton;
 
 import junit.framework.TestCase;
 
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.image.EmptyIcon;
 
 /**
@@ -31,7 +32,7 @@ public class DefaultButtonConfigurerTests extends TestCase {
 
     private TestableIconInfo iconInfo;
 
-    private TestableLabelInfo labelInfo;
+    private CommandButtonLabelInfo labelInfo;
 
     /*
      * (non-Javadoc)
@@ -41,7 +42,7 @@ public class DefaultButtonConfigurerTests extends TestCase {
     protected void setUp() throws Exception {
         descriptor = new CommandFaceDescriptor();
         iconInfo = new TestableIconInfo();
-        labelInfo = new TestableLabelInfo();
+        labelInfo = CommandButtonLabelInfo.valueOf("test");
         descriptor.setIconInfo(iconInfo);
         descriptor.setLabelInfo(labelInfo);
         descriptor.setCaption("Tool tip");
@@ -74,32 +75,13 @@ public class DefaultButtonConfigurerTests extends TestCase {
         DefaultCommandButtonConfigurer configurer = new DefaultCommandButtonConfigurer();
         configurer.configure(button, null, descriptor);
 
-        assertEquals(labelInfo.configuredButton, button);
+        assertEquals(labelInfo.getText(), button.getText());
         assertEquals(iconInfo.configuredButton, button);
         assertEquals("Tool tip", button.getToolTipText());
     }
 
     private static void pass() {
         // test passes
-    }
-
-    private static class TestableLabelInfo extends CommandButtonLabelInfo {
-
-        private AbstractButton configuredButton;
-
-        public TestableLabelInfo() {
-            super("test");
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.springframework.richclient.command.config.CommandButtonLabelInfo#configure(javax.swing.AbstractButton)
-         */
-        public AbstractButton configure(AbstractButton button) {
-            configuredButton = button;
-            return button;
-        }
     }
 
     private static class TestableIconInfo extends CommandButtonIconInfo {

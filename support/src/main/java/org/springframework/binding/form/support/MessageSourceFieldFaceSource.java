@@ -27,8 +27,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.factory.LabelInfo;
-import org.springframework.richclient.factory.LabelInfoFactory;
+import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.image.IconSource;
 
 /**
@@ -170,7 +169,7 @@ public class MessageSourceFieldFaceSource extends CachingFieldFaceSource {
         if (iconName != null) {
             icon = getIconSource().getIcon(iconName);
         }
-        LabelInfo labelInfo = LabelInfoFactory.createLabelInfo(encodedLabel);
+        LabelInfo labelInfo = LabelInfo.valueOf(encodedLabel);
         String displayName = getMessage(contextId, field, DISPLAY_NAME_PROPERTY, labelInfo.getText());
         return new DefaultFieldFace(displayName, caption, description, labelInfo, icon);
     }
