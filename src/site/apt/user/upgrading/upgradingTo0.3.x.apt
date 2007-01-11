@@ -132,3 +132,5 @@ org.acegisecurity.AuthenticationException.description = \
 
     * ShowViewCommand no longer has a no-args constructor. See JIRA issue RCP-452 for details.
 
+    * LabelInfoFactory is now deprecated in favour of factory methods on the appropriated LabelInfo and CommandButtonLabelInfo classes.
+
