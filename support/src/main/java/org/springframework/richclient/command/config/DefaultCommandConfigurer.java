@@ -21,6 +21,7 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
+import org.springframework.richclient.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -50,6 +51,7 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
     }
 
     public AbstractCommand configure(AbstractCommand command) {
+        Assert.required(command, "command");
         return configure(command, getObjectConfigurer());
     }
 
