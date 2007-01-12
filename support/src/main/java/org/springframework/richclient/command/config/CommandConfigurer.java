@@ -18,8 +18,21 @@ package org.springframework.richclient.command.config;
 import org.springframework.richclient.command.AbstractCommand;
 
 /**
+ * An interface to be implemented by classes that are responsible for configuring 
+ * {@link AbstractCommand} instances.
+ * 
  * @author Keith Donald
  */
 public interface CommandConfigurer {
+    
+    /**
+     * Configures the given command.
+     *
+     * @param command The command to be configured. Must not be null.
+     * @return The configured command.
+     * 
+     * @throws IllegalArgumentException if {@code command} is null.
+     */
     public AbstractCommand configure(AbstractCommand command);
+    
 }
