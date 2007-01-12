@@ -45,7 +45,6 @@ import org.springframework.util.StringUtils;
  *  
  * @author Keith Donald
  */
-//TODO confirm if the use of the command: and group: prefixes is still supported/required
 public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, SecurityControllable, InitializingBean {
     
     /** The string that represents a glue component, to be used between other members of the command group. */
@@ -395,7 +394,8 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
     }
 
     /**
-     * Configures the given command if this instance has been provided with a {@link CommandConfigurer}.
+     * Configures the given command if it has not already been configured and this instance has 
+     * been provided with a {@link CommandConfigurer}.
      * 
      * @param command The command to be configured.
      * @throws IllegalArgumentException if {@code command} is null.
