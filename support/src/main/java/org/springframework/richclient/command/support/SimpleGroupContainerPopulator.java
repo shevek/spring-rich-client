@@ -25,22 +25,45 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import org.springframework.richclient.command.GroupContainerPopulator;
+import org.springframework.richclient.util.Assert;
 
+/**
+ * A default implementation of the {@link GroupContainerPopulator} interface.
+ *
+ */
 public class SimpleGroupContainerPopulator implements GroupContainerPopulator {
-    private Container container;
+    
+    private final Container container;
 
+    /**
+     * Creates a new {@code SimpleGroupContainerPopulator} that will populate the given container.
+     *
+     * @param container The container to be populated. Must not be null.
+     * 
+     * @throws IllegalArgumentException if {@code container} is null.
+     */
     public SimpleGroupContainerPopulator(Container container) {
+        Assert.required(container, "container");
         this.container = container;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Container getContainer() {
         return container;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void add(Component c) {
         container.add(c);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void addSeparator() {
         if (container instanceof JMenu) {
             ((JMenu)container).addSeparator();
@@ -56,7 +79,11 @@ public class SimpleGroupContainerPopulator implements GroupContainerPopulator {
         }
     }
 
+    /**
+     * Default implementation, no action is performed.
+     */
     public void onPopulated() {
-
+        //do nothing
     }
+    
 }
