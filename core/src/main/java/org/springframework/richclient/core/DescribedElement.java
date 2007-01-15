@@ -16,20 +16,41 @@
 package org.springframework.richclient.core;
 
 /**
- * A interface for managed elements that can be displayed in a GUI.
+ * An application component, usually a visible GUI component, that can provide information 
+ * describing itself.
  * 
  * @author Keith Donald
  */
 public interface DescribedElement {
+    
+    /** The property name used when firing events for the {@code displayName} property. */
     public static final String DISPLAY_NAME_PROPERTY = "displayName";
 
+    /** The property name used when firing events for the {@code caption} property. */
     public static final String CAPTION_PROPERTY = "caption";
 
+    /** The property name used when firing events for the {@code description} property. */
     public static final String DESCRIPTION_PROPERTY = "description";
 
+    /**
+     * Returns the display name of this object.
+     *
+     * @return The display name, or null.
+     */
     public String getDisplayName();
 
+    /**
+     * Returns the caption for this object.
+     *
+     * @return The caption, or null.
+     */
     public String getCaption();
 
+    /**
+     * Returns a description of this object.
+     *
+     * @return The description, or null.
+     */
     public String getDescription();
+    
 }
