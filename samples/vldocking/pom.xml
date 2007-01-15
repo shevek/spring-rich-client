@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project>
+    <parent>
+        <artifactId>spring-richclient-samples</artifactId>
+        <groupId>org.springframework.richclient.samples</groupId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.springframework.richclient.samples</groupId>
+    <artifactId>spring-richclient-samples-vldocking</artifactId>
+    <name>Spring richclient vldocking sample application</name>
+    <packaging>jar</packaging>
+    <description>
+        This application provides a example of how to use the vldocking features of the Spring Rich Client platform.
+    </description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.springframework.richclient.samples.vldocking.app.SimpleVLDockingApp</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <addExtensions />
+                            <classpathPrefix>../../lib</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.richclient.samples.simple</groupId>
+            <artifactId>spring-richclient-samples-simple</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.richclient</groupId>
+            <artifactId>spring-richclient-vldocking</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+    </dependencies>
+</project>
