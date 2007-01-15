@@ -15,17 +15,27 @@
  */
 package org.springframework.richclient.command.support;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.PropertyNotSetException;
 import org.springframework.richclient.application.View;
 import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.util.Assert;
 
 /**
- * An action command for displaying a {@link View} based on the provided {@link ViewDescriptor}.
+ * An action command for displaying a {@link View} based on a provided {@link ViewDescriptor}.
  */
-public class ShowViewCommand extends ApplicationWindowAwareCommand {
+public class ShowViewCommand extends ApplicationWindowAwareCommand implements InitializingBean {
     
     private ViewDescriptor viewDescriptor;
+    
+    /**
+     * Creates a new uninitialized {@code ShowViewCommand}. The {@code applicationWindow} and 
+     * {@code viewDescriptor} properties must be set before using the new instance.
+     */
+    public ShowViewCommand() {
+        //do nothing
+    }
 
     /**
      * Creates a new {@code ShowViewCommand} with the given view descriptor and associated 
@@ -43,6 +53,14 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand {
         setViewDescriptor(viewDescriptor);
         setApplicationWindow(applicationWindow);
         setEnabled(true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void afterPropertiesSet() {
+        PropertyNotSetException.throwIfNull(getApplicationWindow(), "applicationWindow", getClass());
+        PropertyNotSetException.throwIfNull(this.viewDescriptor, "viewDescriptor", getClass());
     }
 
     /**
