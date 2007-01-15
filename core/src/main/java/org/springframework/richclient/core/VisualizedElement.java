@@ -19,8 +19,27 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
+/**
+ * An application component that has a graphical visual representation that is either an image
+ * or an icon.
+ *
+ * @author Keith Donald
+ *
+ */
 public interface VisualizedElement {
+    
+    /**
+     * Returns the image associated with the application component, or null.
+     *
+     * @return The component's image, or null.
+     */
     public Image getImage();
 
+    /**
+     * Returns the icon associated with the application component, or null.
+     *
+     * @return The component's icon, or null.
+     */
     public Icon getIcon();
+    
 }
