@@ -30,6 +30,7 @@ import org.springframework.richclient.command.ActionCommandInterceptor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandGroupFactoryBean;
 import org.springframework.richclient.command.CommandManager;
+import org.springframework.richclient.command.CommandNotOfRequiredTypeException;
 import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.CommandRegistryListener;
 import org.springframework.richclient.command.CommandServices;
@@ -50,7 +51,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
 
     private BeanFactory beanFactory;
 
-    private DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
+    private final DefaultCommandRegistry commandRegistry = new DefaultCommandRegistry();
 
     private CommandServices commandServices;
 
@@ -231,4 +232,40 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
         }
         return bean;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsCommand(String commandId) {
+        return this.commandRegistry.containsCommand(commandId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getCommand(String commandId, Class requiredType) throws CommandNotOfRequiredTypeException {
+        return this.commandRegistry.getCommand(commandId, requiredType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getCommand(String commandId) {
+        return this.commandRegistry.getCommand(commandId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Class getType(String commandId) {
+        return this.commandRegistry.getType(commandId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTypeMatch(String commandId, Class targetType) {
+        return this.commandRegistry.isTypeMatch(commandId, targetType);
+    }
+    
 }

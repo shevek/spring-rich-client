@@ -15,9 +15,9 @@
  */
 package org.springframework.richclient.command.support;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,87 +27,185 @@ import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
+import org.springframework.richclient.command.CommandNotOfRequiredTypeException;
 import org.springframework.richclient.command.CommandRegistry;
 import org.springframework.richclient.command.CommandRegistryEvent;
 import org.springframework.richclient.command.CommandRegistryListener;
 import org.springframework.richclient.command.TargetableActionCommand;
-import org.springframework.util.Assert;
+import org.springframework.richclient.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * The default implementation of the {@link CommandRegistry} interface. This implementation 
+ * may act as the child of another registry, allowing for a hierarchy of registries to be created.
+ * If a command is requested from this registry but cannot be found, the request will be delegated
+ * to the parent registry.
+ * 
+ * 
  * @author Keith Donald
+ * @author Kevin Stembridge
  */
 public class DefaultCommandRegistry implements CommandRegistry, CommandRegistryListener {
+    
+    /**
+     * Class logger, available to subclasses.
+     */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private List commandRegistryListeners;
+    private final List commandRegistryListeners = new LinkedList();
 
-    private Map commandRegistry = new HashMap();
+    private final Map commandMap = new Hashtable();
 
     private CommandRegistry parent;
 
+    /**
+     * Creates a new uninitialized {@code DefaultCommandRegistry}.
+     */
     public DefaultCommandRegistry() {
-
+        //do nothing
     }
 
+    /**
+     * Creates a new {@code DefaultCommandRegistry} as a child of the given registry. The newly
+     * created instance will be added as a listener on the parent registry.
+     *
+     * @param parent The parent registry. May be null.
+     */
     public DefaultCommandRegistry(CommandRegistry parent) {
-        setParent(parent);
+        internalSetParent(parent);
     }
 
+    /**
+     * Sets the given registry to be the parent of this instance. If the new parent is not null,
+     * this instance will act as a registry listener on it.
+     *
+     * @param parent The parent registry. May be null.
+     */
     public void setParent(CommandRegistry parent) {
-        if (!ObjectUtils.nullSafeEquals(this.parent, parent)) {
+        internalSetParent(parent);
+    }
+    
+    /**
+     * This method is provided as a private helper so that it can be called by the constructor, 
+     * instead of the constructor having to call the public overridable setParent method. 
+     */
+    private void internalSetParent(CommandRegistry parentRegistry) {
+        
+        if (!ObjectUtils.nullSafeEquals(this.parent, parentRegistry)) {
+            
             if (this.parent != null) {
                 this.parent.removeCommandRegistryListener(this);
             }
-            this.parent = parent;
+            
+            this.parent = parentRegistry;
+            
             if (this.parent != null) {
                 this.parent.addCommandRegistryListener(this);
             }
+            
         }
+        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void commandRegistered(CommandRegistryEvent event) {
+        Assert.required(event, "event");
         fireCommandRegistered(event.getCommand());
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated
+     */
     public ActionCommand getActionCommand(String commandId) {
-        ActionCommand command = (ActionCommand)commandRegistry.get(commandId);
-        if (command == null) {
-            if (parent != null) {
-                command = parent.getActionCommand(commandId);
-            }
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Attempting to retrieve ActionCommand with id ["
+                         + commandId
+                         + "] from the command registry.");
         }
-        if (command == null) {
-            logger.warn("No action command with id '" + commandId + "' exists in registry; returning null");
+        
+        Assert.required(commandId, "commandId");
+        
+        Object command = commandMap.get(commandId);
+        
+        if (command == null && this.parent != null) {
+            command = this.parent.getActionCommand(commandId);
         }
-        return command;
+        
+        if (command == null) {
+            logger.debug("command not found, returning null.");
+            return null;
+        } 
+        
+        if (!(command instanceof ActionCommand)) {
+            throw new CommandNotOfRequiredTypeException(commandId, ActionCommand.class, command.getClass());
+        }
+        
+        return (ActionCommand) command;
+        
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated
+     */
     public CommandGroup getCommandGroup(String groupId) {
-        CommandGroup group = (CommandGroup)commandRegistry.get(groupId);
-        if (group == null) {
-            if (parent != null) {
-                group = parent.getCommandGroup(groupId);
-            }
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Attempting to retrieve command group with id ["
+                         + groupId
+                         + "] from the command registry.");
         }
-        if (group == null) {
-            logger.warn("No command group with id '" + groupId + "' exists in registry; returning null");
+        
+        Assert.required(groupId, "groupId");
+        
+        Object command = commandMap.get(groupId);
+        
+        if (command == null && this.parent != null) {
+            command = this.parent.getCommandGroup(groupId);
         }
-        return group;
+        
+        if (command == null) {
+            logger.debug("Command group not found, returning null.");
+            return null;
+        } 
+        
+        if (!(command instanceof CommandGroup)) {
+            throw new CommandNotOfRequiredTypeException(groupId, CommandGroup.class, command.getClass());
+        }
+        
+        return (CommandGroup) command;
+        
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated
+     */
     public boolean containsActionCommand(String commandId) {
-        if (commandRegistry.containsKey(commandId)) {
+        
+        if (commandMap.containsKey(commandId)) {
             return true;
         }
+        
         if (parent != null) {
             return parent.containsActionCommand(commandId);
         }
+        
         return false;
+        
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated
+     */
     public boolean containsCommandGroup(String groupId) {
-        if (commandRegistry.get(groupId) instanceof CommandGroup) {
+        if (commandMap.get(groupId) instanceof CommandGroup) {
             return true;
         }
         if (parent != null) {
@@ -116,71 +214,197 @@ public class DefaultCommandRegistry implements CommandRegistry, CommandRegistryL
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerCommand(AbstractCommand command) {
+        
         Assert.notNull(command, "Command cannot be null.");
         Assert.isTrue(command.getId() != null, "A command must have an identifier to be placed in a registry.");
-        if (containsActionCommand(command.getId())) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("This command registry already contains a command with id '" + command.getId()
-                        + "'; will overwrite...");
-            }
+        
+        Object previousCommand = this.commandMap.put(command.getId(), command);
+        
+        if (previousCommand != null && logger.isWarnEnabled()) {
+            logger.warn("The command ["
+                        + previousCommand
+                        + "] was overwritten in the registry with the command ["
+                        + command
+                        + "]");
         }
-        commandRegistry.put(command.getId(), command);
+        
         if (command instanceof CommandGroup) {
-            ((CommandGroup)command).setCommandRegistry(this);
+            ((CommandGroup) command).setCommandRegistry(this);
         }
+        
         if (logger.isDebugEnabled()) {
             logger.debug("Command registered '" + command.getId() + "'");
         }
+        
         fireCommandRegistered(command);
+        
     }
 
+    /**
+     * Fires a 'commandRegistered' {@link CommandRegistryEvent} for the given command to all 
+     * registered listeners. 
+     *
+     * @param command The command that has been registered. Must not be null.
+     * 
+     * @throws IllegalArgumentException if {@code command} is null.
+     */
     protected void fireCommandRegistered(AbstractCommand command) {
-        if (commandRegistryListeners == null) {
+        
+        Assert.required(command, "command");
+        
+        if (commandRegistryListeners.isEmpty()) {
             return;
         }
-        CommandRegistryEvent e = null;
+        
+        CommandRegistryEvent event = new CommandRegistryEvent(this, command);
+        
         for (Iterator i = commandRegistryListeners.iterator(); i.hasNext();) {
-            if (e == null) {
-                e = new CommandRegistryEvent(this, command);
-            }
-            ((CommandRegistryListener)i.next()).commandRegistered(e);
+            ((CommandRegistryListener)i.next()).commandRegistered(event);
         }
+        
     }
 
-    public void setTargetableActionCommandExecutor(String commandId, ActionCommandExecutor delegate) {
-        try {
-            TargetableActionCommand command = (TargetableActionCommand)getActionCommand(commandId);
-            Assert.isTrue(command != null, "No targetable command found with id " + commandId);
-            command.setCommandExecutor(delegate);
+    /**
+     * {@inheritDoc}
+     */
+    public void setTargetableActionCommandExecutor(String commandId, ActionCommandExecutor executor) {
+        
+        Assert.required(commandId, "commandId");
+        
+        TargetableActionCommand command 
+                = (TargetableActionCommand) getCommand(commandId, TargetableActionCommand.class);
+            
+        if (command != null) {
+            command.setCommandExecutor(executor);
         }
-        catch (ClassCastException e) {
-            throw new IllegalArgumentException(
-                    "Command delegates can only be attached to targetable action commands; commandId '" + commandId
-                            + "' is not an instanceof TargetableActionCommand.");
-        }
+        
     }
 
-    public void addCommandRegistryListener(CommandRegistryListener l) {
-        if (commandRegistryListeners == null) {
-            commandRegistryListeners = new ArrayList();
-        }
+    /**
+     * {@inheritDoc}
+     */
+    public void addCommandRegistryListener(CommandRegistryListener listener) {
+
         if (logger.isDebugEnabled()) {
-            logger.debug("Adding command registry listener " + l);
+            logger.debug("Adding command registry listener " + listener);
         }
-        commandRegistryListeners.add(l);
+        
+        commandRegistryListeners.add(listener);
+        
     }
 
-    public void removeCommandRegistryListener(CommandRegistryListener l) {
-        Assert.notNull(commandRegistryListeners, "Listenerlist not yet created; add a listener first!");
+    /**
+     * {@inheritDoc}
+     */
+    public void removeCommandRegistryListener(CommandRegistryListener listener) {
+        
         if (logger.isDebugEnabled()) {
-            logger.debug("Removing command registry listener " + l);
+            logger.debug("Removing command registry listener " + listener);
         }
-        commandRegistryListeners.remove(l);
+        
+        commandRegistryListeners.remove(listener);
+        
     }
 
+    /**
+     * Returns the parent registry of this instance.
+     *
+     * @return The parent registry, or null.
+     */
     public CommandRegistry getParent() {
         return parent;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsCommand(String commandId) {
+        
+        Assert.required(commandId, "commandId");
+        
+        if (this.commandMap.containsKey(commandId)) {
+            return true;
+        }
+        
+        if (this.parent != null) {
+            return this.parent.containsCommand(commandId);
+        }
+        
+        return false;
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getCommand(String commandId) {
+        return getCommand(commandId, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getCommand(String commandId, Class requiredType) throws CommandNotOfRequiredTypeException {
+        
+        Assert.required(commandId, "commandId");
+        
+        Object command = this.commandMap.get(commandId);
+        
+        if (command == null && this.parent != null) {
+            command = this.parent.getCommand(commandId);
+        }
+        
+        if (command == null) {
+            return null;
+        }
+        
+        if (requiredType != null && !ClassUtils.isAssignableValue(requiredType, command)) {
+            throw new CommandNotOfRequiredTypeException(commandId, requiredType, command.getClass());
+        }
+        
+        return command;
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Class getType(String commandId) {
+        
+        Assert.required(commandId, "commandId");
+        
+        Object command = getCommand(commandId);
+        
+        if (command == null) {
+            return null;
+        }
+        else {
+            return command.getClass();
+        }
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTypeMatch(String commandId, Class targetType) {
+        
+        Assert.required(commandId, "commandId");
+        Assert.required(targetType, "targetType");
+        
+        Class commandType = getType(commandId);
+        
+        if (commandType == null) {
+            return false;
+        }
+        else {
+            return ClassUtils.isAssignable(targetType, commandType);
+        }
+        
     }
 
 }

@@ -18,20 +18,30 @@ package org.springframework.richclient.command.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.command.AbstractCommandRegistryTests;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
+import org.springframework.richclient.command.CommandNotOfRequiredTypeException;
 import org.springframework.richclient.command.CommandRegistry;
-import org.springframework.richclient.command.CommandRegistryEvent;
 import org.springframework.richclient.command.CommandRegistryListener;
 
 /**
+ * Provides unit tests for the {@link DefaultCommandRegistry} class.
+ * 
  * @author Peter De Bruycker
+ * @author Kevin Stembridge
  */
-public class DefaultCommandRegistryTests extends TestCase {
+public class DefaultCommandRegistryTests extends AbstractCommandRegistryTests {
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected CommandRegistry getCommandRegistry() {
+        return new DefaultCommandRegistry();
+    }
+
     public void testConstructor() {
         DefaultCommandRegistry registry = new DefaultCommandRegistry();
         assertNull("parent must be null", registry.getParent());
@@ -70,69 +80,7 @@ public class DefaultCommandRegistryTests extends TestCase {
         assertEquals("registry not removed from parent", 1, parent2.removedListeners.size());
     }
 
-    public void testRegisterCommand() {
-        DefaultCommandRegistry registry = new DefaultCommandRegistry();
-        TestableRegistryListener listener = new TestableRegistryListener();
-        registry.addCommandRegistryListener(listener);
-
-        try {
-            registry.registerCommand(null);
-            fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException e) {
-            pass();
-        }
-
-        try {
-            registry.registerCommand(new TestCommand());
-            fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException e) {
-            pass();
-        }
-
-        TestCommand command1 = new TestCommand("testCommand");
-        // command1 and command2 have same id's
-        TestCommand command2 = new TestCommand("testCommand");
-
-        registry.registerCommand(command1);
-        assertTrue("command1 not registered", registry.containsActionCommand("testCommand"));
-        assertEquals("command1 not registered", command1, registry.getActionCommand("testCommand"));
-        assertEquals("event not fired", command1, listener.registeredCommand);
-
-        registry.registerCommand(command2);
-        assertTrue(registry.containsActionCommand("testCommand"));
-        assertEquals("command1 not overridden", command2, registry.getActionCommand("testCommand"));
-        assertEquals("event not fired", command2, listener.registeredCommand);
-    }
-
-    public void testRegisterCommandGroup() {
-        DefaultCommandRegistry registry = new DefaultCommandRegistry();
-
-        CommandGroup commandGroup = new CommandGroup("testCommandGroup");
-        registry.registerCommand(commandGroup);
-
-        assertTrue("commandgroup not registered", registry.containsCommandGroup("testCommandGroup"));
-        assertEquals("commandgroup not registered", commandGroup, registry.getCommandGroup("testCommandGroup"));
-    }
-
-    private static void pass() {
-        // test passes
-    }
-
-    public static class TestableRegistryListener implements CommandRegistryListener {
-
-        private AbstractCommand registeredCommand;
-
-        /** 
-         * @see org.springframework.richclient.command.CommandRegistryListener#commandRegistered(org.springframework.richclient.command.CommandRegistryEvent)
-         */
-        public void commandRegistered(CommandRegistryEvent event) {
-            registeredCommand = event.getCommand();
-        }
-    }
-
-    public static class TestCommandRegistry implements CommandRegistry {
+    private static class TestCommandRegistry implements CommandRegistry {
         private List addedListeners = new ArrayList();
 
         private List removedListeners = new ArrayList();
@@ -171,5 +119,42 @@ public class DefaultCommandRegistryTests extends TestCase {
             addedListeners.clear();
             removedListeners.clear();
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean containsCommand(String commandId) {
+            return false;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Object getCommand(String commandId) {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Object getCommand(String commandId, Class requiredType) throws CommandNotOfRequiredTypeException {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Class getType(String commandId) {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isTypeMatch(String commandId, Class targetType) {
+            return false;
+        }
+        
     }
+    
 }

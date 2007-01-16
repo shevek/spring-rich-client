@@ -17,12 +17,14 @@ package org.springframework.richclient.config;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 
 /**
@@ -59,6 +61,8 @@ public class DefaultApplicationLifecycleAdvisorTests extends TestCase {
     public static class TestAdvisor extends DefaultApplicationLifecycleAdvisor {
         public TestAdvisor() {
             setStartingPageId("whatever");
+            ApplicationWindow window = (ApplicationWindow) EasyMock.createMock(ApplicationWindow.class);
+            setOpeningWindow(window);
         }
         
 
@@ -69,6 +73,8 @@ public class DefaultApplicationLifecycleAdvisorTests extends TestCase {
         public BeanFactory getBeanFactory() {
             return getCommandBarFactory();
         }
+        
+        
     }
 
     public static class TestCommand implements ApplicationListener {
