@@ -4,12 +4,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
  * @author peter.de.bruycker
  */
-public class ListTableModelTests extends TestCase {
+public class ListTableModelTests extends AbstractBaseTableModelTests {
+    
+    
+    private final ListTableModel dummyListTableModel = new ListTableModel() {
+
+        protected Class[] createColumnClasses() {
+            return new Class[] { String.class };
+        }
+
+        protected String[] createColumnNames() {
+            return new String[] { "column" };
+        }
+        
+        
+    };
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected BaseTableModel getBaseTableModel() {
+        return this.dummyListTableModel;
+    }
 
     /**
      * TestCase for bug #RCP-14
