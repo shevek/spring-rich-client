@@ -8,8 +8,8 @@
   <name>Spring RCP Project Archetype</name>
 
   <properties>
-    <springrich.version>0.2.0-SNAPSHOT</springrich.version>
-    <spring.version>1.2.8</spring.version>
+    <springrich.version>0.3.0-SNAPSHOT</springrich.version>
+    <spring.version>2.0</spring.version>
   </properties>
 
   <build>
