@@ -75,9 +75,13 @@
 		Bean: applicationPageFactory
 		Type: platform optional
 		Description: TODO
-org.springframework.richclient.application.vldocking depends-on="serviceLocator"
-		class="org.springframework.richclient.vldocking.VLDockingorg.springframework.richclient.application.vldocking!-- bean id="defaultDesktopPage"
-		class="org.springframework.richclient.vldocking.VLDockingPageDescriptor">
+	-->
+	<bean id="applicationPageFactory" depends-on="serviceLocator"
+		class="org.springframework.richclient.application.vldocking.VLDockingApplicationPageFactory">
+	</bean>
+
+	<!-- bean id="defaultDesktopPage"
+		class="org.springframework.richclient.application.vldocking.VLDockingPageDescriptor">
 		<property name="viewDescriptors">
 			<list>
 				<value>initialView</value>
@@ -102,11 +106,11 @@ org.springframework.richclient.application.vldocking depends-on="serviceLocator"
 		to present when the application is started.  The application window
 		uses a ViewDescriptor to define the view to be presented.  The
 		ViewDescriptor is then configured with the name of the class that
-		provides the view and any porg.springframework.richclient.application.vldockingnstance
+		provides the view and any properties to be configured on the view instance
 		when it is created.
 	-->
 	<bean id="initialView"
-		class="org.springframework.richclient.vldocking.VLDockingViewDescriptor">
+		class="org.springframework.richclient.application.vldocking.VLDockingViewDescriptor">
 		<property name="viewClass"
 			value="org.springframework.richclient.samples.simple.ui.InitialView" />
 		<property name="viewProperties">
