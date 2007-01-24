@@ -96,12 +96,10 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 		this.elseConstraint = elseConstraint;
 	}
 
-	@Override
 	public boolean isCompoundRule() {
 		return true;
 	}
 
-	@Override
 	public boolean isDependentOn(String propertyName) {
 		if (elseConstraint == null)
 			return ifConstraint.isDependentOn(propertyName) || thenConstraint.isDependentOn(propertyName);
@@ -110,7 +108,6 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 				|| elseConstraint.isDependentOn(propertyName);
 	}
 
-	@Override
 	protected boolean test(PropertyAccessStrategy domainObjectAccessStrategy) {
 		if (ifConstraint.test(domainObjectAccessStrategy))
 			return thenConstraint.test(domainObjectAccessStrategy);
