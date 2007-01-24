@@ -44,6 +44,7 @@ import org.springframework.rules.constraint.StringLengthConstraint;
 import org.springframework.rules.constraint.XOr;
 import org.springframework.rules.constraint.Like.LikeType;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
+import org.springframework.rules.constraint.property.ConditionalPropertyConstraint;
 import org.springframework.rules.constraint.property.NegatedPropertyConstraint;
 import org.springframework.rules.constraint.property.ParameterizedPropertyConstraint;
 import org.springframework.rules.constraint.property.PropertiesConstraint;
@@ -319,13 +320,57 @@ public class Constraints extends AlgorithmsAccessor {
     public Constraint ifTrue(Constraint constraint, Constraint mustAlsoBeTrue, Constraint elseMustAlsoBeTrue) {
         return new IfTrue(constraint, mustAlsoBeTrue, elseMustAlsoBeTrue);
     }
+    
+    /**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint) {
+		return new ConditionalPropertyConstraint(ifConstraint, thenConstraint);
+	}
+    
+    /**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint,
+			PropertyConstraint elseConstraint) {
+		return new ConditionalPropertyConstraint(ifConstraint, thenConstraint, elseConstraint);
+	}
+	
+	/**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint[] thenConstraints) {
+		return new ConditionalPropertyConstraint(ifConstraint, new CompoundPropertyConstraint(new And(thenConstraints)));
+	}
+    
+    /**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint[] thenConstraints,
+			PropertyConstraint[] elseConstraints) {
+		return new ConditionalPropertyConstraint(ifConstraint,
+				new CompoundPropertyConstraint(new And(thenConstraints)), new CompoundPropertyConstraint(new And(
+						elseConstraints)));
+	}
 
     /**
-     * Returns a maxlength constraint.
-     * 
-     * @param maxLength The maximum length in characters.
-     * @return The configured maxlength constraint.
-     */
+	 * Returns a maxlength constraint.
+	 * 
+	 * @param maxLength The maximum length in characters.
+	 * @return The configured maxlength constraint.
+	 */
     public Constraint maxLength(int maxLength) {
         return new StringLengthConstraint(maxLength);
     }
