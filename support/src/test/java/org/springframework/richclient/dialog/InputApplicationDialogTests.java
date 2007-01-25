@@ -36,10 +36,11 @@ public class InputApplicationDialogTests extends SpringRichTestCase {
     }
 
     public void testInitialEnabledState() {
-        assertEnabledStateReflectsFormModelState(createDialog(businessObject, BUSINESS_FIELD));
+        InputApplicationDialog createDialog = createDialog(businessObject, BUSINESS_FIELD);
+		assertEnabledStateReflectsFormModelState(createDialog);
 
         businessObject.setName("test");
-        assertEnabledStateReflectsFormModelState(createDialog(businessObject, BUSINESS_FIELD));
+        assertEnabledStateReflectsFormModelState(createDialog);
     }
 
     private void assertEnabledStateReflectsFormModelState(InputApplicationDialog dialog) {
