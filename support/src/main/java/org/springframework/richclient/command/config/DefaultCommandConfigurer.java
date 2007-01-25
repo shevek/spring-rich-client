@@ -83,9 +83,6 @@ public class DefaultCommandConfigurer implements CommandConfigurer {
         CommandFaceDescriptor face = new CommandFaceDescriptor();
         configurer.configure(face, objectName);
         command.setFaceDescriptor(face);
-        if (face.isBlank()) {
-            face.setButtonLabelInfo("&" + command.getId());
-        }
         return command;
     }
 

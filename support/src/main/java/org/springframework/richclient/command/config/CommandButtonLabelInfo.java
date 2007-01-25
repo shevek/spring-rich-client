@@ -47,7 +47,7 @@ import org.springframework.util.StringUtils;
 public final class CommandButtonLabelInfo implements ButtonConfigurer {
     
     /** A default instance to be used for command buttons with no label information. */
-    public static final CommandButtonLabelInfo BLANK_BUTTON_LABEL = new CommandButtonLabelInfo("commandLabel");
+    public static final CommandButtonLabelInfo BLANK_BUTTON_LABEL = new CommandButtonLabelInfo("");
 
     private final LabelInfo labelInfo;
 
