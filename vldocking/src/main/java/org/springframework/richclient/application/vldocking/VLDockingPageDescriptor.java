@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,13 +16,12 @@
 package org.springframework.richclient.application.vldocking;
 
 import org.springframework.core.io.Resource;
-import org.springframework.richclient.application.mdi.DesktopPageDescriptor;
+import org.springframework.richclient.application.support.MultiViewPageDescriptor;
 
 /**
- * @author rdawes
- *
+ * @author Rogan Dawes
  */
-public class VLDockingPageDescriptor extends DesktopPageDescriptor {
+public class VLDockingPageDescriptor extends MultiViewPageDescriptor {
 
     private VLDockingLayoutManager layoutManager;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,8 +26,7 @@ import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.docking.DockingConstants.Hide;
 
 /**
- * @author rdawes
- *
+ * @author Rogan Dawes
  */
 public class ViewDescriptorDockable implements Dockable {
 
