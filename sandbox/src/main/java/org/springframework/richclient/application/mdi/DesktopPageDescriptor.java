@@ -15,77 +15,11 @@
  */
 package org.springframework.richclient.application.mdi;
 
-import java.awt.Image;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.Icon;
-
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.richclient.application.PageDescriptor;
-import org.springframework.richclient.application.PageLayoutBuilder;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import org.springframework.richclient.application.support.MultiViewPageDescriptor;
 
 /**
  * @author Peter De Bruycker
  */
-public class DesktopPageDescriptor implements PageDescriptor, BeanNameAware, InitializingBean {
+public class DesktopPageDescriptor extends MultiViewPageDescriptor {
 
-    private List viewDescriptors = new ArrayList();
-
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void buildInitialLayout(PageLayoutBuilder pageLayout) {
-        for (Iterator iter = viewDescriptors.iterator(); iter.hasNext();) {
-            String viewDescriptorId = (String) iter.next();
-            pageLayout.addView(viewDescriptorId);
-        }
-    }
-
-    public String getDisplayName() {
-        return null;
-    }
-
-    public String getCaption() {
-        return null;
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public Image getImage() {
-        return null;
-    }
-
-    public Icon getIcon() {
-        return null;
-    }
-
-    public List getViewDescriptors() {
-        return viewDescriptors;
-    }
-
-    public void setViewDescriptors(List viewDescriptors) {
-        this.viewDescriptors = viewDescriptors;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setBeanName(String name) {
-        setId(name);
-    }
-
-    public void afterPropertiesSet() throws Exception {
-        Assert.state(StringUtils.hasText(id), "id is mandatory");
-    }
 }
