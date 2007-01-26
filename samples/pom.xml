@@ -19,8 +19,8 @@
     <modules>
         <module>petclinic</module>
         <module>simple</module>
-    <module>vldocking</module>
-  </modules>
+        <module>vldocking</module>
+    </modules>
 
     <dependencies>
     </dependencies>

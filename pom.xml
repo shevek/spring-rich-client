@@ -496,13 +496,13 @@
         <module>support</module>
         <module>tiger</module>
         <module>sandbox</module>
+        <module>vldocking</module>
         <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
         <!-- TODO bug in maven -->
         <!--<module>full</module>-->
         <module>samples</module>
         <module>archetype</module>
         <!-- Module release is delibertly skipped -->
-        <module>vldocking</module>
     </modules>
 
     <dependencies>
