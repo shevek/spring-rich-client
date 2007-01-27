@@ -84,7 +84,7 @@ public class DialogPageUtils {
      * @param cancelCommand to add to the command button bar
      * @return created component
      * @see #createTitlePane(DialogPage)
-     * @see #adaptToPageComplete(DialogPage, Guarded)
+     * @see #adaptPageCompletetoGuarded(DialogPage, Guarded)
      */
     public static JComponent createStandardView( DialogPage dialogPage, ActionCommand okCommand,
             ActionCommand cancelCommand ) {
@@ -102,7 +102,7 @@ public class DialogPageUtils {
      * @param commandGroupMembers Array of commands to place in the button bar
      * @return created component
      * @see #createTitlePane(DialogPage)
-     * @see #adaptToPageComplete(DialogPage, Guarded)
+     * @see #adaptPageCompletetoGuarded(DialogPage, Guarded)
      */
     public static JComponent createStandardView( DialogPage dialogPage, Object[] commandGroupMembers ) {
         JPanel viewPanel = new JPanel(new BorderLayout());
