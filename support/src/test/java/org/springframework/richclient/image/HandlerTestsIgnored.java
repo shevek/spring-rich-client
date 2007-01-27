@@ -15,12 +15,12 @@
  */
 package org.springframework.richclient.image;
 
-import junit.framework.TestCase;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Tests the "image:" URL protocol handler.
@@ -36,7 +36,7 @@ public class HandlerTestsIgnored extends TestCase {
      * introduced by the strange way Java requires custom URL handlers to be
      * registered.
      */
-    public void testHandler() throws MalformedURLException, IOException {
+    public void testHandler() throws IOException {
         assertTrue("This test can only be run once in a single JVM", imageHasNotBeenInstalledInThisJVM);
 
         URL url;
