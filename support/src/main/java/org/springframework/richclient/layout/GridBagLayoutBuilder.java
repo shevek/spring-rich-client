@@ -713,7 +713,7 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
 
         buffer.append(", ");
         buffer.append("GridBagConstraint[");
-        buffer.append("anchor=" + gbc.anchor).append(",");
+        buffer.append("anchor=").append(gbc.anchor).append(",");
         buffer.append("fill=").append(gbc.fill).append(",");
         buffer.append("gridheight=").append(gbc.gridheight).append(",");
         buffer.append("gridwidth=").append(gbc.gridwidth).append(",");
