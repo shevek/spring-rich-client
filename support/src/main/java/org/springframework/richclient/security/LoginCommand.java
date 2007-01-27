@@ -141,7 +141,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                     ApplicationSecurityManager sm = (ApplicationSecurityManager)getService(ApplicationSecurityManager.class);
                     Authentication authentication = sm.getAuthentication();
                     if( authentication == null ) {
-                        logger.info( "User canceled login; close the application." );
+                        LoginCommand.this.logger.info( "User canceled login; close the application." );
                         getApplication().close();
                     }
                 }
