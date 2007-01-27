@@ -176,6 +176,6 @@ public class FormGuard implements PropertyChangeListener {
      */
     public boolean removeGuarded(Guarded toRemove) {
         Object mask = this.guardedEntries.remove(toRemove);
-        return mask == null ? false : true;
+        return mask != null;
     }
 }

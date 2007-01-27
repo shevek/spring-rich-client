@@ -43,7 +43,6 @@ import org.springframework.richclient.command.config.CommandFaceDescriptorRegist
 import org.springframework.richclient.command.support.CommandFaceButtonManager;
 import org.springframework.richclient.core.SecurityControllable;
 import org.springframework.richclient.factory.ButtonFactory;
-import org.springframework.richclient.factory.LabelInfoFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.CachingMapDecorator;
@@ -350,7 +349,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
             // We need to keep the buttons in sync with the command, so go through the buttons and set Enabled state.
             // alternative is to add a listener to the enabled value and change buttons in that listener 
             // NOT redundant
-            boolean enabled = evt.getNewValue() == Boolean.TRUE ? true : false;
+            boolean enabled = evt.getNewValue() == Boolean.TRUE;
             Iterator it = buttonIterator();
             while (it.hasNext()) 
             {
@@ -371,7 +370,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
             // We need to keep the buttons in sync with the command, so go through the buttons and set visible state.
             // alternative is to add a listener to the visible value and change buttons in that listener 
             // NOT redundant
-            boolean enabled = evt.getNewValue() == Boolean.TRUE ? true : false;
+            boolean enabled = evt.getNewValue() == Boolean.TRUE;
             Iterator it = buttonIterator();
             while (it.hasNext()) 
             {
