@@ -6,7 +6,6 @@ package org.springframework.richclient.security.support;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-
 import org.acegisecurity.AccessDecisionManager;
 import org.acegisecurity.AccessDeniedException;
 import org.acegisecurity.Authentication;
@@ -20,17 +19,17 @@ import org.acegisecurity.providers.TestingAuthenticationToken;
  */
 public class SecurityControllerTests extends TestCase {
 
-    private TestAbstractSecurityController _controller;
-    private TestAccessDecisionManager _accessDecisionManager;
+    private TestAbstractSecurityController controller;
+    private TestAccessDecisionManager accessDecisionManager;
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        _controller = new TestAbstractSecurityController();
-        _accessDecisionManager = new TestAccessDecisionManager();
-        _controller.setAccessDecisionManager( _accessDecisionManager );
+        controller = new TestAbstractSecurityController();
+        accessDecisionManager = new TestAccessDecisionManager();
+        controller.setAccessDecisionManager(accessDecisionManager);
     }
 
     /**
@@ -42,8 +41,8 @@ public class SecurityControllerTests extends TestCase {
         // Authentication token is updated
         TestAuthorizable a1 = new TestAuthorizable( true );
         TestAuthorizable a2 = new TestAuthorizable( true );
-        _controller.addControlledObject( a1 );
-        _controller.addControlledObject( a2 );
+        controller.addControlledObject( a1 );
+        controller.addControlledObject( a2 );
         assertFalse( "Object should not be authorized", a1.isAuthorized() );
         assertFalse( "Object should not be authorized", a2.isAuthorized() );
 
@@ -51,26 +50,26 @@ public class SecurityControllerTests extends TestCase {
         a2.resetAuthCount();
 
         // Set the decision manager to authorize
-        _accessDecisionManager.setDecisionValue( true );
+        accessDecisionManager.setDecisionValue( true );
 
         // Now install a token, a should be updated
-        _controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
+        controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
         assertTrue( "Object should be authorized", a1.isAuthorized() );
         assertEquals( "Object should be updated", a1.getAuthCount(), 1 );
         assertTrue( "Object should be authorized", a2.isAuthorized() );
         assertEquals( "Object should be updated", a2.getAuthCount(), 1 );
 
-        _controller.setAuthenticationToken( null );
+        controller.setAuthenticationToken( null );
         assertFalse( "Object should not be authorized", a1.isAuthorized() );
         assertEquals( "Object should be updated", a1.getAuthCount(), 2 );
         assertFalse( "Object should not be authorized", a2.isAuthorized() );
         assertEquals( "Object should be updated", a2.getAuthCount(), 2 );
 
         // Set the decision manager to NOT authorize
-        _accessDecisionManager.setDecisionValue( false );
+        accessDecisionManager.setDecisionValue( false );
 
         // Now install a token, a should be updated
-        _controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
+        controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
         assertFalse( "Object should not be authorized", a1.isAuthorized() );
         assertEquals( "Object should be updated", a1.getAuthCount(), 3 );
         assertFalse( "Object should not be authorized", a2.isAuthorized() );
@@ -89,13 +88,13 @@ public class SecurityControllerTests extends TestCase {
         badList.add( new Object() );
 
         try {
-            _controller.setControlledObjects( badList );
+            controller.setControlledObjects( badList );
             fail( "Should reject objects that aren't Authorizable" );
         } catch( IllegalArgumentException e ) {
             // expected
         }
 
-        _controller.setControlledObjects( goodList );
+        controller.setControlledObjects( goodList );
         assertFalse( "Object should not be authorized", a1.isAuthorized() );
         assertTrue( "Object should be updated", a1.getAuthCount() == 1 );
         assertFalse( "Object should not be authorized", a2.isAuthorized() );
@@ -108,21 +107,21 @@ public class SecurityControllerTests extends TestCase {
     public void testAddControlledObject() {
 
         // Install an authentication token
-        _controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
+        controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
 
         // Set the decision manager to authorize
-        _accessDecisionManager.setDecisionValue( true );
+        accessDecisionManager.setDecisionValue( true );
 
         TestAuthorizable a1 = new TestAuthorizable( false );
-        _controller.addControlledObject( a1 );
+        controller.addControlledObject( a1 );
         assertTrue( "Object should be authorized", a1.isAuthorized() );
         assertTrue( "Object should be updated", a1.getAuthCount() == 1 );
 
         // Set the decision manager to NOT authorize
-        _accessDecisionManager.setDecisionValue( false );
+        accessDecisionManager.setDecisionValue( false );
 
         TestAuthorizable a2 = new TestAuthorizable( true );
-        _controller.addControlledObject( a2 );
+        controller.addControlledObject( a2 );
         assertFalse( "Object should not be authorized", a2.isAuthorized() );
         assertTrue( "Object should be updated", a2.getAuthCount() == 1 );
     }
@@ -132,16 +131,16 @@ public class SecurityControllerTests extends TestCase {
      */
     public void testRemoveControlledObject() {
         TestAuthorizable a = new TestAuthorizable( true );
-        _controller.addControlledObject( a );
+        controller.addControlledObject( a );
         assertFalse( "Object should not be authorized", a.isAuthorized() );
         assertTrue( "Object should be updated", a.getAuthCount() == 1 );
 
-        _controller.removeControlledObject( a );
+        controller.removeControlledObject( a );
         a.resetAuthCount();
 
         // Set the decision manager to authorize
-        _accessDecisionManager.setDecisionValue( true );
-        _controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
+        accessDecisionManager.setDecisionValue( true );
+        controller.setAuthenticationToken( new TestingAuthenticationToken( "USER2", "FOO", null ) );
 
         assertFalse( "Object should not be authorized", a.isAuthorized() );
         assertTrue( "Object should not be updated", a.getAuthCount() == 0 );
@@ -169,15 +168,15 @@ public class SecurityControllerTests extends TestCase {
      */
     public class TestAccessDecisionManager implements AccessDecisionManager {
 
-        private boolean _decisionValue;
+        private boolean decisionValue;
 
         public void setDecisionValue(boolean decisionValue) {
-            _decisionValue = decisionValue;
+            this.decisionValue = decisionValue;
         }
 
         public void decide(Authentication authentication, Object object, ConfigAttributeDefinition config)
                 throws AccessDeniedException {
-            if( !_decisionValue ) {
+            if( !decisionValue) {
                 throw new AccessDeniedException( "access denied" );
             }
         }

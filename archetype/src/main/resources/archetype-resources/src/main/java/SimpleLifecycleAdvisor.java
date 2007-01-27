@@ -29,7 +29,7 @@ import org.springframework.richclient.application.config.DefaultApplicationLifec
  */
 public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
 
-    private final Log _logger = LogFactory.getLog(getClass());
+    private final Log logger = LogFactory.getLog(getClass());
 
     /**
      * This method is called prior to the opening of an application window. Note
@@ -63,8 +63,8 @@ public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
      * @param window The window who's commands have just been created
      */
     public void onCommandsCreated( ApplicationWindow window ) {
-        if( _logger.isInfoEnabled() ) {
-            _logger.info("onCommandsCreated( windowNumber=" + window.getNumber() + " )");
+        if( logger.isInfoEnabled() ) {
+            logger.info("onCommandsCreated( windowNumber=" + window.getNumber() + " )");
         }
     }
 
@@ -74,8 +74,8 @@ public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
      * @param window The window being processed
      */
     public void onWindowCreated( ApplicationWindow window ) {
-        if( _logger.isInfoEnabled() ) {
-            _logger.info("onWindowCreated( windowNumber=" + window.getNumber() + " )");
+        if( logger.isInfoEnabled() ) {
+            logger.info("onWindowCreated( windowNumber=" + window.getNumber() + " )");
         }
     }
 
@@ -85,8 +85,8 @@ public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
      * @param window The window being processed
      */
     public void onWindowOpened( ApplicationWindow window ) {
-        if( _logger.isInfoEnabled() ) {
-            _logger.info("onWindowOpened( windowNumber=" + window.getNumber() + " )");
+        if( logger.isInfoEnabled() ) {
+            logger.info("onWindowOpened( windowNumber=" + window.getNumber() + " )");
         }
     }
 
@@ -99,8 +99,8 @@ public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
      *         to allow the close, <code>false</code> to prevent the close.
      */
     public boolean onPreWindowClose( ApplicationWindow window ) {
-        if( _logger.isInfoEnabled() ) {
-            _logger.info("onPreWindowClose( windowNumber=" + window.getNumber() + " )");
+        if( logger.isInfoEnabled() ) {
+            logger.info("onPreWindowClose( windowNumber=" + window.getNumber() + " )");
         }
         return true;
     }
@@ -110,8 +110,8 @@ public class SimpleLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
      * application window has been made visible.
      */
     public void onPostStartup() {
-        if( _logger.isInfoEnabled() ) {
-            _logger.info("onPostStartup()");
+        if( logger.isInfoEnabled() ) {
+            logger.info("onPostStartup()");
         }
     }
 

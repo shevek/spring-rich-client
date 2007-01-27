@@ -26,8 +26,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser;
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -39,16 +46,6 @@ import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.util.Assert;
-
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
-import ca.odell.glazedlists.gui.AbstractTableComparatorChooser;
-import ca.odell.glazedlists.gui.TableFormat;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 
 /**
  * This class provides a standard table representation for a set of objects with properties of the objects presented in
@@ -108,8 +105,6 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
  * @author Larry Streepy
  */
 public abstract class AbstractObjectTable extends AbstractControlFactory implements ApplicationListener {
-
-	private final Log _logger = LogFactory.getLog(getClass());
 
 	private final String modelId;
 
@@ -180,8 +175,8 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 		if (baseList == null) {
 			// Construct on demand
 			Object[] data = getInitialData();
-			if (_logger.isDebugEnabled()) {
-				_logger.debug("Table data: got " + data.length + " entries");
+			if (logger.isDebugEnabled()) {
+				logger.debug("Table data: got " + data.length + " entries");
 			}
 			// Construct the event list of all our data and layer on the sorting
 			EventList rawList = GlazedLists.eventList(Arrays.asList(data));

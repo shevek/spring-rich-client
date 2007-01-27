@@ -28,7 +28,7 @@ import org.springframework.richclient.core.Guarded;
  */
 public class ListMultipleSelectionGuard extends AbstractListSelectionGuard {
 
-    private int _requiredCount = -1;
+    private int requiredCount = -1;
 
     /**
      * Constructor.
@@ -51,7 +51,7 @@ public class ListMultipleSelectionGuard extends AbstractListSelectionGuard {
      */
     public ListMultipleSelectionGuard( ValueModel selectionHolder, Guarded guarded, int requiredCount ) {
         super(selectionHolder, guarded);
-        _requiredCount = requiredCount;
+        this.requiredCount = requiredCount;
     }
 
     /**
@@ -62,6 +62,6 @@ public class ListMultipleSelectionGuard extends AbstractListSelectionGuard {
      * @return boolean true if the guarded object should be enabled
      */
     protected boolean shouldEnable( int[] selected ) {
-        return selected != null && selected.length >= 1 && (_requiredCount == -1 || _requiredCount == selected.length);
+        return selected != null && selected.length >= 1 && (requiredCount == -1 || requiredCount == selected.length);
     }
 }

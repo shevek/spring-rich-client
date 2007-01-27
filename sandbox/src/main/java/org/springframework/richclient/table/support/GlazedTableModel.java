@@ -18,13 +18,6 @@ package org.springframework.richclient.table.support;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.binding.form.FieldFaceSource;
-import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
@@ -32,6 +25,12 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.gui.WritableTableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.binding.form.FieldFaceSource;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 /**
  * <code>TableModel</code> that accepts a <code>EventList</code>.
@@ -268,11 +267,11 @@ public class GlazedTableModel extends EventTableModel {
          */
         public Class getColumnClass(int column) {
             Integer columnKey = new Integer(column);
-            Class cls = (Class) _columnClasses.get(columnKey);
+            Class cls = (Class) columnClasses.get(columnKey);
 
             if (cls == null) {
-                if (_prototype != null) {
-                    cls = _beanWrapper.getPropertyType(getColumnPropertyNames()[column]);
+                if (prototype != null) {
+                    cls = beanWrapper.getPropertyType(getColumnPropertyNames()[column]);
                 } else {
                     // Since no prototype is available, inspect the table contents
                     int rowCount = getRowCount();
@@ -287,7 +286,7 @@ public class GlazedTableModel extends EventTableModel {
 
             // If we found something, then put it in the cache. If not, return Object.
             if (cls != null) {
-                _columnClasses.put(columnKey, cls);
+                columnClasses.put(columnKey, cls);
             } else {
                 cls = Object.class;
             }
@@ -305,7 +304,7 @@ public class GlazedTableModel extends EventTableModel {
          * @return the {@link Comparator} to use or <code>null</code> for an unsortable column.
          */
         public Comparator getColumnComparator(int column) {
-            Comparator comparator = (Comparator) _comparators.get(new Integer(column));
+            Comparator comparator = (Comparator) comparators.get(new Integer(column));
             return comparator != null ? comparator : GlazedLists.comparableComparator();
         }
 
@@ -318,7 +317,7 @@ public class GlazedTableModel extends EventTableModel {
          *            The comparator to install
          */
         public void setComparator(int column, Comparator comparator) {
-            _comparators.put(new Integer(column), comparator);
+            comparators.put(new Integer(column), comparator);
         }
 
         /**
@@ -327,16 +326,16 @@ public class GlazedTableModel extends EventTableModel {
          * provide a prototype, you should probably override {@link #getColumnClass(int)}.
          */
         public void setPrototypeValue(Object prototype) {
-            _prototype = prototype;
-            _beanWrapper = new BeanWrapperImpl(_prototype);
+            this.prototype = prototype;
+            beanWrapper = new BeanWrapperImpl(this.prototype);
         }
 
-        private HashMap _comparators = new HashMap();
+        private HashMap comparators = new HashMap();
 
-        private HashMap _columnClasses = new HashMap();
+        private HashMap columnClasses = new HashMap();
 
-        private Object _prototype;
+        private Object prototype;
 
-        private BeanWrapper _beanWrapper;
+        private BeanWrapper beanWrapper;
     }
 }

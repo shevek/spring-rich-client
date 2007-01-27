@@ -56,8 +56,8 @@ import org.springframework.richclient.security.SecurityControllerManager;
  */
 public class DefaultSecurityControllerManager implements SecurityControllerManager {
 
-    private Map _securityControllerMap = new HashMap();
-    private SecurityController _fallbackController = null;
+    private Map securityControllerMap = new HashMap();
+    private SecurityController fallbackController = null;
 
     /*
      * (non-Javadoc)
@@ -78,7 +78,7 @@ public class DefaultSecurityControllerManager implements SecurityControllerManag
      * @return controller, null if not found
      */
     public SecurityController getSecurityController(String id) {
-        SecurityController sc = (SecurityController) _securityControllerMap.get( id );
+        SecurityController sc = (SecurityController) securityControllerMap.get( id );
         if( sc == null ) {
             // Try for a named bean
             try {
@@ -98,7 +98,7 @@ public class DefaultSecurityControllerManager implements SecurityControllerManag
      * @param securityController to register under given alias Id
      */
     public void registerSecurityControllerAlias(String aliasId, SecurityController securityController) {
-        _securityControllerMap.put( aliasId, securityController );
+        securityControllerMap.put( aliasId, securityController );
     }
 
     /**
@@ -107,7 +107,7 @@ public class DefaultSecurityControllerManager implements SecurityControllerManag
      * @param fallbackController
      */
     public void setFallbackSecurityController(SecurityController fallbackController) {
-        _fallbackController = fallbackController;
+        this.fallbackController = fallbackController;
     }
 
     /**
@@ -115,6 +115,6 @@ public class DefaultSecurityControllerManager implements SecurityControllerManag
      * @return fallback security controller, null if not defined
      */
     public SecurityController getFallbackSecurityController() {
-        return _fallbackController;
+        return fallbackController;
     }
 }

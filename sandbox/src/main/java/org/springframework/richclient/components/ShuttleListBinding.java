@@ -34,7 +34,7 @@ import org.springframework.richclient.list.DynamicListModel;
  */
 public class ShuttleListBinding extends AbstractBinding {
 
-    private ShuttleList _list;
+    private ShuttleList list;
 
     private ListModel model;
 
@@ -59,7 +59,7 @@ public class ShuttleListBinding extends AbstractBinding {
      */
     public ShuttleListBinding( final ShuttleList list, final FormModel formModel, final String formPropertyPath ) {
         super(formModel, formPropertyPath, null);
-        _list = list;
+        this.list = list;
     }
 
     public void setComparator( Comparator comparator ) {
@@ -71,11 +71,11 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     public void setRenderer( ListCellRenderer renderer ) {
-        _list.setCellRenderer(renderer);
+        list.setCellRenderer(renderer);
     }
 
     public ListCellRenderer getRenderer() {
-        return _list.getCellRenderer();
+        return list.getCellRenderer();
     }
 
     public void setSelectableItemsHolder( ValueModel selectableItemsHolder ) {
@@ -100,20 +100,20 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     protected JComponent doBindControl() {
-        _list.setModel(createModel());
+        list.setModel(createModel());
         if( selectedItemsHolder != null ) {
             setSelectedValue(null);
-            _list.addListSelectionListener(new ListSelectedValueMediator());
+            list.addListSelectionListener(new ListSelectedValueMediator());
         }
         if( comparator != null ) {
-            _list.setComparator(comparator);
+            list.setComparator(comparator);
         }
         // Get the icon to use for the edit button
-        _list.setEditIcon(getEditIcon(), getEditIconText());
+        list.setEditIcon(getEditIcon(), getEditIconText());
 
-        _list.setListLabels(getChosenLabel(), getSourceLabel());
+        list.setListLabels(getChosenLabel(), getSourceLabel());
 
-        return _list;
+        return list;
     }
 
     private String getSourceLabel() {
@@ -200,9 +200,9 @@ public class ShuttleListBinding extends AbstractBinding {
     protected void setSelectedValue( final PropertyChangeListener silentValueChangeHandler ) {
         final int[] indices = indicesOf(selectedItemsHolder.getValue());
         if( indices.length < 1 ) {
-            _list.clearSelection();
+            list.clearSelection();
         } else {
-            _list.setSelectedIndices(indices);
+            list.setSelectedIndices(indices);
             // The selection may now be different than what is reflected in
             // collection property if this is SINGLE_INTERVAL_SELECTION, so
             // modify if needed...
@@ -244,7 +244,7 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     protected int indexOf( final Object o ) {
-        final ListModel listModel = _list.getModel();
+        final ListModel listModel = list.getModel();
         final int size = listModel.getSize();
         for( int i = 0; i < size; i++ ) {
             if( equalByComparator(o, listModel.getElementAt(i)) ) {
@@ -271,7 +271,7 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     protected void updateSelectionHolderFromList( final PropertyChangeListener silentValueChangeHandler ) {
-        final Object[] selected = _list.getSelectedValues();
+        final Object[] selected = list.getSelectedValues();
 
         if( isSelectedItemACollection() ) {
             try {
@@ -380,11 +380,11 @@ public class ShuttleListBinding extends AbstractBinding {
     }
 
     protected void readOnlyChanged() {
-        _list.setEnabled(isEnabled() && !isReadOnly());
+        list.setEnabled(isEnabled() && !isReadOnly());
     }
 
     protected void enabledChanged() {
-        _list.setEnabled(isEnabled() && !isReadOnly());
+        list.setEnabled(isEnabled() && !isReadOnly());
     }
 
     /**

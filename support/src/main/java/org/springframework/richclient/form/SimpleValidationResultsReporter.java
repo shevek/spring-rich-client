@@ -46,9 +46,9 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 
     private Messagable messageReceiver;
 
-    private List _children = new ArrayList();
+    private List children = new ArrayList();
 
-    private ValidationResultsReporter _parent = null;
+    private ValidationResultsReporter parent = null;
 
     /**
      * Constructor.
@@ -96,8 +96,8 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
             boolean clean = true;
 
             // Check children
-            for( int i = 0, count = _children.size(); i < count; i++ ) {
-                ValidationResultsReporter child = (ValidationResultsReporter) _children.get( i );
+            for( int i = 0, count = children.size(); i < count; i++ ) {
+                ValidationResultsReporter child = (ValidationResultsReporter) children.get( i );
                 if( child.hasErrors() ) {
                     clean = false;
                     child.validationResultsChanged( null ); // Force it to re-report
@@ -113,11 +113,11 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
             if( clean ) {
                 // If we have a parent, then we will leave the handling of the guarded and
                 // message receiver to it since it may have grand-parents, etc.
-                if( _parent != null ) {
+                if( parent != null ) {
                     if( logger.isDebugEnabled() ) {
                         logger.debug( "Form and children are clean, handing off to parent." );
                     }
-                    _parent.validationResultsChanged( null );
+                    parent.validationResultsChanged( null );
                 } else {
                     if( logger.isDebugEnabled() ) {
                         logger.debug( "Reporters are all clean; enabling guarded component." );
@@ -158,8 +158,8 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
     public boolean hasErrors() {
         boolean errors = resultsModel.getHasErrors();
 
-        for( int i = 0, count = _children.size(); i < count && !errors; i++ ) {
-            ValidationResultsReporter child = (ValidationResultsReporter) _children.get( i );
+        for( int i = 0, count = children.size(); i < count && !errors; i++ ) {
+            ValidationResultsReporter child = (ValidationResultsReporter) children.get( i );
             if( child.hasErrors() ) {
                 errors = true;
                 break;
@@ -174,7 +174,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
      * @see org.springframework.richclient.form.ValidationResultsReporter#addChild(org.springframework.richclient.form.ValidationResultsReporter)
      */
     public void addChild(ValidationResultsReporter child) {
-        _children.add( child );
+        children.add( child );
         child.setParent( this );
         validationResultsChanged( null ); // Force a re-reporting
     }
@@ -184,7 +184,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
      */
     public void removeChild(ValidationResultsReporter child)
     {
-        _children.remove(child);
+        children.remove(child);
         validationResultsChanged(null);
     }
     
@@ -215,7 +215,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
      * @see org.springframework.richclient.form.ValidationResultsReporter#getParent()
      */
     public ValidationResultsReporter getParent() {
-        return _parent;
+        return parent;
     }
 
     /*
@@ -223,7 +223,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
      * @see org.springframework.richclient.form.ValidationResultsReporter#setParent(org.springframework.richclient.form.ValidationResultsReporter)
      */
     public void setParent(ValidationResultsReporter parent) {
-        _parent = parent;
+        this.parent = parent;
     }
 
 }

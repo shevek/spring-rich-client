@@ -164,7 +164,7 @@ public class DialogPageUtils {
      * adapt them to operations on a Guarded object.
      */
     protected static class PageCompleteAdapter implements PropertyChangeListener {
-        private Guarded _guarded;
+        private Guarded guarded;
 
         /**
          * Construct a handler on the given guarded object.
@@ -172,7 +172,7 @@ public class DialogPageUtils {
          * @param guarded object to manage
          */
         protected PageCompleteAdapter( Guarded guarded ) {
-            _guarded = guarded;
+            this.guarded = guarded;
         }
 
         /**
@@ -182,7 +182,7 @@ public class DialogPageUtils {
          */
         public void propertyChange( PropertyChangeEvent e ) {
             if( DialogPage.PAGE_COMPLETE_PROPERTY.equals(e.getPropertyName()) ) {
-                _guarded.setEnabled(((Boolean) e.getNewValue()).booleanValue());
+                guarded.setEnabled(((Boolean) e.getNewValue()).booleanValue());
             }
         }
     }

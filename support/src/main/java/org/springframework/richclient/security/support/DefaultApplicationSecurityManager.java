@@ -90,11 +90,11 @@ import org.springframework.richclient.security.LogoutEvent;
  */
 public class DefaultApplicationSecurityManager implements ApplicationSecurityManager, InitializingBean {
 
-    private final Log _logger = LogFactory.getLog( getClass() );
+    private final Log logger = LogFactory.getLog( getClass() );
 
-    private AuthenticationManager _authenticationManager = null;
+    private AuthenticationManager authenticationManager = null;
 
-    private Authentication _currentAuthentication = null;
+    private Authentication currentAuthentication = null;
 
     /**
      * Default constructor.
@@ -128,7 +128,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * @param authenticationManager instance to use for authentication requests
      */
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        _authenticationManager = authenticationManager;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -136,7 +136,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * @return authenticationManager instance used for authentication requests
      */
     public AuthenticationManager getAuthenticationManager() {
-        return _authenticationManager;
+        return authenticationManager;
     }
 
     /**
@@ -159,7 +159,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
         try {
             result = getAuthenticationManager().authenticate( authentication );
         } catch( AcegiSecurityException e ) {
-            _logger.info( "authentication failed: " + e.getMessage() );
+            logger.info( "authentication failed: " + e.getMessage() );
 
             // Fire application event to advise of failed login
             appCtx.publishEvent( new AuthenticationFailedEvent( authentication, e ) );
@@ -169,8 +169,8 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
         }
 
         // Handle success or failure of the authentication attempt
-        if( _logger.isDebugEnabled() ) {
-            _logger.debug( "successful login - update context holder and fire event" );
+        if( logger.isDebugEnabled() ) {
+            logger.debug( "successful login - update context holder and fire event" );
         }
 
         // Commit the successful Authentication object to the secure ContextHolder
@@ -198,7 +198,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * @return authentication token, null if not logged in
      */
     public Authentication getAuthentication() {
-        return _currentAuthentication;
+        return currentAuthentication;
     }
 
     /**
@@ -206,7 +206,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * @param authentication token to install as current.
      */
     protected void setAuthentication(Authentication authentication) {
-        _currentAuthentication = authentication;
+        currentAuthentication = authentication;
     }
 
     /**
@@ -264,9 +264,9 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      */
     public void afterPropertiesSet() {
         // Ensure that we have our authentication manager
-        if( _authenticationManager == null ) {
-            if( _logger.isDebugEnabled() ) {
-                _logger.debug( "No AuthenticationManager defined, look for one" );
+        if( authenticationManager == null ) {
+            if( logger.isDebugEnabled() ) {
+                logger.debug( "No AuthenticationManager defined, look for one" );
             }
 
             // Try the class types in sequence
@@ -281,7 +281,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
         }
 
         // If we still don't have one, then that's it
-        if( _authenticationManager == null ) {
+        if( authenticationManager == null ) {
             throw new IllegalArgumentException( "authenticationManager must be defined" );
         }
     }
@@ -295,8 +295,8 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
         boolean success = false;
         String className = type.getName();
         Map map = Application.instance().getApplicationContext().getBeansOfType( type );
-        if( _logger.isDebugEnabled() ) {
-            _logger.debug( "Search for '" + className + "' found: " + map );
+        if( logger.isDebugEnabled() ) {
+            logger.debug( "Search for '" + className + "' found: " + map );
         }
 
         if( map.size() == 1 ) {
@@ -308,17 +308,17 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
             setAuthenticationManager( am );
             success = true;
 
-            if( _logger.isInfoEnabled() ) {
-                _logger.info( "Auto-configuration using '" + name + "' as authenticationManager" );
+            if( logger.isInfoEnabled() ) {
+                logger.info( "Auto-configuration using '" + name + "' as authenticationManager" );
             }
         } else if( map.size() > 1 ) {
-            if( _logger.isInfoEnabled() ) {
-                _logger.info( "Need a single '" + className + "', found: " + map.keySet() );
+            if( logger.isInfoEnabled() ) {
+                logger.info( "Need a single '" + className + "', found: " + map.keySet() );
             }
         } else {
             // Size 0, no potentials
-            if( _logger.isInfoEnabled() ) {
-                _logger.info( "Auto-configuration did not find a suitable authenticationManager of type " + type );
+            if( logger.isInfoEnabled() ) {
+                logger.info( "Auto-configuration did not find a suitable authenticationManager of type " + type );
             }
         }
 

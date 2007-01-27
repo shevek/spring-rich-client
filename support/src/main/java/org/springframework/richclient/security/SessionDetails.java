@@ -40,7 +40,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
 
     public static final String PROPERTY_PASSWORD = "password";
 
-    private static final Log _logger = LogFactory.getLog( SessionDetails.class );
+    private static final Log logger = LogFactory.getLog( SessionDetails.class );
 
     private transient AuthenticationManager authenticationManager;
 
@@ -114,7 +114,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         try {
             result = authenticationManager.authenticate(request);
         } catch( AcegiSecurityException e ) {
-            _logger.warn( "authentication failed", e);
+            logger.warn( "authentication failed", e);
 
             // Fire application event to advise of failed login
             appCtx.publishEvent( new AuthenticationFailedEvent(request, e));
@@ -124,8 +124,8 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         }
 
         // Handle success or failure of the authentication attempt
-        if( _logger.isDebugEnabled()) {
-            _logger.debug("successful login - update context holder and fire event");
+        if( logger.isDebugEnabled()) {
+            logger.debug("successful login - update context holder and fire event");
         }
 
         // Commit the successful Authentication object to the secure

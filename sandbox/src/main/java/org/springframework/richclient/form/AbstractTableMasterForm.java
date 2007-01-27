@@ -27,20 +27,19 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.table.support.GlazedTableModel;
 import org.springframework.richclient.util.PopupMenuMouseListener;
-
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.matchers.Matcher;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.matchers.MatcherEditor;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 
 /**
  * This is an abstract implementation of AbstractMasterForm that uses a GlazedTableModel
@@ -57,11 +56,11 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
  */
 public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
-    private EventList _eventList;
-    private JTable _masterTable;
-    private Matcher _matcher;
-    private MatcherEditor _matcherEditor;
-    private Comparator _comparator;
+    private EventList eventList;
+    private JTable masterTable;
+    private Matcher matcher;
+    private MatcherEditor matcherEditor;
+    private Comparator comparator;
 
     /**
      * Construct a new AbstractTableMasterForm using the given parent form model and
@@ -90,7 +89,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param matcher The Matcher to use to filter elements in the master set.
      */
     public void setFilterMatcher(Matcher matcher) {
-        _matcher = matcher;
+        this.matcher = matcher;
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @return matcher
      */
     public Matcher getFilterMatcher() {
-        return _matcher;
+        return matcher;
     }
 
     /**
@@ -111,7 +110,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param matcherEditor The MatcherEditor to use to filter elements in the master set.
      */
     public void setFilterMatcherEditor(MatcherEditor matcherEditor) {
-        _matcherEditor = matcherEditor;
+        this.matcherEditor = matcherEditor;
     }
 
     /**
@@ -121,7 +120,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @return matcherEditor
      */
     public MatcherEditor getFilterMatcherEditor() {
-        return _matcherEditor;
+        return matcherEditor;
     }
 
     /**
@@ -130,7 +129,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @param comparator to use for sorting the table
      */
     public void setSortComparator(Comparator comparator) {
-        _comparator = comparator;
+        this.comparator = comparator;
     }
 
     /**
@@ -139,7 +138,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @return comparator to use for sorting the table
      */
     public Comparator getSortComparator() {
-        return _comparator;
+        return comparator;
     }
 
     /**
@@ -161,51 +160,51 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
         configure();    // Configure all our sub-components
 
-        _eventList = getRootEventList();
+        eventList = getRootEventList();
 
         // Install the matcher if configured (this will filter the list)
-        if( _matcher != null ) {
-            _eventList = new FilterList( _eventList, _matcher );
-        } else if( _matcherEditor != null ) {
-            _eventList = new FilterList( _eventList, _matcherEditor );
+        if( matcher != null ) {
+            eventList = new FilterList(eventList, matcher);
+        } else if( matcherEditor != null ) {
+            eventList = new FilterList(eventList, matcherEditor);
         }
 
         // Install the sorter if configured
         SortedList sortedList = null;
-        if( _comparator != null ) {
-            _eventList = sortedList = new SortedList( _eventList, _comparator );
+        if( comparator != null ) {
+            eventList = sortedList = new SortedList(eventList, comparator);
         }
 
         // Install this new event list configuration (sorting and filtering)
-        installEventList( _eventList );
+        installEventList(eventList);
 
-        _masterTable = createTable( createTableModel() );
+        masterTable = createTable( createTableModel() );
 
         // Finish the sorting installation
-        if( _comparator != null ) {
-            new TableComparatorChooser( _masterTable, sortedList, true );
+        if( comparator != null ) {
+            new TableComparatorChooser(masterTable, sortedList, true );
         }
 
         // If we have either a sort or a filter, we need a special selection model
-        if( _comparator != null || _matcher != null ) {
-            EventSelectionModel selectionModel = new EventSelectionModel( _eventList );
-            _masterTable.setSelectionModel( selectionModel );
+        if( comparator != null || matcher != null ) {
+            EventSelectionModel selectionModel = new EventSelectionModel(eventList);
+            masterTable.setSelectionModel( selectionModel );
         }
 
-        // _masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-        _masterTable.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
+        // masterTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        masterTable.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 
         // Setup our selection listener so that it controls the detail form
         installSelectionHandler();
 
         // Enable a popup menu
-        _masterTable.addMouseListener( new PopupMenuMouseListener( getPopupMenu() ) );
+        masterTable.addMouseListener( new PopupMenuMouseListener( getPopupMenu() ) );
 
         // Avoid the default viewport size of 450,400
-        Dimension ps = getMasterTablePreferredSize( _masterTable.getPreferredSize() );
-        _masterTable.setPreferredScrollableViewportSize( ps );
+        Dimension ps = getMasterTablePreferredSize( masterTable.getPreferredSize() );
+        masterTable.setPreferredScrollableViewportSize( ps );
 
-        JScrollPane sp = new JScrollPane( _masterTable );
+        JScrollPane sp = new JScrollPane(masterTable);
 
         JPanel panel = new JPanel();
         panel.setLayout( new BorderLayout() );
@@ -243,7 +242,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      */
     protected TableModel createTableModel() {
         // Make this table model read-only
-        return new GlazedTableModel( _eventList, getColumnPropertyNames(), getId() ) {
+        return new GlazedTableModel(eventList, getColumnPropertyNames(), getId() ) {
             protected boolean isEditable(Object row, int column) {
                 return false;
             }
@@ -268,7 +267,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @return selection model or null if master table has not been constructed yet
      */
     protected ListSelectionModel getSelectionModel() {
-        return _masterTable != null ? _masterTable.getSelectionModel() : null;
+        return masterTable != null ? masterTable.getSelectionModel() : null;
     }
 
     /**
@@ -289,21 +288,21 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
      * @return Returns the eventList.
      */
     protected EventList getEventList() {
-        return _eventList;
+        return eventList;
     }
 
     /**
      * @param list The eventList to set.
      */
     protected void setEventList(EventList list) {
-        _eventList = list;
+        eventList = list;
     }
 
     /**
      * @return Returns the masterTable.
      */
     protected JTable getMasterTable() {
-        return _masterTable;
+        return masterTable;
     }
 
     /**

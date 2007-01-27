@@ -31,9 +31,9 @@ import org.springframework.binding.value.support.AbstractValueModel;
  */
 public class ListSelectionValueModelAdapter extends AbstractValueModel implements ListSelectionListener {
 
-    private ListSelectionModel _model;
-    private int[] _currentSelection = new int[0];
-    private boolean _skipSelectionModelUpdate = false;
+    private ListSelectionModel model;
+    private int[] currentSelection = new int[0];
+    private boolean skipSelectionModelUpdate = false;
 
     /**
      * Constructor.
@@ -41,8 +41,8 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
      * @param model selection model to adapt
      */
     public ListSelectionValueModelAdapter( ListSelectionModel model ) {
-        _model = model;
-        _model.addListSelectionListener(this);
+        this.model = model;
+        this.model.addListSelectionListener(this);
     }
 
     /*
@@ -56,9 +56,9 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
             // We need to install this new value into the value model, but
             // we don't want to propogate it back down to the adapted selection
             // model (since we are responding to a change in that model).
-            _skipSelectionModelUpdate = true;
+            skipSelectionModelUpdate = true;
             setValue(getSelectedRows());
-            _skipSelectionModelUpdate = false;
+            skipSelectionModelUpdate = false;
         }
     }
 
@@ -68,7 +68,7 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
      * @see org.springframework.binding.value.ValueModel#getValue()
      */
     public Object getValue() {
-        return _currentSelection;
+        return currentSelection;
     }
 
     /**
@@ -79,18 +79,18 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
     public void setValue( Object newValue ) {
         int[] newSelection = (int[]) newValue;
 
-        if( hasChanged(_currentSelection, newSelection) ) {
+        if( hasChanged(currentSelection, newSelection) ) {
 
-            int[] oldValue = _currentSelection;
-            _currentSelection = newSelection;
-            fireValueChange(oldValue, _currentSelection);
+            int[] oldValue = currentSelection;
+            currentSelection = newSelection;
+            fireValueChange(oldValue, currentSelection);
 
-            if( !_skipSelectionModelUpdate ) {
+            if( !skipSelectionModelUpdate) {
                 // Don't want notifications while we do this
-                _model.removeListSelectionListener(this);
+                model.removeListSelectionListener(this);
 
                 // Install the selection on the adapted model
-                _model.clearSelection();
+                model.clearSelection();
 
                 int i = 0;
                 int len = newSelection.length;
@@ -100,12 +100,12 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
                         i++;
                     }
                     int end = newSelection[i];
-                    _model.addSelectionInterval(start, end);
+                    model.addSelectionInterval(start, end);
                     i++;
                 }
 
                 // Reinstall listener
-                _model.addListSelectionListener(this);
+                model.addListSelectionListener(this);
             }
         }
     }
@@ -132,8 +132,8 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
      *         or an empty array if no row is selected
      */
     private int[] getSelectedRows() {
-        int iMin = _model.getMinSelectionIndex();
-        int iMax = _model.getMaxSelectionIndex();
+        int iMin = model.getMinSelectionIndex();
+        int iMax = model.getMaxSelectionIndex();
 
         if( (iMin == -1) || (iMax == -1) ) {
             return new int[0];
@@ -142,7 +142,7 @@ public class ListSelectionValueModelAdapter extends AbstractValueModel implement
         int[] rvTmp = new int[1 + (iMax - iMin)];
         int n = 0;
         for( int i = iMin; i <= iMax; i++ ) {
-            if( _model.isSelectedIndex(i) ) {
+            if( model.isSelectedIndex(i) ) {
                 rvTmp[n++] = i;
             }
         }

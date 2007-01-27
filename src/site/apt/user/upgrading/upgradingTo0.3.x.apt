@@ -134,3 +134,6 @@ org.acegisecurity.AuthenticationException.description = \
 
     * LabelInfoFactory is now deprecated in favour of factory methods on the appropriated LabelInfo and CommandButtonLabelInfo classes.
 
+    * All instance variables which had a name prefix of <<<_>>> have been removed of that prefix.
+    For example all <<<_logger>>> varialbes have been renamed to <<<logger>>>.
+    

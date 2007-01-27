@@ -20,11 +20,10 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.springframework.binding.value.IndexAdapter;
-
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
+import org.springframework.binding.value.IndexAdapter;
 
 /**
  * This class provides an implementation of {@link EventList} that also implements the
@@ -36,7 +35,7 @@ import ca.odell.glazedlists.event.ListEvent;
  */
 public class ObservableEventList extends TransformedList implements ObservableList {
 
-    private IndexAdapter _indexAdapter;
+    private IndexAdapter indexAdapter;
     protected EventListenerList listenerList = new EventListenerList();
 
     /**
@@ -92,11 +91,11 @@ public class ObservableEventList extends TransformedList implements ObservableLi
      * @see org.springframework.binding.value.support.ObservableList#getIndexAdapter(int)
      */
     public IndexAdapter getIndexAdapter(int index) {
-        if( _indexAdapter == null ) {
-            _indexAdapter = new ThisIndexAdapter();
+        if( indexAdapter == null ) {
+            indexAdapter = new ThisIndexAdapter();
         }
-        _indexAdapter.setIndex( index );
-        return _indexAdapter;
+        indexAdapter.setIndex( index );
+        return indexAdapter;
     }
 
     /*

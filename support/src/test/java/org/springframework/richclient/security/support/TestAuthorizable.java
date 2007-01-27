@@ -11,30 +11,30 @@ import org.springframework.richclient.core.Authorizable;
  */
 public class TestAuthorizable implements Authorizable {
 
-    private boolean _authorized;
-    private int _authCount = 0;
+    private boolean authorized;
+    private int authCount = 0;
 
     public TestAuthorizable() {
-        _authorized = false;
+        authorized = false;
     }
 
     public TestAuthorizable( boolean authorized ) {
-        _authorized = authorized;
+        this.authorized = authorized;
     }
 
     public void setAuthorized(boolean authorized) {
-        _authCount += 1;
-        _authorized = authorized;
+        authCount += 1;
+        this.authorized = authorized;
     }
 
     public boolean isAuthorized() {
-        return _authorized;
+        return authorized;
     }
     
     public int getAuthCount() {
-        return _authCount;
+        return authCount;
     }
     public void resetAuthCount() {
-        _authCount = 0;
+        authCount = 0;
     }
 }

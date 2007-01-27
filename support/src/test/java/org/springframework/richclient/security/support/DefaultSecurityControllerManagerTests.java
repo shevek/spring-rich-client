@@ -4,7 +4,6 @@
 package org.springframework.richclient.security.support;
 
 import junit.framework.TestCase;
-
 import org.acegisecurity.Authentication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
@@ -26,9 +25,9 @@ import org.springframework.richclient.security.TestAuthenticationManager;
  * 
  */
 public class DefaultSecurityControllerManagerTests extends TestCase {
-    private ClassPathXmlApplicationContext _applicationContext;
-    private TestAuthorizable _testAuth1;
-    private SecurityControllerManager _manager;
+    private ClassPathXmlApplicationContext applicationContext;
+    private TestAuthorizable testAuth1;
+    private SecurityControllerManager manager;
 
     /*
      * @see TestCase#setUp()
@@ -39,16 +38,16 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         TestApplicationLifecycleAdvisor ala = new TestApplicationLifecycleAdvisor();
         ala.setWindowCommandBarDefinitions( "org/springframework/richclient/security/support/test-command-ctx.xml" );
         Application app = new Application( ala );
-        _applicationContext = new ClassPathXmlApplicationContext(
+        applicationContext = new ClassPathXmlApplicationContext(
             "org/springframework/richclient/security/support/test-security-controller-ctx.xml" );
-        app.setApplicationContext( _applicationContext );
+        app.setApplicationContext(applicationContext);
 
         ala.setStartingPageId( "start" );
         ala.setApplication( app );
         app.openWindow( "start" );
 
-        _testAuth1 = (TestAuthorizable) _applicationContext.getBean( "testAuth1" );
-        _manager = (SecurityControllerManager)ApplicationServicesLocator.services().getService(SecurityControllerManager.class);
+        testAuth1 = (TestAuthorizable) applicationContext.getBean( "testAuth1" );
+        manager = (SecurityControllerManager)ApplicationServicesLocator.services().getService(SecurityControllerManager.class);
 
         // Prepare the command context
         ala.createWindowCommandManager();
@@ -59,26 +58,26 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
      */
     public void testRegisterSecurityControllerAlias() {
         SecurityController controller = new UserRoleSecurityController();
-        _manager.registerSecurityControllerAlias( "newAlias", controller );
+        manager.registerSecurityControllerAlias( "newAlias", controller );
 
-        assertEquals( "Should be same controller", controller, _manager.getSecurityController( "newAlias" ) );
+        assertEquals( "Should be same controller", controller, manager.getSecurityController( "newAlias" ) );
     }
 
     /**
      * Test obtaining controllers
      */
     public void testGetSecurityController() {
-        SecurityController write = (SecurityController) _applicationContext.getBean( "writeController",
+        SecurityController write = (SecurityController) applicationContext.getBean( "writeController",
             SecurityController.class );
-        SecurityController admin = (SecurityController) _applicationContext.getBean( "adminController",
+        SecurityController admin = (SecurityController) applicationContext.getBean( "adminController",
             SecurityController.class );
 
         // test defaulting to bean id if no alias registered
-        assertEquals( "Should be same controller", write, _manager.getSecurityController( "writeController" ) );
-        assertEquals( "Should be same controller", admin, _manager.getSecurityController( "adminController" ) );
+        assertEquals( "Should be same controller", write, manager.getSecurityController( "writeController" ) );
+        assertEquals( "Should be same controller", admin, manager.getSecurityController( "adminController" ) );
 
         // Test registered alias
-        assertEquals( "Should be same controller", admin, _manager.getSecurityController( "adminAlias" ) );
+        assertEquals( "Should be same controller", admin, manager.getSecurityController( "adminAlias" ) );
     }
 
     /**
@@ -87,8 +86,8 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
     public void testApplicationContext() {
         ApplicationSecurityManager securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
-        assertFalse( "Object should not be authorized", _testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 1, _testAuth1.getAuthCount() );
+        assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
+        assertEquals( "Object should be updated", 1, testAuth1.getAuthCount() );
 
         CommandManager cmgr = Application.instance().getActiveWindow().getCommandManager();
         ActionCommand cmdWrite = cmgr.getActionCommand( "cmdWrite" );
@@ -106,8 +105,8 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertTrue( "Object should be authorized", cmdWrite.isAuthorized() );
         assertFalse( "Object should not be authorized", cmdAdmin.isAuthorized() );
         assertFalse( "Object should not be authorized", cmdAdminAlias.isAuthorized() );
-        assertFalse( "Object should not be authorized", _testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 2, _testAuth1.getAuthCount() );
+        assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
+        assertEquals( "Object should be updated", 2, testAuth1.getAuthCount() );
 
         // Now login with ROLE_ADMIN
         auth = TestAuthenticationManager.makeAuthentication( "test", "test", "ROLE_ADMIN" );
@@ -116,8 +115,8 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertTrue( "Object should be authorized", cmdWrite.isAuthorized() );
         assertTrue( "Object should be authorized", cmdAdmin.isAuthorized() );
         assertTrue( "Object should be authorized", cmdAdminAlias.isAuthorized() );
-        assertTrue( "Object should be authorized", _testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 3, _testAuth1.getAuthCount() );
+        assertTrue( "Object should be authorized", testAuth1.isAuthorized() );
+        assertEquals( "Object should be updated", 3, testAuth1.getAuthCount() );
     }
 
     /**

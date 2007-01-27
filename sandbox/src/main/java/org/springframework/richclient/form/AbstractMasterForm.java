@@ -25,6 +25,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
@@ -45,9 +47,6 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 
 /**
  * Abstract base for the Master form of a Master/Detail pair. Derived types must implement
@@ -75,17 +74,17 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     public static final String IS_CREATING_PROPERTY = "isCreating";
 
-    private DirtyTrackingDCBCVM _collectionVM;
-    private EventList _rootEventList;
-    private ObservableEventList _masterEventList;
-    private AbstractDetailForm _detailForm;
-    private Class _detailType;
-    private ActionCommand _newFormObjectCommand;
-    private ActionCommand _deleteCommand;
-    private CommandGroup _commandGroup;
-    private boolean _confirmDelete = true;
-    private ListSelectionHandler _selectionHandler = new ListSelectionHandler();
-    private PropertyChangeListener _parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
+    private DirtyTrackingDCBCVM collectionVM;
+    private EventList rootEventList;
+    private ObservableEventList masterEventList;
+    private AbstractDetailForm detailForm;
+    private Class detailType;
+    private ActionCommand newFormObjectCommand;
+    private ActionCommand deleteCommand;
+    private CommandGroup commandGroup;
+    private boolean confirmDelete = true;
+    private ListSelectionHandler selectionHandler = new ListSelectionHandler();
+    private PropertyChangeListener parentFormPropertyChangeHandler = new ParentFormPropertyChangeHandler();
 
     /**
      * Construct a new AbstractMasterForm using the given parent form model and property
@@ -100,20 +99,20 @@ public abstract class AbstractMasterForm extends AbstractForm {
      */
     protected AbstractMasterForm(HierarchicalFormModel parentFormModel, String property, String formId, Class detailType) {
         super( formId );
-        _detailType = detailType;
+        this.detailType = detailType;
 
         ValueModel propertyVM = parentFormModel.getValueModel( property );
 
         // Now construct the dirty tracking model
         Class collectionType = getMasterCollectionType( propertyVM );
 
-        _collectionVM = new DirtyTrackingDCBCVM( propertyVM, collectionType );
+        collectionVM = new DirtyTrackingDCBCVM( propertyVM, collectionType );
         ValidatingFormModel formModel = FormModelHelper.createChildPageFormModel( parentFormModel, formId,
-            _collectionVM );
+                collectionVM);
         setFormModel( formModel );
 
         // Install a handler to detect when the parents form model changes
-        propertyVM.addValueChangeListener( _parentFormPropertyChangeHandler );
+        propertyVM.addValueChangeListener(parentFormPropertyChangeHandler);
     }
 
     /**
@@ -127,7 +126,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return collection value model
      */
     public ValueModel getCollectionValueModel() {
-        return _collectionVM;
+        return collectionVM;
     }
 
     /**
@@ -158,18 +157,18 @@ public abstract class AbstractMasterForm extends AbstractForm {
         // Now we need to construct a subform and value model to handle the
         // detail elements of this master table
 
-        Object detailObject = BeanUtils.instantiateClass( _detailType );
+        Object detailObject = BeanUtils.instantiateClass(detailType);
         ValueModel valueHolder = new ValueHolder( detailObject );
-        _detailForm = createDetailForm( getFormModel(), valueHolder, _masterEventList );
+        detailForm = createDetailForm( getFormModel(), valueHolder, masterEventList);
 
         // Start the form disabled and not validating until the form is actually in use.
-        _detailForm.setEnabled( false );
-        _detailForm.getFormModel().setValidating( false );
+        detailForm.setEnabled( false );
+        detailForm.getFormModel().setValidating( false );
 
         // Wire up the monitor to track the selected index and edit state so we
         // can keep the delete and add button states up to date
-        _detailForm.getEditingIndexHolder().addValueChangeListener( new EditingIndexMonitor() );
-        _detailForm.addPropertyChangeListener( new EditStateMonitor() );
+        detailForm.getEditingIndexHolder().addValueChangeListener( new EditingIndexMonitor() );
+        detailForm.addPropertyChangeListener( new EditStateMonitor() );
     }
 
     /**
@@ -193,11 +192,11 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @param eventList new EventList to install
      */
     protected void installEventList(EventList eventList) {
-        _masterEventList = new ObservableEventList( eventList );
+        masterEventList = new ObservableEventList( eventList );
 
         // Propogate this down to the detail form
-        if( _detailForm != null ) {
-            _detailForm.setMasterList( _masterEventList );
+        if( detailForm != null ) {
+            detailForm.setMasterList(masterEventList);
         }
     }
 
@@ -208,10 +207,10 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * original event list on top of which all the other lists are constructed.
      */
     protected EventList getRootEventList() {
-        if( _rootEventList == null ) {
-            _rootEventList = (EventList) getFormModel().getFormObjectHolder().getValue();
+        if( rootEventList == null ) {
+            rootEventList = (EventList) getFormModel().getFormObjectHolder().getValue();
         }
-        return _rootEventList;
+        return rootEventList;
     }
 
     /**
@@ -220,19 +219,19 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * occur when the parent form object is changed). This method is normally invoked from
      * the parent form object listener.
      *
-     * @see #_parentFormPropertyChangeHandler
+     * @see #parentFormPropertyChangeHandler
      */
     protected void handleExternalRootEventListChange() {
-        if( _masterEventList != null ) {
+        if( masterEventList != null ) {
             // While we do this, we need to disable our normal list listener since it's
             // too late to interact with the user due to unsaved changes (the underlying
             // value model has already changed).
             uninstallSelectionHandler();
 
             // Clean up the detail form
-            if( _detailForm != null ) {
-                _detailForm.reset();
-                _detailForm.setSelectedIndex( -1 );
+            if( detailForm != null ) {
+                detailForm.reset();
+                detailForm.setSelectedIndex( -1 );
             }
 
             if( isControlCreated() ) {
@@ -259,7 +258,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return EventList
      */
     public ObservableEventList getMasterEventList() {
-        return _masterEventList;
+        return masterEventList;
     }
 
     /**
@@ -303,7 +302,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return listener to handle master table selection events
      */
     protected ListSelectionListener getSelectionHandler() {
-        return _selectionHandler;
+        return selectionHandler;
     }
 
     /**
@@ -312,11 +311,11 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return command group
      */
     protected CommandGroup getCommandGroup() {
-        if( _commandGroup == null ) {
-            _commandGroup = CommandGroup.createCommandGroup( null, new AbstractCommand[] { getDeleteCommand(),
+        if( commandGroup == null ) {
+            commandGroup = CommandGroup.createCommandGroup( null, new AbstractCommand[] { getDeleteCommand(),
                     getNewFormObjectCommand() } );
         }
-        return _commandGroup;
+        return commandGroup;
     }
 
     /**
@@ -346,10 +345,10 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * since the AbstractForm's implementation of createNewFormObjectCommand is private!
      */
     public ActionCommand getNewFormObjectCommand() {
-        if( _newFormObjectCommand == null ) {
-            _newFormObjectCommand = createNewFormObjectCommand();
+        if( newFormObjectCommand == null ) {
+            newFormObjectCommand = createNewFormObjectCommand();
         }
-        return _newFormObjectCommand;
+        return newFormObjectCommand;
     }
 
     /**
@@ -382,7 +381,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return constructed command id
      */
     protected String getNewFormObjectCommandId() {
-        return "new" + StringUtils.capitalize( ClassUtils.getShortName( _detailType + "Command" ) );
+        return "new" + StringUtils.capitalize( ClassUtils.getShortName( detailType + "Command" ) );
     }
 
     /**
@@ -391,10 +390,10 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return command, created on demand
      */
     public ActionCommand getDeleteCommand() {
-        if( _deleteCommand == null ) {
-            _deleteCommand = createDeleteCommand();
+        if( deleteCommand == null ) {
+            deleteCommand = createDeleteCommand();
         }
-        return _deleteCommand;
+        return deleteCommand;
     }
 
     /**
@@ -464,7 +463,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
             return;
         }
 
-        _detailForm.reset();
+        detailForm.reset();
 
         int min = sm.getMinSelectionIndex();
         int max = sm.getMaxSelectionIndex();
@@ -483,8 +482,8 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return button
      */
     protected JButton createDeleteButton() {
-        Assert.state( _deleteCommand != null, "Delete command has not been created!" );
-        return (JButton) _deleteCommand.createButton();
+        Assert.state( deleteCommand != null, "Delete command has not been created!" );
+        return (JButton) deleteCommand.createButton();
     }
 
     /**
@@ -494,42 +493,42 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return constructed command id
      */
     protected String getDeleteCommandId() {
-        return "delete" + StringUtils.capitalize( ClassUtils.getShortName( _detailType + "Command" ) );
+        return "delete" + StringUtils.capitalize( ClassUtils.getShortName( detailType + "Command" ) );
     }
 
     /**
      * @return Returns the detailForm.
      */
     protected AbstractDetailForm getDetailForm() {
-        return _detailForm;
+        return detailForm;
     }
 
     /**
      * @param form The detailForm to set.
      */
     protected void setDetailForm(AbstractDetailForm form) {
-        _detailForm = form;
+        detailForm = form;
     }
 
     /**
      * @return Returns the detailFormModel.
      */
     protected ValidatingFormModel getDetailFormModel() {
-        return _detailForm.getFormModel();
+        return detailForm.getFormModel();
     }
 
     /**
      * @return Returns the detailType.
      */
     protected Class getDetailType() {
-        return _detailType;
+        return detailType;
     }
 
     /**
      * @param type The detailType to set.
      */
     protected void setDetailType(Class type) {
-        _detailType = type;
+        detailType = type;
     }
 
     /**
@@ -537,7 +536,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @return confirm delete setting.
      */
     public boolean isConfirmDelete() {
-        return _confirmDelete;
+        return confirmDelete;
     }
 
     /**
@@ -546,7 +545,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * @param confirmDelete
      */
     public void setConfirmDelete(boolean confirmDelete) {
-        _confirmDelete = confirmDelete;
+        this.confirmDelete = confirmDelete;
     }
 
     /**
@@ -558,7 +557,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
             return; // Already creating a new object, just bail
         }
 
-        final ActionCommand detailNewObjectCommand = _detailForm.getNewFormObjectCommand();
+        final ActionCommand detailNewObjectCommand = detailForm.getNewFormObjectCommand();
 
         if( getDetailForm().isDirty() ) {
             String title = getMessage( new String[] { getId() + ".dirtyNew.title", "masterForm.dirtyNew.title" } );
@@ -568,7 +567,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
                     // Tell both forms that we are creating a new object
                     detailNewObjectCommand.execute(); // Do subform action first
                     creatingNewObject();
-                    _detailForm.creatingNewObject();
+                    detailForm.creatingNewObject();
                 }
             };
             dlg.showDialog();
@@ -576,7 +575,7 @@ public abstract class AbstractMasterForm extends AbstractForm {
             // Tell both forms that we are creating a new object
             detailNewObjectCommand.execute(); // Do subform action first
             creatingNewObject();
-            _detailForm.creatingNewObject();
+            detailForm.creatingNewObject();
         }
     }
 

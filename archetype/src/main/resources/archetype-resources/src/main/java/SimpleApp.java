@@ -38,7 +38,7 @@ import org.springframework.richclient.application.ApplicationLauncher;
  */
 public class SimpleApp {
 
-    private static final Log _logger = LogFactory.getLog(SimpleApp.class);
+    private static final Log logger = LogFactory.getLog(SimpleApp.class);
 
     /**
      * Main routine for the simple sample application.
@@ -46,7 +46,7 @@ public class SimpleApp {
      * @param args
      */
     public static void main( String[] args ) {
-        _logger.info("SimpleApp starting up");
+        logger.info("SimpleApp starting up");
 
         // In order to launch the platform, we have to construct an
         // application context that defines the beans (services) and
@@ -72,7 +72,7 @@ public class SimpleApp {
         try {
             new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath });
         } catch (RuntimeException e) {
-            _logger.error("RuntimeException during startup", e);
+            logger.error("RuntimeException during startup", e);
         }
     }
 

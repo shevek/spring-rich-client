@@ -16,8 +16,6 @@
 package org.springframework.richclient.security;
 
 import org.acegisecurity.Authentication;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
@@ -73,8 +71,6 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
  */
 public class LoginCommand extends ApplicationWindowAwareCommand {
     private static final String ID = "loginCommand";
-
-    private final Log _logger = LogFactory.getLog( getClass() );
 
     private boolean displaySuccessMessage = true;
 
@@ -145,7 +141,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
                     ApplicationSecurityManager sm = (ApplicationSecurityManager)getService(ApplicationSecurityManager.class);
                     Authentication authentication = sm.getAuthentication();
                     if( authentication == null ) {
-                        _logger.info( "User canceled login; close the application." );
+                        logger.info( "User canceled login; close the application." );
                         getApplication().close();
                     }
                 }

@@ -43,14 +43,14 @@ import org.springframework.richclient.application.ApplicationLauncher;
  */
 public class SimpleVLDockingApp {
 
-	private static final Log _logger = LogFactory.getLog(SimpleVLDockingApp.class);
+	private static final Log logger = LogFactory.getLog(SimpleVLDockingApp.class);
 
 	/**
 	 * Main routine for the simple sample application.
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		_logger.info("SimpleVLDockingApp starting up");
+		logger.info("SimpleVLDockingApp starting up");
 
 		// The startup context defines elements that should be available
 		// quickly such as a splash screen image.
@@ -68,7 +68,7 @@ public class SimpleVLDockingApp {
 			new ApplicationLauncher(startupContextPath, new String[] { richclientApplicationContextPath });
 		}
 		catch (RuntimeException e) {
-			_logger.error("RuntimeException during startup", e);
+			logger.error("RuntimeException during startup", e);
 		}
 	}
 

@@ -61,10 +61,10 @@ import org.acegisecurity.vote.RoleVoter;
 public class UserRoleSecurityController extends AbstractSecurityController {
 
     /** The ConfigAttributeDefinition controlling our authorization decision. */
-    private ConfigAttributeDefinition _roles = null;
+    private ConfigAttributeDefinition roles = null;
 
     /** Roles as a string. */
-    private String _rolesString;
+    private String rolesString;
 
     /**
      * Constructor.
@@ -89,8 +89,8 @@ public class UserRoleSecurityController extends AbstractSecurityController {
 
         ConfigAttributeEditor editor = new ConfigAttributeEditor();
         editor.setAsText( roles );
-        _roles = (ConfigAttributeDefinition) editor.getValue();
-        _rolesString = roles;
+        this.roles = (ConfigAttributeDefinition) editor.getValue();
+        rolesString = roles;
     }
 
     /**
@@ -98,7 +98,7 @@ public class UserRoleSecurityController extends AbstractSecurityController {
      * @return config attrributes
      */
     public String getAuthorizingRoles() {
-        return _rolesString;
+        return rolesString;
     }
 
     /**
@@ -118,7 +118,7 @@ public class UserRoleSecurityController extends AbstractSecurityController {
      * @return attribute definition for the provided secured object
      */
     protected ConfigAttributeDefinition getConfigAttributeDefinition(Object securedObject) {
-        return _roles;
+        return roles;
     }
 
 }

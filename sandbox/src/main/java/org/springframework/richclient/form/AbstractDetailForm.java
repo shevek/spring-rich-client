@@ -65,9 +65,9 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
         super( formModel, formId );
 
         // Install the detail data as our editable object list
-        _editableItemList = editableItemList;
+        this.editableItemList = editableItemList;
         setEditableFormObjects( editableItemList );
-        setEditingFormObjectIndexHolder( _indexHolder );
+        setEditingFormObjectIndexHolder(indexHolder);
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
             ObservableList masterList) {
         super( parentFormModel, formId, childFormObjectHolder );
         setMasterList( masterList );
-        setEditingFormObjectIndexHolder( _indexHolder );
+        setEditingFormObjectIndexHolder(indexHolder);
     }
 
     /**
@@ -93,8 +93,8 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @param masterList list to use as our master data
      */
     protected void setMasterList(ObservableList masterList) {
-        _editableItemList = masterList;
-        setEditableFormObjects( _editableItemList );
+        editableItemList = masterList;
+        setEditableFormObjects(editableItemList);
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @param index of selected item
      */
     public void setSelectedIndex(int index) {
-        _indexHolder.setValue( new Integer( index ) );
+        indexHolder.setValue( new Integer( index ) );
         setEditState( index < 0 ? STATE_CLEAR : STATE_EDIT );
         updateControlsForState();
     }
@@ -122,7 +122,7 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @return
      */
     public ValueHolder getEditingIndexHolder() {
-        return _indexHolder;
+        return indexHolder;
     }
 
     /**
@@ -169,10 +169,10 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @param new edit state
      */
     protected void setEditState(int editState) {
-        int oldEditState = _editState;
-        _editState = editState;
+        int oldEditState = this.editState;
+        this.editState = editState;
         updateControlsForState();
-        firePropertyChange( EDIT_STATE_PROPERTY, oldEditState, _editState );
+        firePropertyChange( EDIT_STATE_PROPERTY, oldEditState, this.editState);
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @return current state
      */
     public int getEditState() {
-        return _editState;
+        return editState;
     }
 
     /**
@@ -226,10 +226,10 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * @return cancel command
      */
     public ActionCommand getCancelCommand() {
-        if( _cancelCommand == null ) {
-            _cancelCommand = createCancelCommand();
+        if( cancelCommand == null ) {
+            cancelCommand = createCancelCommand();
         }
-        return _cancelCommand;
+        return cancelCommand;
     }
 
     /**
@@ -262,13 +262,13 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
      * and Feel guidelines.
      */
     protected JComponent createButtonBar() {
-        _commitCommand = getCommitCommand();
-        _revertCommand = getRevertCommand();
-        _cancelCommand = getCancelCommand();
+        commitCommand = getCommitCommand();
+        revertCommand = getRevertCommand();
+        cancelCommand = getCancelCommand();
 
-        _formCommandGroup = CommandGroup.createCommandGroup( null, new AbstractCommand[] { _cancelCommand,
-                _revertCommand, _commitCommand } );
-        JComponent buttonBar = _formCommandGroup.createButtonBar();
+        formCommandGroup = CommandGroup.createCommandGroup( null, new AbstractCommand[] {cancelCommand,
+                revertCommand, commitCommand} );
+        JComponent buttonBar = formCommandGroup.createButtonBar();
         GuiStandardUtils.attachDialogBorder( buttonBar );
         return buttonBar;
     }
@@ -281,50 +281,50 @@ public abstract class AbstractDetailForm extends AbstractForm implements Propert
         if( listener == null ) {
             return;
         }
-        if( _changeSupport == null ) {
-            _changeSupport = new PropertyChangeSupport( this );
+        if( changeSupport == null ) {
+            changeSupport = new PropertyChangeSupport( this );
         }
-        _changeSupport.addPropertyChangeListener( listener );
+        changeSupport.addPropertyChangeListener( listener );
     }
 
     public final void removePropertyChangeListener(PropertyChangeListener listener) {
-        if( listener == null || _changeSupport == null ) {
+        if( listener == null || changeSupport == null ) {
             return;
         }
-        _changeSupport.removePropertyChangeListener( listener );
+        changeSupport.removePropertyChangeListener( listener );
     }
 
     public final void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         if( listener == null ) {
             return;
         }
-        if( _changeSupport == null ) {
-            _changeSupport = new PropertyChangeSupport( this );
+        if( changeSupport == null ) {
+            changeSupport = new PropertyChangeSupport( this );
         }
-        _changeSupport.addPropertyChangeListener( propertyName, listener );
+        changeSupport.addPropertyChangeListener( propertyName, listener );
     }
 
     public final void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        if( listener == null || _changeSupport == null ) {
+        if( listener == null || changeSupport == null ) {
             return;
         }
-        _changeSupport.removePropertyChangeListener( propertyName, listener );
+        changeSupport.removePropertyChangeListener( propertyName, listener );
     }
 
     protected final void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        if( _changeSupport == null ) {
+        if( changeSupport == null ) {
             return;
         }
-        _changeSupport.firePropertyChange( propertyName, oldValue, newValue );
+        changeSupport.firePropertyChange( propertyName, oldValue, newValue );
     }
 
-    private ValueHolder _indexHolder = new ValueHolder( new Integer( -1 ) );
-    private CommandGroup _formCommandGroup;
-    private ActionCommand _commitCommand;
-    private ActionCommand _revertCommand;
-    private ActionCommand _cancelCommand;
-    private ObservableList _editableItemList;
-    private int _editState = STATE_CLEAR;
-    private transient PropertyChangeSupport _changeSupport;
+    private ValueHolder indexHolder = new ValueHolder( new Integer( -1 ) );
+    private CommandGroup formCommandGroup;
+    private ActionCommand commitCommand;
+    private ActionCommand revertCommand;
+    private ActionCommand cancelCommand;
+    private ObservableList editableItemList;
+    private int editState = STATE_CLEAR;
+    private transient PropertyChangeSupport changeSupport;
 
 }
