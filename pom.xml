@@ -476,7 +476,7 @@
         </plugins>
     </reporting>
     <properties>
-        <spring.version>2.0</spring.version>
+        <spring.version>2.0.2</spring.version>
     </properties>
 
     <profiles>
@@ -722,12 +722,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-remoting</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -737,6 +731,16 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <!--<dependency>-->
@@ -936,9 +940,9 @@
 
             <!-- VLDocking -->
             <dependency>
-		<groupId>com.vlsolutions</groupId>
-		<artifactId>vldocking</artifactId>
-		<version>2.1.3</version>
+                <groupId>com.vlsolutions</groupId>
+                <artifactId>vldocking</artifactId>
+                <version>2.1.3</version>
             </dependency>
 
         </dependencies>

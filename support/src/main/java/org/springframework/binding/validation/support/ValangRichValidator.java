@@ -33,12 +33,14 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.ReflectiveVisitorHelper;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.util.Assert;
@@ -351,6 +353,15 @@ public class ValangRichValidator implements RichValidator {
         }
 
         public boolean isExtractOldValueForEditor() {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        public Object convertIfNecessary(Object object, Class aClass) throws TypeMismatchException {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        public Object convertIfNecessary(Object object, Class aClass, MethodParameter methodParameter)
+                throws TypeMismatchException {
             throw new UnsupportedOperationException("Not implemented");
         }
     }

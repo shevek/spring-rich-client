@@ -254,6 +254,9 @@ Configuring your favorite IDE
     Open <File>\><Settings>\><Project>\><Version Control>.
     Select <<<Subversion>>> as version control.
 
+    Delete the module <<<spring-richclient-archeypte>>> or just unset it's java source dirs,
+    so you can build the entire project with Intellij too.
+
 Maven 2 versus your favorite IDE
 
     After your IDE is configured with maven 2, you 'll use Maven 2 less frequently.
