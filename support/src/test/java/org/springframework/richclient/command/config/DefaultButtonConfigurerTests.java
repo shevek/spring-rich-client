@@ -19,8 +19,6 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 
 import junit.framework.TestCase;
-
-import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.image.EmptyIcon;
 
 /**

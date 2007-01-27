@@ -15,8 +15,6 @@
  */
 package org.springframework.richclient.factory;
 
-import javax.swing.KeyStroke;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;

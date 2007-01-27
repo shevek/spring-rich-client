@@ -7,8 +7,6 @@ import javax.swing.ComboBoxEditor;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.richclient.list.TextValueListRenderer;
 import org.springframework.util.Assert;
