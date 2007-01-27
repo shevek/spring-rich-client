@@ -203,7 +203,7 @@ public class BigDecimalTextField extends JTextField {
             {
                 BigDecimal bd = new BigDecimal(Double.toString(n.doubleValue()));
                 if (scale != null) {
-                    bd.setScale(scale.intValue(), BigDecimal.ROUND_HALF_UP);
+                    bd = bd.setScale(scale.intValue(), BigDecimal.ROUND_HALF_UP);
                 }
                 return bd;
             } 
