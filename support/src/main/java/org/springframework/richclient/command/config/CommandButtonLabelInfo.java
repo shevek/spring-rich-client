@@ -59,7 +59,7 @@ public final class CommandButtonLabelInfo implements ButtonConfigurer {
      * the {@link LabelInfo} class, with the following additions:
      * 
      * <ul>
-     * <li>The @ symbol is an espapable character.</li>
+     * <li>The @ symbol is an escapable character.</li>
      * <li>Everything after the first unescaped @ symbol will be treated as the textual representation
      * of the keystroke accelerator.</li>
      * </ul>
