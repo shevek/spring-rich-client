@@ -26,15 +26,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
-import ca.odell.glazedlists.gui.AbstractTableComparatorChooser;
-import ca.odell.glazedlists.gui.TableFormat;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -46,6 +37,17 @@ import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.util.Assert;
+
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser;
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import ca.odell.glazedlists.util.concurrent.Lock;
 
 /**
  * This class provides a standard table representation for a set of objects with properties of the objects presented in
@@ -448,34 +450,82 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 	}
 
 	/**
+	 * Executes the runnable with a write lock on the event list.
+	 * 
+	 * @param runnable its run method is executed while holding a write lock for
+	 * the event list.
+	 * 
+	 * @see #getFinalEventList()
+	 */
+	protected void runWithWriteLock(Runnable runnable) {
+		runWithLock(runnable, getFinalEventList().getReadWriteLock().writeLock());
+	}
+
+	/**
+	 * Executes the runnable with a read lock on the event list.
+	 * 
+	 * @param runnable its run method is executed while holding a read lock for
+	 * the event list.
+	 * 
+	 * @see #getFinalEventList()
+	 */
+	protected void runWithReadLock(Runnable runnable) {
+		runWithLock(runnable, getFinalEventList().getReadWriteLock().readLock());
+	}
+
+	private void runWithLock(Runnable runnable, Lock lock) {
+		Assert.notNull(runnable);
+		Assert.notNull(lock);
+		lock.lock();
+		try {
+			runnable.run();
+		}
+		finally {
+			lock.unlock();
+		}
+	}
+
+	/**
 	 * Handle the creation of a new object.
 	 * @param object New object to handle
 	 */
-	protected void handleNewObject(Object object) {
-		getFinalEventList().add(object);
+	protected void handleNewObject(final Object object) {
+		runWithWriteLock(new Runnable() {
+			public void run() {
+				getFinalEventList().add(object);
+			}
+		});
 	}
-
+	
 	/**
 	 * Handle an updated object in this table. Locate the existing entry (by equals) and replace it in the underlying
 	 * list.
 	 * @param object Updated object to handle
 	 */
-	protected void handleUpdatedObject(Object object) {
-		int index = baseList.indexOf(object);
-		if (index >= 0) {
-			baseList.set(index, object);
-		}
+	protected void handleUpdatedObject(final Object object) {		
+		runWithWriteLock(new Runnable() {
+			public void run() {
+				int index = getFinalEventList().indexOf(object);
+				if (index >= 0) {
+					getFinalEventList().set(index, object);
+				}
+			}
+		});
 	}
 
 	/**
 	 * Handle the deletion of an object in this table. Locate this entry (by equals) and delete it.
 	 * @param object Updated object being deleted
 	 */
-	protected void handleDeletedObject(Object object) {
-		int index = baseList.indexOf(object);
-		if (index >= 0) {
-			baseList.remove(index);
-		}
+	protected void handleDeletedObject(final Object object) {
+		runWithWriteLock(new Runnable() {
+			public void run() {
+				int index = getFinalEventList().indexOf(object);
+				if (index >= 0) {
+					getFinalEventList().remove(index);
+				}
+			}
+		});
 	}
 
 	/**
