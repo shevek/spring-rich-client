@@ -20,9 +20,9 @@
     </description>
     <url>http://spring-rich-c.sf.net/</url>
     
-	<prerequisites>
-		<maven>2.0.4</maven>
-	</prerequisites>
+    <prerequisites>
+        <maven>2.0.4</maven>
+    </prerequisites>
     <issueManagement>
         <system>jira</system>
         <url>http://opensource2.atlassian.com/projects/spring/browse/RCP</url>
@@ -318,10 +318,10 @@
                     <version>2.0.1</version>
                     <executions>
                         <execution>
-                        	<!-- To deploy the sources automatically -->
+                            <!-- To deploy the sources automatically -->
                             <goals>
-								<goal>jar</goal>
-								<goal>test-jar</goal>
+                                <goal>jar</goal>
+                                <goal>test-jar</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -392,7 +392,7 @@
         </pluginManagement>
         <plugins>
             <plugin>
-            	<!-- Entry needed to create, install and deploy sources jars -->
+              <!-- Entry needed to create, install and deploy sources jars -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
@@ -513,6 +513,11 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -674,10 +679,6 @@
                 <version>1.1</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>logkit</groupId>
                         <artifactId>logkit</artifactId>
                     </exclusion>
@@ -690,6 +691,12 @@
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.14</version>
             </dependency>
 
             <!-- Dependency injection -->

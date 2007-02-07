@@ -66,6 +66,12 @@
             <groupId>org.acegisecurity</groupId>
             <artifactId>acegi-security</artifactId>
         </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
