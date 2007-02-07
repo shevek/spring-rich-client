@@ -18,9 +18,9 @@ package org.springframework.richclient.samples.simple.ui;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.builder.TableFormBuilder;
+import org.springframework.richclient.samples.simple.domain.Contact;
 
 /**
  * Form to handle the properties of a Contact object. It uses a {@link TableFormBuilder} to construct the layout of the
@@ -31,21 +31,13 @@ import org.springframework.richclient.form.builder.TableFormBuilder;
  */
 public class ContactForm extends AbstractForm {
 
-	public static final String FORM_NAME = "contact";
-
 	private JComponent firstNameField;
 
-	/**
-	 * @param pageFormModel
-	 */
-	public ContactForm(FormModel formModel) {
-		super(formModel, FORM_NAME);
+	public ContactForm(Contact contact) {
+		super(contact);
+		setId("contact");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.richclient.form.AbstractForm#createFormControl()
-	 */
 	protected JComponent createFormControl() {
 		TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
 		formBuilder.setLabelAttributes("colGrId=label colSpec=right:pref");
@@ -75,8 +67,7 @@ public class ContactForm extends AbstractForm {
 		formBuilder.row();
 		formBuilder.add("address.city", "colSpan=1 align=left");
 		formBuilder.row();
-		// formBuilder.add( bf.createBoundComboBox( "address.state",
-		// MasterLists.STATE_CODE ), "colSpan=1 align=left" );
+		// formBuilder.add(getBindingFactory().createBoundComboBox( "address.state", MasterLists.STATE_CODE), "colSpan=1 align=left" );
 		formBuilder.add("address.state", "colSpan=1 align=left");
 		formBuilder.row();
 

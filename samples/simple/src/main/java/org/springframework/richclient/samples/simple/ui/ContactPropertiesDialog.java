@@ -21,7 +21,6 @@ import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.dialog.FormBackedDialogPage;
 import org.springframework.richclient.dialog.TitledPageApplicationDialog;
 import org.springframework.richclient.form.Form;
-import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.samples.simple.domain.Contact;
 import org.springframework.richclient.samples.simple.domain.ContactDataStore;
 import org.springframework.util.Assert;
@@ -57,7 +56,7 @@ public class ContactPropertiesDialog extends TitledPageApplicationDialog {
 			contact = new Contact();
 		}
 		setCloseAction(CloseAction.DISPOSE);
-		form = new ContactForm(FormModelHelper.createFormModel(contact));
+		form = new ContactForm(contact);
 		setDialogPage(new FormBackedDialogPage(form));
 		this.dataStore = dataStore;
 	}

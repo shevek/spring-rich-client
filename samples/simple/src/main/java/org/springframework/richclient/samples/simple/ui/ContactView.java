@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
 import org.springframework.richclient.application.support.AbstractView;
+import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
@@ -169,11 +170,11 @@ public class ContactView extends AbstractView implements ApplicationListener {
 
 			// Install the popup menu
 			CommandGroup popup = new CommandGroup();
-			popup.add(getWindowCommandManager().getActionCommand("deleteCommand"));
+			popup.add((ActionCommand) getWindowCommandManager().getCommand("deleteCommand", ActionCommand.class));
 			popup.addSeparator();
-			popup.add(getWindowCommandManager().getActionCommand("propertiesCommand"));
+			popup.add((ActionCommand) getWindowCommandManager().getCommand("propertiesCommand", ActionCommand.class));
 			contactTable.setPopupCommandGroup(popup);
-			
+
 			// Register to get notified when the filtered list changes
 			contactTable.setStatusBar(getStatusBar());
 
@@ -186,7 +187,7 @@ public class ContactView extends AbstractView implements ApplicationListener {
 			ValueModel selectionHolder = new ListSelectionValueModelAdapter(contactTable.getSelectionModel());
 			new ListSingleSelectionGuard(selectionHolder, deleteExecutor);
 			new ListSingleSelectionGuard(selectionHolder, propertiesExecutor);
-			
+
 			return contactTable;
 		}
 	}
