@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.form.builder.support;
 
+import java.awt.GraphicsEnvironment;
 import java.util.Locale;
 
 import javax.swing.JComponent;
@@ -37,7 +38,13 @@ import org.springframework.richclient.test.SpringRichTestCase;
  * @author Peter De Bruycker
  */
 public class DirtyIndicatorInterceptorTests extends SpringRichTestCase {
+	/**
+	 * FIXME: this test will not run in a headless environment
+	 */
     public void testProcessComponent() throws InterruptedException {
+    	if (GraphicsEnvironment.isHeadless()) {
+			return;
+		}
         TestBean bean = new TestBean();
         bean.setProperty("original value");
 
