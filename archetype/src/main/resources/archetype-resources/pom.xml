@@ -9,7 +9,7 @@
 
   <properties>
     <springrich.version>0.3.0-SNAPSHOT</springrich.version>
-    <spring.version>2.0</spring.version>
+    <spring.version>2.0.2</spring.version>
   </properties>
 
   <build>
@@ -31,11 +31,12 @@
               </configuration>
           </plugin>
 
-          <!-- This plugin copies the dependencies into target/lib -->
+          <!-- This plugin copies the runtime dependencies into target/lib -->
           <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>dependency-maven-plugin</artifactId>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
               <configuration>
+                  <includeScope>runtime</includeScope>
                   <outputDirectory>${project.build.directory}/lib</outputDirectory>
               </configuration>
               <executions>
