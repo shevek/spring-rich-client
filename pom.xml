@@ -209,9 +209,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</connection>
-        <developerConnection>scm:svn:https://svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/spring-rich-c/trunk/spring-richclient/</url>
+        <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</connection>
+        <developerConnection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</developerConnection>
+        <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/trunk/spring-richclient/</url>
     </scm>
     <organization>
         <name>The Spring Framework</name>
