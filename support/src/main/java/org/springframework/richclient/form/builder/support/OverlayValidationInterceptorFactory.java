@@ -41,10 +41,7 @@ import org.springframework.richclient.util.OverlayHelper;
  */
 public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory {
 
-    private int textCompHeight;
-
     public OverlayValidationInterceptorFactory() {
-        textCompHeight = new JTextField().getPreferredSize().height;
     }
 
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
@@ -79,9 +76,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
         }
 
         private void attachOverlay(MessageReportingOverlay overlay, JComponent component) {
-            int yOffset = component.getPreferredSize().height;
-            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.NORTH_WEST, 0, Math.min(yOffset,
-                    textCompHeight));
+            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.SOUTH_WEST, 0, 0);
         }
     }
 
