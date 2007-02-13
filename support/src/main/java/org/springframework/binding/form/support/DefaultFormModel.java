@@ -23,6 +23,7 @@ import java.util.Map;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.BindingErrorMessageProvider;
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.ValidationMessage;
@@ -63,10 +64,19 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     private boolean validating = true;
     
     private boolean oldValidating = true;
+    
+    private boolean oldHasErrors = false;
 
     private Validator validator;
     
     private BindingErrorMessageProvider bindingErrorMessageProvider = new DefaultBindingErrorMessageProvider();
+
+    private final PropertyChangeListener errorChangeHandler = new PropertyChangeListener(){
+    
+                public void propertyChange(PropertyChangeEvent evt)
+                {
+                    hasErrorsUpdated();
+                }};
 
     public DefaultFormModel() {
         init();
@@ -117,12 +127,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             }
             
         });
-        validationResultsModel.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, new PropertyChangeListener(){
-
-            public void propertyChange(PropertyChangeEvent evt)
-            {
-                committableUpdated();
-            }});
+        validationResultsModel.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
     }
 
     public boolean isValidating() {
@@ -147,6 +152,20 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             firePropertyChange(VALIDATING_PROPERTY, !validating, validating);
         }
     }
+    
+    public void addChild(HierarchicalFormModel child)
+    {
+        super.addChild(child);
+        if (child instanceof ValidatingFormModel)
+            child.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
+    }
+
+    public void removeChild(HierarchicalFormModel child)
+    {
+        if (child instanceof ValidatingFormModel)
+            child.removePropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
+        super.removeChild(child);
+    }
 
     public ValidationResultsModel getValidationResults() {
         return validationResultsModel;
@@ -166,6 +185,15 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             }
         }
         return false;
+    }
+    
+    protected void hasErrorsUpdated() {
+        boolean hasErrors = getHasErrors();
+        if (hasChanged(oldHasErrors, hasErrors)) {
+            oldHasErrors = hasErrors;
+            firePropertyChange(ValidationResultsModel.HAS_ERRORS_PROPERTY, !hasErrors, hasErrors);
+            committableUpdated();
+        }
     }
     
     public void validate() {

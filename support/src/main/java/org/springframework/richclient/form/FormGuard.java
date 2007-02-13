@@ -83,8 +83,7 @@ public class FormGuard implements PropertyChangeListener {
         this.formModel = formModel;
 
         this.formModel.addPropertyChangeListener(FormModel.ENABLED_PROPERTY, this);
-        this.formModel.getValidationResults().addPropertyChangeListener(
-                ValidationResultsModel.HAS_ERRORS_PROPERTY, this);
+        this.formModel.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, this);
         this.formModel.addPropertyChangeListener(FormModel.DIRTY_PROPERTY, this);
     }
 
