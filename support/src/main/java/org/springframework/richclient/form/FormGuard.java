@@ -137,7 +137,7 @@ public class FormGuard implements PropertyChangeListener {
 
     private int getFormModelState() {
         int formState = 0;
-        if (!formModel.getValidationResults().getHasErrors())
+        if (!formModel.getHasErrors())
             formState += ON_NOERRORS;
         if (formModel.isDirty())
             formState += ON_ISDIRTY;

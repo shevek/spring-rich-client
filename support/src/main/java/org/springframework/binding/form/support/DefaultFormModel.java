@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.form.BindingErrorMessageProvider;
+import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.RichValidator;
 import org.springframework.binding.validation.ValidationMessage;
@@ -151,6 +152,22 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         return validationResultsModel;
     }
 
+    public boolean getHasErrors() {
+        if (validationResultsModel.getHasErrors())
+            return true;
+        
+        FormModel[] children = getChildren();
+        for (int i = 0; i < children.length;++i)
+        {
+            if (children[i] instanceof ValidatingFormModel)
+            {
+                if (((ValidatingFormModel)children[i]).getHasErrors())
+                    return true;
+            }
+        }
+        return false;
+    }
+    
     public void validate() {
         if (isValidating()) {
             validateAfterPropertyChanged(null);
