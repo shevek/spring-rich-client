@@ -357,7 +357,7 @@
                     <version>2.0-beta-4</version>
                     <configuration>
                         <tagBase>
-                            https://svn.sourceforge.net/svnroot/spring-rich-c/tags
+                            https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/tags
                         </tagBase>
                     </configuration>
                 </plugin>
