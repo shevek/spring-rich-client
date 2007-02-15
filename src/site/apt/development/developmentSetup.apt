@@ -119,12 +119,12 @@ mvn install
 * Other build commands
 
 +--
-mvn clean
-mvn compile
-mvn test
-mvn package
-mvn install
-mvn site
+mvn clean           Deletes all the generated files
+mvn compile         Compiles the code
+mvn test            Tests the code
+mvn package         Generates the jar
+mvn install         Copies the artifacts(jar, war, ...) to your local repo
+mvn site            Generates the website
 +--
 
 * Build result
