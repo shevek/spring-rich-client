@@ -22,24 +22,16 @@ import java.util.List;
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * Base class for {@link PageDescriptor} implementations that support multiple
  * {@link PageComponent}s
- * 
+ *
  * @author Peter De Bruycker
  */
 public class MultiViewPageDescriptor extends AbstractPageDescriptor {
 
     private List viewDescriptors = new ArrayList();
-
-    private String id;
-
-    public String getId() {
-        return id;
-    }
 
     public void buildInitialLayout(PageLayoutBuilder pageLayout) {
         for (Iterator iter = viewDescriptors.iterator(); iter.hasNext();) {
@@ -47,7 +39,7 @@ public class MultiViewPageDescriptor extends AbstractPageDescriptor {
             pageLayout.addView(viewDescriptorId);
         }
     }
-    
+
     public List getViewDescriptors() {
         return viewDescriptors;
     }
@@ -56,15 +48,8 @@ public class MultiViewPageDescriptor extends AbstractPageDescriptor {
         this.viewDescriptors = viewDescriptors;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setBeanName(String name) {
         setId(name);
     }
 
-    public void afterPropertiesSet() throws Exception {
-        Assert.state(StringUtils.hasText(id), "id is mandatory");
-    }
 }

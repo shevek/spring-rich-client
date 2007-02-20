@@ -40,6 +40,7 @@ import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindowFactory;
 import org.springframework.richclient.application.DefaultConversionServiceFactoryBean;
 import org.springframework.richclient.application.PageComponentPaneFactory;
+import org.springframework.richclient.application.PageDescriptorRegistry;
 import org.springframework.richclient.application.ServiceNotFoundException;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
@@ -85,7 +86,7 @@ import org.springframework.util.ClassUtils;
  * service implementations will be set <b>BY ID</b>. The use of service bean ids instead of direct bean references is
  * to avoid numerous problems with cyclic dependencies and other order dependent operations. So, a typical incarnation
  * might look like this:
- * 
+ *
  * <pre>
  *       &lt;bean id=&quot;applicationServices&quot;
  *           class=&quot;org.springframework.richclient.application.support.DefaultApplicationServices&quot;&gt;
@@ -96,7 +97,7 @@ import org.springframework.util.ClassUtils;
  *           &lt;property name=&quot;formComponentInterceptorFactoryId&quot;&gt;&lt;idref bean=&quot;formComponentInterceptorFactory&quot;/&gt;&lt;/property&gt;
  *       &lt;/bean&gt;
  * </pre>
- * 
+ *
  * Note the use of the <code>idref</code> form instead of just using a string value. This is the preferred syntax in
  * order to avoid having misspelled bean names go unreported.
  * <p>
@@ -113,7 +114,7 @@ import org.springframework.util.ClassUtils;
  * <li>If the service impl. is not found yet and a default implementation can be provided, it will be constructed at
  * that time. Default implementations are provided for essentially all services referenced by the platform.</li>
  * </ol>
- * 
+ *
  * @author Larry Streepy
  */
 public class DefaultApplicationServices implements ApplicationServices, ApplicationContextAware {
@@ -140,7 +141,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Constuct using the given application context.
-     * 
+     *
      * @param applicationContext to use for locating named services (beans)
      */
     public DefaultApplicationServices( ApplicationContext applicationContext ) {
@@ -167,7 +168,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * Get a service of the indicated type. If no service definition for the requested
      * type is found in the application context, then a reasonable default implementation
      * will be created.
-     * 
+     *
      * @param serviceType Type of service being requested
      * @return Service instance
      * @throws ServiceNotFoundException if the service is not found and no suitable
@@ -210,7 +211,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * keys that are either class instances (the serviceType) or the String name of the
      * class and values that are the implementation to use for that service or an idref to
      * a bean that is the implementation (passed as a String).
-     * 
+     *
      * @param entryMap Map of entries
      */
     public void setRegistryEntries( Map entryMap ) {
@@ -243,7 +244,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the application object configurer service implementation.
-     * 
+     *
      * @param applicationObjectConfigurer
      */
     public void setApplicationObjectConfigurer( ApplicationObjectConfigurer applicationObjectConfigurer ) {
@@ -252,7 +253,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the application object configurer service implementation bean id
-     * 
+     *
      * @param applicationObjectConfigurerId bean id
      */
     public void setApplicationObjectConfigurerId( String applicationObjectConfigurerId ) {
@@ -261,7 +262,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the application security manager service implementation.
-     * 
+     *
      * @param applicationSecurityManager instance to use
      */
     public void setApplicationSecurityManager( ApplicationSecurityManager applicationSecurityManager ) {
@@ -270,7 +271,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the application security manager service implementation bean id
-     * 
+     *
      * @param applicationSecurityManagerId bean id
      */
     public void setApplicationSecurityManagerId( String applicationSecurityManagerId ) {
@@ -279,7 +280,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>ApplicationWindow</code> factory service implementation
-     * 
+     *
      * @param factory
      */
     public void setApplicationWindowFactory( ApplicationWindowFactory factory ) {
@@ -288,7 +289,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>ApplicationWindow</code> factory service implementation bean id
-     * 
+     *
      * @param factoryId bean id
      */
     public void setApplicationWindowFactoryId( String factoryId ) {
@@ -297,7 +298,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>ApplicationPage</code> factory service implementation
-     * 
+     *
      * @param factory
      */
     public void setApplicationPageFactory( ApplicationPageFactory factory ) {
@@ -306,7 +307,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>ApplicationPage</code> factory service implementation bean id
-     * 
+     *
      * @param factoryId bean id
      */
     public void setApplicationPageFactoryId( String factoryId ) {
@@ -315,7 +316,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>PageComponentPane</code> factory service implementation bean
-     * 
+     *
      * @param factory bean id
      */
     public void setPageComponentPaneFactory( PageComponentPaneFactory factory ) {
@@ -324,7 +325,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the <code>PageComponentPane</code> factory service implementation bean id
-     * 
+     *
      * @param factoryId bean id
      */
     public void setPageComponentPaneFactoryId( String factoryId ) {
@@ -333,7 +334,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the binder selection strategy service implementation
-     * 
+     *
      * @param binderSelectionStrategy
      */
     public void setBinderSelectionStrategy( BinderSelectionStrategy binderSelectionStrategy ) {
@@ -342,7 +343,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the binder selection strategy service implementation bean id
-     * 
+     *
      * @param binderSelectionStrategyId bean id
      */
     public void setBinderSelectionStrategyId( String binderSelectionStrategyId ) {
@@ -351,7 +352,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the binding factory provider service implementation
-     * 
+     *
      * @param bindingFactoryProvider
      */
     public void setBindingFactoryProvider( BindingFactoryProvider bindingFactoryProvider ) {
@@ -360,7 +361,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the binding factory provider service implementation bean id
-     * 
+     *
      * @param bindingFactoryProviderId bean id
      */
     public void setBindingFactoryProviderId( String bindingFactoryProviderId ) {
@@ -369,7 +370,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the command services service implementation
-     * 
+     *
      * @param commandServices
      */
     public void setCommandServices( CommandServices commandServices ) {
@@ -378,7 +379,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the command services service implementation bean id
-     * 
+     *
      * @param commandServicesId bean id
      */
     public void setCommandServicesId( String commandServicesId ) {
@@ -387,7 +388,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the command configurer service implementation
-     * 
+     *
      * @param commandConfigurer
      */
     public void setCommandConfigurer( CommandConfigurer commandConfigurer ) {
@@ -396,7 +397,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the command configurer service implementation bean id
-     * 
+     *
      * @param commandConfigurerId bean id
      */
     public void setCommandConfigurerId( String commandConfigurerId ) {
@@ -405,7 +406,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the button factory service implementation
-     * 
+     *
      * @param buttonFactory
      */
     public void setButtonFactory( ButtonFactory buttonFactory ) {
@@ -414,7 +415,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the button factory service implementation bean id
-     * 
+     *
      * @param buttonFactoryId bean id
      */
     public void setButtonFactoryId( String buttonFactoryId ) {
@@ -423,7 +424,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the menu factory service implementation
-     * 
+     *
      * @param menuFactory
      */
     public void setMenuFactory( MenuFactory menuFactory ) {
@@ -432,7 +433,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the menu factory service implementation bean id
-     * 
+     *
      * @param menuFactoryId bean id
      */
     public void setMenuFactoryId( String menuFactoryId ) {
@@ -441,7 +442,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the component factory service implementation
-     * 
+     *
      * @param componentFactory
      */
     public void setComponentFactory( ComponentFactory componentFactory ) {
@@ -450,7 +451,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the component factory service implementation bean id
-     * 
+     *
      * @param componentFactoryId bean id
      */
     public void setComponentFactoryId( String componentFactoryId ) {
@@ -459,7 +460,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the conversion service service implementation
-     * 
+     *
      * @param conversionService
      */
     public void setConversionService( ConversionService conversionService ) {
@@ -468,7 +469,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the conversion service service implementation bean id
-     * 
+     *
      * @param conversionServiceId bean id
      */
     public void setConversionServiceId( String conversionServiceId ) {
@@ -477,7 +478,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the form component interceptor factory service implementation
-     * 
+     *
      * @param formComponentInterceptorFactory
      */
     public void setFormComponentInterceptorFactory( FormComponentInterceptorFactory formComponentInterceptorFactory ) {
@@ -486,7 +487,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the form component interceptor factory service implementation bean id
-     * 
+     *
      * @param formComponentInterceptorFactoryId bean id
      */
     public void setFormComponentInterceptorFactoryId( String formComponentInterceptorFactoryId ) {
@@ -495,7 +496,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the field face descriptor source service implementation
-     * 
+     *
      * @param fieldFaceSource
      */
     public void setFieldFaceSource( FieldFaceSource fieldFaceSource ) {
@@ -504,7 +505,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the field face descriptor source service implementation bean id
-     * 
+     *
      * @param fieldFaceSourceId bean id
      */
     public void setFieldFaceSourceId( String fieldFaceSourceId ) {
@@ -513,7 +514,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the icon source service implementation
-     * 
+     *
      * @param iconSource
      */
     public void setIconSource( IconSource iconSource ) {
@@ -522,7 +523,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the icon source service implementation bean id
-     * 
+     *
      * @param iconSourceId bean id
      */
     public void setIconSourceId( String iconSourceId ) {
@@ -531,7 +532,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the image source service implementation
-     * 
+     *
      * @param imageSource
      */
     public void setImageSource( ImageSource imageSource ) {
@@ -540,7 +541,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the image source service implementation bean id
-     * 
+     *
      * @param imageSourceId bean id
      */
     public void setImageSourceId( String imageSourceId ) {
@@ -549,7 +550,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the labeled enum resolver service implementation
-     * 
+     *
      * @param labeledEnumResolver
      */
     public void setLabeledEnumResolver( LabeledEnumResolver labeledEnumResolver ) {
@@ -558,7 +559,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the labeled enum resolver service implementation bean id
-     * 
+     *
      * @param labeledEnumResolverId bean id
      */
     public void setLabeledEnumResolverId( String labeledEnumResolverId ) {
@@ -567,7 +568,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the message source service implementation
-     * 
+     *
      * @param messageSource
      */
     public void setMessageSource( MessageSource messageSource ) {
@@ -576,7 +577,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the message source service implementation bean id
-     * 
+     *
      * @param messageSourceId bean id
      */
     public void setMessageSourceId( String messageSourceId ) {
@@ -585,7 +586,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the message source accessor service implementation
-     * 
+     *
      * @param messageSourceAccessor
      */
     public void setMessageSourceAccesor( MessageSourceAccessor messageSourceAccessor ) {
@@ -594,7 +595,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the message source accessor service implementation bean id
-     * 
+     *
      * @param messageSourceAccessorId bean id
      */
     public void setMessageSourceAccesorId( String messageSourceAccessorId ) {
@@ -603,7 +604,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the rules source service implementation
-     * 
+     *
      * @param rulesSource
      */
     public void setRulesSource( RulesSource rulesSource ) {
@@ -612,7 +613,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the rules source service implementation bean id
-     * 
+     *
      * @param rulesSourceId bean id
      */
     public void setRulesSourceId( String rulesSourceId ) {
@@ -621,7 +622,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the security controller manager service implementation
-     * 
+     *
      * @param securityControllerManager instance to use
      */
     public void setSecurityControllerManager( SecurityControllerManager securityControllerManager ) {
@@ -630,7 +631,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the security controller manager service implementation bean id
-     * 
+     *
      * @param securityControllerManagerId bean id
      */
     public void setSecurityControllerManagerId( String securityControllerManagerId ) {
@@ -639,7 +640,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the value change detector service imlpementation.
-     * 
+     *
      * @param valueChangeDetector instance to use
      */
     public void setValueChangeDetector( ValueChangeDetector valueChangeDetector ) {
@@ -648,7 +649,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the value change detector service imlpementation bean id
-     * 
+     *
      * @param valueChangeDetectorId bean id
      */
     public void setValueChangeDetectorId( String valueChangeDetectorId ) {
@@ -657,7 +658,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the view descriptor registry service implementation
-     * 
+     *
      * @param viewDescriptorRegistry
      */
     public void setViewDescriptorRegistry( ViewDescriptorRegistry viewDescriptorRegistry ) {
@@ -665,8 +666,17 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the page descriptor registry service implementation
+     *
+     * @param pageDescriptorRegistry
+     */
+    public void setPageDescriptorRegistry( PageDescriptorRegistry pageDescriptorRegistry ) {
+        services.put( PageDescriptorRegistry.class, pageDescriptorRegistry );
+    }
+
+    /**
      * Set the message translator registry service implementation
-     * 
+     *
      * @param messageTranslatorFactory
      */
     public void setMessageTranslatorFactory( MessageTranslatorFactory messageTranslatorFactory ) {
@@ -675,7 +685,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the message translator registry service implementation bean id
-     * 
+     *
      * @param messageTranslatorFactory
      */
     public void setMessageTranslatorFactoryId( String messageTranslatorFactoryId ) {
@@ -684,7 +694,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Set the view descriptor registry service implementation bean id
-     * 
+     *
      * @param viewDescriptorRegistryId bean id
      */
     public void setViewDescriptorRegistryId( String viewDescriptorRegistryId ) {
@@ -692,8 +702,17 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     }
 
     /**
+     * Set the page descriptor registry service implementation bean id
+     *
+     * @param pageDescriptorRegistryId bean id
+     */
+    public void setPageDescriptorRegistryId( String pageDescriptorRegistryId ) {
+        services.put( PageDescriptorRegistry.class, pageDescriptorRegistryId );
+    }
+
+    /**
      * Get the implementation of a service by using the decapitalized shortname of the serviceType class name.
-     * 
+     *
      * @param serviceType
      *            the service class to lookup the bean definition
      * @return the found service implementation if a bean definition can be found and it implements the required service
@@ -724,7 +743,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     /**
      * Get the default implementation of a service according to the service type. If no
      * default implementation is available, then a null is returned.
-     * 
+     *
      * @param serviceType Type of service requested
      * @return Default service implementation, or null if none defined
      */
@@ -741,7 +760,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * Tests if the application context contains a bean definition by using the decapitalized shortname of the serviceType class name
      * @param serviceType the service class to lookup the bean definition
      * @return true if a bean definition is found in the current application context, otherwise false
-     * 
+     *
      * @see ClassUtils#getShortNameAsProperty(Class)
      */
     protected boolean containsServiceForClassType(Class serviceType) {
@@ -750,7 +769,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
 
     /**
      * Tests if a default implementation for the requested service type is available
-     * 
+     *
      * @param serviceType the requested service type
      * @return true if a default implementation is available otherwise false.
      */
@@ -764,7 +783,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     protected interface ImplBuilder {
         /**
          * Build the service implementation.
-         * 
+         *
          * @param applicationServices reference to service locator
          * @return service implementation
          */
@@ -924,6 +943,15 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         }
     };
 
+    protected static final ImplBuilder pageDescriptorRegistryImplBuilder = new ImplBuilder() {
+        public Object build( DefaultApplicationServices applicationServices ) {
+            logger.info( "Creating default service impl: PageDescriptorRegistry" );
+            BeanFactoryPageDescriptorRegistry impl = new BeanFactoryPageDescriptorRegistry();
+            impl.setApplicationContext( applicationServices.getApplicationContext() );
+            return impl;
+        }
+    };
+
     protected static final ImplBuilder messageTranslatorFactoryImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             logger.info( "Creating default service impl: MessageTranslatorFactory" );
@@ -1006,6 +1034,7 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         serviceImplBuilders.put( SecurityControllerManager.class, SecurityControllerManagerImplBuilder );
         serviceImplBuilders.put( ValueChangeDetector.class, valueChangeDetectorImplBuilder );
         serviceImplBuilders.put( ViewDescriptorRegistry.class, viewDescriptorRegistryImplBuilder );
+        serviceImplBuilders.put( PageDescriptorRegistry.class, pageDescriptorRegistryImplBuilder );
         serviceImplBuilders.put( MessageTranslatorFactory.class, messageTranslatorFactoryImplBuilder );
     }
 }

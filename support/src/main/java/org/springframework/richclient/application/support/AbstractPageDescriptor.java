@@ -17,7 +17,11 @@ package org.springframework.richclient.application.support;
 
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageDescriptor;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandButtonLabelInfo;
+import org.springframework.richclient.command.support.ShowPageCommand;
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -25,7 +29,7 @@ import org.springframework.util.StringUtils;
 /**
  * Abstract base class for {@link PageDescriptor} implementations. Extends
  * {@link LabeledObjectSupport} for gui related configuration.
- * 
+ *
  * @author Peter De Bruycker
  */
 public abstract class AbstractPageDescriptor extends LabeledObjectSupport implements PageDescriptor, BeanNameAware,
@@ -46,6 +50,16 @@ public abstract class AbstractPageDescriptor extends LabeledObjectSupport implem
     }
 
     public void afterPropertiesSet() throws Exception {
-        Assert.state(StringUtils.hasText(id), "id is mandatory");
+        Assert.state(StringUtils.hasText(getId()), "id is mandatory");
     }
+
+    public CommandButtonLabelInfo getShowPageCommandLabel() {
+        return getLabel();
+    }
+
+    public ActionCommand createShowPageCommand(ApplicationWindow window) {
+        return new ShowPageCommand(this, window);
+    }
+
+
 }
