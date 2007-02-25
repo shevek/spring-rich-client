@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
     spec="1.0+"
-    codebase="http://spring-rich-c.sourceforge.net/spring-richclient-samples/spring-richclient-petclinic/spring-richclient-petclinic-standalone"
+    codebase="http://spring-rich-c.sourceforge.net/spring-richclient-samples/spring-richclient-petclinic/spring-richclient-petclinic-standalone/jnlp"
     href="$outputFile">
   <information>
     <title>Petclinic</title>
