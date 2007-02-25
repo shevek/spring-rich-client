@@ -16,6 +16,9 @@
         This produces an executable jar.
     </description>
 
+    <properties>
+        <project.mainClass>org.springframework.richclient.samples.petclinic.PetClinicStandalone</project.mainClass>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -24,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.springframework.richclient.samples.petclinic.PetClinicStandalone</mainClass>
+                            <mainClass>${project.mainClass}</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
@@ -46,6 +49,17 @@
         <dependency>
             <groupId>org.springframework.richclient.samples.petclinic</groupId>
             <artifactId>spring-richclient-petclinic-gui</artifactId>
+            <!--
+              TODO remove jdnc entirely from petclinic
+              or unsign the jar so webstart can sign it
+              or wait for double-signing fix in webstart/jar plugin
+            -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jdesktop</groupId>
+                    <artifactId>jdnc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Spring rich -->
@@ -76,4 +90,33 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>production</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>webstart-maven-plugin</artifactId>
+                        <configuration>
+                            <jnlp>
+                                <mainClass>${project.mainClass}</mainClass>
+                            </jnlp>
+                            <sign>
+                                <keystore>${basedir}/../../../src/keystore/spring-richclient_keystore.jks</keystore>
+                            </sign>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>webstart-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+    </profiles>
 </project>

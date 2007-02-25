@@ -400,22 +400,18 @@ mvn site
 
     Note: this configuration will also be reused when deploying artifacts to our remove maven repository.
 
+    Test if you can access the SF shell:
+
++--
+ssh xxx@shell.sourceforge.net
++--
+
+    This probably won't work and you 'll need to create a private key at <<<~/.ssh/id_rsa>>> first
+    and log in to SF's website and paste your public key in their webform.
+    Afther that it should work.
+
     Now run:
 
 +--
 mvn site-deploy
 +--
-
-Code style
-
-* Eclipse
-
-    Import this: TODO
-
-    * {{SunCodingConventionsWith120CharsPerLineForEclipse.xml}}
-
-* Idea
-
-    Copy this: TODO
-
-    * {{SunCodingConventionsWith120CharsPerLineForIdea.xml}}

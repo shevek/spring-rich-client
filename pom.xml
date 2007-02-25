@@ -337,6 +337,12 @@
                     <version>2.1</version>
                 </plugin>
                 <plugin>
+                    <!-- Only used in profile production -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>webstart-maven-plugin</artifactId>
+                    <version>1.0-alpha-1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-archetype-plugin</artifactId>
                     <version>1.0-alpha-4</version>
@@ -485,6 +491,37 @@
             <properties>
                 <maven.test.skip>true</maven.test.skip>
             </properties>
+        </profile>
+        <profile>
+            <id>production</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>webstart-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <goals>
+                                        <goal>jnlp</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <sign>
+                                    <!-- Keep in sync with /src/keystore/spring-richclient_keystore_comment.txt -->
+                                    <!--<keystore>${basedir}/???/src/keystore/spring-richclient_keystore.jks</keystore>-->
+                                    <keypass>spring-richclient</keypass>
+                                    <storepass>spring-richclient</storepass>
+                                    <storetype>jks</storetype>
+                                    <alias>spring-richclient</alias>
+                                    <verify>true</verify>
+                                </sign>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
     </profiles>
 
