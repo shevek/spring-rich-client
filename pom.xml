@@ -103,14 +103,13 @@
             <timezone>-5</timezone>
         </developer>
         <developer>
-            <!-- TODO verify and complete -->
             <id>peterdb</id>
             <name>Peter De Bruycker</name>
-            <email />
+            <email>peter DOT de DOT bruycker+spring-rich AT gmail DOT com</email>
             <roles>
                 <role>Java developer</role>
             </roles>
-            <timezone />
+            <timezone>+1</timezone>
         </developer>
         <developer>
             <!-- TODO verify and complete -->
