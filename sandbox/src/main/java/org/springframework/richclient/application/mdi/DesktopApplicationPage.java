@@ -163,11 +163,16 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
      * Overridden so it will leave iconified frames iconified.
      */
     protected void setActiveComponent() {
-        for(Iterator iter = getPageComponents().iterator(); iter.hasNext();) {
-            PageComponent component = (PageComponent) iter.next();
-
-            if(!getInternalFrame(component).isIcon()) {
-                setActiveComponent(component);
+        // getAllFrames returns the frames in z-order (i.e. the first one in the list is the last one used)
+        JInternalFrame[] frames = control.getAllFrames();
+        for( int i = 0; i < frames.length; i++ ) {
+            JInternalFrame frame = frames[i];
+            if(!frame.isIcon()) {
+                try {
+                    frame.setSelected( true );
+                } catch( PropertyVetoException ignore ) {
+                    
+                }
                 break;
             }
         }
