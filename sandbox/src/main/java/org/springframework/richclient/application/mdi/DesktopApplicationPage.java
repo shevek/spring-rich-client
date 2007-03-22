@@ -17,6 +17,7 @@ package org.springframework.richclient.application.mdi;
 
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -157,4 +158,18 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 		frame.setTitle(pageComponent.getDisplayName());
 		frame.setToolTipText(pageComponent.getCaption());
 	}
+    
+    /**
+     * Overridden so it will leave iconified frames iconified.
+     */
+    protected void setActiveComponent() {
+        for(Iterator iter = getPageComponents().iterator(); iter.hasNext();) {
+            PageComponent component = (PageComponent) iter.next();
+
+            if(!getInternalFrame(component).isIcon()) {
+                setActiveComponent(component);
+                break;
+            }
+        }
+    }
 }
