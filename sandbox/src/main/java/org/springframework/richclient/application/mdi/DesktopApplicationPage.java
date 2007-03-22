@@ -17,7 +17,6 @@ package org.springframework.richclient.application.mdi;
 
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JComponent;
