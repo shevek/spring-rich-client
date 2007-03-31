@@ -3,7 +3,7 @@
     <skin>
         <groupId>org.springframework.maven.skins</groupId>
         <artifactId>maven-spring-skin</artifactId>
-        <version>1.0</version>
+        <version>1.0.2</version>
     </skin>
     <bannerLeft>
         <name>${project.name}</name>
