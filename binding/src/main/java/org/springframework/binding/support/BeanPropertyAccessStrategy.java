@@ -363,7 +363,7 @@ public class BeanPropertyAccessStrategy implements MutablePropertyAccessStrategy
     private class BeanPropertyMetaAspectAccessor implements PropertyMetadataAccessStrategy {
 
         public Class getPropertyType(String propertyPath) {
-            return beanWrapper.getPropertyDescriptor(getFullPropertyPath(propertyPath)).getPropertyType();
+            return beanWrapper.getPropertyType(getFullPropertyPath(propertyPath));
         }
 
         public boolean isReadable(String propertyPath) {
