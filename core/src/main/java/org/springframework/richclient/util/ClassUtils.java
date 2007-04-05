@@ -226,8 +226,16 @@ public class ClassUtils {
         primativeToWrapperMap.put(double.class, Double.class);
     }
 
+    /**
+     * Gets the equivalent class to convert to if the given clazz is a
+     * primitive.
+     * 
+     * @param clazz
+     *            Class to examin.
+     * @return the class to convert to or the inputted clazz.
+     */
     public static Class convertPrimitiveToWrapper(Class clazz) {
-        if (!clazz.isPrimitive())
+        if (clazz == null || !clazz.isPrimitive())
             return clazz;
 
         return (Class)primativeToWrapperMap.get(clazz);
