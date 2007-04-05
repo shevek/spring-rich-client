@@ -320,7 +320,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
         final ValueModel sourceValueModel = getValueModel(formProperty);
         Assert.notNull(sourceValueModel, "Form does not have a property called '" + formProperty + "'.");
         final Class sourceClass = ClassUtils.convertPrimitiveToWrapper(getFieldMetadata(formProperty).getPropertyType());
-        if (sourceClass == targetClass) {
+        // sourceClass can be null when using eg Map, assume that given targetClass is the correct one
+        if ((sourceClass == null) || (sourceClass == targetClass)) {
             return sourceValueModel;
         }
 
