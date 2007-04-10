@@ -277,6 +277,9 @@ public class BeanPropertyAccessStrategyTests extends SpringRichTestCase {
         }
     }
     
+    /**
+     * Test the metadata on type/readability/writeability.
+     */
     public void testMetaData() {
         PropertyMetadataAccessStrategy mas = pas.getMetadataAccessStrategy();
         
@@ -285,22 +288,20 @@ public class BeanPropertyAccessStrategyTests extends SpringRichTestCase {
         assertPropertyMetadata(mas, "listProperty", List.class, true, true);
         assertPropertyMetadata(mas, "readOnly", Object.class, true, false);
         assertPropertyMetadata(mas, "writeOnly", Object.class, false, true);        
-        
-        try {
-            assertPropertyMetadata(mas, "nestedProperty.simpleProperty", String.class, true, true);
-            fail("should have thrown NullValueInNestedPathException");
-        } catch(NullValueInNestedPathException e) {
-            // expected
-        }        
+
+        // test nested property
+        // when null, no type, not readable, not writeable
+        assertPropertyMetadata(mas, "nestedProperty.simpleProperty", null, false, false);
         final TestBean nestedProperty = new TestBean();
         testBean.setNestedProperty(nestedProperty);
+        // when provided, type/readable/writeable deducted from nested object
         assertPropertyMetadata(mas, "nestedProperty.simpleProperty", String.class, true, true);
         
-//          FIXME: this test should pass.        
-//        final Map map = new HashMap();
-//        testBean.setMapProperty(map);
-//        map.put(".key", new Integer(1));        
-//        assertPropertyMetadata(mas, "mapProperty[.key]", String.class, true, true);
+        // test access to map
+        final Map map = new HashMap();
+        testBean.setMapProperty(map);
+        map.put("key", new Integer(1));        
+        assertPropertyMetadata(mas, "mapProperty[key]", Integer.class, true, true);
     }
 
     private void assertPropertyMetadata(PropertyMetadataAccessStrategy mas, String property, Class type, boolean isReadable, boolean isWriteable) {
