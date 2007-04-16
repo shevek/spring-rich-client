@@ -21,6 +21,7 @@ import java.awt.Toolkit;
 import java.net.URL;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +56,8 @@ public abstract class AbstractSplashScreen implements SplashScreen {
 	private boolean shadowBorder;
 
 	protected final Log logger = LogFactory.getLog(getClass());
+
+	private boolean rootFrame = true;
 
 	/**
 	 * Returns the location of the image to be used as the icon for the splash
@@ -122,6 +125,9 @@ public abstract class AbstractSplashScreen implements SplashScreen {
 	 */
 	public final void splash() {
 		frame = shadowBorder ? new ShadowBorderFrame() : new JFrame();
+		if (isRootFrame())
+			JOptionPane.setRootFrame(frame);
+
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.setUndecorated(true);
 
@@ -193,5 +199,25 @@ public abstract class AbstractSplashScreen implements SplashScreen {
 	 */
 	public void setShadowBorder(boolean shadowBorder) {
 		this.shadowBorder = shadowBorder;
+	}
+
+	/**
+	 * The frame that is used to display this splashscreen can be used as
+	 * rootFrame for other dialogs/windows that need a Frame before the
+	 * applicationFrame is created. (eg login).
+	 * 
+	 * @param rootFrame <code>true</code> if the created frame must be set as
+	 * rootFrame. Defaults to <code>true</code>.
+	 * @see JOptionPane#setRootFrame(java.awt.Frame)
+	 */
+	public void setRootFrame(boolean rootFrame) {
+		this.rootFrame = rootFrame;
+	}
+
+	/**
+	 * @return <code>true</code> if the created frame must be set as rootFrame.
+	 */
+	public boolean isRootFrame() {
+		return this.rootFrame;
 	}
 }
