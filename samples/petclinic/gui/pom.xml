@@ -59,6 +59,12 @@
             <artifactId>commons-lang</artifactId>
             <scope>runtime</scope>
         </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 
         <!-- Dependency injection -->
         <dependency>

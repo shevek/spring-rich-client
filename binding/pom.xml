@@ -15,10 +15,17 @@
     </description>
 
     <dependencies>
+        <!-- Internal -->
         <dependency>
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-core</artifactId>
-        </dependency>    
+        </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
         
         <!-- Binding and validation -->
         <dependency>

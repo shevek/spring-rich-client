@@ -26,6 +26,12 @@
             <groupId>org.springframework.richclient.samples.petclinic</groupId>
             <artifactId>spring-richclient-petclinic-business</artifactId>
         </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 
         <!-- Dependency injection -->
         <dependency>

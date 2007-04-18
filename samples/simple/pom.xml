@@ -67,6 +67,12 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-sandbox</artifactId>
         </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 
         <!-- Dependency injection -->
         <dependency>

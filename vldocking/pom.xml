@@ -10,6 +10,7 @@
     <name>Spring richclient vldocking</name>
     <packaging>jar</packaging>
     <dependencies>
+        <!-- Internal -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -22,6 +23,13 @@
             <groupId>org.springframework.richclient</groupId>
             <artifactId>spring-richclient-sandbox</artifactId>
         </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>com.vlsolutions</groupId>
             <artifactId>vldocking</artifactId>

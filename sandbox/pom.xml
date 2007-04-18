@@ -28,6 +28,11 @@
             <artifactId>spring-richclient-support</artifactId>
             <type>test-jar</type>
         </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
 
         <!-- Components -->
         <dependency>

@@ -14,33 +14,10 @@
     <description>Core and basic classes.</description>
 
     <dependencies>
+        <!-- Dependency injection -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-
-            <exclusions>
-                <!-- Let the user decide what logging implementation to use,
-                    do not bring all of them in as a dependency.  (Should be
-                    fixed in the commons-logging POM, but... -->
-                <exclusion>
-                    <groupId>avalon-framework</groupId>
-                    <artifactId>avalon-framework</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>logkit</groupId>
-                    <artifactId>logkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-
-                <!-- Also pointlessly imported via the commons-logging... -->
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
