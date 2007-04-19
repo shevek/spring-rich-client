@@ -41,5 +41,5 @@ public interface ApplicationPage extends ControlFactory {
 
     boolean close();
     
-    void close(PageComponent pageComponent);
+    boolean close(PageComponent pageComponent);
 }
