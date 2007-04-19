@@ -236,18 +236,20 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * lost" and "closed"), and will activate another <code>PageComponent</code>
 	 * (if there is one).
 	 * <p>
-	 * Does nothing if this <code>ApplicationPage</code> doesn't contain the
-	 * given <code>PageComponent</code>.
+	 * Returns <code>false</code> if this <code>ApplicationPage</code>
+	 * doesn't contain the given <code>PageComponent</code>.
 	 * 
 	 * @param pageComponent the <code>PageComponent</code>
+	 * @return boolean <code>true</code> if pageComponent was successfully
+	 * closed.
 	 */
-	public void close(PageComponent pageComponent) {
+	public boolean close(PageComponent pageComponent) {
 		if (!pageComponent.canClose()) {
-			return;
+			return false;
 		}
 
 		if (!pageComponents.contains(pageComponent)) {
-			return;
+			return false;
 		}
 
 		if (pageComponent == activeComponent) {
@@ -263,6 +265,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 		if (activeComponent == null) {
 			setActiveComponent();
 		}
+		return true;
 	}
 
 	/**
@@ -275,7 +278,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	public boolean close() {
 		for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
 			PageComponent component = (PageComponent) iter.next();
-			close(component);
+			if (!close(component))
+				return false;
 		}
 		return true;
 	}

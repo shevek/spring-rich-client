@@ -333,11 +333,24 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
         this.pageListeners.remove( listener );
     }
 
+    /**
+	 * Close this window. First checks with the advisor by calling the
+	 * {@link ApplicationLifecycleAdvisor#onPreWindowClose(ApplicationWindow)}
+	 * method. Then tries to close it's currentPage. If both are successfull,
+	 * the window will be disposed and removed from the {@link WindowManager}.
+	 * 
+	 * @return boolean <code>true</code> if both, the advisor and the
+	 * currentPage allow the closing action.
+	 */
     public boolean close() {
         boolean canClose = getAdvisor().onPreWindowClose( this );
         if( canClose ) {
+        	// check if page can be closed
             if( currentPage != null ) {
-                currentPage.close();
+                canClose = currentPage.close();
+                // page cannot be closed, exit method and do not dispose
+                if (!canClose)
+                	return canClose;
             }
 
             if( control != null ) {
