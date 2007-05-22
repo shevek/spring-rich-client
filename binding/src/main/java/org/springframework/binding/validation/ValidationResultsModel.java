@@ -57,5 +57,19 @@ public interface ValidationResultsModel extends ValidationResults, PropertyChang
     /**
      * Removes the provided validation listener.
      */
-    void removeValidationListener(String propertyName, ValidationListener listener);    
+    void removeValidationListener(String propertyName, ValidationListener listener);
+    
+    /**
+     * Add a validationResultsModel as a child to this one.
+     * 
+     * @param validationResultsModel
+     */
+    void add(ValidationResultsModel validationResultsModel);
+    
+    /**
+     * Remove the given validationResultsModel from the list of children.
+     * 
+     * @param validationResultsModel
+     */
+    void remove(ValidationResultsModel validationResultsModel);
 }
