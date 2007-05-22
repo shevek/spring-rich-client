@@ -29,60 +29,76 @@ import org.springframework.richclient.factory.ControlFactory;
  * @author Keith Donald
  */
 public interface Form extends ControlFactory {
-    public String getId();
+	public String getId();
 
-    public ValidatingFormModel getFormModel();
+	public ValidatingFormModel getFormModel();
 
-    public Object getFormObject();
+	public Object getFormObject();
 
-    public void setFormObject(Object formObject);
+	public void setFormObject(Object formObject);
 
-    public Object getValue(String formProperty);
+	public Object getValue(String formProperty);
 
-    public ValueModel getValueModel(String formProperty);
+	public ValueModel getValueModel(String formProperty);
 
-    public void addValidationListener(ValidationListener listener);
+	public void addValidationListener(ValidationListener listener);
 
-    public void removeValidationListener(ValidationListener listener);
+	public void removeValidationListener(ValidationListener listener);
 
-    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageAreaPane);
-    
-    /**
-     * @return The list of ValidationResultsReporters of this Form. 
-     */
-    public List getValidationResultsReporters();
-    
-    /**
-     * Add a ValidationResultsReporter to this Form.
-     * 
-     * @param validationResultsReporter
-     */
-    public void addValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
-    
-    /**
-     * Remove a ValidationResultsReporter from this Form.
-     * 
-     * @param validationResultsReporter
-     */
-    public void removeValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
-    
-    /**
-     * Add a child to this Form. Models and available ResultsReporters will be coupled as well.
-     *  
-     * @param form The childForm to add.
-     */
-    public void addChildForm(Form form);
-    
-    /**
-     * Remove a child from this Form. Models and available ResultsReporters will be decoupled as well.
-     * 
-     * @param form The childForm to remove.
-     */
-    public void removeChildForm(Form form);
+	/**
+	 * Create a {@link SimpleValidationResultsReporter} for this form, sending
+	 * input to the given {@link Messagable}.
+	 * 
+	 * @param messageAreaPane the message receiver used by the created
+	 * resultsReporter.
+	 * @return a new ResultsReporter.
+	 */
+	public ValidationResultsReporter newSingleLineResultsReporter(Messagable messageAreaPane);
 
-    public boolean hasErrors();
+	public void addGuarded(Guarded guarded);
+	
+	public void addGuarded(Guarded guarded, int mask);
+	
+	public void removeGuarded(Guarded guarded);
+	
+	/**
+	 * @return The list of ValidationResultsReporters of this Form.
+	 */
+	public List getValidationResultsReporters();
 
-    public void commit();
+	/**
+	 * Add a ValidationResultsReporter to this Form.
+	 * 
+	 * @param validationResultsReporter
+	 */
+	public void addValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
 
-    public void revert();
+	/**
+	 * Remove a ValidationResultsReporter from this Form.
+	 * 
+	 * @param validationResultsReporter
+	 */
+	public void removeValidationResultsReporter(ValidationResultsReporter validationResultsReporter);
+
+	/**
+	 * Add a child to this Form. Models and available ResultsReporters will be
+	 * coupled as well.
+	 * 
+	 * @param form The childForm to add.
+	 */
+	public void addChildForm(Form form);
+
+	/**
+	 * Remove a child from this Form. Models and available ResultsReporters will
+	 * be decoupled as well.
+	 * 
+	 * @param form The childForm to remove.
+	 */
+	public void removeChildForm(Form form);
+
+	public boolean hasErrors();
+
+	public void commit();
+
+	public void revert();
 }

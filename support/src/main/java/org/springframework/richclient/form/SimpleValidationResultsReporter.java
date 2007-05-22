@@ -15,215 +15,101 @@
  */
 package org.springframework.richclient.form;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
-import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.util.Assert;
 
 /**
- * An implementation of ValidationResultsReporter that reports only a single message from
- * the configured validation results models. If there are any errors reported on this or
- * any child's model, then the Guarded object will be disabled and the associated message
- * receiver will be given the newest message posted on the results model.
+ * An implementation of ValidationResultsReporter that reports only a single
+ * message from the configured validation results models. If there are any
+ * errors reported on this or any child's model, then the Guarded object will be
+ * disabled and the associated message receiver will be given the newest message
+ * posted on the results model.
  * 
  * @author Keith Donald
  */
 public class SimpleValidationResultsReporter implements ValidationResultsReporter {
-    private static final Log logger = LogFactory.getLog( SimpleValidationResultsReporter.class );
+	private static final Log logger = LogFactory.getLog(SimpleValidationResultsReporter.class);
 
-    private ValidationResultsModel resultsModel;
+	private ValidationResultsModel resultsModel;
 
-    private Guarded guarded;
+	private Messagable messageReceiver;
 
-    private Messagable messageReceiver;
+	/**
+	 * Constructor.
+	 * @param formModel ValidatingFormModel to monitor and report on.
+	 * @param messageReceiver The receiver for validation messages.
+	 */
+	public SimpleValidationResultsReporter(ValidationResultsModel resultsModel, Messagable messageReceiver) {
+		Assert.notNull(resultsModel, "resultsModel is required");
+		Assert.notNull(messageReceiver, "messagePane is required");
+		this.resultsModel = resultsModel;
+		this.messageReceiver = messageReceiver;
+		init();
+	}
 
-    private List children = new ArrayList();
+	private void init() {
+		resultsModel.addValidationListener(this);
 
-    private ValidationResultsReporter parent = null;
-
-    /**
-     * Constructor.
-     * @param resultsModel Validation results model to monitor and report on
-     * @param guarded The Guarded object to control
-     * @param messageReceiver The receiver for validation messages
-     */
-    public SimpleValidationResultsReporter(ValidationResultsModel resultsModel, Guarded guarded,
-            Messagable messageReceiver) {
-        Assert.notNull( resultsModel, "resultsModel is required" );
-        Assert.notNull( guarded, "guarded is required" );
-        Assert.notNull( messageReceiver, "messagePane is required" );
-        this.resultsModel = resultsModel;
-        this.guarded = guarded;
-        this.messageReceiver = messageReceiver;
-        init();
-    }
-    
-    private void init() {
-        resultsModel.addValidationListener( this );
-
-        // Update state based on current results model
+		// Update state based on current results model
         validationResultsChanged( null );
-    }
+	}
 
-    public void clearErrors() {
-        messageReceiver.setMessage( null );
-        guarded.setEnabled( true );
-    }
+	public void clearErrors() {
+		messageReceiver.setMessage(null);
+	}
 
-    /**
-     * Handle a change in the validation results model. Update the guarded object and
-     * message receiver based on our current results model state.
-     */
+	/**
+	 * Handle a change in the validation results model. Update the guarded
+	 * object and message receiver based on our current results model state.
+	 */
     public void validationResultsChanged(ValidationResults results) {
         // If our model is clean, then we need to see if any of our children have errors.
         // If not, then we have our parent update since we may have siblings that need to
-        // report there status.
+		// report there status.
 
-        if( !resultsModel.getHasErrors() ) {
-            if( logger.isDebugEnabled() ) {
-                logger.debug( "Form has no errors to report; checking children." );
-            }
+		if (!resultsModel.getHasErrors()) {
+			messageReceiver.setMessage(null);
+		}
+		else {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Form has errors; setting error message.");
+			}
+			ValidationMessage message = getNewestMessage(resultsModel);
+			messageReceiver.setMessage(message == null ? null
+					: new Message(message.getMessage(), message.getSeverity()));
+		}
+	}
 
-            boolean clean = true;
-
-            // Check children
-            for( int i = 0, count = children.size(); i < count; i++ ) {
-                ValidationResultsReporter child = (ValidationResultsReporter) children.get( i );
-                if( child.hasErrors() ) {
-                    clean = false;
-                    child.validationResultsChanged( null ); // Force it to re-report
-                    break;
-                }
-            }
-
-            // If we aren't clean, then the guarded and message receiver will already have
-            // been updated so there's nothing more to do. If we are clean, then we
-            // either hand off to our parent, or if there's no parent, then we can finally
-            // enable the guard and clear the message.
-
-            if( clean ) {
-                // If we have a parent, then we will leave the handling of the guarded and
-                // message receiver to it since it may have grand-parents, etc.
-                if( parent != null ) {
-                    if( logger.isDebugEnabled() ) {
-                        logger.debug( "Form and children are clean, handing off to parent." );
-                    }
-                    parent.validationResultsChanged( null );
-                } else {
-                    if( logger.isDebugEnabled() ) {
-                        logger.debug( "Reporters are all clean; enabling guarded component." );
-                    }
-                    messageReceiver.setMessage( null );
-                    guarded.setEnabled( true );
-                }
-            }
-        } else {
-            if( logger.isDebugEnabled() ) {
-                logger.debug( "Form has errors; disabling guarded component and setting error message." );
-            }
-            guarded.setEnabled( false );
-            if( resultsModel.getMessageCount() > 0 ) {
-                ValidationMessage message = getNewestMessage( resultsModel );
-                messageReceiver.setMessage( new Message( message.getMessage(), message.getSeverity() ) );
-            } else {
-                messageReceiver.setMessage( null );
-            }
-        }
-    }
-
-    protected ValidationMessage getNewestMessage(ValidationResults results) {
-        ValidationMessage newestMessage = null;
-        for( Iterator i = results.getMessages().iterator(); i.hasNext(); ) {
-            ValidationMessage message = (ValidationMessage) i.next();
-            if( newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp() ) {
-                newestMessage = message;
-            }
-        }
-        return newestMessage;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.richclient.form.ValidationResultsReporter#hasErrors()
-     */
-    public boolean hasErrors() {
-        boolean errors = resultsModel.getHasErrors();
-
-        for( int i = 0, count = children.size(); i < count && !errors; i++ ) {
-            ValidationResultsReporter child = (ValidationResultsReporter) children.get( i );
-            if( child.hasErrors() ) {
-                errors = true;
-                break;
-            }
-        }
-
-        return errors;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.richclient.form.ValidationResultsReporter#addChild(org.springframework.richclient.form.ValidationResultsReporter)
-     */
-    public void addChild(ValidationResultsReporter child) {
-        children.add( child );
-        child.setParent( this );
-        validationResultsChanged( null ); // Force a re-reporting
-    }
-    
-    /**
-     * @inheritDoc
-     */
-    public void removeChild(ValidationResultsReporter child)
-    {
-        children.remove(child);
-        validationResultsChanged(null);
-    }
-    
-    /**
-     * @inheritDoc
-     */
-    public void removeParent()
-    {
-        if (getParent() != null)
-        {
-            getParent().removeChild(this);
-            setParent(null);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public ValidationResultsReporter createChild(ValidationResultsModel validationResultsModel)
-    {
-        SimpleValidationResultsReporter simpleValidationResultsReporter = new SimpleValidationResultsReporter(validationResultsModel, this.guarded, this.messageReceiver);
-        addChild(simpleValidationResultsReporter);
-        return simpleValidationResultsReporter;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.richclient.form.ValidationResultsReporter#getParent()
-     */
-    public ValidationResultsReporter getParent() {
-        return parent;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.richclient.form.ValidationResultsReporter#setParent(org.springframework.richclient.form.ValidationResultsReporter)
-     */
-    public void setParent(ValidationResultsReporter parent) {
-        this.parent = parent;
-    }
-
+	/**
+	 * Search the newest message in the given resultsModel.
+	 * 
+	 * @param resultsModel Search this model to find the newest message.
+	 * @return the newest message in this resultsModel.
+	 */
+	protected ValidationMessage getNewestMessage(ValidationResults resultsModel) {
+		ValidationMessage newestMessage = null;
+		for (Iterator i = resultsModel.getMessages().iterator(); i.hasNext();) {
+			ValidationMessage message = (ValidationMessage) i.next();
+			if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
+				newestMessage = message;
+			}
+		}
+		return newestMessage;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.richclient.form.ValidationResultsReporter#hasErrors()
+	 */
+	public boolean hasErrors() {
+		return resultsModel.getHasErrors();
+	}
 }
