@@ -78,7 +78,8 @@ public class FormBackedDialogPage extends AbstractDialogPage {
     }
 
     protected void initPageValidationReporter() {
-        backingFormPage.newSingleLineResultsReporter(this, this);
+        backingFormPage.newSingleLineResultsReporter(this);
+        backingFormPage.addGuarded(this);
     }
 
     public void setEnabled(boolean enabled) {

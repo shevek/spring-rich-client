@@ -75,7 +75,8 @@ public class FormBackedWizardPage extends AbstractWizardPage {
     }
 
     protected void initPageValidationReporter() {
-        backingForm.newSingleLineResultsReporter(this, this);
+        backingForm.newSingleLineResultsReporter(this);
+        backingForm.addGuarded(this);
     }
 
     public void setEnabled(boolean enabled) {

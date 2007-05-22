@@ -28,6 +28,7 @@ import javax.swing.text.JTextComponent;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.form.FormGuard;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.SimpleValidationResultsReporter;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
@@ -103,7 +104,9 @@ public class InputApplicationDialog extends ApplicationDialog {
         if (reporter == null) {
             this.reporter = new DefaultMessageAreaPane();
             if (this.formModel != null) {
-                new SimpleValidationResultsReporter(formModel.getValidationResults(), this, this.reporter);
+                new SimpleValidationResultsReporter(formModel.getValidationResults(), this.reporter);
+                FormGuard formGuard = new FormGuard(formModel);
+                formGuard.addGuarded(this, FormGuard.FORMERROR_GUARDED);
                 formModel.validate();
             }
         }
