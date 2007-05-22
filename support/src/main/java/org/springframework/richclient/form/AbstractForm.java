@@ -19,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -190,12 +189,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     public void addChildForm(Form childForm) {
         childForms.put( childForm.getId(), childForm );
         getFormModel().addChild(childForm.getFormModel());
-        Iterator it = validationResultsReporters.iterator();
-        while (it.hasNext())
-        {
-            ValidationResultsReporter reporter = (ValidationResultsReporter)it.next();
-            childForm.addValidationResultsReporter(reporter.createChild(childForm.getFormModel().getValidationResults()));
-        }
     }
     
     /**
@@ -228,12 +221,6 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     public void removeChildForm(Form childForm) {
         getFormModel().removeChild(childForm.getFormModel());
         childForms.remove(childForm.getId());
-        Iterator it = childForm.getValidationResultsReporters().iterator();
-        while (it.hasNext())
-        {
-            ValidationResultsReporter reporter = (ValidationResultsReporter)it.next();
-            reporter.removeParent();
-        }
     }
     /**
      * Return a child form of this form with the given form id.
@@ -646,20 +633,11 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
      * will be constructed and returned.  All registered child forms will be attached
      * to the same <code>guarded</code> and <code>messageReceiver</code> as this form.
      */
-    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
+    public ValidationResultsReporter newSingleLineResultsReporter(Messagable messageReceiver) {
 
         SimpleValidationResultsReporter reporter =
-            new SimpleValidationResultsReporter( formModel.getValidationResults(), guarded, messageReceiver );
+            new SimpleValidationResultsReporter( formModel.getValidationResults(), messageReceiver );
 
-        // Configure all our child forms with this same data
-        for( Iterator iter = childForms.values().iterator(); iter.hasNext(); ) {
-            Form childForm = (Form) iter.next();
-            ValidationResultsReporter child = childForm.newSingleLineResultsReporter( guarded, messageReceiver );
-            reporter.addChild( child );
-            childForm.getFormModel().validate();    // Force an initial validation
-        }
-        validationResultsReporters.add(reporter);
-        
         return reporter;
     }
 
@@ -698,4 +676,16 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
     public void reset() {
         getFormModel().reset();
     }
+    
+    public void addGuarded(Guarded guarded) {
+		formGuard.addGuarded(guarded, FormGuard.FORMERROR_GUARDED);
+	}
+
+	public void addGuarded(Guarded guarded, int mask) {
+		formGuard.addGuarded(guarded, mask);
+	}
+
+	public void removeGuarded(Guarded guarded) {
+		formGuard.removeGuarded(guarded);
+	}
 }

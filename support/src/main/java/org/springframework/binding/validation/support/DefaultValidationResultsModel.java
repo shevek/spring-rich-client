@@ -18,6 +18,7 @@ package org.springframework.binding.validation.support;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,7 @@ import org.springframework.util.ObjectUtils;
  * 
  * @author  Oliver Hutchison
  */
-public class DefaultValidationResultsModel implements ValidationResultsModel {
+public class DefaultValidationResultsModel implements ValidationResultsModel, ValidationListener {
 
     private final EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
 
@@ -57,6 +58,8 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
     };
 
     private final ValidationResultsModel delegateFor;
+    
+    private List children = new ArrayList();
 
     private ValidationResults validationResults = EmptyValidationResults.INSTANCE;
 
@@ -130,40 +133,115 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
         updateValidationResults(EmptyValidationResults.INSTANCE);
     }
 
+    /**
+     * Check children too.
+     */
     public boolean getHasErrors() {
-        return validationResults.getHasErrors();
+    	if (validationResults.getHasErrors())
+    		return true;
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		if (childModel.getHasErrors())
+    			return true;
+    	}
+        return false;
     }
 
     public boolean getHasInfo() {
-        return validationResults.getHasInfo();
+    	if (validationResults.getHasInfo())
+    		return true;
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		if (childModel.getHasInfo())
+    			return true;
+    	}
+        return false;
     }
 
     public boolean getHasWarnings() {
-        return validationResults.getHasWarnings();
+    	if (validationResults.getHasWarnings())
+    		return true;
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		if (childModel.getHasWarnings())
+    			return true;
+    	}
+        return false;
     }
 
     public int getMessageCount() {
-        return validationResults.getMessageCount();
+    	int count = validationResults.getMessageCount();
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		count += childModel.getMessageCount();
+    	}
+        return count;
     }
 
     public int getMessageCount(Severity severity) {
-        return validationResults.getMessageCount(severity);
+    	int count = validationResults.getMessageCount(severity);
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		count += childModel.getMessageCount(severity);
+    	}
+        return count;
     }
 
     public int getMessageCount(String propertyName) {
-        return validationResults.getMessageCount(propertyName);
+    	int count = validationResults.getMessageCount(propertyName);
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		count += childModel.getMessageCount(propertyName);
+    	}
+        return count;
     }
 
     public Set getMessages() {
-        return validationResults.getMessages();
+    	Set messages = new HashSet();
+    	messages.addAll(validationResults.getMessages());
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		messages.addAll(childModel.getMessages());
+    	}
+        return messages;
     }
 
     public Set getMessages(Severity severity) {
-        return validationResults.getMessages(severity);
+    	Set messages = new HashSet();
+    	messages.addAll(validationResults.getMessages(severity));
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		messages.addAll(childModel.getMessages(severity));
+    	}
+        return messages;
     }
 
     public Set getMessages(String propertyName) {
-        return validationResults.getMessages(propertyName);
+    	Set messages = new HashSet();
+    	messages.addAll(validationResults.getMessages(propertyName));
+    	Iterator childIter = children.iterator();
+    	while (childIter.hasNext())
+    	{
+    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
+    		messages.addAll(childModel.getMessages(propertyName));
+    	}
+        return messages;
     }
 
     public void addValidationListener(ValidationListener listener) {
@@ -236,5 +314,32 @@ public class DefaultValidationResultsModel implements ValidationResultsModel {
     
     public String toString() {
         return new ToStringCreator(this).append("messages", getMessages()).toString();
+    }
+    
+    
+    /**
+     * Add a validationResultsModel as a child to this one.
+     * 
+     * @param validationResultsModel
+     */
+    public void add(ValidationResultsModel validationResultsModel)
+    {
+    	children.add(validationResultsModel);
+    	validationResultsModel.addValidationListener(this);
+    }
+    
+    /**
+     * Remove the given validationResultsModel from the list of children.
+     * 
+     * @param validationResultsModel
+     */
+    public void remove(ValidationResultsModel validationResultsModel)
+    {
+    	if (children.remove(validationResultsModel))
+    		validationResultsModel.removeValidationListener(this);
+    }
+    
+    public void validationResultsChanged(ValidationResults results) {
+    	fireValidationResultsChanged();
     }
 }

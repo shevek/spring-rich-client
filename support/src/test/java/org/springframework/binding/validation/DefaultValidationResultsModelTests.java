@@ -18,6 +18,7 @@ package org.springframework.binding.validation;
 import junit.framework.TestCase;
 
 import org.springframework.binding.support.TestPropertyChangeListener;
+import org.springframework.binding.validation.support.DefaultValidationMessage;
 import org.springframework.binding.validation.support.DefaultValidationResults;
 import org.springframework.binding.validation.support.DefaultValidationResultsModel;
 
@@ -140,6 +141,16 @@ public class DefaultValidationResultsModelTests extends TestCase {
         assertEquals(4, listener.eventCount());
         assertEquals(3, field1Listener.eventCount());
         assertEquals(3, nullListener.eventCount());
+    }
+    
+    public void testMessageCount() {
+    	DefaultValidationResultsModel resultsModel = new DefaultValidationResultsModel();
+    	resultsModel.addMessage(new DefaultValidationMessage("property1", Severity.ERROR, "message1"));
+    	resultsModel.addMessage(new DefaultValidationMessage("property1", Severity.INFO, "message2"));
+    	resultsModel.addMessage(new DefaultValidationMessage("property2", Severity.ERROR, "message3"));
+    	assertEquals("Number of messages should be 3", 3, resultsModel.getMessageCount());
+    	assertEquals("Number of messages registered for property1 should be 2", 2, resultsModel.getMessageCount("property1"));
+    	assertEquals("Number of messages flagged as INFO should be 1", 1, resultsModel.getMessageCount(Severity.INFO));
     }
 
     private ValidationResults getResults(String field, Severity severity) {

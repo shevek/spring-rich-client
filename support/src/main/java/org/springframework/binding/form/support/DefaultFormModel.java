@@ -157,13 +157,19 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     {
         super.addChild(child);
         if (child instanceof ValidatingFormModel)
+        {
+            getValidationResults().add(((ValidatingFormModel)child).getValidationResults());
             child.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
+        }
     }
 
     public void removeChild(HierarchicalFormModel child)
     {
         if (child instanceof ValidatingFormModel)
+        {
+            getValidationResults().remove(((ValidatingFormModel)child).getValidationResults());
             child.removePropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
+        }
         super.removeChild(child);
     }
 
