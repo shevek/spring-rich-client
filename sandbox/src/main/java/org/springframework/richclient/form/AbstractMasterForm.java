@@ -25,11 +25,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
+import org.springframework.binding.validation.ValidationResultsModel;
+import org.springframework.binding.validation.support.DefaultValidationResultsModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.DeepCopyBufferedCollectionValueModel;
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
@@ -39,7 +39,6 @@ import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.dialog.ConfirmationDialog;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.table.ListSelectionListenerSupport;
@@ -47,6 +46,9 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * Abstract base for the Master form of a Master/Detail pair. Derived types must implement
@@ -597,10 +599,12 @@ public abstract class AbstractMasterForm extends AbstractForm {
      * When the results reporter is setup on the master form, we need to capture it and
      * forward it on to the detail form as well.
      */
-    public ValidationResultsReporter newSingleLineResultsReporter(Guarded guarded, Messagable messageReceiver) {
-        ValidationResultsReporter reporter = super.newSingleLineResultsReporter( guarded, messageReceiver );
-        ValidationResultsReporter child = getDetailForm().newSingleLineResultsReporter( guarded, messageReceiver );
-        reporter.addChild( child );
+    public ValidationResultsReporter newSingleLineResultsReporter(Messagable messageReceiver) {
+        // create a resultsModel container which receives events from detail and master
+        ValidationResultsModel validationResultsModel = new DefaultValidationResultsModel();
+        validationResultsModel.add(getFormModel().getValidationResults());
+        validationResultsModel.add(getDetailFormModel().getValidationResults());
+        ValidationResultsReporter reporter = new SimpleValidationResultsReporter(validationResultsModel, messageReceiver);
         getDetailFormModel().validate();
         return reporter;
     }

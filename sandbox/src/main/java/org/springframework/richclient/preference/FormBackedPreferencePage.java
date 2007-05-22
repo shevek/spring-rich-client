@@ -49,7 +49,8 @@ public abstract class FormBackedPreferencePage extends PreferencePage {
 	}
 
 	protected void initPageValidationReporter() {
-		form.newSingleLineResultsReporter(this, this);
+		form.newSingleLineResultsReporter(this);
+        form.addGuarded(this);
 	}
 
 	public void onAboutToShow() {
