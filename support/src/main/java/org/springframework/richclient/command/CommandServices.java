@@ -20,6 +20,9 @@ import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
 
 /**
+ * This service delivers the necessary factories and configurers to use with
+ * commands.
+ * 
  * @author Keith Donald
  */
 public interface CommandServices {
