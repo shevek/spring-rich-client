@@ -137,3 +137,11 @@ org.acegisecurity.AuthenticationException.description = \
     * All instance variables which had a name prefix of <<<_>>> have been removed of that prefix.
     For example all <<<_logger>>> varialbes have been renamed to <<<logger>>>.
     
+    * ValidationInterceptor now does an initial check when registering Guarded objects or MessageReceivers. This because the ValidationResultsModel can already contain
+    some values.
+    
+    * SimpleValidationResultsReporter has it's guarded component removed because this was a mixed concern. If you need this behaviour, use the addGuarded(guard) methods on 	Form or simply construct your own FormGuard object and add your guarded object with mask FormGuard.FORMERROR_GUARDED.
+    
+    * ValidationResultsReporter is refactored and had its parent/child methods removed. Chaining ResultsReporters usually results in strange and complicated behaviour (especially when having multiple parent-child relations and when the hierarchy changes a lot). It's better to chain the ValidationResultsModels and have them collect and forward the messages.
+    
+    * ValidationResultsModel now can have children. When chaining DefaultFormModels, their ValidationResultsModels are linked as well and they forward their events as needed. Any ValidationListener registered on a ValidationResultsModel will receive events of it's children too. A ValidationResultsModel can be used to combine multiple other resultsModels and bundle their events.
