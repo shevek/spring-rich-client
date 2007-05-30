@@ -37,309 +37,305 @@ import org.springframework.util.ObjectUtils;
 /**
  * Default implementation of ValidationResultsModel
  * 
- * @author  Oliver Hutchison
+ * @author Oliver Hutchison
  */
 public class DefaultValidationResultsModel implements ValidationResultsModel, ValidationListener {
 
-    private final EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
+	private final EventListenerListHelper validationListeners = new EventListenerListHelper(ValidationListener.class);
 
-    private final CachingMapDecorator propertyValidationListeners = new CachingMapDecorator() {
+	private final CachingMapDecorator propertyValidationListeners = new CachingMapDecorator() {
 
-        protected Object create(Object propertyName) {
-            return new EventListenerListHelper(ValidationListener.class);
-        }
-    };
+		protected Object create(Object propertyName) {
+			return new EventListenerListHelper(ValidationListener.class);
+		}
+	};
 
-    private final CachingMapDecorator propertyChangeListeners = new CachingMapDecorator() {
+	private final CachingMapDecorator propertyChangeListeners = new CachingMapDecorator() {
 
-        protected Object create(Object propertyName) {
-            return new EventListenerListHelper(PropertyChangeListener.class);
-        }
-    };
+		protected Object create(Object propertyName) {
+			return new EventListenerListHelper(PropertyChangeListener.class);
+		}
+	};
 
-    private final ValidationResultsModel delegateFor;
-    
-    private List children = new ArrayList();
+	private final ValidationResultsModel delegateFor;
 
-    private ValidationResults validationResults = EmptyValidationResults.INSTANCE;
+	private List children = new ArrayList();
 
-    public DefaultValidationResultsModel() {
-        delegateFor = this;
-    }
+	private ValidationResults validationResults = EmptyValidationResults.INSTANCE;
 
-    public DefaultValidationResultsModel(ValidationResultsModel delegateFor) {
-        this.delegateFor = delegateFor;
-    }
+	public DefaultValidationResultsModel() {
+		delegateFor = this;
+	}
 
-    public void updateValidationResults(ValidationResults newValidationResults) {
-        Assert.required(newValidationResults, "newValidationResults");
-        ValidationResults oldValidationResults = validationResults;
-        validationResults = newValidationResults;
-        if (oldValidationResults.getMessageCount() == 0 && validationResults.getMessageCount() == 0) {
-            return;
-        }
-        for (Iterator i = propertyValidationListeners.keySet().iterator(); i.hasNext();) {
-            String propertyName = (String)i.next();
-            if (oldValidationResults.getMessageCount(propertyName) > 0
-                    || validationResults.getMessageCount(propertyName) > 0) {
-                fireValidationResultsChanged(propertyName);
-            }
-        }
-        fireChangedEvents(oldValidationResults);
-    }
-    
-    // TODO: test
-    public void addMessage(ValidationMessage validationMessage) {
-        if (!validationResults.getMessages().contains(validationMessage)) {
-            ValidationResults oldValidationResults = validationResults;
-            List newMessages = new ArrayList(oldValidationResults.getMessages());
-            newMessages.add(validationMessage);
-            validationResults = new DefaultValidationResults(newMessages);
-            fireValidationResultsChanged(validationMessage.getProperty());
-            fireChangedEvents(oldValidationResults);
-        }
-    }
+	public DefaultValidationResultsModel(ValidationResultsModel delegateFor) {
+		this.delegateFor = delegateFor;
+	}
 
-    // TODO: test
-    public void removeMessage(ValidationMessage validationMessage) {
-        if (validationResults.getMessages().contains(validationMessage)) {
-            ValidationResults oldValidationResults = validationResults;
-            List newMessages = new ArrayList(oldValidationResults.getMessages());
-            newMessages.remove(validationMessage);
-            validationResults = new DefaultValidationResults(newMessages);
-            fireValidationResultsChanged(validationMessage.getProperty());
-            fireChangedEvents(oldValidationResults);
-        }
-    }
+	public void updateValidationResults(ValidationResults newValidationResults) {
+		Assert.required(newValidationResults, "newValidationResults");
+		ValidationResults oldValidationResults = validationResults;
+		validationResults = newValidationResults;
+		if (oldValidationResults.getMessageCount() == 0 && validationResults.getMessageCount() == 0) {
+			return;
+		}
+		for (Iterator i = propertyValidationListeners.keySet().iterator(); i.hasNext();) {
+			String propertyName = (String) i.next();
+			if (oldValidationResults.getMessageCount(propertyName) > 0
+					|| validationResults.getMessageCount(propertyName) > 0) {
+				fireValidationResultsChanged(propertyName);
+			}
+		}
+		fireChangedEvents(oldValidationResults);
+	}
 
-    // TODO: test
-    public void replaceMessage(ValidationMessage messageToReplace, ValidationMessage replacementMessage) {        
-        ValidationResults oldValidationResults = validationResults;
-        List newMessages = new ArrayList(oldValidationResults.getMessages());
-        final boolean containsMessageToReplace = validationResults.getMessages().contains(messageToReplace);
-        if (containsMessageToReplace) {
-            newMessages.remove(messageToReplace);
-        }
-        newMessages.add(replacementMessage);
-        validationResults = new DefaultValidationResults(newMessages);
-        if (containsMessageToReplace && !ObjectUtils.nullSafeEquals(messageToReplace.getProperty(), replacementMessage.getProperty())) {
-            fireValidationResultsChanged(messageToReplace.getProperty());
-        }
-        fireValidationResultsChanged(replacementMessage.getProperty());
-        fireChangedEvents(oldValidationResults);
-    }
+	// TODO: test
+	public void addMessage(ValidationMessage validationMessage) {
+		if (!validationResults.getMessages().contains(validationMessage)) {
+			ValidationResults oldValidationResults = validationResults;
+			List newMessages = new ArrayList(oldValidationResults.getMessages());
+			newMessages.add(validationMessage);
+			validationResults = new DefaultValidationResults(newMessages);
+			fireValidationResultsChanged(validationMessage.getProperty());
+			fireChangedEvents(oldValidationResults);
+		}
+	}
 
-    public void clearAllValidationResults() {
-        updateValidationResults(EmptyValidationResults.INSTANCE);
-    }
+	// TODO: test
+	public void removeMessage(ValidationMessage validationMessage) {
+		if (validationResults.getMessages().contains(validationMessage)) {
+			ValidationResults oldValidationResults = validationResults;
+			List newMessages = new ArrayList(oldValidationResults.getMessages());
+			newMessages.remove(validationMessage);
+			validationResults = new DefaultValidationResults(newMessages);
+			fireValidationResultsChanged(validationMessage.getProperty());
+			fireChangedEvents(oldValidationResults);
+		}
+	}
 
-    /**
-     * Check children too.
-     */
-    public boolean getHasErrors() {
-    	if (validationResults.getHasErrors())
-    		return true;
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		if (childModel.getHasErrors())
-    			return true;
-    	}
-        return false;
-    }
+	// TODO: test
+	public void replaceMessage(ValidationMessage messageToReplace, ValidationMessage replacementMessage) {
+		ValidationResults oldValidationResults = validationResults;
+		List newMessages = new ArrayList(oldValidationResults.getMessages());
+		final boolean containsMessageToReplace = validationResults.getMessages().contains(messageToReplace);
+		if (containsMessageToReplace) {
+			newMessages.remove(messageToReplace);
+		}
+		newMessages.add(replacementMessage);
+		validationResults = new DefaultValidationResults(newMessages);
+		if (containsMessageToReplace
+				&& !ObjectUtils.nullSafeEquals(messageToReplace.getProperty(), replacementMessage.getProperty())) {
+			fireValidationResultsChanged(messageToReplace.getProperty());
+		}
+		fireValidationResultsChanged(replacementMessage.getProperty());
+		fireChangedEvents(oldValidationResults);
+	}
 
-    public boolean getHasInfo() {
-    	if (validationResults.getHasInfo())
-    		return true;
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		if (childModel.getHasInfo())
-    			return true;
-    	}
-        return false;
-    }
+	public void clearAllValidationResults() {
+		updateValidationResults(EmptyValidationResults.INSTANCE);
+	}
 
-    public boolean getHasWarnings() {
-    	if (validationResults.getHasWarnings())
-    		return true;
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		if (childModel.getHasWarnings())
-    			return true;
-    	}
-        return false;
-    }
+	/**
+	 * Check children too.
+	 */
+	public boolean getHasErrors() {
+		if (validationResults.getHasErrors())
+			return true;
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			if (childModel.getHasErrors())
+				return true;
+		}
+		return false;
+	}
 
-    public int getMessageCount() {
-    	int count = validationResults.getMessageCount();
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		count += childModel.getMessageCount();
-    	}
-        return count;
-    }
+	public boolean getHasInfo() {
+		if (validationResults.getHasInfo())
+			return true;
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			if (childModel.getHasInfo())
+				return true;
+		}
+		return false;
+	}
 
-    public int getMessageCount(Severity severity) {
-    	int count = validationResults.getMessageCount(severity);
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		count += childModel.getMessageCount(severity);
-    	}
-        return count;
-    }
+	public boolean getHasWarnings() {
+		if (validationResults.getHasWarnings())
+			return true;
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			if (childModel.getHasWarnings())
+				return true;
+		}
+		return false;
+	}
 
-    public int getMessageCount(String propertyName) {
-    	int count = validationResults.getMessageCount(propertyName);
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		count += childModel.getMessageCount(propertyName);
-    	}
-        return count;
-    }
+	public int getMessageCount() {
+		int count = validationResults.getMessageCount();
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			count += childModel.getMessageCount();
+		}
+		return count;
+	}
 
-    public Set getMessages() {
-    	Set messages = new HashSet();
-    	messages.addAll(validationResults.getMessages());
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		messages.addAll(childModel.getMessages());
-    	}
-        return messages;
-    }
+	public int getMessageCount(Severity severity) {
+		int count = validationResults.getMessageCount(severity);
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			count += childModel.getMessageCount(severity);
+		}
+		return count;
+	}
 
-    public Set getMessages(Severity severity) {
-    	Set messages = new HashSet();
-    	messages.addAll(validationResults.getMessages(severity));
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		messages.addAll(childModel.getMessages(severity));
-    	}
-        return messages;
-    }
+	public int getMessageCount(String propertyName) {
+		int count = validationResults.getMessageCount(propertyName);
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			count += childModel.getMessageCount(propertyName);
+		}
+		return count;
+	}
 
-    public Set getMessages(String propertyName) {
-    	Set messages = new HashSet();
-    	messages.addAll(validationResults.getMessages(propertyName));
-    	Iterator childIter = children.iterator();
-    	while (childIter.hasNext())
-    	{
-    		ValidationResultsModel childModel = (ValidationResultsModel)childIter.next();
-    		messages.addAll(childModel.getMessages(propertyName));
-    	}
-        return messages;
-    }
+	public Set getMessages() {
+		Set messages = new HashSet();
+		messages.addAll(validationResults.getMessages());
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			messages.addAll(childModel.getMessages());
+		}
+		return messages;
+	}
 
-    public void addValidationListener(ValidationListener listener) {
-        validationListeners.add(listener);
-    }
+	public Set getMessages(Severity severity) {
+		Set messages = new HashSet();
+		messages.addAll(validationResults.getMessages(severity));
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			messages.addAll(childModel.getMessages(severity));
+		}
+		return messages;
+	}
 
-    public void removeValidationListener(ValidationListener listener) {
-        validationListeners.remove(listener);
-    }
+	public Set getMessages(String propertyName) {
+		Set messages = new HashSet();
+		messages.addAll(validationResults.getMessages(propertyName));
+		Iterator childIter = children.iterator();
+		while (childIter.hasNext()) {
+			ValidationResultsModel childModel = (ValidationResultsModel) childIter.next();
+			messages.addAll(childModel.getMessages(propertyName));
+		}
+		return messages;
+	}
 
-    public void addValidationListener(String propertyName, ValidationListener listener) {
-        getValidationListeners(propertyName).add(listener);
-    }
+	public void addValidationListener(ValidationListener listener) {
+		validationListeners.add(listener);
+	}
 
-    public void removeValidationListener(String propertyName, ValidationListener listener) {
-        getValidationListeners(propertyName).remove(listener);
-    }
+	public void removeValidationListener(ValidationListener listener) {
+		validationListeners.remove(listener);
+	}
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        throw new UnsupportedOperationException("This method is not implemented");
-    }
+	public void addValidationListener(String propertyName, ValidationListener listener) {
+		getValidationListeners(propertyName).add(listener);
+	}
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        throw new UnsupportedOperationException("This method is not implemented");
-    }
+	public void removeValidationListener(String propertyName, ValidationListener listener) {
+		getValidationListeners(propertyName).remove(listener);
+	}
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        getPropertyChangeListeners(propertyName).add(listener);
-    }
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		throw new UnsupportedOperationException("This method is not implemented");
+	}
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        getPropertyChangeListeners(propertyName).remove(listener);
-    }
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		throw new UnsupportedOperationException("This method is not implemented");
+	}
 
-    protected void fireChangedEvents(ValidationResults oldValidationResults) {
-        fireValidationResultsChanged();
-        firePropertyChange(HAS_ERRORS_PROPERTY, oldValidationResults.getHasErrors(), getHasErrors());
-        firePropertyChange(HAS_WARNINGS_PROPERTY, oldValidationResults.getHasWarnings(), getHasWarnings());
-        firePropertyChange(HAS_INFO_PROPERTY, oldValidationResults.getHasInfo(), getHasInfo());
-    }
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getPropertyChangeListeners(propertyName).add(listener);
+	}
 
-    protected void fireValidationResultsChanged() {
-        validationListeners.fire("validationResultsChanged", delegateFor);
-    }
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getPropertyChangeListeners(propertyName).remove(listener);
+	}
 
-    protected void fireValidationResultsChanged(String propertyName) {
-        for (Iterator i = getValidationListeners(propertyName).iterator(); i.hasNext();) {
-            ((ValidationListener)i.next()).validationResultsChanged(delegateFor);            
-        }
-    }
+	protected void fireChangedEvents(ValidationResults oldValidationResults) {
+		fireValidationResultsChanged();
+		firePropertyChange(HAS_ERRORS_PROPERTY, oldValidationResults.getHasErrors(), getHasErrors());
+		firePropertyChange(HAS_WARNINGS_PROPERTY, oldValidationResults.getHasWarnings(), getHasWarnings());
+		firePropertyChange(HAS_INFO_PROPERTY, oldValidationResults.getHasInfo(), getHasInfo());
+	}
 
-    protected EventListenerListHelper getValidationListeners(String propertyName) {
-        return ((EventListenerListHelper)propertyValidationListeners.get(propertyName));
-    }
+	protected void fireValidationResultsChanged() {
+		validationListeners.fire("validationResultsChanged", delegateFor);
+	}
 
-    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        if (oldValue != newValue) {
-            EventListenerListHelper propertyChangeListeners = getPropertyChangeListeners(propertyName);
-            if (propertyChangeListeners.hasListeners()) {
-                PropertyChangeEvent event = new PropertyChangeEvent(delegateFor, propertyName,
-                        Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
-                propertyChangeListeners.fire("propertyChange", event);
-            }
-        }
-    }
+	protected void fireValidationResultsChanged(String propertyName) {
+		for (Iterator i = getValidationListeners(propertyName).iterator(); i.hasNext();) {
+			((ValidationListener) i.next()).validationResultsChanged(delegateFor);
+		}
+	}
 
-    protected EventListenerListHelper getPropertyChangeListeners(String propertyName) {
-        return ((EventListenerListHelper)propertyChangeListeners.get(propertyName));
-    }
-    
-    public String toString() {
-        return new ToStringCreator(this).append("messages", getMessages()).toString();
-    }
-    
-    
-    /**
-     * Add a validationResultsModel as a child to this one.
-     * 
-     * @param validationResultsModel
-     */
-    public void add(ValidationResultsModel validationResultsModel)
-    {
-    	children.add(validationResultsModel);
-    	validationResultsModel.addValidationListener(this);
-    }
-    
-    /**
-     * Remove the given validationResultsModel from the list of children.
-     * 
-     * @param validationResultsModel
-     */
-    public void remove(ValidationResultsModel validationResultsModel)
-    {
-    	if (children.remove(validationResultsModel))
-    		validationResultsModel.removeValidationListener(this);
-    }
-    
-    public void validationResultsChanged(ValidationResults results) {
-    	fireValidationResultsChanged();
-    }
+	protected EventListenerListHelper getValidationListeners(String propertyName) {
+		return ((EventListenerListHelper) propertyValidationListeners.get(propertyName));
+	}
+
+	protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+		if (oldValue != newValue) {
+			EventListenerListHelper propertyChangeListeners = getPropertyChangeListeners(propertyName);
+			if (propertyChangeListeners.hasListeners()) {
+				PropertyChangeEvent event = new PropertyChangeEvent(delegateFor, propertyName, Boolean
+						.valueOf(oldValue), Boolean.valueOf(newValue));
+				propertyChangeListeners.fire("propertyChange", event);
+			}
+		}
+	}
+
+	protected EventListenerListHelper getPropertyChangeListeners(String propertyName) {
+		return ((EventListenerListHelper) propertyChangeListeners.get(propertyName));
+	}
+
+	public String toString() {
+		return new ToStringCreator(this).append("messages", getMessages()).toString();
+	}
+
+	/**
+	 * Add a validationResultsModel as a child to this one. If it already has
+	 * messages, fire events.
+	 * 
+	 * @param validationResultsModel
+	 */
+	public void add(ValidationResultsModel validationResultsModel) {
+		children.add(validationResultsModel);
+		validationResultsModel.addValidationListener(this);
+		if (validationResultsModel.getMessageCount() > 0)
+			fireValidationResultsChanged();
+	}
+
+	/**
+	 * Remove the given validationResultsModel from the list of children. If it
+	 * had messages, fire events.
+	 * 
+	 * @param validationResultsModel
+	 */
+	public void remove(ValidationResultsModel validationResultsModel) {
+		if (children.remove(validationResultsModel)) {
+			validationResultsModel.removeValidationListener(this);
+			if (validationResultsModel.getMessageCount() > 0)
+				fireValidationResultsChanged();
+		}
+	}
+
+	public void validationResultsChanged(ValidationResults results) {
+		fireValidationResultsChanged();
+	}
 }

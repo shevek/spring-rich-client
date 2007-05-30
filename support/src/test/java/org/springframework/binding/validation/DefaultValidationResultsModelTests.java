@@ -152,6 +152,30 @@ public class DefaultValidationResultsModelTests extends TestCase {
     	assertEquals("Number of messages registered for property1 should be 2", 2, resultsModel.getMessageCount("property1"));
     	assertEquals("Number of messages flagged as INFO should be 1", 1, resultsModel.getMessageCount(Severity.INFO));
     }
+    
+    public void testAddAndRemoveChild() {
+    	DefaultValidationResultsModel parentModel = new DefaultValidationResultsModel();
+    	DefaultValidationResultsModel childModel = new DefaultValidationResultsModel();
+    	int events = 0;
+    	
+    	TestValidationListener validationListener = new TestValidationListener();
+    	parentModel.addValidationListener(validationListener);
+    	assertEquals("Init: no events yet", events, validationListener.eventCount());
+
+    	parentModel.addMessage(new DefaultValidationMessage("parentProperty1", Severity.ERROR, "parentMessage1"));
+    	assertEquals("ParentModel added ErrorMessage.", ++events, validationListener.eventCount());
+    	
+    	childModel.addMessage(new DefaultValidationMessage("childProperty1", Severity.ERROR, "childMessage1"));
+    	parentModel.add(childModel);
+    	assertEquals("ParentModel adds child with Error.", ++events, validationListener.eventCount());
+    	
+    	childModel.addMessage(new DefaultValidationMessage("childProperty2", Severity.ERROR, "childMessage2"));
+    	assertEquals("Child added errorMessage.", ++events, validationListener.eventCount());
+    	
+    	parentModel.remove(childModel);
+    	assertEquals("Child removed, revalidate.", ++events, validationListener.eventCount());
+    	
+    }
 
     private ValidationResults getResults(String field, Severity severity) {
         DefaultValidationResults vr = new DefaultValidationResults();
