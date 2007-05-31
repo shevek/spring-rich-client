@@ -18,8 +18,8 @@ package org.springframework.rules.reporting;
 import org.springframework.core.closure.Constraint;
 
 /**
- * A message transloator which translates validation results into a human
- * readable form
+ * A message translator which translates validation results into a human
+ * readable form.
  * 
  * @author Mathias Broekelmann
  * 
