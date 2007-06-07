@@ -178,19 +178,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     }
 
     public boolean getHasErrors() {
-        if (validationResultsModel.getHasErrors())
-            return true;
-        
-        FormModel[] children = getChildren();
-        for (int i = 0; i < children.length;++i)
-        {
-            if (children[i] instanceof ValidatingFormModel)
-            {
-                if (((ValidatingFormModel)children[i]).getHasErrors())
-                    return true;
-            }
-        }
-        return false;
+        return validationResultsModel.getHasErrors();
     }
     
     protected void hasErrorsUpdated() {
