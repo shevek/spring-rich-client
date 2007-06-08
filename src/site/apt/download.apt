@@ -84,7 +84,7 @@ Nightly builds (unstable)
 	
     Checkout spring-richclient from {{{source-repository.html}the source repository}},
     build it with <<<mvn -Dmaven.test.skip=true install>>>
-    and then optionally deployt it to your internal repo if other team members need it:
+    and then optionally deploy it to your internal repo if other team members need it:
 	
 +--
 mvn -Dmaven.skip.test -DaltDeploymentRepository=myOwn::default::scp://myRepoIp/myRepoPath deploy
