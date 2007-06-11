@@ -2,6 +2,7 @@ package org.springframework.richclient.exceptionhandling;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.richclient.exceptionhandling.delegation.ExceptionPurger;
 
 /**
  * Superclass of logging exception handlers.
@@ -17,6 +18,7 @@ public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterab
     protected final transient Log logger = LogFactory.getLog(getClass());
 
     protected LogLevel logLevel = LogLevel.ERROR;
+    protected ExceptionPurger exceptionPurger = null;
 
     /**
      * The log level at which the throwable should be logged.
@@ -26,11 +28,22 @@ public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterab
     public void setLogLevel(LogLevel logLevel) {
         this.logLevel = logLevel;
     }
+    
+    /**
+     * If set the throwable will first be purged before handling it.
+     * @param exceptionPurger
+     */
+    public void setExceptionPurger(ExceptionPurger exceptionPurger) {
+        this.exceptionPurger = exceptionPurger;
+    }
 
     /**
      * Logs an exception and shows it to the user.
      */
     public final void uncaughtException(Thread thread, Throwable throwable) {
+        if (exceptionPurger != null) {
+            throwable = exceptionPurger.purge(throwable);
+        }
         logException(thread, throwable);
         notifyUserAboutException(thread, throwable);
     }

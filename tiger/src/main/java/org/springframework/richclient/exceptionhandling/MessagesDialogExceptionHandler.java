@@ -26,18 +26,10 @@ import java.util.StringTokenizer;
  */
 public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandler {
 
-    private int evaluatedChainedIndex = 0;
     private int wrapLength = 120;
     private int identLength = 2;
-
-    /**
-     * If this is bigger then 0, instead of finding a message for the giving throwable,
-     * it will use a recursive chained exception.
-     * @param evaluatedChainedIndex the number of times that should be recursed
-     */
-    public void setEvaluatedChainedIndex(int evaluatedChainedIndex) {
-        this.evaluatedChainedIndex = evaluatedChainedIndex;
-    }
+    
+    private String messagesKey = null;
 
     /**
      * Sets the wrap length applied on the exception message passed as a parameter.
@@ -57,44 +49,42 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
         this.identLength = identLength;
     }
 
+    /**
+     * If messagesKey is set, the caption and description shown in the dialog
+     * are not based dynamically on the throwable,
+     * but instead statically on the keys messageKey.caption and messageKey.description.
+     * 
+     * @param messagesKey the key used for the caption and title
+     */
+    public void setMessagesKey(String messagesKey) {
+        this.messagesKey = messagesKey;
+    }
+
+    
     public String resolveExceptionCaption(Throwable throwable) {
-        List<String> messageCaptionKeyList = new ArrayList<String>();
-        Throwable evaluatedThrowable = determineEvaluatedThrowable(throwable);
-        Class clazz = throwable.getClass();
-        while (clazz != Object.class) {
-            messageCaptionKeyList.add(clazz.getName() + ".caption");
-            clazz = clazz.getSuperclass();
-        }
-        String[] codes = messageCaptionKeyList.toArray(new String[messageCaptionKeyList.size()]);
+        String[] messagesKeys = getMessagesKeys(throwable, ".caption");
         return messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
-                codes, codes[0]));
+                messagesKeys, messagesKeys[0]));
     }
 
     public Object createExceptionContent(Throwable throwable) {
-        List<String> messageDescriptionKeyList = new ArrayList<String>();
-        Throwable evaluatedThrowable = determineEvaluatedThrowable(throwable);
-        Class clazz = evaluatedThrowable.getClass();
-        while (clazz != Object.class) {
-            messageDescriptionKeyList.add(clazz.getName() + ".description");
-            clazz = clazz.getSuperclass();
-        }
-        String[] codes = messageDescriptionKeyList.toArray(new String[messageDescriptionKeyList.size()]);
-        String[] parameters = new String[]{formatMessage(evaluatedThrowable.getMessage())};
+        String[] messagesKeys = getMessagesKeys(throwable, ".description");
+        String[] parameters = new String[]{formatMessage(throwable.getMessage())};
         return messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
-                codes, parameters, codes[0]));
+                messagesKeys, parameters, messagesKeys[0]));
     }
 
-    private Throwable determineEvaluatedThrowable(Throwable throwable) {
-        Throwable evaluatedThrowable = throwable;
-        for (int i = 0; i < evaluatedChainedIndex; i++) {
-            Throwable cause = evaluatedThrowable.getCause();
-            if (cause == null || cause == evaluatedThrowable) {
-                break;
-            } else {
-                evaluatedThrowable = cause;
-            }
+    private String[] getMessagesKeys(Throwable throwable, String keySuffix) {
+        if (messagesKey != null) {
+            return new String[] {messagesKey};
         }
-        return evaluatedThrowable;
+        List<String> messageKeyList = new ArrayList<String>();
+        Class clazz = throwable.getClass();
+        while (clazz != Object.class) {
+            messageKeyList.add(clazz.getName() + keySuffix);
+            clazz = clazz.getSuperclass();
+        }
+        return messageKeyList.toArray(new String[messageKeyList.size()]);
     }
 
     protected String formatMessage(String message) {
@@ -103,16 +93,16 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
         }
         String identString = StringUtils.leftPad("", identLength);
         String newLineWithIdentString = "\n" + identString;
-        StringBuffer formattedMessageBuffer = new StringBuffer(identString);
+        StringBuilder formattedMessageBuilder = new StringBuilder(identString);
         StringTokenizer messageTokenizer = new StringTokenizer(message, "\n");
         while (messageTokenizer.hasMoreTokens()) {
             String messageToken = messageTokenizer.nextToken();
-            formattedMessageBuffer.append(WordUtils.wrap(messageToken, wrapLength, newLineWithIdentString, true));
+            formattedMessageBuilder.append(WordUtils.wrap(messageToken, wrapLength, newLineWithIdentString, true));
             if (messageTokenizer.hasMoreTokens()) {
-                formattedMessageBuffer.append(newLineWithIdentString);
+                formattedMessageBuilder.append(newLineWithIdentString);
             }
         }
-        return formattedMessageBuffer.toString();
+        return formattedMessageBuilder.toString();
     }
 
 }

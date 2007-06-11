@@ -69,7 +69,9 @@ java.lang.Error.description = \
   Please report this bug.
 +--
 
-    See Petclinic for an advanced features example using the delegating exception handler.
+    See Petclinic for an advanced features example using the delegating exception handler,
+    which allows you to analyze the throwable and delegate to a different handler
+    based on it's type etc.
 
     * Exception catching improvements in ApplicationLauncher
 
@@ -145,3 +147,30 @@ org.acegisecurity.AuthenticationException.description = \
     * ValidationResultsReporter is refactored and had its parent/child methods removed. Chaining ResultsReporters usually results in strange and complicated behaviour (especially when having multiple parent-child relations and when the hierarchy changes a lot). It's better to chain the ValidationResultsModels and have them collect and forward the messages.
     
     * ValidationResultsModel now can have children. When chaining DefaultFormModels, their ValidationResultsModels are linked as well and they forward their events as needed. Any ValidationListener registered on a ValidationResultsModel will receive events of it's children too. A ValidationResultsModel can be used to combine multiple other resultsModels and bundle their events.
+    
+    * Clean up and improvements to the delegating exception handler
+    
+      <<<org.springframework.richclient.exceptionhandling.DelegatingExceptionHandler>>>
+      has been moved to
+      <<<org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler>>>
+      
+      <<<org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate>>>
+      has been moved and renamed to
+      <<<org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate>>>
+      
+      It's now possible to plug in your own <<<ExceptionHandlerDelegate>>>'s
+      and there's a new one which can select based on a exception chain hierarchy
+      <<<ChainInspectingExceptionHandlerDelegate>>>
+      (however a simple ExceptionPurger in SimpleExceptionHandlerDelegate will suffice most likely).
+      
+    * Most exception handlers now support ExceptionPurger, which is great for unwrapping wrapper exceptions
+      or bubbling out very specific exceptions from an exception chain.
+      
+    * MessagesDialogExceptionHandler can now have a messagesKey,
+      which turns off the dynamic messagesKey determination based on the throwable. 
+    
+      MessagesDialogExceptionHandler no longer has evaluatedChainedIndex, use a DefaultExceptionPurger instead.
+      
+    * <<<org.springframework.richclient.exceptionhandling.SimpleLoggingExceptionHandler>>>
+       has been renamed to
+      <<<org.springframework.richclient.exceptionhandling.SilentExceptionHandler>>>

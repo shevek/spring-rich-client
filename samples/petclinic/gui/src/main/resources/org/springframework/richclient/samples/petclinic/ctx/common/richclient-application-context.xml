@@ -36,10 +36,10 @@
     </bean>
 
     <bean id="exceptionHandler"
-            class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandler">
+            class="org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler">
         <property name="delegateList">
             <list>
-                <bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">
+                <bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
                     <property name="throwableClassList">
                         <list>
                             <value type="java.lang.Class">org.acegisecurity.AuthenticationException</value>
@@ -53,7 +53,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">
+                <bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
                     <property name="throwableClass">
                         <value type="java.lang.Class">org.hibernate.validator.InvalidStateException</value>
                     </property>
@@ -69,19 +69,25 @@
                     Hibernate's can also throws org.hibernate.PropertyValueException which are wrapped by spring
                     See http://opensource.atlassian.com/projects/hibernate/browse/ANN-396
                 -->
-                <!--<bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">-->
+                <!--<bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">-->
+                    <!--<property name="exceptionPurger">-->
+                       <!--<bean class="org.springframework.richclient.exceptionhandling.delegation.DefaultExceptionPurger">-->
+                           <!--<property name="excludeThrowableClass">-->
+                               <!--<value type="java.lang.Class">org.springframework.orm.hibernate3.HibernateSystemException</value>-->
+                           <!--</property>-->
+                       <!--</bean>-->
+                    <!--</property>-->
                     <!--<property name="throwableClass">-->
-                        <!--<value type="java.lang.Class">org.springframework.orm.hibernate3.HibernateSystemException</value>-->
+                        <!--<value type="java.lang.Class">org.hibernate.PropertyValueException</value>-->
                     <!--</property>-->
                     <!--<property name="exceptionHandler">-->
                         <!--<bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">-->
                             <!--<property name="logLevel" value="INFO"/>-->
                             <!--<property name="shutdownPolicy" value="NONE"/>-->
-                            <!--<property name="evaluatedChainedIndex" value="1"/>-->
                         <!--</bean>-->
                     <!--</property>-->
                 <!--</bean>-->
-                <bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">
+                <bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
                     <property name="throwableClass">
                         <value type="java.lang.Class">java.lang.Error</value>
                     </property>
@@ -93,7 +99,7 @@
                     </property>
                 </bean>
                 <!-- The order is important: if Throwable would be first then the others would be ignored -->
-                <bean class="org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate">
+                <bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
                     <property name="throwableClass">
                         <value type="java.lang.Class">java.lang.Throwable</value>
                     </property>
