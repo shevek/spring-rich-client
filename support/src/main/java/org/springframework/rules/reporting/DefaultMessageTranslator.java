@@ -241,6 +241,8 @@ public class DefaultMessageTranslator implements MessageTranslator,
 	void visit(Constraint constraint) {
 		if (constraint instanceof Range) {
 			this.args.add(handleRange((Range) constraint));
+		} else if (constraint instanceof ParameterizedBinaryConstraint) {
+			this.args.add(handleParameterizedBinaryPredicate((ParameterizedBinaryConstraint)constraint));
 		} else {
 			add(getMessageCode(constraint), null, constraint.toString());
 		}
