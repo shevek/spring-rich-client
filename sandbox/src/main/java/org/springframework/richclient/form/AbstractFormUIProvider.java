@@ -36,7 +36,7 @@ public abstract class AbstractFormUIProvider extends AbstractControlFactory impl
     private String[] properties;
     private Map contextMap = new HashMap();
 
-    public void bind(BindingFactory factory) {
+    public void bind(BindingFactory factory, Form form) {
         Assert.state(properties != null && properties.length > 0, "Properties must be set");
 
         bound = true;

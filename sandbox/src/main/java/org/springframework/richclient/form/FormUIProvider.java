@@ -44,8 +44,9 @@ public interface FormUIProvider extends ControlFactory {
    * 
    * @param factory the <code>BindingFactory</code> this form provider should
    *        use to bind the provided form.
+   * @param form the <code>Form</code> being bound.
    */
-  void bind(BindingFactory factory);
+  void bind(BindingFactory factory, Form form);
 
   /**
    * Provides access to individual components of this pre-generated form.
@@ -54,7 +55,7 @@ public interface FormUIProvider extends ControlFactory {
    * typically these IDs will be the same as the property names of the
    * object backing the form.
    *
-   * @param componentId
+   * @param componentId component id to lookup
    *
    * @return component with the specified id, or <code>null</code> if no
    *         component exists in this pre-generated form with the given id.

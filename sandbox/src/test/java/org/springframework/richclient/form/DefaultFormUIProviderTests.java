@@ -35,7 +35,7 @@ public class DefaultFormUIProviderTests extends TestCase {
 
         formUIProvider.setContext("comboProperty", context);
 
-        formUIProvider.bind(bindingFactory);
+        formUIProvider.bind(bindingFactory, null);
         assertEquals(3, bindingFactory.getBindControlCount());
 
         // string property
