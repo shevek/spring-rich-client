@@ -331,6 +331,16 @@ public class Constraints extends AlgorithmsAccessor {
 		return new ConditionalPropertyConstraint(ifConstraint, thenConstraint);
 	}
     
+	/**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint, String type) {
+		return new ConditionalPropertyConstraint(ifConstraint, thenConstraint, type);
+	}
+	
     /**
 	 * Returns a ConditionalPropertyConstraint: one property will trigger the
 	 * validation of another.
@@ -348,8 +358,29 @@ public class Constraints extends AlgorithmsAccessor {
 	 * 
 	 * @see ConditionalPropertyConstraint
 	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint,
+			PropertyConstraint elseConstraint, String type) {
+		return new ConditionalPropertyConstraint(ifConstraint, thenConstraint, elseConstraint, type);
+	}
+	
+	/**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
 	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint[] thenConstraints) {
 		return new ConditionalPropertyConstraint(ifConstraint, new CompoundPropertyConstraint(new And(thenConstraints)));
+	}
+	
+	/**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint[] thenConstraints, String type) {
+		return new ConditionalPropertyConstraint(ifConstraint, new CompoundPropertyConstraint(new And(thenConstraints)), type);
 	}
     
     /**
@@ -363,6 +394,19 @@ public class Constraints extends AlgorithmsAccessor {
 		return new ConditionalPropertyConstraint(ifConstraint,
 				new CompoundPropertyConstraint(new And(thenConstraints)), new CompoundPropertyConstraint(new And(
 						elseConstraints)));
+	}
+	
+	/**
+	 * Returns a ConditionalPropertyConstraint: one property will trigger the
+	 * validation of another.
+	 * 
+	 * @see ConditionalPropertyConstraint
+	 */
+	public PropertyConstraint ifTrue(PropertyConstraint ifConstraint, PropertyConstraint[] thenConstraints,
+			PropertyConstraint[] elseConstraints, String type) {
+		return new ConditionalPropertyConstraint(ifConstraint,
+				new CompoundPropertyConstraint(new And(thenConstraints)), new CompoundPropertyConstraint(new And(
+						elseConstraints)), type);
 	}
 
     /**

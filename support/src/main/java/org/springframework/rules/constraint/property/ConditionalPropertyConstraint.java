@@ -2,6 +2,7 @@ package org.springframework.rules.constraint.property;
 
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.rules.constraint.IfTrue;
+import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 
 /**
@@ -51,7 +52,7 @@ import org.springframework.util.Assert;
  * @author jh
  * 
  */
-public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
+public class ConditionalPropertyConstraint extends AbstractPropertyConstraint implements TypeResolvable {
 
 	/** The condition which triggers further rules to be checked. */
 	private final PropertyConstraint ifConstraint;
@@ -62,6 +63,16 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 	/** The constraint to be checked when the condition is <b>NOT</b> satisfied. */
 	private final PropertyConstraint elseConstraint;
 
+	/** Type used to fetch message. */
+	private String type;
+
+	/**
+	 * @see #ConditionalPropertyConstraint(PropertyConstraint, PropertyConstraint, String)
+	 */
+	public ConditionalPropertyConstraint(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint) {
+		this(ifConstraint, thenConstraint, null, null);
+	}	
+	
 	/**
 	 * Create a constraint which simulates the if...then pattern applied
 	 * on separate properties.
@@ -71,10 +82,17 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 	 * @param thenConstraint the PropertyConstraint to test in the specified
 	 * condition.
 	 */
-	public ConditionalPropertyConstraint(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint) {
-		this(ifConstraint, thenConstraint, null);
+	public ConditionalPropertyConstraint(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint, String type) {
+		this(ifConstraint, thenConstraint, null, type);
 	}
 	
+	/**
+	 * @see #ConditionalPropertyConstraint(PropertyConstraint, PropertyConstraint, PropertyConstraint, String)
+	 */
+	public ConditionalPropertyConstraint(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint,
+			PropertyConstraint elseConstraint) {
+		this(ifConstraint, thenConstraint, elseConstraint, null);
+	}
 	/**
 	 * Create a constraint which simulates the if...then...else pattern applied
 	 * on separate properties.
@@ -85,15 +103,17 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 	 * condition.
 	 * @param elseConstraint the PropertyConstraint to test if the condition is
 	 * <b>NOT</b> satisfied. May be <code>null</code>.
+	 * @param type the messageCode used to fetch the message.
 	 */
 	public ConditionalPropertyConstraint(PropertyConstraint ifConstraint, PropertyConstraint thenConstraint,
-			PropertyConstraint elseConstraint) {
+			PropertyConstraint elseConstraint, String type) {
 		super(ifConstraint.getPropertyName());
 		Assert.notNull(ifConstraint);
 		Assert.notNull(thenConstraint);
 		this.ifConstraint = ifConstraint;
 		this.thenConstraint = thenConstraint;
 		this.elseConstraint = elseConstraint;
+		this.type = type;
 	}
 
 	public boolean isCompoundRule() {
@@ -117,4 +137,11 @@ public class ConditionalPropertyConstraint extends AbstractPropertyConstraint {
 		return true;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }
