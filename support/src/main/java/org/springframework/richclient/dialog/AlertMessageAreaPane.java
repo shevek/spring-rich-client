@@ -128,10 +128,10 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
     }
 
     private void update( Message message ) {
-        String text = message.getText();
+        String text = message.getMessage();
 
         // try to split it into two parts
-        String[] parts = message.getText().split( "\\n" );
+        String[] parts = message.getMessage().split( "\\n" );
         if( parts.length > 1 ) {
             StringBuffer sb = new StringBuffer();
             sb.append( "<html>" );

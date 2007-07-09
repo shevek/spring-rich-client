@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.util.Assert;
 
 /**
@@ -58,7 +58,7 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
         Assert.hasText(message, "The confirmation message is required");
         this.confirmationMessage = message;
         if(this.messageAreaPane != null) {
-            messageAreaPane.setMessage(new Message(message));
+            messageAreaPane.setMessage(new DefaultMessage(message));
         }
     }
 
@@ -98,7 +98,7 @@ public abstract class ConfirmationDialog extends ApplicationDialog {
             icon = UIManager.getIcon("OptionPane.questionIcon");
         }
         this.messageAreaPane.setDefaultIcon(icon);
-        this.messageAreaPane.setMessage(new Message(confirmationMessage));
+        this.messageAreaPane.setMessage(new DefaultMessage(confirmationMessage));
         return messageAreaPane.getControl();
     }
 

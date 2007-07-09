@@ -21,6 +21,7 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JComponent;
 
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
 import org.springframework.util.Assert;
 
@@ -95,7 +96,7 @@ public class MessageDialog extends ApplicationDialog {
      * @param text the message text
      */
     public void setMessage( String text ) {
-        setMessage( new Message( text ) );
+        setMessage( new DefaultMessage( text ) );
     }
 
     /**
@@ -105,7 +106,7 @@ public class MessageDialog extends ApplicationDialog {
      */
     public void setMessage( Message message ) {
         Assert.notNull( message, "The message is required" );
-        Assert.hasText( message.getText(), "The message text is required" );
+        Assert.hasText( message.getMessage(), "The message text is required" );
         this.message = message;
     }
 

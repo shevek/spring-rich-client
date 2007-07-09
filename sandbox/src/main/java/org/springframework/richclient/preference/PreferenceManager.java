@@ -22,7 +22,7 @@ import java.util.List;
 import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.dialog.MessageDialog;
 import org.springframework.richclient.settings.SettingsException;
 import org.springframework.richclient.settings.SettingsManager;
@@ -58,7 +58,7 @@ public class PreferenceManager {
             try {
                 dialog.setSettings(settingsManager.getUserSettings());
             } catch (SettingsException e) {
-                new MessageDialog("Error", new Message(e.getMessage(), Severity.ERROR)).showDialog();
+                new MessageDialog("Error", new DefaultMessage(e.getMessage(), Severity.ERROR)).showDialog();
                 e.printStackTrace();
             }
         }

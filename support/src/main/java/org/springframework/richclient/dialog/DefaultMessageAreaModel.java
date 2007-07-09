@@ -20,6 +20,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
+import org.springframework.binding.validation.Severity;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.ObjectUtils;
@@ -36,7 +38,7 @@ public class DefaultMessageAreaModel implements Messagable {
 
     private Messagable delegate;
 
-    private Message message = Message.EMPTY_MESSAGE;
+    private Message message = DefaultMessage.EMPTY_MESSAGE;
 
     private EventListenerListHelper listenerList = new EventListenerListHelper(PropertyChangeListener.class);
 
@@ -60,20 +62,20 @@ public class DefaultMessageAreaModel implements Messagable {
     }
 
     public boolean hasInfoMessage() {
-        return message.isWarningMessage();
+        return message.getSeverity() == Severity.INFO;
     }
 
     public boolean hasErrorMessage() {
-        return message.isErrorMessage();
+        return message.getSeverity() == Severity.ERROR;
     }
 
     public boolean hasWarningMessage() {
-        return message.isWarningMessage();
+        return message.getSeverity() == Severity.WARNING;
     }
 
     public void setMessage(Message message) {
         if (message == null) {
-            message = Message.EMPTY_MESSAGE;
+            message = DefaultMessage.EMPTY_MESSAGE;
         }
         if (ObjectUtils.nullSafeEquals(this.message, message)) {
             return;

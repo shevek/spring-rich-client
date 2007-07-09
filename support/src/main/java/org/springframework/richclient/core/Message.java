@@ -15,112 +15,31 @@
  */
 package org.springframework.richclient.core;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.validation.Severity;
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.image.IconSource;
-import org.springframework.richclient.image.NoSuchImageResourceException;
-import org.springframework.richclient.util.LabelUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
-public class Message implements Serializable {
-    private long timestamp = new Date().getTime();
+public interface Message  {
+
+	/**
+	 * Timestamp of message creation.
+	 * 
+	 * @return time in long format.
+	 */
+    long getTimestamp();
     
-    private String text;
+    /**
+     * @return textual message.
+     */
+    String getMessage();
 
-    private Severity severity;
-
-    public static Message EMPTY_MESSAGE = new Message("", null);
-
-    public Message(String text) {
-        this(text, Severity.INFO);
-    }
-
-    public Message(String text, Severity severity) {
-        if (text == null) {
-            text = "";
-        }
-        this.text = text;
-        this.severity = severity;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
+    /**
+     * @return Severity of this message.
+     */
+    Severity getSeverity();
     
-    public String getText() {
-        return text;
-    }
-
-    public Severity getSeverity() {
-        return severity;
-    }
-
-    public boolean isEmpty() {
-        return !StringUtils.hasText(text);
-    }
-
-    public boolean isInfoMessage() {
-        return !isEmpty() && severity == Severity.INFO;
-    }
-
-    public boolean isWarningMessage() {
-        return !isEmpty() && severity == Severity.WARNING;
-    }
-
-    public boolean isErrorMessage() {
-        return !isEmpty() && severity == Severity.ERROR;
-    }
-
-    public void renderMessage(JComponent component) {
-        if (component instanceof JTextComponent) {
-            ((JTextComponent)component).setText(getText());
-        }
-        else if (component instanceof JLabel) {
-            JLabel label = (JLabel)component;
-            label.setText(LabelUtils.htmlBlock(getText()));
-            label.setIcon(getIcon());
-        }
-        else {
-            throw new IllegalArgumentException("Unsupported component type " + component);
-        }
-    }
-
-    public Icon getIcon() {
-        if (severity == null) {
-            return null;
-        }
-        try {
-            IconSource iconSource = (IconSource)ApplicationServicesLocator.services().getService(IconSource.class);
-            return iconSource.getIcon("severity." + severity.getLabel());
-        }
-        catch (NoSuchImageResourceException e) {
-            return null;
-        }
-    }
-
-    public boolean equals(Object o) {
-        if (!(o instanceof Message)) {
-            return false;
-        }
-        Message m = (Message)o;
-        return text.equals(m.text) && ObjectUtils.nullSafeEquals(severity, m.severity);
-    }
-
-    public int hashCode() {
-        return text.hashCode() + (severity != null ? severity.hashCode() : 0);
-    }
-
-    public String toString() {
-        return new ToStringCreator(this).append("message", text).append("severity", severity).toString();
-    }
+    /**
+     * @param component visual component to decorate.
+     */
+    void renderMessage(JComponent component);
 }

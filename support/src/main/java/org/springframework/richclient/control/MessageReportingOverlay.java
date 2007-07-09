@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
@@ -85,9 +86,9 @@ public class MessageReportingOverlay extends JLabel implements Messagable, Guard
      */
     public void setMessage(Message message) {
         if (message == null) {
-            message = Message.EMPTY_MESSAGE;
+            message = DefaultMessage.EMPTY_MESSAGE;
         }
-        setToolTipText(message.getText());
+        setToolTipText(message.getMessage());
         Severity severity = message.getSeverity();
 
         if (severity != null) {

@@ -24,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.image.config.ImageConfigurable;
@@ -34,7 +35,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
         DescriptionConfigurable {
     private TitlePane titlePane = new TitlePane();
 
-    private Message description = new Message("Title pane description");
+    private Message description = new DefaultMessage("Title pane description");
 
     private JComponent pageControl;
 
@@ -58,7 +59,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public void setDescription(String description) {
         Message old = this.description;
-        Message message = new Message(description);
+        Message message = new DefaultMessage(description);
         if (!ObjectUtils.nullSafeEquals(old, message)) {
             this.description = message;
             if (!titlePane.getMessage().equals(old)) {
@@ -85,13 +86,10 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 
     public void setMessage(Message message) {
         if (message == null) {
-            message = Message.EMPTY_MESSAGE;
-        }
-        if (!message.isEmpty()) {
-            titlePane.setMessage(message);
+            titlePane.setMessage(getDescription());
         }
         else {
-            titlePane.setMessage(getDescription());
+            titlePane.setMessage(message);
         }
     }
 

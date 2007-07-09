@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.form.Form;
 import org.springframework.util.Assert;
@@ -79,7 +80,7 @@ public abstract class TitledPageApplicationDialog extends TitledApplicationDialo
     }
 
     protected Message getDescription() {
-        return new Message(dialogPage.getDescription());
+        return new DefaultMessage(dialogPage.getDescription());
     }
 
     public void propertyChange(PropertyChangeEvent e) {

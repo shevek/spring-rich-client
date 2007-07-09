@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
-import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.util.Assert;
 
@@ -38,12 +38,15 @@ import org.springframework.util.Assert;
 public class SimpleValidationResultsReporter implements ValidationResultsReporter {
 	private static final Log logger = LogFactory.getLog(SimpleValidationResultsReporter.class);
 
+	/** ResultsModel containing the messages. */
 	private ValidationResultsModel resultsModel;
 
+	/** Recipient for the newest message. */
 	private Messagable messageReceiver;
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param formModel ValidatingFormModel to monitor and report on.
 	 * @param messageReceiver The receiver for validation messages.
 	 */
@@ -55,6 +58,9 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 		init();
 	}
 
+	/**
+	 * Initialize listener and trigger a first-time check.
+	 */
 	private void init() {
 		resultsModel.addValidationListener(this);
 
@@ -62,6 +68,9 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
         validationResultsChanged( null );
 	}
 
+	/**
+	 * Clear the messageReceiver.
+	 */
 	public void clearErrors() {
 		messageReceiver.setMessage(null);
 	}
@@ -84,7 +93,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 			}
 			ValidationMessage message = getNewestMessage(resultsModel);
 			messageReceiver.setMessage(message == null ? null
-					: new Message(message.getMessage(), message.getSeverity()));
+					: new DefaultMessage(message.getMessage(), message.getSeverity()));
 		}
 	}
 

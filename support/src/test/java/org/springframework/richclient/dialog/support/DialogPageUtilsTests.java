@@ -24,6 +24,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.AbstractDialogPage;
@@ -52,11 +53,11 @@ public class DialogPageUtilsTests extends TestCase {
         DialogPageUtils.addMessageMonitor(page, monitor);
 
         monitor.resetMessageCount();
-        page.setMessage(new Message("a message"));
-        assertEquals("Message text not equal", monitor.getMessage().getText(), "a message");
+        page.setMessage(new DefaultMessage("a message"));
+        assertEquals("Message text not equal", monitor.getMessage().getMessage(), "a message");
 
-        page.setMessage(new Message("another message"));
-        assertEquals("Message text not equal", monitor.getMessage().getText(), "another message");
+        page.setMessage(new DefaultMessage("another message"));
+        assertEquals("Message text not equal", monitor.getMessage().getMessage(), "another message");
 
         assertEquals("Message count incorrect", 2, monitor.getMessageCount());
     }
@@ -100,8 +101,8 @@ public class DialogPageUtilsTests extends TestCase {
 
         TitlePane titlePane = DialogPageUtils.createTitlePane(page);
 
-        page.setMessage(new Message("test message"));
-        assertEquals("Message text not equal", titlePane.getMessage().getText(), "test message");
+        page.setMessage(new DefaultMessage("test message"));
+        assertEquals("Message text not equal", titlePane.getMessage().getMessage(), "test message");
     }
 
     /**

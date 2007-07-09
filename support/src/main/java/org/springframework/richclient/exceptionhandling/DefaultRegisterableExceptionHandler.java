@@ -7,6 +7,7 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
 import org.springframework.util.StringUtils;
 import org.springframework.binding.validation.Severity;
@@ -45,10 +46,10 @@ public class DefaultRegisterableExceptionHandler implements RegisterableExceptio
                     .getMessage("applicationDialog.defaultException", defaultMessage);
         }
 
-        Message message = new Message(exceptionMessage, Severity.ERROR);
+        Message message = new DefaultMessage(exceptionMessage, Severity.ERROR);
         ApplicationWindow activeWindow = Application.instance().getActiveWindow();
         JFrame parentFrame = (activeWindow == null) ? null : activeWindow.getControl();
-        JOptionPane.showMessageDialog(parentFrame, message.getText(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parentFrame, message.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 }
