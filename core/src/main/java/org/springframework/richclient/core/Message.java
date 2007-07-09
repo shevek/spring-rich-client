@@ -13,19 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.binding.validation;
+package org.springframework.richclient.core;
 
-import org.springframework.core.enums.ShortCodedLabeledEnum;
+import javax.swing.JComponent;
 
-public class Severity extends ShortCodedLabeledEnum {
 
-	public static final Severity INFO = new Severity(0, "info");
+public interface Message  {
 
-	public static final Severity WARNING = new Severity(50, "warning");
+	/**
+	 * Timestamp of message creation.
+	 * 
+	 * @return time in long format.
+	 */
+    long getTimestamp();
+    
+    /**
+     * @return textual message.
+     */
+    String getMessage();
 
-	public static final Severity ERROR = new Severity(100, "error");
-
-	protected Severity(int magnitude, String label) {
-		super(magnitude, label);
-	}
+    /**
+     * @return Severity of this message.
+     */
+    Severity getSeverity();
+    
+    /**
+     * @param component visual component to decorate.
+     */
+    void renderMessage(JComponent component);
 }

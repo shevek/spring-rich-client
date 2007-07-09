@@ -15,7 +15,9 @@
  */
 package org.springframework.binding.validation;
 
-public interface ValidationMessage {
+import org.springframework.richclient.core.Message;
+
+public interface ValidationMessage extends Message {
     
     /**
      * The property name for messages that have a global scope i.e. do not
@@ -24,25 +26,10 @@ public interface ValidationMessage {
     public static final String GLOBAL_PROPERTY = null;
     
     /**
-     * The time that this validation message was created.
-     */
-    long getTimeStamp();
-
-    /**
      * The property that this validation message applies to; or 
      * <code>GLOBAL_PROPERTY</code> if this message does not apply
      * to a specific property.
      */
     String getProperty();
 
-    /**
-     * The severity of this message.
-     */
-    Severity getSeverity();
-
-    /**
-     * The text of this message. If any i18n is applcable this must 
-     * have already been allied to this message.
-     */
-    String getMessage();
 }

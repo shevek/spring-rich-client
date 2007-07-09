@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.CachingMapDecorator;

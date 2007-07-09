@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.core.Severity;
 import org.springframework.util.CachingMapDecorator;
 import org.springframework.util.ObjectUtils;
 

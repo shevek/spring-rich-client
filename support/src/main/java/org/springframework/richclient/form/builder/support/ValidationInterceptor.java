@@ -23,9 +23,7 @@ import org.springframework.binding.validation.ValidationListener;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
-import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Guarded;
-import org.springframework.richclient.core.Message;
 import org.springframework.richclient.dialog.Messagable;
 
 /**
@@ -97,7 +95,7 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
 		public void validationResultsChanged(ValidationResults results) {
 			if (results.getMessageCount(propertyName) > 0) {
 				ValidationMessage message = getNewestMessage(results);
-				messageReceiver.setMessage(new DefaultMessage(message.getMessage(), message.getSeverity()));
+				messageReceiver.setMessage(message);
 			}
 			else {
 				messageReceiver.setMessage(null);
@@ -108,7 +106,7 @@ public abstract class ValidationInterceptor extends AbstractFormComponentInterce
 			ValidationMessage newestMessage = null;
 			for (Iterator i = results.getMessages(propertyName).iterator(); i.hasNext();) {
 				ValidationMessage message = (ValidationMessage) i.next();
-				if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
+				if (newestMessage == null || newestMessage.getTimestamp() < message.getTimestamp()) {
 					newestMessage = message;
 				}
 			}

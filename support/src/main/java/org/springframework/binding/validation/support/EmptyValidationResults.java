@@ -18,9 +18,9 @@ package org.springframework.binding.validation.support;
 import java.util.Collections;
 import java.util.Set;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.richclient.core.Severity;
 
 /**
  * An implementation of ValidationResults that contains no results. 

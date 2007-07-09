@@ -15,31 +15,17 @@
  */
 package org.springframework.richclient.core;
 
-import javax.swing.JComponent;
+import org.springframework.core.enums.ShortCodedLabeledEnum;
 
-import org.springframework.binding.validation.Severity;
+public class Severity extends ShortCodedLabeledEnum {
 
-public interface Message  {
+	public static final Severity INFO = new Severity(0, "info");
 
-	/**
-	 * Timestamp of message creation.
-	 * 
-	 * @return time in long format.
-	 */
-    long getTimestamp();
-    
-    /**
-     * @return textual message.
-     */
-    String getMessage();
+	public static final Severity WARNING = new Severity(50, "warning");
 
-    /**
-     * @return Severity of this message.
-     */
-    Severity getSeverity();
-    
-    /**
-     * @param component visual component to decorate.
-     */
-    void renderMessage(JComponent component);
+	public static final Severity ERROR = new Severity(100, "error");
+
+	protected Severity(int magnitude, String label) {
+		super(magnitude, label);
+	}
 }

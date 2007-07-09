@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
 import org.springframework.binding.validation.ValidationResultsModel;
-import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.util.Assert;
 
@@ -92,8 +91,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 				logger.debug("Form has errors; setting error message.");
 			}
 			ValidationMessage message = getNewestMessage(resultsModel);
-			messageReceiver.setMessage(message == null ? null
-					: new DefaultMessage(message.getMessage(), message.getSeverity()));
+			messageReceiver.setMessage(message);
 		}
 	}
 
@@ -107,7 +105,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 		ValidationMessage newestMessage = null;
 		for (Iterator i = resultsModel.getMessages().iterator(); i.hasNext();) {
 			ValidationMessage message = (ValidationMessage) i.next();
-			if (newestMessage == null || newestMessage.getTimeStamp() < message.getTimeStamp()) {
+			if (newestMessage == null || newestMessage.getTimestamp() < message.getTimestamp()) {
 				newestMessage = message;
 			}
 		}

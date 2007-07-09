@@ -17,12 +17,12 @@ package org.springframework.richclient.control;
 
 import javax.swing.JLabel;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.dialog.Messagable;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;

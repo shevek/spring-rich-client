@@ -15,12 +15,10 @@
  */
 package org.springframework.binding.validation.support;
 
-import java.io.Serializable;
-
-import org.springframework.binding.validation.Severity;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.richclient.util.Assert;
+import org.springframework.richclient.core.DefaultMessage;
+import org.springframework.richclient.core.Severity;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -28,38 +26,16 @@ import org.springframework.util.ObjectUtils;
  * 
  * @author  Oliver Hutchison
  */
-public class DefaultValidationMessage implements ValidationMessage, Serializable {
-    private final long timeStamp;
-
+public class DefaultValidationMessage extends DefaultMessage implements ValidationMessage {
     private final String property;
 
-    private final Severity severity;
-
-    private final String message;
-
     public DefaultValidationMessage(String property, Severity severity, String message) {
-        Assert.required(severity, "severity");
-        Assert.required(message, "message");
-        this.timeStamp = System.currentTimeMillis();
+        super(message, severity);
         this.property = property;
-        this.severity = severity;
-        this.message = message;
-    }
-
-    public long getTimeStamp() {
-        return timeStamp;
     }
 
     public String getProperty() {
         return property;
-    }
-
-    public Severity getSeverity() {
-        return severity;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public int hashCode() {

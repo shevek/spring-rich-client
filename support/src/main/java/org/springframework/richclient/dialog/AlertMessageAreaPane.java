@@ -29,8 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.text.html.HTMLDocument;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.text.HtmlPane;

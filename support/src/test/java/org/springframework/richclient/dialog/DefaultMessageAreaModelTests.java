@@ -20,8 +20,8 @@ import java.beans.PropertyChangeListener;
 
 import junit.framework.TestCase;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.core.DefaultMessage;
+import org.springframework.richclient.core.Severity;
 
 /**
  * @author Peter De Bruycker

@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.springframework.binding.validation.support.DefaultValidationMessage;
 import org.springframework.binding.validation.support.DefaultValidationResults;
+import org.springframework.richclient.core.Severity;
 
 import junit.framework.TestCase;
 

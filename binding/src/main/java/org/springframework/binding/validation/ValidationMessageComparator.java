@@ -40,7 +40,7 @@ public class ValidationMessageComparator implements Comparator {
         ValidationMessage m1 = (ValidationMessage)o1;
         ValidationMessage m2 = (ValidationMessage)o2;
         int c;
-        if (m1.getTimeStamp() == m2.getTimeStamp()) {
+        if (m1.getTimestamp() == m2.getTimestamp()) {
             c = NullSafeComparator.NULLS_HIGH.compare(m1.getProperty(), m2.getProperty());
             if (c == 0) {
                 c = m1.getSeverity().compareTo(m2.getSeverity());
@@ -50,7 +50,7 @@ public class ValidationMessageComparator implements Comparator {
             }
         }
         else {
-            c = (m1.getTimeStamp() > m2.getTimeStamp()) ? -1 : 1;
+            c = (m1.getTimestamp() > m2.getTimestamp()) ? -1 : 1;
         }
         return c;
     }

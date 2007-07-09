@@ -21,6 +21,7 @@ import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.validation.support.DefaultValidationMessage;
 import org.springframework.binding.validation.support.DefaultValidationResults;
 import org.springframework.binding.validation.support.DefaultValidationResultsModel;
+import org.springframework.richclient.core.Severity;
 
 /**
  * Tests for @link DefaultValidationResultsModel

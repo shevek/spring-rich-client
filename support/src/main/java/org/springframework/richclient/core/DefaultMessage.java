@@ -16,14 +16,12 @@
 package org.springframework.richclient.core;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.image.IconSource;
@@ -32,11 +30,11 @@ import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.ObjectUtils;
 
 public class DefaultMessage implements Message, Serializable {
-    private long timestamp = new Date().getTime();
+    private final long timestamp;
     
-    private String text;
+    private final String message;
 
-    private Severity severity;
+    private final Severity severity;
 
     public static DefaultMessage EMPTY_MESSAGE = new DefaultMessage("", null);
 
@@ -44,11 +42,12 @@ public class DefaultMessage implements Message, Serializable {
         this(text, Severity.INFO);
     }
 
-    public DefaultMessage(String text, Severity severity) {
-        if (text == null) {
-            text = "";
+    public DefaultMessage(String message, Severity severity) {
+        if (message == null) {
+            message = "";
         }
-        this.text = text;
+        this.timestamp = System.currentTimeMillis();
+        this.message = message;
         this.severity = severity;
     }
 
@@ -57,7 +56,7 @@ public class DefaultMessage implements Message, Serializable {
     }
     
     public String getMessage() {
-        return text;
+        return message;
     }
 
     public Severity getSeverity() {
@@ -96,14 +95,14 @@ public class DefaultMessage implements Message, Serializable {
             return false;
         }
         DefaultMessage m = (DefaultMessage)o;
-        return text.equals(m.text) && ObjectUtils.nullSafeEquals(severity, m.severity);
+        return message.equals(m.message) && ObjectUtils.nullSafeEquals(severity, m.severity);
     }
 
     public int hashCode() {
-        return text.hashCode() + (severity != null ? severity.hashCode() : 0);
+        return message.hashCode() + (severity != null ? severity.hashCode() : 0);
     }
 
     public String toString() {
-        return new ToStringCreator(this).append("message", text).append("severity", severity).toString();
+        return new ToStringCreator(this).append("message", message).append("severity", severity).toString();
     }
 }

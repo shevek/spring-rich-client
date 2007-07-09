@@ -16,6 +16,7 @@
 package org.springframework.binding.validation;
 
 import org.springframework.binding.validation.support.DefaultValidationMessage;
+import org.springframework.richclient.core.Severity;
 
 import junit.framework.TestCase;
 

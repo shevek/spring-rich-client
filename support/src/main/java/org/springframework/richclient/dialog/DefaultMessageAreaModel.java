@@ -20,9 +20,9 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
-import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.ObjectUtils;
 

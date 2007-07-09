@@ -9,8 +9,8 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Severity;
 import org.springframework.util.StringUtils;
-import org.springframework.binding.validation.Severity;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

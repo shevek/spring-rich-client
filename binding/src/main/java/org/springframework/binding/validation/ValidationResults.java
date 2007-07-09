@@ -17,6 +17,8 @@ package org.springframework.binding.validation;
 
 import java.util.Set;
 
+import org.springframework.richclient.core.Severity;
+
 /**
  * Interface to be implemented by objects that hold a list of validation results for
  * a specific object.

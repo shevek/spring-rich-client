@@ -23,8 +23,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.binding.validation.Severity;
 import org.springframework.richclient.control.MessageReportingOverlay;
+import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 import org.springframework.richclient.util.OverlayHelper;
