@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.core;
 
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class LabelInfoTests extends TestCase {
         
         info = LabelInfo.valueOf("S\\&ave @&as");
         Assert.assertEquals("S&ave @as", info.getText());
-        Assert.assertEquals('a', info.getMnemonic());
+        Assert.assertEquals(KeyEvent.VK_A, info.getMnemonic());
         Assert.assertEquals(7, info.getMnemonicIndex());
         
     }
@@ -126,7 +127,7 @@ public class LabelInfoTests extends TestCase {
         LabelInfo info = LabelInfo.valueOf("&Save \\& Run");
         
         Assert.assertEquals(0, info.getMnemonicIndex());
-        Assert.assertEquals('S', info.getMnemonic());
+        Assert.assertEquals(KeyEvent.VK_S, info.getMnemonic());
         Assert.assertEquals("Save & Run", info.getText());
         
     }
@@ -152,7 +153,7 @@ public class LabelInfoTests extends TestCase {
         Assert.assertEquals("Something with an @ in it", info.getText());
         info = LabelInfo.valueOf("S\\&ave with an @ &as");
         Assert.assertEquals("S&ave with an @ as", info.getText());
-        Assert.assertEquals('a', info.getMnemonic());
+        Assert.assertEquals(KeyEvent.VK_A, info.getMnemonic());
         Assert.assertEquals(16, info.getMnemonicIndex());
         
     }
@@ -163,14 +164,14 @@ public class LabelInfoTests extends TestCase {
         assertEquals(0, info.getMnemonic());
         assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
 
-        info = new LabelInfo("test", 't');
+        info = new LabelInfo("test", KeyEvent.VK_T);
         assertEquals("test", info.getText());
-        assertEquals('t', info.getMnemonic());
+        assertEquals(KeyEvent.VK_T, info.getMnemonic());
         assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
 
-        info = new LabelInfo("test", 't', 3);
+        info = new LabelInfo("test", KeyEvent.VK_T, 3);
         assertEquals("test", info.getText());
-        assertEquals('t', info.getMnemonic());
+        assertEquals(KeyEvent.VK_T, info.getMnemonic());
         assertEquals(3, info.getMnemonicIndex());
     }
     
@@ -201,9 +202,9 @@ public class LabelInfoTests extends TestCase {
     }
 
     public void testConstructorEmptyText() {
-        LabelInfo info = new LabelInfo("", 'a', -1);
+        LabelInfo info = new LabelInfo("", KeyEvent.VK_A, -1);
         assertEquals("", info.getText());
-        assertEquals('a', info.getMnemonic());
+        assertEquals(KeyEvent.VK_A, info.getMnemonic());
         assertEquals(DEFAULT_MNEMONIC_INDEX, info.getMnemonicIndex());
     }
 
@@ -264,28 +265,28 @@ public class LabelInfoTests extends TestCase {
     public void testConfigureLabelForWithColon() {
         JTextField field = new JTextField();
         JLabel label = new JLabel();
-        LabelInfo info = new LabelInfo("Name:", 'N');
+        LabelInfo info = new LabelInfo("Name:", KeyEvent.VK_N);
         info.configureLabelFor(label, field);
 
         assertEquals("Name:", label.getText());
-        assertEquals('N', label.getDisplayedMnemonic());
+        assertEquals(KeyEvent.VK_N, label.getDisplayedMnemonic());
         assertEquals(field, label.getLabelFor());
     }
 
     public void testConfigureLabelForJPanel() {
         JPanel panel = new JPanel();
         JLabel label = new JLabel();
-        LabelInfo info = new LabelInfo("Name", 'N');
+        LabelInfo info = new LabelInfo("Name", KeyEvent.VK_N);
         info.configureLabelFor(label, panel);
 
         assertEquals("No colon for panel", "Name", label.getText());
-        assertEquals('N', label.getDisplayedMnemonic());
+        assertEquals(KeyEvent.VK_N, label.getDisplayedMnemonic());
         assertEquals(panel, label.getLabelFor());
     }
 
     public void testConstructorMnemonicIndexGreaterThanLength() {
         try {
-            new LabelInfo("test", 't', 4);
+            new LabelInfo("test", KeyEvent.VK_T, 4);
             fail("Mnemonic index must be < text.length()");
         }
         catch (IllegalArgumentException e) {
@@ -295,7 +296,7 @@ public class LabelInfoTests extends TestCase {
 
     public void testConstructorNegativeMnemonicIndex() {
         try {
-            new LabelInfo("test", 't', -2);
+            new LabelInfo("test", KeyEvent.VK_T, -2);
             fail("index must be >= -1");
         }
         catch (IllegalArgumentException e) {

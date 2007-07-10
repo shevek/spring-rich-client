@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.command.config;
 
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -144,7 +145,7 @@ public class CommandButtonLabelInfoTests extends TestCase {
         System.out.println("XXXXXXXXXXXXXXX " + info.getText());
         System.out.println("XXXXXXXXXXX 16th char = " + info.getText().charAt(16));
         assertEquals("S&ave with an @ as", info.getText());
-        assertEquals('a', info.getMnemonic());
+        assertEquals(KeyEvent.VK_A, info.getMnemonic());
         assertEquals(16, info.getMnemonicIndex());
         assertNull(info.getAccelerator());
     }
@@ -153,7 +154,7 @@ public class CommandButtonLabelInfoTests extends TestCase {
         CommandButtonLabelInfo info = CommandButtonLabelInfo.valueOf("S\\@ve &as@ctrl A");
 
         assertEquals("S@ve as", info.getText());
-        assertEquals('a', info.getMnemonic());
+        assertEquals(KeyEvent.VK_A, info.getMnemonic());
         assertEquals(5, info.getMnemonicIndex());
         assertNotNull("ctrl A is invalid keystroke", info.getAccelerator());
         assertEquals(KeyStroke.getKeyStroke("ctrl A"), info.getAccelerator());
