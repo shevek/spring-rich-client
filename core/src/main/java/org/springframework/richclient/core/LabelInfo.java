@@ -174,7 +174,8 @@ public final class LabelInfo {
             
         }
         
-        return new LabelInfo(labelText.toString(), mnemonicChar, mnemonicCharIndex);
+        // mnemonics work with VK_XXX (see KeyEvent) and only uppercase letters are used as event
+        return new LabelInfo(labelText.toString(), Character.toUpperCase(mnemonicChar), mnemonicCharIndex);
         
     }
 
