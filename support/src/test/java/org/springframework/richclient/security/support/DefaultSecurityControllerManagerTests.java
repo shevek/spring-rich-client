@@ -87,7 +87,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         ApplicationSecurityManager securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
         assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 1, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 2, testAuth1.getAuthCount() );
 
         CommandManager cmgr = Application.instance().getActiveWindow().getCommandManager();
         ActionCommand cmdWrite = cmgr.getActionCommand( "cmdWrite" );
@@ -106,7 +106,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertFalse( "Object should not be authorized", cmdAdmin.isAuthorized() );
         assertFalse( "Object should not be authorized", cmdAdminAlias.isAuthorized() );
         assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 2, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 3, testAuth1.getAuthCount() );
 
         // Now login with ROLE_ADMIN
         auth = TestAuthenticationManager.makeAuthentication( "test", "test", "ROLE_ADMIN" );
@@ -116,7 +116,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertTrue( "Object should be authorized", cmdAdmin.isAuthorized() );
         assertTrue( "Object should be authorized", cmdAdminAlias.isAuthorized() );
         assertTrue( "Object should be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 3, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 4, testAuth1.getAuthCount() );
     }
 
     /**
