@@ -18,6 +18,7 @@ package org.springframework.rules.constraint;
 import org.springframework.core.closure.Constraint;
 import org.springframework.rules.closure.BinaryConstraint;
 import org.springframework.rules.closure.StringLength;
+import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 
 /**
@@ -25,8 +26,13 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class StringLengthConstraint extends AbstractConstraint {
-    private Constraint lengthConstraint;
+public class StringLengthConstraint extends AbstractConstraint implements TypeResolvable {
+
+	private static final long serialVersionUID = 1L;
+
+	private Constraint lengthConstraint;
+    
+    private String type;
 
     /**
      * Constructs a maxlength constraint of the specified length.
@@ -39,6 +45,16 @@ public class StringLengthConstraint extends AbstractConstraint {
     }
 
     /**
+     * Constructs a maxlength constraint of the specified length.
+     * 
+     * @param length
+     *            the max string length
+     */
+    public StringLengthConstraint(int length, String type) {
+        this(RelationalOperator.LESS_THAN_EQUAL_TO, length, type);
+    }
+    
+    /**
      * Constructs a string length constraint with the specified operator and
      * length constraint.
      * 
@@ -48,14 +64,30 @@ public class StringLengthConstraint extends AbstractConstraint {
      *            the length constraint
      */
     public StringLengthConstraint(RelationalOperator operator, int length) {
+    	this(operator, length, null);
+    }
+
+    /**
+     * Constructs a string length constraint with the specified operator and
+     * length constraint.
+     * 
+     * @param operator
+     *            the operator (one of ==, >, >=, <, <=)
+     * @param length
+     *            the length constraint
+     * @param type
+     *            Type used to resolve messages.
+     */
+    public StringLengthConstraint(RelationalOperator operator, int length, String type) {
         Assert.notNull(operator, "The relational operator is required");
         Assert.isTrue(length > 0, "length is required");
         BinaryConstraint comparer = operator.getConstraint();
         Constraint lengthConstraint = bind(comparer, length);
         this.lengthConstraint = testResultOf(StringLength.instance(),
                 lengthConstraint);
+        this.type = type;
     }
-
+    
     /**
      * Constructs a string length range constraint.
      * 
@@ -65,9 +97,22 @@ public class StringLengthConstraint extends AbstractConstraint {
      *            the maximum edge of the range
      */
     public StringLengthConstraint(int min, int max) {
+    	this(min, max, null);
+    }
+    
+    /**
+     * Constructs a string length range constraint.
+     * 
+     * @param min
+     *            The minimum edge of the range
+     * @param max
+     *            the maximum edge of the range
+     */
+    public StringLengthConstraint(int min, int max, String type) {
         Constraint rangeConstraint = new Range(min, max);
         this.lengthConstraint = testResultOf(StringLength.instance(),
                 rangeConstraint);
+        this.type = type;
     }
 
     /**
@@ -87,5 +132,9 @@ public class StringLengthConstraint extends AbstractConstraint {
     public String toString() {
         return lengthConstraint.toString();
     }
+
+	public String getType() {
+		return type;
+	}
 
 }
