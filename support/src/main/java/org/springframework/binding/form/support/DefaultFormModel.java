@@ -155,6 +155,9 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     
     public void addChild(HierarchicalFormModel child)
     {
+        if (child.getParent() == this)
+            return;
+        
         super.addChild(child);
         if (child instanceof ValidatingFormModel)
         {
