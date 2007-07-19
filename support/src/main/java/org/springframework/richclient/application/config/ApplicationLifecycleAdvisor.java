@@ -25,6 +25,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.exceptionhandling.DefaultRegisterableExceptionHandler;
 import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
+import org.springframework.richclient.util.Assert;
 
 /**
  * <p>
