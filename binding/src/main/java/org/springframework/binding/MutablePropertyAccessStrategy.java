@@ -25,23 +25,51 @@ import org.springframework.binding.value.ValueModel;
  * </p>
  * <ul>
  * <li>registering custom property editors for performing type conversions
- * <li>returning a domain object holder allowing the underlying domain object to
- * be changed and subscribed to for modification, and
+ * <li>returning a domain object holder allowing the underlying domain object
+ * to be changed and subscribed to for modification, and
  * <li>adding listeners for changes on particular properties.
  * </ul>
- * EXPERIMENTAL - not yet fit for general use
+ * 
  * @author Keith Donald
  */
 public interface MutablePropertyAccessStrategy extends PropertyAccessStrategy {
 
-    public ValueModel getDomainObjectHolder();
+	/**
+	 * Get the <code>ValueModel</code> used to access the domainObject.
+	 * 
+	 * @return the <code>ValueModel</code> of the domainObject.
+	 */
+	ValueModel getDomainObjectHolder();
 
-    public ValueModel getPropertyValueModel(String propertyPath)
-            throws BeansException;
+	/**
+	 * Get the <code>ValueModel</code> to access the given property. Possibly
+	 * creating the valueModel if needed.
+	 * 
+	 * @param propertyPath property to access.
+	 * @return <code>ValueModel</code> that handles the given property.
+	 * @throws BeansException
+	 */
+	ValueModel getPropertyValueModel(String propertyPath) throws BeansException;
 
-    public MutablePropertyAccessStrategy getPropertyAccessStrategyForPath(
-            String propertyPath) throws BeansException;
+	/**
+	 * Get a <code>MutablePropertyAccessStrategy</code> for the given property.
+	 * 
+	 * TODO check why this exists and where this is used.
+	 * 
+	 * @param propertyPath property.
+	 * @return <code>MutablePropertyAccessStrategy</code> for the given property.
+	 * @throws BeansException
+	 */
+	MutablePropertyAccessStrategy getPropertyAccessStrategyForPath(String propertyPath) throws BeansException;
 
-    public MutablePropertyAccessStrategy newPropertyAccessStrategy(ValueModel domainObjectHolder);
+	/**
+	 * Return a new <code>MutablePropertyAccessStrategy</code> for the given valueModel.
+	 * 
+	 * TODO check why this exists and where this is used.
+	 * 
+	 * @param domainObjectHolder a <code>ValueModel</code> containing the domainObject.
+	 * @return a newly created <code>MutablePropertyAccessStrategy</code>.
+	 */
+	MutablePropertyAccessStrategy newPropertyAccessStrategy(ValueModel domainObjectHolder);
 
 }
