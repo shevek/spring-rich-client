@@ -29,19 +29,47 @@ import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * The default implementation of the {@link Message} interface. This class is 
+ * capable of rendering itself on {@link JTextComponent}s and {@link JLabel}s.
+ * In the case of labels, it is also able to lookup an icon to be displayed on 
+ * the label.
+ * 
+ * @see #getIcon()
+ *
+ */
 public class DefaultMessage implements Message, Serializable {
-    private final long timestamp;
+	
+    private static final long serialVersionUID = -6524078363891514995L;
+
+	private final long timestamp;
     
     private final String message;
 
     private final Severity severity;
 
+    /**
+     * A convenience instance representing an empty message. i.e. The message text 
+     * is empty and there is no associated severity.
+     */
     public static DefaultMessage EMPTY_MESSAGE = new DefaultMessage("", null);
 
+    /**
+     * Creates a new {@code DefaultMessage} with the given text and a default
+     * severity of {@link Severity#INFO}.
+     *
+     * @param text The message text.
+     */
     public DefaultMessage(String text) {
         this(text, Severity.INFO);
     }
 
+    /**
+     * Creates a new {@code DefaultMessage} with the given text and severity.
+     *
+     * @param message The message text.
+     * @param severity The severity of the message. May be null.
+     */
     public DefaultMessage(String message, Severity severity) {
         if (message == null) {
             message = "";
@@ -63,6 +91,13 @@ public class DefaultMessage implements Message, Serializable {
         return severity;
     }
 
+    /**
+     * Renders this message on the given GUI component. This implementation only
+     * supports components of type {@link JTextComponent} or {@link JLabel}. 
+     * 
+     * @throws IllegalArgumentException if {@code component} is not a {@link JTextComponent}
+     * or a {@link JLabel}.
+     */
     public void renderMessage(JComponent component) {
         if (component instanceof JTextComponent) {
             ((JTextComponent)component).setText(getMessage());
@@ -77,6 +112,16 @@ public class DefaultMessage implements Message, Serializable {
         }
     }
 
+    /**
+     * Returns the icon associated with this instance's severity. The icon is 
+     * expected to be retrieved using a key {@code severity.&lt;SEVERITY_LABEL&gt;}. 
+     *
+     * @return The icon associated with this instance's severity, or null if the 
+     * instance has no specified severity, or the icon could not be found.
+     * 
+     * @see Severity#getLabel()
+     * @see IconSource#getIcon(String)
+     */
     public Icon getIcon() {
         if (severity == null) {
             return null;
@@ -94,8 +139,8 @@ public class DefaultMessage implements Message, Serializable {
         if (!(o instanceof DefaultMessage)) {
             return false;
         }
-        DefaultMessage m = (DefaultMessage)o;
-        return message.equals(m.message) && ObjectUtils.nullSafeEquals(severity, m.severity);
+        DefaultMessage other = (DefaultMessage)o;
+        return this.message.equals(other.message) && ObjectUtils.nullSafeEquals(this.severity, other.severity);
     }
 
     public int hashCode() {
