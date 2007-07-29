@@ -17,15 +17,36 @@ package org.springframework.richclient.core;
 
 import org.springframework.core.enums.ShortCodedLabeledEnum;
 
+/**
+ * A typesafe enum representing different levels of severity. Each enum
+ * has an associated label, which may be useful for defining resources 
+ * such as messages and icons in properties files. 
+ * 
+ */
 public class Severity extends ShortCodedLabeledEnum {
+	
+	/** The label associated with the info level. */
+	public static final String INFO_LABEL = "info";
+	
+	/** The label associated with the warning level. */
+	public static final String WARNING_LABEL = "warning";
+	
+	/** The label associated with the error level. */
+	public static final String ERROR_LABEL = "error";
 
-	public static final Severity INFO = new Severity(0, "info");
+	private static final long serialVersionUID = 86569930382195510L;
 
-	public static final Severity WARNING = new Severity(50, "warning");
+	/** Info-level severity. */
+	public static final Severity INFO = new Severity(0, INFO_LABEL);
 
-	public static final Severity ERROR = new Severity(100, "error");
+	/** Warning-level severity. */
+	public static final Severity WARNING = new Severity(50, WARNING_LABEL);
+
+	/** Error-level severity. */
+	public static final Severity ERROR = new Severity(100, ERROR_LABEL);
 
 	protected Severity(int magnitude, String label) {
 		super(magnitude, label);
 	}
+	
 }
