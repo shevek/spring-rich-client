@@ -19,16 +19,19 @@ import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.richclient.core.Message;
 
 /**
- * Interface to be implemented by object capable of receiving messages to the
- * user.
+ * An interface to be implemented by objects that are capable of receiving messages to be 
+ * provided to the user.
  * 
  * @author Keith Donald
  */
 public interface Messagable extends PropertyChangePublisher {
-    public static final String MESSAGE_PROPERTY = "message";
+    
+	/** The name of the message property, to be used for publishing update events. */
+	public static final String MESSAGE_PROPERTY = "message";
 
     /**
      * Set the message.
+     * @param The message.
      */
     public void setMessage(Message message);
 
