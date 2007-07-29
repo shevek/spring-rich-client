@@ -38,11 +38,12 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * MessagePane implementation used by <code>MessageDialog</code>
+ * MessagePane implementation used by {@link MessageDialog}.
  * 
  * @author Peter De Bruycker
  */
 public class AlertMessageAreaPane extends AbstractControlFactory implements MessagePane, PropertyChangeListener {
+	
     private Icon warningIcon;
     private Icon errorIcon;
     private Icon infoIcon;
@@ -50,10 +51,18 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
     private JLabel iconLabel;
     private DefaultMessageAreaModel messageAreaModel;
 
+    /**
+     * Creates a new uninitialized {@code AlertMessageAreaPane}.
+     */
     public AlertMessageAreaPane() {
         init( this );
     }
 
+    /**
+     * Creates a new {@code AlertMessageAreaPane} that uses the given delegate
+     * as a message container.
+     * @param delegate The messagable delegate.
+     */
     public AlertMessageAreaPane( Messagable delegate ) {
         init( delegate );
     }
@@ -74,10 +83,9 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         } catch( IOException e ) {
         }
 
-        // messageArea.setContentType("text/html");
         GuiStandardUtils.textComponentAsLabel( messageArea );
         messageArea.setFont( new JLabel().getFont() );
-        // messageArea.setVerticalAlignment(SwingConstants.TOP);
+        messageArea.setFocusable(false);
     }
 
     public int getPreferredHeight() {
@@ -151,6 +159,11 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         iconLabel.setIcon( getIcon( message.getSeverity() ) );
     }
 
+    /**
+     * Returns the icon for the given severity.
+     * @param severity The severity level.
+     * @return The icon for the given severity, never null.
+     */
     private Icon getIcon( Severity severity ) {
         if( severity == Severity.ERROR ) {
             return getErrorIcon();
@@ -168,6 +181,10 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         return errorIcon;
     }
 
+    /**
+     * Sets the icon to be shown when displaying messages with error-level severity.
+     * @param icon The error icon.
+     */
     public void setErrorIcon( Icon icon ) {
         errorIcon = icon;
     }
@@ -179,6 +196,10 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         return warningIcon;
     }
 
+    /**
+     * Sets the icon to be shown when displaying messages with warning-level severity.
+     * @param icon The warning icon.
+     */
     public void setWarningIcon( Icon icon ) {
         warningIcon = icon;
     }
@@ -190,7 +211,13 @@ public class AlertMessageAreaPane extends AbstractControlFactory implements Mess
         return infoIcon;
     }
 
+    /**
+     * The icon to be shown when dispalying messages with info-level severity.
+     * @param icon The info icon.
+     */
     public void setInfoIcon( Icon icon ) {
         infoIcon = icon;
     }
+    
 }
+
