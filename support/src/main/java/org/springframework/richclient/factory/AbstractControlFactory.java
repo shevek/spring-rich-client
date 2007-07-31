@@ -17,8 +17,6 @@ package org.springframework.richclient.factory;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
 
 /**
@@ -35,9 +33,6 @@ import org.springframework.richclient.application.support.ApplicationServicesAcc
  * @author Keith Donald
  */
 public abstract class AbstractControlFactory extends ApplicationServicesAccessor implements ControlFactory {
-
-    /** Class logger, available to subclasses. */
-    protected Log logger = LogFactory.getLog(getClass());
 
     private boolean singleton = true;
 
@@ -81,10 +76,10 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
      */
     public final JComponent getControl() {
         if (isSingleton()) {
-            if (control == null) {
+            if (this.control == null) {
                 this.control = createControl();
             }
-            return control;
+            return this.control;
         }
 
         return createControl();
@@ -100,7 +95,7 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
      */
     public final boolean isControlCreated() {
         if (isSingleton()) {
-            return control != null;
+            return this.control != null;
         }
 
         return false;
@@ -111,7 +106,7 @@ public abstract class AbstractControlFactory extends ApplicationServicesAccessor
      * and the control instance has not already been created.
      */
     protected void createControlIfNecessary() {
-        if (isSingleton() && control == null) {
+        if (isSingleton() && this.control == null) {
             getControl();
         }
     }
