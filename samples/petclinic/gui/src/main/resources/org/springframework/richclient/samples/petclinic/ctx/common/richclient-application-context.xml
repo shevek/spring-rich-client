@@ -291,7 +291,7 @@
 	<bean id="setupWizard" 
 		class="org.springframework.richclient.application.setup.SetupWizard">
 		<property name="licenseTextLocation">
-			<value>/org/springframework/richclient/samples/petclinic/license.html</value>
+			<value>/org/springframework/richclient/samples/petclinic/license.txt</value>
 		</property>
 	</bean>
 </beans>

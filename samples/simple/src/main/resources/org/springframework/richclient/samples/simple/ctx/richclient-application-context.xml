@@ -84,7 +84,7 @@
         <property name="viewProperties">
             <map>
                 <entry key="firstMessage" value="firstMessage.text"/>
-                <entry key="descriptionTextPath" value="org/springframework/richclient/samples/simple/ui/initialViewText.html"/>
+                <entry key="descriptionTextPath" value="org/springframework/richclient/samples/simple/ui/initialViewText.html.txt"/>
             </map>
         </property>
     </bean>
