@@ -17,7 +17,12 @@ package org.springframework.richclient.core;
 
 import javax.swing.JComponent;
 
-
+/**
+ * An interface to be implemented by classes that represent a user-oriented message and 
+ * are capable of rendering themselves on GUI components.
+ * 
+ * @see JComponent
+ */
 public interface Message  {
 
 	/**
@@ -28,12 +33,15 @@ public interface Message  {
     long getTimestamp();
     
     /**
-     * @return textual message.
+     * The textual representation of the message. This is not necessarily how the
+     * message will appear on a GUI component.
+     * 
+     * @return textual message, never null, but possibly an empty string.
      */
     String getMessage();
 
     /**
-     * @return Severity of this message.
+     * @return Severity of this message, possibly null.
      */
     Severity getSeverity();
     
@@ -41,4 +49,5 @@ public interface Message  {
      * @param component visual component to decorate.
      */
     void renderMessage(JComponent component);
+    
 }
