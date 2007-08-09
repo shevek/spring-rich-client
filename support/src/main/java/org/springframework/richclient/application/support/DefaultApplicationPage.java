@@ -54,10 +54,19 @@ public class DefaultApplicationPage extends AbstractApplicationPage implements P
         pageComponent.getControl();
     }
 
+    /**
+	 * {@inheritDoc}
+	 * 
+	 * Only one pageComponent is shown at a time, so if it's the active one,
+	 * remove all components from this page.
+	 */
     protected void doRemovePageComponent( PageComponent pageComponent ) {
-        this.control.removeAll();
-        this.control.validate();
-        this.control.repaint();
+        if (pageComponent == getActiveComponent())
+        {
+	    	this.control.removeAll();
+	        this.control.validate();
+	        this.control.repaint();
+        }
     }
 
     protected boolean giveFocusTo( PageComponent pageComponent ) {
