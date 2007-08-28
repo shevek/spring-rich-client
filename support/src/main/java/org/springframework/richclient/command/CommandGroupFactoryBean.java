@@ -173,6 +173,13 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
     public void setCommandRegistry(CommandRegistry commandRegistry) {
         this.commandRegistry = commandRegistry;
     }
+    
+    /**
+     * @return commandRegistry containing commands for this command group.
+     */
+    protected CommandRegistry getCommandRegistry() {
+    	return this.commandRegistry;
+    }
 
     /**
      * Sets the object that will be used to configure the command objects in the command groups 
@@ -199,6 +206,13 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
         Assert.required(members, "members");
         this.members = members;
     }
+    
+    /**
+     * @return the possibly encoded representation of the command group members.
+     */
+    protected Object[] getMembers() {
+    	return this.members;
+    }
 
     /**
      * Accepts notification from the IoC container of this instance's bean name as declared in the
@@ -207,6 +221,13 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
      */
     public void setBeanName(String beanName) {
         this.groupId = beanName;
+    }
+    
+    /**
+     * @return beanName.
+     */
+    protected String getBeanName() {
+    	return this.groupId;
     }
 
     /**
@@ -239,6 +260,13 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
      */
     public void setAllowsEmptySelection(boolean allowsEmptySelection) {
         this.allowsEmptySelection = allowsEmptySelection;
+    }
+    
+    /**
+     * @return <code>true</code> if the exclusive commandGroup can have no item selected.
+     */
+    protected boolean isAllowsEmptySelection() {
+    	return this.allowsEmptySelection;
     }
 
     /**
@@ -275,12 +303,12 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
     protected CommandGroup createCommandGroup() {
         CommandGroup group;
         if (isExclusive()) {
-            ExclusiveCommandGroup g = new ExclusiveCommandGroup(groupId, commandRegistry);
-            g.setAllowsEmptySelection(allowsEmptySelection);
+            ExclusiveCommandGroup g = new ExclusiveCommandGroup(getBeanName(), getCommandRegistry());
+            g.setAllowsEmptySelection(isAllowsEmptySelection());
             group = g;
         }
         else {
-            group = new CommandGroup(groupId, commandRegistry);
+            group = new CommandGroup(getBeanName(), getCommandRegistry());
         }
         
         // Apply our security controller id to the new group
@@ -299,7 +327,7 @@ public class CommandGroupFactoryBean implements BeanNameAware, FactoryBean, Secu
      * @throws InvalidGroupMemberEncodingException if a member prefix is provided without 
      * a command id.
      */
-    private void initCommandGroupMembers(CommandGroup group) {
+    protected void initCommandGroupMembers(CommandGroup group) {
         for (int i = 0; i < members.length; i++) {
             Object o = members[i];
             
