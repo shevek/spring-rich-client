@@ -80,7 +80,11 @@ public class DirtyIndicatorInterceptorTests extends SpringRichTestCase {
                      2, layeredPane.getComponentCount());
         // the overlay is the first component
         JComponent overlay = (JComponent)layeredPane.getComponent(0);
-        assertEquals("unable to locate overlay", "dirtyOverlay", overlay.getName());
+        // the overlay is now put into another panel for clipping.
+        if(!"dirtyOverlay".equals(overlay.getName())) {
+            assertEquals("Unable to locate overlay", "dirtyOverlay", overlay.getComponent(0).getName());
+            overlay = (JComponent) overlay.getComponent(0);
+        }
 
         assertFalse("Overlay must be hidden", overlay.isVisible());
 
