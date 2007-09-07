@@ -321,6 +321,14 @@ public class Constraints extends AlgorithmsAccessor {
         return new IfTrue(constraint, mustAlsoBeTrue, elseMustAlsoBeTrue);
     }
     
+    public Constraint ifTrue(Constraint constraint, Constraint mustAlsoBeTrue, String type) {
+        return new IfTrue(constraint, mustAlsoBeTrue, type);
+    }
+
+    public Constraint ifTrue(Constraint constraint, Constraint mustAlsoBeTrue, Constraint elseMustAlsoBeTrue, String type) {
+        return new IfTrue(constraint, mustAlsoBeTrue, elseMustAlsoBeTrue, type);
+    }
+    
     /**
 	 * Returns a ConditionalPropertyConstraint: one property will trigger the
 	 * validation of another.

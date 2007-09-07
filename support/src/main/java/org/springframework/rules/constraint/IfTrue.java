@@ -17,9 +17,10 @@ package org.springframework.rules.constraint;
 
 import org.springframework.core.closure.Constraint;
 import org.springframework.core.closure.support.AbstractConstraint;
+import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 
-public class IfTrue extends AbstractConstraint {
+public class IfTrue extends AbstractConstraint implements TypeResolvable{
 
 	private Constraint constraint;
 
@@ -27,19 +28,27 @@ public class IfTrue extends AbstractConstraint {
 
 	private Constraint elseTrueConstraint;
 
+	private String type;
+	
 	public IfTrue(Constraint constraint, Constraint mustAlsoBeTrue) {
-		Assert.notNull(constraint, "The constraint that may be true is required");
-		Assert.notNull(mustAlsoBeTrue, "The constraint that must be true IF the first constraint is true is required");
-		this.constraint = constraint;
-		this.mustBeTrueConstraint = mustAlsoBeTrue;
+		this(constraint, mustAlsoBeTrue, (Constraint)null);
+	}
+	
+	public IfTrue(Constraint constraint, Constraint mustAlsoBeTrue, String type) {
+		this(constraint, mustAlsoBeTrue, null, type);
 	}
 
 	public IfTrue(Constraint constraint, Constraint mustAlsoBeTrue, Constraint elseMustAlsoBeTrue) {
+		this(constraint, mustAlsoBeTrue, elseMustAlsoBeTrue, "ifTrue");
+	}
+	
+	public IfTrue(Constraint constraint, Constraint mustAlsoBeTrue, Constraint elseMustAlsoBeTrue, String type) {
 		Assert.notNull(constraint, "The constraint that may be true is required");
 		Assert.notNull(mustAlsoBeTrue, "The constraint that must be true IF the first constraint is true is required");
 		this.constraint = constraint;
 		this.mustBeTrueConstraint = mustAlsoBeTrue;
 		this.elseTrueConstraint = elseMustAlsoBeTrue;
+		this.type = type;
 	}
 
 	public boolean test(Object argument) {
@@ -52,4 +61,7 @@ public class IfTrue extends AbstractConstraint {
         return true;
 	}
 
+	public String getType() {
+		return type;
+	}
 }
