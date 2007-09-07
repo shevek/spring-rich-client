@@ -353,33 +353,26 @@ public abstract class AbstractForm extends AbstractControlFactory implements For
         public void propertyChange(PropertyChangeEvent evt) {
             handleEnabledChange(getFormModel().isEnabled());
         }
-
-        private void handleEnabledChange(boolean enabled) {
-
-            if (enabled) {
-                if (getCommitCommand() != null) {
-                    if (lastDefaultButton == null) {
-                        lastDefaultButton = getDefaultButton();
-                    }
-                    getCommitCommand().setDefaultButton();
-                }
-            }
-            else {
-                if (getCommitCommand() != null) {
-                    getCommitCommand().setEnabled(false);
-                }
-                // set previous default button
-                if (lastDefaultButton != null) {
-                    setDefaultButton(lastDefaultButton);
-                }
-            }
-            AbstractForm.this.handleEnabledChange(enabled);
-        }
-
     }
 
     protected void handleEnabledChange(boolean enabled) {
-
+    	if (enabled) {
+            if (getCommitCommand() != null) {
+                if (lastDefaultButton == null) {
+                    lastDefaultButton = getDefaultButton();
+                }
+                getCommitCommand().setDefaultButton();
+            }
+        }
+        else {
+            if (getCommitCommand() != null) {
+                getCommitCommand().setEnabled(false);
+            }
+            // set previous default button
+            if (lastDefaultButton != null) {
+                setDefaultButton(lastDefaultButton);
+            }
+        }
     }
 
     public ActionCommand getNewFormObjectCommand() {
