@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,21 +19,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import javax.swing.JComponent;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
-import org.springframework.richclient.form.builder.support.AbstractFormComponentInterceptor;
 
 /**
- * Implements "select all" behaviour for form components. If the form component is a text field, or a spinner, the
- * contents of the component are selected if it receives focus.
+ * Implements "select all" behaviour for form components. If the form component is a text
+ * field, or a spinner, the contents of the component are selected if it receives focus.
  * 
  * @author Peter De Bruycker
  */
@@ -43,7 +38,7 @@ public class SelectAllFormComponentInterceptorFactory implements FormComponentIn
         return new SelectAllFormComponentInterceptor();
     }
 
-    public class SelectAllFormComponentInterceptor extends AbstractFormComponentInterceptor {
+    public class SelectAllFormComponentInterceptor extends TextComponentInterceptor {
         private FocusListener selector = new FocusAdapter() {
 
             public void focusGained( FocusEvent e ) {
@@ -59,29 +54,8 @@ public class SelectAllFormComponentInterceptorFactory implements FormComponentIn
             }
         };
 
-        public void processComponent( String propertyName, JComponent component ) {
-            JTextComponent textComponent = getTextComponent( getInnerComponent( component ) );
-            if( textComponent != null ) {
-                textComponent.addFocusListener( selector );
-            }
-        }
-
-        private JTextComponent getTextComponent( JComponent component ) {
-            if( component instanceof JTextField ) {
-                return (JTextField) component;
-            }
-
-            if( component instanceof JSpinner ) {
-                JSpinner spinner = (JSpinner) component;
-                if( spinner.getEditor() instanceof JSpinner.DefaultEditor ) {
-                    return ((DefaultEditor) spinner.getEditor()).getTextField();
-                }
-                if( spinner.getEditor() instanceof JTextField ) {
-                    return (JTextField) spinner.getEditor();
-                }
-            }
-
-            return null;
+        protected void processComponent( String propertyName, JTextComponent textComponent ) {
+            textComponent.addFocusListener( selector );
         }
     }
 
