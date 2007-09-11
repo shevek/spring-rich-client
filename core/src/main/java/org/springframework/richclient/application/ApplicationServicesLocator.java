@@ -48,6 +48,10 @@ public class ApplicationServicesLocator {
         return INSTANCE;
     }
 
+    public static boolean isLoaded() {
+        return INSTANCE != null;
+    }
+
     /**
      * Load the single ApplicationServicesLocator instance.
      * 

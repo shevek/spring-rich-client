@@ -24,7 +24,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
+import org.springframework.richclient.application.support.MultiViewPageDescriptor;
 import org.springframework.richclient.image.ImageSource;
+import org.springframework.richclient.image.NoSuchImageResourceException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -81,7 +85,14 @@ public class Application implements InitializingBean, ApplicationContextAware {
      * @return The application services locator.
      */
     public static ApplicationServices services() {
+    	if (!ApplicationServicesLocator.isLoaded()) {
+    		ApplicationServicesLocator.load(new ApplicationServicesLocator(new DefaultApplicationServices()));
+    	}
         return ApplicationServicesLocator.services();
+    }
+    
+    public Application() {
+    	this(new DefaultApplicationLifecycleAdvisor());
     }
 
     public Application( ApplicationLifecycleAdvisor advisor ) {
@@ -139,13 +150,25 @@ public class Application implements InitializingBean, ApplicationContextAware {
         if( descriptor != null && descriptor.getImage() != null )
             return descriptor.getImage();
 
-        ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
-        return isrc.getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+        try {
+        	ImageSource isrc = (ImageSource) services().getService(ImageSource.class);
+        	return isrc.getImage(DEFAULT_APPLICATION_IMAGE_KEY);
+        }
+        catch (NoSuchImageResourceException e) {
+        	return null;
+        }
     }
 
     public void openWindow( String pageDescriptorId ) {
         ApplicationWindow newWindow = initWindow(createNewWindow());
-        newWindow.showPage(pageDescriptorId);
+        if ( pageDescriptorId == null ) {
+        	ApplicationPageFactory pageFactory
+        		= (ApplicationPageFactory)services().getService(ApplicationPageFactory.class);
+        	newWindow.showPage(pageFactory.createApplicationPage(newWindow, new MultiViewPageDescriptor()));
+        }
+        else {
+        	newWindow.showPage(pageDescriptorId);
+        }
     }
 
     private ApplicationWindow initWindow( ApplicationWindow window ) {

@@ -186,6 +186,10 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
 
     public static class TestApplicationLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor {
 
+    	public TestApplicationLifecycleAdvisor() {
+    		setWindowCommandManagerBeanName("windowCommandManager");
+    	}
+    	
         public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
             // Do nothing
         }

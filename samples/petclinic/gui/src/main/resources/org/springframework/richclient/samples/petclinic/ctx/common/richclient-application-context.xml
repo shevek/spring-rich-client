@@ -33,6 +33,9 @@
 			<value>ownerManagerView</value>
 		</property>
         <property name="registerableExceptionHandler" ref="exceptionHandler"/>
+        <property name="menubarBeanName" value="menuBar"/>
+        <property name="toolbarBeanName" value="toolBar" />
+        <property name="windowCommandManagerBeanName" value="windowCommandManager"/>
     </bean>
 
     <bean id="exceptionHandler"
@@ -140,6 +143,7 @@
         <property name="binderSelectionStrategyId"><idref bean="binderSelectionStrategy"/></property>
         <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
         <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <!--property name="messageSourceId"><idref bean="messageSource"/></property-->
         <property name="rulesSourceId"><idref bean="rulesSource"/></property>
     </bean>
 

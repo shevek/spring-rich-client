@@ -69,6 +69,9 @@
 		<property name="windowCommandBarDefinitions"
 			value="org/springframework/richclient/samples/simple/ui/commands-context.xml" />
 		<property name="startingPageId" value="initialView" />
+        <property name="windowCommandManagerBeanName" value="windowCommandManager" />
+        <property name="menubarBeanName" value="menuBar" />
+        <property name="toolbarBeanName" value="toolBar" />
 	</bean>
 
 	<!-- 
@@ -117,7 +120,7 @@
 			<map>
 				<entry key="firstMessage" value="firstMessage.text" />
 				<entry key="descriptionTextPath"
-					value="org/springframework/richclient/samples/simple/ui/initialViewText.html" />
+					value="org/springframework/richclient/samples/simple/ui/initialViewText.html.txt" />
 			</map>
 		</property>
 		<property name="autoHideEnabled">

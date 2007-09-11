@@ -68,6 +68,9 @@
         class="${package}.SimpleLifecycleAdvisor">
         <property name="windowCommandBarDefinitions" value="ui/commands-context.xml"/>
         <property name="startingPageId" value="initialView"/>
+        <property name="windowCommandManagerBeanName" value="windowCommandManager" />
+        <property name="menubarBeanName" value="menuBar" />
+        <property name="toolbarBeanName" value="toolBar" />        
     </bean>
 
     <!-- 

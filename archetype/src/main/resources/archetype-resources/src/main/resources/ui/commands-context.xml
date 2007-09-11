@@ -12,12 +12,23 @@
             are "shared" among views.  This indicates to the manager that they
             will have different target executors in each view.
     -->
-	<bean id="windowCommandManager" 
-		class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+	<bean id="windowCommandManager" class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
 		<property name="sharedCommandIds">
 			<list>
+				<value>newCommand</value>
+				<value>saveCommand</value>
+				<value>saveAsCommand</value>
+				<value>printCommand</value>
 				<value>propertiesCommand</value>
+				<value>undoCommand</value>
+				<value>redoCommand</value>
+				<value>cutCommand</value>
+				<value>copyCommand</value>
+				<value>pasteCommand</value>
 				<value>deleteCommand</value>
+				<value>selectAllCommand</value>
+				<value>newWindowCommand</value>
+				<value>helpContentsCommand</value>
 			</list>
 		</property>
 	</bean>
@@ -31,11 +42,11 @@
             The "members" property is used to specify the top level menus in the
             menu bar.
     -->
-	<bean id="menuBar" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="menuBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<ref bean="fileMenu"/>
+				<ref bean="editMenu"/>
 				<ref bean="windowMenu"/>
 				<ref bean="helpMenu"/>
 			</list>
@@ -53,11 +64,13 @@
             as well and they will be rendered as a button that creates a drop down
             menu when pressed.
     -->
-	<bean id="toolBar" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="toolBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
-				<value>deleteCommand</value>
+				<value>newCommand</value>
+				<value>saveCommand</value>
+				<value>printCommand</value>
+				<value>separator</value>
                 <value>propertiesCommand</value>
 			</list>
 		</property>
@@ -71,16 +84,41 @@
             to shared (predefined) commands by name, directly including a bean (the
             ExitCommand), and including a sub-menu (newMenu).
     -->
-	<bean id="fileMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="fileMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
+				<value>newCommand</value>
+				<value>separator</value>
+				<value>saveCommand</value>
+				<value>saveAsCommand</value>
+                <value>separator</value>
+                <value>printCommand</value>
 				<value>separator</value>
 				<value>propertiesCommand</value>
-                <value>separator</value>
-                <value>deleteCommand</value>
 				<value>separator</value>
 				<bean class="org.springframework.richclient.command.support.ExitCommand"/>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- 
+        Bean: editMenu
+        Type: user named
+        Usage: optional
+        Description: This specifies the content of the "Edit" menu.
+    -->
+	<bean id="editMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+			    <value>undoCommand</value>
+			    <value>redoCommand</value>
+				<value>separator</value>
+				<value>cutCommand</value>
+				<value>copyCommand</value>
+				<value>pasteCommand</value>
+				<value>deleteCommand</value>
+				<value>separator</value>
+				<value>selectAllCommand</value>
 			</list>
 		</property>
 	</bean>
@@ -91,8 +129,7 @@
         Usage: optional
         Description: This specifies the content of the "Window" menu.
     -->
-	<bean id="windowMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="windowMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
 				<bean class="org.springframework.richclient.command.support.NewWindowCommand"/>
@@ -108,10 +145,11 @@
         Usage: optional
         Description: This specifies the content of the "Help" menu.
     -->
-	<bean id="helpMenu" 
-		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+	<bean id="helpMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
 		<property name="members">
 			<list>
+				<value>helpContentsCommand</value>
+				<value>separator</value>
 				<ref bean="aboutCommand"/>
 			</list>
 		</property>
@@ -125,8 +163,6 @@
             a platform class to generate an about box from the configured application
             data in the application context.
     -->
-	<bean id="aboutCommand" 
-		class="org.springframework.richclient.command.support.AboutCommand">
-	</bean>
+	<bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand"/>
 		
 </beans>

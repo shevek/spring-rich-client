@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application.support;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,9 +33,13 @@ import org.springframework.binding.value.support.DefaultValueChangeDetector;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.support.ResourceMapFactoryBean;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.core.enums.StaticLabeledEnumResolver;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.richclient.application.ApplicationPageFactory;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationWindowFactory;
@@ -161,6 +166,9 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
      * @return application context
      */
     public ApplicationContext getApplicationContext() {
+    	if (applicationContext == null) {
+    		applicationContext = new GenericApplicationContext();
+    	}
         return applicationContext;
     }
 
@@ -847,11 +855,11 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
                 } catch( NoSuchBeanDefinitionException e ) {
                     logger.info( "No object configurer found in context under name '" + aocBeanId
                             + "'; configuring defaults." );
-                    impl = new DefaultApplicationObjectConfigurer();
+                    impl = new DefaultApplicationObjectConfigurer((MessageSource)applicationServices.getService(MessageSource.class));
                 }
             } else {
                 logger.info( "No object configurer bean Id has been set; configuring defaults." );
-                impl = new DefaultApplicationObjectConfigurer();
+                impl = new DefaultApplicationObjectConfigurer((MessageSource)applicationServices.getService(MessageSource.class));
             }
             return impl;
         }
@@ -867,7 +875,16 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
     protected static final ImplBuilder imageSourceImplBuilder = new ImplBuilder() {
         public Object build( DefaultApplicationServices applicationServices ) {
             logger.info( "Creating default service impl: ImageSource" );
-            return new DefaultImageSource( new HashMap() );
+            try {
+                ResourceMapFactoryBean imageResourcesFactory = new ResourceMapFactoryBean();
+                imageResourcesFactory.setLocation(new ClassPathResource("org/springframework/richclient/image/images.properties"));
+                imageResourcesFactory.setResourceBasePath("images/");
+                imageResourcesFactory.afterPropertiesSet();
+				return new DefaultImageSource((Map)imageResourcesFactory.getObject());
+			}
+			catch (IOException e) {
+				return new DefaultImageSource(new HashMap());
+			}
         }
     };
 
@@ -972,7 +989,9 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
         public Object build( DefaultApplicationServices applicationServices ) {
             // The application context is our properly configured message source
             logger.info( "Using MessageSource from application context" );
-            return applicationServices.getApplicationContext();
+            ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+            messageSource.setBasename("org.springframework.richclient.application.messages");
+            return messageSource;
         }
     };
 

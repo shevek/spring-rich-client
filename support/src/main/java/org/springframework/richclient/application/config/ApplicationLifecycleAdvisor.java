@@ -25,7 +25,6 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.exceptionhandling.DefaultRegisterableExceptionHandler;
 import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
-import org.springframework.richclient.util.Assert;
 
 /**
  * <p>
@@ -119,8 +118,6 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	 */
 	public void afterPropertiesSet() throws Exception {
 		getRegisterableExceptionHandler().registerExceptionHandler();
-        Assert.state(startingPageId != null,
-                "startingPageId must be set: it must point to a page descriptor, or a view descriptor for a single view per page");		
 	}
 
 	/**

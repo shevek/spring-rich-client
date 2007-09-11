@@ -20,11 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
@@ -34,11 +37,11 @@ import org.springframework.richclient.command.CommandGroup;
  */
 public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvisor
         implements ApplicationListener {
-    private String windowCommandManagerBeanName = "windowCommandManager";
+    private String windowCommandManagerBeanName;
 
-    private String toolBarBeanName = "toolBar";
+    private String toolBarBeanName;
 
-    private String menuBarBeanName = "menuBar";
+    private String menuBarBeanName;
 
     private String windowCommandBarDefinitions;
 
@@ -65,16 +68,23 @@ public class DefaultApplicationLifecycleAdvisor extends ApplicationLifecycleAdvi
 
     public ApplicationWindowCommandManager createWindowCommandManager() {
         initNewWindowCommandBarFactory();
+        if (windowCommandManagerBeanName == null || !getCommandBarFactory().containsBean(windowCommandManagerBeanName)) {
+            return new ApplicationWindowCommandManager();
+        }
         return (ApplicationWindowCommandManager)getCommandBarFactory().getBean(windowCommandManagerBeanName,
                 ApplicationWindowCommandManager.class);
     }
 
     protected void initNewWindowCommandBarFactory() {
-        // Install our own application context so we can register needed post-processors
-        final CommandBarApplicationContext commandBarContext =
-            new CommandBarApplicationContext(windowCommandBarDefinitions);
-        addChildCommandContext(commandBarContext);
-        this.openingWindowCommandBarFactory = commandBarContext.getBeanFactory();
+    	if (windowCommandBarDefinitions != null) {
+    		// Install our own application context so we can register needed post-processors
+    		final CommandBarApplicationContext commandBarContext =
+    			new CommandBarApplicationContext(windowCommandBarDefinitions);
+    		addChildCommandContext(commandBarContext);
+    		this.openingWindowCommandBarFactory = commandBarContext.getBeanFactory();
+    	} else {
+    		this.openingWindowCommandBarFactory = new DefaultListableBeanFactory();
+    	}
     }
 
     protected ConfigurableListableBeanFactory getCommandBarFactory() {
