@@ -179,4 +179,15 @@ org.acegisecurity.AuthenticationException.description = \
     
     * ValidationMessage now extends Message, no converting is necessary from now on
     
-    * Severity has been moved to the core package as it is used in the Message interface (not only in validation cases), update your imports 
+    * Severity has been moved to the core package as it is used in the Message interface (not only in validation cases), update your imports
+    
+    * Magick beannames menuBar/toolBar/windowCommandManager are removed, add the following to your advisor configuration:
+  
++--
+<bean id="lifecycleAdvisor" class=...
+    ...
+    <property name="windowCommandManagerBeanName" value="windowCommandManager" />
+    <property name="menubarBeanName" value="menuBar" />
+    <property name="toolbarBeanName" value="toolBar" />
+</bean>
++--  
