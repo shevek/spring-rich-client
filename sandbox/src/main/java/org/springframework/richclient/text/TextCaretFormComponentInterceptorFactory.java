@@ -46,13 +46,13 @@ public class TextCaretFormComponentInterceptorFactory implements FormComponentIn
      * @return the interceptor
      */
     public FormComponentInterceptor getInterceptor( FormModel formModel ) {
-        return new TextCaretFixerComponentInterceptor();
+        return new TextCaretComponentInterceptor();
     }
 
     /**
      * The <code>FormComponentInterceptor</code> implementation.
      */
-    public class TextCaretFixerComponentInterceptor extends TextComponentInterceptor {
+    public class TextCaretComponentInterceptor extends TextComponentInterceptor {
         protected void processComponent( String propertyName, final JTextComponent textComponent ) {
             textComponent.getDocument().addDocumentListener( new DocumentHandler( textComponent ) );
         }
