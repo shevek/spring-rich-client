@@ -96,7 +96,9 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 			}
 
 			public void internalFrameActivated(InternalFrameEvent e) {
-				setActiveComponent(pageComponent);
+                if(!e.getInternalFrame().isIcon()) {
+                    setActiveComponent(pageComponent);
+                }
 			}
 		});
 
