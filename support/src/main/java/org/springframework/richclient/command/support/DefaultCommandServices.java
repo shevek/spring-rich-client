@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,20 @@
  */
 package org.springframework.richclient.command.support;
 
-import java.awt.Color;
-import java.awt.Insets;
-
-import javax.swing.AbstractButton;
-import javax.swing.SwingConstants;
-
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.CommandServices;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
-import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.config.DefaultCommandButtonConfigurer;
+import org.springframework.richclient.command.config.MenuItemButtonConfigurer;
+import org.springframework.richclient.command.config.PullDownMenuButtonConfigurer;
+import org.springframework.richclient.command.config.ToolBarCommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.MenuFactory;
-import org.springframework.richclient.image.ArrowIcon;
 
 /**
  * @author Keith Donald
  */
 public class DefaultCommandServices implements CommandServices {
-
-    private static final ArrowIcon PULL_DOWN_ICON = new ArrowIcon(ArrowIcon.Direction.DOWN, 3, Color.BLACK);
-
     private ButtonFactory buttonFactory;
 
     private MenuFactory menuFactory;
@@ -121,34 +112,15 @@ public class DefaultCommandServices implements CommandServices {
     }
 
     protected CommandButtonConfigurer createToolBarButtonConfigurer() {
-        return new DefaultCommandButtonConfigurer() {
-            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-                super.configure(button, command, faceDescriptor);
-                if (button.getIcon() != null) {
-                    button.setText("");
-                }
-                button.setMargin(new Insets(2, 5, 2, 5));
-            }
-        };
+        return new ToolBarCommandButtonConfigurer();
     }
 
     protected CommandButtonConfigurer createMenuItemButtonConfigurer() {
-        return new DefaultCommandButtonConfigurer() {
-            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-                super.configure(button, command, faceDescriptor);
-                button.setToolTipText(null);
-            }
-        };
+        return new MenuItemButtonConfigurer();
     }
 
     protected CommandButtonConfigurer createPullDownMenuButtonConfigurer() {
-        return new DefaultCommandButtonConfigurer() {
-            public void configure(AbstractButton button, AbstractCommand command, CommandFaceDescriptor faceDescriptor) {
-                super.configure(button, command, faceDescriptor);
-                button.setIcon(PULL_DOWN_ICON);
-                button.setHorizontalTextPosition(SwingConstants.LEADING);
-            }
-        };
+        return new PullDownMenuButtonConfigurer();
     }
 
 }
