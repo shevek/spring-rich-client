@@ -42,23 +42,26 @@ public class ExtTabbedPane implements ControlFactory {
 	private PropertyChangeListener propertyChangeHandler = new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
 			Tab tab = (Tab) evt.getSource();
-			int index = tabs.indexOf(tab);
-
-			if (evt.getPropertyName().equals("title")) {
-				tabbedPane.setTitleAt(index, tab.getTitle());
-			}
-			if (evt.getPropertyName().equals("tooltip")) {
-				tabbedPane.setToolTipTextAt(index, tab.getTooltip());
-			}
-			if (evt.getPropertyName().equals("icon")) {
-				tabbedPane.setIconAt(index, tab.getIcon());
-			}
-			if (evt.getPropertyName().equals("component")) {
-				tabbedPane.setComponentAt(index, tab.getComponent());
-			}
-			if (evt.getPropertyName().equals("mnemonic")) {
-				tabbedPane.setMnemonicAt(index, tab.getMnemonic());
-			}
+            if (tab.isVisible()) {
+                int index = determineUIIndex(tab);
+                if (index >= 0) {
+                    if (evt.getPropertyName().equals("title")) {
+                        tabbedPane.setTitleAt(index, tab.getTitle());
+                    }
+                    if (evt.getPropertyName().equals("tooltip")) {
+                        tabbedPane.setToolTipTextAt(index, tab.getTooltip());
+                    }
+                    if (evt.getPropertyName().equals("icon")) {
+                        tabbedPane.setIconAt(index, tab.getIcon());
+                    }
+                    if (evt.getPropertyName().equals("component")) {
+                        tabbedPane.setComponentAt(index, tab.getComponent());
+                    }
+                    if (evt.getPropertyName().equals("mnemonic")) {
+                        tabbedPane.setMnemonicAt(index, tab.getMnemonic());
+                    }
+                }
+            }
 			if (evt.getPropertyName().equals("visible")) {
 				if (tab.isVisible()) {
 					tabbedPane.insertTab(tab.getTitle(), tab.getIcon(), tab.getComponent(), tab.getTooltip(),
