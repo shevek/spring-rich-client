@@ -163,6 +163,13 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	public void onPostStartup() {
 
 	}
+	
+	/**
+	 * Hook called right afther the application is closed.
+	 */
+	public void onShutdown() {
+		
+	}
 
 	/**
 	 * @param window the openingWindow.
@@ -281,5 +288,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	public void setApplication(Application application) {
 		this.application = application;
 	}
+
+
 
 }

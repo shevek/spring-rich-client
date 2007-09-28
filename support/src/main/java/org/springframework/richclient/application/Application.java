@@ -208,6 +208,7 @@ public class Application implements InitializingBean, ApplicationContextAware {
                 if( getApplicationContext() instanceof ConfigurableApplicationContext ) {
                     ((ConfigurableApplicationContext) getApplicationContext()).close();
                 }
+                getLifecycleAdvisor().onShutdown();
             }
         } finally {
             if (exitInFinally) {
