@@ -38,7 +38,6 @@ import org.springframework.richclient.form.Form;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.richclient.tree.FocusableTreeCellRenderer;
 import org.springframework.richclient.tree.TreeUtils;
-import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -267,24 +266,19 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
         pageTree.setShowsRootHandles(true);
     }
 
-    /**
-     * Returns the decorated title.
-     * 
-     * @param page
-     *            the page
-     * @return the title
-     */
-    protected String decoratePageTitle(DialogPage page) {
-        return LabelUtils.htmlBlock(page.getTitle() + "<sup><font size=-3 color=red>"
-                + (page.isPageComplete() ? "" : "*"));
-    }
-
     protected void updatePageComplete(DialogPage page) {
         super.updatePageComplete(page);
         if (pageTreeModel != null) {
             pageTreeModel.nodeChanged(getNode(page));
         }
     }
+    
+    protected void updatePageLabels(DialogPage page) {
+        if (pageTreeModel != null) {
+             pageTreeModel.nodeChanged(getNode(page));
+         }
+    }
+ 
 
     protected DefaultMutableTreeNode getNode(DialogPage page) {
         return (DefaultMutableTreeNode)nodes.get(page);
@@ -332,7 +326,7 @@ public class TreeCompositeDialogPage extends CompositeDialogPage {
             if (node.getUserObject() instanceof DialogPage) {
                 DialogPage page = (DialogPage)node.getUserObject();
         
-                this.setText(decoratePageTitle(page));
+                this.setText(getDecoratedPageTitle(page));
                 this.setIcon(page.getIcon());
             }
         
