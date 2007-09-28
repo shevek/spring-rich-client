@@ -134,7 +134,11 @@ public class TabbedDialogPage extends CompositeDialogPage {
 	}
     
     protected void updatePageVisibility(DialogPage page) {
-    	Tab tab = (Tab) page2tab.get(page);
+    	Tab tab = getTab(page);
     	tab.setVisible(page.isVisible());
     }
+    
+    protected final Tab getTab(final DialogPage page) {
+        return (Tab) page2tab.get(page);
+    } 
 }
