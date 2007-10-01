@@ -141,4 +141,8 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
     public boolean canClose() {
         return true;
     }
+    
+    public void close() {
+    	context.getPage().close(this);
+    }
 }

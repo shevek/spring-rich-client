@@ -55,4 +55,6 @@ public interface PageComponent extends PropertyChangePublisher, DescribedElement
     public String getId();
     
     boolean canClose();
+    
+    public void close();
 }
