@@ -21,16 +21,35 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.image.ShadowedIcon;
 
 /**
  * Custom <code>CommandButtonConfigurer</code> for buttons on the toolbar.
  * <p>
- * The <code>showText</code> property determines whether text is shown.
- * Default value is <code>false</code>.
- * <p>
- * The <code>textBelowIcon</code> property indicates whether the text is shown
- * below the icon (as is default in most applications). The default value is
- * <code>true</code>.
+ * Configurable Properties: <table border="1">
+ * <tr>
+ * <td><b>Property</b></td>
+ * <td><b>Default</b></td>
+ * <td><b>Purpose</b></td>
+ * </tr>
+ * <tr>
+ * <td><code>showText</code></td>
+ * <td>false</td>
+ * <td>determines whether text is shown</td>
+ * </tr>
+ * <tr>
+ * <td><code>textBelowIcon</code></td>
+ * <td>true</td>
+ * <td>indicates whether the text is shown below the icon (as is default in
+ * most applications)</td>
+ * </tr>
+ * <tr>
+ * <td><code>enableShadow</code></td>
+ * <td>false</td>
+ * <td>toggles shadow effect on rollover. If the icon already had a rollover
+ * icon attached, no shadow effect is applied</td>
+ * </tr>
+ * </table>
  * 
  * @author Keith Donald
  * @author Peter De Bruycker
@@ -39,6 +58,16 @@ public class ToolBarCommandButtonConfigurer extends DefaultCommandButtonConfigur
 	private boolean showText = false;
 
 	private boolean textBelowIcon = true;
+
+	private boolean enableShadow = false;
+
+	public boolean isEnableShadow() {
+		return enableShadow;
+	}
+
+	public void setEnableShadow(boolean enableShadow) {
+		this.enableShadow = enableShadow;
+	}
 
 	public void setTextBelowIcon(boolean textBelowIcon) {
 		this.textBelowIcon = textBelowIcon;
@@ -68,6 +97,11 @@ public class ToolBarCommandButtonConfigurer extends DefaultCommandButtonConfigur
 			if (button.getIcon() != null) {
 				button.setText("");
 			}
+		}
+
+		if (enableShadow && button.getIcon() != null && button.getRolloverIcon() == null) {
+			button.setRolloverEnabled(true);
+			button.setRolloverIcon(new ShadowedIcon(button.getIcon()));
 		}
 
 		button.setMargin(new Insets(2, 5, 2, 5));
