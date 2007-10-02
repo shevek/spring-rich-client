@@ -105,7 +105,8 @@ public class TabbedDialogPage extends CompositeDialogPage {
 			}
 		});
 		
-		setActivePage((DialogPage) pages.get(0));
+		// show first visible tab
+		setActivePage((DialogPage) pages.get(tabbedPaneView.convertUIIndexToModelIndex(0)));
 		return tabbedPane;
 	}
 

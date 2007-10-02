@@ -113,7 +113,7 @@ public class ExtTabbedPane implements ControlFactory {
 	public Tab getTab(int index) {
 		return (Tab) tabs.get(index);
 	}
-
+	
 	public void removeTab(Tab tab) {
 		removeTab(tabs.indexOf(tab));
 	}
@@ -143,7 +143,7 @@ public class ExtTabbedPane implements ControlFactory {
 
 	public int convertUIIndexToModelIndex(int index) {
 		int modelIndex = index;
-		for (int i = 0; i <= index; i++) {
+		for (int i = 0; i <= modelIndex; i++) {
 			if (!getTab(i).isVisible()) {
 				modelIndex++;
 			}
