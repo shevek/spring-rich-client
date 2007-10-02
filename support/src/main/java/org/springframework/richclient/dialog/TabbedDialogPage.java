@@ -19,14 +19,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.springframework.richclient.core.LabeledObjectSupport;
 import org.springframework.richclient.dialog.control.ExtTabbedPane;
 import org.springframework.richclient.dialog.control.Tab;
-
+import org.springframework.richclient.dialog.control.VetoableSingleSelectionModel;
 
 /**
  * A concrete implementation of <code>CompositeDialogPage</code> that presents
@@ -44,22 +45,25 @@ import org.springframework.richclient.dialog.control.Tab;
  * @author Peter De Bruycker
  */
 public class TabbedDialogPage extends CompositeDialogPage {
-    private ExtTabbedPane tabbedPaneView;
-    private Map page2tab = new HashMap();
-    private Map tab2Page = new HashMap();
-	private boolean settingSelection;
-    
-    public TabbedDialogPage(String pageId) {
-        super(pageId);
-    }
-    
-    public TabbedDialogPage(String pageId, boolean autoConfigure) {
-        super(pageId, autoConfigure);
-    }
+	private ExtTabbedPane tabbedPaneView;
 
-    protected JComponent createControl() {
-        createPageControls();
-		JTabbedPane tabbedPane = getComponentFactory().createTabbedPane();
+	private Map page2tab = new HashMap();
+
+	private Map tab2Page = new HashMap();
+
+	private boolean settingSelection;
+
+	public TabbedDialogPage(String pageId) {
+		super(pageId);
+	}
+
+	public TabbedDialogPage(String pageId, boolean autoConfigure) {
+		super(pageId, autoConfigure);
+	}
+
+	protected JComponent createControl() {
+		createPageControls();
+		final JTabbedPane tabbedPane = getComponentFactory().createTabbedPane();
 		tabbedPaneView = new ExtTabbedPane(tabbedPane);
 
 		List pages = getPages();
@@ -72,32 +76,38 @@ public class TabbedDialogPage extends CompositeDialogPage {
 
 			tab.setComponent(control);
 			tab.setVisible(page.isVisible());
+			tab.setEnabled(page.isEnabled());
 			decorateTab(tab, page);
 
 			page2tab.put(page, tab);
 			tab2Page.put(tab, page);
 			tabbedPaneView.addTab(tab);
-
-        }
-        tabbedPane.setModel(new DefaultSingleSelectionModel() {
-            public void setSelectedIndex(int index) {
-                if (canChangeTabs()) {
-                    super.setSelectedIndex(index);
-                    
-                    if (index >= 0) {
-                    	index = tabbedPaneView.convertUIIndexToModelIndex(index);
-                    	Tab tab = tabbedPaneView.getTab(index);
-                    	setActivePage((DialogPage) tab2Page.get(tab));
-                    }
-                    else {
-                    	setActivePage(null);
-                    }
-                }
-            }
-        });
-        setActivePage((DialogPage) pages.get(0));
-        return tabbedPane;
-    }
+		}
+		
+		tabbedPane.setModel(new VetoableSingleSelectionModel() {
+			protected boolean selectionAllowed(int index) {
+				return canChangeTabs();
+			}
+		});
+		
+		tabbedPaneView.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				int index = tabbedPane.getSelectedIndex();
+				
+				if (index >= 0) {
+					index = tabbedPaneView.convertUIIndexToModelIndex(index);
+					Tab tab = tabbedPaneView.getTab(index);
+					setActivePage((DialogPage) tab2Page.get(tab));
+				}
+				else {
+					setActivePage(null);
+				}
+			}
+		});
+		
+		setActivePage((DialogPage) pages.get(0));
+		return tabbedPane;
+	}
 
 	/**
 	 * Sets the active page of this TabbedDialogPage. This method will also
@@ -107,16 +117,18 @@ public class TabbedDialogPage extends CompositeDialogPage {
 	 * pages.
 	 */
 	public void setActivePage(DialogPage page) {
-		if(settingSelection) {
+		if (settingSelection) {
 			return;
 		}
-		
-    	try {
-    		settingSelection = true;
-    		
-    		super.setActivePage(page);
-    		Tab tab = (Tab) page2tab.get(page);
-    		tabbedPaneView.selectTab(tab);
+
+		try {
+			settingSelection = true;
+
+			super.setActivePage(page);
+			if (page != null) {
+				Tab tab = (Tab) page2tab.get(page);
+				tabbedPaneView.selectTab(tab);
+			}
 		}
 		finally {
 			settingSelection = false;
@@ -144,18 +156,23 @@ public class TabbedDialogPage extends CompositeDialogPage {
 		}
 		tab.setIcon(page.getIcon());
 	}
-    
-    protected void updatePageVisibility(DialogPage page) {
-    	Tab tab = getTab(page);
-    	tab.setVisible(page.isVisible());
-    }
-    
-    protected void updatePageLabels(DialogPage page) {
-    	Tab tab = getTab(page);
-    	tab.setTitle(getDecoratedPageTitle(page));
-    }
-        
-    protected final Tab getTab(final DialogPage page) {
-        return (Tab) page2tab.get(page);
-    } 
+
+	protected void updatePageVisibility(DialogPage page) {
+		Tab tab = getTab(page);
+		tab.setVisible(page.isVisible());
+	}
+	
+	protected void updatePageEnabled(DialogPage page) {
+		Tab tab = getTab(page);
+		tab.setEnabled(page.isEnabled());
+	}
+
+	protected void updatePageLabels(DialogPage page) {
+		Tab tab = getTab(page);
+		tab.setTitle(getDecoratedPageTitle(page));
+	}
+
+	protected final Tab getTab(final DialogPage page) {
+		return (Tab) page2tab.get(page);
+	}
 }

@@ -210,6 +210,10 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
 		}
 		setPageComplete(pageComplete);
 	}
+	
+	protected void updatePageEnabled(DialogPage page) {
+		
+	}
 
 	protected void updatePageLabels(DialogPage page) {
 
@@ -244,7 +248,13 @@ public abstract class CompositeDialogPage extends AbstractDialogPage {
 				DialogPage page = (DialogPage) e.getSource();
 				updatePageVisibility(page);
 			}
-		}
+
+		
+			if ("enabled".equals(e.getPropertyName())) {
+				DialogPage page = (DialogPage) e.getSource();
+				updatePageEnabled(page);
+			}
+}
 	}
 
 	protected void onPageSelected(DialogPage page, boolean selected) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,12 +29,21 @@ import javax.swing.JComponent;
  * @author Peter De Bruycker
  */
 public class Tab {
+	public static final String TITLE_PROPERTY = "title";
+	public static final String ICON_PROPERTY = "icon";
+	public static final String TOOLTIP_PROPERTY = "tooltip";
+	public static final String COMPONENT_PROPERTY = "component";
+	public static final String VISIBLE_PROPERTY = "visible";
+	public static final String MNEMONIC_PROPERTY = "mnemonic";
+	public static final String ENABLED_PROPERTY = "enabled";
+	
 	private String title;
 	private Icon icon;
 	private String tooltip;
 	private JComponent component;
 	private boolean visible = true;
 	private int mnemonic;
+	private boolean enabled = true;
 
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -55,7 +64,7 @@ public class Tab {
 		boolean old = this.visible;
 		this.visible = visible;
 		if (old != visible) {
-			propertyChangeSupport.firePropertyChange("visible", old, visible);
+			propertyChangeSupport.firePropertyChange(VISIBLE_PROPERTY, old, visible);
 		}
 	}
 
@@ -67,7 +76,7 @@ public class Tab {
 		JComponent old = this.component;
 		this.component = component;
 		if (old != component) {
-			propertyChangeSupport.firePropertyChange("component", old, component);
+			propertyChangeSupport.firePropertyChange(COMPONENT_PROPERTY, old, component);
 		}
 	}
 
@@ -79,7 +88,7 @@ public class Tab {
 		Icon old = this.icon;
 		this.icon = icon;
 		if (old != icon) {
-			propertyChangeSupport.firePropertyChange("icon", old, icon);
+			propertyChangeSupport.firePropertyChange(ICON_PROPERTY, old, icon);
 		}
 	}
 
@@ -91,7 +100,7 @@ public class Tab {
 		String old = this.title;
 		this.title = title;
 		if(old != null && !old.equals(title) || title != null) {
-			propertyChangeSupport.firePropertyChange("title", old, title);
+			propertyChangeSupport.firePropertyChange(TITLE_PROPERTY, old, title);
 		}
 	}
 
@@ -103,7 +112,7 @@ public class Tab {
 		String old = this.tooltip;
 		this.tooltip = tooltip;
 		if(old != null && !old.equals(tooltip) || tooltip != null) {
-			propertyChangeSupport.firePropertyChange("tooltip", old, tooltip);
+			propertyChangeSupport.firePropertyChange(TOOLTIP_PROPERTY, old, tooltip);
 		}
 	}
 
@@ -127,11 +136,23 @@ public class Tab {
 		int old = this.mnemonic;
 		this.mnemonic = mnemonic;
 		if(mnemonic != old)  {
-			propertyChangeSupport.firePropertyChange("mnemonic", old, mnemonic);
+			propertyChangeSupport.firePropertyChange(MNEMONIC_PROPERTY, old, mnemonic);
 		}
 	}
 	
 	public int getMnemonic() {
 		return mnemonic;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		boolean old = this.enabled;
+		this.enabled = enabled;
+		if(enabled != old)  {
+			propertyChangeSupport.firePropertyChange(ENABLED_PROPERTY, old, enabled);
+		}
 	}
 }

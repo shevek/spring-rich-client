@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -22,8 +22,11 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.springframework.richclient.factory.ControlFactory;
+import org.springframework.richclient.util.EventListenerListHelper;
 
 /**
  * Wrapper around <code>JTabbedPane</code>. When a <code>Tab</code> is made
@@ -43,43 +46,56 @@ public class ExtTabbedPane implements ControlFactory {
 		public void propertyChange(PropertyChangeEvent evt) {
 			Tab tab = (Tab) evt.getSource();
 			if (tab.isVisible()) {
-				int index = determineUIIndex(tab);
+				int index = getUIIndex(tab);
 				if (index >= 0) {
-					if (evt.getPropertyName().equals("title")) {
+					if (evt.getPropertyName().equals(Tab.TITLE_PROPERTY)) {
 						tabbedPane.setTitleAt(index, tab.getTitle());
 					}
-					if (evt.getPropertyName().equals("tooltip")) {
+					if (evt.getPropertyName().equals(Tab.TOOLTIP_PROPERTY)) {
 						tabbedPane.setToolTipTextAt(index, tab.getTooltip());
 					}
-					if (evt.getPropertyName().equals("icon")) {
+					if (evt.getPropertyName().equals(Tab.ICON_PROPERTY)) {
 						tabbedPane.setIconAt(index, tab.getIcon());
 					}
-					if (evt.getPropertyName().equals("component")) {
+					if (evt.getPropertyName().equals(Tab.COMPONENT_PROPERTY)) {
 						tabbedPane.setComponentAt(index, tab.getComponent());
 					}
-					if (evt.getPropertyName().equals("mnemonic")) {
+					if (evt.getPropertyName().equals(Tab.MNEMONIC_PROPERTY)) {
+						tabbedPane.setMnemonicAt(index, tab.getMnemonic());
+					}
+					if (evt.getPropertyName().equals(Tab.ENABLED_PROPERTY)) {
 						tabbedPane.setMnemonicAt(index, tab.getMnemonic());
 					}
 				}
 			}
 			if (evt.getPropertyName().equals("visible")) {
-				if (tab.isVisible()) {
-					tabbedPane.insertTab(tab.getTitle(), tab.getIcon(), tab.getComponent(), tab.getTooltip(),
-							determineUIIndex(tab));
-				}
-				else {
-					tabbedPane.removeTabAt(determineUIIndex(tab));
-				}
+				updateTabVisibility(tab);
 			}
 		}
 	};
 
+	private EventListenerListHelper changeListeners = new EventListenerListHelper(ChangeListener.class);
+
 	public ExtTabbedPane(JTabbedPane tabbedPane) {
 		this.tabbedPane = tabbedPane;
+		tabbedPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				// delegate change events to registered listeners
+				changeListeners.fire("stateChanged", e);
+			}
+		});
 	}
 
 	public ExtTabbedPane() {
 		this(new JTabbedPane());
+	}
+
+	public void addChangeListener(ChangeListener listener) {
+		changeListeners.add(listener);
+	}
+
+	public void removeChangeListener(ChangeListener listener) {
+		changeListeners.remove(listener);
 	}
 
 	public JComponent getControl() {
@@ -111,8 +127,6 @@ public class ExtTabbedPane implements ControlFactory {
 	}
 
 	public void removeTab(int index) {
-		//
-
 		tabbedPane.removeTabAt(index);
 		Tab tab = (Tab) tabs.remove(index);
 		tab.removePropertyChangeListener(propertyChangeHandler);
@@ -120,7 +134,7 @@ public class ExtTabbedPane implements ControlFactory {
 
 	public void selectTab(Tab tab) {
 		if (tab.isVisible()) {
-			int targetIndex = determineUIIndex(tab);
+			int targetIndex = getUIIndex(tab);
 			if (targetIndex >= 0) {
 				tabbedPane.setSelectedIndex(targetIndex);
 			}
@@ -138,21 +152,34 @@ public class ExtTabbedPane implements ControlFactory {
 		return modelIndex;
 	}
 
-	private int determineUIIndex(Tab tab) {
-		return convertIndex(tabs.indexOf(tab));
+	public int getUIIndex(Tab tab) {
+		return convertModelIndexToUIIndex(tabs.indexOf(tab));
 	}
 
-	private int convertIndex(int index) {
-		int result = 0;
+	public int convertModelIndexToUIIndex(int index) {
+		int uiIndex = 0;
 
 		for (int i = 0; i < index; i++) {
-			Tab t = (Tab) tabs.get(i);
-			if (t.isVisible()) {
-				result++;
+			if (getTab(i).isVisible()) {
+				uiIndex++;
 			}
 		}
 
-		return result;
+		return uiIndex;
 	}
 
+	private void updateTabVisibility(Tab tab) {
+		if (tab.isVisible()) {
+			tabbedPane.insertTab(tab.getTitle(), tab.getIcon(), tab.getComponent(), tab.getTooltip(), getUIIndex(tab));
+		}
+		else {
+			tabbedPane.removeTabAt(getUIIndex(tab));
+
+		}
+
+		// because insert and remove don't change the selected tab index, we
+		// trigger one manually
+		ChangeEvent event = new ChangeEvent(tabbedPane);
+		changeListeners.fire("stateChanged", event);
+	}
 }
