@@ -15,15 +15,18 @@
  */
 package org.springframework.richclient.application.mdi.contextmenu;
 
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
+
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.JPopupMenu;
 
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 
 /**
- * Helper class to create a context menu for a <code>JDesktopPane</code>. The context menu contains the following items:
+ * Helper class to create a context menu for a <code>JDesktopPane</code>. The context
+ * menu contains the following items:
  * <ul>
  * <li>tile command</li>
  * <li>cascade command</li>
@@ -39,32 +42,48 @@ public class DesktopPaneContextMenuFactory {
     private CommandManager commandManager;
 
     public DesktopPaneContextMenuFactory( CommandManager commandManager, JDesktopPane desktopPane ) {
-        desktop = desktopPane;
+        this.desktop = desktopPane;
         this.commandManager = commandManager;
     }
 
-    public JPopupMenu getContextMenu() {
+    /**
+     * Create a window menu CommandGroup
+     * @return the window menu CommandGroup
+     */
+    public CommandGroup createWindowMenu() {
+    	// TODO implement this
+        return null;
+    }
+
+    /**
+     * Create a desktop pane context menu CommandGroup.
+     * @return the context menu CommandGroup
+     */
+    public CommandGroup getContextMenu() {
         CommandGroup commandGroup = new CommandGroup();
 
         TileCommand tileCommand = new TileCommand( desktop );
         CascadeCommand cascadeCommand = new CascadeCommand( desktop );
+        MinimizeAllCommand minimizeAllCommand = new MinimizeAllCommand( desktop );
 
         commandManager.configure( tileCommand );
         commandManager.configure( cascadeCommand );
+        commandManager.configure( minimizeAllCommand );
 
         commandGroup.add( tileCommand );
         commandGroup.add( cascadeCommand );
+        commandGroup.add( minimizeAllCommand );
 
         if( desktop.getAllFrames().length > 0 ) {
             commandGroup.addSeparator();
             // TODO try to get the frames in the order they've been added to the desktop
-            // pane.
+            // pane instead of the current z-order.
             for( int i = 0; i < desktop.getAllFrames().length; i++ ) {
                 JInternalFrame frame = desktop.getAllFrames()[i];
 
                 ShowFrameCommand showFrameCommand = new ShowFrameCommand( frame );
                 showFrameCommand.setIcon( frame.getFrameIcon() );
-                showFrameCommand.setCaption( "ttt" );
+                showFrameCommand.setCaption( "" + frame.getTitle() );
 
                 String label = i + " " + frame.getTitle();
                 if( i < 10 ) {
@@ -75,6 +94,6 @@ public class DesktopPaneContextMenuFactory {
                 commandGroup.add( showFrameCommand );
             }
         }
-        return commandGroup.createPopupMenu();
+        return commandGroup;
     }
 }

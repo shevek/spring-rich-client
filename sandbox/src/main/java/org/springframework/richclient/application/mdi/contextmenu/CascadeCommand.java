@@ -31,16 +31,26 @@ public class CascadeCommand extends ActionCommand {
     private static final String ID = "cascadeCommand";
 
     private JDesktopPane desktop;
-    private int offset = 20;
+    private int offset;
+    private boolean resizeFrames;
 
     public CascadeCommand( JDesktopPane desktopPane ) {
-        super( ID );
-        desktop = desktopPane;
+        this( desktopPane, true );
     }
 
     public CascadeCommand( JDesktopPane desktopPane, int offset ) {
+        this( desktopPane, offset, true );
+    }
+
+    public CascadeCommand( JDesktopPane desktopPane, boolean resizeFrames ) {
+        this( desktopPane, 20, resizeFrames );
+    }
+
+    public CascadeCommand( JDesktopPane desktopPane, int offset, boolean resizeFrames ) {
+        super( ID );
         desktop = desktopPane;
         this.offset = offset;
+        this.resizeFrames = resizeFrames;
     }
 
     protected void doExecuteCommand() {
@@ -61,7 +71,9 @@ public class CascadeCommand extends ActionCommand {
                 }
             }
 
-            frame.setSize( frameWidth, frameHeight );
+            if( resizeFrames ) {
+                frame.setSize( frameWidth, frameHeight );
+            }
             frame.setLocation( x, y );
             x = x + offset;
             y = y + offset;

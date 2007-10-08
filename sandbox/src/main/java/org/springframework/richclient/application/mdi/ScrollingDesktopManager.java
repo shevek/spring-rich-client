@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -59,7 +59,7 @@ public class ScrollingDesktopManager extends DefaultDesktopManager {
             }
 
             d.setSize(d.getWidth() - 20, d.getHeight() - 20);
-            this.desktopPane.setAllSize(x, y);
+            setAllSize(x, y);
             scrollPane.invalidate();
             scrollPane.validate();
         }
@@ -108,9 +108,17 @@ public class ScrollingDesktopManager extends DefaultDesktopManager {
                 x = ((int) d.getWidth()) - 20;
             if (y <= d.getHeight())
                 y = ((int) d.getHeight()) - 20;
-            this.desktopPane.setAllSize(x, y);
+            setAllSize(x, y);
             scrollPane.invalidate();
             scrollPane.validate();
         }
+    }
+    
+    private void setAllSize(int width, int height) {
+        Dimension d = new Dimension(width, height);
+
+        desktopPane.setMinimumSize(d);
+        desktopPane.setMaximumSize(d);
+        desktopPane.setPreferredSize(d);
     }
 }

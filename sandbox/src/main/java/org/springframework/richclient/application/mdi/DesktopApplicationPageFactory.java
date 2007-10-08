@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,18 +15,30 @@
  */
 package org.springframework.richclient.application.mdi;
 
+import javax.swing.JDesktopPane;
+
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationPageFactory;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageDescriptor;
 
 /**
+ * Factory for <code>DesktopApplicationPage</code> instances
+ * 
  * @author Peter De Bruycker
  */
 public class DesktopApplicationPageFactory implements ApplicationPageFactory {
+	private int dragMode = JDesktopPane.LIVE_DRAG_MODE;
 
-    public ApplicationPage createApplicationPage( ApplicationWindow window, PageDescriptor descriptor ) {
-        return new DesktopApplicationPage( window, descriptor );
-    }
+	public int getDragMode() {
+		return dragMode;
+	}
 
+	public void setDragMode(int dragMode) {
+		this.dragMode = dragMode;
+	}
+
+	public ApplicationPage createApplicationPage(ApplicationWindow window, PageDescriptor descriptor) {
+		return new DesktopApplicationPage(window, descriptor, dragMode);
+	}
 }

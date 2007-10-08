@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
@@ -30,7 +32,10 @@ import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
 import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.mdi.contextmenu.DesktopPaneContextMenuFactory;
 import org.springframework.richclient.application.support.AbstractApplicationPage;
+import org.springframework.richclient.util.Assert;
+import org.springframework.richclient.util.PopupMenuMouseListener;
 
 /**
  * @author Peter De Bruycker
@@ -43,8 +48,15 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
 	private Map frames = new HashMap();
 
-	public DesktopApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
+	private int dragMode;
+
+	public DesktopApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor, int dragMode) {
 		super(window, pageDescriptor);
+
+		Assert.isTrue(dragMode == JDesktopPane.LIVE_DRAG_MODE || dragMode == JDesktopPane.OUTLINE_DRAG_MODE,
+				"dragMode must be JDesktopPane.LIVE_DRAG_MODE or JDesktopPane.OUTLINE_DRAG_MODE");
+		
+		this.dragMode = dragMode;
 	}
 
 	protected boolean giveFocusTo(PageComponent pageComponent) {
@@ -96,9 +108,9 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 			}
 
 			public void internalFrameActivated(InternalFrameEvent e) {
-                if(!e.getInternalFrame().isIcon()) {
-                    setActiveComponent(pageComponent);
-                }
+				if (!e.getInternalFrame().isIcon()) {
+					setActiveComponent(pageComponent);
+				}
 			}
 		});
 
@@ -143,7 +155,17 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
 	protected JComponent createControl() {
 		control = new ScrollingDesktopPane();
+		control.setDragMode(dragMode);
+
 		scrollPane = new JScrollPane(control);
+
+		final DesktopPaneContextMenuFactory factory = new DesktopPaneContextMenuFactory(
+				getWindow().getCommandManager(), control);
+		control.addMouseListener(new PopupMenuMouseListener() {
+			protected JPopupMenu getPopupMenu() {
+				return factory.getContextMenu().createPopupMenu();
+			}
+		});
 
 		getPageDescriptor().buildInitialLayout(this);
 
@@ -159,23 +181,25 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 		frame.setTitle(pageComponent.getDisplayName());
 		frame.setToolTipText(pageComponent.getCaption());
 	}
-    
-    /**
-     * Overridden so it will leave iconified frames iconified.
-     */
-    protected void setActiveComponent() {
-        // getAllFrames returns the frames in z-order (i.e. the first one in the list is the last one used)
-        JInternalFrame[] frames = control.getAllFrames();
-        for( int i = 0; i < frames.length; i++ ) {
-            JInternalFrame frame = frames[i];
-            if(!frame.isIcon()) {
-                try {
-                    frame.setSelected( true );
-                } catch( PropertyVetoException ignore ) {
-                    
-                }
-                break;
-            }
-        }
-    }
+
+	/**
+	 * Overridden so it will leave iconified frames iconified.
+	 */
+	protected void setActiveComponent() {
+		// getAllFrames returns the frames in z-order (i.e. the first one in the
+		// list is the last one used)
+		JInternalFrame[] frames = control.getAllFrames();
+		for (int i = 0; i < frames.length; i++) {
+			JInternalFrame frame = frames[i];
+			if (!frame.isIcon()) {
+				try {
+					frame.setSelected(true);
+				}
+				catch (PropertyVetoException ignore) {
+
+				}
+				break;
+			}
+		}
+	}
 }
