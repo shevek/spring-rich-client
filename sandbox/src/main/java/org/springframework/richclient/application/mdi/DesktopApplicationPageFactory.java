@@ -21,6 +21,8 @@ import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationPageFactory;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageDescriptor;
+import org.springframework.richclient.application.mdi.contextmenu.DefaultDesktopCommandGroupFactory;
+import org.springframework.richclient.application.mdi.contextmenu.DesktopCommandGroupFactory;
 
 /**
  * Factory for <code>DesktopApplicationPage</code> instances
@@ -29,6 +31,7 @@ import org.springframework.richclient.application.PageDescriptor;
  */
 public class DesktopApplicationPageFactory implements ApplicationPageFactory {
 	private int dragMode = JDesktopPane.LIVE_DRAG_MODE;
+	private DesktopCommandGroupFactory desktopCommandGroupFactory;
 
 	public int getDragMode() {
 		return dragMode;
@@ -39,6 +42,18 @@ public class DesktopApplicationPageFactory implements ApplicationPageFactory {
 	}
 
 	public ApplicationPage createApplicationPage(ApplicationWindow window, PageDescriptor descriptor) {
-		return new DesktopApplicationPage(window, descriptor, dragMode);
+		return new DesktopApplicationPage(window, descriptor, dragMode, desktopCommandGroupFactory);
+	}
+	
+	public void setDesktopCommandGroupFactory(DesktopCommandGroupFactory desktopCommandGroupFactory) {
+		this.desktopCommandGroupFactory = desktopCommandGroupFactory;
+	}
+	
+	public DesktopCommandGroupFactory getDesktopCommandGroupFactory() {
+		if(desktopCommandGroupFactory == null) {
+			desktopCommandGroupFactory = new DefaultDesktopCommandGroupFactory();
+		}
+		
+		return desktopCommandGroupFactory;
 	}
 }

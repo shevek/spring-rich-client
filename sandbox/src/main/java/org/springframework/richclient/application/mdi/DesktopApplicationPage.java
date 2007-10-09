@@ -32,7 +32,7 @@ import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageDescriptor;
 import org.springframework.richclient.application.PageLayoutBuilder;
 import org.springframework.richclient.application.ViewDescriptor;
-import org.springframework.richclient.application.mdi.contextmenu.DesktopPaneContextMenuFactory;
+import org.springframework.richclient.application.mdi.contextmenu.DesktopCommandGroupFactory;
 import org.springframework.richclient.application.support.AbstractApplicationPage;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.PopupMenuMouseListener;
@@ -50,12 +50,16 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
 	private int dragMode;
 
-	public DesktopApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor, int dragMode) {
+	private final DesktopCommandGroupFactory desktopCommandGroupFactory;
+
+	public DesktopApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor, int dragMode,
+			DesktopCommandGroupFactory desktopCommandGroupFactory) {
 		super(window, pageDescriptor);
+		this.desktopCommandGroupFactory = desktopCommandGroupFactory;
 
 		Assert.isTrue(dragMode == JDesktopPane.LIVE_DRAG_MODE || dragMode == JDesktopPane.OUTLINE_DRAG_MODE,
 				"dragMode must be JDesktopPane.LIVE_DRAG_MODE or JDesktopPane.OUTLINE_DRAG_MODE");
-		
+
 		this.dragMode = dragMode;
 	}
 
@@ -159,11 +163,10 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
 		scrollPane = new JScrollPane(control);
 
-		final DesktopPaneContextMenuFactory factory = new DesktopPaneContextMenuFactory(
-				getWindow().getCommandManager(), control);
 		control.addMouseListener(new PopupMenuMouseListener() {
 			protected JPopupMenu getPopupMenu() {
-				return factory.getContextMenu().createPopupMenu();
+				return desktopCommandGroupFactory.createContextMenuCommandGroup(getWindow().getCommandManager(),
+						control).createPopupMenu();
 			}
 		});
 
