@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import javax.swing.JMenuItem;
 import junit.framework.TestCase;
 
 /**
+ * Testcase for CommandButtonIconInfo
+ * 
  * @author Peter De Bruycker
  */
 public class CommandButtonIconInfoTests extends TestCase {
@@ -108,10 +110,10 @@ public class CommandButtonIconInfoTests extends TestCase {
         assertSame(button, result);
 
         assertEquals(icon, button.getIcon());
-        assertNull(button.getSelectedIcon());
-        assertNull(button.getRolloverIcon());
+        assertEquals(selectedIcon, button.getSelectedIcon());
+        assertEquals(rolloverIcon, button.getRolloverIcon());
         assertEquals(disabledIcon, button.getDisabledIcon());
-        assertNull(button.getPressedIcon());
+        assertEquals(pressedIcon, button.getPressedIcon());
     }
 
     public void testConfigureWithJMenu() {
@@ -125,11 +127,11 @@ public class CommandButtonIconInfoTests extends TestCase {
         JMenuItem result = (JMenuItem)completeInfo.configure(button);
         assertSame(button, result);
 
-        assertNull(button.getIcon());
-        assertNull(button.getSelectedIcon());
-        assertNull(button.getRolloverIcon());
-        assertNull(button.getDisabledIcon());
-        assertNull(button.getPressedIcon());
+        assertEquals(icon, button.getIcon());
+        assertEquals(selectedIcon, button.getSelectedIcon());
+        assertEquals(rolloverIcon, button.getRolloverIcon());
+        assertEquals(disabledIcon, button.getDisabledIcon());
+        assertEquals(pressedIcon, button.getPressedIcon());
     }
 
     private static void pass() {
