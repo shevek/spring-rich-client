@@ -181,7 +181,7 @@ public class OverlayHelper implements SwingConstants {
             }
             overlayClipper.add(overlay);
         }
-        if(overlayClipper != layeredPane) {
+        if(overlayClipper.getParent() != layeredPane) {
             JComponent parent = (JComponent)overlayClipper.getParent();
             if(parent != null) {
                 parent.remove(overlayClipper);
@@ -296,6 +296,15 @@ public class OverlayHelper implements SwingConstants {
     void hideOverlay() {
         setOverlayBounds(new Rectangle(0, 0, 0, 0), 0, 0);
     }
+    
+    void removeOverlay() {
+        if(overlay.getParent() != overlayClipper && overlay.getParent() != null) {
+            overlay.getParent().remove(overlay);
+        }
+        if(overlayClipper.getParent() != null) {
+            overlayClipper.getParent().remove(overlayClipper);
+        }
+    }
 
     protected Container getOverlayCapableParent(JComponent component) {
         Container overlayCapableParent = component.getParent();
@@ -352,10 +361,14 @@ public class OverlayHelper implements SwingConstants {
 
 
     class OverlayUpdater implements Runnable {
+        
         public void run() {
             try {
                 Container overlayCapableParent = getOverlayCapableParent(overlayTarget);
-                if (overlayCapableParent == null || !overlayTarget.isShowing() || !overlay.isVisible()) {
+                if (overlayCapableParent == null) {
+                    removeOverlay();
+                }
+                else if (!overlayTarget.isShowing() || !overlay.isVisible()) {
                     hideOverlay();
                 }
                 else {
