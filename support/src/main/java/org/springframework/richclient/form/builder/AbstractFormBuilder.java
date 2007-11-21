@@ -42,10 +42,20 @@ public abstract class AbstractFormBuilder {
 
     private ComponentFactory componentFactory;
 
+    private FormComponentInterceptor formComponentInterceptor;
+
     protected AbstractFormBuilder(BindingFactory bindingFactory) {
         Assert.notNull(bindingFactory);
         this.bindingFactory = bindingFactory;
 
+    }
+    
+    protected FormComponentInterceptor getFormComponentInterceptor() {
+    	if (formComponentInterceptor == null) {
+			FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory)ApplicationServicesLocator.services().getService(FormComponentInterceptorFactory.class);
+			formComponentInterceptor= factory.getInterceptor(getFormModel());
+		}
+		return formComponentInterceptor;
     }
 
     protected ComponentFactory getComponentFactory() {
@@ -159,6 +169,9 @@ public abstract class AbstractFormBuilder {
         JLabel label = getComponentFactory().createLabel("");
         getFormModel().getFieldFace(fieldName).configure(label);
         label.setLabelFor(component);
+        
+        getFormComponentInterceptor().processLabel(fieldName, label);
+        
         return label;
     }
 }
