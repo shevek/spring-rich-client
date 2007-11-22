@@ -31,6 +31,8 @@ public interface ApplicationPage extends ControlFactory {
 
     PageComponent getActiveComponent();
 
+    void setActiveComponent(PageComponent pageComponent);
+
     void showView(String viewDescriptorId);
 
     void showView(ViewDescriptor viewDescriptor);
