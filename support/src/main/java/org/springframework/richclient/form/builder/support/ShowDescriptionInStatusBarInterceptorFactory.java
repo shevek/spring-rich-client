@@ -20,13 +20,13 @@ import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
 
 /**
- * Shows the caption of a form property in the status bar when the form
+ * Shows the description of a form property in the status bar when the form
  * component gains focus. When the form component loses focus, the status bar is
  * emptied.
  * 
  * @author Peter De Bruycker
  */
-public class ShowCaptionInStatusBarInterceptorFactory implements FormComponentInterceptorFactory {
+public class ShowDescriptionInStatusBarInterceptorFactory implements FormComponentInterceptorFactory {
 
 	public FormComponentInterceptor getInterceptor(final FormModel formModel) {
 		return new AbstractFormComponentStatusBarInterceptor() {
