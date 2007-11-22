@@ -18,16 +18,17 @@ package org.springframework.richclient.dialog;
 import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.core.closure.Closure;
 import org.springframework.core.closure.Constraint;
+import org.springframework.richclient.core.Message;
 import org.springframework.richclient.form.FormGuard;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.SimpleValidationResultsReporter;
@@ -41,7 +42,7 @@ import org.springframework.util.Assert;
  * 
  * @author Keith Donald
  */
-public class InputApplicationDialog extends ApplicationDialog {
+public class InputApplicationDialog extends ApplicationDialog implements Messagable {
 
     private String inputLabelMessage = "dialog.input";
 
@@ -51,7 +52,7 @@ public class InputApplicationDialog extends ApplicationDialog {
 
     private Closure finishAction;
 
-    private DefaultMessageAreaPane reporter;
+    private MessagePane reporter;
 
     private ValidatingFormModel formModel;
 
@@ -100,11 +101,16 @@ public class InputApplicationDialog extends ApplicationDialog {
         this.finishAction = procedure;
     }
 
-    private DefaultMessageAreaPane getValidationReporter() {
+    protected MessagePane createMessagePane() {
+    	return new DefaultMessageAreaPane();
+    }
+    
+    private MessagePane getMessagePane() {
         if (reporter == null) {
-            this.reporter = new DefaultMessageAreaPane();
-            if (this.formModel != null) {
-                new SimpleValidationResultsReporter(formModel.getValidationResults(), this.reporter);
+            reporter = createMessagePane();
+
+        	if (this.formModel != null) {
+                new SimpleValidationResultsReporter(formModel.getValidationResults(), reporter);
                 FormGuard formGuard = new FormGuard(formModel);
                 formGuard.addGuarded(this, FormGuard.FORMERROR_GUARDED);
                 formModel.validate();
@@ -125,21 +131,20 @@ public class InputApplicationDialog extends ApplicationDialog {
             inputField.addFocusListener(selectAllBugFixer);
         }
 
-        layoutBuilder.cell(getInputLabel(), TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES);
+        layoutBuilder.cell(createInputLabel(), TableLayoutBuilder.DEFAULT_LABEL_ATTRIBUTES);
         layoutBuilder.labelGapCol();
         layoutBuilder.cell(inputField);
 
         layoutBuilder.unrelatedGapRow();
-        layoutBuilder.cell(getValidationReporter().getControl());
+        layoutBuilder.cell(getMessagePane().getControl());
 
         layoutBuilder.relatedGapRow();
         layoutBuilder.separator("");
         return layoutBuilder.getPanel();
     }
 
-    protected JComponent getInputLabel() {
-        JLabel label = getComponentFactory().createLabelFor(inputLabelMessage, getInputField());
-        return label;
+    protected JComponent createInputLabel() {
+        return getComponentFactory().createLabelFor(inputLabelMessage, getInputField());
     }
 
     protected boolean onFinish() {
@@ -198,4 +203,24 @@ public class InputApplicationDialog extends ApplicationDialog {
             });
         }
     }
+
+	public void setMessage(Message message) {
+		getMessagePane().setMessage(message);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		getMessagePane().addPropertyChangeListener(listener);
+	}
+
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getMessagePane().addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		getMessagePane().removePropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getMessagePane().removePropertyChangeListener(propertyName, listener);
+	}
 }
