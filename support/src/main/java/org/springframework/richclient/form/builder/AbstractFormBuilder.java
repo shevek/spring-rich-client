@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -38,140 +38,153 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractFormBuilder {
 
-    private final BindingFactory bindingFactory;
+	private final BindingFactory bindingFactory;
 
-    private ComponentFactory componentFactory;
+	private ComponentFactory componentFactory;
 
-    private FormComponentInterceptor formComponentInterceptor;
+	private FormComponentInterceptor interceptor;
 
-    protected AbstractFormBuilder(BindingFactory bindingFactory) {
-        Assert.notNull(bindingFactory);
-        this.bindingFactory = bindingFactory;
+	private FormComponentInterceptorFactory interceptorFactory;
 
-    }
-    
-    protected FormComponentInterceptor getFormComponentInterceptor() {
-    	if (formComponentInterceptor == null) {
-			FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory)ApplicationServicesLocator.services().getService(FormComponentInterceptorFactory.class);
-			formComponentInterceptor= factory.getInterceptor(getFormModel());
+	protected AbstractFormBuilder(BindingFactory bindingFactory) {
+		Assert.notNull(bindingFactory);
+		this.bindingFactory = bindingFactory;
+	}
+
+	protected FormComponentInterceptor getFormComponentInterceptor() {
+		if (interceptor == null) {
+			if (interceptorFactory == null) {
+				interceptorFactory = (FormComponentInterceptorFactory) ApplicationServicesLocator.services()
+						.getService(FormComponentInterceptorFactory.class);
+			}
+			interceptor = interceptorFactory.getInterceptor(getFormModel());
 		}
-		return formComponentInterceptor;
-    }
 
-    protected ComponentFactory getComponentFactory() {
-        if (componentFactory == null) {
-            componentFactory = (ComponentFactory)ApplicationServicesLocator.services().getService(ComponentFactory.class);
-        }
-        return componentFactory;
-    }
+		return interceptor;
+	}
 
-    public void setComponentFactory(ComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
-    }
+	public void setFormComponentInterceptorFactory(FormComponentInterceptorFactory interceptorFactory) {
+		this.interceptorFactory = interceptorFactory;
+		this.interceptor = null;
+	}
 
-    protected BindingFactory getBindingFactory() {
-        return bindingFactory;
-    }
+	protected ComponentFactory getComponentFactory() {
+		if (componentFactory == null) {
+			componentFactory = (ComponentFactory) ApplicationServicesLocator.services().getService(
+					ComponentFactory.class);
+		}
+		return componentFactory;
+	}
 
-    protected FormModel getFormModel() {
-        return bindingFactory.getFormModel();
-    }
+	public void setComponentFactory(ComponentFactory componentFactory) {
+		this.componentFactory = componentFactory;
+	}
 
-    /**
-     * @deprecated Use {@link #createDefaultBinding(String)} instead
-     */
-    protected Binding getDefaultBinding(String fieldName) {
-        return createDefaultBinding(fieldName);
-    }
+	protected BindingFactory getBindingFactory() {
+		return bindingFactory;
+	}
 
-    protected Binding createDefaultBinding(String fieldName) {
-        return getBindingFactory().createBinding(fieldName);
-    }
-    
-    /**
-     * @deprecated Use {@link #createBinding(String,JComponent)} instead
-     */
-    protected Binding getBinding(String fieldName, JComponent component) {
-        return createBinding(fieldName, component);
-    }
+	protected FormModel getFormModel() {
+		return bindingFactory.getFormModel();
+	}
 
-    protected Binding createBinding(String fieldName, JComponent component) {
-        return getBindingFactory().bindControl(component, fieldName);
-    }
+	/**
+	 * @deprecated Use {@link #createDefaultBinding(String)} instead
+	 */
+	protected Binding getDefaultBinding(String fieldName) {
+		return createDefaultBinding(fieldName);
+	}
 
-    protected Binding createBinding(String fieldName, JComponent component, Map context) {
-        return getBindingFactory().bindControl(component, fieldName, context);
-    }
+	protected Binding createDefaultBinding(String fieldName) {
+		return getBindingFactory().createBinding(fieldName);
+	}
 
-    /**
-     * @deprecated Use {@link #createSelector(String,Constraint)} instead
-     */
-    protected JComponent getSelector(String fieldName, Constraint filter) {
-        return createSelector(fieldName, filter);
-    }
+	/**
+	 * @deprecated Use {@link #createBinding(String,JComponent)} instead
+	 */
+	protected Binding getBinding(String fieldName, JComponent component) {
+		return createBinding(fieldName, component);
+	}
 
-    /**
-     * Creates a component which is used as a selector in the form. This implementation creates a {@link JComboBox}
-     * 
-     * @param fieldName
-     *            the name of the field for the selector
-     * @param filter
-     *            an optional filter constraint
-     * @return the component to use for a selector, not null
-     */
-    protected JComponent createSelector(String fieldName, Constraint filter) {
-        Map context = new HashMap();
-        context.put(ComboBoxBinder.FILTER_KEY, filter);
-        return getBindingFactory().createBinding(JComboBox.class, fieldName).getControl();
-    }
-    
-    /**
-     * Creates a component which is used as a scrollpane for a component 
-     * 
-     * @param fieldName the fieldname for the scrollpane
-     * @param component the component to place into the scrollpane
-     * @return the scrollpane component
-     */
-    protected JComponent createScrollPane(String fieldName, JComponent component) {
-        return getComponentFactory().createScrollPane(component);
-    }
+	protected Binding createBinding(String fieldName, JComponent component) {
+		return getBindingFactory().bindControl(component, fieldName);
+	}
 
-    /**
-     * @deprecated Use {@link #createPasswordField(String)} instead
-     */
-    protected JPasswordField getPasswordField(String fieldName) {
-        return createPasswordField(fieldName);
-    }
+	protected Binding createBinding(String fieldName, JComponent component, Map context) {
+		return getBindingFactory().bindControl(component, fieldName, context);
+	}
 
-    protected JPasswordField createPasswordField(String fieldName) {
-        return getComponentFactory().createPasswordField();
-    }
+	/**
+	 * @deprecated Use {@link #createSelector(String,Constraint)} instead
+	 */
+	protected JComponent getSelector(String fieldName, Constraint filter) {
+		return createSelector(fieldName, filter);
+	}
 
-    /**
-     * @deprecated Use {@link #createTextArea(String)} instead
-     */
-    protected JComponent getTextArea(String fieldName) {
-        return createTextArea(fieldName);
-    }
+	/**
+	 * Creates a component which is used as a selector in the form. This
+	 * implementation creates a {@link JComboBox}
+	 * 
+	 * @param fieldName the name of the field for the selector
+	 * @param filter an optional filter constraint
+	 * @return the component to use for a selector, not null
+	 */
+	protected JComponent createSelector(String fieldName, Constraint filter) {
+		Map context = new HashMap();
+		context.put(ComboBoxBinder.FILTER_KEY, filter);
+		return getBindingFactory().createBinding(JComboBox.class, fieldName).getControl();
+	}
 
-    protected JComponent createTextArea(String fieldName) {
-        return getComponentFactory().createTextArea(5, 40);
-    }
+	/**
+	 * Creates a component which is used as a scrollpane for a component
+	 * 
+	 * @param fieldName the fieldname for the scrollpane
+	 * @param component the component to place into the scrollpane
+	 * @return the scrollpane component
+	 */
+	protected JComponent createScrollPane(String fieldName, JComponent component) {
+		return getComponentFactory().createScrollPane(component);
+	}
 
-    /**
-     * @deprecated Use {@link #createLabelFor(String,JComponent)} instead
-     */
-    protected JLabel getLabelFor(String fieldName, JComponent component) {
-        return createLabelFor(fieldName, component);
-    }
+	/**
+	 * @deprecated Use {@link #createPasswordField(String)} instead
+	 */
+	protected JPasswordField getPasswordField(String fieldName) {
+		return createPasswordField(fieldName);
+	}
 
-    protected JLabel createLabelFor(String fieldName, JComponent component) {
-        JLabel label = getComponentFactory().createLabel("");
-        getFormModel().getFieldFace(fieldName).configure(label);
-        label.setLabelFor(component);
-        
-        getFormComponentInterceptor().processLabel(fieldName, label);
-        
-        return label;
-    }
+	protected JPasswordField createPasswordField(String fieldName) {
+		return getComponentFactory().createPasswordField();
+	}
+
+	/**
+	 * @deprecated Use {@link #createTextArea(String)} instead
+	 */
+	protected JComponent getTextArea(String fieldName) {
+		return createTextArea(fieldName);
+	}
+
+	protected JComponent createTextArea(String fieldName) {
+		return getComponentFactory().createTextArea(5, 40);
+	}
+
+	/**
+	 * @deprecated Use {@link #createLabelFor(String,JComponent)} instead
+	 */
+	protected JLabel getLabelFor(String fieldName, JComponent component) {
+		return createLabelFor(fieldName, component);
+	}
+
+	protected JLabel createLabelFor(String fieldName, JComponent component) {
+		JLabel label = getComponentFactory().createLabel("");
+		getFormModel().getFieldFace(fieldName).configure(label);
+		label.setLabelFor(component);
+
+		FormComponentInterceptor interceptor = getFormComponentInterceptor();
+		if (interceptor != null) {
+			interceptor.processLabel(fieldName, label);
+		}
+
+		return label;
+	}
 }

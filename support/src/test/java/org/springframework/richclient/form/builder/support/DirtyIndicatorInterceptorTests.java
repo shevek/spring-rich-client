@@ -30,6 +30,7 @@ import org.springframework.context.support.StaticMessageSource;
 import org.springframework.richclient.application.support.DefaultApplicationServices;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
+import org.springframework.richclient.form.builder.TestBean;
 import org.springframework.richclient.test.SpringRichTestCase;
 
 /**
