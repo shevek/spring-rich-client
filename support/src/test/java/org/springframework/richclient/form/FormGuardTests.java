@@ -16,7 +16,7 @@
 package org.springframework.richclient.form;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
 import org.springframework.binding.form.ValidatingFormModel;
@@ -84,8 +84,8 @@ public class FormGuardTests extends SpringRichTestCase {
             JTextField textControl = (JTextField)getBindingFactory().createBinding("field").getControl();
             
             // provide a rootpane for the form's control.
-            JFrame frame = new JFrame("dummy");
-            frame.getContentPane().add(textControl);
+            JRootPane rootPane= new JRootPane();
+            rootPane.add(textControl);
             
             return textControl;
         }
