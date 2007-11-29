@@ -15,8 +15,7 @@
  */
 package org.springframework.richclient.command.config;
 
-import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Color;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -24,6 +23,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import junit.framework.TestCase;
+
+import org.springframework.richclient.test.TestIcon;
 
 /**
  * Testcase for CommandButtonIconInfo
@@ -138,52 +139,13 @@ public class CommandButtonIconInfoTests extends TestCase {
         // test passes
     }
 
-    private static class TestIcon implements Icon {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see javax.swing.Icon#getIconHeight()
-         */
-        public int getIconHeight() {
-            return 16;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see javax.swing.Icon#getIconWidth()
-         */
-        public int getIconWidth() {
-            return 16;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see javax.swing.Icon#paintIcon(java.awt.Component,
-         *      java.awt.Graphics, int, int)
-         */
-        public void paintIcon(Component arg0, Graphics arg1, int arg2, int arg3) {
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
     protected void setUp() throws Exception {
-        super.setUp();
-
-        icon = new TestIcon();
-        selectedIcon = new TestIcon();
-        rolloverIcon = new TestIcon();
-        disabledIcon = new TestIcon();
-        pressedIcon = new TestIcon();
+        icon = new TestIcon(Color.BLUE);
+        selectedIcon = new TestIcon(Color.BLACK);
+        rolloverIcon = new TestIcon(Color.GREEN);
+        disabledIcon = new TestIcon(Color.GRAY);
+        pressedIcon = new TestIcon(Color.WHITE);
 
         completeInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
-
     }
-
 }
