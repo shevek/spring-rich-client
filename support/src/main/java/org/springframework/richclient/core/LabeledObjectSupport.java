@@ -41,176 +41,184 @@ import org.springframework.util.ObjectUtils;
  * @author Keith Donald
  */
 public class LabeledObjectSupport extends ApplicationServicesAccessor implements DescribedElement, VisualizedElement,
-        CommandLabelConfigurable, ImageConfigurable, DescriptionConfigurable, TitleConfigurable {
-    protected final Log logger = LogFactory.getLog(getClass());
+		CommandLabelConfigurable, ImageConfigurable, DescriptionConfigurable, TitleConfigurable {
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    private CommandButtonLabelInfo label;
+	private CommandButtonLabelInfo label;
 
-    private String title;
+	private String title;
 
-    private String caption;
+	private String caption;
 
-    private String description;
+	private String description;
 
-    private Image image;
+	private Image image;
 
-    private PropertyChangeSupport propertyChangeSupport;
+	private PropertyChangeSupport propertyChangeSupport;
 
-    public void setLabelInfo(CommandButtonLabelInfo label) {
-        String oldDisplayName = getDisplayName();
-        int oldMnemonic = getMnemonic();
-        int oldMnemonicIndex = getMnemonicIndex();
-        KeyStroke oldAccelerator = getAccelerator();
-        this.label = label;
-        firePropertyChange(DISPLAY_NAME_PROPERTY, oldDisplayName, getDisplayName());
-        firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
-        firePropertyChange("mnemonicIndex", oldMnemonicIndex, getMnemonicIndex());
-        firePropertyChange("accelerator", oldAccelerator, getAccelerator());
-    }
+	public void setLabelInfo(CommandButtonLabelInfo label) {
+		String oldDisplayName = null;
+		if (this.title != null || this.label != null) {
+			oldDisplayName = getDisplayName();
+		}
+		
+		int oldMnemonic = getMnemonic();
+		int oldMnemonicIndex = getMnemonicIndex();
+		KeyStroke oldAccelerator = getAccelerator();
+		this.label = label;
+		firePropertyChange(DISPLAY_NAME_PROPERTY, oldDisplayName, getDisplayName());
+		firePropertyChange("mnemonic", oldMnemonic, getMnemonic());
+		firePropertyChange("mnemonicIndex", oldMnemonicIndex, getMnemonicIndex());
+		firePropertyChange("accelerator", oldAccelerator, getAccelerator());
+	}
 
-    public void setCaption(String caption) {
-        String oldValue = caption;
-        this.caption = caption;
-        firePropertyChange(CAPTION_PROPERTY, oldValue, caption);
-    }
+	public void setCaption(String caption) {
+		String oldValue = caption;
+		this.caption = caption;
+		firePropertyChange(CAPTION_PROPERTY, oldValue, caption);
+	}
 
-    public void setDescription(String description) {
-        String oldValue = this.description;
-        this.description = description;
-        firePropertyChange(DESCRIPTION_PROPERTY, oldValue, description);
-    }
+	public void setDescription(String description) {
+		String oldValue = this.description;
+		this.description = description;
+		firePropertyChange(DESCRIPTION_PROPERTY, oldValue, description);
+	}
 
-    public void setTitle(String title) {
-        String oldValue = getDisplayName();
-        this.title = title;
-        firePropertyChange(DISPLAY_NAME_PROPERTY, oldValue, getDisplayName());
-    }
+	public void setTitle(String title) {
+		String oldValue = null;
+		if (this.title != null || this.label != null) {
+			oldValue = getDisplayName();
+		}
 
-    public void setImage(Image image) {
-        Image oldValue = image;
-        this.image = image;
-        firePropertyChange("image", oldValue, image);
-    }
+		this.title = title;
+		firePropertyChange(DISPLAY_NAME_PROPERTY, oldValue, getDisplayName());
+	}
 
-    public String getDisplayName() {
-        if (title != null) {
-            return title;
-        }
+	public void setImage(Image image) {
+		Image oldValue = image;
+		this.image = image;
+		firePropertyChange("image", oldValue, image);
+	}
 
-        if (label == null) {
-            if (logger.isInfoEnabled()) {
-                logger.info("This labeled object's display name is not configured; returning 'displayName'");
-            }
-            return "displayName";
-        }
-        return label.getText();
-    }
+	public String getDisplayName() {
+		if (title != null) {
+			return title;
+		}
 
-    public String getCaption() {
-        return caption;
-    }
+		if (label == null) {
+			if (logger.isInfoEnabled()) {
+				logger.info("This labeled object's display name is not configured; returning 'displayName'");
+			}
+			return "displayName";
+		}
+		return label.getText();
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getCaption() {
+		return caption;
+	}
 
-    public Image getImage() {
-        return image;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Icon getIcon() {
-        if (image != null)
-            return new ImageIcon(image);
+	public Image getImage() {
+		return image;
+	}
 
-        return null;
-    }
+	public Icon getIcon() {
+		if (image != null)
+			return new ImageIcon(image);
 
-    public int getMnemonic() {
-        if (label != null)
-            return label.getMnemonic();
+		return null;
+	}
 
-        return 0;
-    }
+	public int getMnemonic() {
+		if (label != null)
+			return label.getMnemonic();
 
-    public int getMnemonicIndex() {
-        if (label != null)
-            return label.getMnemonicIndex();
+		return 0;
+	}
 
-        return 0;
-    }
+	public int getMnemonicIndex() {
+		if (label != null)
+			return label.getMnemonicIndex();
 
-    public KeyStroke getAccelerator() {
-        if (label != null)
-            return label.getAccelerator();
+		return 0;
+	}
 
-        return null;
-    }
+	public KeyStroke getAccelerator() {
+		if (label != null)
+			return label.getAccelerator();
 
-    public CommandButtonLabelInfo getLabel() {
-        return label;
-    }
+		return null;
+	}
 
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        getOrCreatePropertyChangeSupport().addPropertyChangeListener(l);
-    }
+	public CommandButtonLabelInfo getLabel() {
+		return label;
+	}
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
-        getOrCreatePropertyChangeSupport().addPropertyChangeListener(propertyName, l);
-    }
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		getOrCreatePropertyChangeSupport().addPropertyChangeListener(l);
+	}
 
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        getPropertyChangeSupport().removePropertyChangeListener(l);
-    }
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
+		getOrCreatePropertyChangeSupport().addPropertyChangeListener(propertyName, l);
+	}
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener l) {
-        getPropertyChangeSupport().removePropertyChangeListener(propertyName, l);
-    }
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		getPropertyChangeSupport().removePropertyChangeListener(l);
+	}
 
-    private PropertyChangeSupport getPropertyChangeSupport() {
-        Assert.notNull(propertyChangeSupport,
-                "Property change support has not yet been initialized; add a listener first!");
-        return propertyChangeSupport;
-    }
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener l) {
+		getPropertyChangeSupport().removePropertyChangeListener(propertyName, l);
+	}
 
-    private PropertyChangeSupport getOrCreatePropertyChangeSupport() {
-        if (propertyChangeSupport == null) {
-            propertyChangeSupport = new SwingPropertyChangeSupport(this);
-        }
-        return propertyChangeSupport;
-    }
+	private PropertyChangeSupport getPropertyChangeSupport() {
+		Assert.notNull(propertyChangeSupport,
+				"Property change support has not yet been initialized; add a listener first!");
+		return propertyChangeSupport;
+	}
 
-    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        if (propertyChangeSupport != null) {
-            propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-        }
-    }
+	private PropertyChangeSupport getOrCreatePropertyChangeSupport() {
+		if (propertyChangeSupport == null) {
+			propertyChangeSupport = new SwingPropertyChangeSupport(this);
+		}
+		return propertyChangeSupport;
+	}
 
-    protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        if (propertyChangeSupport != null) {
-            propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-        }
-    }
+	protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+		if (propertyChangeSupport != null) {
+			propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+		}
+	}
 
-    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        if (propertyChangeSupport != null) {
-            propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-        }
-    }
+	protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+		if (propertyChangeSupport != null) {
+			propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+		}
+	}
 
-    protected boolean hasChanged(Object currentValue, Object proposedValue) {
-        return !ObjectUtils.nullSafeEquals(currentValue, proposedValue);
-    }
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (propertyChangeSupport != null) {
+			propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+		}
+	}
 
-    protected boolean hasChanged(boolean currentValue, boolean proposedValue) {
-        return currentValue != proposedValue;
-    }
+	protected boolean hasChanged(Object currentValue, Object proposedValue) {
+		return !ObjectUtils.nullSafeEquals(currentValue, proposedValue);
+	}
 
-    protected boolean hasChanged(int currentValue, int proposedValue) {
-        return currentValue != proposedValue;
-    }
+	protected boolean hasChanged(boolean currentValue, boolean proposedValue) {
+		return currentValue != proposedValue;
+	}
 
-    public String toString() {
-        return new ToStringCreator(this).toString();
-    }
+	protected boolean hasChanged(int currentValue, int proposedValue) {
+		return currentValue != proposedValue;
+	}
+
+	public String toString() {
+		return new ToStringCreator(this).toString();
+	}
 
 }
