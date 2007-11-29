@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -49,14 +49,12 @@ public abstract class BeanTableModel extends BaseTableModel {
         super();
         setBeanClass(beanClass);
         setMessageSource(messages);
-        createColumnInfo();
     }
 
     public BeanTableModel(Class beanClass, List rows, MessageSource messages) {
         super(rows);
         setBeanClass(beanClass);
         setMessageSource(messages);
-        createColumnInfo();
     }
 
     public void setBeanClass(Class clazz) {
@@ -66,6 +64,7 @@ public abstract class BeanTableModel extends BaseTableModel {
     public void setMessageSource(MessageSource messages) {
         if (messages != null) {
             this.messages = new MessageSourceAccessor(messages);
+            createColumnInfo();
         }
         else {
             this.messages = null;
@@ -79,10 +78,10 @@ public abstract class BeanTableModel extends BaseTableModel {
 
     protected abstract String[] createColumnPropertyNames();
 
-    public String[] createColumnNames() {
+    protected String[] createColumnNames() {
         String[] columnPropertyNames = getColumnPropertyNames();
         String[] columnNames = new String[columnPropertyNames.length];
-        Assert.notNull(this.messages);
+        Assert.state(this.messages != null, "First set the MessageSource.");
         for (int i = 0; i < columnPropertyNames.length; i++) {
             String className = ClassUtils.getShortNameAsProperty(beanClass);
             String columnPropertyName = columnPropertyNames[i];
