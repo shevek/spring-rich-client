@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,132 +29,129 @@ import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.image.config.ImageConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
-import org.springframework.util.ObjectUtils;
 
 public abstract class TitledApplicationDialog extends ApplicationDialog implements Messagable, ImageConfigurable,
-        DescriptionConfigurable {
-    private TitlePane titlePane = new TitlePane();
+		DescriptionConfigurable {
+	private TitlePane titlePane = new TitlePane();
 
-    private Message description = new DefaultMessage("Title pane description");
+	private Message description = new DefaultMessage("Title pane description");
 
-    private JComponent pageControl;
+	private JComponent pageControl;
 
-    private JComponent contentPane;
+	private JComponent contentPane;
 
-    public TitledApplicationDialog() {
-        super();
-    }
+	public TitledApplicationDialog() {
+		super();
+	}
 
-    public TitledApplicationDialog(String title, Window parent) {
-        super(title, parent);
-    }
+	public TitledApplicationDialog(String title, Window parent) {
+		super(title, parent);
+	}
 
-    public TitledApplicationDialog(String title, Window parent, CloseAction closeAction) {
-        super(title, parent, closeAction);
-    }
+	public TitledApplicationDialog(String title, Window parent, CloseAction closeAction) {
+		super(title, parent, closeAction);
+	}
 
-    public void setCaption(String shortDescription) {
-        throw new UnsupportedOperationException("What can I do with a caption?");
-    }
+	public void setCaption(String shortDescription) {
+		throw new UnsupportedOperationException("What can I do with a caption?");
+	}
 
-    public void setDescription(String description) {
-        Message old = this.description;
-        Message message = new DefaultMessage(description);
-        if (!ObjectUtils.nullSafeEquals(old, message)) {
-            this.description = message;
-            if (!titlePane.getMessage().equals(old)) {
-                titlePane.setMessage(this.description);
-            }
-        }
-    }
+	public void setDescription(String description) {
+		this.description = new DefaultMessage(description);
+		setMessage(this.description);
+	}
 
-    public void setTitlePaneTitle(String titleAreaText) {
-        titlePane.setTitle(titleAreaText);
-    }
+	public void setTitlePaneTitle(String titleAreaText) {
+		titlePane.setTitle(titleAreaText);
+	}
 
-    public void setTitlePaneImage(Image image) {
-        titlePane.setImage(image);
-    }
+	protected String getTitlePaneTitle() {
+		return titlePane.getTitle();
+	}
 
-    public void setImage(Image image) {
-        setTitlePaneImage(image);
-    }
+	public void setTitlePaneImage(Image image) {
+		titlePane.setImage(image);
+	}
 
-    public Message getMessage() {
-        return titlePane.getMessage();
-    }
+	protected Image getTitlePaneImage() {
+		return titlePane.getImage();
+	}
 
-    public void setMessage(Message message) {
-        if (message == null) {
-            titlePane.setMessage(getDescription());
-        }
-        else {
-            titlePane.setMessage(message);
-        }
-    }
+	public void setImage(Image image) {
+		setTitlePaneImage(image);
+	}
 
-    public boolean isMessageShowing() {
-        return titlePane.isMessageShowing();
-    }
+	public Message getMessage() {
+		return titlePane.getMessage();
+	}
 
-    protected Message getDescription() {
-        return description;
-    }
+	public void setMessage(Message message) {
+		if (message == null || DefaultMessage.EMPTY_MESSAGE.equals(message)) {
+			titlePane.setMessage(getDescription());
+		}
+		else {
+			titlePane.setMessage(message);
+		}
+	}
 
-    protected void setContentPane(JComponent c) {
-        if (isControlCreated()) {
-            pageControl.remove(contentPane);
-            this.contentPane = c;
-            pageControl.add(contentPane);
-            pageControl.revalidate();
-            pageControl.repaint();
-        }
-        else {
-            throw new IllegalStateException("Cannot set content pane until control is created");
-        }
-    }
+	public boolean isMessageShowing() {
+		return titlePane.isMessageShowing();
+	}
 
-    protected void addDialogComponents() {
-        JComponent dialogContentPane = createDialogContentPane();
-        getDialog().getContentPane().add(dialogContentPane, BorderLayout.CENTER);
-        getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
-    }
+	protected Message getDescription() {
+		return description;
+	}
 
-    protected JComponent createDialogContentPane() {
-        pageControl = new JPanel(new BorderLayout());
-        JPanel titlePaneContainer = new JPanel(new BorderLayout());
-        setMessage(getDescription());
-        titlePaneContainer.add(titlePane.getControl());
-        titlePaneContainer.add(new JSeparator(), BorderLayout.SOUTH);
-        pageControl.add(titlePaneContainer, BorderLayout.NORTH);
-        contentPane = createTitledDialogContentPane();
-        if (getPreferredSize() != null) {
-            contentPane.setPreferredSize(getPreferredSize());
-        }
-        GuiStandardUtils.attachDialogBorder(contentPane);
-        pageControl.add(contentPane);
-        return pageControl;
-    }
+	protected void setContentPane(JComponent c) {
+		if (isControlCreated()) {
+			pageControl.remove(contentPane);
+			this.contentPane = c;
+			pageControl.add(contentPane);
+			pageControl.revalidate();
+			pageControl.repaint();
+		}
+		else {
+			throw new IllegalStateException("Cannot set content pane until control is created");
+		}
+	}
 
-    protected abstract JComponent createTitledDialogContentPane();
+	protected void addDialogComponents() {
+		JComponent dialogContentPane = createDialogContentPane();
+		getDialog().getContentPane().add(dialogContentPane, BorderLayout.CENTER);
+		getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
+	}
 
-    protected void onAboutToShow() {
+	protected JComponent createDialogContentPane() {
+		pageControl = new JPanel(new BorderLayout());
+		JPanel titlePaneContainer = new JPanel(new BorderLayout());
+		setMessage(getDescription());
+		titlePaneContainer.add(titlePane.getControl());
+		titlePaneContainer.add(new JSeparator(), BorderLayout.SOUTH);
+		pageControl.add(titlePaneContainer, BorderLayout.NORTH);
+		contentPane = createTitledDialogContentPane();
+		if (getPreferredSize() != null) {
+			contentPane.setPreferredSize(getPreferredSize());
+		}
+		GuiStandardUtils.attachDialogBorder(contentPane);
+		pageControl.add(contentPane);
+		return pageControl;
+	}
 
-    }
+	protected abstract JComponent createTitledDialogContentPane();
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        titlePane.addPropertyChangeListener(listener);
-    }
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		titlePane.addPropertyChangeListener(listener);
+	}
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        titlePane.addPropertyChangeListener(propertyName, listener);
-    }
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		titlePane.addPropertyChangeListener(propertyName, listener);
+	}
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        titlePane.removePropertyChangeListener(listener);
-    }
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		titlePane.removePropertyChangeListener(listener);
+	}
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        titlePane.removePropertyChangeListener(propertyName, listener);
-    }
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		titlePane.removePropertyChangeListener(propertyName, listener);
+	}
 }

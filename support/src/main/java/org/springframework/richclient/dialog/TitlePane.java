@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -84,15 +84,18 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
 
     protected JComponent createControl() {
         titleLabel = new JLabel();
+        titleLabel.setName("title");
         titleLabel.setOpaque(false);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titleLabel.setText(title);
 
         iconLabel = new JLabel();
+        iconLabel.setName("icon");
         iconLabel.setBackground(getBackgroundColor());
         iconLabel.setIcon(getIcon());
 
         JPanel panel = new JPanel();
+        panel.setName("panel");
         panel.setBackground(getBackgroundColor());
         TableLayoutBuilder table = new TableLayoutBuilder(panel);
         table.row(FormFactory.LINE_GAP_ROWSPEC);
@@ -149,4 +152,11 @@ public class TitlePane extends AbstractControlFactory implements MessagePane, Ti
         messagePane.removePropertyChangeListener(propertyName, listener);
     }
 
+	public String getTitle() {
+		return title;
+	}
+
+	public Image getImage() {
+		return image;
+	}
 }
