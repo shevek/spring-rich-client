@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-<!--
-  - $Id$
-  -->
+  <bean id="remoteAuthenticationProvider"
+    class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
+    <property name="remoteAuthenticationManager" ref="remoteAuthenticationManager" />
+  </bean>
 
-<beans>
+  <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+    <property name="providers">
+      <list>
+        <ref bean="remoteAuthenticationProvider" />
+      </list>
+    </property>
+  </bean>
 
-	<bean id="remoteAuthenticationProvider" class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
-  		<property name="remoteAuthenticationManager"><ref bean="remoteAuthenticationManager"/></property>
-	</bean>
-	
-	<bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
-		<property name="providers">
-		  <list>
-		    <ref bean="remoteAuthenticationProvider"/>
-		  </list>
-		</property>
-	</bean>
+  <bean id="remotingSecurityConfigurer"
+    class="org.springframework.richclient.security.RemotingSecurityConfigurer" />
 
-	<bean id="remotingSecurityConfigurer" class="org.springframework.richclient.security.RemotingSecurityConfigurer"/>
+  <!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
 
-	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
-	
-	<bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter"/>
+  <bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter" />
 
-	<bean id="accessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
-   		<property name="allowIfAllAbstainDecisions"><value>false</value></property>
-		<property name="decisionVoters">
-		  <list>
-		    <ref bean="roleVoter"/>
-		  </list>
-		</property>
-	</bean>
+  <bean id="accessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
+    <property name="allowIfAllAbstainDecisions" value="false" />
+    <property name="decisionVoters">
+      <list>
+        <ref bean="roleVoter" />
+      </list>
+    </property>
+  </bean>
 
 </beans>

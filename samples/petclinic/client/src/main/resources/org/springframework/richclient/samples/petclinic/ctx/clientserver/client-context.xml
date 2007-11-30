@@ -1,61 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-<!--
-  - $Id$
+  <!-- Resolves ${...} placeholders from client.properties -->
+  <bean id="propertyConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="org/springframework/richclient/samples/petclinic/ctx/clientserver/client.properties" />
+  </bean>
+
+  <!-- Proxy for the Hessian-exported Clinic -->
+  <!-- Hessian is a slim binary HTTP remoting protocol -->
+  <bean id="clinic" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+    <property name="serviceInterface" value="org.springframework.samples.petclinic.Clinic" />
+    <property name="serviceUrl" value="http://${serverName}:${httpPort}${contextPath}/ws/Clinic-hessian" />
+  </bean>
+
+  <!-- Proxy for the Burlap-exported Clinic -->
+  <!-- Burlap is a slim XML-based HTTP remoting protocol -->
+  <!--
+    <bean id="clinic" class="org.springframework.remoting.caucho.BurlapProxyFactoryBean">
+    <property name="serviceInterface">
+    <value>org.springframework.samples.petclinic.Clinic</value>
+    </property>
+    <property name="serviceUrl">
+    <value>http://${serverName}:${httpPort}${contextPath}/ws/Clinic-burlap</value>
+    </property>
+    </bean>
   -->
 
-<beans>
+  <!-- Proxy for the Hessian-exported RemoteAuthenticationManager -->
+  <bean id="remoteAuthenticationManager"
+    class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+    <property name="serviceInterface" value="org.acegisecurity.providers.rcp.RemoteAuthenticationManager" />
+    <property name="serviceUrl" value="http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-hessian" />
+  </bean>
 
-	<!-- Resolves ${...} placeholders from client.properties -->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location"><value>org/springframework/richclient/samples/petclinic/ctx/clientserver/client.properties</value></property>
-	</bean>
-
-	<!-- Proxy for the Hessian-exported Clinic -->
-	<!-- Hessian is a slim binary HTTP remoting protocol -->
-	<bean id="clinic" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
-		<property name="serviceInterface">
-			<value>org.springframework.samples.petclinic.Clinic</value>
-		</property>
-		<property name="serviceUrl">
-			<value>http://${serverName}:${httpPort}${contextPath}/ws/Clinic-hessian</value>
-		</property>
-	</bean>
-
-	<!-- Proxy for the Burlap-exported Clinic -->
-	<!-- Burlap is a slim XML-based HTTP remoting protocol -->
-<!--
-	<bean id="clinic" class="org.springframework.remoting.caucho.BurlapProxyFactoryBean">
-		<property name="serviceInterface">
-			<value>org.springframework.samples.petclinic.Clinic</value>
-		</property>
-		<property name="serviceUrl">
-			<value>http://${serverName}:${httpPort}${contextPath}/ws/Clinic-burlap</value>
-		</property>
-	</bean>
--->
-
-	<!-- Proxy for the Hessian-exported RemoteAuthenticationManager -->
-	<bean id="remoteAuthenticationManager" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
-		<property name="serviceInterface">
-			<value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
-		</property>
-		<property name="serviceUrl">
-			<value>http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-hessian</value>
-		</property>
-	</bean>
-
-	<!-- Proxy for the Burlap-exported RemoteAuthenticationManager -->
-<!--
-	<bean id="remoteAuthenticationManager" class="org.springframework.remoting.caucho.BurlapProxyFactoryBean">
-		<property name="serviceInterface">
-			<value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
-		</property>
-		<property name="serviceUrl">
-			<value>http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-burlap</value>
-		</property>
-	</bean>
--->
+  <!-- Proxy for the Burlap-exported RemoteAuthenticationManager -->
+  <!--
+    <bean id="remoteAuthenticationManager" class="org.springframework.remoting.caucho.BurlapProxyFactoryBean">
+    <property name="serviceInterface">
+    <value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
+    </property>
+    <property name="serviceUrl">
+    <value>http://${serverName}:${httpPort}${contextPath}/ws/RemoteAuthenticationManager-burlap</value>
+    </property>
+    </bean>
+  -->
 
 </beans>
