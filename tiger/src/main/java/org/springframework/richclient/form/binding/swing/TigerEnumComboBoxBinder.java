@@ -27,7 +27,7 @@ import org.springframework.util.Assert;
  *                   &lt;key&gt;
  *                       &lt;value type=&quot;java.lang.Class&quot;&gt;java.lang.Enum&lt;/value&gt;
  *                   &lt;/key&gt;
- *                   &lt;bean class=&quot;be.kahosl.thot.swingui.util.TigerEnumComboBoxBinder&quot; /&gt;
+ *                   &lt;bean class=&quot;org.springframework.richclient.form.binding.swing.TigerEnumComboBoxBinder&quot; /&gt;
  *               &lt;/entry&gt;
  *           &lt;/map&gt;
  *       &lt;/property&gt;
