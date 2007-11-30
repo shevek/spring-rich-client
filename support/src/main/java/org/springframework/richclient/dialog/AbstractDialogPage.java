@@ -60,10 +60,6 @@ public abstract class AbstractDialogPage extends LabeledObjectSupport implements
 		}
 	};
 
-	protected AbstractDialogPage() {
-
-	}
-
 	/**
 	 * Creates a new dialog page. This titles of this dialog page will be
 	 * configured using the default ObjectConfigurer.
