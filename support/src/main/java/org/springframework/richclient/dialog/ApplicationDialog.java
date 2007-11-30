@@ -47,6 +47,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.core.TitleConfigurable;
 import org.springframework.richclient.util.GuiStandardUtils;
+import org.springframework.richclient.util.WindowUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -308,7 +309,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                 dialog.setLocation(getLocation());
             }
             else {
-				dialog.setLocationRelativeTo(getLocationRelativeTo());
+            	WindowUtils.centerOnParent(dialog, getLocationRelativeTo());
 			}
 
             dialog.setVisible(true);

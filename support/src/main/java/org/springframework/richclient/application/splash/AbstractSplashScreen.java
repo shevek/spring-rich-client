@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.richclient.control.ShadowBorderFrame;
+import org.springframework.richclient.util.WindowUtils;
 
 /**
  * An abstract helper implementation of the {@link SplashScreen} interface.
@@ -139,7 +140,7 @@ public abstract class AbstractSplashScreen implements SplashScreen {
 			frame.getContentPane().add(content);
 		}
 		frame.pack();
-		frame.setLocationRelativeTo(null);
+		WindowUtils.centerOnScreen(frame);
 		frame.setVisible(true);
 	}
 

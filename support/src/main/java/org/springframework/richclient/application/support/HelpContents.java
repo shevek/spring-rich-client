@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.Application;
+import org.springframework.richclient.util.WindowUtils;
 
 /**
  * A simple implementation of a help contents frame for an application using
@@ -74,7 +75,7 @@ public class HelpContents {
             helpFrame.getGlassPane().setCursor(Cursor.getDefaultCursor());
         }
         if (!helpFrame.isVisible()) {
-            helpFrame.setLocationRelativeTo(parent);
+        	WindowUtils.centerOnParent(helpFrame, parent);
             helpFrame.setVisible(true);
         }
         if ((helpFrame.getExtendedState() & Frame.NORMAL) == 0) {

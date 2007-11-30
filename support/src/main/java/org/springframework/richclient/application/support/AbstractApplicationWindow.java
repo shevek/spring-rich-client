@@ -16,9 +16,6 @@
 package org.springframework.richclient.application.support;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -48,6 +45,7 @@ import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.EventListenerListHelper;
+import org.springframework.richclient.util.WindowUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -269,22 +267,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
         windowControl.pack();
         windowControl.setSize( configurer.getInitialSize() );
 
-        // This works around a bug in setLocationRelativeTo(...): it currently
-        // does not take multiple monitors into accounts on all operating
-        // systems.
-        try {
-            // Note that if this is running on a JVM prior to 1.4, then an
-            // exception will be thrown and we will fall back to
-            // setLocationRelativeTo(...).
-            final Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-
-            final Dimension windowSize = windowControl.getSize();
-            final int x = screenBounds.x + ((screenBounds.width - windowSize.width) / 2);
-            final int y = screenBounds.y + ((screenBounds.height - windowSize.height) / 2);
-            windowControl.setLocation( x, y );
-        } catch( Throwable t ) {
-            windowControl.setLocationRelativeTo( null );
-        }
+        WindowUtils.centerOnScreen(windowControl);
     }
 
     protected JFrame createNewWindowControl() {
