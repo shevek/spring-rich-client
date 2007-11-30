@@ -37,7 +37,7 @@ public class ToolBarCommandButtonConfigurerTests extends CommandButtonConfigurer
 
 		configurer.configure(button, null, getCommandFaceDescriptor());
 
-		assertEquals("", button.getText());
+		assertEquals(null, button.getText());
 		assertEquals(getCommandFaceDescriptor().getIcon(), button.getIcon());
 		assertEquals(getCommandFaceDescriptor().getCaption(), button.getToolTipText());
 	}

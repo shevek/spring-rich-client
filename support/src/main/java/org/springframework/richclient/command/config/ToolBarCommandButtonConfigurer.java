@@ -95,7 +95,7 @@ public class ToolBarCommandButtonConfigurer extends DefaultCommandButtonConfigur
 
 		if (!showText) {
 			if (button.getIcon() != null) {
-				button.setText("");
+				button.setText(null);
 			}
 		}
 
