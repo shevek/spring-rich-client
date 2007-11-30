@@ -17,6 +17,7 @@ package org.springframework.richclient.settings.support;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Toolkit;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -155,6 +156,10 @@ public class WindowMementoTests extends TestCase {
 	}
 
 	public void testSaveMaximizedState() {
+		// skip test if platform doesn't support this frame state.
+		if (!Toolkit.getDefaultToolkit().isFrameStateSupported(Frame.MAXIMIZED_BOTH))
+			return;
+
 		WindowMemento frameMemento = new WindowMemento(frame, "frame");
 
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -168,6 +173,10 @@ public class WindowMementoTests extends TestCase {
 	}
 
 	public void testRestoreMaximizedState() {
+		// skip test if platform doesn't support this frame state.
+		if (!Toolkit.getDefaultToolkit().isFrameStateSupported(Frame.MAXIMIZED_BOTH))
+			return;
+
 		WindowMemento frameMemento = new WindowMemento(frame, "frame");
 
 		frame.setExtendedState(Frame.NORMAL);
