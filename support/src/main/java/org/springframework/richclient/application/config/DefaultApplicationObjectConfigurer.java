@@ -345,7 +345,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * instance's {@link MessageSource} using a message code in the format
 	 * 
 	 * <pre>
-	 *                   &lt;objectName&gt;.title
+	 *                     &lt;objectName&gt;.title
 	 * </pre>
 	 * 
 	 * @param configurable The object to be configured. Must not be null.
@@ -371,7 +371,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * {@link MessageSource} using a message code in the format
 	 * 
 	 * <pre>
-	 *                   &lt;objectName&gt;.label
+	 *                     &lt;objectName&gt;.label
 	 * </pre>
 	 * 
 	 * @param configurable The object to be configured. Must not be null.
@@ -398,7 +398,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * instance's {@link MessageSource} using a message code in the format
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.label
+	 *   &lt;objectName&gt;.label
 	 * </pre>
 	 * 
 	 * @param configurable The object to be configured. Must not be null.
@@ -425,13 +425,13 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * the format
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.description
+	 *   &lt;objectName&gt;.description
 	 * </pre>
 	 * 
 	 * and
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.caption
+	 *   &lt;objectName&gt;.caption
 	 * </pre>
 	 * 
 	 * respectively.
@@ -465,7 +465,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * instance's {@link ImageSource} using a key in the format
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.image
+	 *   &lt;objectName&gt;.image
 	 * </pre>
 	 * 
 	 * If the image source cannot find an image under that key, the object's
@@ -493,7 +493,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	 * instance's {@link IconSource} using a key in the format
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.icon
+	 *   &lt;objectName&gt;.icon
 	 * </pre>
 	 * 
 	 * If the icon source cannot find an icon under that key, the object's icon
@@ -517,15 +517,45 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	}
 
 	/**
-	 * Sets the icons of the given object. The icons are loaded from this
-	 * instance's {@link IconSource}. using a key in the format
+	 * Sets the icons of the given object.
+	 * 
+	 * <p>
+	 * The icons are loaded from this instance's {@link IconSource}. using a
+	 * key in the format
+	 * </p>
 	 * 
 	 * <pre>
-	 * &lt;objectName&gt;.icon
+	 *   &lt;objectName&gt;.someIconType
 	 * </pre>
 	 * 
+	 * <p>
+	 * The keys used to retrieve large icons from the icon source are created by
+	 * concatenating the given {@code objectName} with a dot (.), the text
+	 * 'large' and then an icon type like so:
+	 * </p>
+	 * 
+	 * <pre>
+	 *  &lt;myObjectName&gt;.large.someIconType
+	 * </pre>
+	 * 
+	 * <p>
 	 * If the icon source cannot find an icon under that key, the object's icon
 	 * will be set to null.
+	 * </p>
+	 * 
+	 * <p>
+	 * If the {@code loadOptionalIcons} flag is set to true (it is by default)
+	 * all the following icon types will be used. If the flag is false, only the
+	 * first will be used:
+	 * </p>
+	 * 
+	 * <ul>
+	 * <li>{@value #ICON_KEY}</li>
+	 * <li>{@value #SELECTED_ICON_KEY}</li>
+	 * <li>{@value #ROLLOVER_ICON_KEY}</li>
+	 * <li>{@value #DISABLED_ICON_KEY}</li>
+	 * <li>{@value #PRESSED_ICON_KEY}</li>
+	 * </ul>
 	 * 
 	 * @param configurable The object to be configured. Must not be null.
 	 * @param objectName The name of the configurable object, unique within the
@@ -536,8 +566,8 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	protected void configureCommandIcons(CommandIconConfigurable configurable, String objectName) {
 		Assert.required(configurable, "configurable");
 		Assert.required(objectName, "objectName");
-		setIconInfo(configurable, objectName);
-		setLargeIconInfo(configurable, objectName);
+		setIconInfo(configurable, objectName, false);
+		setIconInfo(configurable, objectName, true);
 	}
 
 	/**
@@ -589,45 +619,11 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 
 	}
 
-	/**
-	 * Sets the icons for the given object by retrieving them from this
-	 * instance's {@link IconSource} and adding them to the
-	 * {@link CommandButtonIconInfo} object to be set on the configurable
-	 * object.
-	 * 
-	 * <p>
-	 * The keys used to retrieve icons from the icon source are created by
-	 * concatenating the given {@code objectName} with a dot (.) and then an
-	 * icon type like so:
-	 * </p>
-	 * 
-	 * <pre>
-	 *                       {@code myObjectName.someIconType}.
-	 * </pre>
-	 * 
-	 * If the {@code loadOptionalIcons} flag is set to true (it is by default)
-	 * all the following icon types will be used. If the flag is false, only the
-	 * first will be used:
-	 * 
-	 * <ul>
-	 * <li>{@value #ICON_KEY}</li>
-	 * <li>{@value #SELECTED_ICON_KEY}</li>
-	 * <li>{@value #ROLLOVER_ICON_KEY}</li>
-	 * <li>{@value #DISABLED_ICON_KEY}</li>
-	 * <li>{@value #PRESSED_ICON_KEY}</li>
-	 * </ul>
-	 * 
-	 * @param object The object to be configured. Must not be null.
-	 * @param objectName The name of the object. Must not be null.
-	 * 
-	 * @throws IllegalArgumentException if either argument is null.
-	 */
-	public void setIconInfo(CommandIconConfigurable object, String objectName) {
-
+	protected void setIconInfo(CommandIconConfigurable object, String objectName, boolean large) {
 		Assert.required(object, "object");
 		Assert.required(objectName, "objectName");
 
-		Icon icon = loadIcon(objectName, ICON_KEY);
+		Icon icon = loadIcon(objectName, ICON_KEY, large);
 
 		if (icon == null) {
 			return;
@@ -636,79 +632,22 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		CommandButtonIconInfo iconInfo;
 
 		if (loadOptionalIcons) {
-			Icon selectedIcon = loadIcon(objectName, SELECTED_ICON_KEY);
-			Icon rolloverIcon = loadIcon(objectName, ROLLOVER_ICON_KEY);
-			Icon disabledIcon = loadIcon(objectName, DISABLED_ICON_KEY);
-			Icon pressedIcon = loadIcon(objectName, PRESSED_ICON_KEY);
+			Icon selectedIcon = loadIcon(objectName, SELECTED_ICON_KEY, large);
+			Icon rolloverIcon = loadIcon(objectName, ROLLOVER_ICON_KEY, large);
+			Icon disabledIcon = loadIcon(objectName, DISABLED_ICON_KEY, large);
+			Icon pressedIcon = loadIcon(objectName, PRESSED_ICON_KEY, large);
 			iconInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
 		}
 		else {
 			iconInfo = new CommandButtonIconInfo(icon);
 		}
 
-		object.setIconInfo(iconInfo);
-
-	}
-
-	/**
-	 * Sets the large icons for the given object by retrieving them from this
-	 * instance's {@link IconSource} and adding them to the
-	 * {@link CommandButtonIconInfo} object to be set on the configurable
-	 * object.
-	 * 
-	 * <p>
-	 * The keys used to retrieve icons from the icon source are created by
-	 * concatenating the given {@code objectName} with a dot (.), the text
-	 * 'large' and then an icon type like so:
-	 * </p>
-	 * 
-	 * <pre>
-	 *                       {@code myObjectName.large.someIconType}.
-	 * </pre>
-	 * 
-	 * If the {@code loadOptionalIcons} flag is set to true (it is by default)
-	 * all the following icon types will be used. If the flag is false, only the
-	 * first will be used:
-	 * 
-	 * <ul>
-	 * <li>{@value #ICON_KEY}</li>
-	 * <li>{@value #SELECTED_ICON_KEY}</li>
-	 * <li>{@value #ROLLOVER_ICON_KEY}</li>
-	 * <li>{@value #DISABLED_ICON_KEY}</li>
-	 * <li>{@value #PRESSED_ICON_KEY}</li>
-	 * </ul>
-	 * 
-	 * @param object The object to be configured. Must not be null.
-	 * @param objectName The name of the object. Must not be null.
-	 * 
-	 * @throws IllegalArgumentException if either argument is null.
-	 */
-	public void setLargeIconInfo(CommandIconConfigurable object, String objectName) {
-
-		Assert.required(object, "object");
-		Assert.required(objectName, "objectName");
-
-		Icon icon = loadLargeIcon(objectName, ICON_KEY);
-
-		if (icon == null) {
-			return;
-		}
-
-		CommandButtonIconInfo iconInfo;
-
-		if (loadOptionalIcons) {
-			Icon selectedIcon = loadLargeIcon(objectName, SELECTED_ICON_KEY);
-			Icon rolloverIcon = loadLargeIcon(objectName, ROLLOVER_ICON_KEY);
-			Icon disabledIcon = loadLargeIcon(objectName, DISABLED_ICON_KEY);
-			Icon pressedIcon = loadLargeIcon(objectName, PRESSED_ICON_KEY);
-			iconInfo = new CommandButtonIconInfo(icon, selectedIcon, rolloverIcon, disabledIcon, pressedIcon);
+		if (large) {
+			object.setLargeIconInfo(iconInfo);
 		}
 		else {
-			iconInfo = new CommandButtonIconInfo(icon);
+			object.setIconInfo(iconInfo);
 		}
-
-		object.setLargeIconInfo(iconInfo);
-
 	}
 
 	/**
@@ -764,12 +703,11 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	}
 
 	private Icon loadIcon(String objectName, String iconType) {
-		String key = objectName + "." + iconType;
-		return getIconSource().getIcon(key);
+		return loadIcon(objectName, iconType, false);
 	}
 
-	private Icon loadLargeIcon(String objectName, String iconType) {
-		String key = objectName + ".large." + iconType;
+	private Icon loadIcon(String objectName, String iconType, boolean large) {
+		String key = objectName + (large ? ".large." : ".") + iconType;
 		return getIconSource().getIcon(key);
 	}
 
