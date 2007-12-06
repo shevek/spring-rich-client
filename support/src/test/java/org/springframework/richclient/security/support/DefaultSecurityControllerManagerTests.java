@@ -4,6 +4,9 @@
 package org.springframework.richclient.security.support;
 
 import junit.framework.TestCase;
+import junit.framework.TestResult;
+import junit.textui.TestRunner;
+
 import org.acegisecurity.Authentication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
@@ -79,7 +82,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         // Test registered alias
         assertEquals( "Should be same controller", admin, manager.getSecurityController( "adminAlias" ) );
     }
-
+    
     /**
      * Test the processing of beans referenced in the app context.
      */
@@ -87,7 +90,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         ApplicationSecurityManager securityManager = (ApplicationSecurityManager)ApplicationServicesLocator.services().getService(ApplicationSecurityManager.class);
 
         assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 1, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 2, testAuth1.getAuthCount() );
 
         CommandManager cmgr = Application.instance().getActiveWindow().getCommandManager();
         ActionCommand cmdWrite = cmgr.getActionCommand( "cmdWrite" );
@@ -106,7 +109,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertFalse( "Object should not be authorized", cmdAdmin.isAuthorized() );
         assertFalse( "Object should not be authorized", cmdAdminAlias.isAuthorized() );
         assertFalse( "Object should not be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 2, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 3, testAuth1.getAuthCount() );
 
         // Now login with ROLE_ADMIN
         auth = TestAuthenticationManager.makeAuthentication( "test", "test", "ROLE_ADMIN" );
@@ -116,7 +119,7 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
         assertTrue( "Object should be authorized", cmdAdmin.isAuthorized() );
         assertTrue( "Object should be authorized", cmdAdminAlias.isAuthorized() );
         assertTrue( "Object should be authorized", testAuth1.isAuthorized() );
-        assertEquals( "Object should be updated", 3, testAuth1.getAuthCount() );
+        assertEquals( "Object should be updated", 4, testAuth1.getAuthCount() );
     }
 
     /**
@@ -161,7 +164,6 @@ public class DefaultSecurityControllerManagerTests extends TestCase {
 
         assertTrue( "Object should be authorized", cmdWrite.isAuthorized() );
         assertFalse( "Object should not be enabled", cmdWrite.isEnabled() );
-
     }
     
     public static class TestApplicationWindowFactory implements ApplicationWindowFactory {
