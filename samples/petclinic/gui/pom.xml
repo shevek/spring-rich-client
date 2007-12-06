@@ -107,12 +107,8 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jdesktop</groupId>
+            <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jdesktop</groupId>
-            <artifactId>jdnc</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.nachocalendar</groupId>
