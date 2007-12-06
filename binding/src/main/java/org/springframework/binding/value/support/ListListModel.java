@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -216,15 +216,19 @@ public class ListListModel extends AbstractListModel implements ObservableList {
     }
 
     public boolean retainAll(Collection c) {
-        return items.retainAll(c);
+        boolean b = items.retainAll(c);
+		if (b) {
+			fireContentsChanged(this, -1, -1);
+		}
+		return b;
     }
 
     /**
-     * Set the value of a list element at the specified index.
-     * @param index of element to set
-     * @param element New element value
-     * @return old element value
-     */
+	 * Set the value of a list element at the specified index.
+	 * @param index of element to set
+	 * @param element New element value
+	 * @return old element value
+	 */
     public Object set(int index, Object element) {
         Object oldObject = items.set(index, element);
         if (hasChanged(oldObject, element)) {
