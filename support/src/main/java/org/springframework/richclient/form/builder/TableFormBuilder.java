@@ -119,10 +119,6 @@ public class TableFormBuilder extends AbstractFormBuilder {
      * @return an array containing the label and the component which where added to the form
      */
     public JComponent[] add(Binding binding, String attributes) {
-        // mathiasbr: this is out of scope for the form builder!
-        // FormComponentInterceptorFactory factory = (FormComponentInterceptorFactory) ApplicationServicesLocator
-        // .services().getService(FormComponentInterceptorFactory.class);
-        // factory.getInterceptor(getFormModel()).processComponent(binding.getProperty(), binding.getControl());
         return addBinding(binding, attributes, getLabelAttributes());
     }
 
