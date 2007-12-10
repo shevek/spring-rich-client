@@ -71,18 +71,6 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
 		final OriginalValueHolder originalValueHolder = new OriginalValueHolder();
 		final DirtyOverlay overlay = new DirtyOverlay(getFormModel(), propertyName, originalValueHolder);
 
-		component.addComponentListener(new ComponentAdapter() {
-
-			public void componentShown(ComponentEvent arg0) {
-				System.out.println("shown");
-			}
-
-			public void componentHidden(ComponentEvent arg0) {
-				System.out.println("hidden");
-			}
-
-		});
-
 		final ValueHolder reset = new ValueHolder(Boolean.FALSE);
 		getFormModel().getValueModel(propertyName).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
