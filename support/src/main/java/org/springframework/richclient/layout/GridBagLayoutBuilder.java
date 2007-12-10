@@ -673,13 +673,13 @@ public class GridBagLayoutBuilder implements LayoutBuilder {
             if (item != null && item != NULL_ITEM) {
                 final GridBagConstraints gbc = item.gbc;
 
-                if (currentRowIndex == lastRowIndex) {
-                    formatLastRow(gbc);
-                }
+                if (gbc.gridy + gbc.gridheight - 1 == lastRowIndex) {
+					formatLastRow(gbc);
+				}
 
-                if (currentColIndex == lastColIndex) {
-                    formatLastColumn(gbc, currentColIndex);
-                }
+				if (gbc.gridx + gbc.gridwidth - 1 == lastColIndex) {
+					formatLastColumn(gbc, currentColIndex);
+				}
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Adding to panel: " + getDebugString(item.component, gbc));
