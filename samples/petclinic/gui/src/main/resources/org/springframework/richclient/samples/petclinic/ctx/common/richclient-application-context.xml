@@ -168,7 +168,7 @@
           <key>
             <value type="java.lang.Class">java.util.Date</value>
           </key>
-          <bean class="org.springframework.richclient.form.binding.swing.NachoCalendarDateFieldBinder" />
+          <bean class="org.springframework.richclient.form.binding.swing.date.NachoCalendarDateFieldBinder" />
         </entry>
         <entry>
           <key>
