@@ -95,8 +95,7 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
 		getFormModel().getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				// reset original value, new "original" value is in the form
-				// model as
-				// the form object has changed
+				// model as the form object has changed
 				reset.setValue(Boolean.TRUE);
 			}
 		});
@@ -143,25 +142,6 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
 					super.repaint();
 				}
 			};
-			control.addHierarchyListener(new HierarchyListener() {
-
-				public void hierarchyChanged(HierarchyEvent arg0) {
-					if (control.getParent() != null) {
-						control.getParent().addComponentListener(new ComponentAdapter() {
-
-							public void componentShown(ComponentEvent arg0) {
-								System.out.println("woohoo! shown");
-							}
-
-							public void componentHidden(ComponentEvent arg0) {
-								System.out.println("woohoo! hidden");
-							}
-
-						});
-					}
-				}
-
-			});
 
 			control.setName("dirtyOverlay");
 
