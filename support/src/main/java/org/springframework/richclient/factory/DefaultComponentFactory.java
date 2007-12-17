@@ -42,6 +42,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.table.TableModel;
 
@@ -515,5 +516,14 @@ public class DefaultComponentFactory implements ComponentFactory, MessageSourceA
      */
     public void setTableFactory(TableFactory tableFactory) {
         this.tableFactory = tableFactory;
+    }
+    
+    public JToolBar createToolBar() {
+    	JToolBar toolBar = new JToolBar();
+    	
+    	toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+        
+        return toolBar;
     }
 }

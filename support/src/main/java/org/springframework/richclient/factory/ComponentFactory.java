@@ -35,6 +35,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.table.TableModel;
 
@@ -428,5 +429,11 @@ public interface ComponentFactory {
      * @return new table instance
      */
     public JTable createTable(TableModel model);
+
+    /**
+     * Construct a JToolBar.
+     * @return new toolbar instance
+     */
+	public JToolBar createToolBar();
 
 }
