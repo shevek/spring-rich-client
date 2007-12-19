@@ -69,20 +69,10 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
         this.viewProperties = viewProperties;
     }
 
-    public ApplicationEventMulticaster getApplicationEventMulticaster() {
-        if (getApplicationContext() != null) {
-            final String beanName = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME;
-            if (getApplicationContext().containsBean(beanName)) {
-                return (ApplicationEventMulticaster)getApplicationContext().getBean(beanName);
-            }
-        }
-        return null;
-    }
-
     public PageComponent createPageComponent() {
         return createView();
     }
-    
+
     protected View createView() {
         Assert.state(viewClass != null, "View class to instantiate is not set");
         Object o = BeanUtils.instantiateClass(viewClass);
@@ -90,13 +80,6 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
                 + "' was instantiated, but instance is not a View!");
         View view = (View)o;
         view.setDescriptor(this);
-        if (view instanceof ApplicationListener && getApplicationEventMulticaster() != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Registering new view instance '" + getDisplayName()
-                        + "' as an application event listener...");
-            }
-            getApplicationEventMulticaster().addApplicationListener((ApplicationListener)view);
-        }
         if (viewProperties != null) {
             BeanWrapper wrapper = new BeanWrapperImpl(view);
             wrapper.setPropertyValues(viewProperties);

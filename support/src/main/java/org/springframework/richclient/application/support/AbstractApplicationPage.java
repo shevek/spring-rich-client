@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2006 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
@@ -43,7 +46,7 @@ import org.springframework.util.Assert;
 
 /**
  * Abstract "convenience" implementation of <code>ApplicationPage</code>.
- * 
+ *
  * @author Peter De Bruycker
  */
 public abstract class AbstractApplicationPage extends AbstractControlFactory implements ApplicationPage {
@@ -65,6 +68,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	private ApplicationWindow window;
 
 	private boolean settingActiveComponent;
+
+	private ApplicationEventMulticaster applicationEventMulticaster;
 
 	private PropertyChangeListener pageComponentUpdater = new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -89,7 +94,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * <p>
 	 * This method should be overridden when these changes must be reflected in
 	 * the ui.
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code> that has changed
 	 */
 	protected void updatePageComponentProperties(PageComponent pageComponent) {
@@ -139,7 +144,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	/**
 	 * Returns the active <code>PageComponent</code>, or <code>null</code>
 	 * if none.
-	 * 
+	 *
 	 * @return the active <code>PageComponent</code>
 	 */
 	public PageComponent getActiveComponent() {
@@ -152,7 +157,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * <p>
 	 * Does nothing if this <code>ApplicationPage</code> doesn't contain the
 	 * given <code>PageComponent</code>.
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code>
 	 */
 	public void setActiveComponent(PageComponent pageComponent) {
@@ -187,7 +192,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * <p>
 	 * Implementors may choose to add the <code>PageComponent</code>'s
 	 * control directly, or add the <code>PageComponentPane</code>'s control.
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code> to add
 	 */
 	protected abstract void doAddPageComponent(PageComponent pageComponent);
@@ -195,7 +200,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	/**
 	 * This method must remove the given <code>PageComponent</code> from the
 	 * ui.
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code> to remove
 	 */
 	protected abstract void doRemovePageComponent(PageComponent pageComponent);
@@ -204,7 +209,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * This method must transfer the focus to the given
 	 * <code>PageComponent</code>. This could involve making an internal
 	 * frame visible, selecting a tab in a tabbed pane, ...
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code>
 	 * @return <code>true</code> if the operation was successful,
 	 * <code>false</code> otherwise
@@ -238,7 +243,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * <p>
 	 * Returns <code>false</code> if this <code>ApplicationPage</code>
 	 * doesn't contain the given <code>PageComponent</code>.
-	 * 
+	 *
 	 * @param pageComponent the <code>PageComponent</code>
 	 * @return boolean <code>true</code> if pageComponent was successfully
 	 * closed.
@@ -256,9 +261,13 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 			fireFocusLost(pageComponent);
 			activeComponent = null;
 		}
+
 		pageComponents.remove(pageComponent);
 		doRemovePageComponent(pageComponent);
 		pageComponent.removePropertyChangeListener(pageComponentUpdater);
+		if (pageComponent instanceof ApplicationListener && getApplicationEventMulticaster() != null) {
+			getApplicationEventMulticaster().removeApplicationListener((ApplicationListener) pageComponent);
+		}
 
 		pageComponent.dispose();
 		fireClosed(pageComponent);
@@ -271,8 +280,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	/**
 	 * Closes this <code>ApplicationPage</code>. This method calls
 	 * {@link #close(PageComponent)} for each open <code>PageComponent</code>.
-	 * 
-	 * @return <code>true</code> if the operation was successfull,
+	 *
+	 * @return <code>true</code> if the operation was successful,
 	 * <code>false</code> otherwise.
 	 */
 	public boolean close() {
@@ -311,7 +320,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * Adds the pageComponent to the components list while registering listeners
 	 * and firing appropriate events. (not yet setting the component as the
 	 * active one)
-	 * 
+	 *
 	 * @param pageComponent the pageComponent to add.
 	 */
 	protected void addPageComponent(PageComponent pageComponent) {
@@ -324,13 +333,16 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 
 	/**
 	 * Creates a PageComponent for the given PageComponentDescriptor.
-	 * 
+	 *
 	 * @param descriptor the descriptor
 	 * @return the created PageComponent
 	 */
 	protected PageComponent createPageComponent(PageComponentDescriptor descriptor) {
 		PageComponent pageComponent = descriptor.createPageComponent();
 		pageComponent.setContext(new DefaultViewContext(this, createPageComponentPane(pageComponent)));
+		if (pageComponent instanceof ApplicationListener && getApplicationEventMulticaster() != null) {
+			getApplicationEventMulticaster().addApplicationListener((ApplicationListener) pageComponent);
+		}
 
 		return pageComponent;
 	}
@@ -356,5 +368,15 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 
 	protected PageDescriptor getPageDescriptor() {
 		return descriptor;
+	}
+
+	public ApplicationEventMulticaster getApplicationEventMulticaster() {
+		if ((applicationEventMulticaster == null) && (getApplicationContext() != null)) {
+			final String beanName = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME;
+			if (getApplicationContext().containsBean(beanName)) {
+				applicationEventMulticaster = (ApplicationEventMulticaster) getApplicationContext().getBean(beanName);
+			}
+		}
+		return applicationEventMulticaster;
 	}
 }
