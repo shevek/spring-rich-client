@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-
-<beans>
-	<bean  id="imageResourcesFactory" 
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean  id="imageResourcesFactory"
   	    class="org.springframework.context.support.ResourceMapFactoryBean">
   	  <property name="location">
   	  	<value>classpath:org/springframework/richclient/image/test-images.properties</value>
   	  </property>
   	</bean>
-  	
-	<bean  id="imageSource" 
+
+	<bean  id="imageSource"
   	    class="org.springframework.richclient.image.DefaultImageSource">
   	  <constructor-arg index="0"><value>false</value></constructor-arg>
   	  <constructor-arg index="1"><ref bean="imageResourcesFactory"/></constructor-arg>
   	</bean>
 
-	<bean  id="imageSourceBroken" 
+	<bean  id="imageSourceBroken"
   	    class="org.springframework.richclient.image.DefaultImageSource">
   	  <constructor-arg index="0"><ref bean="imageResourcesFactory"/></constructor-arg>
   	  <property name="brokenImageIndicator"><value>org/springframework/richclient/image/broken.gif</value></property>

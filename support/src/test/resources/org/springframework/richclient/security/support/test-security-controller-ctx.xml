@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-	"http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="securityAwareConfigurer" class="org.springframework.richclient.security.SecurityAwareConfigurer" lazy-init="false" />
 
     <bean id="applicationWindowFactory"
         class="org.springframework.richclient.security.support.DefaultSecurityControllerManagerTests$TestApplicationWindowFactory"
         lazy-init="true"/>
-        
+
     <bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
         <property name="applicationServices" ref="applicationServices"/>
     </bean>
@@ -76,5 +77,5 @@
             </map>
         </property>
     </bean>
-    
+
 </beans>
