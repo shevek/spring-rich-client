@@ -286,6 +286,7 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 	 */
 	public void setStatusBar(StatusBarCommandGroup statusBar) {
 		this.statusBar = statusBar;
+		updateStatusBar();
 	}
 	
 	/**
@@ -336,6 +337,7 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 		StatusBarUpdateListener statusBarUpdateListener = new StatusBarUpdateListener();
 		table.getSelectionModel().addListSelectionListener(statusBarUpdateListener);
 		getFinalEventList().addListEventListener(statusBarUpdateListener);
+	
 		return table;
 	}
 
