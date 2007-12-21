@@ -28,15 +28,8 @@
         <url>http://opensource2.atlassian.com/projects/spring/browse/RCP</url>
     </issueManagement>
     <ciManagement>
-        <system>continuum</system>
-        <notifiers>
-            <notifier>
-                <type>mail</type>
-                <configuration>
-                    <address>build@interface21.com</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <system>bamboo</system>
+        <url>https://build.springframework.org/bamboo/browse/RCP</url>
     </ciManagement>
     <inceptionYear>2004</inceptionYear>
     <mailingLists>
