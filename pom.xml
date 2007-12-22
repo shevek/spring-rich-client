@@ -25,7 +25,7 @@
     </prerequisites>
     <issueManagement>
         <system>jira</system>
-        <url>http://opensource2.atlassian.com/projects/spring/browse/RCP</url>
+        <url>http://jira.springframework.org/browse/RCP</url>
     </issueManagement>
     <ciManagement>
         <system>bamboo</system>
