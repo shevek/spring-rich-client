@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Exception handling</title>
+
+  <section>
+    <title>Why not just use try and catch?</title>
+
+    <para>Most exceptions that are thrown are unexpected: we don't expect them
+    to happen (especially during production) such as:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><literal>NullPointerException</literal>: Didn't I double checked
+        all my source code to avoid NPE's?</para>
+      </listitem>
+
+      <listitem>
+        <para><literal>CvsParserException</literal>: Why did the user pick a
+        html file when I asked him for a CVS file?</para>
+      </listitem>
+
+      <listitem>
+        <para><literal>IDidNotKnowThisExistedHibernateRuntimeException</literal>:
+        What the ...?</para>
+      </listitem>
+    </itemizedlist>
+
+    <para> And if you except some of them, you ussually can't really fix the
+    problem, just deal with it:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Log the exception.</para>
+      </listitem>
+
+      <listitem>
+        <para>Notify the user that whatever he tried didn't work, preferably
+        with an not-technical, exception-specific explanation.</para>
+      </listitem>
+
+      <listitem>
+        <para>Either shutdown the application or allow the user to continue
+        (and try again).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>You could use try-catch during every user action:</para>
+
+    <programlisting>protected boolean onFinish() {
+    try {
+        form.getFormModel().commit();
+        // ...
+        getApplicationContext().publishEvent(new LifecycleApplicationEvent(eventType, getEditingContact()));
+        return true;
+    } catch (Throwable throwable) {
+        handleException(throwable);
+    }
+}</programlisting>
+
+    <para> But this is tedious and error prone: </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>It's easy to forget to try catch some code, which makes the
+        exception escape to the top layer exception handler.</para>
+      </listitem>
+
+      <listitem>
+        <para>You could unwillingly eat the exception, not logging it:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>If you handle an exception, but forget to log it and/or show
+            it to the user.</para>
+          </listitem>
+
+          <listitem>
+            <para>If you throw an exception in the catch or finally part, only
+            the last exception bubbles up, effectively hiding the real
+            exception.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>In production, this leads to discussions where the user is sure
+        he pushed the button (which he did in this case) and the programmer is
+        sure the user didn't because the system didn't report anything and
+        nothing has changed. If you notice that while you are fixing a issue,
+        an exception is eaten (making it hard to identify the original issue),
+        create a new issue because exceptions are eaten and fix that
+        first.</para>
+      </listitem>
+
+      <listitem>
+        <para>You are in danger to handle the same exception on 2 different
+        layers, effectively logging it or notifing the user twice.</para>
+      </listitem>
+
+      <listitem>
+        <para>In some layers or parts of the application, it might not be
+        clear if you need to notify the user (and which user) through a swing
+        dialog or JSP or webservice response.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Spring-richclient's exception handling system uses the top layer
+    exception handling. It expects that all other layers let the exception
+    bubble up.</para>
+  </section>
+</section>

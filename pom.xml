@@ -166,6 +166,8 @@
             <id>ge0ffrey</id>
             <name>Geoffrey De Smet</name>
             <email>ge0ffrey.spam AT gmail DOT com</email>
+            <organization>Schaubroeck</organization>
+            <organizationUrl>http://www.schaubroeck.be</organizationUrl>
             <roles>
                 <role>Maven2izer</role>
                 <role>Java developer</role>
