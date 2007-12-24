@@ -214,20 +214,27 @@
 
     <repositories>
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
             <id>springRichclientRepository</id>
             <name>Spring rich client repository</name>
             <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
             <id>springRichclientSnapshotRepository</id>
             <name>Spring rich client snapshot repository</name>
             <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.com/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -239,6 +246,13 @@
             <id>codehaus-snapshots</id>
             <name>Snapshot repository from codehaus</name>
             <url>http://snapshots.maven.codehaus.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jboss</id>
+            <url>http://repository.jboss.com/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
@@ -396,6 +410,36 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <version>2.0-beta-5</version>
                 </plugin>
+                <!-- This docbook plugin is inferiour (and doesn't work fast enough to be useable): -->
+                <!--<plugin>-->
+                    <!--<groupId>org.codehaus.mojo</groupId>-->
+                    <!--<artifactId>docbook-maven-plugin</artifactId>-->
+                    <!--<version>1.0.0-alpha-1</version>-->
+                    <!--<configuration>-->
+                        <!--<sourceDirectory>${basedir}/src/docbook/en</sourceDirectory>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
+                <!-- This docbook plugin doesn't work yet in current configuration: -->
+                <!--<plugin>-->
+                    <!--<groupId>org.jboss.maven.plugins</groupId>-->
+                    <!--<artifactId>maven-jdocbook-plugin</artifactId>-->
+                    <!--<extensions>true</extensions>-->
+                    <!--<configuration>-->
+                        <!--<sourceDirectory>${basedir}/src/docbook/en</sourceDirectory>-->
+                        <!--<sourceDocumentName>index.xml</sourceDocumentName>-->
+                        <!--<formats>-->
+                            <!--<format>-->
+                                <!--<formatName>html</formatName>-->
+                            <!--</format>-->
+                            <!--<format>-->
+                                <!--<formatName>html_single</formatName>-->
+                            <!--</format>-->
+                            <!--<format>-->
+                                <!--<formatName>pdf</formatName>-->
+                            <!--</format>-->
+                        <!--</formats>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
         <plugins>
