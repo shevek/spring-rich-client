@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -80,6 +82,14 @@ public class ShuttleList extends JPanel {
 
     private static final long serialVersionUID = -6038138479095186130L;
 
+    private JButton leftToRight;
+
+    private JButton allLeftToRight;
+
+    private JButton rightToLeft;
+
+    private JButton allRightToLeft;
+
     /**
      * Simple constructor.
      */
@@ -115,7 +125,7 @@ public class ShuttleList extends JPanel {
      *        cells
      * @see #getCellRenderer
      */
-    public void setCellRenderer( ListCellRenderer cellRenderer ) {
+    public void setCellRenderer(ListCellRenderer cellRenderer) {
         // Apply this to both lists
         sourceList.setCellRenderer(cellRenderer);
         chosenList.setCellRenderer(cellRenderer);
@@ -141,7 +151,7 @@ public class ShuttleList extends JPanel {
      * @exception IllegalArgumentException if <code>model</code> is
      *            <code>null</code>
      */
-    public void setModel( ListModel model ) {
+    public void setModel(ListModel model) {
         helperList.setModel(model);
 
         dataModel = model;
@@ -163,7 +173,7 @@ public class ShuttleList extends JPanel {
      * @param visibleRowCount an integer specifying the preferred number of
      *        visible rows
      */
-    public void setVisibleRowCount( int visibleRowCount ) {
+    public void setVisibleRowCount(int visibleRowCount) {
         sourceList.setVisibleRowCount(visibleRowCount);
         chosenList.setVisibleRowCount(visibleRowCount);
         helperList.setVisibleRowCount(visibleRowCount);
@@ -181,7 +191,7 @@ public class ShuttleList extends JPanel {
      * 
      * @param comparator to use
      */
-    public void setComparator( Comparator comparator ) {
+    public void setComparator(Comparator comparator) {
         this.comparator = comparator;
     }
 
@@ -191,16 +201,16 @@ public class ShuttleList extends JPanel {
      * 
      * @param editIcon Icon to use on edit button
      */
-    public void setEditIcon( Icon editIcon, String text ) {
-        if( editIcon != null ) {
+    public void setEditIcon(Icon editIcon, String text) {
+        if (editIcon != null) {
             editButton.setIcon(editIcon);
-            if( text != null ) {
+            if (text != null) {
                 editButton.setToolTipText(text);
             }
             editButton.setText("");
         } else {
             editButton.setIcon(null);
-            if( text != null ) {
+            if (text != null) {
                 editButton.setText(text);
             }
         }
@@ -212,15 +222,15 @@ public class ShuttleList extends JPanel {
      * @param chosenLabel
      * @param sourceLabel
      */
-    public void setListLabels( String chosenLabel, String sourceLabel ) {
-        if( chosenLabel != null ) {
+    public void setListLabels(String chosenLabel, String sourceLabel) {
+        if (chosenLabel != null) {
             this.chosenLabel.setText(chosenLabel);
             this.chosenLabel.setVisible(true);
         } else {
             this.chosenLabel.setVisible(false);
         }
 
-        if( sourceLabel != null ) {
+        if (sourceLabel != null) {
             this.sourceLabel.setText(sourceLabel);
             this.sourceLabel.setVisible(true);
         } else {
@@ -241,9 +251,9 @@ public class ShuttleList extends JPanel {
         sourcePanel.setPreferredSize(dSourcePanel);
 
         Dimension fullPanelSize = getPreferredSize();
-        fullPanelSize.width = dSourcePanel.width + dChosenPanel.width
-                + (editButton != null ? editButton.getPreferredSize().width : 0)
-                + (buttonPanel != null ? buttonPanel.getPreferredSize().width : 0) + 20;
+        fullPanelSize.width =
+                dSourcePanel.width + dChosenPanel.width + (editButton != null ? editButton.getPreferredSize().width : 0)
+                        + (buttonPanel != null ? buttonPanel.getPreferredSize().width : 0) + 20;
         setPreferredSize(fullPanelSize);
     }
 
@@ -265,7 +275,7 @@ public class ShuttleList extends JPanel {
         editButton.setMargin(new Insets(2, 4, 2, 4));
 
         editButton.addActionListener(new ActionListener() {
-            public void actionPerformed( ActionEvent event ) {
+            public void actionPerformed(ActionEvent event) {
                 togglePanels();
             }
         });
@@ -279,6 +289,13 @@ public class ShuttleList extends JPanel {
         add(editButton);
 
         sourceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        sourceList.addKeyListener(new KeyAdapter() {
+            public void keyPressed(final KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    moveLeftToRight();
+                }
+            }
+        });
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -298,6 +315,13 @@ public class ShuttleList extends JPanel {
         add(buttonPanel);
 
         chosenList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        chosenList.addKeyListener(new KeyAdapter() {
+            public void keyPressed(final KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    moveRightToLeft();
+                }
+            }
+        });
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -323,11 +347,10 @@ public class ShuttleList extends JPanel {
     protected JPanel buildButtonPanel() {
         buttonPanel = new JPanel();
 
-        JButton leftToRight = new JButton(">");
-        JButton allLeftToRight = new JButton(">>");
-        JButton rightToLeft = new JButton("<");
-        JButton allRightToLeft = new JButton("<<");
-
+        leftToRight = new JButton(">");
+        allLeftToRight = new JButton(">>");
+        rightToLeft = new JButton("<");
+        allRightToLeft = new JButton("<<");
         Font smallerFont = leftToRight.getFont().deriveFont(9.0F);
         leftToRight.setFont(smallerFont);
         allLeftToRight.setFont(smallerFont);
@@ -358,22 +381,22 @@ public class ShuttleList extends JPanel {
         buttonPanel.add(allRightToLeft);
 
         leftToRight.addActionListener(new ActionListener() {
-            public void actionPerformed( ActionEvent event ) {
+            public void actionPerformed(ActionEvent event) {
                 moveLeftToRight();
             }
         });
         allLeftToRight.addActionListener(new ActionListener() {
-            public void actionPerformed( ActionEvent event ) {
+            public void actionPerformed(ActionEvent event) {
                 moveAllLeftToRight();
             }
         });
         rightToLeft.addActionListener(new ActionListener() {
-            public void actionPerformed( ActionEvent event ) {
+            public void actionPerformed(ActionEvent event) {
                 moveRightToLeft();
             }
         });
         allRightToLeft.addActionListener(new ActionListener() {
-            public void actionPerformed( ActionEvent event ) {
+            public void actionPerformed(ActionEvent event) {
                 moveAllRightToLeft();
             }
         });
@@ -387,7 +410,7 @@ public class ShuttleList extends JPanel {
      * Toggle the panel visibility. This will hide/show the source list and
      * movement buttons.
      */
-    protected void togglePanels() {
+    public void togglePanels() {
         panelsShowing = !panelsShowing;
         sourcePanel.setVisible(panelsShowing);
         buttonPanel.setVisible(panelsShowing);
@@ -407,7 +430,7 @@ public class ShuttleList extends JPanel {
         System.arraycopy(currentSelection, 0, newSelection, 0, currentSelection.length);
         int destPos = currentSelection.length;
 
-        for( int i = 0; i < sourceSelected.length; i++ ) {
+        for (int i = 0; i < sourceSelected.length; i++) {
             newSelection[destPos++] = indexOf(sourceSelected[i]);
         }
 
@@ -421,7 +444,7 @@ public class ShuttleList extends JPanel {
     protected void moveAllLeftToRight() {
         int sz = dataModel.getSize();
         int[] selected = new int[sz];
-        for( int i = 0; i < sz; i++ ) {
+        for (int i = 0; i < sz; i++) {
             selected[i] = i;
         }
         helperList.setSelectedIndices(selected);
@@ -437,7 +460,7 @@ public class ShuttleList extends JPanel {
         int nChosenSelected = chosenSelectedValues.length;
         int[] chosenSelected = new int[nChosenSelected];
 
-        if( nChosenSelected == 0 ) {
+        if (nChosenSelected == 0) {
             return; // Nothing to move
         }
 
@@ -447,7 +470,7 @@ public class ShuttleList extends JPanel {
 
         // Fill the chosenSelected array with the indices of the selected chosen
         // items
-        for( int i = 0; i < nChosenSelected; i++ ) {
+        for (int i = 0; i < nChosenSelected; i++) {
             chosenSelected[i] = indexOf(chosenSelectedValues[i]);
         }
 
@@ -460,9 +483,9 @@ public class ShuttleList extends JPanel {
         int newSelPos = 0;
         int chosenPos = 0;
 
-        for( int i = 0; i < nCurrentSelected; i++ ) {
+        for (int i = 0; i < nCurrentSelected; i++) {
             int currentIdx = currentSelected[i];
-            if( chosenPos < nChosenSelected && currentIdx == chosenSelected[chosenPos] ) {
+            if (chosenPos < nChosenSelected && currentIdx == chosenSelected[chosenPos]) {
                 chosenPos += 1;
             } else {
                 newSelection[newSelPos++] = currentIdx;
@@ -488,14 +511,14 @@ public class ShuttleList extends JPanel {
      * @param o Object to locate
      * @return index of object in model, -1 if not found
      */
-    protected int indexOf( final Object o ) {
+    protected int indexOf(final Object o) {
         final int size = dataModel.getSize();
-        for( int i = 0; i < size; i++ ) {
-            if( comparator == null ) {
-                if( o.equals(dataModel.getElementAt(i)) ) {
+        for (int i = 0; i < size; i++) {
+            if (comparator == null) {
+                if (o.equals(dataModel.getElementAt(i))) {
                     return i;
                 }
-            } else if( comparator.compare(o, dataModel.getElementAt(i)) == 0 ) {
+            } else if (comparator.compare(o, dataModel.getElementAt(i)) == 0) {
                 return i;
             }
         }
@@ -513,12 +536,12 @@ public class ShuttleList extends JPanel {
         ArrayList chosenItems = new ArrayList(selected.length);
 
         // Start with the source items filled from our data model
-        for( int i = 0; i < sz; i++ ) {
+        for (int i = 0; i < sz; i++) {
             sourceItems.add(dataModel.getElementAt(i));
         }
 
         // Now move the selected items to the chosen list
-        for( int i = selected.length - 1; i >= 0; i-- ) {
+        for (int i = selected.length - 1; i >= 0; i--) {
             chosenItems.add(sourceItems.remove(selected[i]));
         }
 
@@ -549,7 +572,7 @@ public class ShuttleList extends JPanel {
      * 
      * @param listener the <code>ListSelectionListener</code> to add
      */
-    public void addListSelectionListener( ListSelectionListener listener ) {
+    public void addListSelectionListener(ListSelectionListener listener) {
         helperList.addListSelectionListener(listener);
     }
 
@@ -559,7 +582,7 @@ public class ShuttleList extends JPanel {
      * 
      * @param listener the <code>ListSelectionListener</code> to remove
      */
-    public void removeListSelectionListener( ListSelectionListener listener ) {
+    public void removeListSelectionListener(ListSelectionListener listener) {
         helperList.removeListSelectionListener(listener);
     }
 
@@ -577,7 +600,7 @@ public class ShuttleList extends JPanel {
      * 
      * @param indices an array of the indices of the cells to select
      */
-    public void setSelectedIndices( int[] indices ) {
+    public void setSelectedIndices(int[] indices) {
         helperList.setSelectedIndices(indices);
         update();
     }
@@ -592,4 +615,15 @@ public class ShuttleList extends JPanel {
         return helperList.getSelectedValues();
     }
 
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        helperList.setEnabled(enabled);
+        sourceList.setEnabled(enabled);
+        chosenList.setEnabled(enabled);
+        buttonPanel.setEnabled(enabled);
+        leftToRight.setEnabled(enabled);
+        allLeftToRight.setEnabled(enabled);
+        rightToLeft.setEnabled(enabled);
+        allRightToLeft.setEnabled(enabled);
+    }
 }
