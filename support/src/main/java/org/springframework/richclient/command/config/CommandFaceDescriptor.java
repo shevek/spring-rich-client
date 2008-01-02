@@ -55,10 +55,6 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     /** The property name used when firing events for the {@code largeIconInfo} property. */
     public static final String LARGE_ICON_INFO_PROPERTY = "largeIconInfo";
 
-    /** A convenience instance to be used when no face descriptor information is available. */
-    //FIXME this is a mutable class, probably shouldn't be using a common instance for blank descriptors
-    public static final CommandFaceDescriptor BLANK_FACE_DESCRIPTOR = new CommandFaceDescriptor();
-
     private String caption;
 
     private String description;
@@ -314,7 +310,7 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
      */
     public void setLargeIconInfo(CommandButtonIconInfo largeIconInfo) {
         if (largeIconInfo == null) {
-        	largeIconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
+            largeIconInfo = CommandButtonIconInfo.BLANK_ICON_INFO;
         }
         CommandButtonIconInfo old = this.largeIconInfo;
         this.largeIconInfo = largeIconInfo;
@@ -327,11 +323,11 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
      * @param icon The main default icon. May be null.
      */
     public void setIcon(Icon icon) {
-    	Icon old = null;
+        Icon old = null;
         if (iconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
                 // New IconInfo fires event
-            	setIconInfo(new CommandButtonIconInfo(icon));
+                setIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {
@@ -347,11 +343,11 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
      * @param icon The large icon. May be null.
      */
     public void setLargeIcon(Icon icon) {
-    	Icon old = null;
+        Icon old = null;
         if (largeIconInfo == CommandButtonIconInfo.BLANK_ICON_INFO) {
             if (icon != null) {
                 // new IconInfo fires event
-            	setLargeIconInfo(new CommandButtonIconInfo(icon));
+                setLargeIconInfo(new CommandButtonIconInfo(icon));
             }
         }
         else {

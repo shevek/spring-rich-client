@@ -127,7 +127,7 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
 
     public CommandFaceDescriptor getFaceDescriptor(AbstractCommand command, String faceDescriptorId) {
         if (beanFactory == null) {
-            return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+            return null;
         }
         try {
             return (CommandFaceDescriptor)beanFactory.getBean(command.getId() + "." + faceDescriptorId,
@@ -138,17 +138,17 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
                 return (CommandFaceDescriptor)beanFactory.getBean(faceDescriptorId, CommandFaceDescriptor.class);
             }
             catch (NoSuchBeanDefinitionException ex) {
-                return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+                return null;
             }
         }
     }
 
     public ActionCommand getActionCommand(String commandId) {
-        return commandRegistry.getActionCommand(commandId);
+        return (ActionCommand) commandRegistry.getCommand(commandId, ActionCommand.class);
     }
 
     public CommandGroup getCommandGroup(String groupId) {
-        return commandRegistry.getCommandGroup(groupId);
+        return (CommandGroup)commandRegistry.getCommand(groupId, CommandGroup.class);
     }
 
     public boolean containsCommandGroup(String groupId) {

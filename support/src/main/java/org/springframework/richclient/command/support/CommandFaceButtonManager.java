@@ -95,21 +95,11 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     public CommandFaceDescriptor getFaceDescriptor() {
-        if (this.faceDescriptor == null) {
-            setFaceDescriptor(getFaceDescriptor(this.faceDescriptorId));
-        }
         return faceDescriptor;
     }
 
-    private CommandFaceDescriptor getFaceDescriptor(String faceDescriptorId) {
-        if (command.getFaceDescriptorRegistry() != null)
-            return command.getFaceDescriptorRegistry().getFaceDescriptor(command, faceDescriptorId);
-
-        return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
-    }
-
     public boolean isFaceConfigured() {
-        return this.faceDescriptor != null && this.faceDescriptor != CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR;
+        return this.faceDescriptor != null;
     }
 
     public void attachAndConfigure(AbstractButton button, CommandButtonConfigurer strategy) {
@@ -133,6 +123,14 @@ public class CommandFaceButtonManager implements PropertyChangeListener {
     }
 
     protected void configure(AbstractButton button, CommandButtonConfigurer strategy) {
+        if (this.faceDescriptor == null) {
+            if (command.getFaceDescriptorRegistry() != null) {
+                setFaceDescriptor(command.getFaceDescriptorRegistry().getFaceDescriptor(command, faceDescriptorId));
+            } else {
+                setFaceDescriptor(new CommandFaceDescriptor());
+            }
+        }
+
         getFaceDescriptor().configure(button, command, strategy);
     }
 
