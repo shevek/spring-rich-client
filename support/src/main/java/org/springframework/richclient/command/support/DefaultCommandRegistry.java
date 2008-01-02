@@ -128,22 +128,7 @@ public class DefaultCommandRegistry implements CommandRegistry, CommandRegistryL
                          + "] from the command registry.");
         }
         
-        Assert.required(commandId, "commandId");
-        
-        Object command = commandMap.get(commandId);
-        
-        if (command == null && this.parent != null) {
-            command = this.parent.getActionCommand(commandId);
-        }
-        
-        if (command == null) {
-            logger.debug("command not found, returning null.");
-            return null;
-        } 
-        
-        if (!(command instanceof ActionCommand)) {
-            throw new CommandNotOfRequiredTypeException(commandId, ActionCommand.class, command.getClass());
-        }
+        Object command = getCommand(commandId, ActionCommand.class);
         
         return (ActionCommand) command;
         
@@ -161,22 +146,7 @@ public class DefaultCommandRegistry implements CommandRegistry, CommandRegistryL
                          + "] from the command registry.");
         }
         
-        Assert.required(groupId, "groupId");
-        
-        Object command = commandMap.get(groupId);
-        
-        if (command == null && this.parent != null) {
-            command = this.parent.getCommandGroup(groupId);
-        }
-        
-        if (command == null) {
-            logger.debug("Command group not found, returning null.");
-            return null;
-        } 
-        
-        if (!(command instanceof CommandGroup)) {
-            throw new CommandNotOfRequiredTypeException(groupId, CommandGroup.class, command.getClass());
-        }
+        Object command = getCommand(groupId, CommandGroup.class);
         
         return (CommandGroup) command;
         
