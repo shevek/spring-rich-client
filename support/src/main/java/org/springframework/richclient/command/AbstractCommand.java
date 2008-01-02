@@ -329,6 +329,13 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 	public boolean isFaceConfigured() {
 		return getDefaultButtonManager().isFaceConfigured();
 	}
+	
+	public Icon getIcon() {
+		if (isFaceConfigured()) {
+			return getFaceDescriptor().getIcon();
+		}
+		return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR.getIcon();
+	}
 
 	public String getText() {
 		if (isFaceConfigured()) {
