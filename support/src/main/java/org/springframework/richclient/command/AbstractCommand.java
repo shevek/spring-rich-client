@@ -116,16 +116,10 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 	protected AbstractCommand(String id) {
 		super();
 		setId(id);
-		addEnabledListener(new ButtonEnablingListener()); // keep track of
-															// enable state for
-															// buttons
-		addPropertyChangeListener(VISIBLE_PROPERTY_NAME, new ButtonVisibleListener()); // keep
-																						// track
-																						// of
-																						// visible
-																						// state
-																						// for
-																						// buttons
+		// keep track of enable state for buttons
+		addEnabledListener(new ButtonEnablingListener()); 
+		// keep track of visible state for buttons
+		addPropertyChangeListener(VISIBLE_PROPERTY_NAME, new ButtonVisibleListener()); 
 	}
 
 	/**
@@ -334,7 +328,7 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 		if (isFaceConfigured()) {
 			return getFaceDescriptor().getIcon();
 		}
-		return CommandFaceDescriptor.BLANK_FACE_DESCRIPTOR.getIcon();
+		return null;
 	}
 
 	public String getText() {
