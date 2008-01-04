@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -58,7 +58,7 @@ import org.springframework.util.StringUtils;
  * <P>
  * Subclasses implement the body of the dialog (wherein business objects are manipulated),
  * and the action taken by the <code>OK</code> button.
- * 
+ *
  * <P>
  * Services of a <code>ApplicationDialog</code> include:
  * <ul>
@@ -75,6 +75,8 @@ import org.springframework.util.StringUtils;
  * <li>will be shown in taskbar if no parent window has been set, and no
  * applicationwindow is open</li>
  * </ul>
+ *
+ * <em>Note: Default close behaviour is to dispose the graphical dialog when it closes, you can set the CloseAction to hide if needed.</em>
  */
 public abstract class ApplicationDialog extends ApplicationServicesAccessor implements TitleConfigurable, Guarded {
 
@@ -99,10 +101,10 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private JDialog dialog;
 
     private Component parentComponent;
-    
+
     private Window parentWindow;
 
-    private CloseAction closeAction = CloseAction.HIDE;
+    private CloseAction closeAction = CloseAction.DISPOSE;
 
     private boolean defaultEnabled = true;
 
@@ -113,7 +115,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     private Dimension preferredSize;
 
     private Point location;
-    
+
     private Component locationRelativeTo;
 
     private ActionCommand finishCommand;
@@ -126,10 +128,19 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     private ActionCommand callingCommand;
 
+    /**
+     * Create dialog with default closeAction {@link CloseAction#DISPOSE}. No parent or title set.
+     */
     public ApplicationDialog() {
         init();
     }
 
+    /**
+     * Create dialog with default closeAction {@link CloseAction#DISPOSE}.
+     *
+     * @param title text that will appear on dialog's titlebar.
+     * @param parent component serving as parent in it's hierarchy.
+     */
     public ApplicationDialog(String title, Component parent) {
         setTitle(title);
         setParentComponent(parent);
@@ -139,11 +150,11 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Creates a new application dialog; the actual UI is not initialized until
      * showDialog() is called.
-     * 
+     *
      * @param title text which appears in the title bar after the name of the application,
      *        and satisfies
      * @param parent frame to which this dialog is attached.
-     * @param closeAction sets the behaviour of the dialog upon close.
+     * @param closeAction sets the behaviour of the dialog upon close. Default closeAction is {@link CloseAction#DISPOSE}.
      */
     public ApplicationDialog(String title, Component parent, CloseAction closeAction) {
         setTitle(title);
@@ -174,29 +185,29 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-	 * The parent Component that will be used to extract the Frame/Dialog owner
-	 * for the JDialog at creation. You may pass a Window/Frame that will be
-	 * used directly as parent for the JDialog, or you can pass the component
-	 * which has one of both in it's parent hierarchy. The latter option can be
-	 * handy when you're locally implementing Components without a direct
-	 * -connection to/notion of- a Window/Frame.
-	 * 
-	 * @param parentComponent Component that is a Frame/Window or has one in its parent
-	 * hierarchy.
-	 */
+     * The parent Component that will be used to extract the Frame/Dialog owner
+     * for the JDialog at creation. You may pass a Window/Frame that will be
+     * used directly as parent for the JDialog, or you can pass the component
+     * which has one of both in it's parent hierarchy. The latter option can be
+     * handy when you're locally implementing Components without a direct
+     * -connection to/notion of- a Window/Frame.
+     *
+     * @param parentComponent Component that is a Frame/Window or has one in its parent
+     * hierarchy.
+     */
     public void setParentComponent(Component parentComponent) {
         this.parentComponent = parentComponent;
     }
-    
+
     /**
-     * Returns the parent Component.  
-     * 
+     * Returns the parent Component.
+     *
      * @return
      * @see #setParentComponent(Component)
      */
     public Component getParentComponent() {
-		return this.parentComponent;
-	}
+        return this.parentComponent;
+    }
 
     public void setCloseAction(CloseAction action) {
         this.closeAction = action;
@@ -204,7 +215,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     /**
      * Should the finish button be enabled by default?
-     * 
+     *
      * @param enabled true or false
      */
     public void setDefaultEnabled(boolean enabled) {
@@ -221,18 +232,18 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     /**
      * Set a specific location for the JDialog to popup.
-     * 
+     *
      * @param location point on screen where to place the JDialog.
      */
     public void setLocation(Point location) {
         this.location = location;
     }
-    
+
     /**
      * @see Window#setLocationRelativeTo(Component)
      */
     public void setLocationRelativeTo(Component locationRelativeTo) {
-    	this.locationRelativeTo = locationRelativeTo;
+        this.locationRelativeTo = locationRelativeTo;
     }
 
     public void setPreferredSize(Dimension preferredSize) {
@@ -288,17 +299,17 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     }
 
     /**
-	 * <p>
-	 * Show the dialog. The dialog will be created if it doesn't exist yet.
-	 * Before setting the dialog visible, a hook method onAboutToShow is called
-	 * and the location will be set.
-	 * </p>
-	 * <p>
-	 * When showing the dialog several times, it will always be opened on the
-	 * location that has been set, or relative to the parent. (former location
-	 * will not persist)
-	 * </p>
-	 */
+     * <p>
+     * Show the dialog. The dialog will be created if it doesn't exist yet.
+     * Before setting the dialog visible, a hook method onAboutToShow is called
+     * and the location will be set.
+     * </p>
+     * <p>
+     * When showing the dialog several times, it will always be opened on the
+     * location that has been set, or relative to the parent. (former location
+     * will not persist)
+     * </p>
+     */
     public void showDialog() {
         if (!isControlCreated()) {
             createDialog();
@@ -309,16 +320,16 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
                 dialog.setLocation(getLocation());
             }
             else {
-            	WindowUtils.centerOnParent(dialog, getLocationRelativeTo());
-			}
+                WindowUtils.centerOnParent(dialog, getLocationRelativeTo());
+            }
 
             dialog.setVisible(true);
         }
     }
 
     /**
-	 * Subclasses should call if layout of the dialog components changes.
-	 */
+     * Subclasses should call if layout of the dialog components changes.
+     */
     protected void componentsChanged() {
         if (isControlCreated()) {
             dialog.pack();
@@ -351,31 +362,31 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
         dialog.getContentPane().setLayout(new BorderLayout());
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setResizable(resizable);
-        
+
         initStandardCommands();
         addCancelByEscapeKey();
     }
 
     /**
-	 * <p>
-	 * --jh-- This method is copied from JOptionPane. I'm still trying to figure
-	 * out why they chose to have a static method with package visibility for
-	 * this one instead of just making it public.
-	 * </p>
-	 * 
-	 * Returns the specified component's toplevel <code>Frame</code> or
-	 * <code>Dialog</code>.
-	 * 
-	 * @param parentComponent the <code>Component</code> to check for a
-	 * <code>Frame</code> or <code>Dialog</code>
-	 * @return the <code>Frame</code> or <code>Dialog</code> that contains
-	 * the component, or the default frame if the component is <code>null</code>,
-	 * or does not have a valid <code>Frame</code> or <code>Dialog</code>
-	 * parent
-	 * @exception HeadlessException if
-	 * <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
-	 * @see java.awt.GraphicsEnvironment#isHeadless
-	 */
+     * <p>
+     * --jh-- This method is copied from JOptionPane. I'm still trying to figure
+     * out why they chose to have a static method with package visibility for
+     * this one instead of just making it public.
+     * </p>
+     *
+     * Returns the specified component's toplevel <code>Frame</code> or
+     * <code>Dialog</code>.
+     *
+     * @param parentComponent the <code>Component</code> to check for a
+     * <code>Frame</code> or <code>Dialog</code>
+     * @return the <code>Frame</code> or <code>Dialog</code> that contains
+     * the component, or the default frame if the component is <code>null</code>,
+     * or does not have a valid <code>Frame</code> or <code>Dialog</code>
+     * parent
+     * @exception HeadlessException if
+     * <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
+     * @see java.awt.GraphicsEnvironment#isHeadless
+     */
     public static Window getWindowForComponent(Component parentComponent)
         throws HeadlessException {
         if (parentComponent == null)
@@ -384,7 +395,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
             return (Window)parentComponent;
         return getWindowForComponent(parentComponent.getParent());
     }
-    
+
     private void initStandardCommands() {
         finishCommand = new ActionCommand(getFinishCommandId()) {
             public void doExecuteCommand() {
@@ -411,7 +422,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Subclasses may override to return a custom message key, default is "okCommand",
      * corresponding to the "&OK" label.
-     * 
+     *
      * @return The message key to use for the finish ("ok") button
      */
     protected String getFinishCommandId() {
@@ -421,7 +432,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Subclasses may override to return a security controller id to be attached to the
      * finish command. The default is null, no controller.
-     * 
+     *
      * @return security controller id, or null if none
      */
     protected String getFinishSecurityControllerId() {
@@ -431,7 +442,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Request invocation of the action taken when the user hits the <code>OK</code>
      * (finish) button.
-     * 
+     *
      * @return true if action completed successfully; false otherwise.
      */
     protected abstract boolean onFinish();
@@ -547,9 +558,9 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     protected Point getLocation() {
         return location;
     }
-    
+
     protected Component getLocationRelativeTo() {
-    	return locationRelativeTo;
+        return locationRelativeTo;
     }
 
     protected Dimension getPreferredSize() {
@@ -582,7 +593,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 
     /**
      * Template getter method to return the commands to populate the dialog button bar.
-     * 
+     *
      * @return The array of commands (may also be a separator or glue identifier)
      */
     protected Object[] getCommandGroupMembers() {
@@ -610,7 +621,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
     /**
      * Register the provided button as the default dialog button. The button must be
      * present on the dialog.
-     * 
+     *
      * @param button The button to become the default.
      */
     protected final void registerDefaultCommand(ActionCommand command) {
@@ -688,28 +699,28 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
      * in memory.
      */
     protected final void hide() {
-    	if(dialog != null) {
-    		onWindowClosing();
-    		this.dialog.setVisible(false);
-    	}
+        if(dialog != null) {
+            onWindowClosing();
+            this.dialog.setVisible(false);
+        }
     }
 
     /**
-	 * Returns the parent window based on the internal parent Component. Will
-	 * search for a Window in the parent hierarchy if needed (when parent
-	 * Component isn't a Window).
-	 * 
-	 * @return the parent window
-	 */
+     * Returns the parent window based on the internal parent Component. Will
+     * search for a Window in the parent hierarchy if needed (when parent
+     * Component isn't a Window).
+     *
+     * @return the parent window
+     */
     public Window getParentWindow() {
-    	if (parentWindow == null) {
-	    	if ((parentComponent == null) && (getActiveWindow() != null)) {
-	    		parentWindow = getActiveWindow().getControl();
-	    	}
-	    	else {
-	    		parentWindow = getWindowForComponent(parentComponent);
-	    	}
-    	}
+        if (parentWindow == null) {
+            if ((parentComponent == null) && (getActiveWindow() != null)) {
+                parentWindow = getActiveWindow().getControl();
+            }
+            else {
+                parentWindow = getWindowForComponent(parentComponent);
+            }
+        }
         return parentWindow;
     }
 
