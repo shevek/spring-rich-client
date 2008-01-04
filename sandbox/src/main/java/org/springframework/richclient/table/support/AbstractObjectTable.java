@@ -30,11 +30,11 @@ import org.springframework.beans.support.PropertyComparator;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.richclient.application.event.LifecycleApplicationEvent;
+import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.command.ActionCommandExecutor;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.GuardedActionCommandExecutor;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.util.Assert;
 
@@ -128,7 +128,7 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 
 	private CommandGroup popupCommandGroup;
 
-	private StatusBarCommandGroup statusBar;
+	private StatusBar statusBar;
 
 	private AbstractTableComparatorChooser tableSorter;
 
@@ -284,7 +284,7 @@ public abstract class AbstractObjectTable extends AbstractControlFactory impleme
 	 * changes, then the status bar will be updated with the current object counts.
 	 * @param statusBar to update
 	 */
-	public void setStatusBar(StatusBarCommandGroup statusBar) {
+	public void setStatusBar(StatusBar statusBar) {
 		this.statusBar = statusBar;
 		updateStatusBar();
 	}
