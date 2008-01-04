@@ -41,9 +41,9 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.WindowManager;
 import org.springframework.richclient.application.config.ApplicationLifecycleAdvisor;
 import org.springframework.richclient.application.config.ApplicationWindowConfigurer;
+import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.richclient.util.WindowUtils;
 import org.springframework.util.Assert;
@@ -64,7 +64,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
     private CommandGroup toolBarCommandGroup;
 
-    private StatusBarCommandGroup statusBarCommandGroup;
+    private StatusBar statusBar;
 
     private ApplicationWindowConfigurer windowConfigurer;
 
@@ -90,7 +90,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
         this.commandManager = getAdvisor().createWindowCommandManager();
         this.menuBarCommandGroup = getAdvisor().getMenuBarCommandGroup();
         this.toolBarCommandGroup = getAdvisor().getToolBarCommandGroup();
-        this.statusBarCommandGroup = getAdvisor().getStatusBarCommandGroup();
+        this.statusBar = getAdvisor().getStatusBar();
     }
 
     public int getNumber() {
@@ -136,8 +136,8 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
         return toolBarCommandGroup;
     }
 
-    public StatusBarCommandGroup getStatusBar() {
-        return statusBarCommandGroup;
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 
     public void setWindowManager( WindowManager windowManager ) {
@@ -303,9 +303,9 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
     }
 
     protected JComponent createStatusBarControl() {
-        JComponent statusBar = statusBarCommandGroup.getControl();
-        statusBarCommandGroup.setVisible( getWindowConfigurer().getShowStatusBar() );
-        return statusBar;
+        JComponent statusBarControl = statusBar.getControl();
+        statusBarControl.setVisible( getWindowConfigurer().getShowStatusBar() );
+        return statusBarControl;
     }
 
     public void addPageListener( PageListener listener ) {

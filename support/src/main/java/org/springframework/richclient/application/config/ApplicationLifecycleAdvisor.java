@@ -20,11 +20,12 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.statusbar.StatusBar;
+import org.springframework.richclient.application.statusbar.support.DefaultStatusBar;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.exceptionhandling.DefaultRegisterableExceptionHandler;
 import org.springframework.richclient.exceptionhandling.RegisterableExceptionHandler;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 
 /**
  * <p>
@@ -225,10 +226,10 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	/**
 	 * Create the statusBar for the application.
 	 * 
-	 * @return a statusBarCommandGroup.
+	 * @return a statusBar.
 	 */
-	public StatusBarCommandGroup getStatusBarCommandGroup() {
-		return new StatusBarCommandGroup();
+	public StatusBar getStatusBar() {
+		return new DefaultStatusBar();
 	}
 
 	/**

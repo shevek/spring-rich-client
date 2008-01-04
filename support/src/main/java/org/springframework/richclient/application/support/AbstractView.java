@@ -25,9 +25,9 @@ import javax.swing.JComponent;
 import org.springframework.richclient.application.PageComponentContext;
 import org.springframework.richclient.application.PageComponentDescriptor;
 import org.springframework.richclient.application.View;
+import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.command.CommandManager;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 import org.springframework.util.Assert;
 
 public abstract class AbstractView extends AbstractControlFactory implements View {
@@ -101,7 +101,7 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
         return context.getWindow().getCommandManager();
     }
 
-    protected final StatusBarCommandGroup getStatusBar() {
+    protected final StatusBar getStatusBar() {
         return context.getWindow().getStatusBar();
     }
 

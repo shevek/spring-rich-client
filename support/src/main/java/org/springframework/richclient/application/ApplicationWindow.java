@@ -19,9 +19,9 @@ import java.util.Iterator;
 
 import javax.swing.JFrame;
 
+import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.command.CommandGroup;
 import org.springframework.richclient.command.CommandManager;
-import org.springframework.richclient.progress.StatusBarCommandGroup;
 
 /**
  * A main application window (or frame) consisting of a menu bar, tool bar,
@@ -40,7 +40,7 @@ public interface ApplicationWindow {
 
     public CommandGroup getToolBar();
 
-    public StatusBarCommandGroup getStatusBar();
+    public StatusBar getStatusBar();
 
     public JFrame getControl();
 

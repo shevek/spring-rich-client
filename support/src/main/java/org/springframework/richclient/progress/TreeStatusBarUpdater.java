@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,18 +17,19 @@ package org.springframework.richclient.progress;
 
 import javax.swing.tree.TreePath;
 
+import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.tree.TreeSelectionListenerSupport;
 import org.springframework.util.Assert;
 
 public abstract class TreeStatusBarUpdater extends TreeSelectionListenerSupport {
-    private StatusBarCommandGroup statusBar;
+    private StatusBar statusBar;
 
-    public TreeStatusBarUpdater(StatusBarCommandGroup statusBar) {
+    public TreeStatusBarUpdater(StatusBar statusBar) {
         Assert.notNull(statusBar);
         this.statusBar = statusBar;
     }
 
-    private StatusBarCommandGroup getStatusBar() {
+    private StatusBar getStatusBar() {
         return statusBar;
     }
 
@@ -55,7 +56,7 @@ public abstract class TreeStatusBarUpdater extends TreeSelectionListenerSupport 
             getStatusBar().setMessage(selectedObjectName);
         }
         else {
-            getStatusBar().setMessage(null);
+            getStatusBar().setMessage((String)null);
         }
     }
 }
