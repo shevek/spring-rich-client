@@ -90,4 +90,9 @@ public interface StatusBar extends ControlFactory {
 	 *            true or false
 	 */
 	void setCancelEnabled(boolean enabled);
+	
+	/**
+	 * Clears the messages of this status bar.
+	 */
+	void clear();
 }
