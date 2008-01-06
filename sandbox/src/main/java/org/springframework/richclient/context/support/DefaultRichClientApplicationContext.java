@@ -54,5 +54,7 @@ public class DefaultRichClientApplicationContext extends ClassPathXmlApplication
     protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         beanFactory.addBeanPostProcessor(new TitleConfigurableBeanPostProcessor(this));
         beanFactory.addBeanPostProcessor(new LabelConfigurableBeanPostProcessor(this));
+        
+        beanFactory.registerScope("window", new ApplicationWindowScope());
     }
 }

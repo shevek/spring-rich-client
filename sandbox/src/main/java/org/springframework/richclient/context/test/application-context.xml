@@ -17,5 +17,7 @@
 	<bean name="testBean" class="org.springframework.richclient.context.test.TestBean">
 	
 	</bean>
+	
+	<bean scope="window" name="testCommand" class="org.springframework.richclient.context.test.TestCommand"/>
 
 </beans>
