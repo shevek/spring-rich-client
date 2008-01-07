@@ -35,6 +35,7 @@ public class FilterListSelectionDialog extends ListSelectionDialog {
 		JComponent filterComponent = createFilterComponent();
 		builder.cell(filterComponent);
 		builder.row();
+		builder.relatedGapRow();
 		builder.cell(super.createDialogContentPane());
 
 		return builder.getPanel();

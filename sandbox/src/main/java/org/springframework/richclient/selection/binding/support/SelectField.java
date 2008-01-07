@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.selection.binding.support;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -52,18 +54,20 @@ public abstract class SelectField extends JPanel {
     private LabelProvider labelProvider;
 
     public SelectField() {
-        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        setLayout(new BorderLayout());
 
         renderer = createRenderer();
         add(renderer);
 
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+        
         selectButton = new JButton("...");
         selectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialog.showDialog();
             }
         });
-        add(selectButton);
+        buttonPanel.add(selectButton);
 
         clearButton = new JButton("X");
         clearButton.addActionListener(new ActionListener() {
@@ -71,7 +75,9 @@ public abstract class SelectField extends JPanel {
                 setValue(null);
             }
         });
-        add(clearButton);
+        buttonPanel.add(clearButton);
+        
+        add(buttonPanel, BorderLayout.LINE_END);
     }
 
     /**
