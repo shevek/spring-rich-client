@@ -1,4 +1,4 @@
-package org.springframework.richclient.dialog.selection;
+package org.springframework.richclient.selection.dialog;
 
 import java.awt.Window;
 import java.awt.event.KeyAdapter;
