@@ -10,52 +10,66 @@
     </parent>
 
     <artifactId>spring-richclient-manual</artifactId>
-    <packaging>jdocbook</packaging>
     <name>Spring richclient manual</name>
     <description>Refence manual.</description>
 
     <build>
         <plugins>
-            <!-- There are 3 available docbook plugins: mojo, jboss and agilejava -->
-            <!-- This docbook plugin is inferiour (and doesn't work fast enough to be useable): -->
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>docbook-maven-plugin</artifactId>-->
-                <!--<version>1.0.0-alpha-1</version>-->
-                <!--<configuration>-->
-                    <!--<sourceDirectory>${basedir}/src/docbook/en</sourceDirectory>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
-                <groupId>org.jboss.maven.plugins</groupId>
-                <artifactId>maven-jdocbook-plugin</artifactId>
-                <version>2.0.0</version>
-                <extensions>true</extensions>
+                <groupId>com.agilejava.docbkx</groupId>
+                <artifactId>docbkx-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-html</goal>
+                            <!-- commented out as it's way too slow -->
+                            <!--<goal>generate-pdf</goal>-->
+                        </goals>
+                        <phase>pre-site</phase>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.docbook</groupId>
+                        <artifactId>docbook-xml</artifactId>
+                        <version>4.4</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <sourceDirectory>${basedir}/src/docbook/en</sourceDirectory>
-                    <sourceDocumentName>index.xml</sourceDocumentName>
-                    <!--<masterTranslation>en</masterTranslation>-->
-                    <formats>
-                        <format>
-                            <formatName>html</formatName>
-                        </format>
-                        <format>
-                            <formatName>html_single</formatName>
-                        </format>
-                        <!--<format>--><!-- TODO pdf breaks on FO error -->
-                            <!--<formatName>pdf</formatName>-->
-                        <!--</format>-->
-                    </formats>
-                    <options>
-                        <xincludeSupported>true</xincludeSupported>
-                        <useRelativeImageUris>true</useRelativeImageUris>
-                    </options>
+                    <includes>index.xml,faq.xml,issues.xml</includes>
+                    <chunkedOutput>true</chunkedOutput>
+                    <htmlStylesheet>css/html.css</htmlStylesheet>
+                    <xincludeSupported>true</xincludeSupported>
+                    <htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+                    <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                    <entities>
+                        <entity>
+                            <name>version</name>
+                            <value>${version}</value>
+                        </entity>
+                    </entities>
+                    <postProcess>
+                        <copy todir="target/site/reference">
+                            <fileset dir="target/docbkx">
+                                <include name="**/*.html" />
+                                <include name="**/*.pdf" />
+                            </fileset>
+                        </copy>
+                        <copy todir="target/site/reference/html">
+                            <fileset dir="src/docbkx/resources">
+                                <include name="**/*.css" />
+                                <include name="**/*.png" />
+                                <include name="**/*.gif" />
+                                <include name="**/*.jpg" />
+                            </fileset>
+                        </copy>
+                        <move file="target/site/reference/pdf/index.pdf" tofile="target/site/reference/pdf/spring-rich-client-reference.pdf" failonerror="false" />
+                        <!--<move file="target/site/reference/pdf/faq.pdf" tofile="target/site/reference/pdf/spring-dm-faq.pdf" failonerror="false" />-->
+                        <!--<move file="target/site/reference/pdf/issues.pdf" tofile="target/site/reference/pdf/spring-dm-issues.pdf" failonerror="false" />-->
+                    </postProcess>
                 </configuration>
             </plugin>
-            <!--
-              TODO try out agilejava's docbook plugin, used in spring-osgi:
-              http://springframework.svn.sourceforge.net/viewvc/springframework/spring-osgi/trunk/docs/pom.xml?view=markup
-            -->
         </plugins>
     </build>
     <dependencies>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+    <bookinfo>
+        <title>Spring Richclient Reference Guide</title>
+
+        <releaseinfo>&version;</releaseinfo>
+
+        <authorgroup>
+            <author>
+                <firstname>Geoffrey</firstname>
+                <surname>De Smet</surname>
+                <affiliation>Schaubroeck</affiliation>
+            </author>
+            <author>
+                <firstname>Peter</firstname>
+                <surname>De Bruycker</surname>
+            </author>
+        </authorgroup>
+
+        <legalnotice>
+            <para>
+            Copies of this document may be made for your own use and for
+      distribution to others, provided that you do not charge any fee for such
+      copies and further provided that each copy contains this Copyright
+      Notice, whether distributed in print or electronically.tt
+            </para>
+        </legalnotice>
+    </bookinfo>
+
+    <toc/>
+
+    <xi:include href="preface.xml"/>
+    <xi:include href="introduction.xml"/>
+
+    <xi:include href="reference/application/application.xml" />
+    <xi:include href="reference/forms/forms.xml"/>
+    
+    <part id="commands">
+        <title>Command Framework</title>
+    </part>
+    
+    <part id="dialogs">
+        <title>Dialogs</title>
+        <chapter id="dialogs:wizards">
+            <title>Wizards</title>
+        </chapter>
+    </part>
+    
+    <part id="misc">
+        <title>Misc</title>
+        <xi:include href="reference/exception_handling/exception_handling.xml"/>
+    </part>
+
+    <part id="integration">
+        <title>Integration</title>
+    </part>
+
+  <!--<part id="appendixes">-->
+
+  <!--<title>Appendixes</title>-->
+
+  <!--<xi:include href="appendix/introduction.xml"/>-->
+
+  <!--<xi:include href="appendix/appendix-roadmap.xml"/>-->
+
+  <!--</part>-->
+</book>
