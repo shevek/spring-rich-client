@@ -88,11 +88,6 @@
             <artifactId>spring-aop</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-remoting</artifactId>
-            <optional>true</optional>
-        </dependency>
 
         <dependency>
             <groupId>aopalliance</groupId>
@@ -123,7 +118,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Codec -->        
+        <!-- Codec -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>

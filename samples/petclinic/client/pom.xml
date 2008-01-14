@@ -61,12 +61,6 @@
             <artifactId>spring-richclient-core</artifactId>
         </dependency>
 
-        <!-- Dependency injection -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-remoting</artifactId>
-        </dependency>
-
         <!-- Remoting -->
         <dependency>
             <groupId>com.caucho</groupId>

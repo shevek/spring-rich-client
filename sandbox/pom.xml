@@ -48,10 +48,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-dao</artifactId>
+            <artifactId>spring-tx</artifactId>
             <optional>true</optional>
         </dependency>
-        
+
         <dependency>
             <groupId>net.java.dev.glazedlists</groupId>
             <artifactId>glazedlists_java15</artifactId>
@@ -68,7 +68,7 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Docking -->
         <dependency>
             <groupId>net.java.dev.flexdock</groupId>

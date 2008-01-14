@@ -59,7 +59,7 @@
             <artifactId>commons-lang</artifactId>
             <scope>runtime</scope>
         </dependency>
-        
+
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
@@ -81,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-dao</artifactId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
 
         <!-- Spring's petclinic -->

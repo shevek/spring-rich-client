@@ -19,7 +19,7 @@
         The goal of spring-richclient is to provide that.
     </description>
     <url>http://spring-rich-c.sf.net/</url>
-    
+
     <prerequisites>
         <maven>2.0.7</maven>
     </prerequisites>
@@ -498,7 +498,7 @@
         </plugins>
     </reporting>
     <properties>
-        <spring.version>2.0.6</spring.version>
+        <spring.version>2.5.1</spring.version>
     </properties>
 
     <profiles>
@@ -717,7 +717,7 @@
                 <artifactId>commons-collections</artifactId>
                 <version>3.1</version>
             </dependency>
-            
+
             <!-- Codec -->
             <dependency>
                   <groupId>commons-codec</groupId>
@@ -779,17 +779,12 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-support</artifactId>
+                <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-remoting</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-dao</artifactId>
+                <artifactId>spring-tx</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
@@ -852,6 +847,14 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-support</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-remoting</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>ehcache</groupId>
