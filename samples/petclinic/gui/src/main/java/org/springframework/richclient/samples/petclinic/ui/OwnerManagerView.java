@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -63,16 +63,15 @@ import org.springframework.richclient.util.PopupMenuMouseListener;
 import org.springframework.samples.petclinic.Clinic;
 import org.springframework.samples.petclinic.Owner;
 import org.springframework.samples.petclinic.Pet;
-import org.springframework.samples.petclinic.jdbc.JdbcPet;
 import org.springframework.util.Assert;
 
 /**
- * Shows the owners and their pets in a tree structure. 
- * 
+ * Shows the owners and their pets in a tree structure.
+ *
  * Several dialogs are used to show detail information or messages. Notice that we're explicitly
  * setting {@link CloseAction}s to either dispose or hide the dialog as an example. Check out the default behavior of
  * the dialog type that you use to determine if you need to specify this as well.
- * 
+ *
  * @author Keith Donald
  * @author Jan Hoskens
  */
@@ -349,7 +348,7 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
             // setting closeAction explicitly to dispose, if confirmationDialog has this default,
             // this line may be removed.
             dialog.setCloseAction(CloseAction.DISPOSE);
-            
+
             if (ownerCount > 0 && petCount > 0) {
                 dialog.setTitle(getMessage("confirmDeleteOwnerAndPetDialog.title"));
                 dialog.setConfirmationMessage(getMessage("confirmDeleteOwnerAndPetDialog.label"));
@@ -414,8 +413,8 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     /**
-     * Command to create a new Pet. Pops up a dialog which is reused by using the {@link CloseAction#HIDE}. 
-     * 
+     * Command to create a new Pet. Pops up a dialog which is reused by using the {@link CloseAction#HIDE}.
+     *
      * @see ApplicationDialog
      * @see CloseAction
      */
@@ -451,13 +450,13 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
                     return true;
                 }
             };
-            
+
         }
-        
+
         public void execute() {
             if (dialog == null)
                 createDialog();
-            
+
             ownerGeneralForm.setFormObject(getSelectedOwner());
             dialog.showDialog();
         }
@@ -466,9 +465,9 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     /**
      * Show properties of a single pet. Note the usage of {@link CloseAction#DISPOSE} to show how
      * you can rely on fully recreating the dialog instead of hiding it.
-     * 
+     *
      * As this is not used directly to create buttons etc... no full blown ActionCommand is needed.
-     * 
+     *
      * @see ApplicationDialog
      * @see CloseAction
      */
@@ -497,32 +496,32 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
     }
 
     /**
-     * Command to create a new Pet. Pops up a dialog which is reused by using the {@link CloseAction#HIDE}. 
-     * 
+     * Command to create a new Pet. Pops up a dialog which is reused by using the {@link CloseAction#HIDE}.
+     *
      * @see ApplicationDialog
      * @see CloseAction
      */
     private class NewPetAction extends ActionCommand {
 
         private ApplicationDialog dialog;
-        
+
         private PetForm petForm;
 
         private FormBackedDialogPage dialogPage;
-        
+
         /**
          * Constructor with fixed command id which will be used to configure it's label/icon etc...
          */
         public NewPetAction() {
             super("newPetCommand");
         }
-        
+
         /**
          * Create the dialog with {@link CloseAction#HIDE}. This will keep the dialog hidden in order
-         * to reuse the component. This avoids the time-consuming building of the dialog gui each time. 
+         * to reuse the component. This avoids the time-consuming building of the dialog gui each time.
          */
         private void createDialog() {
-            petForm = new PetForm(FormModelHelper.createFormModel(new JdbcPet()), true);
+            petForm = new PetForm(FormModelHelper.createFormModel(new Pet()), true);
             dialogPage = new FormBackedDialogPage(petForm);
 
             dialog = new TitledPageApplicationDialog(dialogPage, getWindowControl(), CloseAction.HIDE) {
@@ -550,24 +549,24 @@ public class OwnerManagerView extends AbstractView implements ApplicationListene
         protected void doExecuteCommand() {
             if (dialog == null)
                 createDialog();
-            
-            petForm.setFormObject(new JdbcPet());
+
+            petForm.setFormObject(new Pet());
             dialog.showDialog();
         }
     }
-    
+
     public void componentClosed() {
         System.out.println("closed");
     }
-    
+
     public void componentFocusGained() {
         System.out.println("gained");
     }
-    
+
     public void componentFocusLost() {
         System.out.println("lost");
     }
-    
+
     public void componentOpened() {
         System.out.println("opened");
     }

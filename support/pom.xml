@@ -88,6 +88,10 @@
             <artifactId>spring-aop</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>aopalliance</groupId>

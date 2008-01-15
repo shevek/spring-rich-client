@@ -86,8 +86,8 @@
 
         <!-- Spring's petclinic -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-petclinic</artifactId>
+            <groupId>org.springframework.samples</groupId>
+            <artifactId>spring-petclinic-domain</artifactId>
         </dependency>
 
         <!-- Security -->

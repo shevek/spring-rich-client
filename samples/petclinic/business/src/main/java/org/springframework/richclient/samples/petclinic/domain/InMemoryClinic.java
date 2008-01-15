@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,28 +15,43 @@
  */
 package org.springframework.richclient.samples.petclinic.domain;
 
-import java.util.Collection;
+import javax.sql.DataSource;
 
-import org.springframework.dao.DataAccessException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.samples.petclinic.jdbc.HsqlJdbcClinic;
+import org.springframework.samples.petclinic.jdbc.SimpleJdbcClinic;
 
 /**
  * Provides an in-memory PetClinic business object.
- * 
+ *
  * <P>
  * Leverages HSQL database's in-memory option and uses the Spring-supplied
- * <code>HsqlJdbcClinic</code>. This class simply inserts the schema and base
+ * <code>SimpleJdbcClinic</code>. This class simply inserts the schema and base
  * data into the in-memory instance at startup time. It also inserts data
  * required for security.
- * 
+ *
  * @author Ben Alex
  */
-public class InMemoryClinic extends HsqlJdbcClinic {
+public class InMemoryClinic extends SimpleJdbcClinic {
 
-    protected void initDao() {
-        super.initDao();
-        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+    private final Log logger = LogFactory.getLog(getClass());
+
+    private DataSource dataSource;
+
+    /**
+     * Note: the SimpleJdbcClinic uses autowiring, we could do the same here.
+     *
+     * @param dataSource
+     */
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource=dataSource;
+        init();
+    }
+
+    public void init() {
+        super.init(dataSource);
+        JdbcTemplate template = new JdbcTemplate(dataSource);
 
         // Schema: Petclinic
         template
@@ -142,17 +157,5 @@ public class InMemoryClinic extends HsqlJdbcClinic {
         template.execute("INSERT INTO authorities VALUES ('dianne', 'ROLE_CLINIC_STAFF')");
         template.execute("INSERT INTO authorities VALUES ('peter', 'ROLE_CLINIC_CUSTOMER')");
         template.execute("INSERT INTO authorities VALUES ('scott', 'ROLE_CLINIC_CUSTOMER')");
-    }
-
-    public Collection findOwners(String arg0) throws DataAccessException {
-        Collection result = super.findOwners(arg0);
-        logger.debug("Finding Owners matching: " + arg0 + "; found: " + result.size());
-        return result;
-    }
-
-    public Collection getVets() throws DataAccessException {
-        Collection result = super.getVets();
-        logger.debug("Finding vets; found: " + result.size());
-        return result;
     }
 }

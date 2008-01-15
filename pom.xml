@@ -802,6 +802,12 @@
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
             <!--<dependency>-->
                 <!--<groupId>org.springframework</groupId>-->
                 <!--<artifactId>spring-mock</artifactId>-->
@@ -811,9 +817,14 @@
 
             <!-- Spring's petclinic -->
             <dependency>
-                <groupId>org.springframework</groupId>
+                <groupId>org.springframework.samples</groupId>
                 <artifactId>spring-petclinic</artifactId>
-                <version>1.2.8</version><!-- TODO Get in sync with ${spring.version} by deploying it in our repo -->
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.samples</groupId>
+                <artifactId>spring-petclinic-domain</artifactId>
+                <version>${spring.version}</version>
             </dependency>
 
             <dependency>
