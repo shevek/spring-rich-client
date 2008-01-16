@@ -17,14 +17,17 @@ package org.springframework.richclient.selection.binding.support;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.springframework.binding.value.PropertyChangePublisher;
+import org.springframework.binding.value.support.PropertyChangeSupport;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.selection.dialog.ListSelectionDialog;
 
 /**
@@ -35,49 +38,41 @@ import org.springframework.richclient.selection.dialog.ListSelectionDialog;
  * sets the value to <code>null</code>.
  * </p>
  * 
- * TODO use icons on the buttons
- * 
  * @author Peter De Bruycker
  */
-public abstract class SelectField extends JPanel {
+public abstract class SelectField extends AbstractControlFactory implements PropertyChangePublisher {
 
     private JComponent renderer;
-    private JButton selectButton;
-    private JButton clearButton;
-
+    private SelectCommand selectCommand = new SelectCommand();
+    private ClearCommand clearCommand = new ClearCommand();
     private boolean editable;
-
     private Object value;
-
     private ListSelectionDialog dialog;
-
     private LabelProvider labelProvider;
-
-    public SelectField() {
-        setLayout(new BorderLayout());
-
+    private JPanel control;
+    
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    
+    protected JComponent createControl() {
+        control = new JPanel(new BorderLayout());
+        
         renderer = createRenderer();
-        add(renderer);
+        control.add(renderer);
+
+        // configure commands
+        CommandConfigurer configurer = (CommandConfigurer) ApplicationServicesLocator.services().getService(
+                CommandConfigurer.class);
+        configurer.configure(selectCommand);
+        configurer.configure(clearCommand);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
-        
-        selectButton = new JButton("...");
-        selectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dialog.showDialog();
-            }
-        });
-        buttonPanel.add(selectButton);
 
-        clearButton = new JButton("X");
-        clearButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setValue(null);
-            }
-        });
-        buttonPanel.add(clearButton);
+        buttonPanel.add(selectCommand.createButton());
+        buttonPanel.add(clearCommand.createButton());
+
+        control.add(buttonPanel, BorderLayout.LINE_END);
         
-        add(buttonPanel, BorderLayout.LINE_END);
+        return control;
     }
 
     /**
@@ -88,26 +83,22 @@ public abstract class SelectField extends JPanel {
     protected abstract JComponent createRenderer();
 
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
+        control.setEnabled(enabled);
 
         renderer.setEnabled(enabled);
-        selectButton.setEnabled(enabled);
-        clearButton.setEnabled(enabled);
+        selectCommand.setEnabled(enabled);
+        clearCommand.setEnabled(enabled);
     }
 
     public void setEditable(boolean editable) {
         this.editable = editable;
 
-        selectButton.setEnabled(isEnabled() && editable);
-        clearButton.setEnabled(isEnabled() && editable);
+        selectCommand.setEnabled(control.isEnabled() && editable);
+        clearCommand.setEnabled(control.isEnabled() && editable);
     }
 
     public boolean isEditable() {
         return editable;
-    }
-
-    public JButton getSelectButton() {
-        return selectButton;
     }
 
     public void setValue(Object value) {
@@ -116,7 +107,14 @@ public abstract class SelectField extends JPanel {
 
         render(value);
 
-        firePropertyChange("value", oldValue, value);
+        propertyChangeSupport.firePropertyChange("value", oldValue, value);
+    }
+
+    /**
+     * Convenience method, calls <code>setValue(null)</code>.
+     */
+    public void clear() {
+        setValue(null);
     }
 
     /**
@@ -141,5 +139,44 @@ public abstract class SelectField extends JPanel {
 
     public LabelProvider getLabelProvider() {
         return labelProvider;
+    }
+
+    private class ClearCommand extends ActionCommand {
+
+        public ClearCommand() {
+            super("selectField.clearCommand");
+        }
+
+        protected void doExecuteCommand() {
+            clear();
+        }
+
+    }
+
+    private class SelectCommand extends ActionCommand {
+
+        public SelectCommand() {
+            super("selectField.selectCommand");
+        }
+
+        protected void doExecuteCommand() {
+            dialog.showDialog();
+        }
+    }
+    
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+    
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }
 }

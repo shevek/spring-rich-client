@@ -17,22 +17,29 @@ package org.springframework.richclient.selection.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.core.closure.Closure;
+import org.springframework.core.closure.support.Block;
 import org.springframework.richclient.form.binding.support.CustomBinding;
 import org.springframework.richclient.selection.binding.support.LabelProvider;
 import org.springframework.richclient.selection.binding.support.LabelProviderListCellRenderer;
 import org.springframework.richclient.selection.binding.support.SelectField;
+import org.springframework.richclient.selection.binding.support.ValueModel2EventListBridge;
 import org.springframework.richclient.selection.dialog.FilterListSelectionDialog;
 import org.springframework.richclient.selection.dialog.ListSelectionDialog;
+import org.springframework.util.StringUtils;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTextFilterator;
 import ca.odell.glazedlists.impl.filter.StringTextFilterator;
 
@@ -43,17 +50,15 @@ import ca.odell.glazedlists.impl.filter.StringTextFilterator;
  */
 public class ListSelectionDialogBinding extends CustomBinding {
 
-    private LabelProvider labelProvider;
-
     private SelectField selectField;
-
-    private List selectableItems;
-
     private boolean filtered;
-
     private String[] filterProperties;
-
     private ListCellRenderer renderer;
+    private ValueModel selectableItemsHolder;
+    private LabelProvider labelProvider;
+    private Comparator comparator;
+    private String descriptionKey;
+    private String titleKey;
 
     protected ListSelectionDialogBinding(SelectField selectField, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -63,6 +68,10 @@ public class ListSelectionDialogBinding extends CustomBinding {
     protected JComponent doBindControl() {
         selectField.setLabelProvider(labelProvider);
         selectField.setSelectionDialog(createSelectionDialog());
+        
+        // trigger control creation so we can set the value
+        selectField.getControl();
+        
         selectField.setValue(getValue());
 
         selectField.addPropertyChangeListener("value", new PropertyChangeListener() {
@@ -71,23 +80,17 @@ public class ListSelectionDialogBinding extends CustomBinding {
             }
         });
 
-        return selectField;
+        return selectField.getControl();
     }
 
     protected ListSelectionDialog createSelectionDialog() {
-        Closure onSelectAction = new Closure() {
-            public Object call(Object argument) {
-                controlValueChanged(argument);
-                selectField.setValue(argument);
-
-                return argument;
-            }
-        };
+        EventList eventList = createEventList(selectableItemsHolder);
+        final ValueModel2EventListBridge itemRefresher = new ValueModel2EventListBridge(selectableItemsHolder,
+                eventList, true);
 
         ListSelectionDialog selectionDialog = null;
         if (filtered) {
-            FilterListSelectionDialog filterDialog = new FilterListSelectionDialog("", null, new FilterList(GlazedLists
-                    .eventList(selectableItems)));
+            FilterListSelectionDialog filterDialog = new FilterListSelectionDialog("", null, new FilterList(eventList));
             if (filterProperties == null) {
                 filterDialog.setFilterator(new StringTextFilterator());
             }
@@ -98,25 +101,56 @@ public class ListSelectionDialogBinding extends CustomBinding {
             selectionDialog = filterDialog;
         }
         else {
-            selectionDialog = new ListSelectionDialog("", null, GlazedLists.eventList(selectableItems));
+            selectionDialog = new ListSelectionDialog("", null, eventList);
         }
 
-        selectionDialog.setOnSelectAction(onSelectAction);
+        selectionDialog.setOnAboutToShow(new Block() {
+            protected void handle(Object ignore) {
+                itemRefresher.synchronize();
+            }
+        });
 
+        selectionDialog.setOnSelectAction(new Closure() {
+            public Object call(Object argument) {
+                controlValueChanged(argument);
+                selectField.setValue(argument);
+
+                return argument;
+            }
+        });
         selectionDialog.setRenderer(getRendererForSelectionDialog());
+        
+        if (StringUtils.hasText(descriptionKey)) {
+            String description = getMessage(descriptionKey);
+            selectionDialog.setDescription(description);
+        }
+        if (StringUtils.hasText(titleKey)) {
+            String title = getMessage(titleKey);
+            selectionDialog.setTitle(title);
+        }
 
         return selectionDialog;
     }
-    
+
+    private EventList createEventList(ValueModel selectableItemsHolder) {
+        EventList eventList = GlazedLists.eventList(Collections.emptyList());
+
+        if (comparator != null) {
+            eventList = new SortedList(eventList, comparator);
+        }
+
+        return eventList;
+    }
+
     protected ListCellRenderer getRendererForSelectionDialog() {
-        if(renderer != null) {
+        if (renderer != null) {
             return renderer;
         }
-        
-        if(labelProvider != null) {
+
+        if (labelProvider != null) {
             return new LabelProviderListCellRenderer(labelProvider);
         }
-        
+
         return null;
     }
 
@@ -136,10 +170,6 @@ public class ListSelectionDialogBinding extends CustomBinding {
         selectField.setValue(newValue);
     }
 
-    public void setSelectableItems(List selectableItems) {
-        this.selectableItems = selectableItems;
-    }
-
     public void setFilterProperties(String[] filterProperties) {
         this.filterProperties = filterProperties;
     }
@@ -150,5 +180,21 @@ public class ListSelectionDialogBinding extends CustomBinding {
 
     public void setRenderer(ListCellRenderer renderer) {
         this.renderer = renderer;
+    }
+
+    public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
+        this.selectableItemsHolder = selectableItemsHolder;
+    }
+
+    public void setComparator(Comparator comparator) {
+        this.comparator = comparator;
+    }
+
+    public void setDescriptionKey(String descriptionKey) {
+        this.descriptionKey = descriptionKey;
+    }
+    
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
     }
 }

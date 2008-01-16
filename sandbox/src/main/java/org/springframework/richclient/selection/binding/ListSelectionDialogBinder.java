@@ -15,19 +15,19 @@
  */
 package org.springframework.richclient.selection.binding;
 
-import java.util.List;
+import java.util.Comparator;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.richclient.selection.binding.support.LabelProvider;
-import org.springframework.richclient.selection.binding.support.SelectField;
 import org.springframework.richclient.selection.binding.support.SimpleSelectField;
-import org.springframework.util.Assert;
 
 /**
  * Binder for <code>SelectField</code>.
@@ -47,9 +47,7 @@ import org.springframework.util.Assert;
  */
 public class ListSelectionDialogBinder extends AbstractBinder {
 
-    public static final String SELECTABLE_ITEMS_KEY = "selectableItems";
-
-    public static final String LABEL_PROVIDER_KEY = "labelProvider";
+    public static final String SELECTABLE_ITEMS_HOLDER_KEY = "selectableItemsHolder";
 
     public static final String FILTER_PROPERTIES_KEY = "filterProperties";
 
@@ -57,35 +55,40 @@ public class ListSelectionDialogBinder extends AbstractBinder {
 
     public static final String RENDERER_KEY = "renderer";
 
-    private LabelProvider labelProvider;
-    private List selectableItems;
+    public static final String COMPARATOR_KEY = "comparator";
+
+    public static final String LABEL_PROVIDER_KEY = "lavelProvider";
+
+    public static final String DESCRIPTION_KEY_KEY = "descriptionKey";
+
+    public static final String TITLE_KEY_KEY = "titleKey";
+
+    private ValueModel selectableItemsHolder;
 
     private String[] filterProperties;
     private boolean filtered;
-    
+    private LabelProvider labelProvider;
     private ListCellRenderer renderer;
+    private Comparator comparator;
+    private String descriptionKey;
+    private String titleKey;
 
     protected ListSelectionDialogBinder() {
-        super(null, new String[] { SELECTABLE_ITEMS_KEY, LABEL_PROVIDER_KEY, FILTER_PROPERTIES_KEY, FILTERED_KEY, RENDERER_KEY });
+        super(null, new String[] { SELECTABLE_ITEMS_HOLDER_KEY, FILTER_PROPERTIES_KEY, FILTERED_KEY, RENDERER_KEY,
+                LABEL_PROVIDER_KEY, COMPARATOR_KEY, DESCRIPTION_KEY_KEY, TITLE_KEY_KEY });
     }
 
     protected JComponent createControl(Map context) {
-        return new SimpleSelectField();
+        // not used
+        return new JLabel("dummy");
     }
 
     protected void applyContext(ListSelectionDialogBinding binding, Map context) {
-        if (context.containsKey(LABEL_PROVIDER_KEY)) {
-            binding.setLabelProvider((LabelProvider) context.get(LABEL_PROVIDER_KEY));
+        if (context.containsKey(SELECTABLE_ITEMS_HOLDER_KEY)) {
+            binding.setSelectableItemsHolder((ValueModel) context.get(SELECTABLE_ITEMS_HOLDER_KEY));
         }
-        else if (labelProvider != null) {
-            binding.setLabelProvider(labelProvider);
-        }
-
-        if (context.containsKey(SELECTABLE_ITEMS_KEY)) {
-            binding.setSelectableItems((List) context.get(SELECTABLE_ITEMS_KEY));
-        }
-        else if (selectableItems != null) {
-            binding.setSelectableItems(selectableItems);
+        else if (selectableItemsHolder != null) {
+            binding.setSelectableItemsHolder(selectableItemsHolder);
         }
 
         if (context.containsKey(FILTER_PROPERTIES_KEY)) {
@@ -108,23 +111,46 @@ public class ListSelectionDialogBinder extends AbstractBinder {
         else if (renderer != null) {
             binding.setRenderer(renderer);
         }
-}
 
-    protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        Assert.isInstanceOf(SelectField.class, control);
+        if (context.containsKey(COMPARATOR_KEY)) {
+            binding.setComparator((Comparator) context.get(COMPARATOR_KEY));
+        }
+        else if (comparator != null) {
+            binding.setComparator(comparator);
+        }
 
-        ListSelectionDialogBinding binding = new ListSelectionDialogBinding((SelectField) control, formModel, formPropertyPath);
+        if (context.containsKey(LABEL_PROVIDER_KEY)) {
+            binding.setLabelProvider((LabelProvider) context.get(LABEL_PROVIDER_KEY));
+        }
+        else if (renderer != null) {
+            binding.setLabelProvider(labelProvider);
+        }
+
+        if (context.containsKey(DESCRIPTION_KEY_KEY)) {
+            binding.setDescriptionKey((String) context.get(DESCRIPTION_KEY_KEY));
+        }
+        else if (descriptionKey != null) {
+            binding.setDescriptionKey(descriptionKey);
+        }
+
+        if (context.containsKey(TITLE_KEY_KEY)) {
+            binding.setTitleKey((String) context.get(TITLE_KEY_KEY));
+        }
+        else if (titleKey != null) {
+            binding.setTitleKey(titleKey);
+        }
+    }
+
+    protected Binding doBind(JComponent notUsed, FormModel formModel, String formPropertyPath, Map context) {
+        ListSelectionDialogBinding binding = new ListSelectionDialogBinding(new SimpleSelectField(), formModel,
+                formPropertyPath);
         applyContext(binding, context);
 
         return binding;
     }
 
-    public void setLabelProvider(LabelProvider labelProvider) {
-        this.labelProvider = labelProvider;
-    }
-
-    public void setSelectableItems(List selectableItems) {
-        this.selectableItems = selectableItems;
+    public void setSelectableItemsHolder(ValueModel selectableItemsHolder) {
+        this.selectableItemsHolder = selectableItemsHolder;
     }
 
     public void setFilterProperties(String[] filterProperties) {
@@ -134,8 +160,24 @@ public class ListSelectionDialogBinder extends AbstractBinder {
     public void setFiltered(boolean filtered) {
         this.filtered = filtered;
     }
-    
+
     public void setRenderer(ListCellRenderer renderer) {
         this.renderer = renderer;
+    }
+
+    public void setLabelProvider(LabelProvider labelProvider) {
+        this.labelProvider = labelProvider;
+    }
+
+    public void setComparator(Comparator comparator) {
+        this.comparator = comparator;
+    }
+
+    public void setDescriptionKey(String descriptionKey) {
+        this.descriptionKey = descriptionKey;
+    }
+
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
     }
 }
