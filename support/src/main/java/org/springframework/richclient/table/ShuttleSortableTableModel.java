@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,28 +27,22 @@ import javax.swing.table.TableModel;
 
 import org.springframework.core.style.StylerUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.comparator.NullSafeComparator;
 
 /**
- * A sorter for TableModels. The sorter has a model (conforming to TableModel)
- * and itself implements TableModel. TableSorter does not store or copy the
- * model in the TableModel, instead it maintains an array of integers which it
- * keeps the same size as the number of rows in its model. When the model
- * changes it notifies the sorter that something has changed eg. "rowsAdded" so
- * that its internal array of integers can be reallocated. As requests are made
- * of the sorter (like getValueAt(row, col) it redirects them to its model via
- * the mapping array. That way the TableSorter appears to hold another copy of
- * the table with the rows in a different order. The sorting algorthm used is
- * stable which means that it does not move around rows when its comparison
- * function returns 0 to denote that they are equivalent.
+ * A sorter for TableModels. The sorter has a model (conforming to TableModel) and itself implements TableModel.
+ * TableSorter does not store or copy the model in the TableModel, instead it maintains an array of integers which it
+ * keeps the same size as the number of rows in its model. When the model changes it notifies the sorter that something
+ * has changed eg. "rowsAdded" so that its internal array of integers can be reallocated. As requests are made of the
+ * sorter (like getValueAt(row, col) it redirects them to its model via the mapping array. That way the TableSorter
+ * appears to hold another copy of the table with the rows in a different order. The sorting algorthm used is stable
+ * which means that it does not move around rows when its comparison function returns 0 to denote that they are
+ * equivalent.
  */
 public class ShuttleSortableTableModel extends AbstractTableModelFilter implements SortableTableModel {
-    public static final Comparator OBJECT_COMPARATOR = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            String s1 = o1.toString();
-            String s2 = o2.toString();
-            return s1.compareTo(s2);
-        }
-    };
+    private static final Comparator OBJECT_COMPARATOR = new NullSafeComparator(ToStringComparator.INSTANCE, true);
+
+    private static final Comparator COMPARABLE_COMPARATOR = NullSafeComparator.NULLS_LOW;
 
     private Comparator[] columnComparators;
 
@@ -202,7 +196,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
         if (columnsToSort.size() > 0) {
             checkModel();
             compares = 0;
-            doShuttleSort((int[])indexes.clone(), indexes, 0, indexes.length);
+            doShuttleSort((int[]) indexes.clone(), indexes, 0, indexes.length);
         }
     }
 
@@ -231,18 +225,14 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
         int q = middle;
 
         /*
-         * This is an optional short-cut; at each recursive call, check to see
-         * if the elements in this subset are already ordered. If so, no further
-         * comparisons are needed; the sub-array can just be copied. The array
-         * must be copied rather than assigned otherwise sister calls in the
-         * recursion might get out of sinc. When the number of elements is three
-         * they are partitioned so that the first set, [low, mid), has one
-         * element and and the second, [mid, high), has two. We skip the
-         * optimisation when the number of elements is three or less as the
-         * first compare in the normal merge will produce the same sequence of
-         * steps. This optimisation seems to be worthwhile for partially ordered
-         * lists but some analysis is needed to find out how the performance
-         * drops to Nlog(N) as the initial
+         * This is an optional short-cut; at each recursive call, check to see if the elements in this subset are
+         * already ordered. If so, no further comparisons are needed; the sub-array can just be copied. The array must
+         * be copied rather than assigned otherwise sister calls in the recursion might get out of sinc. When the number
+         * of elements is three they are partitioned so that the first set, [low, mid), has one element and and the
+         * second, [mid, high), has two. We skip the optimisation when the number of elements is three or less as the
+         * first compare in the normal merge will produce the same sequence of steps. This optimisation seems to be
+         * worthwhile for partially ordered lists but some analysis is needed to find out how the performance drops to
+         * Nlog(N) as the initial
          */
         if (high - low >= 4 && compare(from[middle - 1], from[middle]) <= 0) {
             for (int i = low; i < high; i++) {
@@ -265,7 +255,7 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
     public int compare(int row1, int row2) {
         compares++;
         for (int level = 0; level < columnsToSort.size(); level++) {
-            ColumnToSort column = (ColumnToSort)columnsToSort.get(level);
+            ColumnToSort column = (ColumnToSort) columnsToSort.get(level);
             int result = compareRowsByColumn(row1, row2, column.getColumnIndex());
             if (result != 0) {
                 return column.getSortOrder() == SortOrder.ASCENDING ? result : -result;
@@ -278,44 +268,12 @@ public class ShuttleSortableTableModel extends AbstractTableModelFilter implemen
         Object o1 = filteredModel.getValueAt(row1, column);
         Object o2 = filteredModel.getValueAt(row2, column);
 
-        // If both values are null, return 0.
-        if (o1 == null && o2 == null) {
-            return 0;
-        }
-        else if (o1 == null) {
-            // Define null less than everything
-            return -1;
-        }
-        else if (o2 == null) {
-            return 1;
-        }
-
         Comparator comparator = columnComparators[column];
         if (comparator != null) {
-            int result = comparator.compare(o1, o2);
-            if (result > 0) {
-                return 1;
-            }
-            else if (result < 0) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
+            return comparator.compare(o1, o2);
         }
 
-        Comparable c1 = (Comparable)o1;
-        Comparable c2 = (Comparable)o2;
-        int result = c1.compareTo(c2);
-        if (result > 0) {
-            return 1;
-        }
-        else if (result < 0) {
-            return -1;
-        }
-        else {
-            return 0;
-        }
+        return COMPARABLE_COMPARATOR.compare(o1, o2);
     }
 
     public void tableChanged(final TableModelEvent e) {
