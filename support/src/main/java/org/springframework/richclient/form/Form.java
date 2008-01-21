@@ -101,4 +101,6 @@ public interface Form extends ControlFactory {
 	public void commit();
 
 	public void revert();
+	
+	public void reset();
 }
