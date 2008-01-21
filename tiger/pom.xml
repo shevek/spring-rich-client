@@ -84,6 +84,16 @@
             <artifactId>hibernate-annotations</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-commons-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- JNLP -->
         <dependency>
@@ -91,7 +101,7 @@
             <artifactId>jnlp-api</artifactId>
             <optional>true</optional>
         </dependency>
-        
+
     </dependencies>
 
 </project>
