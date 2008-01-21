@@ -34,7 +34,7 @@ import org.springframework.richclient.selection.binding.support.SimpleSelectFiel
  * <p>
  * The context can contain the following items:
  * <ul>
- * <li><code>SELECTABLE_ITEMS_KEY</code>: the collection of selectable items</li>
+ * <li><code>SELECTABLE_ITEMS_HOLDER_KEY</code>: The ValueModel holding the collection of selectable items</li>
  * <li><code>LABEL_PROVIDER_KEY</code>: the label provider to provide the text of a given item</li>
  * <li><code>FILTERED_KEY</code>: boolean value indicating whether the selection dialog will contain a filter field.
  * If this value is <code>true</code> and the filter properties are not given, the string representation of the item
@@ -122,7 +122,7 @@ public class ListSelectionDialogBinder extends AbstractBinder {
         if (context.containsKey(LABEL_PROVIDER_KEY)) {
             binding.setLabelProvider((LabelProvider) context.get(LABEL_PROVIDER_KEY));
         }
-        else if (renderer != null) {
+        else if (labelProvider != null) {
             binding.setLabelProvider(labelProvider);
         }
 

@@ -26,6 +26,8 @@ import javax.swing.JList;
  * @author Peter De Bruycker
  */
 public class LabelProviderListCellRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     private LabelProvider labelProvider;
 
     public LabelProviderListCellRenderer(LabelProvider labelProvider) {
