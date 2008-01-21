@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -50,10 +50,10 @@ import org.springframework.util.StringUtils;
  * a simple, fixed area at the top showing the information from the
  * ApplicationDescriptor configured in the context.  Below that is a scrolling
  * (animated) panel that displays the contents of a specified file.
- * 
+ *
  * @author Keith Donald
  * @author Oliver Hutchison
- * 
+ *
  * @see #setAboutTextPath(Resource)
  * @see ApplicationDescriptor
  * @see HtmlPane
@@ -76,10 +76,6 @@ public class AboutBox {
      */
     public Resource getAboutTextPath() {
         return aboutTextPath;
-    }
-
-    protected String getApplicationName() {
-        return Application.instance().getName();
     }
 
     public void display(Window parent) {
@@ -107,7 +103,7 @@ public class AboutBox {
         /**
          * Create the control that shows the application descriptor data (title,
          * caption, description, version, and build id).
-         * 
+         *
          * @return control
          */
         protected JComponent createApplicationDescriptorComponent() {
@@ -205,7 +201,7 @@ public class AboutBox {
         protected Object[] getCommandGroupMembers() {
             return new AbstractCommand[] { getFinishCommand() };
         }
-        
+
         /**
          * Get the scrolling HTML panel.
          * @return scroller
@@ -217,7 +213,7 @@ public class AboutBox {
 
     /**
      * A panel that scrolls the content of a HTML document.
-     * 
+     *
      * @author Oliver Hutchison
      */
     protected static class HtmlScroller extends JViewport implements HyperlinkListener {
@@ -236,7 +232,7 @@ public class AboutBox {
 
         /**
          * Created a new HtmlScroller.
-         * 
+         *
          * @param antiAlias
          *            antialias the rendered HTML
          * @param initalDelay
@@ -304,7 +300,7 @@ public class AboutBox {
         public void setViewPosition(Point p) {
             // ignore calls that are not internal
         }
-        
+
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType().equals(HyperlinkEvent.EventType.ENTERED)) {
                 enteredLink();
