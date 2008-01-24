@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,11 +26,11 @@ import org.springframework.binding.value.support.AbstractPropertyChangePublisher
 import org.springframework.binding.value.support.DirtyTrackingValueModel;
 
 /**
- * Default implementation of FieldMetadata. 
+ * Default implementation of FieldMetadata.
  * <p>
  * NOTE: This is a framework internal class and should not be
- * instantiated in user code. 
- * 
+ * instantiated in user code.
+ *
  * @author Oliver Hutchison
  */
 public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implements FieldMetadata {
@@ -42,7 +42,7 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     private final Class propertyType;
 
     private final boolean forceReadOnly;
-  
+
     private final Map userMetadata = new HashMap();
 
     private boolean oldReadOnly;
@@ -52,20 +52,20 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     private boolean enabled = true;
 
     private boolean oldEnabled = true;
-    
+
     private final DirtyChangeHandler dirtyChangeHandler = new DirtyChangeHandler();
 
     private final PropertyChangeListener formChangeHandler = new FormModelChangeHandler();
 
     /**
-     * Constructs a new instance of DefaultFieldMetadata. 
-     * 
-     * @param formModel the form model 
-     * @param valueModel the value model for the property  
+     * Constructs a new instance of DefaultFieldMetadata.
+     *
+     * @param formModel the form model
+     * @param valueModel the value model for the property
      * @param propertyType the type of the property
      * @param forceReadOnly should readOnly be forced to true; this is
      *                      required if the property can not be modified. e.g.
-     *                      at the PropertyAccessStrategy level. 
+     *                      at the PropertyAccessStrategy level.
      * @param userMetadata map using String keys containing user defined
      *                     metadata.  As an example, tiger extensions
      *                     currently use this to expose JDK 1.5 annotations on
@@ -78,7 +78,8 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
         this.valueModel.addPropertyChangeListener(DirtyTrackingValueModel.DIRTY_PROPERTY, dirtyChangeHandler);
         this.propertyType = propertyType;
         this.forceReadOnly = forceReadOnly;
-        this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, formChangeHandler);        
+        this.formModel.addPropertyChangeListener(ENABLED_PROPERTY, formChangeHandler);
+        this.formModel.addPropertyChangeListener(READ_ONLY_PROPERTY, formChangeHandler);
         this.oldReadOnly = isReadOnly();
         this.oldEnabled = isEnabled();
         if(userMetadata != null) {
@@ -93,7 +94,7 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     }
 
     public boolean isReadOnly() {
-        return forceReadOnly || readOnly;
+        return forceReadOnly || readOnly || formModel.isReadOnly();
     }
 
     public void setEnabled(boolean enabled) {
@@ -115,7 +116,7 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     }
 
     public Object getUserMetadata(final String key) {
-        return userMetadata.get(key); 
+        return userMetadata.get(key);
     }
 
     public Map getAllUserMetadata() {
@@ -162,7 +163,7 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     }
 
   /**
-     * Propagates dirty changes from the value model on to 
+     * Propagates dirty changes from the value model on to
      * the dirty change listeners attached to this class.
      */
   private class DirtyChangeHandler extends CommitListenerAdapter implements PropertyChangeListener {
@@ -173,7 +174,7 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
     }
 
     /**
-     * Responsible for listening for changes to the enabled 
+     * Responsible for listening for changes to the enabled
      * property of the FormModel
      */
     private class FormModelChangeHandler implements PropertyChangeListener {
@@ -181,6 +182,10 @@ public class DefaultFieldMetadata extends AbstractPropertyChangePublisher implem
             if (FormModel.ENABLED_PROPERTY.equals(evt.getPropertyName())) {
                 firePropertyChange(ENABLED_PROPERTY, Boolean.valueOf(oldEnabled), Boolean.valueOf(isEnabled()));
                 oldEnabled = isEnabled();
+            }
+            else if (FormModel.READONLY_PROPERTY.equals(evt.getPropertyName())) {
+                firePropertyChange(READ_ONLY_PROPERTY, Boolean.valueOf(oldReadOnly), Boolean.valueOf(isReadOnly()));
+                oldReadOnly = isReadOnly();
             }
         }
     }
