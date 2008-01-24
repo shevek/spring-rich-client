@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2006 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -81,7 +81,6 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
     public AbstractApplicationWindow( int number ) {
         this.number = number;
         getAdvisor().setOpeningWindow( this );
-        getAdvisor().onPreWindowOpen( getWindowConfigurer() );
         init();
         getAdvisor().onCommandsCreated( this );
     }
@@ -146,9 +145,9 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
     /**
      * Show the given page in this window.
-     * 
+     *
      * @param pageId the page to show, identified by id
-     * 
+     *
      * @throws IllegalArgumentException if pageId == null
      */
     public void showPage( String pageId ) {
@@ -174,9 +173,9 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
     /**
      * Show the given page in this window.
-     * 
+     *
      * @param page the page to show
-     * 
+     *
      * @throws IllegalArgumentException if page == null
      */
     public void showPage( ApplicationPage page ) {
@@ -185,6 +184,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
         if( this.currentPage == null ) {
             this.currentPage = page;
+            getAdvisor().onPreWindowOpen( getWindowConfigurer() );
             this.control = createNewWindowControl();
             this.control.addWindowFocusListener( this );
             initWindowControl( this.control );
@@ -213,9 +213,9 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
     /**
      * Factory method for creating the page area managed by this window. Subclasses may
      * override to return a custom page implementation.
-     * 
+     *
      * @param descriptor The page descriptor
-     * 
+     *
      * @return The window's page
      */
     protected ApplicationPage createPage( PageDescriptor descriptor ) {
@@ -258,7 +258,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
     /**
      * Set the given <code>ApplicationPage</code> active (visible + selected if
      * applicable)
-     * 
+     *
      * @param page the <code>ApplicationPage</code>
      */
     protected abstract void setActivePage( ApplicationPage page );
@@ -321,7 +321,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 	 * {@link ApplicationLifecycleAdvisor#onPreWindowClose(ApplicationWindow)}
 	 * method. Then tries to close it's currentPage. If both are successfull,
 	 * the window will be disposed and removed from the {@link WindowManager}.
-	 * 
+	 *
 	 * @return boolean <code>true</code> if both, the advisor and the
 	 * currentPage allow the closing action.
 	 */
@@ -366,7 +366,7 @@ public abstract class AbstractApplicationWindow implements ApplicationWindow, Wi
 
     /**
      * Implementors create the component that contains the contents of this window.
-     * 
+     *
      * @return the content pane
      */
     protected abstract JComponent createWindowContentPane();
