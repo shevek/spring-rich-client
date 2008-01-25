@@ -1,1062 +1,1063 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework.richclient</groupId>
-    <artifactId>spring-richclient</artifactId>
-    <packaging>pom</packaging>
-    <name>Spring richclient</name>
-    <version>0.3.0-SNAPSHOT</version>
-    <description>
-        Spring-rich adds value for people needing to develop Swing applications
-        and do so in a way that promotes consistent, well-designed, configurable Swing applications.
-        The spring-rich developers strongly feel the "old days" of Swing apps "not looking native"
-        and not being performant or web-accessible are gone with JDK1.4.2 and 1.5 and webstart.
-        It is our belief the only problem with Swing is that there are a limited number
-        of higher-level abstractions available that assist in making the toolkit simpler
-        and easier to use, and a limited number of design best practices.
-        The goal of spring-richclient is to provide that.
-    </description>
-    <url>http://spring-rich-c.sf.net/</url>
+  <groupId>org.springframework.richclient</groupId>
+  <artifactId>spring-richclient</artifactId>
+  <packaging>pom</packaging>
+  <name>Spring richclient</name>
+  <version>0.3.0-SNAPSHOT</version>
+  <description>
+    Spring-rich adds value for people needing to develop Swing applications and do so in a way that promotes
+    consistent, well-designed, configurable Swing applications. The spring-rich developers strongly feel the
+    "old days" of Swing apps "not looking native" and not being performant or web-accessible are gone with
+    JDK1.4.2 and 1.5 and webstart. It is our belief the only problem with Swing is that there are a limited
+    number of higher-level abstractions available that assist in making the toolkit simpler and easier to use,
+    and a limited number of design best practices. The goal of spring-richclient is to provide that.
+  </description>
+  <url>http://spring-rich-c.sf.net/</url>
 
-    <prerequisites>
-        <maven>2.0.7</maven>
-    </prerequisites>
-    <issueManagement>
-        <system>jira</system>
-        <url>http://jira.springframework.org/browse/RCP</url>
-    </issueManagement>
-    <ciManagement>
-        <system>bamboo</system>
-        <url>https://build.springframework.org/bamboo/browse/RCP</url>
-    </ciManagement>
-    <inceptionYear>2004</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>User list</name>
-            <subscribe>http://forum.springframework.org/forumdisplay.php?f=28</subscribe>
-            <unsubscribe>http://forum.springframework.org/forumdisplay.php?f=28</unsubscribe>
-            <post>http://forum.springframework.org/forumdisplay.php?f=28</post>
-            <archive>http://forum.springframework.org/forumdisplay.php?f=28</archive>
-        </mailingList>
-        <mailingList>
-            <name>Developer list</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</unsubscribe>
-            <!-- This list is not part of the spring-rich-c SF project but of the springframework -->
-            <post>springframework-rcp-dev@lists.sourceforge.net</post>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum=springframework-rcp-dev</archive>
-            <otherArchives>
-                <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.devel</otherArchive>
-            </otherArchives>
-        </mailingList>
-        <mailingList>
-            <name>Version control commits</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</unsubscribe>
-            <post>spring-rich-c-cvs@lists.sourceforge.net</post>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum=spring-rich-c-cvs</archive>
-            <otherArchives>
-                <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.commits</otherArchive>
-            </otherArchives>
-        </mailingList>
-    </mailingLists>
-    <developers>
-        <developer>
-            <!-- TODO verify and complete -->
-            <id>ohutchison</id>
-            <name>Oliver Hutchison</name>
-            <email />
-            <roles>
-                <role>Former project leader</role>
-                <role>Java developer</role>
-            </roles>
-            <timezone />
-        </developer>
-        <developer>
-            <!-- TODO verify and complete -->
-            <id>kdonald</id>
-            <name>Keith Donald</name>
-            <email />
-            <roles>
-                <role>Former project leader</role>
-                <role>Java developer</role>
-            </roles>
-            <timezone />
-        </developer>
-        <developer>
-            <id>lstreepy</id>
-            <name>Larry Streepy</name>
-            <email>lstreepy AT nyc.rr DOT com</email>
-            <roles>
-                <role>Project leader</role>
-                <role>Java developer</role>
-            </roles>
-            <timezone>-5</timezone>
-        </developer>
-        <developer>
-            <id>peterdb</id>
-            <name>Peter De Bruycker</name>
-            <email>peter DOT de DOT bruycker+spring-rich AT gmail DOT com</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <!-- TODO verify and complete -->
-            <id>benalex</id>
-            <name>Ben Alex</name>
-            <email />
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone />
-        </developer>
-        <developer>
-            <id>anodos</id>
-            <name>Andy DePue</name>
-            <email>andy AT marathon-man DOT com</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>-8</timezone>
-        </developer>
-        <developer>
-            <id>jdigger</id>
-            <name>Jim Moore</name>
-            <email>springrich AT mooresoft DOT net</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>-5</timezone>
-        </developer>
-        <developer>
-            <id>jhoskens</id>
-            <name>Jan Hoskens</name>
-            <email>jh AT schaubroeck DOT be</email>
-            <roles>
-                <role>Project leader</role>
-                <role>Java developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <!-- TODO verify and complete -->
-            <id>mportier</id>
-            <name>Marc Portier</name>
-            <email>mpo AT outerthought DOT org</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <!-- TODO verify and complete -->
-            <id>scottdelap</id>
-            <name>Scott Delap</name>
-            <email />
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone />
-        </developer>
-        <developer>
-            <id>ge0ffrey</id>
-            <name>Geoffrey De Smet</name>
-            <email>ge0ffrey.spam AT gmail DOT com</email>
-            <organization>Schaubroeck</organization>
-            <organizationUrl>http://www.schaubroeck.be</organizationUrl>
-            <roles>
-                <role>Maven2izer</role>
-                <role>Java developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <id>mathiasbr</id>
-            <name>Mathias Broekelmann</name>
-            <email>mbroekelmann AT googlemail DOT com</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <id>kevinstembridge</id>
-            <name>Kevin Stembridge</name>
-            <email>kevin DOT stembridge AT gmail DOT com</email>
-            <roles>
-                <role>Java developer</role>
-            </roles>
-            <timezone>0</timezone>
-        </developer>
-    </developers>
-    <contributors />
+  <prerequisites>
+    <maven>2.0.7</maven>
+  </prerequisites>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.springframework.org/browse/RCP</url>
+  </issueManagement>
+  <ciManagement>
+    <system>bamboo</system>
+    <url>https://build.springframework.org/bamboo/browse/RCP</url>
+  </ciManagement>
+  <inceptionYear>2004</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>User list</name>
+      <subscribe>http://forum.springframework.org/forumdisplay.php?f=28</subscribe>
+      <unsubscribe>http://forum.springframework.org/forumdisplay.php?f=28</unsubscribe>
+      <post>http://forum.springframework.org/forumdisplay.php?f=28</post>
+      <archive>http://forum.springframework.org/forumdisplay.php?f=28</archive>
+    </mailingList>
+    <mailingList>
+      <name>Developer list</name>
+      <subscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</subscribe>
+      <unsubscribe>http://lists.sourceforge.net/lists/listinfo/springframework-rcp-dev</unsubscribe>
+      <!-- This list is not part of the spring-rich-c SF project but of the springframework -->
+      <post>springframework-rcp-dev@lists.sourceforge.net</post>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum=springframework-rcp-dev</archive>
+      <otherArchives>
+        <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.devel</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Version control commits</name>
+      <subscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</subscribe>
+      <unsubscribe>http://lists.sourceforge.net/lists/listinfo/spring-rich-c-cvs</unsubscribe>
+      <post>spring-rich-c-cvs@lists.sourceforge.net</post>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum=spring-rich-c-cvs</archive>
+      <otherArchives>
+        <otherArchive>http://news.gmane.org/gmane.comp.java.springframework.rcp.commits</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <!-- TODO verify and complete -->
+      <id>ohutchison</id>
+      <name>Oliver Hutchison</name>
+      <email />
+      <roles>
+        <role>Former project leader</role>
+        <role>Java developer</role>
+      </roles>
+      <timezone />
+    </developer>
+    <developer>
+      <!-- TODO verify and complete -->
+      <id>kdonald</id>
+      <name>Keith Donald</name>
+      <email />
+      <roles>
+        <role>Former project leader</role>
+        <role>Java developer</role>
+      </roles>
+      <timezone />
+    </developer>
+    <developer>
+      <id>lstreepy</id>
+      <name>Larry Streepy</name>
+      <email>lstreepy AT nyc.rr DOT com</email>
+      <roles>
+        <role>Project leader</role>
+        <role>Java developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+    <developer>
+      <id>peterdb</id>
+      <name>Peter De Bruycker</name>
+      <email>peter DOT de DOT bruycker+spring-rich AT gmail DOT com</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <!-- TODO verify and complete -->
+      <id>benalex</id>
+      <name>Ben Alex</name>
+      <email />
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone />
+    </developer>
+    <developer>
+      <id>anodos</id>
+      <name>Andy DePue</name>
+      <email>andy AT marathon-man DOT com</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>-8</timezone>
+    </developer>
+    <developer>
+      <id>jdigger</id>
+      <name>Jim Moore</name>
+      <email>springrich AT mooresoft DOT net</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+    <developer>
+      <id>jhoskens</id>
+      <name>Jan Hoskens</name>
+      <email>jh AT schaubroeck DOT be</email>
+      <roles>
+        <role>Project leader</role>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <!-- TODO verify and complete -->
+      <id>mportier</id>
+      <name>Marc Portier</name>
+      <email>mpo AT outerthought DOT org</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <!-- TODO verify and complete -->
+      <id>scottdelap</id>
+      <name>Scott Delap</name>
+      <email />
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone />
+    </developer>
+    <developer>
+      <id>ge0ffrey</id>
+      <name>Geoffrey De Smet</name>
+      <email>ge0ffrey.spam AT gmail DOT com</email>
+      <organization>Schaubroeck</organization>
+      <organizationUrl>http://www.schaubroeck.be</organizationUrl>
+      <roles>
+        <role>Maven2izer</role>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>mathiasbr</id>
+      <name>Mathias Broekelmann</name>
+      <email>mbroekelmann AT googlemail DOT com</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>kevinstembridge</id>
+      <name>Kevin Stembridge</name>
+      <email>kevin DOT stembridge AT gmail DOT com</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+  <contributors />
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm>
-        <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</connection>
-        <developerConnection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</developerConnection>
-        <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/trunk/spring-richclient/</url>
-    </scm>
-    <organization>
-        <name>The Spring Framework</name>
-        <url>http://www.springframework.org</url>
-    </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>
+      scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
+    </connection>
+    <developerConnection>
+      scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
+    </developerConnection>
+    <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/trunk/spring-richclient/</url>
+  </scm>
+  <organization>
+    <name>The Spring Framework</name>
+    <url>http://www.springframework.org</url>
+  </organization>
 
-    <repositories>
-        <repository>
-            <id>springRichclientRepository</id>
-            <name>Spring rich client repository</name>
-            <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>springRichclientSnapshotRepository</id>
-            <name>Spring rich client snapshot repository</name>
-            <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>jboss</id>
-            <url>http://repository.jboss.com/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <!-- currently only needed to use jdepend report -->
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>codehaus-snapshots</id>
-            <name>Snapshot repository from codehaus</name>
-            <url>http://snapshots.maven.codehaus.org/maven2</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>jboss</id>
-            <url>http://repository.jboss.com/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+  <repositories>
+    <repository>
+      <id>springRichclientRepository</id>
+      <name>Spring rich client repository</name>
+      <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>springRichclientSnapshotRepository</id>
+      <name>Spring rich client snapshot repository</name>
+      <url>http://spring-rich-c.sourceforge.net/maven2snapshotrepository</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jboss</id>
+      <url>http://repository.jboss.com/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <!-- currently only needed to use jdepend report -->
+    <pluginRepository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>codehaus-snapshots</id>
+      <name>Snapshot repository from codehaus</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss</id>
+      <url>http://repository.jboss.com/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
-    <build>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!--
+          Last time synchronized with the latest plugin releases:
+          2006-06-21
+          See http://news.gmane.org/gmane.comp.apache.maven.announce
+        -->
+
+        <!-- Building -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-help-plugin</artifactId>
+          <version>2.0.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <source>1.4</source>
+            <target>1.4</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <!--<testFailureIgnore>true</testFailureIgnore>-->
+            <forkMode>never</forkMode>
+            <includes>
+              <include>**/*Tests.java</include>
+            </includes>
+            <excludes>
+              <exclude>**/*AbstractTests.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+
+        <!-- Packaging -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.2</version>
+          <executions>
+            <execution>
+              <!-- So tests can reuse testcode from dependencies -->
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.0.4</version>
+          <executions>
+            <execution>
+              <!-- To deploy the sources automatically -->
+              <goals>
+                <goal>jar</goal>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1-alpha-1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-1</version>
+        </plugin>
+        <plugin>
+          <!-- Only used in profile production -->
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>webstart-maven-plugin</artifactId>
+          <version>1.0-alpha-1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>1.0-alpha-7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0-beta-7</version>
+          <configuration>
+            <tagBase>https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/tags</tagBase>
+          </configuration>
+        </plugin>
+
+        <!-- IDE -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <downloadSources>true</downloadSources>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-idea-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <downloadSources>true</downloadSources>
+            <!--<downloadJavadocs>true</downloadJavadocs>-->
+            <dependenciesAsLibraries>true</dependenciesAsLibraries>
+          </configuration>
+        </plugin>
+
+        <!--Site -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0-beta-6</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <!-- Entry needed to create, install and deploy sources jars -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <!-- Note: It's not possible to configure reporting plugins in pluginManagement in m2.0.4 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.0.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <link>http://static.springframework.org/spring/docs/2.0.x/api</link>
+          </links>
+        </configuration>
+      </plugin>
+      <!--
+        TODO Changelog is unfinished:
+        - has also a problem with the netbeans (cvs)lib dependency
+        - is moving from mojo.codehaus.org to maven.apache.org
+      -->
+      <!--<plugin>-->
+      <!--<groupId>org.apache.maven.plugins</groupId>-->
+      <!--<artifactId>maven-changelog-plugin</artifactId>-->
+      <!--<version>2.0-beta-1</version>-->
+      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <!--<plugin>-->
+      <!--<groupId>org.codehaus.mojo</groupId>-->
+      <!--<artifactId>findbugs-maven-plugin</artifactId>-->
+      <!--<version>1.0.0</version>-->
+      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <!--
+        TODO checkstyle rules must be configured so it no longer
+        generates a 4 mb file which is hard to site-deploy...
+      -->
+      <!--<plugin>-->
+      <!--<groupId>org.apache.maven.plugins</groupId>-->
+      <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+      <!--<version>2.1</version>-->
+      <!--</plugin>-->
+      <!--<plugin>-->
+      <!--<groupId>org.codehaus.mojo</groupId>-->
+      <!--<artifactId>jdepend-maven-plugin</artifactId>-->
+      <!--<version>2.0-beta-1</version>-->
+      <!--</plugin>-->
+      <plugin>
+        <!-- In 2.0-beta-1 an aggregate works after running "mvn site" twice -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javancss-maven-plugin</artifactId>
+        <version>2.0-beta-2</version>
+      </plugin>
+      <!--<plugin>-->
+      <!--<groupId>org.apache.maven.plugins</groupId>-->
+      <!--<artifactId>maven-jxr-plugin</artifactId>-->
+      <!--<version>2.0</version>-->
+      <!--</plugin>-->
+    </plugins>
+  </reporting>
+  <properties>
+    <spring.version>2.5.1</spring.version>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>fast</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>production</id>
+      <build>
         <pluginManagement>
-            <plugins>
-                <!--
-                    Last time synchronized with the latest plugin releases:
-                    2006-06-21
-                    See http://news.gmane.org/gmane.comp.apache.maven.announce
-                -->
-
-                <!-- Building -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-help-plugin</artifactId>
-                    <version>2.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.0.2</version>
-                    <configuration>
-                        <source>1.4</source>
-                        <target>1.4</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.3</version>
-                    <configuration>
-                        <!--<testFailureIgnore>true</testFailureIgnore>-->
-                        <forkMode>never</forkMode>
-                        <includes>
-                            <include>**/*Tests.java</include>
-                        </includes>
-                        <excludes>
-                            <exclude>**/*AbstractTests.java</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-
-                <!-- Packaging -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.1</version>
-                    <executions>
-                        <execution>
-                            <!-- So tests can reuse testcode from dependencies -->
-                            <goals>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.0.2</version>
-                    <executions>
-                        <execution>
-                            <!-- To deploy the sources automatically -->
-                            <goals>
-                                <goal>jar</goal>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.0.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <!-- Only used in profile production -->
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>webstart-maven-plugin</artifactId>
-                    <version>1.0-alpha-1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-archetype-plugin</artifactId>
-                    <version>1.0-alpha-4</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.3</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0-beta-4</version>
-                    <configuration>
-                        <tagBase>
-                            https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/tags
-                        </tagBase>
-                    </configuration>
-                </plugin>
-
-                <!-- IDE -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-eclipse-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <downloadSources>true</downloadSources>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-idea-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <downloadSources>true</downloadSources>
-                        <!--<downloadJavadocs>true</downloadJavadocs>-->
-                        <dependenciesAsLibraries>true</dependenciesAsLibraries>
-                    </configuration>
-                </plugin>
-
-                <!--Site -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>2.0-beta-5</version>
-                </plugin>
-            </plugins>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>webstart-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>jnlp</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <sign>
+                  <!-- Keep in sync with /src/keystore/spring-richclient_keystore_comment.txt -->
+                  <!--<keystore>${basedir}/???/src/keystore/spring-richclient_keystore.jks</keystore>-->
+                  <keypass>spring-richclient</keypass>
+                  <storepass>spring-richclient</storepass>
+                  <storetype>jks</storetype>
+                  <alias>spring-richclient</alias>
+                  <verify>true</verify>
+                </sign>
+              </configuration>
+            </plugin>
+          </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-              <!-- Entry needed to create, install and deploy sources jars -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-    <reporting>
-        <plugins>
-            <!-- Note: It's not possible to configure reporting plugins in pluginManagement in m2.0.4 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.0.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                        <link>http://static.springframework.org/spring/docs/2.0.x/api</link>
-                    </links>
-                </configuration>
-            </plugin>
-            <!--
-                TODO Changelog is unfinished:
-                - has also a problem with the netbeans (cvs)lib dependency
-                - is moving from mojo.codehaus.org to maven.apache.org
-            -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-changelog-plugin</artifactId>-->
-                <!--<version>2.0-beta-1</version>-->
-            <!--</plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <version>2.0</version>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>findbugs-maven-plugin</artifactId>-->
-                <!--<version>1.0.0</version>-->
-            <!--</plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-            <!--
-                TODO checkstyle rules must be configured so it no longer
-                generates a 4 mb file which is hard to site-deploy...
-            -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-                <!--<version>2.1</version>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-              <!--<groupId>org.codehaus.mojo</groupId>-->
-              <!--<artifactId>jdepend-maven-plugin</artifactId>-->
-              <!--<version>2.0-beta-1</version>-->
-            <!--</plugin>-->
-            <plugin>
-                <!-- In 2.0-beta-1 an aggregate works after running "mvn site" twice -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javancss-maven-plugin</artifactId>
-                <version>2.0-beta-2</version>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jxr-plugin</artifactId>-->
-                <!--<version>2.0</version>-->
-            <!--</plugin>-->
-        </plugins>
-    </reporting>
-    <properties>
-        <spring.version>2.5.1</spring.version>
-    </properties>
+      </build>
+    </profile>
+  </profiles>
 
-    <profiles>
-        <profile>
-            <id>fast</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-        </profile>
-        <profile>
-            <id>production</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>webstart-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>jnlp</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <sign>
-                                    <!-- Keep in sync with /src/keystore/spring-richclient_keystore_comment.txt -->
-                                    <!--<keystore>${basedir}/???/src/keystore/spring-richclient_keystore.jks</keystore>-->
-                                    <keypass>spring-richclient</keypass>
-                                    <storepass>spring-richclient</storepass>
-                                    <storetype>jks</storetype>
-                                    <alias>spring-richclient</alias>
-                                    <verify>true</verify>
-                                </sign>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
+  <modules>
+    <module>resources</module>
+    <module>core</module>
+    <module>binding</module>
+    <module>form</module>
+    <module>support</module>
+    <module>tiger</module>
+    <module>sandbox</module>
+    <module>vldocking</module>
+    <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
+    <!-- TODO bug in maven -->
+    <!--<module>full</module>-->
+    <module>samples</module>
+    <module>archetype</module>
+    <!-- Module release is delibertly skipped -->
+  </modules>
 
-    <modules>
-        <module>resources</module>
-        <module>core</module>
-        <module>binding</module>
-        <module>form</module>
-        <module>support</module>
-        <module>tiger</module>
-        <module>sandbox</module>
-        <module>vldocking</module>
-        <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
-        <!-- TODO bug in maven -->
-        <!--<module>full</module>-->
-        <module>samples</module>
-        <module>archetype</module>
-        <!-- Module release is delibertly skipped -->
-    </modules>
-
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
+      <!--
+        Declare all dependency versions and default scopes here, but not optional.
+        Each module should declare it's direct dependency and possibily overwrite scope/optional.
+      -->
+
+      <!-- Internal -->
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-resources</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-resources</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-core</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-core</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-binding</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-binding</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-form</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-form</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-support</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-support</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-tiger</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-tiger</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-sandbox</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-sandbox</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-full</artifactId>
+        <version>${pom.version}</version>
+        <type>pom</type>
+      </dependency>
+
+      <!-- Lang -->
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.1</version>
+      </dependency>
+
+      <!-- Testing -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>2.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Binding and validation -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-binding</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springmodules</groupId>
+        <artifactId>spring-modules-validation</artifactId>
+        <version>0.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- Collections -->
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.1</version>
+      </dependency>
+
+      <!-- Codec -->
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.3</version>
+      </dependency>
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>logkit</groupId>
+            <artifactId>logkit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>avalon-framework</groupId>
+            <artifactId>avalon-framework</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <scope>test</scope>
-        </dependency>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.14</version>
+        <scope>runtime</scope>
+      </dependency>
+
+      <!-- Dependency injection -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <!--<dependency>-->
+      <!--<groupId>org.springframework</groupId>-->
+      <!--<artifactId>spring-mock</artifactId>-->
+      <!--<version>${spring.version}</version>-->
+      <!--<scope>test</scope>-->
+      <!--</dependency>-->
+
+      <!-- Spring's petclinic -->
+      <dependency>
+        <groupId>org.springframework.samples</groupId>
+        <artifactId>spring-petclinic</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.samples</groupId>
+        <artifactId>spring-petclinic-domain</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <!-- Security -->
+      <dependency>
+        <groupId>org.acegisecurity</groupId>
+        <artifactId>acegi-security</artifactId>
+        <version>1.0.2</version>
+        <exclusions>
+          <!--
+            TODO remove as soon as this issue is fixed and released:
+            See http://opensource.atlassian.com/projects/spring/browse/SEC-369
+          -->
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-mock</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-support</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-remoting</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>cas</groupId>
+            <artifactId>casclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>cas</groupId>
+            <artifactId>casclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- Components -->
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>forms</artifactId>
+        <version>1.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>looks</artifactId>
+        <version>2.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>net.java.dev.glazedlists</groupId>
+        <artifactId>glazedlists_java15</artifactId>
+        <version>1.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.swinglabs</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.9.1</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.nachocalendar</groupId>
+        <artifactId>nachocalendar</artifactId>
+        <version>0.23</version>
+      </dependency>
+      <dependency>
+        <groupId>com.toedter</groupId>
+        <artifactId>jcalendar</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+
+      <!-- Utils -->
+      <dependency>
+        <groupId>concurrent</groupId>
+        <artifactId>concurrent</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.help</groupId>
+        <artifactId>jhelp</artifactId>
+        <version>2.0</version>
+      </dependency>
+
+      <!-- Docking -->
+      <dependency>
+        <groupId>net.java.dev.flexdock</groupId>
+        <artifactId>flexdock</artifactId>
+        <version>0.4.0</version>
+      </dependency>
+
+      <!-- JNLP -->
+      <dependency>
+        <groupId>javax.jnlp</groupId>
+        <artifactId>jnlp-api</artifactId>
+        <version>1.5</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Persistence (for samples) -->
+      <dependency>
+        <!-- TODO once hibernate's validator doesn't need persistence-api, exclude it -->
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-annotations</artifactId>
+        <version>3.3.0.ga</version>
+        <exclusions>
+          <!-- TODO once hibernate's validator doesn't need hibernate, exclude it -->
+          <!--<exclusion>-->
+          <!--<groupId>org.hibernate</groupId>-->
+          <!--<artifactId>hibernate</artifactId>-->
+          <!--</exclusion>-->
+          <exclusion>
+            <groupId>javax.persistence</groupId>
+            <artifactId>ejb</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>3.3.0.ga</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>3.0.0.ga</version>
+      </dependency>
+
+      <dependency>
+        <groupId>hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>1.8.0.7</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>3.1.11</version>
+        <scope>runtime</scope>
+      </dependency>
+
+      <!-- Remoting -->
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.caucho</groupId>
+        <artifactId>hessian</artifactId>
+        <version>2.1.12</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.caucho</groupId>
+        <artifactId>burlap</artifactId>
+        <version>2.1.12</version>
+        <scope>runtime</scope>
+      </dependency>
+
+      <!-- VLDocking -->
+      <dependency>
+        <groupId>com.vlsolutions</groupId>
+        <artifactId>vldocking</artifactId>
+        <version>2.1.3</version>
+      </dependency>
+
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <!--
-                Declare all dependency versions and default scopes here, but not optional.
-                Each module should declare it's direct dependency and possibily overwrite scope/optional.
-            -->
+  </dependencyManagement>
 
-            <!-- Internal -->
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-resources</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-resources</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-core</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-core</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-binding</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-binding</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-form</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-form</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-support</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-support</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-tiger</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-tiger</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-sandbox</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-sandbox</artifactId>
-                <type>test-jar</type>
-                <version>${pom.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient</groupId>
-                <artifactId>spring-richclient-full</artifactId>
-                <version>${pom.version}</version>
-                <type>pom</type>
-            </dependency>
-
-            <!-- Lang -->
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.1</version>
-            </dependency>
-
-            <!-- Testing -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>2.0</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- Binding and validation -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-binding</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springmodules</groupId>
-                <artifactId>spring-modules-validation</artifactId>
-                <version>0.5</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- Collections -->
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.1</version>
-            </dependency>
-
-            <!-- Codec -->
-            <dependency>
-                  <groupId>commons-codec</groupId>
-                  <artifactId>commons-codec</artifactId>
-                 <version>1.3</version>
-            </dependency>
-
-            <!-- Logging -->
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>logkit</groupId>
-                        <artifactId>logkit</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>avalon-framework</groupId>
-                        <artifactId>avalon-framework</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.14</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- Dependency injection -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <!--<dependency>-->
-                <!--<groupId>org.springframework</groupId>-->
-                <!--<artifactId>spring-mock</artifactId>-->
-                <!--<version>${spring.version}</version>-->
-                <!--<scope>test</scope>-->
-            <!--</dependency>-->
-
-            <!-- Spring's petclinic -->
-            <dependency>
-                <groupId>org.springframework.samples</groupId>
-                <artifactId>spring-petclinic</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.samples</groupId>
-                <artifactId>spring-petclinic-domain</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <!-- Security -->
-            <dependency>
-                <groupId>org.acegisecurity</groupId>
-                <artifactId>acegi-security</artifactId>
-                <version>1.0.2</version>
-                <exclusions>
-                    <!--
-                        TODO remove as soon as this issue is fixed and released:
-                        See http://opensource.atlassian.com/projects/spring/browse/SEC-369
-                    -->
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jdbc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-mock</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-support</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-remoting</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ehcache</groupId>
-                        <artifactId>ehcache</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>cas</groupId>
-                        <artifactId>casclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>jsp-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>taglibs</groupId>
-                        <artifactId>standard</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>cas</groupId>
-                        <artifactId>casclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>oro</groupId>
-                        <artifactId>oro</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-codec</groupId>
-                        <artifactId>commons-codec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- Components -->
-            <dependency>
-                <groupId>com.jgoodies</groupId>
-                <artifactId>forms</artifactId>
-                <version>1.0.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jgoodies</groupId>
-                <artifactId>looks</artifactId>
-                <version>2.0.4</version>
-            </dependency>
-            <dependency>
-                <groupId>net.java.dev.glazedlists</groupId>
-                <artifactId>glazedlists_java15</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-            <dependency>
-                   <groupId>org.swinglabs</groupId>
-                   <artifactId>swingx</artifactId>
-                   <version>0.9.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.nachocalendar</groupId>
-                <artifactId>nachocalendar</artifactId>
-                <version>0.23</version>
-            </dependency>
-            <dependency>
-                <groupId>com.toedter</groupId>
-                <artifactId>jcalendar</artifactId>
-                <version>1.3.2</version>
-            </dependency>
-
-            <!-- Utils -->
-            <dependency>
-                <groupId>concurrent</groupId>
-                <artifactId>concurrent</artifactId>
-                <version>1.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.help</groupId>
-                <artifactId>jhelp</artifactId>
-                <version>2.0</version>
-            </dependency>
-
-            <!-- Docking -->
-            <dependency>
-                <groupId>net.java.dev.flexdock</groupId>
-                <artifactId>flexdock</artifactId>
-                <version>0.4.0</version>
-            </dependency>
-
-            <!-- JNLP -->
-            <dependency>
-                <groupId>javax.jnlp</groupId>
-                <artifactId>jnlp-api</artifactId>
-                <version>1.5</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- Persistence (for samples) -->
-            <dependency>
-                <!-- TODO once hibernate's validator doesn't need persistence-api, exclude it -->
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-annotations</artifactId>
-                <version>3.3.0.ga</version>
-                <exclusions>
-                    <!-- TODO once hibernate's validator doesn't need hibernate, exclude it -->
-                    <!--<exclusion>-->
-                        <!--<groupId>org.hibernate</groupId>-->
-                        <!--<artifactId>hibernate</artifactId>-->
-                    <!--</exclusion>-->
-                    <exclusion>
-                        <groupId>javax.persistence</groupId>
-                        <artifactId>ejb</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-commons-annotations</artifactId>
-              <version>3.3.0.ga</version>
-            </dependency>
-            <dependency>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-validator</artifactId>
-              <version>3.0.0.ga</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>1.8.0.7</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>3.1.11</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- Remoting -->
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.caucho</groupId>
-                <artifactId>hessian</artifactId>
-                <version>2.1.12</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.caucho</groupId>
-                <artifactId>burlap</artifactId>
-                <version>2.1.12</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- VLDocking -->
-            <dependency>
-                <groupId>com.vlsolutions</groupId>
-                <artifactId>vldocking</artifactId>
-                <version>2.1.3</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>shell.sourceforge.net</id>
-            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2repository</url>
-        </repository>
-        <snapshotRepository>
-            <id>shell.sourceforge.net</id>
-            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2snapshotrepository</url>
-        </snapshotRepository>
-        <site>
-            <id>shell.sourceforge.net</id>
-            <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/</url>
-        </site>
-        <!-- Archive deployment -->
-        <!--<site>-->
-            <!--<id>shell.sourceforge.net</id>-->
-            <!--<url>-->
-                <!--scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/archive/${pom.version}/-->
-            <!--</url>-->
-        <!--</site>-->
-    </distributionManagement>
+  <distributionManagement>
+    <repository>
+      <id>shell.sourceforge.net</id>
+      <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>shell.sourceforge.net</id>
+      <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/maven2snapshotrepository</url>
+    </snapshotRepository>
+    <site>
+      <id>shell.sourceforge.net</id>
+      <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/</url>
+    </site>
+    <!-- Archive deployment -->
+    <!--<site>-->
+    <!--<id>shell.sourceforge.net</id>-->
+    <!--<url>-->
+    <!--scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/archive/${pom.version}/-->
+    <!--</url>-->
+    <!--</site>-->
+  </distributionManagement>
 
 </project>
