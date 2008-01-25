@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
  * <p>
  * configuration happens like this:
  * </p>
- * 
+ *
  * <pre>
  *   &lt;bean id=&quot;binderSelectionStrategy&quot;
  *           class=&quot;org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy&quot;&gt;
@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
  *       &lt;/property&gt;
  *   &lt;/bean&gt;
  * </pre>
- * 
+ *
  * @author Geoffrey De Smet
  */
 public class TigerEnumComboBoxBinder extends ComboBoxBinder {
@@ -51,7 +51,7 @@ public class TigerEnumComboBoxBinder extends ComboBoxBinder {
         return binding;
     }
 
-    private Enum[] createEnumSelectableItems(FormModel formModel, String formPropertyPath) {
+    protected Enum[] createEnumSelectableItems(FormModel formModel, String formPropertyPath) {
         Class propertyType = getPropertyType(formModel, formPropertyPath);
         Class<Enum> enumPropertyType = propertyType;
         return enumPropertyType.getEnumConstants();
