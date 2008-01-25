@@ -617,7 +617,7 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
     public boolean isReadOnly()
     {
-        return readOnly && (parent == null || parent.isReadOnly());
+        return readOnly || (parent != null && parent.isReadOnly());
     }
 
     /**
