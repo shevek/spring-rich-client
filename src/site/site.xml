@@ -27,9 +27,10 @@
 
     <body>
         <links>
+            <item name="Blog" href="http://spring-rich.blogspot.com/"/>
             <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
-            <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
             <item name="JIRA" href="http://jira.springframework.org/browse/RCP"/>
+            <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
             <item name="Spring framework" href="http://www.springframework.org/"/>
         </links>
 
@@ -61,6 +62,8 @@
             <item name="Articles" href="/user/articles.html"/>
             <item name="Related projects" href="/user/relatedProjects.html"/>
             <item name="FAQ" href="/user/faq.html"/>
+            <item name="Blog" href="http://spring-rich.blogspot.com/"/>
+            <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
         </menu>
         
         <menu name="Development">
@@ -71,6 +74,7 @@
             <item name="Release checklist" href="/development/releaseChecklist.html"/>
             <item name="FAQ" href="/development/faq.html"/>
             <item name="Maven2ization (TMP)" href="/development/maven2ization.html"/> <!-- TODO deleteme -->
+            <item name="JIRA" href="http://jira.springframework.org/browse/RCP"/>
         </menu>
 
         <!--<menu name="Archived website">-->
