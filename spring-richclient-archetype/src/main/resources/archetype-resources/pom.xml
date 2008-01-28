@@ -10,7 +10,7 @@
 
   <properties>
     <springrich.version>0.3.0-SNAPSHOT</springrich.version>
-    <spring.version>2.0.2</spring.version>
+    <spring.version>2.5.1</spring.version>
   </properties>
 
   <build>
