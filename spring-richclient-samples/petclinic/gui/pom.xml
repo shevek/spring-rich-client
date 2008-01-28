@@ -1,143 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient.samples.petclinic</groupId>
-        <artifactId>spring-richclient-petclinic</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.richclient.samples.petclinic</groupId>
+    <artifactId>spring-richclient-petclinic</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>spring-richclient-petclinic-gui</artifactId>
-    <packaging>jar</packaging>
-    <name>Spring richclient petclinic sample GUI</name>
-    <description>
-        The GUI presentation layer which resides in client and standalone,
-        but NOT in the server.
-    </description>
+  <artifactId>spring-richclient-petclinic-gui</artifactId>
+  <packaging>jar</packaging>
+  <name>Spring richclient petclinic sample GUI</name>
+  <description>
+    The GUI presentation layer which resides in client and standalone, but NOT in the server.
+  </description>
 
-    <dependencies>
-        <!-- Internal -->
-        <dependency>
-            <groupId>org.springframework.richclient.samples.petclinic</groupId>
-            <artifactId>spring-richclient-petclinic-common</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- Internal -->
+    <dependency>
+      <groupId>org.springframework.richclient.samples.petclinic</groupId>
+      <artifactId>spring-richclient-petclinic-common</artifactId>
+    </dependency>
 
-        <!-- Spring rich -->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-resources</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-binding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-form</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-tiger</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-sandbox</artifactId>
-        </dependency>
+    <!-- Spring rich -->
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-binding</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-form</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-jdk5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-sandbox</artifactId>
+    </dependency>
 
-        <!-- Lang -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+    <!-- Lang -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-        <!-- Dependency injection -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
+    <!-- Dependency injection -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
 
-        <!-- Spring's petclinic -->
-        <dependency>
-            <groupId>org.springframework.samples</groupId>
-            <artifactId>spring-petclinic-domain</artifactId>
-        </dependency>
+    <!-- Spring's petclinic -->
+    <dependency>
+      <groupId>org.springframework.samples</groupId>
+      <artifactId>spring-petclinic-domain</artifactId>
+    </dependency>
 
-        <!-- Security -->
-        <dependency>
-            <groupId>org.acegisecurity</groupId>
-            <artifactId>acegi-security</artifactId>
-        </dependency>
+    <!-- Security -->
+    <dependency>
+      <groupId>org.acegisecurity</groupId>
+      <artifactId>acegi-security</artifactId>
+    </dependency>
 
-        <!-- Components -->
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>looks</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.nachocalendar</groupId>
-            <artifactId>nachocalendar</artifactId>
-        </dependency>
+    <!-- Components -->
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swingx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.nachocalendar</groupId>
+      <artifactId>nachocalendar</artifactId>
+    </dependency>
 
-        <!-- Validation with Hibernate validator -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
+    <!-- Validation with Hibernate validator -->
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
 
-        <!-- Utils -->
-        <dependency>
-            <groupId>javax.help</groupId>
-            <artifactId>jhelp</artifactId>
-        </dependency>
-    </dependencies>
+    <!-- Utils -->
+    <dependency>
+      <groupId>javax.help</groupId>
+      <artifactId>jhelp</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

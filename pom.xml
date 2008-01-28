@@ -543,19 +543,19 @@
   </profiles>
 
   <modules>
-    <module>resources</module>
-    <module>core</module>
-    <module>binding</module>
-    <module>form</module>
-    <module>support</module>
-    <module>tiger</module>
-    <module>sandbox</module>
-    <module>vldocking</module>
+    <module>spring-richclient-resources</module>
+    <module>spring-richclient-core</module>
+    <module>spring-richclient-binding</module>
+    <module>spring-richclient-form</module>
+    <module>spring-richclient-support</module>
+    <module>spring-richclient-jdk5</module>
+    <module>spring-richclient-sandbox</module>
+    <module>spring-richclient-vldocking</module>
     <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
     <!-- TODO bug in maven -->
-    <!--<module>full</module>-->
-    <module>samples</module>
-    <module>archetype</module>
+    <!--<module>spring-richclient-full</module>-->
+    <module>spring-richclient-samples</module>
+    <module>spring-richclient-archetype</module>
     <!-- Module release is delibertly skipped -->
   </modules>
 
@@ -644,12 +644,12 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-tiger</artifactId>
+        <artifactId>spring-richclient-jdk5</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-tiger</artifactId>
+        <artifactId>spring-richclient-jdk5</artifactId>
         <type>test-jar</type>
         <version>${pom.version}</version>
         <scope>test</scope>

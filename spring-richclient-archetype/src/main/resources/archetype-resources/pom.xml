@@ -14,120 +14,120 @@
   </properties>
 
   <build>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                  <!-- this configuration generates the manifest in target/${artifactId}-${version}.jar -->
-                  <archive>
-                      <manifest>
-                          <!-- specify the main class for your application -->
-                          <mainClass>${groupId}.SimpleApp</mainClass>
-                          <addClasspath>true</addClasspath>
-                          <addExtensions/>
-                          <classpathPrefix>lib</classpathPrefix>
-                      </manifest>
-                  </archive>
-              </configuration>
-          </plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <!-- this configuration generates the manifest in target/${artifactId}-${version}.jar -->
+          <archive>
+            <manifest>
+              <!-- specify the main class for your application -->
+              <mainClass>${groupId}.SimpleApp</mainClass>
+              <addClasspath>true</addClasspath>
+              <addExtensions />
+              <classpathPrefix>lib</classpathPrefix>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
 
-          <!-- This plugin copies the runtime dependencies into target/lib -->
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-dependency-plugin</artifactId>
-              <configuration>
-                  <includeScope>runtime</includeScope>
-                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
-              </configuration>
-              <executions>
-                  <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                      <goal>copy-dependencies</goal>
-                    </goals>
-                  </execution>
-              </executions>
-          </plugin>
-      </plugins>
+      <!-- This plugin copies the runtime dependencies into target/lib -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <includeScope>runtime</includeScope>
+          <outputDirectory>${project.build.directory}/lib</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
-        <!-- Spring rich -->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-resources</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-core</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-binding</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-form</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-support</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        <!-- Uncomment spring-richclient-tiger module if you want to use java 1.5 support classes from spring rich
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-tiger</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        -->
-        <!-- Uncomment spring-richclient-sandbox module if you want to use in dev classes from spring rich
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-sandbox</artifactId>
-            <version>${springrich.version}</version>
-        </dependency>
-        -->
+    <!-- Spring rich -->
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-resources</artifactId>
+      <version>${springrich.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-core</artifactId>
+      <version>${springrich.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-binding</artifactId>
+      <version>${springrich.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-form</artifactId>
+      <version>${springrich.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-support</artifactId>
+      <version>${springrich.version}</version>
+    </dependency>
+    <!-- Uncomment spring-richclient-tiger module if you want to use java 1.5 support classes from spring rich
+      <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-jdk5</artifactId>
+      <version>${springrich.version}</version>
+      </dependency>
+    -->
+    <!-- Uncomment spring-richclient-sandbox module if you want to use in dev classes from spring rich
+      <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-sandbox</artifactId>
+      <version>${springrich.version}</version>
+      </dependency>
+    -->
 
-        <!-- spring dependency injection-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+    <!-- spring dependency injection-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
 
-        <!-- Components -->
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-            <version>1.0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>looks</artifactId>
-            <version>2.0.4</version>
-        </dependency>
+    <!-- Components -->
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
+      <version>2.0.4</version>
+    </dependency>
   </dependencies>
 </project>
