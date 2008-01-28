@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-vldocking</artifactId>
+            <artifactId>spring-richclient-docking</artifactId>
             <version>${pom.version}</version>
         </dependency>
     </dependencies>
