@@ -550,7 +550,7 @@
     <module>spring-richclient-support</module>
     <module>spring-richclient-jdk5</module>
     <module>spring-richclient-sandbox</module>
-    <module>spring-richclient-vldocking</module>
+    <module>spring-richclient-docking</module>
     <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
     <!-- TODO bug in maven -->
     <!--<module>spring-richclient-full</module>-->
