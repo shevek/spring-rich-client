@@ -26,7 +26,7 @@ import org.springframework.rules.constraint.Required;
  * @author Keith Donald
  * @see Required
  */
-public class PropertyPresent extends AbstractPropertyConstraint implements Constraint {
+public class PropertyPresent extends AbstractPropertyConstraint {
 
 	/**
 	 * Constructs a property present predicate for the specified property.
