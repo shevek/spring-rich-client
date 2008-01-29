@@ -549,6 +549,7 @@
     <module>spring-richclient-form</module>
     <module>spring-richclient-support</module>
     <module>spring-richclient-jdk5</module>
+    <module>spring-richclient-jdk6</module>
     <module>spring-richclient-sandbox</module>
     <module>spring-richclient-docking</module>
     <!-- Enabling this will petclinic common not be (re)installed on mvn install... -->
@@ -650,6 +651,18 @@
       <dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-jdk5</artifactId>
+        <type>test-jar</type>
+        <version>${pom.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-jdk6</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient</groupId>
+        <artifactId>spring-richclient-jdk6</artifactId>
         <type>test-jar</type>
         <version>${pom.version}</version>
         <scope>test</scope>
