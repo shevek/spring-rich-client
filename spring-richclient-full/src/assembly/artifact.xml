@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
-    <formats>
-        <format>jar</format>
-    </formats>
-    <includeBaseDirectory>false</includeBaseDirectory>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>/</outputDirectory>
-            <unpack>true</unpack>
-            <scope>runtime</scope>
-            <includes>
-                <include>org.springframework.richclient:spring-richclient-resources</include>
-                <include>org.springframework.richclient:spring-richclient-core</include>
-                <include>org.springframework.richclient:spring-richclient-binding</include>
-                <include>org.springframework.richclient:spring-richclient-form</include>
-                <include>org.springframework.richclient:spring-richclient-support</include>
-            </includes>
-        </dependencySet>
-    </dependencySets>
+  <id>bin</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>org.springframework.richclient:spring-richclient-resources</include>
+        <include>org.springframework.richclient:spring-richclient-core</include>
+        <include>org.springframework.richclient:spring-richclient-binding</include>
+        <include>org.springframework.richclient:spring-richclient-form</include>
+        <include>org.springframework.richclient:spring-richclient-support</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
 </assembly>
