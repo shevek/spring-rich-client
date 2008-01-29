@@ -5,6 +5,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,10 +15,8 @@ import org.hibernate.validator.InvalidValue;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.ValidationMessage;
 import org.springframework.binding.validation.ValidationResults;
-import org.springframework.binding.validation.support.DefaultValidationMessage;
-import org.springframework.binding.validation.support.DefaultValidationResults;
-import org.springframework.binding.validation.support.RulesValidator;
 import org.springframework.richclient.core.Severity;
+import org.springframework.richclient.util.Assert;
 import org.springframework.rules.RulesSource;
 
 /**
@@ -44,6 +43,8 @@ public class HibernateRulesValidator extends RulesValidator {
 
 	private Map<String, DefaultValidationResults> propertyResults;
 
+	private Set<String> ignoredHibernateProperties;
+
 	/**
 	 * Creates a new HibernateRulesValidator
 	 *
@@ -58,6 +59,7 @@ public class HibernateRulesValidator extends RulesValidator {
 		this.formModel = formModel;
 		hibernateValidator = new ClassValidator(clazz, new HibernateRulesMessageInterpolator());
 		propertyResults = new HashMap<String, DefaultValidationResults>();
+		ignoredHibernateProperties = new HashSet<String>();
 	}
 
 	/**
@@ -159,18 +161,23 @@ public class HibernateRulesValidator extends RulesValidator {
 			}
 			for (final PropertyDescriptor prop : propertyDescriptors) {
 				if (formModel.hasValueModel(prop.getName())) {
-					final InvalidValue[] result = hibernateValidator.getPotentialInvalidValues(prop.getName(),
-							formModel.getValueModel(prop.getName()).getValue());
-					if (result != null) {
-						for (final InvalidValue r : result) {
-							ret.add(r);
-						}
-					}
+				    if (!ignoredHibernateProperties.contains(prop.getName()))
+                    {
+                        final InvalidValue[] result = hibernateValidator.getPotentialInvalidValues(prop
+                                .getName(), formModel.getValueModel(prop.getName()).getValue());
+                        if (result != null)
+                        {
+                            for (final InvalidValue r : result)
+                            {
+                                ret.add(r);
+                            }
+                        }
+                    }
 				}
 			}
 			return ret.toArray(new InvalidValue[ret.size()]);
 		}
-		else if (object != null) {
+		else if (object != null && !ignoredHibernateProperties.contains(property)) {
 			if (formModel.hasValueModel(property)) {
 				return hibernateValidator.getPotentialInvalidValues(property, formModel.getValueModel(property)
 						.getValue());
@@ -193,4 +200,28 @@ public class HibernateRulesValidator extends RulesValidator {
 	public void clearMessages() {
 		this.results.clearMessages();
 	}
+
+	/**
+     * Add a property for the Hibernate validator to ignore.
+     *
+     * @param propertyName
+     *            Name of the property to ignore. Cannot be null.
+     */
+    public void addIgnoredHibernateProperty(String propertyName)
+    {
+        Assert.notNull(propertyName);
+        ignoredHibernateProperties.add(propertyName);
+    }
+
+    /**
+     * Remove a property for the Hibernate validator to ignore.
+     *
+     * @param propertyName
+     *            Name of the property to be removed. Cannot be null.
+     */
+    public void removeIgnoredHibernateProperty(String propertyName)
+    {
+        Assert.notNull(propertyName);
+        ignoredHibernateProperties.remove(propertyName);
+    }
 }
