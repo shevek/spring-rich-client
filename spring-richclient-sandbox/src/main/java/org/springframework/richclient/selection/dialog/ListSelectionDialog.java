@@ -48,10 +48,14 @@ public class ListSelectionDialog extends AbstractSelectionDialog {
 
 	private EventList items;
 
+	public ListSelectionDialog(String title, List items) {
+		this(title, null, GlazedLists.eventList(items));
+	}
+	
 	public ListSelectionDialog(String title, Window parent, List items) {
 		this(title, parent, GlazedLists.eventList(items));
 	}
-	
+
 	public ListSelectionDialog(String title, Window parent, EventList items) {
 		super(title, parent);
 		this.items = items;
