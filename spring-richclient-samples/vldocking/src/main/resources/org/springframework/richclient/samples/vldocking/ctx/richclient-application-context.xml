@@ -78,11 +78,11 @@
     Description: TODO
   -->
   <bean id="applicationPageFactory" depends-on="serviceLocator"
-    class="org.springframework.richclient.application.vldocking.VLDockingApplicationPageFactory">
+    class="org.springframework.richclient.application.docking.vldocking.VLDockingApplicationPageFactory">
   </bean>
 
   <!-- bean id="defaultDesktopPage"
-    class="org.springframework.richclient.application.vldocking.VLDockingPageDescriptor">
+    class="org.springframework.richclient.application.docking.vldocking.VLDockingPageDescriptor">
     <property name="viewDescriptors">
     <list>
     <value>initialView</value>
@@ -111,7 +111,7 @@
     when it is created.
   -->
   <bean id="initialView"
-    class="org.springframework.richclient.application.vldocking.VLDockingViewDescriptor">
+    class="org.springframework.richclient.application.docking.vldocking.VLDockingViewDescriptor">
     <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView" />
     <property name="viewProperties">
       <map>
