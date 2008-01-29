@@ -72,10 +72,7 @@ public class HibernateRulesValidator extends RulesValidator {
 	 * @param clazz The class of the object this validator needs to check
 	 */
 	public HibernateRulesValidator(ValidatingFormModel formModel, Class clazz) {
-		super(formModel, null);
-		this.formModel = formModel;
-		hibernateValidator = new ClassValidator(clazz, new HibernateRulesMessageInterpolator());
-		propertyResults = new HashMap<String, DefaultValidationResults>();
+	    this(formModel, null, clazz);
 	}
 
 	/**
