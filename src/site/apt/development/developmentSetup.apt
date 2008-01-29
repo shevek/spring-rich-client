@@ -370,7 +370,7 @@ mvn site
 
 * Deploy the website
 
-    Create the file <<<USER_HOME/.m2/setting.xml>>> and add the following content:
+    Create the file <<<USER_HOME/.m2/settings.xml>>> and add the following content:
 
 +--
 <?xml version="1.0" encoding="UTF-8"?>
