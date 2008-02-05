@@ -31,7 +31,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 *
 	 * @param id
 	 */
-	public void setId(String id);
+	void setId(String id);
 
 	/**
 	 * <p>
@@ -48,7 +48,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 * @param enabled set to <code>true</code> if the formModel should be
 	 * enabled. Set to <code>false</code> if all fields should be disabled.
 	 */
-	public void setEnabled(boolean enabled);
+	void setEnabled(boolean enabled);
 
 	/**
 	 * <p>
@@ -65,7 +65,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 * @param readOnly set to <code>true</code> if all fields should be set
 	 * readOnly.
 	 */
-	public void setReadOnly(boolean readOnly);
+	void setReadOnly(boolean readOnly);
 
 	/**
 	 * Add a valueModel for the given property.
@@ -73,7 +73,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 * @param propertyName the property to create a valueModel for.
 	 * @return a ValueModel that wraps the property.
 	 */
-	public ValueModel add(String propertyName);
+	ValueModel add(String propertyName);
 
 	/**
 	 * Add the given valueModel as wrapper for the given property. Note that the
@@ -84,7 +84,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 * @param valueModel the valueModel to access the property.
 	 * @return a valueModel that wraps the given valueModel.
 	 */
-	public ValueModel add(String propertyName, ValueModel valueModel);
+	ValueModel add(String propertyName, ValueModel valueModel);
 
 	/**
 	 * Add a valueModel that holds a derived value computed by invoking the
@@ -94,7 +94,7 @@ public interface ConfigurableFormModel extends FormModel {
 	 * @param derivedFromProperty property to use as argument.
 	 * @return a valueModel holding the derived value.
 	 */
-	public ValueModel addMethod(String propertyMethodName, String derivedFromProperty);
+	ValueModel addMethod(String propertyMethodName, String derivedFromProperty);
 
 	/**
 	 * Add a valueModel that holds a derived value computed by invoking the
@@ -102,8 +102,9 @@ public interface ConfigurableFormModel extends FormModel {
 	 * formModel.
 	 *
 	 * @param propertyMethodName method to invoke.
-	 * @param derivedFromProperties a number of properties to use as arguments on the method.
-	 * @return
+	 * @param derivedFromProperties a number of properties to use as arguments
+	 * on the method.
+	 * @return a valueModel holding the derived value.
 	 */
-	public ValueModel addMethod(String propertyMethodName, String[] derivedFromProperties);
+	ValueModel addMethod(String propertyMethodName, String[] derivedFromProperties);
 }

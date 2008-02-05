@@ -1,4 +1,4 @@
 /**
- * Core value model interfaces, for accessing values from abritrary sources.
+ * Supporting value model and value holder implementations.
  */
 package org.springframework.binding.value.support;

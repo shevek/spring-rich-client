@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,19 +17,25 @@ package org.springframework.binding.validation;
 
 import org.springframework.richclient.core.Message;
 
+/**
+ * A specific type of message that relates to a property.
+ * <code>ValidationMessage</code>s often find their origin in validation
+ * triggered by a constraint on a property. This information is additionally
+ * kept available in this <code>ValidationMessage</code>.
+ */
 public interface ValidationMessage extends Message {
-    
-    /**
-     * The property name for messages that have a global scope i.e. do not
-     * apply to a specific property.
-     */
-    public static final String GLOBAL_PROPERTY = null;
-    
-    /**
-     * The property that this validation message applies to; or 
-     * <code>GLOBAL_PROPERTY</code> if this message does not apply
-     * to a specific property.
-     */
-    String getProperty();
+
+	/**
+	 * The property name for messages that have a global scope i.e. do not apply
+	 * to a specific property.
+	 */
+	public static final String GLOBAL_PROPERTY = null;
+
+	/**
+	 * The property that this validation message applies to; or
+	 * <code>GLOBAL_PROPERTY</code> if this message does not apply to a
+	 * specific property.
+	 */
+	String getProperty();
 
 }

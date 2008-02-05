@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,12 +15,25 @@
  */
 package org.springframework.binding.value;
 
-
-
+/**
+ * Adds an index aspect to the backing object mostly used by collection type
+ * backing objects. The index can be set to point to a specific item which can
+ * be manipulated using get/setValue().
+ */
 public interface IndexAdapter extends ValueModel {
-    public int getIndex();
 
-    public void setIndex(int index);
-    
-    public void fireIndexedObjectChanged();
+	/**
+	 * Returns the index of the item which is currently being manipulated.
+	 */
+	public int getIndex();
+
+	/**
+	 * Set the index of the item to manipulate.
+	 */
+	public void setIndex(int index);
+
+	/**
+	 * Code to be executed when the index has changed.
+	 */
+	public void fireIndexedObjectChanged();
 }

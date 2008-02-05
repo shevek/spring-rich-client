@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -18,27 +18,27 @@ package org.springframework.binding.value.support;
 import org.springframework.binding.value.ValueModel;
 
 /**
- * A value model that wraps another value model; possibly adding additional
- * functionality such as type conversion or buffering.  
- * 
+ * A value model that wraps another value model, possibly adding additional
+ * functionality such as type conversion or buffering.
+ *
  * @author Keith Donald
  * @author Oliver Hutchison
  */
 public interface ValueModelWrapper {
-            
-    /**
-     * Returns the <code>ValueModel</code> wrapped by this 
-     * <code>ValueModelWrapper</code>.
-     * 
-     * @return the wrapped value model.
-     */
-    ValueModel getWrappedValueModel();
-    
-    /**
-     * Returns the inner most <code>ValueModel</code> wrapped by 
-     * this <code>ValueModelWrapper</code>.
-     * 
-     * @return the inner most wrapped value model.
-     */
-    ValueModel getInnerMostWrappedValueModel();
+
+	/**
+	 * Returns the <code>ValueModel</code> wrapped by this
+	 * <code>ValueModelWrapper</code>.
+	 *
+	 * @return the wrapped value model.
+	 */
+	ValueModel getWrappedValueModel();
+
+	/**
+	 * Returns the inner most <code>ValueModel</code> wrapped by this
+	 * <code>ValueModelWrapper</code>.
+	 *
+	 * @return the inner most wrapped value model.
+	 */
+	ValueModel getInnerMostWrappedValueModel();
 }

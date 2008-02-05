@@ -21,19 +21,26 @@ import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
 
 /**
- * <p>A formModel groups valueModels and actions that are related to the same
+ * <p>
+ * A formModel groups valueModels and actions that are related to the same
  * backing object. It will manage the creation/handling of the valueModels,
- * their associated metadata and an overal state.</p>
+ * their associated metadata and an overal state.
+ * </p>
  *
- * <p>The formModel can be in one of three 'user' states:
+ * <p>
+ * The formModel can be in one of three 'user' states:
  * <ul>
  * <li><em>Disabled:</em> all user interaction should be ignored.</li>
  * <li><em>Enabled and readOnly:</em> user may interact, but not edit.</li>
- * <li><em>Enabled and editable:</em> user may interact and edit where needed.</li>
+ * <li><em>Enabled and editable:</em> user may interact and edit where
+ * needed.</li>
  * </ul>
- * These states are counterparts of the enabled/editable state of a component/textcomponent.</p>
+ * These states are counterparts of the enabled/editable state of a
+ * component/textcomponent.
+ * </p>
  *
- * <p>The formModel also tracks its inner states:
+ * <p>
+ * The formModel also tracks its inner states:
  * <ul>
  * <li><em>Dirty:</em> one of its valueModels has a changed value.</li>
  * <li><em>Committable:</em> all valueModels are in an 'error-free' state.</li>
@@ -47,25 +54,17 @@ import org.springframework.binding.value.ValueModel;
  */
 public interface FormModel extends PropertyChangePublisher {
 
-	/**
-	 * The name of the bound property <em>dirty</em>.
-	 */
-	String DIRTY_PROPERTY = "dirty";
+	/** The name of the bound property <em>dirty</em>. */
+	static final String DIRTY_PROPERTY = "dirty";
 
-	/**
-	 * The name of the bound property <em>enabled</em>.
-	 */
-	String ENABLED_PROPERTY = "enabled";
+	/** The name of the bound property <em>enabled</em>. */
+	static final String ENABLED_PROPERTY = "enabled";
 
-	/**
-	 * The name of the bound property <em>readonly</em>.
-	 */
-	String READONLY_PROPERTY = "readOnly";
+	/** The name of the bound property <em>readonly</em>. */
+	static final String READONLY_PROPERTY = "readOnly";
 
-	/**
-	 * The name of the bound property <em>committable</em>.
-	 */
-	String COMMITTABLE_PROPERTY = "committable";
+	/** The name of the bound property <em>committable</em>. */
+	static final String COMMITTABLE_PROPERTY = "committable";
 
 	/**
 	 * Returns the id that is used to identify this form model.
@@ -114,11 +113,12 @@ public interface FormModel extends PropertyChangePublisher {
 
 	/**
 	 * Register converters for a given property name.
+	 *
 	 * @param propertyName name of property on which to register converters
 	 * @param toConverter Convert from source to target type
 	 * @param fromConverter Convert from target to source type
 	 */
-	public void registerPropertyConverter(String propertyName, Converter toConverter, Converter fromConverter);
+	void registerPropertyConverter(String propertyName, Converter toConverter, Converter fromConverter);
 
 	/**
 	 * Returns true if the form has a value model for the provided property
@@ -151,7 +151,7 @@ public interface FormModel extends PropertyChangePublisher {
 	void reset();
 
 	/**
-	 * Does this form model buffer changes.
+	 * Does this form model buffer changes?
 	 */
 	boolean isBuffered();
 
