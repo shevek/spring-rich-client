@@ -7,30 +7,30 @@ import org.springframework.core.closure.Closure;
 
 /**
  * Convenient class to implement workflow.
- * 
+ *
  * @author Keith Donald
  */
 public abstract class AbstractElementGeneratorWorkflow extends AbstractElementGenerator {
 
-    /**
-     * @see AbstractElementGenerator#AbstractElementGenerator()
-     */
-    protected AbstractElementGeneratorWorkflow() {
+	/**
+	 * @see AbstractElementGenerator#AbstractElementGenerator()
+	 */
+	protected AbstractElementGeneratorWorkflow() {
 		super();
 	}
 
-    /**
-     * @see AbstractElementGenerator#AbstractElementGenerator(boolean)
-     */
+	/**
+	 * @see AbstractElementGenerator#AbstractElementGenerator(boolean)
+	 */
 	protected AbstractElementGeneratorWorkflow(boolean runOnce) {
 		super(runOnce);
 	}
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Defines the workflow sequence.
-     */
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Defines the workflow sequence.
+	 */
 	public final void run(Closure templateCallback) {
 		reset();
 		setRunning();
@@ -42,33 +42,33 @@ public abstract class AbstractElementGeneratorWorkflow extends AbstractElementGe
 		doCleanup();
 	}
 
-    /**
-     * Setup the workflow.
-     */
+	/**
+	 * Setup the workflow.
+	 */
 	protected void doSetup() {
 
 	}
 
-    /**
-     * @return <code>true</code> if ElementGenerator is still processing.
-     */
+	/**
+	 * @return <code>true</code> if ElementGenerator is still processing.
+	 */
 	protected boolean processing() {
 		return hasMoreWork() && !isStopped();
 	}
 
-    /**
-     * @return <code>true</code> if more work has to be done.
-     */
+	/**
+	 * @return <code>true</code> if more work has to be done.
+	 */
 	protected abstract boolean hasMoreWork();
 
-    /**
-     * @return the object to process (with the given closure).
-     */
+	/**
+	 * @return the object to process (with the given closure).
+	 */
 	protected abstract Object doWork();
 
-    /**
-     * Clean up after workflow.
-     */
+	/**
+	 * Clean up after workflow.
+	 */
 	protected void doCleanup() {
 
 	}

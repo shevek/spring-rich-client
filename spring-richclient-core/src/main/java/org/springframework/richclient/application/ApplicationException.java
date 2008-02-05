@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,20 +16,20 @@
 package org.springframework.richclient.application;
 
 /**
- * Indicates that an application-level programming error or a runtime 
- * configuration error has occurred. 
- * 
+ * Indicates that an application-level programming error or a runtime
+ * configuration error has occurred.
+ *
  * <p>
- * This exception should not be thrown for errors such as invalid user 
- * input or data access errors. Basically, this represents a defect in the 
- * program or its runtime configuration. This is a very general top-level 
- * exception. Before creating and throwing a new instance of this type, 
+ * This exception should not be thrown for errors such as invalid user
+ * input or data access errors. Basically, this represents a defect in the
+ * program or its runtime configuration. This is a very general top-level
+ * exception. Before creating and throwing a new instance of this type,
  * consider if a more specific subclass would be more appropriate.
- * </p> 
- * 
+ * </p>
+ *
  */
 public class ApplicationException extends RuntimeException {
-    
+
     private static final long serialVersionUID = 1732836822446152658L;
 
     /**
@@ -40,10 +40,10 @@ public class ApplicationException extends RuntimeException {
     }
 
     /**
-     * Creates a new {@code ApplicationException} with the specified message.
-     *
-     * @param message The detail message.
-     */
+	 * Creates a new {@code ApplicationException} with the specified message.
+	 *
+	 * @param message The detail message.
+	 */
     public ApplicationException(String message) {
         super(message);
     }
@@ -52,7 +52,7 @@ public class ApplicationException extends RuntimeException {
      * Creates a new {@code ApplicationException} with the specified message
      * and nested exception.
      *
-     * @param message The detail mesage.
+     * @param message The detail message.
      * @param cause The nested exception.
      */
     public ApplicationException(String message, Throwable cause) {

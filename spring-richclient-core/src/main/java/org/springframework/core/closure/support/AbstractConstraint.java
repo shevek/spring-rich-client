@@ -26,58 +26,58 @@ import org.springframework.core.closure.Constraint;
  */
 public abstract class AbstractConstraint extends AlgorithmsAccessor implements Constraint, Serializable {
 
-    /**
-     * @see AlgorithmsAccessor#allTrue(Collection, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#allTrue(Collection, Constraint)
+	 */
 	public boolean allTrue(Collection collection) {
 		return allTrue(collection, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#allTrue(Iterator, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#allTrue(Iterator, Constraint)
+	 */
 	public boolean allTrue(Iterator it) {
 		return allTrue(it, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#anyTrue(Collection, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#anyTrue(Collection, Constraint)
+	 */
 	public boolean anyTrue(Collection collection) {
 		return anyTrue(collection, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#anyTrue(Iterator, Constraint)
-     */    
+	/**
+	 * @see AlgorithmsAccessor#anyTrue(Iterator, Constraint)
+	 */
 	public boolean anyTrue(Iterator it) {
 		return anyTrue(it, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#findAll(Collection, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#findAll(Collection, Constraint)
+	 */
 	public Collection findAll(Collection collection) {
 		return findAll(collection, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#findAll(Iterator, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#findAll(Iterator, Constraint)
+	 */
 	public Collection findAll(Iterator it) {
 		return findAll(it, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#findFirst(Collection, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#findFirst(Collection, Constraint)
+	 */
 	public Object findFirst(Collection collection) {
 		return findFirst(collection, this);
 	}
 
-    /**
-     * @see AlgorithmsAccessor#findFirst(Iterator, Constraint)
-     */
+	/**
+	 * @see AlgorithmsAccessor#findFirst(Iterator, Constraint)
+	 */
 	public Object findFirst(Iterator it) {
 		return findFirst(it, this);
 	}

@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,13 +32,13 @@ import org.springframework.core.style.ToStringCreator;
  * <code>f2</code> for evaluation, and f2's result will be passed to
  * <code>f3</code> for evaluation. The final f3 result will be returned to the
  * caller.
- * 
+ * </p>
+ *
  * @author Keith Donald
  */
 public class ClosureChain implements Closure {
-    /**
-     * Holds the sequence of closures.
-     */
+
+	/** Holds the sequence of closures. */
 	private Set closures = new LinkedHashSet();
 
 	/**
@@ -51,11 +51,9 @@ public class ClosureChain implements Closure {
 
 	/**
 	 * Creates a chain composed of two functions.
-	 * 
-	 * @param function1
-	 *            the first function
-	 * @param function2
-	 *            the second function
+	 *
+	 * @param function1 the first function
+	 * @param function2 the second function
 	 */
 	public ClosureChain(Closure function1, Closure function2) {
 		closures.add(function1);
@@ -64,9 +62,8 @@ public class ClosureChain implements Closure {
 
 	/**
 	 * Creates a chain composed of the ordered array of functions.
-	 * 
-	 * @param functions
-	 *            the aggregated functions
+	 *
+	 * @param functions the aggregated functions
 	 */
 	public ClosureChain(Closure[] functions) {
 		this.closures.addAll(Arrays.asList(functions));
@@ -75,9 +72,8 @@ public class ClosureChain implements Closure {
 	/**
 	 * Add the specified function to the set of functions aggregated by this
 	 * function chain.
-	 * 
-	 * @param function
-	 *            the function to add
+	 *
+	 * @param function the function to add
 	 * @return A reference to this, to support easy chaining.
 	 */
 	public ClosureChain add(Closure function) {
@@ -87,29 +83,29 @@ public class ClosureChain implements Closure {
 
 	/**
 	 * Return an iterator over the aggregated predicates.
-	 * 
+	 *
 	 * @return An iterator
 	 */
 	public Iterator iterator() {
 		return closures.iterator();
 	}
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object call(Object argument) {
 		Object result = argument;
 		Iterator it = iterator();
 		while (it.hasNext()) {
-			Closure f = (Closure)it.next();
+			Closure f = (Closure) it.next();
 			result = f.call(result);
 		}
 		return result;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		return new ToStringCreator(this).append("closureChain", closures).toString();
 	}

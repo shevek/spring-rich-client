@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,12 +27,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * A parameter object for a labelable component; consists of the text, mnemonic, mnemonicIndex and 
- * accelerator that may be associated with a labeled component. This class also acts as a 
+ * A parameter object for a labelable component; consists of the text, mnemonic, mnemonicIndex and
+ * accelerator that may be associated with a labeled component. This class also acts as a
  * configurer for {@link JLabel}s, using the properties of .
- * 
+ *
  * @author Keith Donald
- * 
+ *
  * @deprecated Replaced by {@link org.springframework.richclient.core.LabelInfo}
  */
 public class LabelInfo {
@@ -47,9 +47,9 @@ public class LabelInfo {
     /**
      * Creates a new {@code LabelInfo} with the given text and no specified mnemonic.
      *
-     * @param text The text to be displayed by the label. This may be an empty string but 
+     * @param text The text to be displayed by the label. This may be an empty string but
      * cannot be null.
-     * 
+     *
      * @throws IllegalArgumentException if {@code text} is null.
      */
     public LabelInfo(String text) {
@@ -63,8 +63,8 @@ public class LabelInfo {
      * @param text The text to be displayed by the label. This may be an empty string but cannot
      * be null.
      * @param mnemonic The character from the label text that acts as a mnemonic.
-     * 
-     * @throws IllegalArgumentException if {@code text} is null or if {@code mnemonic} is a 
+     *
+     * @throws IllegalArgumentException if {@code text} is null or if {@code mnemonic} is a
      * negative value.
      */
     public LabelInfo(String text, int mnemonic) {
@@ -75,12 +75,12 @@ public class LabelInfo {
     /**
      * Creates a new {@code LabelInfo} with the given text, mnemonic character and mnemonic index.
      *
-     * @param text The text to be displayed by the label. This may be an empty string but cannot 
+     * @param text The text to be displayed by the label. This may be an empty string but cannot
      * be null.
      * @param mnemonic The character from the label text that acts as a mnemonic.
-     * @param mnemonicIndex The zero-based index of the mnemonic character within the label text. 
+     * @param mnemonicIndex The zero-based index of the mnemonic character within the label text.
      * If the specified label text is an empty string, this property will be ignored and set to -1.
-     * 
+     *
      * @throws IllegalArgumentException if {@code text} is null, if {@code mnemonic} is a negative
      * value or if {@code mnemonicIndex} is less than -1.
      */
@@ -95,12 +95,12 @@ public class LabelInfo {
                     + ", mnemonicIndex=" + mnemonicIndex);
         }
         Assert.isTrue(mnemonic >= 0 && mnemonicIndex >= -1);
-        Assert.isTrue(mnemonicIndex < text.length(), 
+        Assert.isTrue(mnemonicIndex < text.length(),
                       "The mnemonic index must be less than the text length; mnemonicIndex = "
                       + mnemonicIndex
                       + ", text length = "
                       + text.length());
-        
+
         this.mnemonic = mnemonic;
         this.mnemonicIndex = mnemonicIndex;
     }
@@ -145,7 +145,7 @@ public class LabelInfo {
         label.setText(text);
         label.setDisplayedMnemonic(getMnemonic());
         int index = getMnemonicIndex();
-        
+
         //TODO aren't zero and -1 valid index values?
         if (index > 0) {
             label.setDisplayedMnemonicIndex(index);
@@ -161,7 +161,7 @@ public class LabelInfo {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Appending colon to text field label text '" + text + "'");
                 }
-                label.setText(labelText += ":");
+                label.setText(labelText + ":");
             }
         }
         label.setLabelFor(component);
@@ -215,5 +215,5 @@ public class LabelInfo {
                 .append("mnemonicIndex", this.mnemonicIndex)
                 .toString();
     }
-    
+
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,11 +17,11 @@ package org.springframework.core.closure;
 
 /**
  * A interface to be implemented by objects which encapsulate a workflow process
- * template that generates elements for processing. For example, a template process might 
- * produce records from a file for processing.
+ * template that generates elements for processing. For example, a template
+ * process might produce records from a file for processing.
  * <p>
- * A user-provided closure call back is passed in on process execution
- * and is called to insert custom processing within the template.
+ * A user-provided closure call back is passed in on process execution and is
+ * called to insert custom processing within the template.
  * <p>
  * For example, the following code snippet demonstrates a generator that
  * produces parsed csv records from an underlying file resource. In this case,
@@ -29,7 +29,7 @@ package org.springframework.core.closure;
  * (opening/closing resources) and the algorithm to parse / iterate over
  * records. The results (a single parsed record) are passed to the callback for
  * processing.
- * 
+ *
  * <pre>
  * ElementGenerator recordGenerator = new CsvRecordGenerator(new FileSystemResource(file));
  * recordGenerator.run(new Block() {
@@ -38,63 +38,70 @@ package org.springframework.core.closure;
  * 	}
  * });
  * </pre>
- * 
+ *
  * This is a generic equivalent to approaches used throughout The Spring
  * Framework, including Spring's JDBC Template for processing DB query result
  * sets. In addition to providing a common callback interface, it is intended
  * for convenience in situations where defining a separate callback hierarchy to
  * support a template callback approach is overkill.
+ *
  * @author Keith Donald
  */
 public interface ElementGenerator extends ClosureTemplate {
 
 	/**
-	 * Does this process produce an element maching the given criteria?
+	 * Does this process produce an element matching the given criteria?
+	 *
 	 * @param constraint the criteria
-	 * @return true if yes, false otherwise
+	 * @return <code>true</code> if yes, <code>false</code> otherwise
 	 */
-	public boolean anyTrue(Constraint constraint);
+	boolean anyTrue(Constraint constraint);
 
 	/**
-	 * Does this process produce all elements maching the given criteria?
+	 * Does this process produce all elements matching the given criteria?
+	 *
 	 * @param constraint the criteria
-	 * @return true if yes, false otherwise
+	 * @return <code>true</code> if yes, <code>false</code> otherwise
 	 */
-	public boolean allTrue(Constraint constraint);
+	boolean allTrue(Constraint constraint);
 
 	/**
 	 * Find the first element that matches the given criteria.
+	 *
 	 * @param constraint the criteria
 	 * @return the first element, or null if none found.
 	 */
-	public Object findFirst(Constraint constraint);
+	Object findFirst(Constraint constraint);
 
 	/**
 	 * Find the first element that matches the given criteria, return
 	 * <code>defaultIfNoneFound</code> if none found.
+	 *
 	 * @param constraint the constraint
 	 * @param defaultIfNoneFound none found object
 	 * @return the first match, or defaultIfNoneFound if no match found
 	 */
-	public Object findFirst(Constraint constraint, Object defaultIfNoneFound);
+	Object findFirst(Constraint constraint, Object defaultIfNoneFound);
 
 	/**
 	 * Find all elements produced by ths template that match the specified
 	 * criteria.
+	 *
 	 * @param constraint the criteria
 	 * @return the elements
 	 */
-	public ElementGenerator findAll(Constraint constraint);
+	ElementGenerator findAll(Constraint constraint);
 
 	/**
 	 * Execute the template until the specified condition is true
+	 *
 	 * @param templateCallback the callback
 	 * @param constraint the constraint condition
 	 */
-	public void runUntil(Closure templateCallback, Constraint constraint);
+	void runUntil(Closure templateCallback, Constraint constraint);
 
 	/**
 	 * Stop this process after it has started.
 	 */
-	public void stop() throws IllegalStateException;
+	void stop() throws IllegalStateException;
 }

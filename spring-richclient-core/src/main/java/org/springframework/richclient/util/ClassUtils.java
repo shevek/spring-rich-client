@@ -37,8 +37,8 @@ import org.springframework.core.style.StylerUtils;
 
 /**
  * Misc static utility functions for java classes.
- * 
- * @author Kerth Donald
+ *
+ * @author Keith Donald
  * @author Jim Moore
  */
 public class ClassUtils {
@@ -69,7 +69,7 @@ public class ClassUtils {
 
 	/**
 	 * Intializes the specified class if not initialized already.
-	 * 
+	 *
 	 * This is required for EnumUtils if the enum class has not yet been loaded.
 	 */
 	public static void initializeClass(Class clazz) {
@@ -85,7 +85,7 @@ public class ClassUtils {
 	 * Returns the qualified class field name with the specified value. For
 	 * example, with a class defined with a static field "NORMAL" with value =
 	 * "0", passing in "0" would return: className.NORMAL.
-	 * 
+	 *
 	 * @return The qualified field.
 	 */
 	public static String getClassFieldNameWithValue(Class clazz, Object value) {
@@ -126,7 +126,7 @@ public class ClassUtils {
 
 	/**
 	 * Load the class with the specified name.
-	 * 
+	 *
 	 * @param name
 	 * @return The loaded class.
 	 * @throws ClassNotFoundException
@@ -155,7 +155,7 @@ public class ClassUtils {
 
 	/**
 	 * Returns the unqualified class name of the specified class.
-	 * 
+	 *
 	 * @param clazz the class to get the name for
 	 * @return The unqualified, short name.
 	 */
@@ -170,7 +170,7 @@ public class ClassUtils {
 	/**
 	 * Returns the qualifier for a name separated by dots. The qualified part is
 	 * everything up to the last dot separator.
-	 * 
+	 *
 	 * @param qualifiedName The qualified name.
 	 * @return The qualifier portion.
 	 */
@@ -206,40 +206,39 @@ public class ClassUtils {
 			Method method = locatorClass.getDeclaredMethod(name, args);
 			if ((method.getModifiers() & Modifier.STATIC) != 0)
 				return method;
-			
+
 			return null;
 		}
 		catch (NoSuchMethodException e) {
 			return null;
 		}
 	}
-        
-    private static final Map primativeToWrapperMap = new HashMap();
-    static {
-        primativeToWrapperMap.put(boolean.class, Boolean.class);
-        primativeToWrapperMap.put(char.class, Character.class);
-        primativeToWrapperMap.put(byte.class, Byte.class);
-        primativeToWrapperMap.put(short.class, Short.class);
-        primativeToWrapperMap.put(int.class, Integer.class);
-        primativeToWrapperMap.put(long.class, Long.class);
-        primativeToWrapperMap.put(float.class, Float.class);
-        primativeToWrapperMap.put(double.class, Double.class);
-    }
 
-    /**
-     * Gets the equivalent class to convert to if the given clazz is a
-     * primitive.
-     * 
-     * @param clazz
-     *            Class to examin.
-     * @return the class to convert to or the inputted clazz.
-     */
-    public static Class convertPrimitiveToWrapper(Class clazz) {
-        if (clazz == null || !clazz.isPrimitive())
-            return clazz;
+	private static final Map primativeToWrapperMap = new HashMap();
+	static {
+		primativeToWrapperMap.put(boolean.class, Boolean.class);
+		primativeToWrapperMap.put(char.class, Character.class);
+		primativeToWrapperMap.put(byte.class, Byte.class);
+		primativeToWrapperMap.put(short.class, Short.class);
+		primativeToWrapperMap.put(int.class, Integer.class);
+		primativeToWrapperMap.put(long.class, Long.class);
+		primativeToWrapperMap.put(float.class, Float.class);
+		primativeToWrapperMap.put(double.class, Double.class);
+	}
 
-        return (Class)primativeToWrapperMap.get(clazz);
-    }
+	/**
+	 * Gets the equivalent class to convert to if the given clazz is a
+	 * primitive.
+	 *
+	 * @param clazz Class to examin.
+	 * @return the class to convert to or the inputted clazz.
+	 */
+	public static Class convertPrimitiveToWrapper(Class clazz) {
+		if (clazz == null || !clazz.isPrimitive())
+			return clazz;
+
+		return (Class) primativeToWrapperMap.get(clazz);
+	}
 
 	/**
 	 * Given a {@link Map}where the keys are {@link Class}es, search the map
@@ -247,17 +246,17 @@ public class ClassUtils {
 	 * extremely useful to support polymorphism (and an absolute requirement to
 	 * find proxied classes where classes are acting as keys in a map).
 	 * <p />
-	 * 
+	 *
 	 * For example: If the Map has keys of Number.class and String.class, using
 	 * a <tt>typeClass</tt> of Long.class will find the Number.class entry and
 	 * return its value.
 	 * <p />
-	 * 
+	 *
 	 * When doing the search, it looks for the most exact match it can, giving
 	 * preference to interfaces over class inheritance. As a performance
 	 * optimiziation, if it finds a match it stores the derived match in the map
 	 * so it does not have to be derived again.
-	 * 
+	 *
 	 * @param typeClass the kind of class to search for
 	 * @param classMap the map where the keys are of type Class
 	 * @return null only if it can't find any match
@@ -281,7 +280,7 @@ public class ClassUtils {
 				return null;
 			}
 
-            // remember this so it doesn't have to be looked-up again
+			// remember this so it doesn't have to be looked-up again
 			classMap.put(typeClass, val);
 			return val;
 		}
@@ -340,12 +339,12 @@ public class ClassUtils {
 	/**
 	 * Is the given name a property in the class? In other words, does it have a
 	 * setter and/or a getter method?
-	 * 
+	 *
 	 * @param theClass the class to look for the property in
 	 * @param propertyName the name of the property
-	 * 
+	 *
 	 * @return true if there is either a setter or a getter for the property
-	 * 
+	 *
 	 * @throws IllegalArgumentException if either argument is null
 	 */
 	public static boolean isAProperty(Class theClass, String propertyName) {
@@ -454,18 +453,18 @@ public class ClassUtils {
 	/**
 	 * Returns the class of the property.
 	 * <p />
-	 * 
+	 *
 	 * For example, getPropertyClass(JFrame.class, "size") would return the
 	 * java.awt.Dimension class.
-	 * 
+	 *
 	 * @param parentClass the class to look for the property in
 	 * @param propertyName the name of the property
-	 * 
+	 *
 	 * @return the class of the property; never null
-	 * 
+	 *
 	 * @throws IllegalArgumentException if either argument is null
 	 * @throws IllegalArgumentException <tt>propertyName</tt> is not a
-	 *         property of <tt>parentClass</tt>
+	 * property of <tt>parentClass</tt>
 	 */
 	public static Class getPropertyClass(Class parentClass, String propertyName) throws IllegalArgumentException {
 		if (parentClass == null)
