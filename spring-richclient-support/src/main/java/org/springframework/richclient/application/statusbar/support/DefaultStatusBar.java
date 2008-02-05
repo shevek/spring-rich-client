@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2007 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,13 +21,18 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.SystemColor;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.statusbar.StatusBar;
+import org.springframework.richclient.control.ShadowBorder;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.ProgressMonitor;
@@ -41,7 +46,7 @@ import org.springframework.richclient.progress.ProgressMonitor;
  * By default a <tt>StatusBar</tt> has two predefined status controls: a <tt>JLabel</tt> and a <tt>JProgressBar</tt>
  * and it provides API for easy access.
  * </p>
- * 
+ *
  * @author Peter De Bruycker
  */
 public class DefaultStatusBar extends AbstractControlFactory implements StatusBar {
@@ -67,7 +72,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
 
     /**
      * Controls whether the ProgressIndication provides UI for canceling a long running operation.
-     * 
+     *
      * If the ProgressIndication is currently visible calling this method may have a direct effect on the layout because
      * it will make a cancel button visible.
      */
@@ -79,7 +84,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
      * Sets the message text to be displayed on the status bar.
      * <p>
      * The icon of the message is ignored
-     * 
+     *
      * @param message
      *            the message to be set, if <code>null</code>, the status line is cleared.
      */
@@ -89,7 +94,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
 
     /**
      * Sets the message text to be displayed on the status bar.
-     * 
+     *
      * @param message
      *            the message to be set, if <code>null</code>, the status line is cleared.
      */
@@ -107,7 +112,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
      * Error messages are shown over the standard message, and in a red color.
      * <p>
      * The icon of the message is ignored
-     * 
+     *
      * @param message
      *            the error message to be set, if <code>null</code>, the error message is cleared, and the standard
      *            message is shown again
@@ -120,7 +125,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
      * Sets the error message text to be displayed on the status bar.
      * <p>
      * Error messages are shown over the standard message, and in a red color.
-     * 
+     *
      * @param message
      *            the error message to be set, if <code>null</code>, the error message is cleared, and the standard
      *            message is shown again
@@ -147,12 +152,16 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
      * Create the <code>JLabel</code> used to render the messages.
      * <p>
      * Can safely be overridden to customize the label
-     * 
+     *
      * @return the <code>JLabel</code>
      */
     protected JLabel createMessageLabel() {
         JLabel messageLabel = new JLabel(" ");
         messageLabel.setName("message");
+        Border bevelBorder = BorderFactory.createBevelBorder(BevelBorder.LOWERED, UIManager
+                .getColor("controlHighlight"), UIManager.getColor("controlShadow"));
+        Border emptyBorder = BorderFactory.createEmptyBorder(1, 3, 1, 3);
+        messageLabel.setBorder(BorderFactory.createCompoundBorder(bevelBorder, emptyBorder));
 
         return messageLabel;
     }
@@ -169,6 +178,8 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
 
         progressMonitor.getControl().setPreferredSize(new Dimension(200, 17));
 
+        statusBar.setBorder(new ShadowBorder());
+
         return statusBar;
     }
 
@@ -176,7 +187,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
      * Create the <code>StatusBarProgressMonitor</code>.
      * <p>
      * Can safely be overridden to customize the progress monitor and its components
-     * 
+     *
      * @return the <code>StatusBarProgressMonitor</code>
      */
     protected StatusBarProgressMonitor createStatusBarProgressMonitor() {
@@ -185,7 +196,7 @@ public class DefaultStatusBar extends AbstractControlFactory implements StatusBa
 
     /**
      * Shows or hides this status bar.
-     * 
+     *
      * @see Component#setVisible(boolean)
      */
     public void setVisible(boolean visible) {

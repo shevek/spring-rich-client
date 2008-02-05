@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2007 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,11 +21,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.AbstractControlFactory;
@@ -44,7 +48,7 @@ import org.springframework.util.StringUtils;
  * Initally the progress bar and button are hidden, and shown when a task is
  * running longer than the <code>delayProgress</code> property (default is 500
  * ms).
- * 
+ *
  * @author Peter De Bruycker
  */
 public class StatusBarProgressMonitor extends AbstractControlFactory implements
@@ -96,7 +100,12 @@ public class StatusBarProgressMonitor extends AbstractControlFactory implements
 
 		control.add(progressBar);
 		control.add(cancelButton, BorderLayout.LINE_END);
-		
+
+        Border bevelBorder = BorderFactory.createBevelBorder(BevelBorder.LOWERED, UIManager
+                .getColor("controlHighlight"), UIManager.getColor("controlShadow"));
+        Border emptyBorder = BorderFactory.createEmptyBorder(1, 3, 1, 3);
+        control.setBorder(BorderFactory.createCompoundBorder(bevelBorder, emptyBorder));
+
 		// initially hide the control
 		hideProgress();
 
