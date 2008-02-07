@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -65,14 +65,14 @@ public class DefaultValidationResults implements ValidationResults {
         addAllMessages(validationResults.getMessages());
     }
 
-    public void addAllMessages(Collection validationMessages) {        
+    public void addAllMessages(Collection validationMessages) {
         if (messages.addAll(validationMessages)) {
             messagesSubSets.clear();
         }
     }
 
     public void addMessage(ValidationMessage validationMessage) {
-        if (messages.add(validationMessage)) {            
+        if (messages.add(validationMessage)) {
             messagesSubSets.clear();
         }
     }
@@ -125,10 +125,10 @@ public class DefaultValidationResults implements ValidationResults {
     public String toString() {
         return new ToStringCreator(this).append("messages", getMessages()).toString();
     }
-    
+
     /**
      * Clear all messages.
-     * 
+     *
      * @see RulesValidator#clearMessages()
      */
     public void clearMessages()
@@ -137,4 +137,14 @@ public class DefaultValidationResults implements ValidationResults {
         messagesSubSets.clear();
     }
 
+    /**
+     * Clear all messages of the given fieldName.
+     */
+    public void clearMessages(String fieldName) {
+    	Set messagesForFieldName = getMessages(fieldName);
+    	for (Iterator mi = messagesForFieldName.iterator(); mi.hasNext();) {
+			messages.remove(mi.next());
+		}
+    	messagesSubSets.clear();
+    }
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -39,7 +39,7 @@ import java.util.Set;
 
 /**
  * Tests for @link DefaultFormModel
- * 
+ *
  * @author Oliver Hutchison
  */
 public class DefaultFormModelTests extends AbstractFormModelTests {
@@ -60,23 +60,26 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         cs.executer = new ConversionExecutor(String.class, String.class, new CopiedPublicNoOpConverter(String.class, String.class));
         fm.setConversionService(cs);
         ValueModel vm = fm.getValueModel("simpleProperty");
-        assertEquals(1, v.count);
+        // starting at 2: constructing a formmodel + creating valueModel
+        int expectedCount = 2;
+        assertEquals(expectedCount++, v.count);
 
         vm.setValue("1");
-        assertEquals(2, v.count);
+        assertEquals(expectedCount, v.count);
 
+        // no change in value, no validation triggered.
         vm.setValue("1");
-        assertEquals(2, v.count);
+        assertEquals(expectedCount++, v.count);
 
         vm.setValue(null);
-        assertEquals(3, v.count);
+        assertEquals(expectedCount++, v.count);
 
         vm = fm.getValueModel("simpleProperty", Integer.class);
         vm.setValue("1");
-        assertEquals(4, v.count);
+        assertEquals(expectedCount++, v.count);
 
         vm.setValue("2");
-        assertEquals(5, v.count);
+        assertEquals(expectedCount++, v.count);
     }
 
     public void testValidationMessages() {
@@ -85,35 +88,37 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         ValueModel vm = fm.getValueModel("simpleProperty");
+        // starting at 2: constructing a formmodel + creating valueModel
+        int expectedCount = 2;
 
-        assertEquals(1, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(0, r.getMessageCount());
 
         v.results = getValidationResults("message1");
         vm.setValue("1");
-        assertEquals(2, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(1, r.getMessageCount());
         assertContainsMessage("message1", r.getMessages());
 
         v.results = getValidationResults("message2");
         vm.setValue("2");
-        assertEquals(3, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(1, r.getMessageCount());
         assertContainsMessage("message2", r.getMessages());
         // this will cause a binding exception
         vm.setValue(new Object());
-        assertEquals(3, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(2, r.getMessageCount());
         assertContainsMessage("message2", r.getMessages());
 
         // this will clear the binding exception
         vm.setValue("3");
-        assertEquals(4, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(1, r.getMessageCount());
         assertContainsMessage("message2", r.getMessages());
 
         fm.validate();
-        assertEquals(5, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(1, r.getMessageCount());
         assertContainsMessage("message2", r.getMessages());
     }
@@ -124,11 +129,13 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         TestValidator v = new TestValidator();
         fm.setValidator(v);
         ValueModel vm = fm.getValueModel("simpleProperty");
+        // starting at 2: constructing a formmodel + creating valueModel
+        int expectedCount = 2;
 
         final DefaultValidationMessage message1 = new DefaultValidationMessage("simpleProperty", Severity.ERROR, "1");
 
         fm.raiseValidationMessage(message1);
-        assertEquals(1, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(1, r.getMessageCount());
         assertContainsMessage("1", r.getMessages());
 
@@ -140,11 +147,12 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertEquals(0, r.getMessageCount());
 
         fm.setValidating(true);
+        assertEquals(expectedCount++, v.count);
         assertEquals(1, r.getMessageCount());
 
         v.results = getValidationResults("2");
         vm.setValue("3");
-        assertEquals(3, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(2, r.getMessageCount());
 
         fm.clearValidationMessage(message1);
@@ -155,41 +163,43 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         DefaultFormModel fm = (DefaultFormModel) getFormModel(new TestBean());
         ValidationResultsModel r = fm.getValidationResults();
         TestValidator v = new TestValidator();
+        // starting at 2: constructing a formmodel + creating valueModel
+        int expectedCount = 2;
         v.results = getValidationResults("message1");
         fm.setValidator(v);
 
         ValueModel vm = fm.getValueModel("simpleProperty");
-        assertEquals(1, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(1, r.getMessageCount());
 
         fm.setValidating(false);
-        assertEquals(1, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(0, r.getMessageCount());
 
         fm.setValidating(true);
-        assertEquals(2, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(1, r.getMessageCount());
 
         // this will cause a binding exception
         vm.setValue(new Object());
-        assertEquals(2, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(2, r.getMessageCount());
 
         fm.setValidating(false);
-        assertEquals(2, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(0, r.getMessageCount());
 
         // this will cause a another binding exception
         fm.getValueModel("listProperty").setValue(new Object());
-        assertEquals(2, v.count);
+        assertEquals(expectedCount, v.count);
         assertEquals(0, r.getMessageCount());
 
         vm.setValue("test");
-        assertEquals(2, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(0, r.getMessageCount());
 
         fm.setValidating(true);
-        assertEquals(3, v.count);
+        assertEquals(expectedCount++, v.count);
         assertEquals(2, r.getMessageCount());
     }
 
@@ -240,7 +250,7 @@ public class DefaultFormModelTests extends AbstractFormModelTests {
         assertTrue(fm.isValidating());
         assertEquals(2, pcl.eventCount());
     }
-    
+
     public void testReadOnlyRevert() {
         FormModel fm = getFormModel(new TestBean());
         fm.getValueModel("readOnly");

@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -49,30 +49,30 @@ import org.springframework.richclient.util.Assert;
  * </code>
  * Along with this you will need to register your rules using the context id.  See
  * {@link DefaultRulesSource#addRules(String, Rules)}.
- * 
+ *
  * @author  Keith Donald
- * @author  Oliver Hutchison 
+ * @author  Oliver Hutchison
  */
 public class DefaultFormModel extends AbstractFormModel implements ValidatingFormModel {
 
     private final DefaultValidationResultsModel validationResultsModel = new DefaultValidationResultsModel();
-    
+
     private final DefaultValidationResults additionalValidationResults = new DefaultValidationResults();
-    
+
     private final Map bindingErrorMessages = new HashMap();
 
     private boolean validating = true;
-    
+
     private boolean oldValidating = true;
-    
+
     private boolean oldHasErrors = false;
 
     private Validator validator;
-    
+
     private BindingErrorMessageProvider bindingErrorMessageProvider = new DefaultBindingErrorMessageProvider();
 
     private final PropertyChangeListener errorChangeHandler = new PropertyChangeListener(){
-    
+
                 public void propertyChange(PropertyChangeEvent evt)
                 {
                     hasErrorsUpdated();
@@ -86,7 +86,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         super(domainObject);
         init();
     }
-    
+
     public DefaultFormModel(Object domainObject, boolean buffered) {
         super(domainObject, buffered);
         init();
@@ -96,7 +96,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         super(domainObjectHolder, true);
         init();
     }
-    
+
     public DefaultFormModel(ValueModel domainObjectHolder, boolean buffered) {
         super(domainObjectHolder, buffered);
         init();
@@ -111,7 +111,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
         super(domainObjectAccessStrategy, bufferChanges);
         init();
     }
-    
+
     /**
      * Initialization of DefaultFormModel.
      * Adds a listener on the Enabled property in order to switch validating state
@@ -123,9 +123,9 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
 
             public void propertyChange(PropertyChangeEvent evt)
             {
-                validatingUpdated();                
+                validatingUpdated();
             }
-            
+
         });
         validationResultsModel.addPropertyChangeListener(ValidationResultsModel.HAS_ERRORS_PROPERTY, errorChangeHandler);
     }
@@ -152,12 +152,12 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             firePropertyChange(VALIDATING_PROPERTY, !validating, validating);
         }
     }
-    
+
     public void addChild(HierarchicalFormModel child)
     {
         if (child.getParent() == this)
             return;
-        
+
         super.addChild(child);
         if (child instanceof ValidatingFormModel)
         {
@@ -183,7 +183,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     public boolean getHasErrors() {
         return validationResultsModel.getHasErrors();
     }
-    
+
     protected void hasErrorsUpdated() {
         boolean hasErrors = getHasErrors();
         if (hasChanged(oldHasErrors, hasErrors)) {
@@ -192,7 +192,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             committableUpdated();
         }
     }
-    
+
     public void validate() {
         if (isValidating()) {
             validateAfterPropertyChanged(null);
@@ -201,14 +201,20 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
 
     public Validator getValidator() {
         if (validator == null) {
-            validator = new RulesValidator(this);
+            setValidator(new RulesValidator(this));
         }
         return validator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Setting a validator will trigger a validate of the current object.</p>
+     */
     public void setValidator(Validator validator) {
         Assert.required(validator, "validator");
         this.validator = validator;
+        validate();
     }
 
     public boolean isCommittable() {
@@ -241,8 +247,8 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     }
 
     /**
-     * 
-     * @param formProperty the name of the only property that has changed since the 
+     *
+     * @param formProperty the name of the only property that has changed since the
      * last call to validateAfterPropertyChange or <code>null</code> if this is not
      * known/available.
      */
@@ -271,21 +277,21 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
             validationResultsModel.replaceMessage(oldValidationMessage, newValidationMessage);
         }
     }
-    
+
     protected void clearBindingError(ValidatingFormValueModel valueModel) {
         ValidationMessage validationMessage = (ValidationMessage)bindingErrorMessages.remove(valueModel);
-        if (validationMessage != null) {            
+        if (validationMessage != null) {
             validationResultsModel.removeMessage(validationMessage);
         }
     }
-    
+
     public void raiseValidationMessage(ValidationMessage validationMessage) {
         additionalValidationResults.addMessage(validationMessage);
         if (isValidating()) {
             validationResultsModel.addMessage(validationMessage);
         }
     }
-    
+
     public void clearValidationMessage(ValidationMessage validationMessage) {
         additionalValidationResults.removeMessage(validationMessage);
         if (isValidating()) {
@@ -296,7 +302,7 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
     protected ValidationMessage getBindingErrorMessage(String propertyName, Object valueBeingSet, Exception e) {
         return bindingErrorMessageProvider.getErrorMessage(this, propertyName, valueBeingSet, e);
     }
-    
+
     public void setBindingErrorMessageProvider(BindingErrorMessageProvider bindingErrorMessageProvider) {
         Assert.required(bindingErrorMessageProvider, "bindingErrorMessageProvider");
         this.bindingErrorMessageProvider = bindingErrorMessageProvider;
