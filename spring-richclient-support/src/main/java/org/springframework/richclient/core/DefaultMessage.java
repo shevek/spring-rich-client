@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,29 +30,29 @@ import org.springframework.richclient.util.LabelUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * The default implementation of the {@link Message} interface. This class is 
+ * The default implementation of the {@link Message} interface. This class is
  * capable of rendering itself on {@link JTextComponent}s and {@link JLabel}s.
- * In the case of labels, it is also able to lookup an icon to be displayed on 
+ * In the case of labels, it is also able to lookup an icon to be displayed on
  * the label.
- * 
+ *
  * @see #getIcon()
  *
  */
 public class DefaultMessage implements Message, Serializable {
-	
+
     private static final long serialVersionUID = -6524078363891514995L;
 
 	private final long timestamp;
-    
+
     private final String message;
 
     private final Severity severity;
 
     /**
-     * A convenience instance representing an empty message. i.e. The message text 
+     * A convenience instance representing an empty message. i.e. The message text
      * is empty and there is no associated severity.
      */
-    public static DefaultMessage EMPTY_MESSAGE = new DefaultMessage("", null);
+    public static final DefaultMessage EMPTY_MESSAGE = new DefaultMessage("", null);
 
     /**
      * Creates a new {@code DefaultMessage} with the given text and a default
@@ -82,7 +82,7 @@ public class DefaultMessage implements Message, Serializable {
     public long getTimestamp() {
         return timestamp;
     }
-    
+
     public String getMessage() {
         return message;
     }
@@ -93,8 +93,8 @@ public class DefaultMessage implements Message, Serializable {
 
     /**
      * Renders this message on the given GUI component. This implementation only
-     * supports components of type {@link JTextComponent} or {@link JLabel}. 
-     * 
+     * supports components of type {@link JTextComponent} or {@link JLabel}.
+     *
      * @throws IllegalArgumentException if {@code component} is not a {@link JTextComponent}
      * or a {@link JLabel}.
      */
@@ -113,12 +113,12 @@ public class DefaultMessage implements Message, Serializable {
     }
 
     /**
-     * Returns the icon associated with this instance's severity. The icon is 
-     * expected to be retrieved using a key {@code severity.&lt;SEVERITY_LABEL&gt;}. 
+     * Returns the icon associated with this instance's severity. The icon is
+     * expected to be retrieved using a key {@code severity.&lt;SEVERITY_LABEL&gt;}.
      *
-     * @return The icon associated with this instance's severity, or null if the 
+     * @return The icon associated with this instance's severity, or null if the
      * instance has no specified severity, or the icon could not be found.
-     * 
+     *
      * @see Severity#getLabel()
      * @see IconSource#getIcon(String)
      */
