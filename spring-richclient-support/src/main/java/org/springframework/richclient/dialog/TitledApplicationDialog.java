@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2007 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -105,7 +105,7 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 	protected void setContentPane(JComponent c) {
 		if (isControlCreated()) {
 			pageControl.remove(contentPane);
-			this.contentPane = c;
+			contentPane = c;
 			pageControl.add(contentPane);
 			pageControl.revalidate();
 			pageControl.repaint();
@@ -121,6 +121,16 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 		getDialog().getContentPane().add(createButtonBar(), BorderLayout.SOUTH);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Creates an additional panel at the top containing a title/message area.
+	 * This can be used in conjunction with validation reporters to show the
+	 * most recent error or to simply show a title and a description of the
+	 * current Dialog.
+	 *
+	 * Use {@link #createTitledDialogContentPane()} to add your custom components.
+	 */
 	protected JComponent createDialogContentPane() {
 		pageControl = new JPanel(new BorderLayout());
 		JPanel titlePaneContainer = new JPanel(new BorderLayout());
@@ -137,7 +147,19 @@ public abstract class TitledApplicationDialog extends ApplicationDialog implemen
 		return pageControl;
 	}
 
+	/**
+	 *
+	 * @return a component that will be added as the content of the Titled Dialog.
+	 */
 	protected abstract JComponent createTitledDialogContentPane();
+
+	/**
+	 * Dispose of the dialog content.
+	 */
+	protected void disposeDialogContentPane() {
+		contentPane = null;
+		pageControl = null;
+	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		titlePane.addPropertyChangeListener(listener);

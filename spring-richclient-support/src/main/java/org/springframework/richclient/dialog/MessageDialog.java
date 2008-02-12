@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2006 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -48,7 +48,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Constructs a new dialog.
-     * 
+     *
      * @param title the title
      * @param message the message
      */
@@ -58,7 +58,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Constructs a new dialog.
-     * 
+     *
      * @param title the title
      * @param parent the parent window
      * @param message the message
@@ -70,7 +70,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Constructs a new dialog, the message is converted to an information message
-     * 
+     *
      * @param title the title
      * @param message the message text
      */
@@ -80,7 +80,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Constructs a new dialog, the message is converted to an information message
-     * 
+     *
      * @param title the title
      * @param parent the parent window
      * @param message the message text
@@ -92,7 +92,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Set the message text, severity is info.
-     * 
+     *
      * @param text the message text
      */
     public void setMessage( String text ) {
@@ -101,7 +101,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Set the message.
-     * 
+     *
      * @param message the message
      */
     public void setMessage( Message message ) {
@@ -112,7 +112,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Get the message
-     * 
+     *
      * @return message
      */
     public Message getMessage() {
@@ -147,6 +147,10 @@ public class MessageDialog extends ApplicationDialog {
         this.messageAreaPane = new AlertMessageAreaPane();
         this.messageAreaPane.setMessage( message );
         return messageAreaPane.getControl();
+    }
+
+    protected void disposeDialogContentPane() {
+    	messageAreaPane = null;
     }
 
     /**
@@ -185,7 +189,7 @@ public class MessageDialog extends ApplicationDialog {
     /**
      * Get the scale factor for the dialog size (as compared to the parent window). The
      * default returned here is 55% (.55).
-     * 
+     *
      * @return scale factor
      */
     public float getDialogScaleFactor() {
@@ -194,7 +198,7 @@ public class MessageDialog extends ApplicationDialog {
 
     /**
      * Set the scale factory for the dialog size.
-     * 
+     *
      * @param dialogScaleFactor New dialog scale factor
      */
     public void setDialogScaleFactor( float dialogScaleFactor ) {
@@ -204,7 +208,7 @@ public class MessageDialog extends ApplicationDialog {
     /**
      * Get the minimum width for the dialog. This overrides the value calculated by the
      * scale factor.
-     * 
+     *
      * @return minimum width
      * @see #setDialogScaleFactor
      */
@@ -215,7 +219,7 @@ public class MessageDialog extends ApplicationDialog {
     /**
      * Set the minimum width for the dialog. This overrides the value calculated by the
      * scale factor.
-     * 
+     *
      * @return minimum width
      */
     public void setMinimumWidth( int minimumWidth ) {
