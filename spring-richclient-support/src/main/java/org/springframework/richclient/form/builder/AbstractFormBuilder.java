@@ -33,6 +33,8 @@ import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
 import org.springframework.util.Assert;
 
 /**
+ * Base class for form builders.
+ *
  * @author oliverh
  * @author Mathias Broekelmann
  */
@@ -46,11 +48,20 @@ public abstract class AbstractFormBuilder {
 
 	private FormComponentInterceptorFactory interceptorFactory;
 
+	/**
+	 * Default constructor providing the {@link BindingFactory}.
+	 *
+	 * @param bindingFactory the factory creating the {@link Binding}s.
+	 */
 	protected AbstractFormBuilder(BindingFactory bindingFactory) {
 		Assert.notNull(bindingFactory);
 		this.bindingFactory = bindingFactory;
 	}
 
+	/**
+	 * Returns the {@link FormComponentInterceptor} that will be used when
+	 * creating a component with this builder.
+	 */
 	protected FormComponentInterceptor getFormComponentInterceptor() {
 		if (interceptor == null) {
 			if (interceptorFactory == null) {
@@ -63,11 +74,18 @@ public abstract class AbstractFormBuilder {
 		return interceptor;
 	}
 
+	/**
+	 * Set the factory that delivers the {@link FormComponentInterceptor}.
+	 */
 	public void setFormComponentInterceptorFactory(FormComponentInterceptorFactory interceptorFactory) {
 		this.interceptorFactory = interceptorFactory;
 		this.interceptor = null;
 	}
 
+	/**
+	 * Returns the {@link ComponentFactory} that delivers all the visual
+	 * components.
+	 */
 	protected ComponentFactory getComponentFactory() {
 		if (componentFactory == null) {
 			componentFactory = (ComponentFactory) ApplicationServicesLocator.services().getService(
@@ -76,55 +94,72 @@ public abstract class AbstractFormBuilder {
 		return componentFactory;
 	}
 
+	/**
+	 * Set the {@link ComponentFactory}.
+	 */
 	public void setComponentFactory(ComponentFactory componentFactory) {
 		this.componentFactory = componentFactory;
 	}
 
+	/**
+	 * Returns the {@link BindingFactory}.
+	 */
 	protected BindingFactory getBindingFactory() {
 		return bindingFactory;
 	}
 
+	/**
+	 * Convenience method to return the formModel that is used in the
+	 * {@link BindingFactory} and that should be used in the builder.
+	 */
 	protected FormModel getFormModel() {
 		return bindingFactory.getFormModel();
 	}
 
 	/**
-	 * @deprecated Use {@link #createDefaultBinding(String)} instead
+	 * Create a binding by looking up the appropriate registered binding.
+	 *
+	 * @param fieldName the name of the property to bind.
+	 * @return the {@link Binding} for the property which provides a component
+	 * that is bound to the valueModel of the property.
 	 */
-	protected Binding getDefaultBinding(String fieldName) {
-		return createDefaultBinding(fieldName);
-	}
-
 	protected Binding createDefaultBinding(String fieldName) {
 		return getBindingFactory().createBinding(fieldName);
 	}
 
 	/**
-	 * @deprecated Use {@link #createBinding(String,JComponent)} instead
+	 * Create a binding that uses the given component instead of its default
+	 * component.
+	 *
+	 * @param fieldName the name of the property to bind.
+	 * @param component the component to bind to the property.
+	 * @return the {@link Binding} that binds the component to the valuemodel of
+	 * the property.
 	 */
-	protected Binding getBinding(String fieldName, JComponent component) {
-		return createBinding(fieldName, component);
-	}
-
 	protected Binding createBinding(String fieldName, JComponent component) {
 		return getBindingFactory().bindControl(component, fieldName);
 	}
 
+	/**
+	 * Create a binding that uses the given component instead of its default
+	 * component. Additionally providing a context which is used by the binding
+	 * to allow custom settings.
+	 *
+	 * @param fieldName the name of the property to bind.
+	 * @param component the component to bind to the property.
+	 * @param context a map of with additional settings providing a specific
+	 * context.
+	 * @return the {@link Binding} that binds the component to the valuemodel of
+	 * the property.
+	 */
 	protected Binding createBinding(String fieldName, JComponent component, Map context) {
 		return getBindingFactory().bindControl(component, fieldName, context);
 	}
 
 	/**
-	 * @deprecated Use {@link #createSelector(String,Constraint)} instead
-	 */
-	protected JComponent getSelector(String fieldName, Constraint filter) {
-		return createSelector(fieldName, filter);
-	}
-
-	/**
 	 * Creates a component which is used as a selector in the form. This
 	 * implementation creates a {@link JComboBox}
-	 * 
+	 *
 	 * @param fieldName the name of the field for the selector
 	 * @param filter an optional filter constraint
 	 * @return the component to use for a selector, not null
@@ -137,7 +172,7 @@ public abstract class AbstractFormBuilder {
 
 	/**
 	 * Creates a component which is used as a scrollpane for a component
-	 * 
+	 *
 	 * @param fieldName the fieldname for the scrollpane
 	 * @param component the component to place into the scrollpane
 	 * @return the scrollpane component
@@ -147,34 +182,33 @@ public abstract class AbstractFormBuilder {
 	}
 
 	/**
-	 * @deprecated Use {@link #createPasswordField(String)} instead
+	 * Create a password field for the given property.
+	 *
+	 * @param fieldName the name of the property.
+	 * @return the password field.
 	 */
-	protected JPasswordField getPasswordField(String fieldName) {
-		return createPasswordField(fieldName);
-	}
-
 	protected JPasswordField createPasswordField(String fieldName) {
 		return getComponentFactory().createPasswordField();
 	}
 
 	/**
-	 * @deprecated Use {@link #createTextArea(String)} instead
+	 * Create a textarea for the given property.
+	 *
+	 * @param fieldName the name of the property.
+	 * @return the textarea.
 	 */
-	protected JComponent getTextArea(String fieldName) {
-		return createTextArea(fieldName);
-	}
-
 	protected JComponent createTextArea(String fieldName) {
 		return getComponentFactory().createTextArea(5, 40);
 	}
 
 	/**
-	 * @deprecated Use {@link #createLabelFor(String,JComponent)} instead
+	 * Create a label for the property.
+	 *
+	 * @param fieldName the name of the property.
+	 * @param component the component of the property which is related to the
+	 * label.
+	 * @return a {@link JLabel} for the property.
 	 */
-	protected JLabel getLabelFor(String fieldName, JComponent component) {
-		return createLabelFor(fieldName, component);
-	}
-
 	protected JLabel createLabelFor(String fieldName, JComponent component) {
 		JLabel label = getComponentFactory().createLabel("");
 		getFormModel().getFieldFace(fieldName).configure(label);
