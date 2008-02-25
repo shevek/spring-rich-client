@@ -76,6 +76,9 @@ import javax.swing.SwingUtilities;
  * @author Eric Albert ( <a
  * href="mailto:ejalbert@cs.stanford.edu">ejalbert@cs.stanford.edu </a>)
  * @version 1.4b1 (Released June 20, 2001)
+ *
+ * @deprecated use JDIC (https://jdic.dev.java.net/) or the Desktop class in
+ * java 1.6 instead
  */
 public class BrowserLauncher {
 
