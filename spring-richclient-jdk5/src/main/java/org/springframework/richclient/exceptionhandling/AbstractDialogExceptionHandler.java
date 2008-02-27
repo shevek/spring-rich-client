@@ -93,7 +93,7 @@ public abstract class AbstractDialogExceptionHandler extends AbstractLoggingExce
         }
     }
 
-    private JFrame resolveParentFrame() {
+    protected JFrame resolveParentFrame() {
         ApplicationWindow activeWindow = Application.instance().getActiveWindow();
         return (activeWindow == null) ? null : activeWindow.getControl();
     }
