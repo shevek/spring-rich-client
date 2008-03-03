@@ -122,10 +122,17 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
 		objectClass = object.getClass();
 		Rules rules = null;
 		if (object instanceof PropertyConstraintProvider) {
-			PropertyConstraint validationRule = ((PropertyConstraintProvider) object)
-					.getPropertyConstraint(propertyName);
-			if (validationRule != null) {
+			PropertyConstraintProvider propertyConstraintProvider = (PropertyConstraintProvider) object;
+			if (propertyName != null) {
+				PropertyConstraint validationRule = propertyConstraintProvider.getPropertyConstraint(propertyName);
 				checkRule(validationRule);
+			}
+			else {
+				for (Iterator fieldNamesIter = formModel.getFieldNames().iterator(); fieldNamesIter.hasNext();) {
+					PropertyConstraint validationRule = propertyConstraintProvider
+							.getPropertyConstraint((String) fieldNamesIter.next());
+					checkRule(validationRule);
+				}
 			}
 		}
 		else {
@@ -154,6 +161,8 @@ public class RulesValidator implements RichValidator, ObjectNameResolver {
 	}
 
 	private void checkRule(PropertyConstraint validationRule) {
+		if (validationRule == null)
+			return;
 		BeanValidationResultsCollector resultsCollector = takeResultsCollector();
 		PropertyResults results = resultsCollector.collectPropertyResults(validationRule);
 		returnResultsCollector(resultsCollector);
