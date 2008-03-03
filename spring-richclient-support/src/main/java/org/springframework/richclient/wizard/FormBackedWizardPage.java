@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,15 +22,15 @@ import org.springframework.richclient.form.Form;
 /**
  * An implementation of WizardPage that delegates to a FormPage for its control,
  * pageComplete status and messages.
- * 
- * @author oliverh
+ *
+ * @author Oliver Hutchison
  */
 public class FormBackedWizardPage extends AbstractWizardPage {
     private Form backingForm;
 
     /**
      * Createa a new FormBackedWizardPage
-     * 
+     *
      * @param backingForm
      *            the named form page which will provide the control for this
      *            wizard page.
@@ -46,7 +46,7 @@ public class FormBackedWizardPage extends AbstractWizardPage {
 
     /**
      * Creates a new FormBackedWizardPage.
-     * 
+     *
      * @param parentPageId
      *            the id of a containing parent page. This will be used to
      *            configure page titles/description
@@ -70,7 +70,6 @@ public class FormBackedWizardPage extends AbstractWizardPage {
     protected JComponent createControl() {
         JComponent formControl = backingForm.getControl();
         initPageValidationReporter();
-        backingForm.getFormModel().validate();
         return formControl;
     }
 
