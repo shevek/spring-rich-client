@@ -15,6 +15,8 @@
  */
 package org.springframework.binding.form;
 
+import java.util.Set;
+
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.binding.convert.Converter;
 import org.springframework.binding.value.PropertyChangePublisher;
@@ -100,6 +102,7 @@ public interface FormModel extends PropertyChangePublisher {
 	 * Returns a type converting value model for the given form property. The
 	 * type of the value returned from the returned value model is guaranteed to
 	 * be of class targetClass.
+	 *
 	 * @throws InvalidPropertyException if the form has no such property
 	 * @throws IllegalArgumentException if no suitable converter from the
 	 * original property class to the targetClass can be found
@@ -110,6 +113,12 @@ public interface FormModel extends PropertyChangePublisher {
 	 * Returns the metadata for the given form field.
 	 */
 	FieldMetadata getFieldMetadata(String field);
+
+	/**
+	 * Returns the fields that are used by this formModel. Each field has an
+	 * associated ValueModel.
+	 */
+	Set getFieldNames();
 
 	/**
 	 * Register converters for a given property name.

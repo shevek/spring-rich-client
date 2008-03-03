@@ -18,6 +18,7 @@ package org.springframework.binding.form.support;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -445,6 +446,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
             metadata = (FieldMetadata)fieldMetadata.get(propertyName);
         }
         return metadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set getFieldNames() {
+    	return Collections.unmodifiableSet(propertyValueModels.keySet());
     }
 
     /**
