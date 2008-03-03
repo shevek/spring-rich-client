@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2002-2005 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -50,21 +50,21 @@ import org.springframework.richclient.dialog.TitledPageApplicationDialog;
  * then the password field will be cleared after the failure is reported.
  * <p>
  * A typical configuration for this component might look like this:
- * 
+ *
  * <pre>
- *        &lt;bean id=&quot;placeholderConfigurer&quot; 
- *             class=&quot;org.springframework.beans.factory.config.PropertiesPlaceholderConfigurer&quot;/&gt;
- *      
+ *        &lt;bean id=&quot;placeholderConfigurer&quot;
+ *             class=&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;/&gt;
+ *
  *         &lt;bean id=&quot;loginCommand&quot;
  *             class=&quot;org.springframework.richclient.security.LoginCommand&quot;&gt;
  *             &lt;property name=&quot;displaySuccess&quot; value=&quot;false&quot;/&gt;
  *             &lt;property name=&quot;defaultUserName&quot; value=&quot;${user.name}&quot;/&gt;
  *         &lt;/bean&gt;
  * </pre>
- * 
+ *
  * @author Ben Alex
  * @author Larry Streepy
- * 
+ *
  * @see LoginForm
  * @see LoginDetails
  * @see ApplicationSecurityManager
@@ -92,7 +92,7 @@ public class LoginCommand extends ApplicationWindowAwareCommand {
     /**
      * Indicates whether an information message is displayed to the user upon successful
      * authentication. Defaults to true.
-     * 
+     *
      * @param displaySuccessMessage displays an information message upon successful login if
      *            true, otherwise false
      */
