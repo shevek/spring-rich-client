@@ -36,18 +36,18 @@
 
     <xi:include href="reference/application/application.xml" />
     <xi:include href="reference/forms/forms.xml"/>
-    
+
     <part id="commands">
         <title>Command Framework</title>
     </part>
-    
+
     <part id="dialogs">
         <title>Dialogs</title>
-        <chapter id="dialogs:wizards">
+        <chapter id="dialogs-wizards">
             <title>Wizards</title>
         </chapter>
     </part>
-    
+
     <part id="misc">
         <title>Misc</title>
         <xi:include href="reference/exception_handling/exception_handling.xml"/>
