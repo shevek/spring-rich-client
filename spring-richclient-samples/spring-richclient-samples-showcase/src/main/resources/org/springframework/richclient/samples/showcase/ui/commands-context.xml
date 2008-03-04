@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <!--
+    Bean: windowCommandManager
+    Type: magic
+    Usage: required
+    Description: This specifies the component that will manage the commands
+    associated with a window.  You can specify the ids of commands that
+    are "shared" among views.  This indicates to the manager that they
+    will have different target executors in each view.
+  -->
+  <bean id="windowCommandManager"
+    class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+    <property name="sharedCommandIds">
+      <list></list>
+    </property>
+  </bean>
+
+  <!--
+    Bean: menuBar
+    Type: magic
+    Usage: required
+    Description: This specifies the makeup of the main menu bar for the application.
+    The CommandGroupFactoryBean is a factory that generates command groups.
+    The "members" property is used to specify the top level menus in the
+    menu bar.
+  -->
+  <bean id="menuBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="bindingMenu" />
+        <ref bean="dialogMenu" />
+        <ref bean="exceptionHandlerMenu" />
+        <ref bean="conversionMenu" />
+        <ref bean="validationMenu" />
+        <ref bean="wizardMenu" />
+        <ref bean="helpMenu" />
+        <!-- bean class="org.springframework.richclient.command.support.ExitCommand" />-->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="bindingMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="listSelectionBindingDialogCommand" />
+        <ref bean="messageFormatValueModelDialogCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dialogMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="basicApplicationDialogCommand" />
+        <ref bean="basicTitledApplicationDialogCommand" />
+        <ref bean="basicConfirmationDialogCommand" />
+        <ref bean="basicInputApplicationDialogCommand" />
+        <ref bean="basicMessageDialogCommand" />
+        <ref bean="toolbarSampleCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="validationMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="basicRegExpDialogCommand" />
+        <ref bean="stringLengthConstraintCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="conversionMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="numberConversionDialogCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="wizardMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="installWizardDialogCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <!--
+    Bean: helpMenu
+    Type: user named
+    Usage: optional
+    Description: This specifies the content of the "Help" menu.
+  -->
+  <bean id="helpMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <value>helpContentsCommand</value>
+        <value>separator</value>
+        <ref bean="aboutCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <!--
+    Bean: aboutCommand
+    Type: user named
+    Usage: optional
+    Description: This creates a command to handle the "about" menu item.  It uses
+    a platform class to generate an about box from the configured application
+    data in the application context.
+  -->
+  <bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand" />
+
+  <bean id="basicApplicationDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicApplicationDialog"
+        class="org.springframework.richclient.samples.showcase.dialog.BasicApplicationDialog" />
+    </property>
+  </bean>
+
+  <bean id="basicConfirmationDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicConfirmationDialog"
+        class="org.springframework.richclient.samples.showcase.dialog.BasicConfirmationDialog" />
+    </property>
+  </bean>
+
+  <bean id="basicInputApplicationDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicInputApplicationDialog"
+        class="org.springframework.richclient.samples.showcase.dialog.BasicInputApplicationDialog" />
+    </property>
+  </bean>
+
+  <bean id="basicMessageDialogCommand" class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicMessageDialog"
+        class="org.springframework.richclient.samples.showcase.dialog.BasicMessageDialog" />
+    </property>
+  </bean>
+
+  <bean id="basicTitledApplicationDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicTitledApplicationDialog"
+        class="org.springframework.richclient.samples.showcase.dialog.BasicTitledApplicationDialog" />
+    </property>
+  </bean>
+
+  <bean id="installWizardDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="installWizardDialog"
+        class="org.springframework.richclient.samples.showcase.wizard.BasicWizardDialog">
+        <property name="wizard">
+          <bean id="installWizard"
+            class="org.springframework.richclient.samples.showcase.wizard.InstallWizard">
+            <property name="licenseResource"
+              value="/org/springframework/richclient/samples/showcase/ui/license.txt" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="basicRegExpDialogCommand" class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="basicRegExpDialog"
+        class="org.springframework.richclient.samples.showcase.validation.BasicRegExpConstraintDialog" />
+    </property>
+  </bean>
+
+  <bean id="stringLengthConstraintCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="stringLengthConstraint"
+        class="org.springframework.richclient.samples.showcase.validation.StringLenghtConstraintDialog" />
+    </property>
+  </bean>
+
+  <bean id="listSelectionBindingDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="listSelectionBindingDialog"
+        class="org.springframework.richclient.samples.showcase.binding.ListSelectionBindingDialog" />
+    </property>
+  </bean>
+
+  <bean id="messageFormatValueModelDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="messageFormatValueModelDialog"
+        class="org.springframework.richclient.samples.showcase.binding.DerivedValueModelDialog" />
+    </property>
+  </bean>
+
+  <bean id="toolbarSampleCommand" class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="toolbarSample" class="org.springframework.richclient.samples.showcase.command.ToolbarSample" />
+    </property>
+  </bean>
+
+  <bean id="exceptionHandlerMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <bean id="messagesDialogExceptionHandlerCommand"
+          class="org.springframework.richclient.samples.showcase.exceptionhandling.MessagesDialogExceptionHandlerCommand" />
+        <bean id="hibernateDialogExceptionHandlerCommand"
+          class="org.springframework.richclient.samples.showcase.exceptionhandling.HibernateExceptionHandlerCommand" />
+        <bean id="jxerrorDialogExceptionHandlerCommand"
+          class="org.springframework.richclient.samples.showcase.exceptionhandling.JXErrorDialogExceptionHandlerCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="numberConversionDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="numberConversionBindingDialog"
+        class="org.springframework.richclient.samples.showcase.conversion.NumberConversionDialog" />
+    </property>
+  </bean>
+</beans>

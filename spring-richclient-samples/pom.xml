@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.richclient</groupId>
+    <artifactId>spring-richclient</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
 
-    <groupId>org.springframework.richclient.samples</groupId>
-    <artifactId>spring-richclient-samples</artifactId>
-    <packaging>pom</packaging>
-    <name>Spring richclient samples</name>
-    <description>
-        Spring richclient samples.
-    </description>
+  <groupId>org.springframework.richclient.samples</groupId>
+  <artifactId>spring-richclient-samples</artifactId>
+  <packaging>pom</packaging>
+  <name>Spring richclient samples</name>
+  <description>Spring richclient samples.</description>
 
-    <modules>
-        <module>petclinic</module>
-        <module>simple</module>
-        <module>vldocking</module>
-    </modules>
+  <modules>
+    <module>spring-richclient-samples-petclinic</module>
+    <module>spring-richclient-samples-simple</module>
+    <module>spring-richclient-samples-vldocking</module>
+    <module>spring-richclient-samples-showcase</module>
+  </modules>
 
-    <dependencies>
-    </dependencies>
+  <dependencies></dependencies>
 
 </project>
