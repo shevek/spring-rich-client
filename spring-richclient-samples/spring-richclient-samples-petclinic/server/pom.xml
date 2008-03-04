@@ -1,57 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient.samples.petclinic</groupId>
-        <artifactId>spring-richclient-petclinic</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.richclient.samples.petclinic</groupId>
+    <artifactId>spring-richclient-samples-petclinic</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>spring-richclient-petclinic-server</artifactId>
-    <packaging>war</packaging>
-    <name>Spring richclient petclinic sample server</name>
-    <description>
-        The server final delivery part of standapart(client-server).
-        This produces a war.
-    </description>
+  <artifactId>petclinic-server</artifactId>
+  <packaging>war</packaging>
+  <name>Spring richclient petclinic sample server</name>
+  <description>The server final delivery part of standapart(client-server). This produces a war.</description>
 
-    <dependencies>
-        <!-- Internal -->
-        <dependency>
-            <groupId>org.springframework.richclient.samples.petclinic</groupId>
-            <artifactId>spring-richclient-petclinic-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient.samples.petclinic</groupId>
-            <artifactId>spring-richclient-petclinic-business</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- Internal -->
+    <dependency>
+      <groupId>org.springframework.richclient.samples.petclinic</groupId>
+      <artifactId>petclinic-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient.samples.petclinic</groupId>
+      <artifactId>petclinic-business</artifactId>
+    </dependency>
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-        <!-- Dependency injection -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
+    <!-- Dependency injection -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
 
-        <!-- Remoting -->
-        <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>hessian</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>burlap</artifactId>
-        </dependency>
-    </dependencies>
+    <!-- Remoting -->
+    <dependency>
+      <groupId>com.caucho</groupId>
+      <artifactId>hessian</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.caucho</groupId>
+      <artifactId>burlap</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

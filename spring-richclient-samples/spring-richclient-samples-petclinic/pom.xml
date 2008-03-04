@@ -1,90 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient.samples</groupId>
-        <artifactId>spring-richclient-samples</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.richclient.samples</groupId>
+    <artifactId>spring-richclient-samples</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
 
-    <groupId>org.springframework.richclient.samples.petclinic</groupId>
-    <artifactId>spring-richclient-petclinic</artifactId>
-    <packaging>pom</packaging>
-    <name>Spring richclient petclinic sample</name>
-    <description>
-        Petclinic sample runnable in 2 forms: standapart (client-server) and standalone.
-    </description>
+  <groupId>org.springframework.richclient.samples.petclinic</groupId>
+  <artifactId>spring-richclient-petclinic</artifactId>
+  <packaging>pom</packaging>
+  <name>Spring richclient petclinic sample</name>
+  <description>Petclinic sample runnable in 2 forms: standapart (client-server) and standalone.</description>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
-    <modules>
-        <module>common</module>
-        <module>business</module>
-        <module>gui</module>
-        <module>server</module>
-        <module>client</module>
-        <module>standalone</module>
-    </modules>
+  <modules>
+    <module>petclinic-common</module>
+    <module>petclinic-business</module>
+    <module>petclinic-gui</module>
+    <module>petclinic-server</module>
+    <module>petclinic-client</module>
+    <module>petclinic-standalone</module>
+  </modules>
 
+  <dependencies></dependencies>
+  <dependencyManagement>
     <dependencies>
+      <!-- Internal -->
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-common</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-business</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-gui</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-server</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-client</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.richclient.samples.petclinic</groupId>
+        <artifactId>petclinic-standalone</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <!-- Internal -->
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-common</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-business</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-gui</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-server</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-client</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.richclient.samples.petclinic</groupId>
-                <artifactId>spring-richclient-petclinic-standalone</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  </dependencyManagement>
 
 </project>
