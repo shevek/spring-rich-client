@@ -9,7 +9,7 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.springframework.richclient.samples.simple</groupId>
+  <groupId>org.springframework.richclient.samples</groupId>
   <artifactId>spring-richclient-samples-simple</artifactId>
   <packaging>jar</packaging>
   <name>Spring richclient simple sample</name>

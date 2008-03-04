@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.springframework.richclient.samples.petclinic</groupId>
-  <artifactId>spring-richclient-petclinic</artifactId>
+  <artifactId>petclinic</artifactId>
   <packaging>pom</packaging>
   <name>Spring richclient petclinic sample</name>
   <description>Petclinic sample runnable in 2 forms: standapart (client-server) and standalone.</description>
