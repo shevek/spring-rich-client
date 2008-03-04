@@ -1088,7 +1088,7 @@
     </snapshotRepository>
     <site>
       <id>shell.sourceforge.net</id>
-      <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/</url>
+      <url>scp://shell.sourceforge.net/home/groups/s/sp/spring-rich-c/htdocs/${project.version}</url>
     </site>
     <!-- Archive deployment -->
     <!--<site>-->
