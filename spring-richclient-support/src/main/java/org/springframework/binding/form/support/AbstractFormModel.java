@@ -388,8 +388,6 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
             ((BufferedValueModel)valueModel).setCommitTrigger(commitTrigger);
         }
 
-        // XXX: this is very broken as it assumes that the added value model was derived
-        // from the property access strategy when this is not always the case.
         PropertyMetadataAccessStrategy metadataAccessStrategy = getFormObjectPropertyAccessStrategy().getMetadataAccessStrategy();
 
         FormModelMediatingValueModel mediatingValueModel = new FormModelMediatingValueModel(valueModel,
@@ -401,15 +399,22 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
                 !metadataAccessStrategy.isWriteable(formProperty),
                 metadataAccessStrategy.getAllUserMetadata(formProperty));
         metadata.addPropertyChangeListener(FieldMetadata.DIRTY_PROPERTY, dirtyChangeHandler);
-        fieldMetadata.put(formProperty, metadata);
+        return add(formProperty, mediatingValueModel, metadata);
+    }
 
-        valueModel = preProcessNewValueModel(formProperty, mediatingValueModel);
-        propertyValueModels.put(formProperty, valueModel);
+    /**
+     * {@inheritDoc}
+     */
+    public ValueModel add(String propertyName, ValueModel valueModel, FieldMetadata metadata) {
+        fieldMetadata.put(propertyName, metadata);
+
+        valueModel = preProcessNewValueModel(propertyName, valueModel);
+        propertyValueModels.put(propertyName, valueModel);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Registering '" + formProperty + "' form property, property value model=" + valueModel);
+            logger.debug("Registering '" + propertyName + "' form property, property value model=" + valueModel);
         }
-        postProcessNewValueModel(formProperty, valueModel);
+        postProcessNewValueModel(propertyName, valueModel);
         return valueModel;
     }
 

@@ -68,7 +68,8 @@ public interface ConfigurableFormModel extends FormModel {
 	void setReadOnly(boolean readOnly);
 
 	/**
-	 * Add a valueModel for the given property.
+	 * Add a valueModel for the given property. Property should be accessible on
+	 * the formObject.
 	 *
 	 * @param propertyName the property to create a valueModel for.
 	 * @return a ValueModel that wraps the property.
@@ -76,15 +77,38 @@ public interface ConfigurableFormModel extends FormModel {
 	ValueModel add(String propertyName);
 
 	/**
-	 * Add the given valueModel as wrapper for the given property. Note that the
-	 * given valueModel should be used to access the property, but may be
-	 * wrapped(chained) a number of times in other valueModels.
+	 * Add the given valueModel as wrapper for the given property. Property
+	 * should be accessible on the formObject. Note that the given valueModel
+	 * should be used to access the property, but may be wrapped(chained) a
+	 * number of times in other valueModels.
 	 *
 	 * @param propertyName the property.
 	 * @param valueModel the valueModel to access the property.
 	 * @return a valueModel that wraps the given valueModel.
 	 */
 	ValueModel add(String propertyName, ValueModel valueModel);
+
+	/**
+	 * Add the given valueModel as wrapper for the given property. Note that the
+	 * given valueModel should be used to access the property, but may be
+	 * wrapped(chained) a number of times in other valueModels.
+	 *
+	 * <p>
+	 * This adds another dimension to the formModel as this makes it possible to
+	 * provide your own property that is not present on the formObject but does
+	 * have a valueModel and metadata to bind fields and listen to.
+	 * </p>
+	 *
+	 * @param propertyName the property, possibly not bound to the formObject.
+	 * @param valueModel the valueModel to access the property.
+	 * @param fieldMetadata the metadata for this valueModel.
+	 * @return a valueModel that is or wraps the given valueModel.
+	 *
+	 * @see org.springframework.binding.value.DerivedValueModel
+	 * @see org.springframework.binding.value.support.AbstractDerivedValueModel
+	 * @see org.springframework.binding.value.support.MessageFormatValueModel
+	 */
+	ValueModel add(String propertyName, ValueModel valueModel, FieldMetadata fieldMetadata);
 
 	/**
 	 * Add a valueModel that holds a derived value computed by invoking the
