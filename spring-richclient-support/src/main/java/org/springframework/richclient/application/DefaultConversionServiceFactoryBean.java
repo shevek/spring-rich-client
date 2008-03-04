@@ -26,16 +26,16 @@ import org.springframework.binding.convert.support.AbstractConverter;
 import org.springframework.binding.convert.support.AbstractFormattingConverter;
 import org.springframework.binding.convert.support.DefaultConversionService;
 import org.springframework.binding.format.FormatterFactory;
-import org.springframework.binding.format.support.SimpleFormatterFactory;
+import org.springframework.binding.format.support.StrictNumberFormatterFactory;
 import org.springframework.richclient.convert.support.CollectionConverter;
 import org.springframework.richclient.convert.support.ListModelConverter;
 import org.springframework.util.StringUtils;
 
 /**
- * A factory bean that produces a conversion service installed with most converters 
- * needed by Spring Rich.  Subclasses may extend and customize.  The factory approach 
+ * A factory bean that produces a conversion service installed with most converters
+ * needed by Spring Rich.  Subclasses may extend and customize.  The factory approach
  * here is superior to subclassing as it minimizes conversion service constructor logic.
- * 
+ *
  * @author Oliver Hutchison
  * @author Keith Donald
  */
@@ -43,7 +43,7 @@ public class DefaultConversionServiceFactoryBean implements FactoryBean {
 
 	private ConversionService conversionService;
 
-	private FormatterFactory formatterFactory = new SimpleFormatterFactory();
+	private FormatterFactory formatterFactory = new StrictNumberFormatterFactory();
 
 	public DefaultConversionServiceFactoryBean() {
 	}
