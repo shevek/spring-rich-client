@@ -20,9 +20,10 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.PropertyAccessException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
+import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.form.BindingErrorMessageProvider;
-import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
 import org.springframework.binding.validation.RichValidator;
@@ -346,9 +347,13 @@ public class DefaultFormModel extends AbstractFormModel implements ValidatingFor
                 super.setValueSilently(value, listenerToSkip);
                 clearBindingError(this);
             }
-            catch (Exception e) {
-                logger.debug("Exception occurred setting value", e);
-                raiseBindingError(this, value, e);
+            catch (ConversionException ce) {
+                logger.warn("Conversion exception occurred setting value", ce);
+                raiseBindingError(this, value, ce);
+            }
+            catch (PropertyAccessException pae) {
+                logger.warn("Type Mismatch Exception occurred setting value", pae);
+                raiseBindingError(this, value, pae);
             }
         }
 
