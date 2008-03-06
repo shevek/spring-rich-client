@@ -32,6 +32,7 @@
     <property name="members">
       <list>
         <ref bean="bindingMenu" />
+        <ref bean="commandMenu" />
         <ref bean="dialogMenu" />
         <ref bean="exceptionHandlerMenu" />
         <ref bean="conversionMenu" />
@@ -48,6 +49,14 @@
       <list>
         <ref bean="listSelectionBindingDialogCommand" />
         <ref bean="messageFormatValueModelDialogCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="commandMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="toolbarSampleCommand"/>
       </list>
     </property>
   </bean>

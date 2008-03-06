@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.command;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.util.Collections;
 import java.util.Iterator;
@@ -198,6 +199,10 @@ public class CommandGroup extends AbstractCommand {
 
 	protected void addGlueInternal() {
 		this.memberList.add(new GlueGroupMember());
+	}
+
+	protected void addComponentInternal(Component component) {
+		this.memberList.add(new ComponentGroupMember(component));
 	}
 
 	public final void setCommandRegistry(CommandRegistry registry) {
