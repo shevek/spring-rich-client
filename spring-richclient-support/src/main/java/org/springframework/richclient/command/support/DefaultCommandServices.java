@@ -23,12 +23,17 @@ import org.springframework.richclient.command.config.MenuItemButtonConfigurer;
 import org.springframework.richclient.command.config.PullDownMenuButtonConfigurer;
 import org.springframework.richclient.command.config.ToolBarCommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.MenuFactory;
 
 /**
  * @author Keith Donald
  */
 public class DefaultCommandServices implements CommandServices {
+	private ComponentFactory componentFactory;
+	
+	private ButtonFactory toolBarButtonFactory;
+	
     private ButtonFactory buttonFactory;
 
     private MenuFactory menuFactory;
@@ -41,6 +46,14 @@ public class DefaultCommandServices implements CommandServices {
 
     private CommandButtonConfigurer pullDownMenuButtonConfigurer;
 
+    public void setComponentFactory(ComponentFactory componentFactory){
+    	this.componentFactory = componentFactory;
+    }
+    
+    public void setToolBarButtonFactory(ButtonFactory buttonFactory){
+    	this.toolBarButtonFactory = buttonFactory;
+    }
+    
     public void setButtonFactory(ButtonFactory buttonFactory) {
         this.buttonFactory = buttonFactory;
     }
@@ -65,6 +78,20 @@ public class DefaultCommandServices implements CommandServices {
         this.pullDownMenuButtonConfigurer = pullDownMenuButtonConfigurer;
     }
 
+    public ComponentFactory getComponentFactory(){
+    	if(componentFactory == null){
+    		componentFactory = (ComponentFactory) ApplicationServicesLocator.services().getService(ComponentFactory.class);
+    	}
+    	return componentFactory;
+    }
+    
+    public ButtonFactory getToolBarButtonFactory(){
+    	if(toolBarButtonFactory == null){
+    		toolBarButtonFactory = (ButtonFactory) ApplicationServicesLocator.services().getService(ButtonFactory.class);
+    	}
+        return toolBarButtonFactory;
+    }
+    
     public ButtonFactory getButtonFactory() {
         if(buttonFactory == null) {
             buttonFactory = (ButtonFactory) ApplicationServicesLocator.services().getService(ButtonFactory.class);

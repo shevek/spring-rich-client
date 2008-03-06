@@ -40,6 +40,7 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.factory.ButtonFactory;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.MenuFactory;
 import org.springframework.util.Assert;
 
@@ -100,7 +101,15 @@ public class DefaultCommandManager implements CommandManager, BeanPostProcessor,
     public void setBeanFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
+    
+    public ComponentFactory getComponentFactory(){
+    	return getCommandServices().getComponentFactory();
+    }
 
+    public ButtonFactory getToolBarButtonFactory() {
+        return getCommandServices().getButtonFactory();
+    }
+    
     public ButtonFactory getButtonFactory() {
         return getCommandServices().getButtonFactory();
     }

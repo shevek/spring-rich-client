@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,9 +19,7 @@ import java.util.Iterator;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
-import javax.swing.JRadioButton;
 import javax.swing.RootPaneContainer;
 
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
@@ -32,7 +30,7 @@ import org.springframework.util.Assert;
 
 public abstract class ToggleCommand extends ActionCommand {
 
-	private static final String SELECTED_PROPERTY = "selected";
+	public static final String SELECTED_PROPERTY = "selected";
 
 	private boolean selected;
 
@@ -85,55 +83,64 @@ public abstract class ToggleCommand extends ActionCommand {
 		return button;
 	}
 
-	public final JCheckBox createCheckBox() {
+	public final AbstractButton createCheckBox() {
 		return createCheckBox(getDefaultFaceDescriptorId(), getButtonFactory(), getDefaultButtonConfigurer());
 	}
 
-	public final JCheckBox createCheckBox(ButtonFactory buttonFactory) {
+	public final AbstractButton createCheckBox(ButtonFactory buttonFactory) {
 		return createCheckBox(getDefaultFaceDescriptorId(), buttonFactory, getDefaultButtonConfigurer());
 	}
 
-	public final JCheckBox createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory) {
+	public final AbstractButton createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory) {
 		return createCheckBox(faceDescriptorId, buttonFactory, getDefaultButtonConfigurer());
 	}
 
-	public JCheckBox createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory,
+	public AbstractButton createCheckBox(String faceDescriptorId, ButtonFactory buttonFactory,
 			CommandButtonConfigurer configurer) {
-		JCheckBox checkBox = buttonFactory.createCheckBox();
+		AbstractButton checkBox = buttonFactory.createCheckBox();
 		attach(checkBox, configurer);
 		return checkBox;
 	}
 
-	public final JRadioButton createRadioButton() {
+	public final AbstractButton createRadioButton() {
 		return createRadioButton(getDefaultFaceDescriptorId(), getButtonFactory(), getDefaultButtonConfigurer());
 	}
 
-	public final JRadioButton createRadioButton(ButtonFactory buttonFactory) {
+	public final AbstractButton createRadioButton(ButtonFactory buttonFactory) {
 		return createRadioButton(getDefaultFaceDescriptorId(), buttonFactory, getDefaultButtonConfigurer());
 	}
 
-	public final JRadioButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory) {
+	public final AbstractButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory) {
 		return createRadioButton(faceDescriptorId, buttonFactory, getDefaultButtonConfigurer());
 	}
 
-	public JRadioButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory,
+	public AbstractButton createRadioButton(String faceDescriptorId, ButtonFactory buttonFactory,
 			CommandButtonConfigurer configurer) {
 		Assert.state(isExclusiveGroupMember(),
 				"Can't create radio buttons for toggle commands that aren't members of an exclusive group");
-		JRadioButton radioButton = buttonFactory.createRadioButton();
+		AbstractButton radioButton = buttonFactory.createRadioButton();
 		attach(radioButton, faceDescriptorId, configurer);
 		return radioButton;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected void onButtonAttached(AbstractButton button) {
 		super.onButtonAttached(button);
 		button.setSelected(selected);
 	}
 
+	/**
+	 * Returns <code>true</code> if the command is selected.
+	 */
 	public final boolean isSelected() {
 		return this.selected;
 	}
 
+	/**
+	 * Set the selection state of the command.
+	 */
 	public final void setSelected(boolean selected) {
 		if (isExclusiveGroupMember()) {
 			boolean oldState = isSelected();
@@ -153,7 +160,13 @@ public abstract class ToggleCommand extends ActionCommand {
 		}
 	}
 
-	boolean requestSetSelection(boolean selected) {
+	/**
+	 * Handles the switching of the selected state. All attached buttons are updated.
+	 *
+	 * @param selected select state to set.
+	 * @return the select state afterwards.
+	 */
+	protected boolean requestSetSelection(boolean selected) {
 		boolean previousState = isSelected();
 
 		if (previousState != selected) {
@@ -183,6 +196,9 @@ public abstract class ToggleCommand extends ActionCommand {
 		return isSelected();
 	}
 
+	/**
+	 * Executing a toggleCommand will flip its select state.
+	 */
 	protected final void doExecuteCommand() {
 		setSelected(!isSelected());
 	}

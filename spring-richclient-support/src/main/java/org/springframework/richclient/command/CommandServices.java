@@ -17,6 +17,7 @@ package org.springframework.richclient.command;
 
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.factory.ButtonFactory;
+import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.factory.MenuFactory;
 
 /**
@@ -26,6 +27,10 @@ import org.springframework.richclient.factory.MenuFactory;
  * @author Keith Donald
  */
 public interface CommandServices {
+	public ComponentFactory getComponentFactory();
+	
+	public ButtonFactory getToolBarButtonFactory();
+	
     public ButtonFactory getButtonFactory();
 
     public MenuFactory getMenuFactory();
