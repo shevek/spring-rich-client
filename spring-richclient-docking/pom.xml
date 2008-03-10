@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.richclient</groupId>
+    <artifactId>spring-richclient</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>spring-richclient-docking</artifactId>
-    <packaging>jar</packaging>
-    <name>Spring richclient docking</name>
-    <description>
-        Docking support
-    </description>
+  <artifactId>spring-richclient-docking</artifactId>
+  <packaging>jar</packaging>
+  <name>Spring richclient docking</name>
+  <description>Docking support</description>
 
-    <dependencies>
-        <!-- internal -->
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.richclient</groupId>
-            <artifactId>spring-richclient-core</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- internal -->
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-core</artifactId>
+    </dependency>
 
-        <!-- Docking -->
-      <dependency>
-        <groupId>com.vlsolutions</groupId>
-        <artifactId>vldocking</artifactId>
-            <optional>true</optional>
-      </dependency>
-        <dependency>
-            <groupId>net.java.dev.flexdock</groupId>
-            <artifactId>flexdock</artifactId>
-            <optional>true</optional>
-        </dependency>
+    <!-- Docking -->
 
-    </dependencies>
+    <!-- IMPORTANT! This library has a GPL/CeCil license.
+      If you want to use this in a commercial app please visit
+      www.vlsolutions.com for a commercial license-->
+    <dependency>
+      <groupId>com.vlsolutions</groupId>
+      <artifactId>vldocking</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.flexdock</groupId>
+      <artifactId>flexdock</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+  </dependencies>
 
 </project>
