@@ -114,21 +114,21 @@ org.acegisecurity.AuthenticationException.description = \
 +--
 
     * Automatic service bean lookup
-    
+
     <<<DefaultApplicationServices>>> now searches for a bean with a name of the decapitalized short name of the requested service type,
     if no bean was defined through direct injection. <<<ApplicationServicesLocator>>> can be used to lookup custom services as well without
     injecting them through <<<registryEntries>>> property of <<<DefaultApplicationServices>>>.
-    
-    If the service type is <<<org.springframework.rules.RulesSource>>> the name to lookup will be <<<rulesSource>>>. If a bean can be found in 
+
+    If the service type is <<<org.springframework.rules.RulesSource>>> the name to lookup will be <<<rulesSource>>>. If a bean can be found in
     the current application context and it implements <<<org.springframework.rules.RulesSource>>> it will be used as the implementation for it.
 
     * Upgraded dependencies on spring 2.0 final.
 
 	* ApplicationDialog small refactoring
-	
+
 	<<<setParent(Window)>>> is replaced by <<<setParentComponent(Component)>>>. This allows to pass any component which has the appropriate Frame/Dialog in it's hierarchy.
-	Window can still be retrieved by <<<getParentWindow()>>>. 
-	
+	Window can still be retrieved by <<<getParentWindow()>>>.
+
 	<<<setLocationRelativeTo(Component)>>> is added. Before this method, the parent component was always used (if given) to set the location, but this might not be the preferred way.
 	This method provides more flexibility as to where your dialog will be placed besides the <<<setLocation(point)>>> method.
 
@@ -138,51 +138,51 @@ org.acegisecurity.AuthenticationException.description = \
 
     * All instance variables which had a name prefix of <<<_>>> have been removed of that prefix.
     For example all <<<_logger>>> varialbes have been renamed to <<<logger>>>.
-    
+
     * ValidationInterceptor now does an initial check when registering Guarded objects or MessageReceivers. This because the ValidationResultsModel can already contain
     some values.
-    
+
     * SimpleValidationResultsReporter has it's guarded component removed because this was a mixed concern. If you need this behaviour, use the addGuarded(guard) methods on 	Form or simply construct your own FormGuard object and add your guarded object with mask FormGuard.FORMERROR_GUARDED.
-    
+
     * ValidationResultsReporter is refactored and had its parent/child methods removed. Chaining ResultsReporters usually results in strange and complicated behaviour (especially when having multiple parent-child relations and when the hierarchy changes a lot). It's better to chain the ValidationResultsModels and have them collect and forward the messages.
-    
+
     * ValidationResultsModel now can have children. When chaining DefaultFormModels, their ValidationResultsModels are linked as well and they forward their events as needed. Any ValidationListener registered on a ValidationResultsModel will receive events of it's children too. A ValidationResultsModel can be used to combine multiple other resultsModels and bundle their events.
-    
+
     * Clean up and improvements to the delegating exception handler
-    
+
       <<<org.springframework.richclient.exceptionhandling.DelegatingExceptionHandler>>>
       has been moved to
       <<<org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler>>>
-      
+
       <<<org.springframework.richclient.exceptionhandling.DelegatingExceptionHandlerDelegate>>>
       has been moved and renamed to
       <<<org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate>>>
-      
+
       It's now possible to plug in your own <<<ExceptionHandlerDelegate>>>'s
       and there's a new one which can select based on a exception chain hierarchy
       <<<ChainInspectingExceptionHandlerDelegate>>>
       (however a simple ExceptionPurger in SimpleExceptionHandlerDelegate will suffice most likely).
-      
+
     * Most exception handlers now support ExceptionPurger, which is great for unwrapping wrapper exceptions
       or bubbling out very specific exceptions from an exception chain.
-      
+
     * MessagesDialogExceptionHandler can now have a messagesKey,
-      which turns off the dynamic messagesKey determination based on the throwable. 
-    
+      which turns off the dynamic messagesKey determination based on the throwable.
+
       MessagesDialogExceptionHandler no longer has evaluatedChainedIndex, use a DefaultExceptionPurger instead.
-      
+
     * <<<org.springframework.richclient.exceptionhandling.SimpleLoggingExceptionHandler>>>
        has been renamed to
       <<<org.springframework.richclient.exceptionhandling.SilentExceptionHandler>>>
 
     * Message has been refactored to an interface, a DefaultMessage implementation is provided, replace all uses of Message constructor with the one from DefaultMessage. More info in issue: RCP-479.
-    
+
     * ValidationMessage now extends Message, no converting is necessary from now on
-    
+
     * Severity has been moved to the core package as it is used in the Message interface (not only in validation cases), update your imports
-    
+
     * Magick beannames menuBar/toolBar/windowCommandManager are removed, add the following to your advisor configuration:
-  
+
 +--
 <bean id="lifecycleAdvisor" class=...
     ...
@@ -190,4 +190,8 @@ org.acegisecurity.AuthenticationException.description = \
     <property name="menubarBeanName" value="menuBar" />
     <property name="toolbarBeanName" value="toolBar" />
 </bean>
-+--  
++--
+
+    * Cleaned up AbstractFormBuilder. Deprecated methods are removed, use the createXXX methods instead of the old getXXX methods.
+
+    * StatusBarCommandGroup has been refactored to StatusBar. The ApplicationLifecycleAdvisor now has a getStatusBar() method which returns the default implementation of StatusBar (DefaultStatusBar).

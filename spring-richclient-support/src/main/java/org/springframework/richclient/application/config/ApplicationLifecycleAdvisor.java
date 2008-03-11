@@ -34,41 +34,41 @@ import org.springframework.richclient.exceptionhandling.RegisterableExceptionHan
  * structures(menu/toolbar/statusbar) and a number of hook methods that are
  * called in the startup/closing process.
  * </p>
- * 
+ *
  * <p>
  * The sequence in which the hooks are called is as follows:
  * </p>
- * 
+ *
  * <pre>
  * Application Creation
  * 		{@link ApplicationLifecycleAdvisor#setApplication(Application)}
  * 		{@link ApplicationLifecycleAdvisor#onPreInitialize(Application)}
- * 
+ *
  * Application Start
  * 		{@link ApplicationLifecycleAdvisor#onPreStartup()}
- * 		
+ *
  * 		ApplicationWindow Creation
  * 			{@link ApplicationLifecycleAdvisor#setOpeningWindow(ApplicationWindow)}
  * 			{@link ApplicationLifecycleAdvisor#onPreWindowOpen(ApplicationWindowConfigurer)}
  * 			{@link ApplicationLifecycleAdvisor#createWindowCommandManager()}
  * 			{@link ApplicationLifecycleAdvisor#getMenuBarCommandGroup()}
  * 			{@link ApplicationLifecycleAdvisor#getToolBarCommandGroup()}
- * 			{@link ApplicationLifecycleAdvisor#getStatusBarCommandGroup()}
+ * 			{@link ApplicationLifecycleAdvisor#getStatusBar()}
  * 			{@link ApplicationLifecycleAdvisor#onCommandsCreated(ApplicationWindow)}
- * 
+ *
  * 		ApplicationWindow Creating the JFrame
  * 			{@link ApplicationLifecycleAdvisor#onWindowCreated(ApplicationWindow)}
  * 			ApplicationWindow Shows JFrame (setVisible(true))
  * 			{@link ApplicationLifecycleAdvisor#onWindowOpened(ApplicationWindow)}
- * 		
+ *
  * 		{@link ApplicationLifecycleAdvisor#onPostStartup()}
  * </pre>
- * 
+ *
  * <p>
  * The remaining hook is called when the ApplicationWindow is closed:
  * {@link ApplicationLifecycleAdvisor#onPreWindowClose(ApplicationWindow)}.
  * </p>
- * 
+ *
  * @author Keith Donald
  * @author Jim Moore
  */
@@ -91,9 +91,9 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	 * ApplicationWindow is opened. Useful when the ApplicationAdvisor needs to
 	 * do things before ViewDescriptor should be created, such as setting up a
 	 * security context.
-	 * 
+	 *
 	 * @param pageDescriptorId id of the pageDescriptor bean to show on startup.
-	 * 
+	 *
 	 * @see #getStartingPageId()
 	 */
 	public void setStartingPageId(String pageDescriptorId) {
@@ -103,10 +103,10 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	/**
 	 * Sets the exception handler which will be registered upon initialization
 	 * to handle uncaught throwables.
-	 * 
+	 *
 	 * By default this is a DefaultRegisterableExceptionHandler, which is
 	 * inferior to a well configured DelegatingExceptionHandler (java 1.5 only).
-	 * 
+	 *
 	 * @param registerableExceptionHandler the exception handler which will
 	 * handle uncaught throwables
 	 */
@@ -144,7 +144,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Hook called right after the application has been created.
-	 * 
+	 *
 	 * @param application the application.
 	 */
 	public void onPreInitialize(Application application) {
@@ -164,12 +164,12 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	public void onPostStartup() {
 
 	}
-	
+
 	/**
 	 * Hook called right afther the application is closed.
 	 */
 	public void onShutdown() {
-		
+
 	}
 
 	/**
@@ -181,7 +181,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Hook called right before the application opens a window.
-	 * 
+	 *
 	 * @param configurer
 	 */
 	public void onPreWindowOpen(ApplicationWindowConfigurer configurer) {
@@ -198,7 +198,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Create a {@link ApplicationWindowCommandManager} for the application.
-	 * 
+	 *
 	 * @return applicationWindowCommandManager.
 	 */
 	public ApplicationWindowCommandManager createWindowCommandManager() {
@@ -207,7 +207,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Create the menuBar for the application.
-	 * 
+	 *
 	 * @return a CommandGroup.
 	 */
 	public CommandGroup getMenuBarCommandGroup() {
@@ -216,7 +216,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Create the toolBar for the application.
-	 * 
+	 *
 	 * @return a CommandGroup.
 	 */
 	public CommandGroup getToolBarCommandGroup() {
@@ -225,7 +225,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Create the statusBar for the application.
-	 * 
+	 *
 	 * @return a statusBar.
 	 */
 	public StatusBar getStatusBar() {
@@ -235,7 +235,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	/**
 	 * Hook called right after commands are initialized. Typically the next step
 	 * after the get*CommandGroup() methods are called.
-	 * 
+	 *
 	 * @param window applicationWindow.
 	 */
 	public void onCommandsCreated(ApplicationWindow window) {
@@ -245,7 +245,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	/**
 	 * Hook called right after the window (JFrame) of the application is
 	 * created.
-	 * 
+	 *
 	 * @param window applicationWindow.
 	 */
 	public void onWindowCreated(ApplicationWindow window) {
@@ -255,7 +255,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 	/**
 	 * Hook called right after the window (JFrame) of the application is shown
 	 * (setVisible(true)).
-	 * 
+	 *
 	 * @param window applicationWindow.
 	 */
 	public void onWindowOpened(ApplicationWindow window) {
@@ -264,7 +264,7 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/**
 	 * Check if the ApplicationWindow can close.
-	 * 
+	 *
 	 * @param window the applicationWindow that should be closed.
 	 * @return <code>true</code> if the window may close.
 	 */
