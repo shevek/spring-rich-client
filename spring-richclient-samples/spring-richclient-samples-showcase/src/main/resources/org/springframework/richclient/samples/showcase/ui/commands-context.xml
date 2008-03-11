@@ -33,6 +33,7 @@
       <list>
         <ref bean="bindingMenu" />
         <ref bean="commandMenu" />
+        <ref bean="componentMenu" />
         <ref bean="dialogMenu" />
         <ref bean="exceptionHandlerMenu" />
         <ref bean="conversionMenu" />
@@ -57,6 +58,14 @@
     <property name="members">
       <list>
         <ref bean="toolbarSampleCommand"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="componentMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="shuttleSortableTableDialogCommand"/>
       </list>
     </property>
   </bean>
@@ -235,6 +244,15 @@
     <property name="dialog">
       <bean id="numberConversionBindingDialog"
         class="org.springframework.richclient.samples.showcase.conversion.NumberConversionDialog" />
+    </property>
+  </bean>
+
+
+  <bean id="shuttleSortableTableDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="shuttleSortableTableDialog"
+        class="org.springframework.richclient.samples.showcase.component.ShuttleSortableTableDialog" />
     </property>
   </bean>
 </beans>
