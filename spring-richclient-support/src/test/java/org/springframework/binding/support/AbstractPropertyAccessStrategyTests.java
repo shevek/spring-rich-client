@@ -56,6 +56,10 @@ public abstract class AbstractPropertyAccessStrategyTests extends SpringRichTest
 
     protected abstract AbstractPropertyAccessStrategy createPropertyAccessStrategy(Object target);
 
+    protected boolean isStrictNullHandlingEnabled() {
+    	return true;
+    }
+
     public void testSimpleProperty() {
         vm = pas.getPropertyValueModel("simpleProperty");
         Block setValueDirectly = new Block() {
@@ -120,10 +124,12 @@ public abstract class AbstractPropertyAccessStrategyTests extends SpringRichTest
 
         try {
             pas.getPropertyValueModel("nestedProperty").setValue(null);
-            fail("Should have thrown a NullValueInNestedPathException");
+            if (isStrictNullHandlingEnabled())
+            	fail("Should have thrown a NullValueInNestedPathException");
         }
         catch (NullValueInNestedPathException e) {
-            // expected
+            if (!isStrictNullHandlingEnabled())
+            	fail("Should not have thrown a NullValueInNestedPathException");
         }
     }
 
@@ -146,10 +152,12 @@ public abstract class AbstractPropertyAccessStrategyTests extends SpringRichTest
 
         try {
             pas.getPropertyValueModel("mapProperty").setValue(null);
-            fail("Should have thrown a NullValueInNestedPathException");
+            if (isStrictNullHandlingEnabled())
+            	fail("Should have thrown a NullValueInNestedPathException");
         }
-        catch (NullValueInNestedPathException  e) {
-            // expected
+        catch (NullValueInNestedPathException e) {
+            if (!isStrictNullHandlingEnabled())
+            	fail("Should not have thrown a NullValueInNestedPathException");
         }
     }
 
@@ -179,18 +187,22 @@ public abstract class AbstractPropertyAccessStrategyTests extends SpringRichTest
         try {
             List newList = new ArrayList();
             pas.getPropertyValueModel("listProperty").setValue(newList);
-            fail("Should have thrown an InvalidPropertyException");
+            if (isStrictNullHandlingEnabled())
+            	fail("Should have thrown an InvalidPropertyException");
         }
         catch (InvalidPropertyException e) {
-            // expected
+            if (!isStrictNullHandlingEnabled())
+            	fail("Should not have thrown an InvalidPropertyException");
         }
 
         try {
             pas.getPropertyValueModel("listProperty").setValue(null);
-            fail("Should have thrown a NullValueInNestedPathException");
+            if (isStrictNullHandlingEnabled())
+            	fail("Should have thrown a NullValueInNestedPathException");
         }
         catch (NullValueInNestedPathException e) {
-            // expected
+            if (!isStrictNullHandlingEnabled())
+            	fail("Should not have thrown a NullValueInNestedPathException");
         }
     }
 
