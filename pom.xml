@@ -192,7 +192,14 @@
       <timezone>0</timezone>
     </developer>
   </developers>
-  <contributors />
+    <contributors>
+    <contributor>
+      <name>Arne Limburg</name>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+    </contributor>
+  </contributors>
 
   <licenses>
     <license>
