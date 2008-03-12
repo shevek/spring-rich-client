@@ -1,7 +1,6 @@
 package org.springframework.richclient.samples.showcase.component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -12,10 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandConfigurer;
@@ -23,8 +19,28 @@ import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.table.ShuttleSortableTableModel;
 import org.springframework.richclient.table.SortTableCommand;
 import org.springframework.richclient.table.TableSortIndicator;
-import org.springframework.richclient.table.TableUtils;
 
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.Sizes;
+
+/**
+ * This sample shows a {@link ShuttleSortableTableModel} being used. The
+ * adding/removing of columns is possible, but note that the commands doing
+ * these actions call the {@link ShuttleSortableTableModel#resetComparators()}
+ * to have the correct number of comparators added/removed. A second method
+ * exists to allow direct injection of your custom comparators (
+ * {@link ShuttleSortableTableModel#resetComparators(java.util.Map)}). The
+ * adding a specific headerRenderer with an arrow icon is done by the
+ * {@link TableSortIndicator} and the actual sort action is encapsulated by the
+ * {@link SortTableCommand}.
+ *
+ * @author Jan Hoskens
+ *
+ */
 public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 
 	private List<Customer> customerData = new ArrayList<Customer>();
@@ -39,6 +55,9 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 
 	private ShuttleSortableTableModel sortedModel;
 
+	/**
+	 * Initialise all needed data.
+	 */
 	public ShuttleSortableTableDialog() {
 		customerData.add(new Customer("Jan", "Janssen", "Some dude", 4));
 		customerData.add(new Customer("Peter", "Petersen", "Another dude", 6));
@@ -54,7 +73,12 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 
 	@Override
 	protected JComponent createTitledDialogContentPane() {
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(new FormLayout(new ColumnSpec[] {
+				new ColumnSpec(ColumnSpec.FILL, Sizes.DEFAULT, ColumnSpec.DEFAULT_GROW),
+				FormFactory.RELATED_GAP_COLSPEC,
+				new ColumnSpec(ColumnSpec.FILL, Sizes.DEFAULT, ColumnSpec.DEFAULT_GROW) }, new RowSpec[] {
+				FormFactory.DEFAULT_ROWSPEC, FormFactory.LINE_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC }));
+		// create all columns, needed to add/remove them
 		TableColumn column;
 		for (int i = 0; i < headers.size(); ++i) {
 			column = new TableColumn(i, -1, new DefaultTableCellRenderer(), null);
@@ -62,19 +86,25 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 			tableColumns.add(column);
 		}
 		columnModel = new DefaultTableColumnModel();
+		// create the sortable model by wrapping our simple custom model
 		sortedModel = new ShuttleSortableTableModel(new CustomerTableModel());
 		table = new JTable(sortedModel, columnModel);
 		table.setAutoCreateColumnsFromModel(false);
 		TableSortIndicator sortIndicator = new TableSortIndicator(table);
 		new SortTableCommand(table, sortIndicator.getColumnSortList());
 		JScrollPane scrollPane = new JScrollPane(table);
-		panel.add(scrollPane);
-		panel.add(createAddCommand().createButton());
-		panel.add(createRemoveCommand().createButton());
+		CellConstraints cc = new CellConstraints();
+		panel.add(scrollPane, cc.xyw(1, 1, 3));
+		panel.add(createAddCommand().createButton(), cc.xy(1, 3));
+		panel.add(createRemoveCommand().createButton(), cc.xy(3, 3));
 
 		return panel;
 	}
 
+	/**
+	 * Returns an actionCommand that adds a column if possible. Maximum number
+	 * of rows is the number of headers as defined in constructor.
+	 */
 	private ActionCommand createAddCommand() {
 		ActionCommand addCommand = new ActionCommand("addCommand") {
 
@@ -94,13 +124,16 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 		return addCommand;
 	}
 
+	/**
+	 * Returns an actionCommand removing a column.
+	 */
 	private ActionCommand createRemoveCommand() {
 		ActionCommand removeCommand = new ActionCommand("removeCommand") {
 
 			@Override
 			protected void doExecuteCommand() {
 				int columnCount = columnModel.getColumnCount();
-				if (columnCount > 1) {
+				if (columnCount > 0) {
 					columnModel.removeColumn(tableColumns.get(columnCount - 1));
 					sortedModel.resetComparators();
 				}
@@ -118,6 +151,9 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 		return true;
 	}
 
+	/**
+	 * A very simplistic/minimalistic TableModel.
+	 */
 	private class CustomerTableModel extends AbstractTableModel {
 
 		public int getColumnCount() {
@@ -143,6 +179,9 @@ public class ShuttleSortableTableDialog extends TitledApplicationDialog {
 
 	}
 
+	/**
+	 * Simple data container.
+	 */
 	private class Customer {
 		private String firstName;
 
