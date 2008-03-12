@@ -247,7 +247,7 @@
         <value>classpath:org/springframework/richclient/samples/showcase/ui/images.properties</value>
       </list>
     </property>
-    <property name="resourceBasePath" value="org/springframework/richclient/samples/showcase/images/" />
+    <property name="resourceBasePath" value="images/" />
   </bean>
 
   <!--
@@ -261,7 +261,7 @@
   -->
   <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
     <constructor-arg index="0" ref="imageResourcesFactory" />
-    <property name="brokenImageIndicator" value="org/springframework/richclient/samples/showcase/images/alert/process-stop.png" />
+    <property name="brokenImageIndicator" value="images/samples/showcase/alert/process-stop.png" />
   </bean>
 
   <!--

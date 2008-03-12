@@ -50,6 +50,7 @@
       <list>
         <ref bean="listSelectionBindingDialogCommand" />
         <ref bean="messageFormatValueModelDialogCommand" />
+        <ref bean="parentChildFormDialogCommand" />
       </list>
     </property>
   </bean>
@@ -209,6 +210,14 @@
     <property name="dialog">
       <bean id="listSelectionBindingDialog"
         class="org.springframework.richclient.samples.showcase.binding.ListSelectionBindingDialog" />
+    </property>
+  </bean>
+
+  <bean id="parentChildFormDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="parentChildFormDialog"
+        class="org.springframework.richclient.samples.showcase.binding.ParentChildFormDialog" />
     </property>
   </bean>
 
