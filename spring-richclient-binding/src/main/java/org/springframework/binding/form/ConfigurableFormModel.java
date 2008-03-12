@@ -23,6 +23,7 @@ import org.springframework.binding.value.ValueModel;
  *
  * @author Keith Donald
  * @author Oliver Hutchison
+ * @author Jan Hoskens
  */
 public interface ConfigurableFormModel extends FormModel {
 

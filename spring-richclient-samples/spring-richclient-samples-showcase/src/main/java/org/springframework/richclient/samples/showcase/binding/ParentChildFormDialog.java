@@ -10,14 +10,12 @@ import javax.swing.JPanel;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.samples.showcase.util.AbstractReporterForm;
 import org.springframework.richclient.samples.showcase.util.AbstractReporterTitledApplicationDialog;
 import org.springframework.richclient.samples.showcase.util.Reporter;
 import org.springframework.rules.PropertyConstraintProvider;
-import org.springframework.rules.constraint.Required;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.rules.factory.Constraints;
 
@@ -150,12 +148,14 @@ public class ParentChildFormDialog extends AbstractReporterTitledApplicationDial
 			panel.add(parentFormcommandGroup.createButtonBar(), cc.xy(3, 5));
 			panel.add(new JLabel(getMessage("childForm.label")), cc.xy(1, 7));
 			childForm = new ChildForm();
+			childForm.setMessageArea(getMessageArea());
 			panel.add(childForm.getControl(), cc.xy(3, 9));
 			CommandGroup childFormcommandGroup = CommandGroup.createCommandGroup(new ActionCommand[] {
 					childForm.getEnableFormModelCommand(), childForm.getReadOnlyFormModelCommand(),
 					childForm.getValidatingFormModelCommand() });
 			panel.add(childFormcommandGroup.createButtonBar(), cc.xy(3, 11));
 			addChildForm(childForm);
+			newSingleLineResultsReporter(ParentChildFormDialog.this);
 			return panel;
 		}
 
@@ -175,6 +175,18 @@ public class ParentChildFormDialog extends AbstractReporterTitledApplicationDial
 		public StringBuilder getFormModelDetails(StringBuilder builder, FormModel formModel) {
 			builder = super.getFormModelDetails(builder, formModel);
 			return super.getFormModelDetails(builder, childForm.getFormModel());
+		}
+
+		@Override
+		public void registerFormModelPropertyChangeListener() {
+			childForm.registerFormModelPropertyChangeListener();
+			super.registerFormModelPropertyChangeListener();
+		}
+
+		@Override
+		public void unregisterFormModelPropertyChangeListener() {
+			childForm.unregisterFormModelPropertyChangeListener();
+			super.unregisterFormModelPropertyChangeListener();
 		}
 	}
 

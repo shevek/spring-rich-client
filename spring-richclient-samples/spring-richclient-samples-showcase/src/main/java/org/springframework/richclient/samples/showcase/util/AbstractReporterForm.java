@@ -30,11 +30,11 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 
 	private ActionCommand printFieldsCommand;
 
-	private ToggleCommand enableCommand;
+	private StateSynchronizingToggleCommand enableCommand;
 
-	private ToggleCommand readOnlyCommand;
+	private StateSynchronizingToggleCommand readOnlyCommand;
 
-	private ToggleCommand validatingCommand;
+	private StateSynchronizingToggleCommand validatingCommand;
 
 	private ToggleCommand logFormModelPropertyChangeCommand;
 
@@ -135,43 +135,41 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 		return printFormModelCommand;
 	}
 
-	public ToggleCommand getReadOnlyFormModelCommand() {
+	public StateSynchronizingToggleCommand getReadOnlyFormModelCommand() {
 		if (readOnlyCommand == null) {
-			readOnlyCommand = new ToggleCommand(getReadOnlyCommandFaceDescriptorId()) {
+			readOnlyCommand = new StateSynchronizingToggleCommand(getReadOnlyCommandFaceDescriptorId()) {
 				@Override
-				protected void onSelection() {
+				protected void doOnSelection() {
 					getFormModel().setReadOnly(true);
 				}
 
 				@Override
-				protected void onDeselection() {
+				protected void doOnDeselection() {
 					getFormModel().setReadOnly(false);
 				}
 			};
 			readOnlyCommand.setSelected(getFormModel().isReadOnly());
-			getFormModel().addPropertyChangeListener(FormModel.READONLY_PROPERTY,
-					new ToggleCommandPropertyChangeListener(readOnlyCommand));
+			getFormModel().addPropertyChangeListener(FormModel.READONLY_PROPERTY,readOnlyCommand);
 			getCommandConfigurer().configure(readOnlyCommand);
 		}
 		return readOnlyCommand;
 	}
 
-	public ToggleCommand getEnableFormModelCommand() {
+	public StateSynchronizingToggleCommand getEnableFormModelCommand() {
 		if (enableCommand == null) {
-			enableCommand = new ToggleCommand(getEnableCommandFaceDescriptorId()) {
+			enableCommand = new StateSynchronizingToggleCommand(getEnableCommandFaceDescriptorId()) {
 				@Override
-				protected void onSelection() {
+				protected void doOnSelection() {
 					getFormModel().setEnabled(true);
 				}
 
 				@Override
-				protected void onDeselection() {
+				protected void doOnDeselection() {
 					getFormModel().setEnabled(false);
 				}
 			};
 			enableCommand.setSelected(getFormModel().isEnabled());
-			getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,
-					new ToggleCommandPropertyChangeListener(enableCommand));
+			getFormModel().addPropertyChangeListener(FormModel.ENABLED_PROPERTY,enableCommand);
 			getCommandConfigurer().configure(enableCommand);
 		}
 		return enableCommand;
@@ -179,20 +177,19 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 
 	public ToggleCommand getValidatingFormModelCommand() {
 		if (validatingCommand == null) {
-			validatingCommand = new ToggleCommand(getValidatingCommandFaceDescriptorId()) {
+			validatingCommand = new StateSynchronizingToggleCommand(getValidatingCommandFaceDescriptorId()) {
 				@Override
-				protected void onSelection() {
+				protected void doOnSelection() {
 					getFormModel().setValidating(true);
 				}
 
 				@Override
-				protected void onDeselection() {
+				protected void doOnDeselection() {
 					getFormModel().setValidating(false);
 				}
 			};
 			validatingCommand.setSelected(getFormModel().isValidating());
-			getFormModel().addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY,
-					new ToggleCommandPropertyChangeListener(validatingCommand));
+			getFormModel().addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY,validatingCommand);
 			getCommandConfigurer().configure(validatingCommand);
 		}
 		return validatingCommand;
@@ -223,7 +220,7 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 				getLogFormModelPropertyChangeCommand() };
 	}
 
-	protected void registerFormModelPropertyChangeListener() {
+	public void registerFormModelPropertyChangeListener() {
 		ValidatingFormModel formModel = getFormModel();
 		formModel.addPropertyChangeListener(FormModel.COMMITTABLE_PROPERTY, formModelPropertyChangeListener);
 		formModel.addPropertyChangeListener(FormModel.DIRTY_PROPERTY, formModelPropertyChangeListener);
@@ -232,7 +229,7 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 		formModel.addPropertyChangeListener(ValidatingFormModel.VALIDATING_PROPERTY, formModelPropertyChangeListener);
 	}
 
-	protected void unregisterFormModelPropertyChangeListener() {
+	public void unregisterFormModelPropertyChangeListener() {
 		ValidatingFormModel formModel = getFormModel();
 		formModel.removePropertyChangeListener(FormModel.COMMITTABLE_PROPERTY, formModelPropertyChangeListener);
 		formModel.removePropertyChangeListener(FormModel.DIRTY_PROPERTY, formModelPropertyChangeListener);
@@ -282,23 +279,46 @@ public abstract class AbstractReporterForm extends AbstractForm implements Repor
 		return "reporterForm.newCommand";
 	}
 
-	public static class ToggleCommandPropertyChangeListener implements PropertyChangeListener {
+	public static abstract class StateSynchronizingToggleCommand extends ToggleCommand implements PropertyChangeListener {
 
-		private final ToggleCommand toggleCommand;
+		private boolean isSynchronizing = false;
 
-		public ToggleCommandPropertyChangeListener(ToggleCommand toggleCommand) {
-			this.toggleCommand = toggleCommand;
+		public StateSynchronizingToggleCommand(String id) {
+			super(id);
 		}
 
+		@Override
+		protected final void onSelection() {
+			if (!isSynchronizing)
+				doOnSelection();
+		}
+
+		@Override
+		protected final void onDeselection() {
+			if (!isSynchronizing)
+				doOnDeselection();
+		}
+
+		protected abstract void doOnSelection();
+
+		protected abstract void doOnDeselection();
+
 		public void propertyChange(PropertyChangeEvent evt) {
-			toggleCommand.setSelected((Boolean) evt.getNewValue());
+			isSynchronizing = true;
+			setSelected((Boolean) evt.getNewValue());
+			isSynchronizing = false;
 		}
 	}
 
 	protected class LogPropertyChangeListener implements PropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			getMessageArea().append(evt.toString());
+			getMessageArea().append("[EVENT");
+			if (evt.getSource() instanceof FormModel)
+				getMessageArea().append(" " + ((FormModel)evt.getSource()).getId());
+			getMessageArea().append("] property = " + evt.getPropertyName());
+			getMessageArea().append(", oldValue = " + evt.getOldValue());
+			getMessageArea().append(", newValue = " + evt.getNewValue());
 			getMessageArea().append("\n");
 		}
 	};
