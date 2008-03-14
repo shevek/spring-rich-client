@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,8 +34,14 @@ import org.springframework.util.CachingMapDecorator;
  * For example, <code>action.edit.copy = /images/edit/copy.gif</code>
  * <p>
  * This class by default performs caching of all loaded image resources using
- * soft references (TODO it just lazy loads them, but it doesn't use SoftReference).
- * 
+ * soft references (TODO it just lazy loads them, but it doesn't use
+ * SoftReference).
+ *
+ * <p>
+ * An image {@link Handler} is available that handles the 'image' protocol.
+ * Check the javadocs of the handler to know how to use/register it.
+ * </p>
+ *
  * @author Keith Donald
  */
 public class DefaultImageSource implements ImageSource {
@@ -57,7 +63,7 @@ public class DefaultImageSource implements ImageSource {
 	 * "image:" protocol. This allows for images in this image source to be
 	 * located using the Java URL classes: <br>
 	 * <code>URL imageUrl = new URL("image:the.image.key")</code>
-	 * 
+	 *
 	 * @param imageResources a map of key-to-image-resources.
 	 */
 	public DefaultImageSource(Map imageResources) {
@@ -67,7 +73,7 @@ public class DefaultImageSource implements ImageSource {
 	/**
 	 * Creates a image resource bundle containing the specified map of keys to
 	 * resource paths.
-	 * 
+	 *
 	 * @param installUrlHandler should a URL handler be installed.
 	 * @param imageResources a map of key-to-image-resources.
 	 */
@@ -91,7 +97,7 @@ public class DefaultImageSource implements ImageSource {
 		Assert.notNull(key);
 		AwtImageResource resource = getImageResource(key);
 		try {
-			return (Image)imageCache.get(resource);
+			return (Image) imageCache.get(resource);
 		}
 		catch (RuntimeException e) {
 			if (brokenImageIndicator != null) {
@@ -103,7 +109,7 @@ public class DefaultImageSource implements ImageSource {
 
 	public AwtImageResource getImageResource(String key) {
 		Assert.notNull(key);
-		Resource resource = (Resource)imageResources.get(key);
+		Resource resource = (Resource) imageResources.get(key);
 		if (resource == null) {
 			throw new NoSuchImageResourceException(key);
 		}
@@ -167,7 +173,7 @@ public class DefaultImageSource implements ImageSource {
 
 		public Object create(Object resource) {
 			try {
-				return ((AwtImageResource)resource).getImage();
+				return ((AwtImageResource) resource).getImage();
 			}
 			catch (IOException e) {
 				throw new NoSuchImageResourceException("No image found at resource '" + resource + '"', e);
