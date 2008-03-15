@@ -28,7 +28,7 @@
               <mainClass>org.springframework.richclient.samples.showcase.ShowcaseMain</mainClass>
               <addClasspath>true</addClasspath>
               <addExtensions />
-              <classpathPrefix>lib</classpathPrefix>
+              <classpathPrefix>../lib</classpathPrefix>
             </manifest>
           </archive>
         </configuration>
@@ -151,7 +151,7 @@
       <artifactId>jdic-shared</artifactId>
     </dependency>
   </dependencies>
-    <profiles>
+  <profiles>
     <profile>
       <id>nix</id>
       <activation>

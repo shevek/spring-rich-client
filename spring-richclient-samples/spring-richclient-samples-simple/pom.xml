@@ -29,7 +29,7 @@
               <mainClass>org.springframework.richclient.samples.simple.app.SimpleApp</mainClass>
               <addClasspath>true</addClasspath>
               <addExtensions />
-              <classpathPrefix>../../lib</classpathPrefix>
+              <classpathPrefix>../lib</classpathPrefix>
             </manifest>
           </archive>
         </configuration>
