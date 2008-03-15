@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.richclient</groupId>
     <artifactId>spring-richclient</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>spring-richclient-release</artifactId>
@@ -64,6 +64,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-jdk6</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-sandbox</artifactId>
     </dependency>
     <dependency>
@@ -78,24 +82,27 @@
       <version>${pom.version}</version>
       <type>zip</type>
     </dependency>
-    <!-- Petclinic -->
-    <dependency>
+    <!-- Samples dependencies -->
+    <!-- dependency>
       <groupId>org.springframework.richclient.samples.petclinic</groupId>
-      <artifactId>spring-richclient-petclinic-server</artifactId>
+      <artifactId>petclinic-server</artifactId>
       <type>war</type>
       <version>${pom.version}</version>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.springframework.richclient.samples.petclinic</groupId>
-      <artifactId>spring-richclient-petclinic-standalone</artifactId>
+      <artifactId>petclinic-standalone</artifactId>
       <version>${pom.version}</version>
     </dependency>
-    <!-- Samples/simple -->
     <dependency>
-      <groupId>org.springframework.richclient.samples.simple</groupId>
+      <groupId>org.springframework.richclient.samples</groupId>
       <artifactId>spring-richclient-samples-simple</artifactId>
       <version>${pom.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient.samples</groupId>
+      <artifactId>spring-richclient-samples-vldocking</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
   </dependencies>
-
 </project>
