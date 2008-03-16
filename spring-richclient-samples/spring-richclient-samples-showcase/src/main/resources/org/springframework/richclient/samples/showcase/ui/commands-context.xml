@@ -31,6 +31,7 @@
   <bean id="menuBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
     <property name="members">
       <list>
+        <ref bean="fileMenu" />
         <ref bean="bindingMenu" />
         <ref bean="commandMenu" />
         <ref bean="componentMenu" />
@@ -40,7 +41,36 @@
         <ref bean="validationMenu" />
         <ref bean="wizardMenu" />
         <ref bean="helpMenu" />
-        <!-- bean class="org.springframework.richclient.command.support.ExitCommand" />-->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="fileMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <bean id="showPageCommand" class="org.springframework.richclient.command.support.ShowPageMenu"/>
+        <bean id="showViewCommand" class="org.springframework.richclient.command.support.ShowViewMenu"/>
+        <bean id="newWindowCommand" class="org.springframework.richclient.command.support.NewWindowCommand" />
+        <value>separator</value>
+        <ref bean="allMenuAgainCommand" />
+        <value>separator</value>
+        <bean id="exitCommand" class="org.springframework.richclient.command.support.ExitCommand"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="allMenuAgainCommand" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="bindingMenu" />
+        <ref bean="commandMenu" />
+        <ref bean="componentMenu" />
+        <ref bean="dialogMenu" />
+        <ref bean="exceptionHandlerMenu" />
+        <ref bean="conversionMenu" />
+        <ref bean="validationMenu" />
+        <ref bean="wizardMenu" />
+        <ref bean="helpMenu" />
       </list>
     </property>
   </bean>
@@ -59,6 +89,7 @@
     <property name="members">
       <list>
         <ref bean="toolbarSampleCommand"/>
+        <ref bean="titleBarTimeStampCommand" />
       </list>
     </property>
   </bean>
@@ -264,4 +295,9 @@
         class="org.springframework.richclient.samples.showcase.component.ShuttleSortableTableDialog" />
     </property>
   </bean>
+
+  <bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand" />
+
+  <bean id="titleBarTimeStampCommand" class="org.springframework.richclient.samples.showcase.command.TitleBarTimeStampCommand"/>
+
 </beans>

@@ -302,6 +302,5 @@
     <property name="viewClass" value="org.springframework.richclient.samples.showcase.InitialView" />
   </bean>
 
-  <bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand" />
 
 </beans>
