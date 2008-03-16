@@ -3,7 +3,6 @@ package org.springframework.richclient.samples.showcase.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
