@@ -195,3 +195,6 @@ org.acegisecurity.AuthenticationException.description = \
     * Cleaned up AbstractFormBuilder. Deprecated methods are removed, use the createXXX methods instead of the old getXXX methods.
 
     * StatusBarCommandGroup has been refactored to StatusBar. The ApplicationLifecycleAdvisor now has a getStatusBar() method which returns the default implementation of StatusBar (DefaultStatusBar).
+
+    * Images are moved to a namespaced package. The resourceBasePath that was used to prefix the images and was defined in your application context should be removed.
+    Your own images.properties file should use full paths and not rely on the resourceBasePath.
