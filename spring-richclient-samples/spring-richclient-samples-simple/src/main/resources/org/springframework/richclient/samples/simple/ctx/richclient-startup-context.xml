@@ -5,6 +5,6 @@
   <!-- Define the splash screen to be displayed during application startup -->
   <!-- The SplashScreen class requires the location of the image to display -->
   <bean id="splashScreen" class="org.springframework.richclient.application.SplashScreen">
-    <property name="imageResourcePath" value="/images/splash-screen.jpg" />
+    <property name="imageResourcePath" value="/org/springframework/richclient/samples/simple/images/splash-screen.jpg" />
   </bean>
 </beans>

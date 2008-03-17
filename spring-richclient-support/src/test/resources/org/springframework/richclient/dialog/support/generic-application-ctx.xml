@@ -34,13 +34,12 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
                 <value>classpath:org/springframework/richclient/image/images.properties</value>
             </list>
         </property>
-        <property name="resourceBasePath" value="images/" />
     </bean>
 
     <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
         <constructor-arg index="0" ref="imageResourcesFactory" />
         <property name="brokenImageIndicator">
-            <value>images/alert/error_obj.gif</value>
+            <value>/org/springframework/richclient/images/alert/error_obj.gif</value>
         </property>
     </bean>
 

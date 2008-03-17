@@ -260,7 +260,6 @@
         <value>classpath:org/springframework/richclient/samples/simple/ui/images.properties</value>
       </list>
     </property>
-    <property name="resourceBasePath" value="images/" />
   </bean>
 
   <!--
@@ -275,7 +274,7 @@
   -->
   <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
     <constructor-arg index="0" ref="imageResourcesFactory" />
-    <property name="brokenImageIndicator" value="images/alert/error_obj.gif" />
+    <property name="brokenImageIndicator" value="/org/springframework/richclient/images/alert/error_obj.gif" />
   </bean>
 
   <!--

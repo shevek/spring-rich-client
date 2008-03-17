@@ -878,7 +878,6 @@ public class DefaultApplicationServices implements ApplicationServices, Applicat
             try {
                 ResourceMapFactoryBean imageResourcesFactory = new ResourceMapFactoryBean();
                 imageResourcesFactory.setLocation(new ClassPathResource("org/springframework/richclient/image/images.properties"));
-                imageResourcesFactory.setResourceBasePath("images/");
                 imageResourcesFactory.afterPropertiesSet();
 				return new DefaultImageSource((Map)imageResourcesFactory.getObject());
 			}

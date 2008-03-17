@@ -92,7 +92,7 @@
     <property name="applicationServices" ref="applicationServices" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: applicationServices
     Usage: Platform required (unless you set this up programmatically)
     Description: This configures the application services available to the platform.
@@ -137,7 +137,7 @@
           <key>
           <value type="java.lang.Class">java.util.Date</value>
           </key>
-          <bean 
+          <bean
           class="org.springframework.richclient.samples.petclinic.ui.binder.CustomDatePickerBinder"/>
           </entry>
         -->
@@ -183,12 +183,11 @@
         <value>classpath:org/springframework/richclient/samples/petclinic/ui/images.properties</value>
       </list>
     </property>
-    <property name="resourceBasePath" value="images/" />
   </bean>
 
   <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
     <constructor-arg index="0" ref="imageResourcesFactory" />
-    <property name="brokenImageIndicator" value="images/alert/error_obj.gif" />
+    <property name="brokenImageIndicator" value="/org/springframework/richclient/images/alert/error_obj.gif" />
   </bean>
 
   <bean id="formComponentInterceptorFactory"
