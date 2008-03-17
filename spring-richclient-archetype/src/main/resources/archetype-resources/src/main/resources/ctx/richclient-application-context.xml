@@ -10,17 +10,17 @@
     and applicationServices.  Many of the services have reasonable default
     implementations, meaning that you probably won't need to define them here
     unless you have specific needs not addressed in the default implementation.
-    
+
     Beyond the services, you will define the various components that make up
     your application, like the application descriptor, views, lifecycle advisor,
     validation rules, etc.
-    
+
     This may look a little daunting at first, but hang in there.  The good news
     is that you don't have to change many of the bean configurations provided
     here when you are setting up your application.
-    
+
     Typically, you would change the following:
-    
+
     1. The startingPageId on the lifecycleAdvisor.
     2. The eventExceptionHandler on the lifecycleAdvisor (or remove it if you
     don't want to use it).
@@ -30,7 +30,7 @@
     6. Configure your view beans.
   -->
 
-  <!-- 
+  <!--
     Bean: application
     Usage: Platform required
     Description: This defines the singleton application instance to be used.
@@ -42,7 +42,7 @@
     <constructor-arg index="1" ref="lifecycleAdvisor" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: lifecycleAdvisor
     Type: user named
     Usage: required
@@ -52,12 +52,12 @@
     in the application lifecycle, then you could use the provided default
     advisor in
     org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor
-    
+
     Two key properties must be configured, the location of the file containing
     the command definitions for application windows and the bean id of the
     page that should be displayed initially upon application startup, you
     can find the referenced view bean toward the bottom of this file.
-    
+
     An optional, but highly recommended, property you can set is the
     eventExceptionHandler.  If specified, this will be registered with the
     AWT event thread as the handler to receive uncaught exceptions that occur
@@ -71,7 +71,7 @@
     <property name="toolbarBeanName" value="toolBar" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: serviceLocator
     Usage: Platform required
     Description: This defines the singleton application service locator instance.
@@ -82,7 +82,7 @@
     <property name="applicationServices" ref="applicationServices" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: applicationServices
     Usage: Platform required (unless you set this up programmatically)
     Description: This configures the application services available to the platform.
@@ -104,7 +104,7 @@
     </property>
   </bean>
 
-  <!-- 
+  <!--
     Bean: applicationEventMulticaster
     Type: magic
     Usage: platform required
@@ -115,7 +115,7 @@
   <bean id="applicationEventMulticaster"
     class="org.springframework.context.event.SimpleApplicationEventMulticaster" />
 
-  <!-- 
+  <!--
     Bean: applicationDescriptor
     Usage: platform required
     Description: This defines the Application metadata to be used by the
@@ -128,7 +128,7 @@
     <property name="buildId" value="20060408-001" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: applicationObjectConfigurer
     Usage: platform required (because it is a bean post processor)
     Description: This defines the object responsible for configuring other objects
@@ -138,7 +138,7 @@
     class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
   </bean>
 
-  <!-- 
+  <!--
     Bean: lookAndFeelConfigurer
     Usage: platform optional
     Description: The platform doesn't specifically make direct use of this
@@ -155,7 +155,7 @@
     </property>
   </bean>
 
-  <!-- 
+  <!--
     Bean: messageSource
     Usage: platform required (not really, but you can't do much without it)
     Description: This specifies the component that is responsible for providing
@@ -176,7 +176,7 @@
     </property>
   </bean>
 
-  <!-- 
+  <!--
     Bean: imageResourcesFactory
     Usage: platform required (if you are using the DefaultImageSource, see below)
     Description: This specifies the component that is responsible for providing
@@ -190,10 +190,9 @@
         <value>classpath:ui/images.properties</value>
       </list>
     </property>
-    <property name="resourceBasePath" value="images/" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: imageSource
     Usage: platform required
     Description: This specifies the component that is responsible for providing
@@ -204,17 +203,17 @@
   -->
   <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
     <constructor-arg index="0" ref="imageResourcesFactory" />
-    <property name="brokenImageIndicator" value="images/alert/error_obj.gif" />
+    <property name="brokenImageIndicator" value="/org/springframework/richclient/images/alert/error_obj.gif" />
   </bean>
 
-  <!-- 
+  <!--
     Bean: formComponentInterceptorFactory
     Usage: platform optional
     Description: This specifies the list of interceptors to attach to controls
     constructed by the platform.  This allows for a declarative model for
     specifying "additional" functionality to be added to various components.
     The configuration below adds interceptors to overlay validation error
-    images and background color changes, provide popup menus in text fields, 
+    images and background color changes, provide popup menus in text fields,
     and autocompletion (as you type) for comboboxes.
   -->
   <bean id="formComponentInterceptorFactory"
@@ -231,7 +230,7 @@
     </property>
   </bean>
 
-  <!-- 
+  <!--
     Bean: initialView
     Usage: application
     Description: This specifies the component that describes the initial view
