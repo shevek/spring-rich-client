@@ -54,7 +54,8 @@
             </item>
             <item name="Support" href="/user/support.html"/>
             <item name="Upgrading" href="/user/upgrading/index.html" collapse="true">
-                <item name="To 0.3.x" href="/user/upgrading/upgradingTo0.3.x.html"/>
+                <item name="To 1.1.x (svn)" href="/user/upgrading/upgradingTo1.1.x.html"/>
+                <item name="To 1.0.x" href="/user/upgrading/upgradingTo1.0.x.html"/>
                 <item name="To 0.2.x" href="/user/upgrading/upgradingTo0.2.x.html"/>
                 <item name="To 0.1.x" href="/user/upgrading/upgradingTo0.1.x.html"/>
             </item>

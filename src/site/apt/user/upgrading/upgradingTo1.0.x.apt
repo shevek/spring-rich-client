@@ -5,7 +5,7 @@
  Mathias Broekelmann
  -----
 
-Upgrading from 0.2.x to 0.3.x
+Upgrading from 0.2.x to 1.0.x
 
     * Exception handling refactor
 
@@ -181,7 +181,7 @@ org.acegisecurity.AuthenticationException.description = \
 
     * Severity has been moved to the core package as it is used in the Message interface (not only in validation cases), update your imports
 
-    * Magick beannames menuBar/toolBar/windowCommandManager are removed, add the following to your advisor configuration:
+    * Magic beannames menuBar/toolBar/windowCommandManager are removed, add the following to your advisor configuration:
 
 +--
 <bean id="lifecycleAdvisor" class=...
