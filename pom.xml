@@ -7,7 +7,7 @@
   <artifactId>spring-richclient</artifactId>
   <packaging>pom</packaging>
   <name>Spring richclient</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <description>
     Spring-rich adds value for people needing to develop Swing applications and do so in a way that promotes
     consistent, well-designed, configurable Swing applications. The spring-rich developers strongly feel the
@@ -208,9 +208,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/tags/spring-richclient-1.0.0</connection>
-    <developerConnection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/tags/spring-richclient-1.0.0</developerConnection>
-    <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/tags/spring-richclient-1.0.0</url>
+    <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</connection>
+    <developerConnection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</developerConnection>
+    <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/trunk/spring-richclient/</url>
   </scm>
   <organization>
     <name>The Spring Framework</name>
