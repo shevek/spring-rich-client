@@ -9,11 +9,11 @@
         <name>${project.name}</name>
         <href>${project.url}</href>
     </bannerLeft>
-    <bannerRight>
+    <!--<bannerRight>
         <name>Spring framework</name>
         <src>http://www.springframework.org/buttons/spring_clear.png</src>
         <href>http://www.springframework.org</href>
-    </bannerRight>
+    </bannerRight>-->
     <publishDate format="yyyy-MM-dd HH:mm"/>
 
     <poweredBy>
@@ -44,6 +44,7 @@
         </menu>
 
         <menu name="User">
+	        <item name="Reference manual" href="/spring-richclient-manual/reference/html/index.html"/>
             <item name="User Guide" href="/user/userGuide.html" collapse="true">
                 <item name="Master-detail" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Master-Detail+Forms"/>
                 <item name="Acegi security" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Security"/>
