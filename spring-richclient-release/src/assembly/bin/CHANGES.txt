@@ -1,3 +1,119 @@
+Release Notes - Spring Framework Rich Client Project - Version 1.0.0
+====================================================================
+
+Bug
+
+    * [RCP-11] - ApplicationWindow.getToolBar() return incorrect value
+    * [RCP-170] - AbstractFormModel.reset() needs default constructor on current FormObject
+    * [RCP-202] - Binding to a superclass should be possible
+    * [RCP-221] - Shadowed logger
+    * [RCP-259] - StatusBarCommandGroup.setErrorMessage(String) sets the Message instead of the ErrorMessage
+    * [RCP-260] - using addChildForm for validation reporting can leave FormBackedWizardPage form guard in an improper state
+    * [RCP-269] - Allow escaping of & and @ in i18n labels
+    * [RCP-303] - Use URLStreamHandlerFactory instead of property to register image protocol
+    * [RCP-308] - DefaultFormModel should log exception as a warning or error
+    * [RCP-309] - Archive the website for each release
+    * [RCP-315] - FormGuard does not notice child form errors
+    * [RCP-323] - In FormModel, setValidating and setEnabled should invoke child form methods
+    * [RCP-353] - ConfirmationDialog submits 'no' button on <enter> even when 'yes' button is in focus
+    * [RCP-379] - Memory-leak: Petclinic-Sample blunders in the CloseAction trap
+    * [RCP-391] - Updating spring framework dependency from 1.2.6 to 1.2.7 breaks petclinic
+    * [RCP-399] - NachoCalendarDateFieldBinder component's height is wrong.
+    * [RCP-404] - Clean up exception handling in ApplicationLauncher and LoginCommand
+    * [RCP-405] - Animated gif in splash doesn't nicely work anymore
+    * [RCP-407] - NumberBinding ignores alignment settings in XML -> all numbers are right aligned!
+    * [RCP-408] - MessageDialog's ok button should be the default button (enter key should press it)
+    * [RCP-409] - jgoodies looks is a required dependency
+    * [RCP-411] - ApplicationLauncher bug when no start-up context specified
+    * [RCP-412] - DefaultApplicationPageFactory has wrong logger class
+    * [RCP-413] - Two labels for bound checkboxes
+    * [RCP-414] - MDI DesktopPageComponentPane does not allow handling of 'closing' event
+    * [RCP-416] - Programmatically update of PageComponentDescriptor in AbstractView fails
+    * [RCP-418] - ShowCaptionInStatusBarInterceptorFactory.getCaption throws NullpointerException
+    * [RCP-420] - NullPointerException in ApplicationLauncher if splash screen returns a null progress monitor
+    * [RCP-424] - exception handler is already set with sun.awt.exception.handler
+    * [RCP-426] - Dirty Overlay Interceptor does not repaint when changing tabs
+    * [RCP-428] - Problem with comparators in ShuttleSortableTableModel when TableColumnModel is changed
+    * [RCP-430] - MessagesDialogExceptionHandler does not always replace placeholder {0}.
+    * [RCP-434] - EventListenerListHelper NullPointerException when firing an event with null method name
+    * [RCP-438] - Inline validation of Integer fields
+    * [RCP-444] - mvn compile attempts to retrieve spring framework's v 2.0-m5
+    * [RCP-450] - Compile error: AboutBox.java
+    * [RCP-454] - Application launcher can cause dead lock when the frame is made visible
+    * [RCP-457] - DefaultCommandRegistry contains several potential bugs
+    * [RCP-464] - Closing an mdi frame forces a frame to re-open
+    * [RCP-466] - spring-richclient-core's POM transitively brings in too much
+    * [RCP-467] - the links to checkout the sample petclinic does not work
+    * [RCP-471] - objectIs in LifecycleApplicationEvent returns wrong result, if parameter is not same class
+    * [RCP-482] - VLDocking throws a NullPointerException, on closing a duplicate window
+    * [RCP-483] - missing to remove view from ApplicationEventMulticaster when view is closed
+    * [RCP-484] - OverlayHelper removes table header if a form is contained in a JTable
+    * [RCP-486] - ShuttleList cannot be enabled/disabled
+    * [RCP-492] - OverlayHelper causes memory leak
+    * [RCP-506] - Continuous integration info in pom.xml is wrong
+    * [RCP-515] - SimpleValidationResultsReporter reports wrong message
+    * [RCP-526] - Application locking up during startup
+    * [RCP-536] - AbstractWizard#addPages is called multiple times, when Wizard is reused
+    * [RCP-537] - Constraing regexp does not display a nice message
+    * [RCP-538] - Invalid link (dialogs:wizards) in spring-richclient-manual
+    * [RCP-539] - BigDecimalTextField looses precision when value is set
+    * [RCP-543] - LoginForm accepts empty username/password --> NPE
+    * [RCP-544] - Wrong LoginCommand javadoc comment
+
+Improvement
+
+    * [RCP-97] - Creating ActionCommands without a CommandFaceDescriptor causes memory leaks
+    * [RCP-126] - add drop shadow to splash screen
+    * [RCP-165] - Eliminate need for special bean names when configuring Application and ApplicationServices
+    * [RCP-284] - Multiproject site with working JavaDocs
+    * [RCP-331] - activation and mail are now available in Ibiblio
+    * [RCP-410] - Generate bin scripts with appassembler-maven-plugin
+    * [RCP-417] - Extendability of DesktopApplicationPage
+    * [RCP-423] - Public support to raise and clear custom validation messages in a ValidatingFormModel
+    * [RCP-429] - DialogPage.visible state not reflected in TabbedDialogPage
+    * [RCP-431] - New SplashScreen implementation: MacOSXSplashScreen
+    * [RCP-442] - ActionCommand should add commandId (or this) to parameter map
+    * [RCP-452] - The no-arg constructor in ShowViewCommand should be removed
+    * [RCP-453] - LabelInfoFactory will be deprecated in favour of a factory method on LabelInfo itself
+    * [RCP-456] - DefaultApplicationObjectConfigurer should be more subclass-friendly
+    * [RCP-459] - introduce MultiViewPageDescriptor
+    * [RCP-461] - provide close() method on View
+    * [RCP-476] - Better support for chained exceptions in DelegatingExceptionHandler
+    * [RCP-478] - Pass Form reference to FormUIProvider.bind to support binding child forms
+    * [RCP-479] - Refactor Message to interface
+    * [RCP-491] - CommandButtonIconInfo has different behaviour for JMenu, JMenuItem and other buttons
+    * [RCP-508] - Improve configurability of toolbar creation
+    * [RCP-514] - Set default CloseAction of ApplicationDialog to CloseAction.DISPOSE
+    * [RCP-540] - BrowserLauncher uses netscape as default-browser
+    * [RCP-541] - ButtonFactory should return AbstractButton
+    * [RCP-542] - Create more advanced toolbars by adding components.
+
+New Feature
+
+    * [RCP-112] - splash screen to show progress of spring initialization
+    * [RCP-351] - ExceptionHandler improvements
+    * [RCP-421] - Initial implementation of support for VLDocking framework
+    * [RCP-427] - Localized Bean Factory Post Processor
+    * [RCP-446] - Create read-only forms
+    * [RCP-458] - Implement PageDescriptorRegistry - an analog of ViewDescriptorRegistry
+    * [RCP-477] - TigerEnumTableCellRenderer
+    * [RCP-509] - Add Hibernate Validator notification to the GUI validation framework
+
+Task
+
+    * [RCP-307] - Replace scripts of petclinic standalone with UberJar
+    * [RCP-324] - Code formatting config files on website: eclipse and idea
+    * [RCP-325] - Upgrade to Spring 2.0 final after it's release
+    * [RCP-415] - Refactor all package.html to package-info.java
+    * [RCP-422] - Update the schema's in the examples to match for spring 2.0
+    * [RCP-436] - upgrade to spring-binding 1.0
+    * [RCP-460] - Clean up unused vars, optimize imports and remove _ prefix of instance vars.
+    * [RCP-469] - Refactor spring-richclient-vldocking to spring-richclient-docking
+    * [RCP-510] - Disable CVS on SourceForge page
+    * [RCP-511] - Upgrade all maven plugins as necesarry
+    * [RCP-546] - Document upgrade path for custom StatusBar implementations
+
+
 Release Notes - Spring Framework Rich Client Project - Version 0.2.1
 ====================================================================
 
