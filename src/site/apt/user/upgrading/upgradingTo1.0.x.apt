@@ -124,13 +124,13 @@ org.acegisecurity.AuthenticationException.description = \
 
     * Upgraded dependencies on spring 2.0 final.
 
-	* ApplicationDialog small refactoring
+  * ApplicationDialog small refactoring
 
-	<<<setParent(Window)>>> is replaced by <<<setParentComponent(Component)>>>. This allows to pass any component which has the appropriate Frame/Dialog in it's hierarchy.
-	Window can still be retrieved by <<<getParentWindow()>>>.
+  <<<setParent(Window)>>> is replaced by <<<setParentComponent(Component)>>>. This allows to pass any component which has the appropriate Frame/Dialog in it's hierarchy.
+  Window can still be retrieved by <<<getParentWindow()>>>.
 
-	<<<setLocationRelativeTo(Component)>>> is added. Before this method, the parent component was always used (if given) to set the location, but this might not be the preferred way.
-	This method provides more flexibility as to where your dialog will be placed besides the <<<setLocation(point)>>> method.
+  <<<setLocationRelativeTo(Component)>>> is added. Before this method, the parent component was always used (if given) to set the location, but this might not be the preferred way.
+  This method provides more flexibility as to where your dialog will be placed besides the <<<setLocation(point)>>> method.
 
     * ShowViewCommand no longer has a no-args constructor. See JIRA issue RCP-452 for details.
 
@@ -198,3 +198,5 @@ org.acegisecurity.AuthenticationException.description = \
 
     * Images are moved to a namespaced package. The resourceBasePath that was used to prefix the images and was defined in your application context should be removed.
     Your own images.properties file should use full paths and not rely on the resourceBasePath.
+
+    * Renamed module spring-richclient-tiger to spring-richclient-jdk5
