@@ -9,9 +9,17 @@
   <name>Spring RCP Project Archetype</name>
 
   <properties>
-    <springrich.version>0.3.0-SNAPSHOT</springrich.version>
+    <springrich.version>1.0.1-SNAPSHOT</springrich.version>
     <spring.version>2.5.1</spring.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>springRichClientRepository</id>
+      <name>Spring rich client repository</name>
+      <url>http://spring-rich-c.sourceforge.net/maven2repository</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>

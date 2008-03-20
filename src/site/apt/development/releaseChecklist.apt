@@ -31,7 +31,8 @@ Checklist
     all issues that are resolved should be closed, all closed issues that aren't assigned to a fix version must
     set their fix version to the current release version. (Use bulk edit.)
 
-    * Set the version of /full/pom.xml and /release/pom.xml to the correct one
+    * Set the version of /spring-richclient-full/pom.xml,  /spring-richclient-release/pom.xml and
+    /spring-richclient-archetype/src/main/resources/archetype-resources/pom.xml to the correct one
 
     * Prepare with the release plugin (user/pass for svn):
 
