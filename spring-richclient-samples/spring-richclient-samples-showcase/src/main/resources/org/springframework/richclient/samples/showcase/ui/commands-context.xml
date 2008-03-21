@@ -296,8 +296,6 @@
     </property>
   </bean>
 
-  <bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand" />
-
   <bean id="titleBarTimeStampCommand" class="org.springframework.richclient.samples.showcase.command.TitleBarTimeStampCommand"/>
 
 </beans>
