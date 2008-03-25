@@ -81,6 +81,7 @@
         <ref bean="listSelectionBindingDialogCommand" />
         <ref bean="messageFormatValueModelDialogCommand" />
         <ref bean="parentChildFormDialogCommand" />
+        <ref bean="radioButtonEnumDialogCommand" />
       </list>
     </property>
   </bean>
@@ -241,6 +242,14 @@
     <property name="dialog">
       <bean id="listSelectionBindingDialog"
         class="org.springframework.richclient.samples.showcase.binding.ListSelectionBindingDialog" />
+    </property>
+  </bean>
+
+  <bean id="radioButtonEnumDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="radioButtonEnumDialog"
+        class="org.springframework.richclient.samples.showcase.binding.RadioButtonEnumDialog" />
     </property>
   </bean>
 
