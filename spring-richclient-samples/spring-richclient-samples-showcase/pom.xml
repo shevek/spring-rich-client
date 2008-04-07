@@ -55,42 +55,38 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-sandbox</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-jdk5</artifactId>
-      <version>${springrich.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-jdk6</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-resources</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-core</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-binding</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-form</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-support</artifactId>
-      <version>${springrich.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>servlet-api</artifactId>
@@ -101,22 +97,18 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>forms</artifactId>
-      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>looks</artifactId>
-      <version>2.0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -193,8 +185,4 @@
       </dependencies>
     </profile>
   </profiles>
-  <properties>
-    <spring.version>2.5.1</spring.version>
-    <springrich.version>1.0.0</springrich.version>
-  </properties>
 </project>
