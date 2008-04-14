@@ -151,6 +151,15 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         setSortComparator( new PropertyComparator( propertyName, true, true ) );
     }
 
+    /**
+     * Default is false (unless you have given a Comparator), override this method to use the
+     * default SortedList from GlazedLists.
+     * @return false
+     */
+    protected boolean useSortedList() {
+        return false;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -171,7 +180,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
         // Install the sorter if configured
         SortedList sortedList = null;
-        if( comparator != null ) {
+        if( comparator != null || useSortedList()) {
             eventList = sortedList = new SortedList(eventList, comparator);
         }
 
@@ -181,12 +190,12 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         masterTable = createTable( createTableModel() );
 
         // Finish the sorting installation
-        if( comparator != null ) {
+        if( comparator != null || useSortedList()) {
             new TableComparatorChooser(masterTable, sortedList, true );
         }
 
         // If we have either a sort or a filter, we need a special selection model
-        if( comparator != null || matcher != null ) {
+        if( comparator != null || matcher != null || useSortedList()) {
             EventSelectionModel selectionModel = new EventSelectionModel(eventList);
             masterTable.setSelectionModel( selectionModel );
         }
@@ -214,9 +223,7 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
 
         // Now put the two forms into a split pane
         JSplitPane splitter = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
-        splitter.add( panel );
-        splitter.add( getDetailForm().getControl() );
-        splitter.setResizeWeight( 1.0d );
+        configureSplitter(splitter, panel, getDetailForm().getControl());
 
         final SwingBindingFactory sbf = (SwingBindingFactory) getBindingFactory();
         TableFormBuilder formBuilder = new TableFormBuilder( sbf );
@@ -225,6 +232,18 @@ public abstract class AbstractTableMasterForm extends AbstractMasterForm {
         updateControlsForState();
 
         return formBuilder.getForm();
+    }
+    
+    /**
+     * Override this method is one needs to re-size/change the splitter details.
+     * @param splitter
+     * @param masterPanel
+     * @param detailPanel
+     */
+    protected void configureSplitter(final JSplitPane splitter, final JPanel masterPanel, final JComponent detailPanel) {
+        splitter.add( masterPanel );
+        splitter.add( detailPanel );
+        splitter.setResizeWeight( 1.0d );
     }
 
     /**
