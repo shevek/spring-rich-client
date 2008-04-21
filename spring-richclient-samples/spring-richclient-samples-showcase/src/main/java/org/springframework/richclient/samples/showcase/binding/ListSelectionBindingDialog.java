@@ -137,8 +137,16 @@ public class ListSelectionBindingDialog extends TitledApplicationDialog {
 			});
 			countryContext.put(ListSelectionDialogBinder.FILTERED_KEY, Boolean.TRUE);
 			countryContext.put(ListSelectionDialogBinder.FILTER_PROPERTIES_KEY, new String[] { "name" });
-			formBuilder.add(bf.createBinding(JComboBox.class, "country", countryContext), "colSpan=2 align=left");
-			formBuilder.row();
+		    
+			// this works ... but unfortunately ListSelectionDialogBinder has no public constructor
+//          ListSelectionDialogBinder binder = new ListSelectionDialogBinder();
+//          Binding binding = binder.bind(getFormModel(), "country", countryContext);
+//          formBuilder.add(binding, "colSpan=2");
+
+            // this works if the binderSelectionStrategy is configured in richclient-application-context.xml
+            formBuilder.add(bf.createBinding("country", countryContext), "colSpan=2");
+
+            formBuilder.row();
 
 			this.addFormValueChangeListener("country", new ChangeCountryListener());
 
@@ -146,12 +154,15 @@ public class ListSelectionBindingDialog extends TitledApplicationDialog {
 				public Object call(Object object) {
 					Country country = (Country) getValue("country");
 					List<Town> towns = getTowns(country);
+					if (towns == null) {
+                        towns = Collections.EMPTY_LIST;
+                    }
 					return towns;
 				}
 			}, true, false);
 			refreshableTownValueHolder.setValue(Collections.EMPTY_LIST);
 			formBuilder
-					.add(bf.createBoundComboBox("towns", refreshableTownValueHolder, "name"), "colSpan=2 align=left");
+					.add(bf.createBoundComboBox("town", refreshableTownValueHolder, "name"), "colSpan=2 align=left");
 			formBuilder.row();
 
 			return formBuilder.getForm();

@@ -301,5 +301,20 @@
     <property name="viewClass" value="org.springframework.richclient.samples.showcase.InitialView" />
   </bean>
 
+  <bean id="binderSelectionStrategy"
+    class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
+    <property name="bindersForPropertyTypes">
+      <map>
+        <entry>
+          <key>
+            <value type="java.lang.Class">
+              org.springframework.richclient.samples.showcase.binding.ListSelectionBindingDialog$Country
+            </value>
+          </key>
+          <bean class="org.springframework.richclient.selection.binding.ListSelectionDialogBinder" />
+        </entry>
+      </map>
+    </property>
+  </bean>
 
 </beans>
