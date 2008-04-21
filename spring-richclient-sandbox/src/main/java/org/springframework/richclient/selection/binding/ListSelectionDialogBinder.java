@@ -73,7 +73,7 @@ public class ListSelectionDialogBinder extends AbstractBinder {
     private String descriptionKey;
     private String titleKey;
 
-    protected ListSelectionDialogBinder() {
+    public ListSelectionDialogBinder() {
         super(null, new String[] { SELECTABLE_ITEMS_HOLDER_KEY, FILTER_PROPERTIES_KEY, FILTERED_KEY, RENDERER_KEY,
                 LABEL_PROVIDER_KEY, COMPARATOR_KEY, DESCRIPTION_KEY_KEY, TITLE_KEY_KEY });
     }
