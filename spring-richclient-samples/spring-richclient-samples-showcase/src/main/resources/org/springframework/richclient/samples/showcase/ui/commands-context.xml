@@ -90,6 +90,7 @@
     <property name="members">
       <list>
         <ref bean="toolbarSampleCommand"/>
+        <ref bean="buttonStackBarSampleCommand"/>
         <ref bean="titleBarTimeStampCommand" />
       </list>
     </property>
@@ -272,6 +273,12 @@
   <bean id="toolbarSampleCommand" class="org.springframework.richclient.command.support.DialogCommand">
     <property name="dialog">
       <bean id="toolbarSample" class="org.springframework.richclient.samples.showcase.command.ToolbarSample" />
+    </property>
+  </bean>
+
+  <bean id="buttonStackBarSampleCommand" class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="buttonStackBarSample" class="org.springframework.richclient.samples.showcase.command.ButtonStackBarSample" />
     </property>
   </bean>
 
