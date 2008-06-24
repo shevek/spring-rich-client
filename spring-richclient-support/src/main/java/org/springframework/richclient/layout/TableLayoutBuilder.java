@@ -328,6 +328,8 @@ public class TableLayoutBuilder implements LayoutBuilder {
 
     /**
      * Inserts a separator with the given label.
+     * 
+     * @deprecated this is a layout builder, creating components should be done elsewhere, use cell() methods instead
      */
     public TableLayoutBuilder separator(String labelKey) {
         return separator(labelKey, "");
@@ -336,6 +338,8 @@ public class TableLayoutBuilder implements LayoutBuilder {
     /**
      * Inserts a separator with the given label. Attributes my be zero or more of
      * rowSpec, columnSpec, colGrId, rowGrId, align and valign.
+     * 
+     * @deprecated this is a layout builder, creating components should be done elsewhere, use cell() methods instead
      */
     public TableLayoutBuilder separator(String labelKey, String attributes) {
         Cell cc = cellInternal(getComponentFactory().createLabeledSeparator(labelKey), attributes);

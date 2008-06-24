@@ -327,8 +327,8 @@ public class TableFormBuilder extends AbstractFormBuilder {
      * @param text
      *            the key for the label. Must not be null
      */
-    public void addSeparator(String text) {
-        getLayoutBuilder().separator(text);
+    public JComponent addSeparator(String text) {
+		return addSeparator(text, "");
     }
 
     /**
@@ -339,8 +339,10 @@ public class TableFormBuilder extends AbstractFormBuilder {
      * @param attributes
      *            optional attributes. See {@link TableLayoutBuilder} for syntax details
      */
-    public void addSeparator(String text, String attributes) {
-        getLayoutBuilder().separator(text, attributes);
+    public JComponent addSeparator(String text, String attributes) {
+        JComponent separator = getComponentFactory().createLabeledSeparator(text);
+		getLayoutBuilder().cell(separator, attributes);
+		return separator;
     }
 
     /**
