@@ -136,18 +136,18 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 		this(new ValueHolder(domainObject), buffered);
 	}
 
-	protected AbstractFormModel(ValueModel formObjectHolder, boolean buffered) {
-		prepareValueModel(formObjectHolder);
-		this.formObjectHolder = new FormModelMediatingValueModel(formObjectHolder, false);
-		this.propertyAccessStrategy = new BeanPropertyAccessStrategy(formObjectHolder);
-		this.buffered = buffered;
-		this.defaultInstanceClass = formObjectHolder.getValue().getClass();
+	protected AbstractFormModel(ValueModel domainObjectHolder, boolean buffered) {
+		this(new BeanPropertyAccessStrategy(domainObjectHolder), buffered);
 	}
 
 	protected AbstractFormModel(MutablePropertyAccessStrategy propertyAccessStrategy, boolean buffered) {
-		this.formObjectHolder = new FormModelMediatingValueModel(propertyAccessStrategy.getDomainObjectHolder(), false);
+		ValueModel domainObjectHolder = propertyAccessStrategy.getDomainObjectHolder();
+		prepareValueModel(domainObjectHolder);
+		this.formObjectHolder = new FormModelMediatingValueModel(domainObjectHolder, false);
 		this.propertyAccessStrategy = propertyAccessStrategy;
 		this.buffered = buffered;
+		if (domainObjectHolder.getValue() != null)
+			this.defaultInstanceClass = domainObjectHolder.getValue().getClass();
 	}
 
 	/**
@@ -245,17 +245,27 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 		return parent;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * When the parent is set, the enabled and read-only states are bound and
+	 * updated as needed.
+	 */
 	public void setParent(HierarchicalFormModel parent) {
 		Assert.required(parent, "parent");
 		this.parent = parent;
 		this.parent.addPropertyChangeListener(ENABLED_PROPERTY, parentStateChangeHandler);
 		this.parent.addPropertyChangeListener(READONLY_PROPERTY, parentStateChangeHandler);
+		enabledUpdated();
+		readOnlyUpdated();
 	}
 
 	public void removeParent() {
 		this.parent.removePropertyChangeListener(READONLY_PROPERTY, parentStateChangeHandler);
 		this.parent.removePropertyChangeListener(ENABLED_PROPERTY, parentStateChangeHandler);
 		this.parent = null;
+		readOnlyUpdated();
+		enabledUpdated();
 	}
 
 	public FormModel[] getChildren() {
@@ -276,6 +286,11 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 		children.add(child);
 		child.addPropertyChangeListener(DIRTY_PROPERTY, childStateChangeHandler);
 		child.addPropertyChangeListener(COMMITTABLE_PROPERTY, childStateChangeHandler);
+		if (child.isDirty())
+		{
+			dirtyValueAndFormModels.add(child);
+			dirtyUpdated();
+		}
 	}
 
 	/**
@@ -628,6 +643,10 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 		return buffered;
 	}
 
+	/**
+	 * Returns <code>true</code> if this formModel or any of its children has
+	 * dirty valueModels.
+	 */
 	public boolean isDirty() {
 		return dirtyValueAndFormModels.size() > 0;
 	}
