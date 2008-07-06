@@ -10,6 +10,12 @@ Introduction
 
 Press
 
+    * Release 1.0.0:
+    
+        * {{{http://java.dzone.com/news/getting-further-with-spring-rc}Getting Further with Spring RCP (DZone Javalobby)}}
+    
+        * {{{http://java.dzone.com/news/spring-rcp-tutorial}Getting Started with Spring RCP (DZone Javalobby)}}
+
     * Release 0.2.1:
 
         * {{{http://today.java.net/pub/n/Spring-richclient0.2.1}Java news}}
@@ -24,7 +30,9 @@ Press
 
 Blogs
 
-    * {{{http://pa.rsons.org/node/6}Spring Richclient: A Journey}} (very helpfull)
+    * {{http://spring-rich.blogspot.com/}}
+
+    * {{{http://pa.rsons.org/node/6}Spring Richclient: A Journey}}
 
     * {{http://robwilsonjavagui.blogspot.com/}}
 
@@ -33,7 +41,6 @@ Blogs
 Fan websites
 
     * {{{https://scifi.homelinux.net/mediawiki/index.php/Spring_Framework}Wikigate Spring Framework}}
-    (contains up to date javadocs of spring-richclient)
 
 Contact us
 
