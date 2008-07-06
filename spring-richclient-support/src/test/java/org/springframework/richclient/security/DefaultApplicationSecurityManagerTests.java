@@ -17,11 +17,6 @@ package org.springframework.richclient.security;
 
 import junit.framework.TestCase;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.BadCredentialsException;
-import org.acegisecurity.LockedException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -29,6 +24,11 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.BadCredentialsException;
+import org.springframework.security.LockedException;
+import org.springframework.security.SpringSecurityException;
 
 /**
  * Test cases for the DefaultApplicationSecurityManager implementation.
@@ -171,7 +171,7 @@ public class DefaultApplicationSecurityManagerTests extends TestCase {
         try {
             asm.doLogin( authentication );
             fail( exceptionType.getName() + " should have been thrown" );
-        } catch( AcegiSecurityException e ) {
+        } catch( SpringSecurityException e ) {
             // We expect an exception
             assertTrue( "Wrong exception thrown; expecting: " + exceptionType.getName(), exceptionType
                 .isAssignableFrom( e.getClass() ) );

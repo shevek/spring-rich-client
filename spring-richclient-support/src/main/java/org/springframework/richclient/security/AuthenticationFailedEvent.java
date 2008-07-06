@@ -15,8 +15,8 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
+import org.springframework.security.SpringSecurityException;
 
 /**
  * Event fired when an authentication attempt fails.
@@ -29,14 +29,14 @@ import org.acegisecurity.Authentication;
  */
 public class AuthenticationFailedEvent extends ClientSecurityEvent {
 
-    private AcegiSecurityException cause;
+    private SpringSecurityException cause;
 
     /**
      * Constructor. Use the given authentication token as the source of the event.
      * @param authentication token
      * @param cause The exception that caused the login failure
      */
-    public AuthenticationFailedEvent(Authentication authentication, AcegiSecurityException cause) {
+    public AuthenticationFailedEvent(Authentication authentication, SpringSecurityException cause) {
         super( authentication );
         setCause( cause );
     }
@@ -45,7 +45,7 @@ public class AuthenticationFailedEvent extends ClientSecurityEvent {
      * Get the exception that caused the login failure
      * @return causing exception
      */
-    public AcegiSecurityException getCause() {
+    public SpringSecurityException getCause() {
         return cause;
     }
 
@@ -53,7 +53,7 @@ public class AuthenticationFailedEvent extends ClientSecurityEvent {
      * Set the exception that caused this login failure.
      * @param cause
      */
-    public void setCause(AcegiSecurityException cause) {
+    public void setCause(SpringSecurityException cause) {
         this.cause = cause;
     }
 }

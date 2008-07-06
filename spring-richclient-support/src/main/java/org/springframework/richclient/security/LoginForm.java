@@ -17,11 +17,11 @@ package org.springframework.richclient.security;
 
 import javax.swing.JComponent;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.builder.TableFormBuilder;
+import org.springframework.security.Authentication;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
 /**
  * This class provides a simple form for capturing a username and password from the user.

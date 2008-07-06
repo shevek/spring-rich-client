@@ -23,15 +23,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.acegisecurity.AccessDecisionManager;
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttributeDefinition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.richclient.core.Authorizable;
 import org.springframework.richclient.security.SecurityController;
+import org.springframework.security.AccessDecisionManager;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.Authentication;
+import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

@@ -15,10 +15,10 @@
  */
 package org.springframework.richclient.security.remoting;
 
-import org.acegisecurity.Authentication;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor;
 import org.springframework.richclient.security.AuthenticationAware;
+import org.springframework.security.Authentication;
 
 /**
  * Extension of <code>HttpInvokerProxyFactoryBean</code> that supports the use of BASIC
@@ -33,7 +33,7 @@ import org.springframework.richclient.security.AuthenticationAware;
  * and every invocation should use the same credentials. If you need per-thread
  * authentication then you should look at using a combination of
  * {@link HttpInvokerProxyFactoryBean} and
- * {@link org.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}.
+ * {@link org.springframework.security.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}.
  * <p>
  * {@link AuthenticationAware} is implemented in order to get notifications of changes in
  * the user's credentials. Please see the class documentation for
@@ -59,7 +59,7 @@ public class BasicAuthHttpInvokerProxyFactoryBean extends HttpInvokerProxyFactor
      * Handle a change in the current authentication token. Pass it along to the executor
      * if it's of the proper type.
      * @see BasicAuthHttpInvokerRequestExecutor
-     * @see AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
+     * @see AuthenticationAware#setAuthenticationToken(org.springframework.security.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
         if( logger.isDebugEnabled() ) {

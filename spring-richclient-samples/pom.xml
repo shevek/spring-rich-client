@@ -17,6 +17,7 @@
     <module>spring-richclient-samples-petclinic</module>
     <module>spring-richclient-samples-simple</module>
     <module>spring-richclient-samples-vldocking</module>
+    <module>spring-richclient-samples-swingdocking</module>
     <module>spring-richclient-samples-showcase</module>
   </modules>
 

@@ -15,12 +15,12 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
 import org.springframework.core.closure.Constraint;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.PropertyConstraint;
+import org.springframework.security.Authentication;
 
 /**
  * This class provides a bean suitable for use in a login form, providing properties for

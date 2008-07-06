@@ -285,8 +285,8 @@ java.lang.Error.description = \
         &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
           &lt;property name="throwableClassList"&gt;
             &lt;list&gt;
-              &lt;value type="java.lang.Class"&gt;org.acegisecurity.AuthenticationException&lt;/value&gt;
-              &lt;value type="java.lang.Class"&gt;org.acegisecurity.AccessDeniedException&lt;/value&gt;
+              &lt;value type="java.lang.Class"&gt;org.springframework.security.AuthenticationException&lt;/value&gt;
+              &lt;value type="java.lang.Class"&gt;org.springframework.security.AccessDeniedException&lt;/value&gt;
             &lt;/list&gt;
           &lt;/property&gt;
           &lt;property name="exceptionHandler"&gt;

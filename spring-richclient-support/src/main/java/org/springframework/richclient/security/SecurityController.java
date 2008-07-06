@@ -17,8 +17,8 @@ package org.springframework.richclient.security;
 
 import java.util.List;
 
-import org.acegisecurity.AccessDecisionManager;
 import org.springframework.richclient.core.Authorizable;
+import org.springframework.security.AccessDecisionManager;
 
 /**
  * A security controller is responsible for authorizing other {@link Authorizable}

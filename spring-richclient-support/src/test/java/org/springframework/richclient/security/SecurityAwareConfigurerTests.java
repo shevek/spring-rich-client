@@ -17,14 +17,14 @@ package org.springframework.richclient.security;
 
 import junit.framework.TestCase;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.BadCredentialsException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
 import org.springframework.richclient.security.support.DefaultApplicationSecurityManager;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.BadCredentialsException;
 
 /**
  * @author Larry Streepy

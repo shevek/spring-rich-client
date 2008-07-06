@@ -4,10 +4,7 @@
 package org.springframework.richclient.security.support;
 
 import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.textui.TestRunner;
 
-import org.acegisecurity.Authentication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServicesLocator;
@@ -22,6 +19,7 @@ import org.springframework.richclient.security.ApplicationSecurityManager;
 import org.springframework.richclient.security.SecurityController;
 import org.springframework.richclient.security.SecurityControllerManager;
 import org.springframework.richclient.security.TestAuthenticationManager;
+import org.springframework.security.Authentication;
 
 /**
  * @author Larry Streepy

@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 
 /**
  * A Spring managed bean implementing this interface will be automatically notified of any
@@ -34,7 +34,7 @@ import org.acegisecurity.Authentication;
  * <p>
  * @author Larry Streepy
  * 
- * @see org.acegisecurity.AuthenticationManager#authenticate(org.acegisecurity.Authentication)
+ * @see org.springframework.security.AuthenticationManager#authenticate(org.springframework.security.Authentication)
  * @see org.springframework.context.ApplicationListener
  * @see LoginAware
  * @see ClientSecurityEvent

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.acegisecurity.Authentication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +16,7 @@ import org.springframework.remoting.caucho.BurlapProxyFactoryBean;
 import org.springframework.remoting.caucho.HessianProxyFactoryBean;
 import org.springframework.remoting.jaxrpc.JaxRpcPortProxyFactoryBean;
 import org.springframework.richclient.application.Application;
+import org.springframework.security.Authentication;
 
 /**
  * Correctly configures the username and password on Spring's remoting proxy

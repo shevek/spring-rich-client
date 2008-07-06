@@ -15,13 +15,13 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.dialog.CompositeDialogPage;
 import org.springframework.richclient.dialog.TabbedDialogPage;
 import org.springframework.richclient.dialog.TitledPageApplicationDialog;
+import org.springframework.security.Authentication;
 
 /**
  * Provides a login interface to the user.

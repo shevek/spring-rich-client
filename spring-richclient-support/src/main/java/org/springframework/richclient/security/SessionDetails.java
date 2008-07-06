@@ -2,11 +2,6 @@ package org.springframework.richclient.security;
 
 import java.io.Serializable;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +10,11 @@ import org.springframework.richclient.application.Application;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.PropertyConstraint;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
 /**
  * This class provides a bean suitable for use in a login form, providing properties for
@@ -102,7 +102,7 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
         this.authenticationManager = manager;
     }
 
-    public void login() throws AcegiSecurityException {
+    public void login() throws SpringSecurityException {
         final ApplicationContext appCtx = Application.instance().getApplicationContext();
 
         // Attempt login
@@ -113,13 +113,13 @@ public class SessionDetails implements Serializable, PropertyConstraintProvider 
 
         try {
             result = authenticationManager.authenticate(request);
-        } catch( AcegiSecurityException e ) {
+        } catch( SpringSecurityException e ) {
             logger.warn( "authentication failed", e);
 
             // Fire application event to advise of failed login
             appCtx.publishEvent( new AuthenticationFailedEvent(request, e));
             
-            // And retrhow the exception to prevent the dialog from closing
+            // And rethrow the exception to prevent the dialog from closing
             throw e;
         }
 

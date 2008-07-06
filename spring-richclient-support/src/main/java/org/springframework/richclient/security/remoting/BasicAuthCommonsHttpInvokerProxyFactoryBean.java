@@ -1,12 +1,12 @@
 package org.springframework.richclient.security.remoting;
 
-import org.acegisecurity.Authentication;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.richclient.security.AuthenticationAware;
+import org.springframework.security.Authentication;
 
 /**
  * Extension of <code>HttpInvokerProxyFactoryBean</code> that supports the use of BASIC
@@ -28,7 +28,7 @@ import org.springframework.richclient.security.AuthenticationAware;
  * and every invocation should use the same credentials. If you need per-thread
  * authentication then you should look at using a combination of
  * {@link org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean} and
- * {@link org.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}.
+ * {@link org.springframework.security.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}.
  * <p>
  * {@link org.springframework.richclient.security.AuthenticationAware} is implemented in order to get notifications of changes in
  * the user's credentials. Please see the class documentation for
@@ -51,7 +51,7 @@ public class BasicAuthCommonsHttpInvokerProxyFactoryBean extends HttpInvokerProx
     /**
      * Handle a change in the current authentication token.
      * This method will fail fast if the executor isn't a CommonsHttpInvokerRequestExecutor.
-     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
+     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.springframework.security.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
         if( logger.isDebugEnabled() ) {

@@ -17,13 +17,6 @@ package org.springframework.richclient.security.support;
 
 import java.util.Map;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.AuthenticationProvider;
-import org.acegisecurity.providers.ProviderManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,13 +27,20 @@ import org.springframework.richclient.security.AuthenticationEvent;
 import org.springframework.richclient.security.AuthenticationFailedEvent;
 import org.springframework.richclient.security.LoginEvent;
 import org.springframework.richclient.security.LogoutEvent;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.AuthenticationProvider;
+import org.springframework.security.providers.ProviderManager;
 
 /**
  * Default implementation of ApplicationSecurityManager. It provides basic processing for
  * login and logout actions and the event lifecycle.
  * <p>
  * Instances of this class should be configured with an instance of
- * {@link org.acegisecurity.AuthenticationManager} to be used to handle authentication
+ * {@link org.springframework.security.AuthenticationManager} to be used to handle authentication
  * (login) requests. This would be done like this:
  * 
  * <pre>
@@ -50,7 +50,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *         &lt;/bean&gt;
  *         
  *         &lt;bean id=&quot;authenticationManager&quot;
- *           class=&quot;org.acegisecurity.providers.ProviderManager&quot;&gt;
+ *           class=&quot;org.springframework.security.providers.ProviderManager&quot;&gt;
  *           &lt;property name=&quot;providers&quot;&gt;
  *               &lt;list&gt;
  *                   &lt;ref bean=&quot;remoteAuthenticationProvider&quot; /&gt;
@@ -59,7 +59,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *       &lt;/bean&gt;
  *       
  *       &lt;bean id=&quot;remoteAuthenticationProvider&quot;
- *           class=&quot;org.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
+ *           class=&quot;org.springframework.security.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
  *           &lt;property name=&quot;remoteAuthenticationManager&quot; ref=&quot;remoteAuthenticationManager&quot; /&gt;
  *       &lt;/bean&gt;
  *    
@@ -69,7 +69,7 @@ import org.springframework.richclient.security.LogoutEvent;
  *               &lt;value&gt;http://localhost:8080/myserver/rootContext/RemoteAuthenticationManager&lt;/value&gt;
  *           &lt;/property&gt;
  *           &lt;property name=&quot;serviceInterface&quot;&gt;
- *               &lt;value&gt;org.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
+ *               &lt;value&gt;org.springframework.security.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
  *           &lt;/property&gt;
  *       &lt;/bean&gt;
  * </pre>
@@ -147,9 +147,9 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
      * 
      * @param authentication token to use for the login attempt
      * @return Authentication token resulting from a successful call to
-     *         {@link AuthenticationManager#authenticate(org.acegisecurity.Authentication)}.
-     * @see org.springframework.richclient.security.ApplicationSecurityManager#doLogin(org.acegisecurity.Authentication)
-     * @throws AcegiSecurityException If the authentication attempt fails
+     *         {@link AuthenticationManager#authenticate(org.springframework.security.Authentication)}.
+     * @see org.springframework.richclient.security.ApplicationSecurityManager#doLogin(org.springframework.security.Authentication)
+     * @throws SpringSecurityException If the authentication attempt fails
      */
     public Authentication doLogin(Authentication authentication) {
         final ApplicationContext appCtx = Application.instance().getApplicationContext();
@@ -158,7 +158,7 @@ public class DefaultApplicationSecurityManager implements ApplicationSecurityMan
 
         try {
             result = getAuthenticationManager().authenticate( authentication );
-        } catch( AcegiSecurityException e ) {
+        } catch( SpringSecurityException e ) {
             logger.info( "authentication failed: " + e.getMessage() );
 
             // Fire application event to advise of failed login

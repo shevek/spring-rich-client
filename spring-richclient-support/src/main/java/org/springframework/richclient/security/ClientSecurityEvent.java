@@ -15,9 +15,9 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.security.Authentication;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
 /**
  * Parent for all RCP security related application events.

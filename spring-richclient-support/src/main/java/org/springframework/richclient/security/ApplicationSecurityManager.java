@@ -15,14 +15,14 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
 
 /**
  * This interface defines the operations required of an Application Security Manager for
  * the RCP framework. The security manager is responsible for handling login and logout
- * requests, interacting with the {@link org.acegisecurity.AuthenticationManager} that
+ * requests, interacting with the {@link org.springframework.security.AuthenticationManager} that
  * will perform the actual user authentication, and firing the events associated with
  * application security lifecycle. See {@link ClientSecurityEvent} and its subclasses.
  * <p>
@@ -49,10 +49,10 @@ public interface ApplicationSecurityManager {
      * 
      * @param authentication token to use for the login attempt
      * @return Authentication token resulting from a successful call to
-     *         {@link AuthenticationManager#authenticate(org.acegisecurity.Authentication)}.
-     * @throws AcegiSecurityException If the authentication attempt fails
+     *         {@link AuthenticationManager#authenticate(org.springframework.security.Authentication)}.
+     * @throws SpringSecurityException If the authentication attempt fails
      */
-    public Authentication doLogin(Authentication authentication) throws AcegiSecurityException;
+    public Authentication doLogin(Authentication authentication) throws SpringSecurityException;
 
     /**
      * Return if a user is currently logged in, meaning that a previous call to doLogin

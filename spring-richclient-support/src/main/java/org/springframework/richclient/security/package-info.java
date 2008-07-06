@@ -1,37 +1,36 @@
 /**
  * Integrates
- * <A HREF="http://acegisecurity.sourceforge.net">Acegi Security System for
- * Spring</A>
+ * <A HREF="http://static.springframework.org/spring-security/site/index.html">Spring Security System </A>
  * into RCP.
  *
  * <h1>Overview</h1>
  *
- * <P>Acegi Security is a comprehensive open-source security system that
+ * <P>Spring Security is a comprehensive open-source security system that
  * delivers fully-featured security to Spring applications. To learn more
- * about Acegi Security or access detailed documentation, please visit the
- * project home page at <A HREF="http://acegisecurity.sourceforge.net">http://acegisecurity.sourceforge.net</A>.</p>
+ * about Spring Security or access detailed documentation, please visit the
+ * project home page at <A HREF="http://static.springframework.org/spring-security/site/index.html">http://static.springframework.org/spring-security/site/index.html</A>.</p>
  *
  * <P>It is envisaged that many RCP clients will be connecting with a
  * remote Spring-powered server. In such deployments, security becomes of
  * paramount importance. Whilst transport-layer security (such as HTTPS,
  * port filtering and firewalls) are essential to almost all production
  * applications, this package delivers comprehensive application-layer
- * security to RCP clients by hooking into the Acegi Security project.</P>
+ * security to RCP clients by hooking into the Spring Security project.</P>
  *
  * <h2>Background Knowledge</h2>
  *
- * <P>Whilst you should really read the Acegi Security System for Spring
+ * <P>Whilst you should really read the Spring Security System
  * reference documentation to fully understand the architecture, the most
  * important details you need to understand in order to utilize this RCP
  * package is the summarized below.</P>
  *
- * <P>RCP uses the following key Acegi Security classes and interfaces:</P>
+ * <P>RCP uses the following key Spring Security classes and interfaces:</P>
  *
  * <P>ContextHolder, which simply uses a ThreadLocal to store a
  * SecureContext implementation.</P>
  *
  * <P>Authentication, which stores the details of a principal, credentials
- * and its granted authorities. RCP uses Acegi Securit's
+ * and its granted authorities. RCP uses Spring Security's
  * UsernamePasswordAuthenticationToken, which simply represents a username
  * and password for the principal and credentials respectively.</P>
  *
@@ -42,7 +41,7 @@
  *
  * <h2>Per-thread vs. per-Application authentication</h2>
  *
- * <p>One thing to keep in mind is that Acegi maintains authentication
+ * <p>One thing to keep in mind is that Spring Security maintains authentication
  * credentials on a per-thread basis (ContextHolder described above). This
  * makes sense when considering server side implementations where different
  * threads are working on behalf of potentially different principals. In a
@@ -246,8 +245,8 @@
  * <h1>Which AuthenticationManager?</h1>
  *
  * <P>As mentioned above, an AuthenticationManager is configured against
- * the LoginCommand. This is just like any other Acegi Security use of
- * AuthenticationManager, so you can use any of the standard Acegi Security
+ * the LoginCommand. This is just like any other Spring Security use of
+ * AuthenticationManager, so you can use any of the standard Spring Security
  * authentication providers with the RCP package (such as
  * <code>DaoAuthenticationProvider</code>).</P>
  *
@@ -259,8 +258,8 @@
  * <code>RemoteAuthenticationProvider</code>. On the server you'll need
  * to use the <code>RemoteAuthenticationManagerImpl</code>. On the client
  * you'll use your preferred remoting proxy factory to access the server-side
- * RemoteAuthenticationManagerImpl. You can find these classes in Acegi
- * Security's <code>org.acegisecurity.providers.rcp</code> package.
+ * RemoteAuthenticationManagerImpl. You can find these classes in Spring
+ * Security's <code>org.springframework.security.providers.rcp</code> package.
  * An example using the HTTP proxy would be configured like this:</P>
  *
  * <pre>
@@ -272,7 +271,7 @@
  *
  * 	&lt;!-- Remote authentication manager configuration --&gt;
  * 	&lt;bean id="authenticationManager"
- * 		class="org.acegisecurity.providers.ProviderManager"&gt;
+ *         class="org.springframework.security.providers.ProviderManager"&gt;
  * 		&lt;property name="providers"&gt;
  * 			&lt;list&gt;
  * 				&lt;ref bean="remoteAuthenticationProvider" /&gt;
@@ -281,7 +280,7 @@
  * 	&lt;/bean&gt;
  *
  * 	&lt;bean id="remoteAuthenticationProvider"
- * 		class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider"&gt;
+ *         class="org.springframework.security.providers.rcp.RemoteAuthenticationProvider"&gt;
  * 		&lt;property name="remoteAuthenticationManager" ref="remoteAuthenticationManager" /&gt;
  * 	&lt;/bean&gt;
  *
@@ -291,7 +290,7 @@
  * 			&lt;value&gt;http://localhost:8080/myserver/context/RemoteAuthenticationManager&lt;/value&gt;
  * 		&lt;/property&gt;
  * 		&lt;property name="serviceInterface"&gt;
- * 			&lt;value&gt;org.acegisecurity.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
+ *             &lt;value&gt;org.springframework.security.providers.rcp.RemoteAuthenticationManager&lt;/value&gt;
  * 		&lt;/property&gt;
  * 	&lt;/bean&gt;
  * </code>
@@ -335,9 +334,9 @@
  *
  * <h2>Server Side Configuration</h2>
  *
- * <P>On the server side you will need to register Acegi Security's
+ * <P>On the server side you will need to register Spring Security's
  * BasicProcessingFilter so BASIC authentication headers can be processed.
- * You'd need to do this if you're using Acegi Security with any form
+ * You'd need to do this if you're using Spring Security with any form
  * of BASIC authentication (it is not an RCP-specific requirement).  Here is
  * an example of how you might configure this in the application context of
  * your server:</P>
@@ -345,7 +344,7 @@
  * <pre>
  * <code>
  * 	&lt;bean id="basicProcessingFilter"
- * 		class="org.acegisecurity.ui.basicauth.BasicProcessingFilter"&gt;
+ *         class="org.springframework.security.ui.basicauth.BasicProcessingFilter"&gt;
  * 		&lt;property name="authenticationManager"&gt;
  * 			&lt;ref bean="authenticationManager" /&gt;
  * 		&lt;/property&gt;
@@ -355,14 +354,14 @@
  * 	&lt;/bean&gt;
  *
  * 	&lt;bean id="basicProcessingFilterEntryPoint"
- * 		class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint"&gt;
+ *         class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint"&gt;
  * 		&lt;property name="realmName"&gt;
  * 			&lt;value&gt;My Realm&lt;/value&gt;
  * 		&lt;/property&gt;
  * 	&lt;/bean&gt;
  *
  * 	&lt;bean id="httpSessionContextIntegrationFilter"
- * 		class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"&gt;
+ *         class="org.springframework.security.context.HttpSessionContextIntegrationFilter"&gt;
  * 		&lt;property name="allowSessionCreation"&gt;
  * 			&lt;value&gt;false&lt;/value&gt;
  * 		&lt;/property&gt;
@@ -370,14 +369,14 @@
  *
  * 	&lt;!-- Allows remote clients to check if a username/password is valid --&gt;
  * 	&lt;bean id="remoteAuthenticationManager"
- * 		class="org.acegisecurity.providers.rcp.RemoteAuthenticationManagerImpl"&gt;
+ *         class="org.springframework.security.providers.rcp.RemoteAuthenticationManagerImpl"&gt;
  * 		&lt;property name="authenticationManager"&gt;
  * 			&lt;ref bean="authenticationManager" /&gt;
  * 		&lt;/property&gt;
  * 	&lt;/bean&gt;
  *
  * 	&lt;bean id="authenticationManager"
- * 		class="org.acegisecurity.providers.ProviderManager"&gt;
+ *         class="org.springframework.security.providers.ProviderManager"&gt;
  * 		&lt;property name="providers"&gt;
  * 			&lt;list&gt;
  * 				&lt;ref bean="daoAuthenticationProvider" /&gt;
@@ -386,7 +385,7 @@
  * 	&lt;/bean&gt;
  *
  * 	&lt;bean id="daoAuthenticationProvider"
- * 		class="org.acegisecurity.providers.dao.DaoAuthenticationProvider"&gt;
+ *         class="org.springframework.security.providers.dao.DaoAuthenticationProvider"&gt;
  * 		&lt;property name="authenticationDao"&gt;
  * 			&lt;ref bean="authenticationDao" /&gt;
  * 		&lt;/property&gt;
@@ -403,30 +402,30 @@
  * <code>
  *     &lt;!-- Security configuration --&gt;
  *     &lt;filter&gt;
- *         &lt;filter-name&gt;Acegi HTTP Session Integration&lt;/filter-name&gt;
- *         &lt;filter-class&gt;org.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
+ *         &lt;filter-name&gt;Spring Security HTTP Session Integration&lt;/filter-name&gt;
+ *         &lt;filter-class&gt;org.springframework.security.util.FilterToBeanProxy&lt;/filter-class&gt;
  *         &lt;init-param&gt;
  *             &lt;param-name&gt;targetClass&lt;/param-name&gt;
- *             &lt;param-value&gt;org.acegisecurity.context.HttpSessionContextIntegrationFilter&lt;/param-value&gt;
+ *             &lt;param-value&gt;org.springframework.security.context.HttpSessionContextIntegrationFilter&lt;/param-value&gt;
  *         &lt;/init-param&gt;
  *     &lt;/filter&gt;
  *
  *     &lt;filter-mapping&gt;
- *       &lt;filter-name&gt;Acegi HTTP Session Integration&lt;/filter-name&gt;
+ *       &lt;filter-name&gt;Spring Security HTTP Session Integration&lt;/filter-name&gt;
  *       &lt;url-pattern&gt;/context/*&lt;/url-pattern&gt;
  *     &lt;/filter-mapping&gt;
  *
  *     &lt;filter&gt;
- *         &lt;filter-name&gt;Acegi HTTP BASIC Authorization Filter&lt;/filter-name&gt;
- *         &lt;filter-class&gt;org.acegisecurity.util.FilterToBeanProxy&lt;/filter-class&gt;
+ *         &lt;filter-name&gt;Spring Security HTTP BASIC Authorization Filter&lt;/filter-name&gt;
+ *         &lt;filter-class&gt;org.springframework.security.util.FilterToBeanProxy&lt;/filter-class&gt;
  *         &lt;init-param&gt;
  *             &lt;param-name&gt;targetClass&lt;/param-name&gt;
- *             &lt;param-value&gt;org.acegisecurity.ui.basicauth.BasicProcessingFilter&lt;/param-value&gt;
+ *             &lt;param-value&gt;org.springframework.security.ui.basicauth.BasicProcessingFilter&lt;/param-value&gt;
  *         &lt;/init-param&gt;
  *     &lt;/filter&gt;
  *
  *     &lt;filter-mapping&gt;
- *       &lt;filter-name&gt;Acegi HTTP BASIC Authorization Filter&lt;/filter-name&gt;
+ *       &lt;filter-name&gt;Spring Security HTTP BASIC Authorization Filter&lt;/filter-name&gt;
  *       &lt;url-pattern&gt;/context/*&lt;/url-pattern&gt;
  *     &lt;/filter-mapping&gt;
  * </code>

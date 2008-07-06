@@ -26,7 +26,7 @@
   <bean name="/RemoteAuthenticationManager-hessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
     <property name="service"><ref bean="remoteAuthenticationManager"/></property>
     <property name="serviceInterface">
-      <value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
+      <value>org.springframework.security.providers.rcp.RemoteAuthenticationManager</value>
     </property>
   </bean>
 
@@ -34,7 +34,7 @@
   <bean name="/RemoteAuthenticationManager-burlap" class="org.springframework.remoting.caucho.BurlapServiceExporter">
     <property name="service"><ref bean="remoteAuthenticationManager"/></property>
     <property name="serviceInterface">
-      <value>org.acegisecurity.providers.rcp.RemoteAuthenticationManager</value>
+      <value>org.springframework.security.providers.rcp.RemoteAuthenticationManager</value>
     </property>
   </bean>
 

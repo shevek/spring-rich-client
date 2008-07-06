@@ -32,8 +32,8 @@
         <bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
           <property name="throwableClassList">
             <list>
-              <value type="java.lang.Class">org.acegisecurity.AuthenticationException</value>
-              <value type="java.lang.Class">org.acegisecurity.AccessDeniedException</value>
+              <value type="java.lang.Class">org.springframework.security.AuthenticationException</value>
+              <value type="java.lang.Class">org.springframework.security.AccessDeniedException</value>
             </list>
           </property>
           <property name="exceptionHandler">

@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 
 /**
  * Event fired when a user logs out.

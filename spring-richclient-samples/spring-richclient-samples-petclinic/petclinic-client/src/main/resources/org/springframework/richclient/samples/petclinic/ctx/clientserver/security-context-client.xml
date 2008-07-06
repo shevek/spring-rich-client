@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <bean id="remoteAuthenticationProvider"
-    class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
+    class="org.springframework.security.providers.rcp.RemoteAuthenticationProvider">
     <property name="remoteAuthenticationManager" ref="remoteAuthenticationManager" />
   </bean>
 
-  <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+  <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
     <property name="providers">
       <list>
         <ref bean="remoteAuthenticationProvider" />
@@ -21,9 +21,9 @@
 
   <!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
 
-  <bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter" />
+  <bean id="roleVoter" class="org.springframework.security.vote.RoleVoter" />
 
-  <bean id="accessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
+  <bean id="accessDecisionManager" class="org.springframework.security.vote.AffirmativeBased">
     <property name="allowIfAllAbstainDecisions" value="false" />
     <property name="decisionVoters">
       <list>

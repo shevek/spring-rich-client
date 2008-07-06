@@ -6,12 +6,13 @@ package org.springframework.richclient.security.support;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttribute;
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.providers.TestingAuthenticationToken;
+
+import org.springframework.security.Authentication;
+import org.springframework.security.ConfigAttribute;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.providers.TestingAuthenticationToken;
 
 /**
  * @author Larry Streepy
@@ -36,9 +37,9 @@ public class UserRoleSecurityControllerTests extends TestCase {
         controller.setAuthorizingRoles( "ROLE_1,ROLE_2" );
 
         ConfigAttributeDefinition cad = controller.getParsedConfigs();
-        assertTrue( "Should be 2 roles", cad.size() == 2 );
+        assertTrue( "Should be 2 roles", cad.getConfigAttributes().size() == 2 );
 
-        Iterator iter = cad.getConfigAttributes();
+        Iterator iter = cad.getConfigAttributes().iterator();
         ConfigAttribute attr1 = (ConfigAttribute) iter.next();
         ConfigAttribute attr2 = (ConfigAttribute) iter.next();
 

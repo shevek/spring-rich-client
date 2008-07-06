@@ -18,10 +18,10 @@ package org.springframework.richclient.security.remoting;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import org.acegisecurity.Authentication;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor;
 import org.springframework.richclient.security.AuthenticationAware;
+import org.springframework.security.Authentication;
 
 /**
  * Adds BASIC authentication support to <code>SimpleHttpInvokerRequestExecutor</code>.
@@ -31,9 +31,9 @@ import org.springframework.richclient.security.AuthenticationAware;
  * received.
  * <p>
  * In comparison, see
- * {@link org.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}
+ * {@link org.springframework.security.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor}
  * for a class that manages the Authentication per-thread. If you need to have threads
- * with different authentication credentials, then you should use the acegi class instead.
+ * with different authentication credentials, then you should use the Spring Security class instead.
  * <p>
  * Typically, instances of this class will be automatically created by using
  * {@link BasicAuthHttpInvokerProxyFactoryBean}, which will take care of keeping this
@@ -67,7 +67,7 @@ public class BasicAuthHttpInvokerRequestExecutor extends SimpleHttpInvokerReques
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.acegisecurity.Authentication)
+     * @see org.springframework.richclient.security.AuthenticationAware#setAuthenticationToken(org.springframework.security.Authentication)
      */
     public void setAuthenticationToken(Authentication authentication) {
         this.authentication = authentication;

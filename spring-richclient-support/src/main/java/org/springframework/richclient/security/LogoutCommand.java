@@ -17,9 +17,9 @@ package org.springframework.richclient.security;
 
 import javax.swing.JOptionPane;
 
-import org.acegisecurity.Authentication;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.support.ApplicationWindowAwareCommand;
+import org.springframework.security.Authentication;
 
 /**
  * Provides a command to log the current user out.

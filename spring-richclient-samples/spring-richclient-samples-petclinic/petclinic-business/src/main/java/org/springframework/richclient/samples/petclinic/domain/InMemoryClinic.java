@@ -77,7 +77,7 @@ public class InMemoryClinic extends SimpleJdbcClinic {
                 .execute("CREATE TABLE visits (id INT NOT NULL IDENTITY PRIMARY KEY, pet_id INT NOT NULL, visit_date DATE, description VARCHAR(255))");
         template.execute("alter table visits add constraint fk_visits_pets foreign key (pet_id) references pets(id)");
 
-        // Schema: Acegi Security
+        // Schema: Spring Security
         template
                 .execute("CREATE TABLE users (username VARCHAR(50) NOT NULL PRIMARY KEY, password VARCHAR(50) NOT NULL, enabled BIT NOT NULL)");
         template.execute("CREATE TABLE authorities (username VARCHAR(50) NOT NULL, authority VARCHAR(50) NOT NULL)");
@@ -148,7 +148,7 @@ public class InMemoryClinic extends SimpleJdbcClinic {
         template.execute("INSERT INTO visits VALUES (3, 8, '1996-06-04', 'neutered')");
         template.execute("INSERT INTO visits VALUES (4, 7, '1996-09-04', 'spayed')");
 
-        // Data: Acegi Security
+        // Data: Spring Security
         template.execute("INSERT INTO users VALUES ('dianne', 'emu', true)");
         template.execute("INSERT INTO users VALUES ('marissa', 'koala', true)");
         template.execute("INSERT INTO users VALUES ('peter', 'opal', false)");

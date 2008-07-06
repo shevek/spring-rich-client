@@ -5,7 +5,7 @@
  Mathias Broekelmann
  -----
 
-Upgrading from 0.2.x to 1.0.x
+Upgrading from 0.2.x to 1.0.0
 
     * Exception handling refactor
 
@@ -200,3 +200,22 @@ org.acegisecurity.AuthenticationException.description = \
     Your own images.properties file should use full paths and not rely on the resourceBasePath.
 
     * Renamed module spring-richclient-tiger to spring-richclient-jdk5
+    
+ Upgrading from 1.0.0 to 1.0.1
+ 
+    * The Acegi Security Framework has been replaced with it's newer version Spring Security. Update your dependencies and messages:
+ 
++--
+org.springframework.security.BadCredentialsException.caption = Authentication failed
+org.springframework.security.BadCredentialsException.description = \
+  Your username did not match your password.\n\
+  \n\
+  Please verify your username and password.
+
+org.springframework.security.AuthenticationException.caption = Authentication failed
+org.springframework.security.AuthenticationException.description = \
+  You are not or no longer allowed to log in.\n\
+  \n\
+  Please verify your username.
++--   
+    

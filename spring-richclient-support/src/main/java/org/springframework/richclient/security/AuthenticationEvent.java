@@ -15,14 +15,14 @@
  */
 package org.springframework.richclient.security;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 
 /**
  * Event fired when the user's authentication token changes.
  * <p>
  * The source of this event is the <code>Authentication</code> token returned by a
  * successful call to
- * {@link org.acegisecurity.AuthenticationManager#authenticate(org.acegisecurity.Authentication)}
+ * {@link org.springframework.security.AuthenticationManager#authenticate(org.springframework.security.Authentication)}
  * or {@link ClientSecurityEvent#NO_AUTHENTICATION} if no authentication is in place (such
  * as after the user logs out).
  * 
