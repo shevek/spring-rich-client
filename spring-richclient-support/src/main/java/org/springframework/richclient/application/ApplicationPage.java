@@ -15,6 +15,8 @@
  */
 package org.springframework.richclient.application;
 
+import java.util.Set;
+
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
@@ -44,4 +46,11 @@ public interface ApplicationPage extends ControlFactory {
     boolean close();
     
     boolean close(PageComponent pageComponent);
+
+    /**
+     * Returns the Set of {@link PageComponent}s on this ApplicationPage
+     * @return the page components
+     */
+    public Set getPageComponents();
+
 }
