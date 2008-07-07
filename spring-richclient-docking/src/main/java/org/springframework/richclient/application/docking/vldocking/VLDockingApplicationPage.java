@@ -92,13 +92,12 @@ public class VLDockingApplicationPage extends AbstractApplicationPage implements
         if (dockable == null) {
             return false;
         }
-
-        // FIXME: need some way to tell the desktop to focus on the indicated dockable
-        // e.g. if it is hidden, it should be expanded, etc
-        // if another Dockable is maximized, it should be restored, so that the
-        // selected Dockable can be seen
-        // if the specified Dockable is a non-visible tab, it should be brought to front, etc
-        return pageComponent.getControl().requestFocusInWindow();
+        // Don't request focus here, the DockingDesktop already shifts focus. If requesting focus at this point, 
+        //  the DockingDesktop catches this event and fires another focus event. This might cause loops when 
+        // maximizing/minimizing/restoring because at that point a remove of the component is done which shifts
+        // focus and after setting the correct docking state, a focus request is done. 
+        // see RCP-558
+        return true;
     }
 
     public void addView(String viewDescriptorId) {
