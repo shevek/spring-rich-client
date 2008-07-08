@@ -42,13 +42,13 @@ import org.springframework.richclient.util.PopupMenuMouseListener;
  */
 public class DesktopApplicationPage extends AbstractApplicationPage implements PageLayoutBuilder {
 
-	private ScrollingDesktopPane control;
-
-	private JScrollPane scrollPane;
+	private JDesktopPane control;
 
 	private Map frames = new HashMap();
 
 	private int dragMode;
+	
+    private boolean scrollable = true;
 
 	private final DesktopCommandGroupFactory desktopCommandGroupFactory;
 
@@ -63,6 +63,13 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 		this.dragMode = dragMode;
 	}
 
+    public void setScrollable(boolean scrollable) {
+        if (isControlCreated()) {
+            throw new IllegalStateException("scrollable-property can only be set before creation of control");
+        }
+        this.scrollable = scrollable;
+    }
+	
 	protected boolean giveFocusTo(PageComponent pageComponent) {
 		if (getActiveComponent() == pageComponent) {
 			return true;
@@ -158,21 +165,33 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 	}
 
 	protected JComponent createControl() {
-		control = new ScrollingDesktopPane();
+		control = createDesktopPane();
 		control.setDragMode(dragMode);
 
-		scrollPane = new JScrollPane(control);
-
-		control.addMouseListener(new PopupMenuMouseListener() {
-			protected JPopupMenu getPopupMenu() {
-				return desktopCommandGroupFactory.createContextMenuCommandGroup(getWindow().getCommandManager(),
-						control).createPopupMenu();
-			}
-		});
 
 		getPageDescriptor().buildInitialLayout(this);
 
-		return scrollPane;
+        if (scrollable) {
+            return new JScrollPane(control);
+        } else {
+            return control;
+        }
+	}
+	
+	protected JDesktopPane createDesktopPane() {
+        final JDesktopPane control;
+        if (scrollable) {
+            control = new ScrollingDesktopPane();
+        } else {
+            control = new JDesktopPane();
+        }
+        control.addMouseListener(new PopupMenuMouseListener() {
+            protected JPopupMenu getPopupMenu() {
+                return desktopCommandGroupFactory.createContextMenuCommandGroup(getWindow().getCommandManager(),
+                        control).createPopupMenu();
+            }
+        });
+        return control; 
 	}
 
 	protected void updatePageComponentProperties(PageComponent pageComponent) {
