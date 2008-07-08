@@ -39,6 +39,16 @@
       <artifactId>flexdock</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>net.sf.swingdocking</groupId>
+      <artifactId>swingdocking-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.swingdocking</groupId>
+      <artifactId>swingdocking-mustang</artifactId>
+      <optional>true</optional>
+    </dependency>
 
   </dependencies>
 
