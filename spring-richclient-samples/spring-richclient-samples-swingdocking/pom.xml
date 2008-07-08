@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>spring-richclient-samples</artifactId>
+    <groupId>org.springframework.richclient.samples</groupId>
+    <version>1.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.richclient.samples</groupId>
+  <artifactId>spring-richclient-samples-swingdocking</artifactId>
+  <name>Spring richclient Swing-Docking sample application</name>
+  <packaging>jar</packaging>
+  <description>
+    This application provides a example of how to use the Swing-Docking features of the Spring Rich Client platform.
+  </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.springframework.richclient.samples.swingdocking.app.SimpleSwingDockingApp</mainClass>
+              <addClasspath>true</addClasspath>
+              <addExtensions />
+              <classpathPrefix>../lib</classpathPrefix>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.richclient.samples</groupId>
+      <artifactId>spring-richclient-samples-simple</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-docking</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.swingdocking</groupId>
+      <artifactId>swingdocking-mustang</artifactId>
+    </dependency>
+  </dependencies>
+</project>
