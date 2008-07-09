@@ -31,7 +31,7 @@ public class SwingDockingApplicationPage extends DesktopApplicationPage {
 
     public SwingDockingApplicationPage(ApplicationWindow window, PageDescriptor pageDescriptor) {
         super(window, pageDescriptor, JDesktopPane.OUTLINE_DRAG_MODE, null);
-//        setScrollable(false);
+        setScrollable(false);
     }
 
     protected JDesktopPane createDesktopPane() {
