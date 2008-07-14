@@ -23,6 +23,7 @@ import javax.swing.JProgressBar;
 
 import org.springframework.richclient.progress.ProgressBarProgressMonitor;
 import org.springframework.richclient.progress.ProgressMonitor;
+import org.springframework.util.Assert;
 
 /**
  * A lightweight splash-screen for displaying the progress of a GUI application startup process.
@@ -114,9 +115,14 @@ public class ProgressSplashScreen extends SimpleSplashScreen implements Monitori
      */
     protected JProgressBar getProgressBar() {
         if (progressBar == null) {
-            progressBar = new JProgressBar();
+            progressBar = createProgressBar();
+            Assert.notNull(progressBar, "createProgressBar should not return null");
         }
         return progressBar;
+    }
+    
+    protected JProgressBar createProgressBar() {
+        return new JProgressBar();
     }
 
     public boolean isIndeterminate() {
