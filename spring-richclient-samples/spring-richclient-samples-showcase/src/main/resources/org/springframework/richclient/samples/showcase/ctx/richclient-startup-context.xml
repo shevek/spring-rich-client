@@ -4,9 +4,22 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <!-- Define the splash screen to be displayed during application startup -->
-  <!-- The SplashScreen class requires the location of the image to display -->
   <bean id="splashScreen" class="org.springframework.richclient.application.splash.SimpleSplashScreen"
     scope="prototype">
+    <!-- The SplashScreen class requires the location of the image to display -->
     <property name="imageResourcePath" value="/org/springframework/richclient/samples/showcase/images/splash-screen.jpg" />
+    <!-- The icon to use in the taskbar while the splashscreen is showing -->
+    <property name="iconResourcePath" value="/org/springframework/richclient/images/misc/bkmrk_nav.gif" />
+    <!-- The messageSource containing the title to use in the taskbar while the splashscreen is showing.
+      The key used here is 'splash.title' -->
+    <property name="messageSource" ref="messageSource"/>
+  </bean>
+
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>org.springframework.richclient.samples.showcase.ui.splash-messages</value>
+      </list>
+    </property>
   </bean>
 </beans>
