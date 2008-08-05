@@ -13,11 +13,7 @@
     will have different target executors in each view.
   -->
   <bean id="windowCommandManager"
-    class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
-    <property name="sharedCommandIds">
-      <list></list>
-    </property>
-  </bean>
+    class="org.springframework.richclient.application.support.ApplicationWindowCommandManager" />
 
   <!--
     Bean: menuBar
@@ -78,10 +74,12 @@
   <bean id="bindingMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
     <property name="members">
       <list>
+        <ref bean="documentBindingDialogCommand" />
         <ref bean="listSelectionBindingDialogCommand" />
         <ref bean="messageFormatValueModelDialogCommand" />
         <ref bean="parentChildFormDialogCommand" />
         <ref bean="radioButtonEnumDialogCommand" />
+        <ref bean="shuttleListBindingDialogCommand" />
       </list>
     </property>
   </bean>
@@ -122,6 +120,7 @@
       <list>
         <ref bean="basicRegExpDialogCommand" />
         <ref bean="stringLengthConstraintCommand" />
+        <ref bean="requiredIfTrueConstraintCommand" />
       </list>
     </property>
   </bean>
@@ -237,6 +236,22 @@
         class="org.springframework.richclient.samples.showcase.validation.StringLenghtConstraintDialog" />
     </property>
   </bean>
+  
+  <bean id="requiredIfTrueConstraintCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="requiredIfTrueConstraint"
+        class="org.springframework.richclient.samples.showcase.validation.RequiredIfTrueConstraintDialog" />
+    </property>
+  </bean>
+
+  <bean id="documentBindingDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="documentBindingDialog"
+        class="org.springframework.richclient.samples.showcase.binding.DocumentBindingDialog" />
+    </property>
+  </bean>
 
   <bean id="listSelectionBindingDialogCommand"
     class="org.springframework.richclient.command.support.DialogCommand">
@@ -246,6 +261,14 @@
     </property>
   </bean>
 
+  <bean id="shuttleListBindingDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="shuttleListBindingDialog"
+        class="org.springframework.richclient.samples.showcase.binding.ShuttleListBindingDialog" />
+    </property>
+  </bean>
+  
   <bean id="radioButtonEnumDialogCommand"
     class="org.springframework.richclient.command.support.DialogCommand">
     <property name="dialog">

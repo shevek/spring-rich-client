@@ -91,7 +91,7 @@
           <property name="exceptionHandler">
             <bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">
               <property name="logLevel" value="WARN" />
-              <property name="shutdownPolicy" value="NONE" />
+              <property name="shutdownPolicy" value="ASK" />
             </bean>
           </property>
         </bean>
@@ -315,6 +315,16 @@
         </entry>
       </map>
     </property>
+    <property name="bindersForControlTypes">
+      <map>
+        <entry>
+          <key>
+            <value type="java.lang.Class">org.springframework.richclient.components.ShuttleList</value>
+          </key>
+          <bean class="org.springframework.richclient.components.ShuttleListBinder" />
+        </entry>
+      </map>
+    </property>
   </bean>
-
+    
 </beans>
