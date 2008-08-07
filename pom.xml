@@ -682,12 +682,12 @@
         <version>${pom.version}</version>
         <scope>test</scope>
       </dependency>
-      <dependency>
+      <!--dependency>
         <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-full</artifactId>
         <version>${pom.version}</version>
         <type>pom</type>
-      </dependency>
+      </dependency-->
 
       <!-- Lang -->
       <dependency>
@@ -876,7 +876,7 @@
       <dependency>
         <groupId>org.swinglabs</groupId>
         <artifactId>swingx</artifactId>
-        <version>0.9.1</version>
+        <version>0.9.3</version>
       </dependency>
       <!-- JDIC library: use a profile in maven to have the correct os specific libs added to your classpath, see jdk5 module -->
       <dependency>
