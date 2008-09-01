@@ -40,7 +40,7 @@ import org.springframework.util.StringUtils;
  * This class displays a configurable splash screen and launches a rich client
  * {@link Application}. Both the splash screen and the application to be
  * launched are expected to be defined as beans, under the names
- * {@value #SPLASH_SCREEN_BEAN_ID} and {@value #APPLICATION_BEAN_ID}
+ * {@link #SPLASH_SCREEN_BEAN_ID} and {@link #APPLICATION_BEAN_ID}
  * respectively, in one of the application contexts provided to the constructor.
  * </p>
  * 
@@ -48,7 +48,7 @@ import org.springframework.util.StringUtils;
  * For quick loading and display of the splash screen while the rest of the
  * application is being initialized, constructors are provided that take a
  * separate startup context. The startup context will be searched for the
- * {@value #SPLASH_SCREEN_BEAN_ID} bean, which will then be displayed before the
+ * {@link #SPLASH_SCREEN_BEAN_ID} bean, which will then be displayed before the
  * main application context is loaded and the application launched. If no
  * startup context is provided or it doesn't contain an appropriately named
  * splash screen bean, an attempt will be made to load a splash screen from the
@@ -64,12 +64,14 @@ public class ApplicationLauncher {
 
 	/**
 	 * The name of the bean that defines the application's splash screen.
+     * {@value}
 	 */
 	public static final String SPLASH_SCREEN_BEAN_ID = "splashScreen";
 
 	/**
 	 * The name of the bean that defines the {@code Application} that this class
 	 * will launch.
+     * {@value}
 	 */
 	public static final String APPLICATION_BEAN_ID = "application";
 
@@ -274,7 +276,7 @@ public class ApplicationLauncher {
 	 * been provided, the main application context will be searched for a splash
 	 * screen to display. The main application context will then be searched for
 	 * the {@link Application} to be launched, using the bean name
-	 * {@value #APPLICATION_BEAN_ID}. If the application is found, it will be
+	 * {@link #APPLICATION_BEAN_ID}. If the application is found, it will be
 	 * started.
 	 * 
 	 */
