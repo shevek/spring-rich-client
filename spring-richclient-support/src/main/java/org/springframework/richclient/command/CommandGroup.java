@@ -220,8 +220,18 @@ public class CommandGroup extends AbstractCommand {
 		}
 	}
 
+	/**
+	 * Enable/disable the entire group.
+	 * 
+	 * @param enabled enable/disable this group.
+	 */
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
+		for (Iterator members = getMemberList().iterator(); members.hasNext();)
+		{
+		    GroupMember groupMember = (GroupMember)members.next();
+		    groupMember.setEnabled(enabled);
+		}
 	}
 
 	public void setVisible(boolean visible) {
