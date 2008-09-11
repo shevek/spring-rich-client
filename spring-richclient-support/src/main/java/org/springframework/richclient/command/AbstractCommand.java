@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.command;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -314,6 +315,24 @@ public abstract class AbstractCommand extends AbstractPropertyChangePublisher im
 	 */
 	public void setIconInfo(CommandButtonIconInfo iconInfo) {
 		getOrCreateFaceDescriptor().setIconInfo(iconInfo);
+	}
+	
+	/**
+	 * Set the provided foreground colour on the default {@link CommandFaceDescriptor}.
+	 *
+	 * @see CommandFaceDescriptor#setForeground(Color)
+	 */
+	public void setForeground(Color foreground) {
+		getOrCreateFaceDescriptor().setForeground(foreground);
+	}
+	
+	/**
+	 * Set the provided background colour on the default {@link CommandFaceDescriptor}.
+	 *
+	 * @see CommandFaceDescriptor#setBackground(Color)
+	 */	
+	public void setBackground(Color background) {
+		getOrCreateFaceDescriptor().setBackground(background);
 	}
 
 	/**

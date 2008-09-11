@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.command.config;
 
+import java.awt.Color;
 import java.awt.Image;
 
 import javax.swing.AbstractButton;
@@ -25,6 +26,7 @@ import javax.swing.KeyStroke;
 import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.core.ColorConfigurable;
 import org.springframework.richclient.core.DescribedElement;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.VisualizedElement;
@@ -38,7 +40,7 @@ import org.springframework.richclient.util.Assert;
  * @author Keith Donald
  */
 public class CommandFaceDescriptor extends AbstractPropertyChangePublisher implements DescribedElement,
-        VisualizedElement, CommandLabelConfigurable, DescriptionConfigurable, CommandIconConfigurable {
+        VisualizedElement, CommandLabelConfigurable, DescriptionConfigurable, CommandIconConfigurable, ColorConfigurable {
 
     /** The property name used when firing events for the {@code labelInfo} property. */
     public static final String LABEL_INFO_PROPERTY = "labelInfo";
@@ -54,10 +56,20 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
 
     /** The property name used when firing events for the {@code largeIconInfo} property. */
     public static final String LARGE_ICON_INFO_PROPERTY = "largeIconInfo";
+    
+    /** The property name used when firing events for the {@code background} property. */
+    public static final String BACKGROUND_PROPERTY = "background";
+    
+    /** The property name used when firing events for the {@code foreground} property. */
+    public static final String FOREGROUND_PROPERTY = "foreground";
 
     private String caption;
 
     private String description;
+    
+    private Color background;
+    
+    private Color foreground;
 
     private CommandButtonLabelInfo labelInfo;
 
@@ -270,6 +282,24 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
     }
 
     /**
+     * {@inheritDoc}
+     */
+	public void setBackground(Color background) {
+		Color old = this.background;
+		this.background = background;
+		firePropertyChange(BACKGROUND_PROPERTY, old, this.background);
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public void setForeground(Color foreground) {
+		Color old = this.foreground;
+		this.foreground = foreground;
+		firePropertyChange(FOREGROUND_PROPERTY, old, this.foreground);		
+	}
+
+    /**
      * Sets the label information for the command using the given encoded label descriptor.
      *
      * @param encodedLabelInfo The encoded label descriptor. May be null or empty.
@@ -400,7 +430,21 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
         else {
             iconInfo.configure(button);
         }
-        
+    }
+    
+    /**
+     * Configures the given button with colours for background and foreground if available.
+     * 
+     * @param button The button to be configured. Must not be null.
+     */
+    public void configureColor(AbstractButton button) {
+        Assert.required(button, "button");
+        if (foreground != null) {
+        	button.setForeground(foreground);
+        }
+        if (background != null) {
+        	button.setBackground(background);
+        }
     }
 
     /**
@@ -444,5 +488,4 @@ public class CommandFaceDescriptor extends AbstractPropertyChangePublisher imple
         return new ToStringCreator(this).append("caption", caption).append("description", description).append(
                 "buttonLabelInfo", labelInfo).append("buttonIconInfo", iconInfo).toString();
     }
-
 }

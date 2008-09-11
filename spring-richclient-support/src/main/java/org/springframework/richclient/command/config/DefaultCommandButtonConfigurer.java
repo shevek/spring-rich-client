@@ -36,6 +36,7 @@ public class DefaultCommandButtonConfigurer implements CommandButtonConfigurer {
         Assert.notNull(faceDescriptor, "The command face descriptor cannot be null.");
         faceDescriptor.configureLabel(button);
         faceDescriptor.configureIcon(button);
+        faceDescriptor.configureColor(button);
         button.setToolTipText(faceDescriptor.getCaption());
     }
     

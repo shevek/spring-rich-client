@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application.config;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.util.Locale;
 
@@ -32,6 +33,7 @@ import org.springframework.richclient.command.config.CommandButtonIconInfo;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.config.CommandIconConfigurable;
 import org.springframework.richclient.command.config.CommandLabelConfigurable;
+import org.springframework.richclient.core.ColorConfigurable;
 import org.springframework.richclient.core.DescriptionConfigurable;
 import org.springframework.richclient.core.LabelConfigurable;
 import org.springframework.richclient.core.LabelInfo;
@@ -313,6 +315,10 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		if (object instanceof LabelConfigurable) {
 			configureLabel((LabelConfigurable) object, objectName);
 		}
+		
+		if (object instanceof ColorConfigurable) {
+			configureColor((ColorConfigurable)object, objectName);
+		}
 
 		if (object instanceof CommandLabelConfigurable) {
 			configureCommandLabel((CommandLabelConfigurable) object, objectName);
@@ -392,6 +398,34 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		}
 	}
 
+	/**
+	 * Sets the foreground and background colours of the given object.
+	 * Use the following message codes:
+	 * 
+	 * <pre>
+	 * &lt;objectName&gt;.foreground
+	 * &lt;objectName&gt;.background
+	 * </pre>
+	 * 
+	 * @param configurable The object to be configured. Must not be null.
+	 * @param objectName The name of the configurable object, unique within the
+	 * application. Must not be null.
+	 * 
+	 * @throws IllegalArgumentException if either argument is null.
+	 */
+	protected void configureColor(ColorConfigurable configurable, String objectName) {
+		Assert.required(configurable, "configurable");
+		Assert.required(objectName, "objectName");
+
+		Color color = loadColor(objectName + ".foreground");
+		if (color != null)
+			configurable.setForeground(color);
+		
+		color = loadColor(objectName + ".background");
+		if (color != null)
+			configurable.setBackground(color);
+	}
+	
 	/**
 	 * Sets the {@link CommandButtonLabelInfo} of the given object. The label
 	 * info is created after loading the encoded label string from this
@@ -659,6 +693,32 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		return bean;
 	}
 
+	/**
+	 * Attempts to load a {@link Color} by decoding the message that is found by
+	 * looking up the given colorKey. Decoding is done by by
+	 * {@link Color#decode(String)}.
+	 * 
+	 * @param colorKey The message code used to retrieve the colour code.
+	 * @return the decoded {@link Color} or <code>null</code> if no colour could
+	 * be decoded/found.
+	 */
+	private Color loadColor(String colorKey) {
+		String colorCode = loadMessage(colorKey);
+		if (colorCode == null) {
+			return null;
+		}
+		try {
+			return Color.decode(colorCode);
+		}
+		catch (NumberFormatException nfe) {
+			if (logger.isWarnEnabled()) {
+				logger.warn("Could not parse a valid Color from code [" + colorCode
+						+ "]. Ignoring and returning null.");
+			}
+			return null;
+		}
+	}
+	
 	/**
 	 * Attempts to load the message corresponding to the given message code
 	 * using this instance's {@link MessageSource} and locale.
