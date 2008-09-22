@@ -294,7 +294,7 @@ public class TableLayoutBuilder implements LayoutBuilder {
      * Inserts a related component gap column.
      */
     public TableLayoutBuilder gapCol() {
-        return gapCol(FormFactory.RELATED_GAP_COLSPEC);
+        return relatedGapCol();
     }
 
     /**
@@ -324,6 +324,13 @@ public class TableLayoutBuilder implements LayoutBuilder {
      */
     public TableLayoutBuilder unrelatedGapCol() {
         return gapCol(FormFactory.UNRELATED_GAP_COLSPEC);
+    }
+
+    /**
+     * Inserts a related component gap column.
+     */
+    public TableLayoutBuilder relatedGapCol() {
+        return gapCol(FormFactory.RELATED_GAP_COLSPEC);
     }
 
     /**
