@@ -3,7 +3,7 @@
   <parent>
     <artifactId>spring-richclient-samples</artifactId>
     <groupId>org.springframework.richclient.samples</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.richclient.samples</groupId>
