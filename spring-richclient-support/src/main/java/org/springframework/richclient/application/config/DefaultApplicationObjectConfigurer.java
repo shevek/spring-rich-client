@@ -110,6 +110,9 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 	/** The key fragment used to retrieve the title for a given object. */
 	public static final String TITLE_KEY = "title";
 
+	/** The key fragment used to retrieve the label for a given object. */
+	public static final String LABEL_KEY = "label";
+
 	/** Class logger, available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -390,7 +393,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		Assert.required(configurable, "configurable");
 		Assert.required(objectName, "objectName");
 
-		String labelStr = loadMessage(objectName + ".label");
+		String labelStr = loadMessage(objectName + "." + LABEL_KEY);
 
 		if (StringUtils.hasText(labelStr)) {
 			LabelInfo labelInfo = LabelInfo.valueOf(labelStr);
@@ -445,7 +448,7 @@ public class DefaultApplicationObjectConfigurer implements ApplicationObjectConf
 		Assert.required(configurable, "configurable");
 		Assert.required(objectName, "objectName");
 
-		String labelStr = loadMessage(objectName + ".label");
+		String labelStr = loadMessage(objectName + "." + LABEL_KEY);
 
 		if (StringUtils.hasText(labelStr)) {
 			CommandButtonLabelInfo labelInfo = CommandButtonLabelInfo.valueOf(labelStr);
