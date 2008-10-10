@@ -9,7 +9,7 @@
   <name>Spring RCP Project Archetype</name>
 
   <properties>
-    <springrich.version>1.0.1-SNAPSHOT</springrich.version>
+    <springrich.version>1.0.2-SNAPSHOT</springrich.version>
     <spring.version>2.5.1</spring.version>
   </properties>
 
