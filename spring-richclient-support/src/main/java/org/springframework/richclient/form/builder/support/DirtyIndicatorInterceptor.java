@@ -89,7 +89,8 @@ public class DirtyIndicatorInterceptor extends AbstractFormComponentInterceptor 
 
 				Object oldValue = originalValueHolder.getValue();
 				Object newValue = evt.getNewValue();
-				overlay.setVisible(getValueChangeDetector().hasValueChanged(oldValue, newValue));
+				overlay.setVisible(getValueChangeDetector().hasValueChanged(oldValue, newValue)
+                    && !getFormModel().getFieldMetadata(propertyName).isReadOnly());
 			}
 		});
 		getFormModel().getFormObjectHolder().addValueChangeListener(new PropertyChangeListener() {
