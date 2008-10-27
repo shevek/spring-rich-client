@@ -30,7 +30,7 @@ public interface RulesSource {
 	/**
 	 * Return the validation rules for the provided bean.
 	 *
-	 * @param beanClass
+	 * @param bean
 	 *            the bean class
 	 * @return The validation rules, or <code>null</code> if none exist.
 	 */
