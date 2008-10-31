@@ -38,7 +38,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.BufferedCollectionValueModel;
 import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure;
+package org.springframework.rules.closure;
 
 /**
  * A function object that evaluates one argument, executing a block of code. It

@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure;
+package org.springframework.rules.closure;
+
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A interface to be implemented by objects which encapsulate a workflow process

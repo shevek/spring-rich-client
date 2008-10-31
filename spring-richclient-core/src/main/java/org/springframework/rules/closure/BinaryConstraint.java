@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.closure;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A function object that tests two arguments and returns a single

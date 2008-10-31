@@ -21,7 +21,7 @@ import java.util.Observer;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.util.Assert;
 
 /**

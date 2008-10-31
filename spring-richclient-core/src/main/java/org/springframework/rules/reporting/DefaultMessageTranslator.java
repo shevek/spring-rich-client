@@ -26,14 +26,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.ReflectiveVisitorHelper;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.core.style.StylerUtils;
-import org.springframework.rules.constraint.ClosureResultConstraint;
-import org.springframework.rules.constraint.CompoundConstraint;
-import org.springframework.rules.constraint.Not;
-import org.springframework.rules.constraint.ParameterizedBinaryConstraint;
-import org.springframework.rules.constraint.Range;
-import org.springframework.rules.constraint.StringLengthConstraint;
+import org.springframework.rules.constraint.*;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;
 import org.springframework.rules.constraint.property.ParameterizedPropertyConstraint;
 import org.springframework.rules.constraint.property.PropertiesConstraint;
@@ -84,7 +79,7 @@ public class DefaultMessageTranslator implements MessageTranslator,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.springframework.rules.reporting.MessageTranslator#getMessage(org.springframework.core.closure.Constraint)
+	 * @see org.springframework.rules.reporting.MessageTranslator#getMessage(org.springframework.rules.constraint.Constraint)
 	 */
 	public String getMessage(Constraint constraint) {
 		String objectName = null;

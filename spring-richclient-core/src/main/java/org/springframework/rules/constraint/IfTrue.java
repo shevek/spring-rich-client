@@ -15,8 +15,7 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.support.AbstractConstraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 

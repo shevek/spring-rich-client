@@ -23,7 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.swing.ComboBoxBinder;
@@ -161,7 +161,7 @@ public class TableFormBuilder extends AbstractFormBuilder {
      *            optional filter constraint for the items of the selector
      * @return an array containing the label and the selector component which where added to the form
      * 
-     * @see #createSelector(String, Constraint)
+     * @see #createSelector(String, org.springframework.rules.constraint.Constraint)
      */
     public JComponent[] addSelector(String fieldName, Constraint filter) {
         return addSelector(fieldName, filter, "");

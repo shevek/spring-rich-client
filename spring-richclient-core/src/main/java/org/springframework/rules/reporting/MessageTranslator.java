@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.reporting;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A message translator which translates validation results into a human

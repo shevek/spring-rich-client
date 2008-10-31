@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.core.style.ToStringCreator;
 
 /**

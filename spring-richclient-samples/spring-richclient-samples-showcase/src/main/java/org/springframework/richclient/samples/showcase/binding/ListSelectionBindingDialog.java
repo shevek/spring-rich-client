@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 import org.springframework.binding.value.support.RefreshableValueHolder;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.Form;

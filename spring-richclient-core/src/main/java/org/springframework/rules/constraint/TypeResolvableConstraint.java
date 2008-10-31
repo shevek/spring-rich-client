@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.reporting.TypeResolvableSupport;
 
 /**

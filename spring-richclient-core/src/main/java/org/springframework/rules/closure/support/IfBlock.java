@@ -13,10 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * Only execute the specified closure if a provided constraint is also true.

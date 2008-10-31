@@ -23,8 +23,8 @@ import javax.swing.JComponent;
 import javax.swing.ListModel;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.util.Assert;
@@ -71,7 +71,7 @@ public abstract class AbstractListBinder extends AbstractBinder {
 
     /**
      * key for defining a context dependent filter constraint value that is used to filter the elements of
-     * selectableItems. Values must be instances of {@link Constraint}. See class description for more details.
+     * selectableItems. Values must be instances of {@link org.springframework.rules.constraint.Constraint}. See class description for more details.
      */
     public static final String FILTER_KEY = "filter";
 
@@ -139,7 +139,7 @@ public abstract class AbstractListBinder extends AbstractBinder {
     }
 
     /**
-     * Defines the {@link Constraint} which is used as a filter for the selectable items. The value can be overwritten
+     * Defines the {@link org.springframework.rules.constraint.Constraint} which is used as a filter for the selectable items. The value can be overwritten
      * with a context value for <code>FILTER_KEY</code>
      * 
      * @param filter

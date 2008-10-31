@@ -15,8 +15,8 @@
  */
 package org.springframework.rules.closure;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.support.AbstractClosure;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.closure.support.AbstractClosure;
 
 /**
  * Returns a trimmed copy of the string form of an object.
@@ -41,7 +41,7 @@ public class StringTrimmer extends AbstractClosure {
 	 * leading/trailing whitespace) copy of the string.
 	 * 
 	 * @return The trimmed string
-	 * @see org.springframework.core.closure.Closure#call(java.lang.Object)
+	 * @see Closure#call(java.lang.Object)
 	 */
 	public Object call(Object argument) {
 		return String.valueOf(argument).trim();

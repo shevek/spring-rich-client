@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.rules.PropertyConstraintProvider;
 import org.springframework.rules.Rules;

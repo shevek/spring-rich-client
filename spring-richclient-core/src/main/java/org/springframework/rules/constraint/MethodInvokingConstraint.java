@@ -17,7 +17,7 @@ package org.springframework.rules.constraint;
 
 import java.lang.reflect.Method;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.Assert;
 

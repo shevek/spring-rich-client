@@ -17,7 +17,7 @@ package org.springframework.rules.constraint;
 
 import java.util.Comparator;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;
 
@@ -189,7 +189,7 @@ public final class Range extends AbstractConstraint {
 	/**
 	 * Test if the specified argument falls within the established range.
 	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+	 * @see Constraint#test(java.lang.Object)
 	 */
 	public boolean test(Object argument) {
 		return this.rangeConstraint.test(argument);

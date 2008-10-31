@@ -13,13 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 
 /**
  * Convenience implementation for the closure interface. Extends

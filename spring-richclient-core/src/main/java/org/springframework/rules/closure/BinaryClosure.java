@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.closure;
 
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 
 /**
  * A function object that tests two arguments and returns a single

@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.support.Algorithms;
-import org.springframework.core.closure.support.Block;
+import org.springframework.rules.constraint.Constraint;
+import org.springframework.rules.closure.support.Algorithms;
+import org.springframework.rules.closure.support.Block;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;
 

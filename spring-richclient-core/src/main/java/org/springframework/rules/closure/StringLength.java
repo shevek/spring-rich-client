@@ -15,8 +15,8 @@
  */
 package org.springframework.rules.closure;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.support.AbstractClosure;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.closure.support.AbstractClosure;
 
 /**
  * Returns the Integer length of an object's string form, or zero if the object
@@ -42,7 +42,7 @@ public class StringLength extends AbstractClosure {
      * the string length.
      * 
      * @return The string length Integer.
-     * @see org.springframework.core.closure.Closure#call(java.lang.Object)
+     * @see Closure#call(java.lang.Object)
      */
     public Object call(Object value) {
         if (value == null) { return new Integer(0); }

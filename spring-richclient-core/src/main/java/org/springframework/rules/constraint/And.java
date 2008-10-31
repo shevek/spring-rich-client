@@ -17,7 +17,7 @@ package org.springframework.rules.constraint;
 
 import java.util.Iterator;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A "and" compound constraint (aka conjunction).
@@ -59,7 +59,7 @@ public class And extends CompoundConstraint {
 	 * Tests if all of the constraints aggregated by this compound constraint
 	 * return <code>true</code> when evaulating this argument.
 	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+	 * @see Constraint#test(java.lang.Object)
 	 */
 	public boolean test(Object argument) {
 		for (Iterator i = iterator(); i.hasNext();) {

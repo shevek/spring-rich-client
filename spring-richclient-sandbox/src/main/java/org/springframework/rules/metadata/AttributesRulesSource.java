@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.metadata.Attributes;
 import org.springframework.rules.Rules;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;

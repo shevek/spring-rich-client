@@ -18,7 +18,7 @@ package org.springframework.rules.reporting;
 import java.util.Iterator;
 
 import org.springframework.core.ReflectiveVisitorHelper;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.constraint.And;
 import org.springframework.rules.constraint.Or;
 import org.springframework.rules.constraint.property.CompoundPropertyConstraint;

@@ -26,7 +26,7 @@ import javax.swing.ListModel;
 
 import junit.framework.TestCase;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * @author Mathias Broekelmann

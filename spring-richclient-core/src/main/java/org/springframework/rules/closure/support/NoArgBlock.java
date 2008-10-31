@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
 
 /**

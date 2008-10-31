@@ -13,21 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure;
+package org.springframework.rules.constraint;
 
 /**
- * Marks the Template as being able to run a Closure on its contents.
+ * A function object that tests one argument and returns a single
+ * <code>boolean</code> result.
+ * <p>
+ * A constraint tests a single argument against some conditional expression. For
+ * example, a "required" constraint will return true if the provided argument is
+ * non-null or empty, false otherwise.
+ * </p>
  *
  * @author Keith Donald
  */
-public interface ClosureTemplate {
+public interface Constraint {
 
 	/**
-	 * Execute the template with the specific closure callback for the insertion
-	 * of custom processing code.
+	 * Test the provided argument against this predicate's condition.
 	 *
-	 * @param templateCallback The procedure callback.
+	 * @param argument the argument value
+	 * @return <code>true</code> if the condition was satisfied,
+	 * <code>false</code> otherwise
 	 */
-	void run(Closure templateCallback);
-
+	boolean test(Object argument);
 }

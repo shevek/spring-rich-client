@@ -24,7 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.ComponentFactory;
 import org.springframework.richclient.form.binding.Binding;

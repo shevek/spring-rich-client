@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A constraint that tests if an argument is one of a group. Similiar to a database's 'in' operator, and more convenient
@@ -51,7 +51,7 @@ public class InGroup implements Constraint {
     /**
      * Tests the variable argument value is in this group.
      * 
-     * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+     * @see Constraint#test(java.lang.Object)
      */
     public boolean test(Object value) {
         return group.contains(value);

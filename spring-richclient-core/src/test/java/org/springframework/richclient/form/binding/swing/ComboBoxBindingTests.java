@@ -32,7 +32,7 @@ import javax.swing.event.ListDataListener;
 
 import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.util.comparator.ComparableComparator;
 

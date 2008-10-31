@@ -7,7 +7,7 @@
  */
 package org.springframework.rules.reporting;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.core.Severity;
 
 /**

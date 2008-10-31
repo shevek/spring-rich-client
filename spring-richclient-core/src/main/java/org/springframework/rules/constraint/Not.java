@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.util.Assert;
 
 /**
@@ -51,7 +51,7 @@ public class Not implements Constraint {
     /**
      * Negates the boolean result returned by testing the wrapped constraint.
      * 
-     * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+     * @see Constraint#test(java.lang.Object)
      */
     public boolean test(Object value) {
     	Assert.state(constraint != null, "The constraint is not set");

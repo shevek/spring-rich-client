@@ -15,11 +15,11 @@
  */
 package org.springframework.rules.factory;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.support.AlgorithmsAccessor;
-import org.springframework.core.closure.support.ClosureChain;
-import org.springframework.core.closure.support.IfBlock;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
+import org.springframework.rules.closure.support.AlgorithmsAccessor;
+import org.springframework.rules.closure.support.ClosureChain;
+import org.springframework.rules.closure.support.IfBlock;
 import org.springframework.util.Assert;
 
 /**

@@ -16,7 +16,7 @@
 package org.springframework.binding.value.support;
 
 import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.test.SpringRichTestCase;
 
 /**

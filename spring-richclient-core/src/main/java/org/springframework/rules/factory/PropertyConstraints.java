@@ -15,8 +15,8 @@
  */
 package org.springframework.rules.factory;
 
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.support.AlgorithmsAccessor;
+import org.springframework.rules.constraint.Constraint;
+import org.springframework.rules.closure.support.AlgorithmsAccessor;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 import org.springframework.util.Assert;
 

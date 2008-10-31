@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.closure.BinaryConstraint;
 import org.springframework.rules.closure.StringLength;
 import org.springframework.rules.reporting.TypeResolvable;
@@ -119,7 +119,7 @@ public class StringLengthConstraint extends AbstractConstraint implements TypeRe
      * Tests that the string form of this argument falls within the length
      * constraint.
      * 
-     * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+     * @see Constraint#test(java.lang.Object)
      */
     public boolean test(Object argument) {
         return this.lengthConstraint.test(argument);

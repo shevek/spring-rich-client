@@ -19,7 +19,7 @@ import java.awt.Window;
 
 import javax.swing.JComponent;
 
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.layout.TableLayoutBuilder;
 import org.springframework.util.Assert;

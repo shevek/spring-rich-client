@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.springframework.binding.PropertyAccessStrategy;
 import org.springframework.binding.support.BeanPropertyAccessStrategy;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.constraint.property.PropertyConstraint;
 
 /**

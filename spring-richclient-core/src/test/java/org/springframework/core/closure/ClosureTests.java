@@ -8,8 +8,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.springframework.core.closure.support.Block;
-import org.springframework.core.closure.support.IteratorTemplate;
+import org.springframework.rules.closure.support.Block;
+import org.springframework.rules.closure.support.IteratorTemplate;
+import org.springframework.rules.constraint.Constraint;
+import org.springframework.rules.closure.ElementGenerator;
 
 /**
  * @author Keith Donald

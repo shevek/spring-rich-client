@@ -28,8 +28,8 @@ import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.binding.MutablePropertyAccessStrategy;
 import org.springframework.binding.PropertyMetadataAccessStrategy;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.support.Block;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.closure.support.Block;
 import org.springframework.richclient.test.SpringRichTestCase;
 
 /**

@@ -17,7 +17,7 @@ package org.springframework.rules.constraint;
 
 import java.util.Iterator;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * A "xor" compound constraint (aka exclusive disjunction).
@@ -60,7 +60,7 @@ public class XOr extends CompoundConstraint {
    * Tests if any of the constraints aggregated by this compound constraint test
    * <code>true</code>.
    * 
-   * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+   * @see Constraint#test(java.lang.Object)
    */
   public boolean test(Object value) {
     boolean found = false;

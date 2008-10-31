@@ -8,7 +8,7 @@ import java.util.Locale;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.application.support.DefaultApplicationServices;
 import org.springframework.richclient.test.SpringRichTestCase;
 import org.springframework.rules.constraint.CompoundConstraint;

@@ -16,7 +16,6 @@
 package org.springframework.rules.constraint.property;
 
 import org.springframework.binding.PropertyAccessStrategy;
-import org.springframework.core.closure.Constraint;
 import org.springframework.rules.constraint.Required;
 
 /**

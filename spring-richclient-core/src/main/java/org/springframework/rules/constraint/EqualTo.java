@@ -17,7 +17,7 @@ package org.springframework.rules.constraint;
 
 import java.util.Comparator;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.closure.BinaryConstraint;
 import org.springframework.util.ObjectUtils;
 

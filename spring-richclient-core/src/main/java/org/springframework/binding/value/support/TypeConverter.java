@@ -21,7 +21,7 @@ import org.springframework.binding.convert.ConversionExecutor;
 import org.springframework.binding.value.DerivedValueModel;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 
 /**

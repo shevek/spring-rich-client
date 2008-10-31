@@ -28,7 +28,7 @@ import org.springframework.binding.convert.ConversionException;
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.core.ReflectiveVisitorHelper;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
 import org.springframework.richclient.list.AbstractFilteredListModel;
 import org.springframework.richclient.list.FilteredListModel;

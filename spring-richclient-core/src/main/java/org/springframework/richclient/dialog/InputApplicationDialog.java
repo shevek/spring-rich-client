@@ -26,8 +26,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.form.ValidatingFormModel;
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.form.FormGuard;
 import org.springframework.richclient.form.FormModelHelper;

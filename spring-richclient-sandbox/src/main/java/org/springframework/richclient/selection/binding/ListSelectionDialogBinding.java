@@ -25,8 +25,8 @@ import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.support.Block;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.closure.support.Block;
 import org.springframework.richclient.form.binding.support.CustomBinding;
 import org.springframework.richclient.selection.binding.support.LabelProvider;
 import org.springframework.richclient.selection.binding.support.LabelProviderListCellRenderer;

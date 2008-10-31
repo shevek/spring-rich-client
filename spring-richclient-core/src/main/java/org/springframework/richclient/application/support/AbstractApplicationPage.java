@@ -26,7 +26,6 @@ import java.util.Set;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.closure.support.AbstractConstraint;
 import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServicesLocator;
@@ -43,6 +42,7 @@ import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.Assert;
+import org.springframework.rules.constraint.AbstractConstraint;
 
 /**
  * Abstract "convenience" implementation of <code>ApplicationPage</code>.

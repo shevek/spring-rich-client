@@ -18,7 +18,7 @@ package org.springframework.rules.constraint;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.rules.reporting.TypeResolvableSupport;
 

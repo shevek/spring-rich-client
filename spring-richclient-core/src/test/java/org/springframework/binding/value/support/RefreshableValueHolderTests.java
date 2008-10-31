@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.springframework.binding.value.ValueChangeDetector;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 

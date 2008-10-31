@@ -1,9 +1,9 @@
 /*
  * Copyright 2004-2005 the original author or authors.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 
 /**
  * Convenient class to implement workflow.

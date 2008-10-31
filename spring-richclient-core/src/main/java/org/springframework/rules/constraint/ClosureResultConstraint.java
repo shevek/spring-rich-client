@@ -15,8 +15,8 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.util.Assert;
 
 /**
@@ -49,7 +49,7 @@ public class ClosureResultConstraint implements Constraint {
 	 * Tests the result returned by evaluating the specified argument against
 	 * the configured closure.
 	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+	 * @see Constraint#test(java.lang.Object)
 	 */
 	public boolean test(Object argument) {
 		Object returnValue = closure.call(argument);

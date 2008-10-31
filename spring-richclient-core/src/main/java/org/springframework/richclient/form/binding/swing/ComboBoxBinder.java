@@ -23,7 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.core.closure.Closure;
+import org.springframework.rules.closure.Closure;
 import org.springframework.util.Assert;
 
 /**

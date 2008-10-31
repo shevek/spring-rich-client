@@ -15,7 +15,7 @@
  */
 package org.springframework.rules.constraint;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.closure.BinaryConstraint;
 
 /**
@@ -97,7 +97,7 @@ public class ParameterizedBinaryConstraint implements Constraint {
 	 * Tests the wrapped binary constraint with the variable argument value,
 	 * passing in the parameter constant as the second argument.
 	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+	 * @see Constraint#test(java.lang.Object)
 	 */
 	public boolean test(Object value) {
 		return constraint.test(value, this.parameter);

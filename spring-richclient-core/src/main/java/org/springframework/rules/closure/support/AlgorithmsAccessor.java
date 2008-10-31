@@ -13,13 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.core.closure.support;
+package org.springframework.rules.closure.support;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
 
 /**
  * Algorithms accessor support class, for convenient extending by subclasses.
@@ -49,14 +49,14 @@ public abstract class AlgorithmsAccessor {
 	}
 
 	/**
-	 * @see Algorithms#findAll(Collection, Constraint)
+	 * @see Algorithms#findAll(Collection, org.springframework.rules.constraint.Constraint)
 	 */
 	public Collection findAll(Collection collection, Constraint constraint) {
 		return getAlgorithms().findAll(collection, constraint);
 	}
 
 	/**
-	 * @see Algorithms#findAll(Iterator, Constraint)
+	 * @see Algorithms#findAll(Iterator, org.springframework.rules.constraint.Constraint)
 	 */
 	public Collection findAll(Iterator it, Constraint constraint) {
 		return getAlgorithms().findAll(it, constraint);
@@ -77,7 +77,7 @@ public abstract class AlgorithmsAccessor {
 	}
 
 	/**
-	 * @see Algorithms#anyTrue(Collection, Constraint)
+	 * @see Algorithms#anyTrue(Collection, org.springframework.rules.constraint.Constraint)
 	 */
 	public boolean anyTrue(Collection collection, Constraint constraint) {
 		return getAlgorithms().anyTrue(collection, constraint);
@@ -91,14 +91,14 @@ public abstract class AlgorithmsAccessor {
 	}
 
 	/**
-	 * @see Algorithms#forEach(Collection, Closure)
+	 * @see Algorithms#forEach(Collection, org.springframework.rules.closure.Closure)
 	 */
 	public void forEach(Collection collection, Closure closure) {
 		getAlgorithms().forEach(collection, closure);
 	}
 
 	/**
-	 * @see Algorithms#forEach(Iterator, Closure)
+	 * @see Algorithms#forEach(Iterator, org.springframework.rules.closure.Closure)
 	 */
 	public void forEach(Iterator it, Closure closure) {
 		getAlgorithms().forEach(it, closure);

@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 
 public abstract class AbstractConstraint extends ConstraintsAccessor implements Constraint, Serializable {
 

@@ -25,8 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 import org.springframework.binding.value.ValueModel;
-import org.springframework.core.closure.support.Algorithms;
-import org.springframework.core.closure.support.Block;
+import org.springframework.rules.closure.support.Algorithms;
+import org.springframework.rules.closure.support.Block;
 
 /**
  * @author Keith Donald

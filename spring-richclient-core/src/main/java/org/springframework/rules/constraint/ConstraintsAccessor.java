@@ -18,9 +18,9 @@ package org.springframework.rules.constraint;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.springframework.core.closure.Closure;
-import org.springframework.core.closure.Constraint;
-import org.springframework.core.closure.support.AlgorithmsAccessor;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.constraint.Constraint;
+import org.springframework.rules.closure.support.AlgorithmsAccessor;
 import org.springframework.rules.closure.BinaryConstraint;
 import org.springframework.rules.constraint.Like.LikeType;
 import org.springframework.rules.constraint.property.PropertyConstraint;

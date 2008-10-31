@@ -18,7 +18,7 @@ package org.springframework.rules.constraint;
 import java.util.Collection;
 import java.util.Map;
 
-import org.springframework.core.closure.Constraint;
+import org.springframework.rules.constraint.Constraint;
 import org.springframework.rules.reporting.TypeResolvable;
 import org.springframework.util.StringUtils;
 
@@ -59,7 +59,7 @@ public class Required implements Constraint, TypeResolvable {
 	/**
 	 * Tests if this argument is present (non-null, not-empty, not blank)
 	 * 
-	 * @see org.springframework.core.closure.Constraint#test(java.lang.Object)
+	 * @see Constraint#test(java.lang.Object)
 	 */
 	public boolean test(Object argument) {
 		if (argument != null) {
