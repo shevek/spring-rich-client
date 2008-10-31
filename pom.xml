@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -7,7 +8,7 @@
   <artifactId>spring-richclient</artifactId>
   <packaging>pom</packaging>
   <name>Spring richclient</name>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <description>
     Spring-rich adds value for people needing to develop Swing applications and do so in a way that promotes
     consistent, well-designed, configurable Swing applications. The spring-rich developers strongly feel the
@@ -65,30 +66,30 @@
       <!-- TODO verify and complete -->
       <id>ohutchison</id>
       <name>Oliver Hutchison</name>
-      <email />
+      <email/>
       <roles>
         <role>Former project leader</role>
         <role>Java developer</role>
       </roles>
-      <timezone />
+      <timezone/>
     </developer>
     <developer>
       <!-- TODO verify and complete -->
       <id>kdonald</id>
       <name>Keith Donald</name>
-      <email />
+      <email/>
       <roles>
         <role>Former project leader</role>
         <role>Java developer</role>
       </roles>
-      <timezone />
+      <timezone/>
     </developer>
     <developer>
       <id>lstreepy</id>
       <name>Larry Streepy</name>
       <email>lstreepy AT nyc.rr DOT com</email>
       <roles>
-        <role>Project leader</role>
+        <role>Former project leader</role>
         <role>Java developer</role>
       </roles>
       <timezone>-5</timezone>
@@ -106,11 +107,11 @@
       <!-- TODO verify and complete -->
       <id>benalex</id>
       <name>Ben Alex</name>
-      <email />
+      <email/>
       <roles>
         <role>Java developer</role>
       </roles>
-      <timezone />
+      <timezone/>
     </developer>
     <developer>
       <id>anodos</id>
@@ -135,7 +136,7 @@
       <name>Jan Hoskens</name>
       <email>jh AT schaubroeck DOT be</email>
       <roles>
-        <role>Project leader</role>
+        <role>Former project leader</role>
         <role>Java developer</role>
       </roles>
       <timezone>+1</timezone>
@@ -154,11 +155,11 @@
       <!-- TODO verify and complete -->
       <id>scottdelap</id>
       <name>Scott Delap</name>
-      <email />
+      <email/>
       <roles>
         <role>Java developer</role>
       </roles>
-      <timezone />
+      <timezone/>
     </developer>
     <developer>
       <id>ge0ffrey</id>
@@ -190,8 +191,18 @@
       </roles>
       <timezone>0</timezone>
     </developer>
+    <developer>
+      <id>ldoclo</id>
+      <name>Lieven Doclo</name>
+      <email>springrcpATgmailDOTcom</email>
+      <roles>
+        <role>Java developer</role>
+        <role>Project leader</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
   </developers>
-    <contributors>
+  <contributors>
     <contributor>
       <name>Arne Limburg</name>
       <roles>
@@ -208,8 +219,11 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</connection>
-    <developerConnection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/</developerConnection>
+    <connection>scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
+    </connection>
+    <developerConnection>
+      scm:svn:https://spring-rich-c.svn.sourceforge.net/svnroot/spring-rich-c/trunk/spring-richclient/
+    </developerConnection>
     <url>http://spring-rich-c.svn.sourceforge.net/viewvc/spring-rich-c/trunk/spring-richclient/</url>
   </scm>
   <organization>
@@ -242,6 +256,7 @@
       </snapshots>
     </repository>
   </repositories>
+
   <pluginRepositories>
     <!-- currently only needed to use jdepend report -->
     <pluginRepository>
@@ -264,17 +279,11 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!--
-          Last time synchronized with the latest plugin releases:
-          2008-01-30
-          See http://news.gmane.org/gmane.comp.apache.maven.announce
-        -->
-
         <!-- Building -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-help-plugin</artifactId>
-          <version>2.0.2</version>
+          <version>2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -284,21 +293,21 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.2</version>
+          <version>2.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.0.2</version>
           <configuration>
-            <source>1.4</source>
-            <target>1.4</target>
+            <source>1.5</source>
+            <target>1.5</target>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.4.3</version>
           <configuration>
             <!--<testFailureIgnore>true</testFailureIgnore>-->
             <forkMode>never</forkMode>
@@ -350,12 +359,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>2.1-alpha-1</version>
+          <version>2.1-alpha-2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.2-beta-1</version>
+          <version>2.2-beta-2</version>
         </plugin>
         <plugin>
           <!-- Only used in profile production -->
@@ -366,7 +375,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-archetype-plugin</artifactId>
-          <version>1.0-alpha-7</version>
+          <version>2.0-alpha-4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -376,7 +385,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -391,7 +400,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-eclipse-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.5.1</version>
           <configuration>
             <downloadSources>true</downloadSources>
           </configuration>
@@ -399,7 +408,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-idea-plugin</artifactId>
-          <version>2.1</version>
+          <version>2.2</version>
           <configuration>
             <downloadSources>true</downloadSources>
             <!--<downloadJavadocs>true</downloadJavadocs>-->
@@ -411,13 +420,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-6</version>
+          <version>2.0-beta-7</version>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
       <plugin>
-        <!-- Entry needed to create, install and deploy sources jars -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
@@ -425,16 +433,15 @@
   </build>
   <reporting>
     <plugins>
-      <!-- Note: It's not possible to configure reporting plugins in pluginManagement in m2.0.4 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0.1</version>
+        <version>2.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.5</version>
         <configuration>
           <aggregate>true</aggregate>
           <links>
@@ -443,65 +450,36 @@
           </links>
         </configuration>
       </plugin>
-      <!--
-        TODO Changelog is unfinished:
-        - has also a problem with the netbeans (cvs)lib dependency
-        - is moving from mojo.codehaus.org to maven.apache.org
-      -->
-      <!--<plugin>-->
-      <!--<groupId>org.apache.maven.plugins</groupId>-->
-      <!--<artifactId>maven-changelog-plugin</artifactId>-->
-      <!--<version>2.0-beta-1</version>-->
-      <!--</plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.4.3</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.2</version>
       </plugin>
-      <!--<plugin>-->
-      <!--<groupId>org.codehaus.mojo</groupId>-->
-      <!--<artifactId>findbugs-maven-plugin</artifactId>-->
-      <!--<version>1.0.0</version>-->
-      <!--</plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
       </plugin>
-      <!--
-        TODO checkstyle rules must be configured so it no longer
-        generates a 4 mb file which is hard to site-deploy...
-      -->
-      <!--<plugin>-->
-      <!--<groupId>org.apache.maven.plugins</groupId>-->
-      <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-      <!--<version>2.1</version>-->
-      <!--</plugin>-->
-      <!--<plugin>-->
-      <!--<groupId>org.codehaus.mojo</groupId>-->
-      <!--<artifactId>jdepend-maven-plugin</artifactId>-->
-      <!--<version>2.0-beta-1</version>-->
-      <!--</plugin>-->
       <plugin>
-        <!-- In 2.0-beta-1 an aggregate works after running "mvn site" twice -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javancss-maven-plugin</artifactId>
         <version>2.0-beta-2</version>
       </plugin>
-      <!--<plugin>-->
-      <!--<groupId>org.apache.maven.plugins</groupId>-->
-      <!--<artifactId>maven-jxr-plugin</artifactId>-->
-      <!--<version>2.0</version>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
     </plugins>
   </reporting>
+
   <properties>
-    <spring.version>2.5.1</spring.version>
+    <spring.version>2.5.5</spring.version>
   </properties>
 
   <profiles>
@@ -547,10 +525,10 @@
   <modules>
     <module>spring-richclient-resources</module>
     <module>spring-richclient-core</module>
-    <module>spring-richclient-binding</module>
-    <module>spring-richclient-form</module>
-    <module>spring-richclient-support</module>
-    <module>spring-richclient-jdk5</module>
+    <!--<module>spring-richclient-binding</module>-->
+    <!--<module>spring-richclient-form</module>-->
+    <!--<module>spring-richclient-support</module>-->
+    <!--<module>spring-richclient-jdk5</module>-->
     <module>spring-richclient-jdk6</module>
     <module>spring-richclient-sandbox</module>
     <module>spring-richclient-docking</module>
@@ -714,12 +692,12 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-binding</artifactId>
-        <version>1.0</version>
+        <version>1.0.5</version>
       </dependency>
       <dependency>
         <groupId>org.springmodules</groupId>
         <artifactId>spring-modules-validation</artifactId>
-        <version>0.5</version>
+        <version>0.8a</version>
         <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
@@ -732,7 +710,7 @@
       <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
-        <version>3.1</version>
+        <version>3.2.1</version>
       </dependency>
 
       <!-- Codec -->
@@ -746,7 +724,7 @@
       <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
-        <version>1.1</version>
+        <version>1.1.1</version>
         <exclusions>
           <exclusion>
             <groupId>logkit</groupId>
@@ -769,7 +747,17 @@
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <version>1.2.15</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.sun.jdmk</groupId>
+            <artifactId>jmxtools</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.jmx</groupId>
+            <artifactId>jmxri</artifactId>
+          </exclusion>
+        </exclusions>
         <scope>runtime</scope>
       </dependency>
 
@@ -825,25 +813,6 @@
         <version>${spring.version}</version>
       </dependency>
 
-      <!--<dependency>-->
-      <!--<groupId>org.springframework</groupId>-->
-      <!--<artifactId>spring-mock</artifactId>-->
-      <!--<version>${spring.version}</version>-->
-      <!--<scope>test</scope>-->
-      <!--</dependency>-->
-
-      <!-- Spring's petclinic -->
-      <dependency>
-        <groupId>org.springframework.samples</groupId>
-        <artifactId>spring-petclinic</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.samples</groupId>
-        <artifactId>spring-petclinic-domain</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-
       <dependency>
         <groupId>aopalliance</groupId>
         <artifactId>aopalliance</artifactId>
@@ -854,7 +823,14 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
-        <version>2.0.3</version>
+        <version>2.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>2.0.4</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
 
       <!-- Components -->
@@ -919,7 +895,7 @@
       <dependency>
         <groupId>concurrent</groupId>
         <artifactId>concurrent</artifactId>
-        <version>1.3.2</version>
+        <version>1.3.4</version>
       </dependency>
       <dependency>
         <groupId>javax.help</groupId>
@@ -962,13 +938,8 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-annotations</artifactId>
-        <version>3.3.0.ga</version>
+        <version>3.4.0.GA</version>
         <exclusions>
-          <!-- TODO once hibernate's validator doesn't need hibernate, exclude it -->
-          <!--<exclusion>-->
-          <!--<groupId>org.hibernate</groupId>-->
-          <!--<artifactId>hibernate</artifactId>-->
-          <!--</exclusion>-->
           <exclusion>
             <groupId>javax.persistence</groupId>
             <artifactId>ejb</artifactId>
@@ -995,7 +966,7 @@
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
-        <version>3.1.11</version>
+        <version>5.1.6</version>
         <scope>runtime</scope>
       </dependency>
 
@@ -1003,12 +974,12 @@
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
-        <version>3.0.1</version>
+        <version>3.1</version>
       </dependency>
       <dependency>
         <groupId>com.caucho</groupId>
         <artifactId>hessian</artifactId>
-        <version>2.1.12</version>
+        <version>3.1.5</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
