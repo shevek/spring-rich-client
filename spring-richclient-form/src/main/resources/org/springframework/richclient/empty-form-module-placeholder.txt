@@ -1,5 +1,0 @@
-This file is here because if you build a jnlp with the maven-webstart-plugin,
-this empty jar will be included in the jnlp.
-That works for javaws 5, but not for javaws 6, which horribly fails.
-I've posted a bug issue at sun, and provided a proof of concept,
-they are looking into it.
