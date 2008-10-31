@@ -13,7 +13,7 @@ import org.springframework.context.support.MessageSourceAccessor;
  * 
  * @author Xavier Breton
  */
-public class TigerEnumTableCellRenderer extends DefaultTableCellRenderer {
+public class EnumTableCellRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = -1737388077316919179L;
 
@@ -24,7 +24,7 @@ public class TigerEnumTableCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 * @param messageSourceAccesor containing the messages for the Enums.
 	 */
-	public TigerEnumTableCellRenderer(MessageSourceAccessor messageSourceAccesor) {
+	public EnumTableCellRenderer(MessageSourceAccessor messageSourceAccesor) {
 		this.messageSourceAccessor = messageSourceAccesor;
 	}
 

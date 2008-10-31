@@ -46,8 +46,8 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
         ComboBoxBinding binding = (ComboBoxBinding) super.createListBinding(control, formModel, formPropertyPath);
         binding.setSelectableItems(createEnumSelectableItems(formModel, formPropertyPath));
         MessageSourceAccessor messageSourceAccessor = getMessages();
-        binding.setRenderer(new TigerEnumListRenderer(messageSourceAccessor));
-        binding.setEditor(new TigerEnumComboBoxEditor(messageSourceAccessor, binding.getEditor()));
+        binding.setRenderer(new EnumListRenderer(messageSourceAccessor));
+        binding.setEditor(new EnumComboBoxEditor(messageSourceAccessor, binding.getEditor()));
         return binding;
     }
 
@@ -57,11 +57,11 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
         return enumPropertyType.getEnumConstants();
     }
 
-    public class TigerEnumListRenderer extends TextValueListRenderer {
+    public class EnumListRenderer extends TextValueListRenderer {
 
         private MessageSourceAccessor messageSourceAccessor;
 
-        public TigerEnumListRenderer(MessageSourceAccessor messageSourceAccessor) {
+        public EnumListRenderer(MessageSourceAccessor messageSourceAccessor) {
             this.messageSourceAccessor = messageSourceAccessor;
         }
 
@@ -76,7 +76,7 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
 
     }
 
-    public class TigerEnumComboBoxEditor implements ComboBoxEditor {
+    public class EnumComboBoxEditor implements ComboBoxEditor {
 
         private Object current;
 
@@ -84,7 +84,7 @@ public class EnumComboBoxBinder extends ComboBoxBinder {
 
         private ComboBoxEditor inner;
 
-        public TigerEnumComboBoxEditor(MessageSourceAccessor messageSourceAccessor, ComboBoxEditor editor) {
+        public EnumComboBoxEditor(MessageSourceAccessor messageSourceAccessor, ComboBoxEditor editor) {
             Assert.notNull(editor, "Editor cannot be null");
             this.inner = editor;
             this.messageSourceAccessor = messageSourceAccessor;
