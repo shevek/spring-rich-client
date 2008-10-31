@@ -42,7 +42,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
         registerBinderForPropertyType(String.class, new TextComponentBinder());
         registerBinderForPropertyType(boolean.class, new CheckBoxBinder());
         registerBinderForPropertyType(Boolean.class, new CheckBoxBinder());
-        registerBinderForPropertyType(LabeledEnum.class, new EnumComboBoxBinder());
+        registerBinderForPropertyType(LabeledEnum.class, new LabeledEnumComboBoxBinder());
         registerBinderForControlType(JTextComponent.class, new TextComponentBinder());
         registerBinderForControlType(JFormattedTextField.class, new FormattedTextFieldBinder(null));
         registerBinderForControlType(JTextArea.class, new TextAreaBinder());

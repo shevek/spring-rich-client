@@ -22,14 +22,14 @@ import javax.swing.event.ListDataEvent;
 
 import org.springframework.binding.support.TestLabeledEnum;
 
-public class EnumComboBoxBindingAbstractTests extends BindingAbstractTests {
+public class LabeledEnumComboBoxBindingAbstractTests extends BindingAbstractTests {
 
-    private EnumComboBoxBinding cbb;
+    private LabeledEnumComboBoxBinding cbb;
 
     private JComboBox cb;
 
     protected String setUpBinding() {
-        cbb = (EnumComboBoxBinding) new EnumComboBoxBinder().bind(fm, "enumProperty", Collections.EMPTY_MAP);
+        cbb = (LabeledEnumComboBoxBinding) new LabeledEnumComboBoxBinder().bind(fm, "enumProperty", Collections.EMPTY_MAP);
         cb = (JComboBox) cbb.getControl();
         return "enumProperty";
     }

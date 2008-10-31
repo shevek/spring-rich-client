@@ -30,11 +30,11 @@ import org.springframework.util.comparator.CompoundComparator;
 /**
  * @author Oliver Hutchison
  */
-public class EnumComboBoxBinding extends ComboBoxBinding {
+public class LabeledEnumComboBoxBinding extends ComboBoxBinding {
 
     private MessageSource messageSource;
 
-    public EnumComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
+    public LabeledEnumComboBoxBinding(JComboBox comboBox, FormModel formModel, String formPropertyPath) {
         super(comboBox, formModel, formPropertyPath);
     }
 

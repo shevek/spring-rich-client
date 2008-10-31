@@ -1,69 +1,125 @@
-/*
- * Copyright 2002-2004 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.richclient.form.binding.swing;
 
-import java.util.Collection;
-import java.util.Map;
+import java.awt.Component;
+import java.awt.event.ActionListener;
 
-import javax.swing.JComboBox;
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComponent;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.core.enums.LabeledEnumResolver;
-import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.list.TextValueListRenderer;
 import org.springframework.util.Assert;
 
 /**
- * @author Oliver Hutchison
+ * Binds a Tiger enum in a combobox and supports i18n.<br/> The i18n key of an enum is the full classname + "." +
+ * enumfield.<br/> For example:<br/> x.y.Season.WINTER = Winter<br/>
+ * <p>
+ * configuration happens like this:
+ * </p>
+ *
+ * <pre>
+ *   &lt;bean id=&quot;binderSelectionStrategy&quot;
+ *           class=&quot;org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy&quot;&gt;
+ *       &lt;property name=&quot;bindersForPropertyTypes&quot;&gt;
+ *           &lt;map&gt;
+ *               &lt;entry&gt;
+ *                   &lt;key&gt;
+ *                       &lt;value type=&quot;java.lang.Class&quot;&gt;java.lang.Enum&lt;/value&gt;
+ *                   &lt;/key&gt;
+ *                   &lt;bean class=&quot;org.springframework.richclient.form.binding.swing.TigerEnumComboBoxBinder&quot; /&gt;
+ *               &lt;/entry&gt;
+ *           &lt;/map&gt;
+ *       &lt;/property&gt;
+ *   &lt;/bean&gt;
+ * </pre>
+ *
+ * @author Geoffrey De Smet
  */
 public class EnumComboBoxBinder extends ComboBoxBinder {
 
-    private LabeledEnumResolver enumResolver;
-
-    public EnumComboBoxBinder() {
-        super(new String[] { COMPARATOR_KEY, RENDERER_KEY, EDITOR_KEY, FILTER_KEY });
+    protected EnumComboBoxBinder() {
+        super();
     }
 
     protected AbstractListBinding createListBinding(JComponent control, FormModel formModel, String formPropertyPath) {
-        Assert.isInstanceOf(JComboBox.class, control, formPropertyPath);
-        return new EnumComboBoxBinding((JComboBox) control, formModel, formPropertyPath);
+        ComboBoxBinding binding = (ComboBoxBinding) super.createListBinding(control, formModel, formPropertyPath);
+        binding.setSelectableItems(createEnumSelectableItems(formModel, formPropertyPath));
+        MessageSourceAccessor messageSourceAccessor = getMessages();
+        binding.setRenderer(new TigerEnumListRenderer(messageSourceAccessor));
+        binding.setEditor(new TigerEnumComboBoxEditor(messageSourceAccessor, binding.getEditor()));
+        return binding;
     }
 
-    protected void applyContext(AbstractListBinding binding, Map context) {
-        super.applyContext(binding, context);
-        binding.setSelectableItems(createEnumSelectableItemsHolder(binding.getFormModel(), binding.getProperty()));
+    protected Enum[] createEnumSelectableItems(FormModel formModel, String formPropertyPath) {
+        Class propertyType = getPropertyType(formModel, formPropertyPath);
+        Class<Enum> enumPropertyType = propertyType;
+        return enumPropertyType.getEnumConstants();
     }
 
-    protected Collection createEnumSelectableItemsHolder(FormModel formModel, String formPropertyPath) {
-        Collection enumCollection = getLabeledEnumResolver().getLabeledEnumSet(
-                getPropertyType(formModel, formPropertyPath));
-        Assert.notNull(enumCollection, "Unable to resolve enums for class '"
-                + getPropertyType(formModel, formPropertyPath).getName() + "'.");
-        return enumCollection;
-    }
+    public class TigerEnumListRenderer extends TextValueListRenderer {
 
-    public LabeledEnumResolver getLabeledEnumResolver() {
-        if (enumResolver == null) {
-            enumResolver = (LabeledEnumResolver) ApplicationServicesLocator.services().getService(
-                    LabeledEnumResolver.class);
+        private MessageSourceAccessor messageSourceAccessor;
+
+        public TigerEnumListRenderer(MessageSourceAccessor messageSourceAccessor) {
+            this.messageSourceAccessor = messageSourceAccessor;
         }
-        return enumResolver;
+
+        protected String getTextValue(Object value) {
+            if (value == null) {
+                return "";
+            }
+            Enum valueEnum = (Enum) value;
+            Class<? extends Enum> valueClass = valueEnum.getClass();
+            return messageSourceAccessor.getMessage(valueClass.getName() + "." + valueEnum.name());
+        }
+
     }
 
-    public void setEnumResolver(LabeledEnumResolver enumResolver) {
-        this.enumResolver = enumResolver;
+    public class TigerEnumComboBoxEditor implements ComboBoxEditor {
+
+        private Object current;
+
+        private MessageSourceAccessor messageSourceAccessor;
+
+        private ComboBoxEditor inner;
+
+        public TigerEnumComboBoxEditor(MessageSourceAccessor messageSourceAccessor, ComboBoxEditor editor) {
+            Assert.notNull(editor, "Editor cannot be null");
+            this.inner = editor;
+            this.messageSourceAccessor = messageSourceAccessor;
+        }
+
+        public void selectAll() {
+            inner.selectAll();
+        }
+
+        public Component getEditorComponent() {
+            return inner.getEditorComponent();
+        }
+
+        public void addActionListener(ActionListener l) {
+            inner.addActionListener(l);
+        }
+
+        public void removeActionListener(ActionListener l) {
+            inner.removeActionListener(l);
+        }
+
+        public Object getItem() {
+            return current;
+        }
+
+        public void setItem(Object value) {
+            current = value;
+            if (value != null) {
+                Enum valueEnum = (Enum) value;
+                Class<? extends Enum> valueClass = valueEnum.getClass();
+                inner.setItem(messageSourceAccessor.getMessage(valueClass.getName() + "." + valueEnum.name()));
+            } else {
+                inner.setItem(null);
+            }
+        }
     }
+
 }
