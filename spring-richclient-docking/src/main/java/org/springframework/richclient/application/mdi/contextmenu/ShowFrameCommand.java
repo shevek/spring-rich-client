@@ -38,6 +38,7 @@ public class ShowFrameCommand extends ActionCommand {
     protected void doExecuteCommand() {
         try {
             frame.setSelected( true );
+            frame.setIcon( false );
         } catch( PropertyVetoException e ) {
             // ignore
         }
