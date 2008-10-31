@@ -43,6 +43,7 @@ import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.components.ShuttleList;
 import org.springframework.util.Assert;
 
 /**
@@ -327,6 +328,100 @@ public class SwingBindingFactory extends AbstractBindingFactory {
             context.put(ListBinder.COMPARATOR_KEY, new PropertyComparator(renderedProperty, true, true));
         }
         return createBinding(JList.class, selectionFormProperty, context);
+    }
+
+    /**
+     * Binds the values specified in the collection contained within
+     * <code>selectableItemsHolder</code> to a {@link org.springframework.richclient.components.ShuttleList}, with any
+     * user selection being placed in the form property referred to by
+     * <code>selectionFormProperty</code>. Each item in the list will be
+     * rendered by looking up a property on the item by the name contained in
+     * <code>renderedProperty</code>, retrieving the value of the property,
+     * and rendering that value in the UI.
+     * <p>
+     * Note that the selection in the bound list will track any changes to the
+     * <code>selectionFormProperty</code>. This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code> is
+     * not empty when the list is bound, then its content will be used for the
+     * initial selection.
+     *
+     * @param selectionFormProperty form property to hold user's selection. This
+     *        property must be a <code>Collection</code> or array type.
+     * @param selectableItemsHolder <code>ValueModel</code> containing the
+     *        items with which to populate the list.
+     * @param renderedProperty the property to be queried for each item in the
+     *        list, the result of which will be used to render that item in the
+     *        UI. May be null, in which case the selectable items will be
+     *        rendered as strings.
+     * @return constructed {@link Binding}. Note that the bound control is of
+     *         type {@link org.springframework.richclient.components.ShuttleList}. Access this component to set specific
+     *         display properties.
+     */
+    public Binding createBoundShuttleList( String selectionFormProperty, ValueModel selectableItemsHolder,
+            String renderedProperty ) {
+        Map context = ShuttleListBinder.createBindingContext(getFormModel(), selectionFormProperty,
+                selectableItemsHolder, renderedProperty);
+        return createBinding(ShuttleList.class, selectionFormProperty, context);
+    }
+
+    /**
+     * Binds the values specified in the collection contained within
+     * <code>selectableItems</code> (which will be wrapped in a
+     * {@link ValueHolder} to a {@link ShuttleList}, with any user selection
+     * being placed in the form property referred to by
+     * <code>selectionFormProperty</code>. Each item in the list will be
+     * rendered by looking up a property on the item by the name contained in
+     * <code>renderedProperty</code>, retrieving the value of the property,
+     * and rendering that value in the UI.
+     * <p>
+     * Note that the selection in the bound list will track any changes to the
+     * <code>selectionFormProperty</code>. This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code> is
+     * not empty when the list is bound, then its content will be used for the
+     * initial selection.
+     *
+     * @param selectionFormProperty form property to hold user's selection. This
+     *        property must be a <code>Collection</code> or array type.
+     * @param selectableItems Collection or array containing the items with
+     *        which to populate the selectable list (this object will be wrapped
+     *        in a ValueHolder).
+     * @param renderedProperty the property to be queried for each item in the
+     *        list, the result of which will be used to render that item in the
+     *        UI. May be null, in which case the selectable items will be
+     *        rendered as strings.
+     * @return constructed {@link Binding}. Note that the bound control is of
+     *         type {@link ShuttleList}. Access this component to set specific
+     *         display properties.
+     */
+    public Binding createBoundShuttleList( String selectionFormProperty, Object selectableItems, String renderedProperty ) {
+        return createBoundShuttleList(selectionFormProperty, new ValueHolder(selectableItems), renderedProperty);
+    }
+
+    /**
+     * Binds the values specified in the collection contained within
+     * <code>selectableItems</code> (which will be wrapped in a
+     * {@link ValueHolder} to a {@link ShuttleList}, with any user selection
+     * being placed in the form property referred to by
+     * <code>selectionFormProperty</code>. Each item in the list will be
+     * rendered as a String.
+     * <p>
+     * Note that the selection in the bound list will track any changes to the
+     * <code>selectionFormProperty</code>. This is especially useful to
+     * preselect items in the list - if <code>selectionFormProperty</code> is
+     * not empty when the list is bound, then its content will be used for the
+     * initial selection.
+     *
+     * @param selectionFormProperty form property to hold user's selection. This
+     *        property must be a <code>Collection</code> or array type.
+     * @param selectableItems Collection or array containing the items with
+     *        which to populate the selectable list (this object will be wrapped
+     *        in a ValueHolder).
+     * @return constructed {@link Binding}. Note that the bound control is of
+     *         type {@link ShuttleList}. Access this component to set specific
+     *         display properties.
+     */
+    public Binding createBoundShuttleList( String selectionFormProperty, Object selectableItems ) {
+        return createBoundShuttleList(selectionFormProperty, new ValueHolder(selectableItems), null);
     }
 
     protected static class BeanPropertyEditorClosure implements Closure {

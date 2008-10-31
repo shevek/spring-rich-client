@@ -1,22 +1,21 @@
 package org.springframework.richclient.samples.showcase.binding;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JComponent;
-
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.FormModelHelper;
-import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactory;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.form.builder.TableFormBuilder;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This dialog shows a ShuttleList in which several items can be selected and added to a list on the backing formObject.
  * Mind that this is far from perfect, but does illustrate the binding and the specific component that is created.
  *
  * @see org.springframework.richclient.components.ShuttleList
- * @see org.springframework.richclient.components.ShuttleListBinder
+ * @see org.springframework.richclient.form.binding.swing.ShuttleListBinder
  */
 public class ShuttleListBindingDialog extends TitledApplicationDialog {
 
@@ -54,7 +53,7 @@ public class ShuttleListBindingDialog extends TitledApplicationDialog {
 
         @Override
         protected JComponent createFormControl() {
-            SandboxSwingBindingFactory bindingFactory = new SandboxSwingBindingFactory(getFormModel());
+            SwingBindingFactory bindingFactory = new SwingBindingFactory(getFormModel());
             TableFormBuilder builder = new TableFormBuilder(bindingFactory);
             builder.setLabelAttributes("colGrId=label colSpec=left:pref rowSpec=top:pref");
             builder.add(bindingFactory.createBoundShuttleList("selectedRegions", selectableRegions));

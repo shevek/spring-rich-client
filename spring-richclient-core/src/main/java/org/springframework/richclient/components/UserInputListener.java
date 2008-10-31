@@ -1,4 +1,4 @@
-package org.springframework.richclient.swing;
+package org.springframework.richclient.components;
 
 import javax.swing.JComponent;
 

@@ -1,4 +1,4 @@
-package org.springframework.richclient.swing;
+package org.springframework.richclient.components;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

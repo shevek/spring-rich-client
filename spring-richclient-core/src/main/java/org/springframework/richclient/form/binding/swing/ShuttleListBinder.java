@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.springframework.richclient.components;
+package org.springframework.richclient.form.binding.swing;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import org.springframework.richclient.form.binding.support.AbstractBinder;
 import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactory;
 import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactoryProvider;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+import org.springframework.richclient.components.ShuttleList;
 import org.springframework.util.Assert;
 
 /**
@@ -115,7 +116,7 @@ public class ShuttleListBinder extends AbstractBinder {
      * of {@link ShutteListBinding} created by this binder.
      * <p>
      * Binds the values specified in the collection contained within
-     * <code>selectableItemsHolder</code> to a {@link ShuttleList}, with any
+     * <code>selectableItemsHolder</code> to a {@link org.springframework.richclient.components.ShuttleList}, with any
      * user selection being placed in the form property referred to by
      * <code>selectionFormProperty</code>. Each item in the list will be
      * rendered by looking up a property on the item by the name contained in

@@ -1,26 +1,21 @@
 package org.springframework.richclient.samples.showcase.binding;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JComponent;
-
 import org.springframework.binding.value.support.RefreshableValueHolder;
 import org.springframework.binding.value.support.ValueHolder;
-import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.Form;
 import org.springframework.richclient.form.FormModelHelper;
-import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactory;
+import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.selection.binding.ListSelectionDialogBinder;
 import org.springframework.richclient.selection.binding.support.LabelProvider;
+import org.springframework.rules.closure.Closure;
+
+import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
 
 public class ListSelectionBindingDialog extends TitledApplicationDialog {
 
@@ -122,7 +117,7 @@ public class ListSelectionBindingDialog extends TitledApplicationDialog {
 		}
 
 		protected JComponent createFormControl() {
-			SandboxSwingBindingFactory bf = new SandboxSwingBindingFactory(getFormModel());
+			SwingBindingFactory bf = new SwingBindingFactory(getFormModel());
 			TableFormBuilder formBuilder = new TableFormBuilder(bf);
 			formBuilder.row();
 

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.springframework.richclient.components;
+package org.springframework.richclient.form.binding.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -26,9 +26,10 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.form.binding.support.AbstractBinding;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.list.DynamicListModel;
+import org.springframework.richclient.components.ShuttleList;
 
 /**
- * Binding to manage a {@link ShuttleList} component.
+ * Binding to manage a {@link org.springframework.richclient.components.ShuttleList} component.
  * 
  * @author lstreepy
  */

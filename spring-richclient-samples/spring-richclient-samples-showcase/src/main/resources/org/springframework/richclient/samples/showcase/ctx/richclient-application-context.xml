@@ -321,7 +321,7 @@
           <key>
             <value type="java.lang.Class">org.springframework.richclient.components.ShuttleList</value>
           </key>
-          <bean class="org.springframework.richclient.components.ShuttleListBinder" />
+          <bean class="org.springframework.richclient.form.binding.swing.ShuttleListBinder" />
         </entry>
       </map>
     </property>
