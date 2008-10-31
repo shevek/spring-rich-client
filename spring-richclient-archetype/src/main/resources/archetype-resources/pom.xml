@@ -9,8 +9,8 @@
   <name>Spring RCP Project Archetype</name>
 
   <properties>
-    <springrich.version>1.0.2-SNAPSHOT</springrich.version>
-    <spring.version>2.5.1</spring.version>
+    <springrich.version>1.1.0-SNAPSHOT</springrich.version>
+    <spring.version>2.5.5</spring.version>
   </properties>
 
   <repositories>
@@ -73,25 +73,10 @@
       <artifactId>spring-richclient-core</artifactId>
       <version>${springrich.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-binding</artifactId>
-      <version>${springrich.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-form</artifactId>
-      <version>${springrich.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-support</artifactId>
-      <version>${springrich.version}</version>
-    </dependency>
-    <!-- Uncomment spring-richclient-tiger module if you want to use java 1.5 support classes from spring rich
+    <!-- Uncomment spring-richclient-jdk6 module if you want to use java 1.6 support classes from spring rich
       <dependency>
       <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-jdk5</artifactId>
+      <artifactId>spring-richclient-jdk6</artifactId>
       <version>${springrich.version}</version>
       </dependency>
     -->
@@ -130,12 +115,12 @@
     <dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>forms</artifactId>
-      <version>1.0.7</version>
+      <version>1.2.1</version>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>looks</artifactId>
-      <version>2.0.4</version>
+      <version>2.2.0</version>
     </dependency>
   </dependencies>
 </project>
