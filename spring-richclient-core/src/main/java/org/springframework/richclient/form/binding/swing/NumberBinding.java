@@ -1,18 +1,14 @@
 package org.springframework.richclient.form.binding.swing;
 
-import java.math.BigDecimal;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.form.binding.support.CustomBinding;
-import org.springframework.richclient.swing.BigDecimalTextField;
-import org.springframework.richclient.swing.UserInputListener;
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.components.BigDecimalTextField;
+import org.springframework.richclient.components.UserInputListener;
+import org.springframework.richclient.form.binding.support.CustomBinding;
+
+import javax.swing.*;
+import java.math.BigDecimal;
 
 /**
  * Binding to handle Numbers. Can be configured in different with shiftFactor/shiftScale and

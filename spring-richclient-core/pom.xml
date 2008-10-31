@@ -179,13 +179,6 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Docking -->
-    <dependency>
-      <groupId>net.java.dev.flexdock</groupId>
-      <artifactId>flexdock</artifactId>
-      <optional>true</optional>
-    </dependency>
-
     <!-- Remoting -->
     <dependency>
       <groupId>commons-httpclient</groupId>

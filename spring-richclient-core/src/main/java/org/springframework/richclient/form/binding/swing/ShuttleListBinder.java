@@ -16,8 +16,6 @@ import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
-import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactory;
-import org.springframework.richclient.form.binding.swing.SandboxSwingBindingFactoryProvider;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
 import org.springframework.richclient.components.ShuttleList;
 import org.springframework.util.Assert;
@@ -71,8 +69,8 @@ import org.springframework.util.Assert;
  * </pre>
  * 
  * <p>
- * Also, see {@link SandboxSwingBindingFactoryProvider} and
- * {@link SandboxSwingBindingFactory} for how to configure and use that binding
+ * Also, see {@link SwingBindingFactoryProvider} and
+ * {@link SwingBindingFactoryProvider} for how to configure and use that binding
  * factory, which offers convenience methods for constructing a bound shuttle
  * list. With the provider, factory, and binder registered, the following code
  * can be used to add a bound shuttle list to a form:
@@ -113,7 +111,7 @@ public class ShuttleListBinder extends AbstractBinder {
 
     /**
      * Utility method to construct the context map used to configure instances
-     * of {@link ShutteListBinding} created by this binder.
+     * of {@link ShuttleListBinding} created by this binder.
      * <p>
      * Binds the values specified in the collection contained within
      * <code>selectableItemsHolder</code> to a {@link org.springframework.richclient.components.ShuttleList}, with any

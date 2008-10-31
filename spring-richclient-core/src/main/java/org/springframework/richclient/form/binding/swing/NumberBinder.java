@@ -10,7 +10,7 @@ import javax.swing.SwingConstants;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.form.binding.support.AbstractBinder;
-import org.springframework.richclient.swing.BigDecimalTextField;
+import org.springframework.richclient.components.BigDecimalTextField;
 import org.springframework.util.Assert;
 
 /**
