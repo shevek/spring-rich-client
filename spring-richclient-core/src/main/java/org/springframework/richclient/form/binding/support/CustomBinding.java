@@ -29,6 +29,9 @@ public abstract class CustomBinding extends AbstractBinding {
 
     private final ValueModelChangeHandler valueModelChangeHandler;
 
+    /** Possible forced read-only. */
+    private boolean readOnly = false;
+
     protected CustomBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass) {
         super(formModel, formPropertyPath, requiredSourceClass);
         valueModelChangeHandler = new ValueModelChangeHandler();
@@ -54,5 +57,25 @@ public abstract class CustomBinding extends AbstractBinding {
             }
             valueModelChanged(getValue());
         }
-    }  
+    }
+
+    /**
+     * Force this binding to be readonly, whatever the metaInfo.
+     *
+     * @param readOnly <code>true</code> if only read-access should be allowed.
+     */
+    public void setReadOnly(boolean readOnly)
+    {
+        this.readOnly = readOnly;
+        readOnlyChanged();
+    }
+
+    /**
+     * We were using an override to check the setter's visibility on the backing object.
+     */
+    @Override
+    protected boolean isReadOnly()
+    {
+        return this.readOnly || super.isReadOnly();
+    }
 }

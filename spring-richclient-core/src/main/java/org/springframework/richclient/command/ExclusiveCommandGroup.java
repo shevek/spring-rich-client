@@ -19,6 +19,10 @@ import javax.swing.Icon;
 
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 
+/**
+ * A {@link CommandGroup} that can only contain ToggleCommands and for which only one togglecommand can be
+ * chosen. Comparable to a radio button group.
+ */
 public class ExclusiveCommandGroup extends CommandGroup {
 
     private ExclusiveCommandGroupSelectionController controller = new ExclusiveCommandGroupSelectionController();
