@@ -36,17 +36,17 @@ import org.springframework.util.Assert;
  * @author Keith Donald
  */
 public class WizardDialog extends TitledApplicationDialog implements WizardContainer, PropertyChangeListener {
-    private Wizard wizard;
+    protected Wizard wizard;
 
-    private ActionCommand nextCommand;
+    protected ActionCommand nextCommand;
 
-    private ActionCommand backCommand;
+    protected ActionCommand backCommand;
 
-    private WizardPage currentPage;
+    protected WizardPage currentPage;
 
-    private int largestPageWidth;
+    protected int largestPageWidth;
 
-    private int largestPageHeight;
+    protected int largestPageHeight;
 
     public WizardDialog() {
         this(null);

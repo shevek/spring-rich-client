@@ -590,54 +590,6 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-binding</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-binding</artifactId>
-        <type>test-jar</type>
-        <version>${pom.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-form</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-form</artifactId>
-        <type>test-jar</type>
-        <version>${pom.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-support</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-support</artifactId>
-        <type>test-jar</type>
-        <version>${pom.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-jdk5</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-jdk5</artifactId>
-        <type>test-jar</type>
-        <version>${pom.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.richclient</groupId>
         <artifactId>spring-richclient-jdk6</artifactId>
         <version>${pom.version}</version>
       </dependency>
