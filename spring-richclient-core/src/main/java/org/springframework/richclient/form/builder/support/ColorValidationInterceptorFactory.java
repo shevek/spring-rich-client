@@ -59,6 +59,16 @@ public class ColorValidationInterceptorFactory implements FormComponentIntercept
         this.colorMap = colorMap;
     }
 
+    public void setErrorColor(Color color)
+    {
+        colorMap.put(Severity.ERROR, color);
+    }
+
+    public void setWarningColor(Color color)
+    {
+        colorMap.put(Severity.WARNING, color);
+    }
+
     public FormComponentInterceptor getInterceptor(FormModel formModel)
     {
         return new ColorValidationInterceptor(formModel);
