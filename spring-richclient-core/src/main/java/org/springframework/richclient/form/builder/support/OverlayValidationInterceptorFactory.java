@@ -18,30 +18,30 @@ package org.springframework.richclient.form.builder.support;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.control.MessageReportingOverlay;
+import org.springframework.richclient.components.MessageReportingOverlay;
+import org.springframework.richclient.components.MayHaveMessagableTab;
+import org.springframework.richclient.components.MessagableTab;
+import org.springframework.richclient.components.PanelWithValidationComponent;
 import org.springframework.richclient.core.Severity;
+import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Guarded;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
+import org.springframework.richclient.form.HasValidationComponent;
 import org.springframework.richclient.util.OverlayHelper;
+import org.springframework.richclient.util.RcpSupport;
+import org.springframework.richclient.dialog.DefaultMessageAreaModel;
+import org.springframework.richclient.dialog.Messagable;
 
-/**
- * Adds an "overlay" to a component that is triggered by a validation event. The overlaid image is retrieved by the
- * image key "severity.{severityShortCode}.overlay", where {severityShortCode} is the number returned by
- * {@link Severity#getShortCode()}. The image is placed at the bottom-left corner of the component, and the image's
- * tooltip is set to the validation message.
- * 
- * @author Oliver Hutchison
- * @author Mathias Broekelmann
- * @see OverlayHelper#attachOverlay
- */
-public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory {
+public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory
+{
+    private int textCompHeight;
 
     public OverlayValidationInterceptorFactory() {
+        textCompHeight = new JTextField().getPreferredSize().height;
     }
 
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
@@ -55,7 +55,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
         }
 
         public void processComponent(String propertyName, final JComponent component) {
-            final MessageReportingOverlay overlay = new ErrorReportingOverlay();
+            final ErrorReportingOverlay overlay = new ErrorReportingOverlay();
 
             registerGuarded(propertyName, overlay);
             registerMessageReceiver(propertyName, overlay);
@@ -70,22 +70,69 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
                     }
                 };
                 component.addPropertyChangeListener("ancestor", waitUntilHasParentListener);
-            } else {
+            }
+            else {
                 attachOverlay(overlay, component);
             }
         }
 
-        private void attachOverlay(MessageReportingOverlay overlay, JComponent component) {
-            InterceptorOverlayHelper.attachOverlay(overlay, component, SwingConstants.SOUTH_WEST, 0, 0);
+        private void attachOverlay(ErrorReportingOverlay overlay, JComponent component) {
+            JComponent componentToOverlay;
+            if (component instanceof HasValidationComponent)
+                componentToOverlay = ((HasValidationComponent) component).getValidationComponent();
+            else
+                componentToOverlay = hasParentScrollPane(component) ? getParentScrollPane(component) : component;
+            int yOffset = componentToOverlay.getPreferredSize().height;
+            OverlayHelper.attachOverlay(overlay, componentToOverlay, SwingConstants.NORTH_WEST, 0, Math.min(yOffset,
+                    textCompHeight));
+        }
+
+        private JScrollPane getParentScrollPane(JComponent component) {
+            return (JScrollPane)component.getParent().getParent();
+        }
+
+        private boolean hasParentScrollPane(JComponent component) {
+            return component.getParent() != null && component.getParent() instanceof JViewport
+                    && component.getParent().getParent() instanceof JScrollPane;
         }
     }
 
-    /**
-     * switches enabled state enabled will be false on validation error
-     */
-    private static class ErrorReportingOverlay extends MessageReportingOverlay {
-        public void setEnabled(boolean enabled) {
-            super.setEnabled(!enabled);
+    private static class ErrorReportingOverlay extends JLabel implements Messagable, Guarded, MayHaveMessagableTab
+    {
+
+        private DefaultMessageAreaModel messageBuffer = new DefaultMessageAreaModel(this);
+        private MessagableTab messagableTab = null;
+        private int tabIndex = 0;
+
+        public boolean isEnabled()
+        {
+            return true;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            setVisible(!enabled);
+        }
+
+        public void setMessagableTab(MessagableTab messagableTab, int tabIndex)
+        {
+            this.messagableTab = messagableTab;
+            this.tabIndex = tabIndex;
+        }
+
+        public void setMessage(Message message)
+        {
+            // geef de messgage door aan de omringende tabbedpane als ie er is
+            if (this.messagableTab != null)
+                this.messagableTab.setMessage(this, message, this.tabIndex);
+            messageBuffer.setMessage(message);
+            message = messageBuffer.getMessage();
+            setToolTipText(message.getMessage());
+            Severity severity = message.getSeverity();
+            if (severity != null)
+                setIcon(RcpSupport.getIcon("severity." + severity.getLabel() + ".overlay"));
+            else
+                setIcon(null);
         }
     }
 }

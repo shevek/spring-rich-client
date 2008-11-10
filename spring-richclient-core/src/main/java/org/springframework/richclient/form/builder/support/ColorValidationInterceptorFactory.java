@@ -15,105 +15,157 @@
  */
 package org.springframework.richclient.form.builder.support;
 
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.JComponent;
-import javax.swing.text.JTextComponent;
-
+import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.core.Guarded;
+import org.springframework.richclient.core.Message;
+import org.springframework.richclient.core.Severity;
+import org.springframework.richclient.dialog.Messagable;
+import org.springframework.richclient.form.HasValidationComponent;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
-import org.springframework.util.Assert;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Adds an "overlay" to a component that is triggered by a validation event for
  * JTextComponents. When an error is triggered, the background color of the
  * component is changed to the color set in {@link #setErrorColor(Color)}. (The
  * default color is a very light red.)
- * 
+ *
  * @author oliverh
  */
-public class ColorValidationInterceptorFactory implements FormComponentInterceptorFactory {
+public class ColorValidationInterceptorFactory implements FormComponentInterceptorFactory
+{
 
-	private static final Color DEFAULT_ERROR_COLOR = new Color(255, 240, 240);
+    private static final Color DEFAULT_ERROR_COLOR = new Color(255, 220, 220);
 
-	private Color errorColor = DEFAULT_ERROR_COLOR;
+    private static final Color DEFAULT_WARNING_COLOR = new Color(255, 255, 160);
 
-	public ColorValidationInterceptorFactory() {
-	}
+    private Map<Severity, Color> colorMap = new HashMap<Severity, Color>();
 
-	public void setErrorColor(Color errorColor) {
-		Assert.notNull(errorColor);
-		this.errorColor = errorColor;
-	}
+    public ColorValidationInterceptorFactory()
+    {
+        colorMap.put(Severity.ERROR, DEFAULT_ERROR_COLOR);
+        colorMap.put(Severity.WARNING, DEFAULT_WARNING_COLOR);
+    }
 
-	public FormComponentInterceptor getInterceptor(FormModel formModel) {
-		return new ColorValidationInterceptor(formModel);
-	}
+    public void setColorMap(Map<Severity, Color> colorMap)
+    {
+        this.colorMap = colorMap;
+    }
 
-	private class ColorValidationInterceptor extends ValidationInterceptor {
+    public FormComponentInterceptor getInterceptor(FormModel formModel)
+    {
+        return new ColorValidationInterceptor(formModel);
+    }
 
-		public ColorValidationInterceptor(FormModel formModel) {
-			super(formModel);
-		}
+    private class ColorValidationInterceptor extends ValidationInterceptor
+    {
 
-		public void processComponent(String propertyName, JComponent component) {
-			JComponent innerComponent = getInnerComponent(component);
-			if (innerComponent instanceof JTextComponent) {
-				ColorChanger colorChanger = new ColorChanger(innerComponent, errorColor);
-				registerGuarded(propertyName, colorChanger);
-			}
-		}
-	}
+        public ColorValidationInterceptor(FormModel formModel)
+        {
+            super(formModel);
+        }
 
-	static class ColorChanger implements Guarded {
-		private Color normalColor;
+        public void processComponent(String propertyName, JComponent component) {
+            JComponent innerComponent = getInnerComponent(component);
+            if (innerComponent instanceof JTextComponent) {
+                ColorChanger colorChanger = new ColorChanger((JTextComponent)innerComponent);
+                registerMessageReceiver(propertyName, colorChanger);
+            }
+        }
 
-		private JComponent component;
+        @Override
+        protected JComponent getInnerComponent(JComponent component)
+        {
+            if (component instanceof JXDatePicker)
+                return ((JXDatePicker)component).getEditor();
+            if (component instanceof HasValidationComponent)
+                return ((HasValidationComponent)component).getValidationComponent();
 
-		private boolean changingColor;
+            return super.getInnerComponent(component);
+        }
+    }
 
-		private Color errorColor;
+    /**
+     * The colors used with each component are set by a ComponentUI class. When
+     * the state of a component changes, the ComponentUI class will react on
+     * this and set the appropriate colors <b>if and only if</b> the current
+     * color on the component is implementing ResourceUI. (~ was created by the
+     * ComponentUI itself)
+     *
+     * That's why we have to remember this color instead of defining our own
+     * "normal" color which wouldn't be replaced by the inactive/active color
+     * scheme used with editable/enabled.
+     *
+     * The only thing to check actually is when the enable/editable states are
+     * changed (should be after this colorChanger).
+     *
+     * @see javax.swing.plaf.basic.BasicTextFieldUI#update(java.awt.Graphics, JComponent)
+     *
+     * @author jh
+     *
+     */
+    private class ColorChanger implements Messagable
+    {
+        /**
+         * Reference to the component to switch colors.
+         */
+        private JTextComponent component;
 
-		private boolean enabled;
+        /**
+         * Constructor.
+         *
+         * @param component
+         *            component on which to change color.
+         */
+        public ColorChanger(JTextComponent component)
+        {
+            this.component = component;
+        }
 
-		public ColorChanger(JComponent component, Color errorColor) {
-			this.normalColor = component.getBackground();
-			this.errorColor = errorColor;
-			this.component = component;
 
-			component.addPropertyChangeListener("background", new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (changingColor) {
-						return;
-					}
+        /**
+         * Set the color according to the enabled state. When enabled, check
+         * component's enabled and editable state for correct background color.
+         */
+        @Override
+        public void setMessage(Message message)
+        {
+            Color colorToSet = message == null ? null : colorMap.get(message.getSeverity());
+            if (colorToSet != null)
+                component.setBackground(colorToSet);
+            else if (!component.isEnabled())
+                component.setBackground( UIManager.getColor("TextField.disabledBackground"));
+            else if (!component.isEditable())
+                component.setBackground( UIManager.getColor("TextField.inactiveBackground"));
+            else
+                component.setBackground( UIManager.getColor("TextField.background"));
+        }
 
-					normalColor = (Color) evt.getNewValue();
+        @Override
+        public void addPropertyChangeListener(PropertyChangeListener listener)
+        {
+        }
 
-					// this call is needed so if the color is set when the
-					// errorColor is showing
-					// the errorColor will still be shown afterward
-					setEnabled(enabled);
-				}
-			});
-		}
+        @Override
+        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        {
+        }
 
-		public boolean isEnabled() {
-			return enabled;
-		}
+        @Override
+        public void removePropertyChangeListener(PropertyChangeListener listener)
+        {
+        }
 
-		public void setEnabled(boolean enabled) {
-			try {
-				changingColor = true;
-				this.enabled = enabled;
-				component.setBackground(enabled ? normalColor : errorColor);
-			}
-			finally {
-				changingColor = false;
-			}
-		}
-	}
+        @Override
+        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        {
+        }
+    }
 }

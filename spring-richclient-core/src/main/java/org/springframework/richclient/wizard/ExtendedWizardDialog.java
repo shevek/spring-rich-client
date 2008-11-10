@@ -16,6 +16,8 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 /**
  * Wizard dialog that additionally adds a panel to the dialog
  * showing the page path and the current page.
+ *
+ * @author Schaubroeck N.V.
  */
 public class ExtendedWizardDialog extends
         org.springframework.richclient.wizard.WizardDialog

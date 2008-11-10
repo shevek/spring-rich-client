@@ -23,7 +23,7 @@ import javax.swing.JToolBar;
 
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageComponentPane;
-import org.springframework.richclient.control.SimpleInternalFrame;
+import org.springframework.richclient.components.SimpleInternalFrame;
 import org.springframework.richclient.factory.AbstractControlFactory;
 
 /**

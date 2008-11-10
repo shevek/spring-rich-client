@@ -32,7 +32,7 @@ import javax.swing.border.Border;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.statusbar.StatusBar;
-import org.springframework.richclient.control.ShadowBorder;
+import org.springframework.richclient.components.ShadowBorder;
 import org.springframework.richclient.core.Message;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.progress.ProgressMonitor;

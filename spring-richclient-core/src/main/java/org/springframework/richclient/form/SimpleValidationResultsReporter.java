@@ -43,7 +43,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 	/**
 	 * Constructor.
 	 *
-	 * @param formModel ValidatingFormModel to monitor and report on.
+	 * @param resultsModel ValidationResultsModel to monitor and report on.
 	 * @param messageReceiver The receiver for validation messages.
 	 */
 	public SimpleValidationResultsReporter(ValidationResultsModel resultsModel, Messagable messageReceiver) {
@@ -104,16 +104,16 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
 	 */
 	protected ValidationMessage getValidationMessage(ValidationResults resultsModel) {
 		ValidationMessage validationMessage = null;
-		for (Iterator i = resultsModel.getMessages().iterator(); i.hasNext();) {
-			ValidationMessage tmpMessage = (ValidationMessage) i.next();
-			if (validationMessage == null
-					|| (validationMessage.getSeverity().compareTo(tmpMessage.getSeverity()) < 0)
-					|| ((validationMessage.getTimestamp() < tmpMessage.getTimestamp()) && (validationMessage
-							.getSeverity() == tmpMessage.getSeverity()))) {
-				validationMessage = tmpMessage;
-			}
-		}
-		return validationMessage;
+        for (Iterator i = resultsModel.getMessages().iterator(); i.hasNext();) {
+            ValidationMessage tmpMessage = (ValidationMessage) i.next();
+            if (validationMessage == null
+                    || (validationMessage.getSeverity().compareTo(tmpMessage.getSeverity()) < 0)
+                    || ((validationMessage.getTimestamp() > tmpMessage.getTimestamp()) && (validationMessage
+                            .getSeverity() == tmpMessage.getSeverity()))) {
+                validationMessage = tmpMessage;
+            }
+        }
+        return validationMessage;
 	}
 
 	/**

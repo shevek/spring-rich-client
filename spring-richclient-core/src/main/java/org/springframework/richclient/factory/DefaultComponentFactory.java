@@ -58,7 +58,7 @@ import org.springframework.core.enums.LabeledEnum;
 import org.springframework.core.enums.LabeledEnumResolver;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
-import org.springframework.richclient.control.PatchedJFormattedTextField;
+import org.springframework.richclient.components.PatchedJFormattedTextField;
 import org.springframework.richclient.core.LabelInfo;
 import org.springframework.richclient.core.UIConstants;
 import org.springframework.richclient.image.IconSource;

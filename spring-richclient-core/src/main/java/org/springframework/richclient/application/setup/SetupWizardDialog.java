@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import org.springframework.richclient.command.AbstractCommand;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.CommandGroup;
-import org.springframework.richclient.control.GradientPanel;
+import org.springframework.richclient.components.GradientPanel;
 import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.richclient.wizard.Wizard;
 import org.springframework.richclient.wizard.WizardDialog;

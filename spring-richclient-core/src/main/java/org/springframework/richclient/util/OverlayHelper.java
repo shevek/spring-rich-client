@@ -15,6 +15,9 @@
  */
 package org.springframework.richclient.util;
 
+import org.springframework.richclient.components.MessagableTabbedPane;
+import org.springframework.richclient.components.MayHaveMessagableTab;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -306,10 +309,28 @@ public class OverlayHelper implements SwingConstants {
         }
     }
 
+    private Container overlayCapableParent;
+
     protected Container getOverlayCapableParent(JComponent component) {
-        Container overlayCapableParent = component.getParent();
-        while (overlayCapableParent != null && !(overlayCapableParent instanceof JRootPane)) {
-            overlayCapableParent = overlayCapableParent.getParent();
+        if (overlayCapableParent != null)
+            return overlayCapableParent;
+        Component overlayChild = component;
+        overlayCapableParent = component.getParent();
+        MessagableTabbedPane tabbedPane = null;
+        if (overlay instanceof MayHaveMessagableTab)
+        {
+            while (overlayCapableParent != null && !(overlayCapableParent instanceof JRootPane))
+            {
+                if (overlayCapableParent instanceof MessagableTabbedPane)
+                {
+                    tabbedPane = (MessagableTabbedPane)overlayCapableParent;
+                    int tabIndex = tabbedPane.indexOfComponent(overlayChild);
+                    ((MayHaveMessagableTab)overlay).setMessagableTab(tabbedPane, tabIndex);
+                }
+
+                overlayChild = overlayCapableParent;
+                overlayCapableParent = overlayCapableParent.getParent();
+            }
         }
         return overlayCapableParent;
     }
@@ -323,6 +344,8 @@ public class OverlayHelper implements SwingConstants {
                                                + overlayCapableParent.getClass().getName() + "].");
         }
     }
+
+
 
     public static class SingleComponentLayoutManager implements LayoutManager {
         private Component singleComponent;
@@ -355,10 +378,6 @@ public class OverlayHelper implements SwingConstants {
             return singleComponent.getPreferredSize();
         }
     }
-
-
-
-
 
     class OverlayUpdater implements Runnable {
         

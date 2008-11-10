@@ -19,6 +19,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -129,10 +130,20 @@ public class CommandGroup extends AbstractCommand {
 		return createCommandGroup(null, members, false, null);
 	}
 
-	/**
+    /**
 	 * Create a command group which holds all the given members.
 	 *
-	 * @param id the id to configure the group.
+	 * @param members members to add to the group.
+	 * @return a {@link CommandGroup} which contains all the members.
+	 */
+	public static CommandGroup createCommandGroup(List<? extends AbstractCommand> members) {
+		return createCommandGroup(null, members.toArray(), false, null);
+	}
+
+    /**
+	 * Create a command group which holds all the given members.
+	 *
+	 * @param groupId the id to configure the group.
 	 * @param members members to add to the group.
 	 * @return a {@link CommandGroup} which contains all the members.
 	 */
@@ -143,7 +154,7 @@ public class CommandGroup extends AbstractCommand {
 	/**
 	 * Create a command group which holds all the given members.
 	 *
-	 * @param id the id to configure the group.
+	 * @param groupId the id to configure the group.
 	 * @param members members to add to the group.
 	 * @param configurer the configurer to use.
 	 * @return a {@link CommandGroup} which contains all the members.
