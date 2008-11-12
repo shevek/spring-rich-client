@@ -15,16 +15,14 @@
  */
 package org.springframework.richclient.samples.simple.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-
-import org.springframework.richclient.form.AbstractForm;
+import com.jgoodies.forms.layout.FormLayout;
 import org.springframework.richclient.form.AbstractFocussableForm;
 import org.springframework.richclient.form.FormModelHelper;
-import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.form.builder.FormLayoutFormBuilder;
+import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.samples.simple.domain.Contact;
-import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.*;
 
 /**
  * Form to handle the properties of a Contact object. It uses a {@link TableFormBuilder} to construct the layout of the
@@ -74,6 +72,10 @@ public class ContactForm extends AbstractFocussableForm
 		formBuilder.nextRow();
         JComponent zipField = formBuilder.addPropertyAndLabel("address.zip")[1];
 		((JTextField) zipField).setColumns(8);
+        formBuilder.nextRow();
+		formBuilder.addHorizontalSeparator("Memo", 7);
+		formBuilder.nextRow("fill:default:grow");
+        formBuilder.addTextArea("memo", 1, formBuilder.getRow(), 7, 1);
 
         /*
 		TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());

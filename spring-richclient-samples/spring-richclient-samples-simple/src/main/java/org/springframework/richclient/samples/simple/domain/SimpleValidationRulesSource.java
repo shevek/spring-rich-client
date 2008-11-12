@@ -97,6 +97,8 @@ public class SimpleValidationRulesSource extends DefaultRulesSource {
 				add("address.city", required());
 				add("address.state", required());
 				add("address.zip", ZIPCODE_CONSTRAINT);
+
+                add("memo", required());
 			}
 		};
 	}

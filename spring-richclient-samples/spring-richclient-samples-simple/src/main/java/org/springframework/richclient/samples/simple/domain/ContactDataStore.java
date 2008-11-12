@@ -72,19 +72,19 @@ public class ContactDataStore {
 	 */
 	private void loadData() {
 		contacts.add(makeContact("Larry", "Streepy", "123 Some St.", "Apt. #26C", "New York", "NY", "10010",
-				ContactType.BUSINESS));
+				ContactType.BUSINESS, "Lorem ipsum..."));
 		contacts.add(makeContact("Keith", "Donald", "456 WebFlow Rd.", "2", "Cooltown", "NY", "10001",
-				ContactType.BUSINESS));
+				ContactType.BUSINESS, "Lorem ipsum..."));
 		contacts.add(makeContact("Steve", "Brothers", "10921 The Other Street", "", "Denver", "CO", "81234-2121",
-				ContactType.PERSONAL));
+				ContactType.PERSONAL, "Lorem ipsum..."));
 		contacts.add(makeContact("Carlos", "Mencia", "4321 Comedy Central", "", "Hollywood", "CA", "91020",
-				ContactType.PERSONAL));
+				ContactType.PERSONAL, "Lorem ipsum..."));
 		contacts.add(makeContact("Jim", "Jones", "1001 Another Place", "", "Dallas", "TX", "71212",
-				ContactType.PERSONAL));
+				ContactType.PERSONAL, "Lorem ipsum..."));
 		contacts.add(makeContact("Jenny", "Jones", "1001 Another Place", "", "Dallas", "TX", "75201",
-				ContactType.PERSONAL));
+				ContactType.PERSONAL, "Lorem ipsum..."));
 		contacts.add(makeContact("Greg", "Jones", "9 Some Other Place", "Apt. 12D", "Chicago", "IL", "60601",
-				ContactType.PERSONAL));
+				ContactType.PERSONAL, "Lorem ipsum..."));
 	}
 
 	/**
@@ -92,12 +92,13 @@ public class ContactDataStore {
 	 * @return Contact object
 	 */
 	private Contact makeContact(String first, String last, String address1, String address2, String city, String state,
-			String zip, ContactType contactType) {
+			String zip, ContactType contactType, String memo) {
 		Contact contact = new Contact();
 		contact.setId(nextId++);
 		contact.setContactType(contactType);
 		contact.setFirstName(first);
 		contact.setLastName(last);
+        contact.setMemo(memo);
 
 		Address address = contact.getAddress();
 		address.setAddress1(address1);

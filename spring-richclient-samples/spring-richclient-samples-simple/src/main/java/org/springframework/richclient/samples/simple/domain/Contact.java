@@ -54,6 +54,8 @@ public class Contact {
 
 	private String emailAddress;
 
+    private String memo;
+
 	/**
 	 * Default constructor.
 	 */
@@ -201,7 +203,17 @@ public class Contact {
 		this.contactType = contactType;
 	}
 
-	/**
+    public String getMemo()
+    {
+        return memo;
+    }
+
+    public void setMemo(String memo)
+    {
+        this.memo = memo;
+    }
+
+    /**
 	 * Compare two objects for equality. Just test their ids.
 	 * @param o object to compare
 	 */
