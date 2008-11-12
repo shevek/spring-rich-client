@@ -351,8 +351,8 @@ public class OverlayHelper implements SwingConstants
 
     protected Container getOverlayCapableParent(JComponent component)
     {
-        if (overlayCapableParent != null)
-            return overlayCapableParent;
+        //if (overlayCapableParent != null)
+        //    return overlayCapableParent;
         Component overlayChild = component;
         overlayCapableParent = component.getParent();
         if (overlay instanceof MayHaveMessagableTab)

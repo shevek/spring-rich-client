@@ -108,7 +108,7 @@ public class SimpleValidationResultsReporter implements ValidationResultsReporte
             ValidationMessage tmpMessage = (ValidationMessage) i.next();
             if (validationMessage == null
                     || (validationMessage.getSeverity().compareTo(tmpMessage.getSeverity()) < 0)
-                    || ((validationMessage.getTimestamp() > tmpMessage.getTimestamp()) && (validationMessage
+                    || ((validationMessage.getTimestamp() < tmpMessage.getTimestamp()) && (validationMessage
                             .getSeverity() == tmpMessage.getSeverity()))) {
                 validationMessage = tmpMessage;
             }
