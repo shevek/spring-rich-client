@@ -301,8 +301,15 @@ public class OverlayHelper implements SwingConstants
         Rectangle visibleRect = null;
         int curxoffset = 0;
         int curyoffset = 0;
-        for (JComponent comp = overlayTarget; comp != null && !(comp instanceof JViewport) && !(comp instanceof JScrollPane); comp = comp.getParent() instanceof JComponent ? (JComponent) comp.getParent() : null)
+        if (overlayTarget == null)
         {
+            return null;
+        }
+
+        JComponent comp = overlayTarget;
+        do
+        {
+
             visibleRect = comp.getVisibleRect();
             visibleRect.x -= curxoffset;
             visibleRect.y -= curyoffset;
@@ -312,7 +319,12 @@ public class OverlayHelper implements SwingConstants
             }
             curxoffset += comp.getX();
             curyoffset += comp.getY();
+
+            comp = comp.getParent() instanceof JComponent ? (JComponent) comp.getParent() : null;
         }
+        while (comp != null && !(comp instanceof JViewport) && !(comp instanceof JScrollPane));
+
+
         return visibleRect;
     }
 
