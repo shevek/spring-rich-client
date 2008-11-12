@@ -19,8 +19,12 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.springframework.richclient.form.AbstractForm;
+import org.springframework.richclient.form.AbstractFocussableForm;
+import org.springframework.richclient.form.FormModelHelper;
 import org.springframework.richclient.form.builder.TableFormBuilder;
+import org.springframework.richclient.form.builder.FormLayoutFormBuilder;
 import org.springframework.richclient.samples.simple.domain.Contact;
+import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Form to handle the properties of a Contact object. It uses a {@link TableFormBuilder} to construct the layout of the
@@ -29,16 +33,49 @@ import org.springframework.richclient.samples.simple.domain.Contact;
  * based on the type of the property in question.
  * @author Larry Streepy
  */
-public class ContactForm extends AbstractForm {
-
-	private JComponent firstNameField;
-
+public class ContactForm extends AbstractFocussableForm
+{
 	public ContactForm(Contact contact) {
-		super(contact);
-		setId("contact");
+		super(FormModelHelper.createFormModel(contact, "contact"));
 	}
 
-	protected JComponent createFormControl() {
+	protected JComponent createFormControl()
+    {
+        FormLayout layout = new FormLayout("right:pref, 4dlu, default, 6dlu, right:pref, 4dlu, default", "default");
+        FormLayoutFormBuilder formBuilder = new FormLayoutFormBuilder(getBindingFactory(), layout);
+        
+        formBuilder.setLabelAttributes("r, c");
+        formBuilder.addHorizontalSeparator("General", 7);
+        formBuilder.nextRow();
+        formBuilder.addPropertyAndLabel("lastName");
+        setFocusControl(formBuilder.addPropertyAndLabel("firstName", 5)[1]);
+        formBuilder.nextRow();
+        formBuilder.addPropertyAndLabel("dateOfBirth");
+        formBuilder.nextRow();
+        formBuilder.addPropertyAndLabel("homePhone");
+		formBuilder.addPropertyAndLabel("workPhone", 5);
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("emailAddress");
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("contactType");
+		formBuilder.nextRow();
+		formBuilder.addHorizontalSeparator("Address", 7);
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("address.address1");
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("address.address2");
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("address.address3");
+		formBuilder.nextRow();
+		formBuilder.addPropertyAndLabel("address.city");
+		formBuilder.nextRow();
+		// formBuilder.add(getBindingFactory().createBoundComboBox( "address.state", MasterLists.STATE_CODE), "colSpan=1 align=left" );
+		formBuilder.addPropertyAndLabel("address.state");
+		formBuilder.nextRow();
+        JComponent zipField = formBuilder.addPropertyAndLabel("address.zip")[1];
+		((JTextField) zipField).setColumns(8);
+
+        /*
 		TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());
 		formBuilder.setLabelAttributes("colGrId=label colSpec=right:pref");
 
@@ -77,15 +114,9 @@ public class ContactForm extends AbstractForm {
 		JComponent zipField = formBuilder.add("address.zip", "colSpan=1 align=left")[1];
 		((JTextField) zipField).setColumns(8);
 		formBuilder.row();
+		*/
 
-		return formBuilder.getForm();
+		return formBuilder.getPanel();
 	}
 
-	/**
-	 * Try to place the focus in the firstNameField whenever the initial focus is being set.
-	 * @return
-	 */
-	public boolean requestFocusInWindow() {
-		return firstNameField.requestFocusInWindow();
-	}
 }

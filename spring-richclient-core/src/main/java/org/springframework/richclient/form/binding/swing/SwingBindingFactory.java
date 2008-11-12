@@ -17,6 +17,7 @@ package org.springframework.richclient.form.binding.swing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.JCheckBox;
@@ -40,6 +41,7 @@ import org.springframework.binding.value.support.ObservableList;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.rules.closure.Closure;
 import org.springframework.richclient.form.binding.Binding;
+import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.support.AbstractBindingFactory;
 import org.springframework.richclient.list.BeanPropertyValueComboBoxEditor;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
@@ -422,6 +424,31 @@ public class SwingBindingFactory extends AbstractBindingFactory {
      */
     public Binding createBoundShuttleList( String selectionFormProperty, Object selectableItems ) {
         return createBoundShuttleList(selectionFormProperty, new ValueHolder(selectableItems), null);
+    }
+
+    /**
+     * @see #createBinding(String, String, Map)
+     */
+    public Binding createBinding(String propertyPath, String binderId)
+    {
+        return this.createBinding(propertyPath, binderId, Collections.EMPTY_MAP);
+    }
+
+    /**
+     * Create a binding based on a specific binder id.
+     *
+     * @param propertyPath Path to property
+     * @param binderId Id of the binder
+     * @param context Context data (can be empty map)
+     * @return Specific binding
+     */
+    public Binding createBinding(String propertyPath, String binderId, Map context)
+    {
+        Assert.notNull(context, "Context must not be null");
+        Binder binder = ((SwingBinderSelectionStrategy)getBinderSelectionStrategy()).getIdBoundBinder(binderId);
+        Binding binding = binder.bind(getFormModel(), propertyPath, context);
+        interceptBinding(binding);
+        return binding;
     }
 
     protected static class BeanPropertyEditorClosure implements Closure {
