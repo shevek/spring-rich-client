@@ -8,6 +8,7 @@ import org.springframework.core.ErrorCoded;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.sql.SQLException;
 
 /**
  * Displays a message to the user which is fetched from the I18N files
@@ -80,11 +81,15 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
             return new String[] {messagesKey};
         }
         List<String> messageKeyList = new ArrayList<String>();
+        Class clazz = throwable.getClass();
         if(throwable instanceof ErrorCoded)
         {
             messageKeyList.add(((ErrorCoded) throwable).getErrorCode() +  keySuffix);
         }
-        Class clazz = throwable.getClass();
+        if(throwable instanceof SQLException)
+        {
+            messageKeyList.add(SQLException.class.getName() + "." + ((SQLException) throwable).getErrorCode() + keySuffix);
+        }
         while (clazz != Object.class) {
             messageKeyList.add(clazz.getName() + keySuffix);
             clazz = clazz.getSuperclass();
