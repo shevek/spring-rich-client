@@ -42,12 +42,8 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-docking</artifactId>
+      <artifactId>spring-richclient-vldocking</artifactId>
       <version>${pom.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.vlsolutions</groupId>
-      <artifactId>vldocking</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -49,7 +49,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-docking</artifactId>
+      <artifactId>spring-richclient-swingdocking</artifactId>
       <version>${pom.version}</version>
     </dependency>
     <dependency>

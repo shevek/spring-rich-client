@@ -541,6 +541,7 @@
     <!--<module>spring-richclient-full</module>-->
     <module>spring-richclient-samples</module>
     <module>spring-richclient-archetype</module>
+    <module>spring-richclient-integrations</module>
     <!-- Module release is delibertly skipped -->
   </modules>
 
