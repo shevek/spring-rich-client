@@ -3,6 +3,7 @@ package org.springframework.richclient.exceptionhandling;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.ErrorCoded;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,10 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
             return new String[] {messagesKey};
         }
         List<String> messageKeyList = new ArrayList<String>();
+        if(throwable instanceof ErrorCoded)
+        {
+            messageKeyList.add(((ErrorCoded) throwable).getErrorCode() +  keySuffix);
+        }
         Class clazz = throwable.getClass();
         while (clazz != Object.class) {
             messageKeyList.add(clazz.getName() + keySuffix);
