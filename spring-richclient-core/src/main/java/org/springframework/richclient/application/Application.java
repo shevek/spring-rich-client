@@ -54,6 +54,8 @@ public class Application implements InitializingBean, ApplicationContextAware {
 
     private WindowManager windowManager;
 
+    private boolean forceShutdown = false;
+
     /**
      * Load the single application instance.
      * 
@@ -196,22 +198,30 @@ public class Application implements InitializingBean, ApplicationContextAware {
         return windowManager.getActiveWindow();
     }
 
+    /**
+     * @return true if the application is in a force shutdown mode.
+     */
+    public boolean isForceShutdown()
+    {
+        return forceShutdown;
+    }
+
     public void close() {
         close(false, 0);
     }
 
     public void close(boolean force, int exitCode) {
-        boolean exitInFinally = force;
+        forceShutdown = force;
         try {
             if (windowManager.close() ) {
-                exitInFinally = true;
+                forceShutdown = true;
                 if( getApplicationContext() instanceof ConfigurableApplicationContext ) {
                     ((ConfigurableApplicationContext) getApplicationContext()).close();
                 }
                 getLifecycleAdvisor().onShutdown();
             }
         } finally {
-            if (exitInFinally) {
+            if (isForceShutdown()) {
                 System.exit(exitCode);
             }
         }
