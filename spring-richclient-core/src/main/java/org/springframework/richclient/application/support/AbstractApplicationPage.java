@@ -57,7 +57,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	private final ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator
 			.services().getService(ViewDescriptorRegistry.class);
 
-	private final Set pageComponents = new LinkedHashSet();
+	private final Set<PageComponent> pageComponents = new LinkedHashSet<PageComponent>();
 
 	private PageComponent activeComponent;
 
@@ -285,8 +285,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 	 * <code>false</code> otherwise.
 	 */
 	public boolean close() {
-		for (Iterator iter = new HashSet(pageComponents).iterator(); iter.hasNext();) {
-			PageComponent component = (PageComponent) iter.next();
+		for (Iterator<PageComponent> iter = new HashSet<PageComponent>(pageComponents).iterator(); iter.hasNext();) {
+			PageComponent component = iter.next();
 			if (!close(component))
 				return false;
 		}
@@ -347,7 +347,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 		return pageComponent;
 	}
 
-	public Set getPageComponents() {
+	public Set<PageComponent> getPageComponents() {
 		return Collections.unmodifiableSet(pageComponents);
 	}
 
