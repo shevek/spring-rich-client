@@ -29,7 +29,6 @@ public abstract class AbstractWidget extends ApplicationServicesAccessor impleme
         showing = false;
     }
 
-    @Override
     public boolean isShowing()
     {
         return showing;

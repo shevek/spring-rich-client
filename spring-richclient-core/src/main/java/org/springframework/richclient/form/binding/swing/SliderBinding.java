@@ -30,7 +30,6 @@ public class SliderBinding extends CustomBinding
         slider.addChangeListener(new ChangeListener()
         {
 
-            @Override
             public void stateChanged(ChangeEvent e)
             {
                 controlValueChanged(slider.getValue());

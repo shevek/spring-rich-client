@@ -51,37 +51,31 @@ public abstract class AbstractWidgetForm extends AbstractForm implements Widget
         super(parentFormModel, formId, childFormObjectHolder);
     }
 
-    @Override
     public boolean canClose()
     {
         return true;
     }
 
-    @Override
     public List<? extends AbstractCommand> getCommands()
     {
         return Collections.emptyList();
     }
 
-    @Override
     public JComponent getComponent()
     {
         return getControl();
     }
 
-    @Override
     public void onAboutToHide()
     {
         showing = false;
     }
 
-    @Override
     public void onAboutToShow()
     {
         showing = true;
     }
 
-    @Override
     public boolean isShowing()
     {
         return showing;

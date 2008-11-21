@@ -144,7 +144,6 @@ public class ColorValidationInterceptorFactory implements FormComponentIntercept
          * Set the color according to the enabled state. When enabled, check
          * component's enabled and editable state for correct background color.
          */
-        @Override
         public void setMessage(Message message)
         {
             Color colorToSet = message == null ? null : colorMap.get(message.getSeverity());
@@ -158,22 +157,18 @@ public class ColorValidationInterceptorFactory implements FormComponentIntercept
                 component.setBackground( UIManager.getColor("TextField.background"));
         }
 
-        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener)
         {
         }
 
-        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
         }
 
-        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener)
         {
         }
 
-        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
         }

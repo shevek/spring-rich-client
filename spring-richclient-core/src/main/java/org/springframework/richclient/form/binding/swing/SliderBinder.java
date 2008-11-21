@@ -24,7 +24,6 @@ public class SliderBinder implements Binder
 
     private SliderLabelFactory sliderLabelFactory;
 
-    @Override
     public Binding bind(FormModel formModel, String formPropertyPath, Map context)
     {
         SliderBinding binding = new SliderBinding(formModel, formPropertyPath);
@@ -37,7 +36,6 @@ public class SliderBinder implements Binder
         return binding;
     }
 
-    @Override
     public Binding bind(JComponent control, FormModel formModel, String formPropertyPath, Map context)
     {
         throw new UnsupportedOperationException("Deze binder voorziet in zijn eigen component");
