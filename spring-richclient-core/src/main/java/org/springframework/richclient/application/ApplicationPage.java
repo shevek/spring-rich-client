@@ -42,12 +42,18 @@ public interface ApplicationPage extends ControlFactory {
     /**
      * Returns the {@link View} with the given id. Returns <code>null</code> if no {@link View} with the given id is
      * shown.
+     * <p>
+     * This method is "generified" to avoid extra casts when calling this method:
+     * <pre>
+     * ApplicationPage page = ...; // get a reference to the ApplicationPage
+     * InitialView initialView = page.getView("initialView");
+     * </pre>
      * 
      * @param id
      *            the id, cannot be <code>null</code>
      * @return the {@link View}, or <code>null</code>
      */
-    View getView(String id);
+    <T extends View> T getView(String id);
 
     void openEditor(Object editorInput);
 

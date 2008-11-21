@@ -26,7 +26,6 @@ import java.util.Set;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationPage;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
@@ -41,8 +40,8 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.util.EventListenerListHelper;
-import org.springframework.util.Assert;
 import org.springframework.rules.constraint.AbstractConstraint;
+import org.springframework.util.Assert;
 
 /**
  * Abstract "convenience" implementation of <code>ApplicationPage</code>.
@@ -54,8 +53,9 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
     private final EventListenerListHelper pageComponentListeners = new EventListenerListHelper(
             PageComponentListener.class);
 
-    private final ViewDescriptorRegistry viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator
-            .services().getService(ViewDescriptorRegistry.class);
+    private ViewDescriptorRegistry viewDescriptorRegistry;
+
+    private PageComponentPaneFactory pageComponentPaneFactory;
 
     private final Set<PageComponent> pageComponents = new LinkedHashSet<PageComponent>();
 
@@ -112,8 +112,9 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         }.findFirst(pageComponents);
     }
 
-    public View getView(String id) {
-        return (View) findPageComponent(id);
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(String id) {
+        return (T) findPageComponent(id);
     }
 
     public void addPageComponentListener(PageComponentListener listener) {
@@ -141,7 +142,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
     }
 
     protected ViewDescriptor getViewDescriptor(String viewDescriptorId) {
-        return viewDescriptorRegistry.getViewDescriptor(viewDescriptorId);
+        return getViewDescriptorRegistry().getViewDescriptor(viewDescriptorId);
     }
 
     /**
@@ -218,9 +219,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
     protected abstract boolean giveFocusTo(PageComponent pageComponent);
 
     protected PageComponentPane createPageComponentPane(PageComponent pageComponent) {
-        PageComponentPaneFactory paneFactory = (PageComponentPaneFactory) Application.services().getService(
-                PageComponentPaneFactory.class);
-        return paneFactory.createPageComponentPane(pageComponent);
+        return getPageComponentPaneFactory().createPageComponentPane(pageComponent);
     }
 
     protected void fireClosed(PageComponent component) {
@@ -293,10 +292,14 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
     }
 
     public void showView(String viewDescriptorId) {
+        Assert.hasText(viewDescriptorId, "id cannot be empty");
+
         showView(getViewDescriptor(viewDescriptorId));
     }
 
     public void showView(ViewDescriptor viewDescriptor) {
+        Assert.notNull(viewDescriptor, "viewDescriptor cannot be null");
+
         PageComponent component = findPageComponent(viewDescriptor.getId());
         if (component == null) {
             component = createPageComponent(viewDescriptor);
@@ -378,5 +381,31 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
             }
         }
         return applicationEventMulticaster;
+    }
+
+    public void setViewDescriptorRegistry(ViewDescriptorRegistry viewDescriptorRegistry) {
+        this.viewDescriptorRegistry = viewDescriptorRegistry;
+    }
+
+    public ViewDescriptorRegistry getViewDescriptorRegistry() {
+        if (viewDescriptorRegistry == null) {
+            viewDescriptorRegistry = (ViewDescriptorRegistry) ApplicationServicesLocator.services().getService(
+                    ViewDescriptorRegistry.class);
+        }
+
+        return viewDescriptorRegistry;
+    }
+
+    public void setPageComponentPaneFactory(PageComponentPaneFactory pageComponentPaneFactory) {
+        this.pageComponentPaneFactory = pageComponentPaneFactory;
+    }
+
+    public PageComponentPaneFactory getPageComponentPaneFactory() {
+        if (pageComponentPaneFactory == null) {
+            pageComponentPaneFactory = (PageComponentPaneFactory) ApplicationServicesLocator.services().getService(
+                    PageComponentPaneFactory.class);
+        }
+
+        return pageComponentPaneFactory;
     }
 }
