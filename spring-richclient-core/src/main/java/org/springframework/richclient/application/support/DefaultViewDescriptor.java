@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.application.support;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
@@ -23,9 +24,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.View;
@@ -38,15 +36,30 @@ import org.springframework.util.Assert;
 
 /**
  * Provides a standard implementation of {@link ViewDescriptor}.
- *
+ * 
  * @author Keith Donald
  */
-public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewDescriptor, BeanNameAware {
+public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewDescriptor, BeanNameAware,
+        InitializingBean {
     private String id;
 
-    private Class viewClass;
+    private Class<? extends View> viewClass;
 
-    private Map viewProperties;
+    private Map<String, Object> viewProperties;
+
+    public DefaultViewDescriptor() {
+        // default constructor for spring creation
+    }
+
+    public DefaultViewDescriptor(String id, Class<? extends View> viewClass) {
+        this(id, viewClass, Collections.<String, Object> emptyMap());
+    }
+
+    public DefaultViewDescriptor(String id, Class<? extends View> viewClass, Map<String, Object> viewProperties) {
+        setId(id);
+        setViewClass(viewClass);
+        setViewProperties(viewProperties);
+    }
 
     public void setBeanName(String beanName) {
         setId(beanName);
@@ -61,11 +74,18 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
         return id;
     }
 
-    public void setViewClass(Class viewClass) {
+    public Class<? extends View> getViewClass() {
+        return viewClass;
+    }
+
+    public void setViewClass(Class<? extends View> viewClass) {
+        Assert.notNull(viewClass, "viewClass cannot be null");
+        Assert.isTrue(View.class.isAssignableFrom(viewClass), "viewClass doesn't derive from View");
+
         this.viewClass = viewClass;
     }
 
-    public void setViewProperties(Map viewProperties) {
+    public void setViewProperties(Map<String, Object> viewProperties) {
         this.viewProperties = viewProperties;
     }
 
@@ -78,7 +98,7 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
         Object o = BeanUtils.instantiateClass(viewClass);
         Assert.isTrue((o instanceof View), "View class '" + viewClass
                 + "' was instantiated, but instance is not a View!");
-        View view = (View)o;
+        View view = (View) o;
         view.setDescriptor(this);
         if (viewProperties != null) {
             BeanWrapper wrapper = new BeanWrapperImpl(view);
@@ -87,9 +107,8 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
 
         if (view instanceof InitializingBean) {
             try {
-                ((InitializingBean)view).afterPropertiesSet();
-            }
-            catch (Exception e) {
+                ((InitializingBean) view).afterPropertiesSet();
+            } catch (Exception e) {
                 throw new BeanInitializationException("Problem running on " + view, e);
             }
         }
@@ -102,6 +121,11 @@ public class DefaultViewDescriptor extends LabeledObjectSupport implements ViewD
 
     public ActionCommand createShowViewCommand(ApplicationWindow window) {
         return new ShowViewCommand(this, window);
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(id, "id is mandatory");
+        Assert.notNull(viewClass, "viewClass is mandatory");
     }
 
 }
