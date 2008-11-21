@@ -29,8 +29,17 @@ import junit.framework.TestCase;
  */
 public class SimpleViewDescriptorTests extends TestCase {
 
-    public void testCreatePageComponent() {
-        View view = new AbstractView() {
+    private AbstractView view;
+
+    public void testConstructor() {
+        SimpleViewDescriptor descriptor = new SimpleViewDescriptor("id", view);
+        assertEquals("id", descriptor.getId());
+        assertEquals(descriptor, view.getDescriptor());
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        view = new AbstractView() {
 
             @Override
             protected JComponent createControl() {
@@ -38,8 +47,10 @@ public class SimpleViewDescriptorTests extends TestCase {
             }
         };
 
+    }
+
+    public void testCreatePageComponent() {
         SimpleViewDescriptor descriptor = new SimpleViewDescriptor("id", view);
-        assertEquals("id", descriptor.getId());
 
         assertSame(view, descriptor.createPageComponent());
         // must always return the same

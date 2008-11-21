@@ -51,6 +51,8 @@ public class SimpleViewDescriptor implements ViewDescriptor {
 
         this.id = id;
         this.view = view;
+        
+        view.setDescriptor(this);
     }
 
     public ActionCommand createShowViewCommand(ApplicationWindow window) {
