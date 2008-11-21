@@ -18,8 +18,6 @@ package org.springframework.richclient.application.support;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import org.springframework.richclient.application.View;
-
 import junit.framework.TestCase;
 
 /**

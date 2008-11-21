@@ -28,7 +28,6 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.support.ShowViewCommand;
-import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.Assert;
 
 /**
