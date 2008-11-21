@@ -27,8 +27,8 @@ import org.springframework.binding.value.support.PropertyChangeSupport;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.factory.AbstractControlFactory;
-import org.springframework.richclient.selection.dialog.ListSelectionDialog;
 
 /**
  * <tt>SelectField</tt> base class. Allows for customization of the renderer component.
@@ -47,15 +47,16 @@ public abstract class SelectField extends AbstractControlFactory implements Prop
     private ClearCommand clearCommand = new ClearCommand();
     private boolean editable;
     private Object value;
-    private ListSelectionDialog dialog;
+    private ApplicationDialog dialog;
     private LabelProvider labelProvider;
     private JPanel control;
-    
+    private boolean nullable = true;
+
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    
+
     protected JComponent createControl() {
         control = new JPanel(new BorderLayout());
-        
+
         renderer = createRenderer();
         control.add(renderer);
 
@@ -68,10 +69,12 @@ public abstract class SelectField extends AbstractControlFactory implements Prop
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
 
         buttonPanel.add(selectCommand.createButton());
-        buttonPanel.add(clearCommand.createButton());
+        if (nullable) {
+            buttonPanel.add(clearCommand.createButton());
+        }
 
         control.add(buttonPanel, BorderLayout.LINE_END);
-        
+
         return control;
     }
 
@@ -129,7 +132,7 @@ public abstract class SelectField extends AbstractControlFactory implements Prop
         return value;
     }
 
-    public void setSelectionDialog(ListSelectionDialog dialog) {
+    public void setSelectionDialog(ApplicationDialog dialog) {
         this.dialog = dialog;
     }
 
@@ -139,6 +142,25 @@ public abstract class SelectField extends AbstractControlFactory implements Prop
 
     public LabelProvider getLabelProvider() {
         return labelProvider;
+    }
+
+    /**
+     * Returns whether the property is nullable. If set to true, the "clear" button is shown.
+     * 
+     * @return whether the property is nullable
+     */
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    /**
+     * Sets whether the clear button is shown
+     * 
+     * @param nullable
+     *            whether the clear button is shown
+     */
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
     }
 
     private class ClearCommand extends ActionCommand {
@@ -163,19 +185,19 @@ public abstract class SelectField extends AbstractControlFactory implements Prop
             dialog.showDialog();
         }
     }
-    
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-    
+
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
-    
+
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
-    
+
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }

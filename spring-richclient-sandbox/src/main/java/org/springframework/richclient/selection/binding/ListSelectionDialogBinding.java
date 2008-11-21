@@ -25,8 +25,7 @@ import javax.swing.ListCellRenderer;
 
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueModel;
-import org.springframework.rules.closure.Closure;
-import org.springframework.rules.closure.support.Block;
+import org.springframework.richclient.dialog.ApplicationDialog;
 import org.springframework.richclient.form.binding.support.CustomBinding;
 import org.springframework.richclient.selection.binding.support.LabelProvider;
 import org.springframework.richclient.selection.binding.support.LabelProviderListCellRenderer;
@@ -34,6 +33,8 @@ import org.springframework.richclient.selection.binding.support.SelectField;
 import org.springframework.richclient.selection.binding.support.ValueModel2EventListBridge;
 import org.springframework.richclient.selection.dialog.FilterListSelectionDialog;
 import org.springframework.richclient.selection.dialog.ListSelectionDialog;
+import org.springframework.rules.closure.Closure;
+import org.springframework.rules.closure.support.Block;
 import org.springframework.util.StringUtils;
 
 import ca.odell.glazedlists.EventList;
@@ -50,7 +51,7 @@ import ca.odell.glazedlists.impl.filter.StringTextFilterator;
  */
 public class ListSelectionDialogBinding extends CustomBinding {
 
-    private SelectField selectField;
+    protected SelectField selectField;
     private boolean filtered;
     private String[] filterProperties;
     private ListCellRenderer renderer;
@@ -59,6 +60,7 @@ public class ListSelectionDialogBinding extends CustomBinding {
     private Comparator comparator;
     private String descriptionKey;
     private String titleKey;
+    private boolean nullable = true;
 
     protected ListSelectionDialogBinding(SelectField selectField, FormModel formModel, String formPropertyPath) {
         super(formModel, formPropertyPath, null);
@@ -68,10 +70,12 @@ public class ListSelectionDialogBinding extends CustomBinding {
     protected JComponent doBindControl() {
         selectField.setLabelProvider(labelProvider);
         selectField.setSelectionDialog(createSelectionDialog());
+
+        selectField.setNullable(nullable);
         
         // trigger control creation so we can set the value
         selectField.getControl();
-        
+
         selectField.setValue(getValue());
 
         selectField.addPropertyChangeListener("value", new PropertyChangeListener() {
@@ -83,7 +87,7 @@ public class ListSelectionDialogBinding extends CustomBinding {
         return selectField.getControl();
     }
 
-    protected ListSelectionDialog createSelectionDialog() {
+    protected ApplicationDialog createSelectionDialog() {
         EventList eventList = createEventList(selectableItemsHolder);
         final ValueModel2EventListBridge itemRefresher = new ValueModel2EventListBridge(selectableItemsHolder,
                 eventList, true);
@@ -93,14 +97,12 @@ public class ListSelectionDialogBinding extends CustomBinding {
             FilterListSelectionDialog filterDialog = new FilterListSelectionDialog("", null, new FilterList(eventList));
             if (filterProperties == null) {
                 filterDialog.setFilterator(new StringTextFilterator());
-            }
-            else {
+            } else {
                 filterDialog.setFilterator(new BeanTextFilterator(filterProperties));
             }
 
             selectionDialog = filterDialog;
-        }
-        else {
+        } else {
             selectionDialog = new ListSelectionDialog("", null, eventList);
         }
 
@@ -119,7 +121,7 @@ public class ListSelectionDialogBinding extends CustomBinding {
             }
         });
         selectionDialog.setRenderer(getRendererForSelectionDialog());
-        
+
         if (StringUtils.hasText(descriptionKey)) {
             String description = getMessage(descriptionKey);
             selectionDialog.setDescription(description);
@@ -193,8 +195,12 @@ public class ListSelectionDialogBinding extends CustomBinding {
     public void setDescriptionKey(String descriptionKey) {
         this.descriptionKey = descriptionKey;
     }
-    
+
     public void setTitleKey(String titleKey) {
         this.titleKey = titleKey;
+    }
+
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
     }
 }
