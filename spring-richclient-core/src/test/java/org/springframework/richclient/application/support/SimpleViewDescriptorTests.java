@@ -38,7 +38,8 @@ public class SimpleViewDescriptorTests extends TestCase {
             }
         };
 
-        SimpleViewDescriptor descriptor = new SimpleViewDescriptor(view);
+        SimpleViewDescriptor descriptor = new SimpleViewDescriptor("id", view);
+        assertEquals("id", descriptor.getId());
 
         assertSame(view, descriptor.createPageComponent());
         // must always return the same

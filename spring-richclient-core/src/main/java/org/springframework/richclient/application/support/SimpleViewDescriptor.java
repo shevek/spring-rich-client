@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Icon;
 
+import org.springframework.binding.value.support.PropertyChangeSupport;
 import org.springframework.richclient.application.ApplicationWindow;
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.View;
@@ -27,6 +28,7 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonLabelInfo;
 import org.springframework.richclient.command.support.ShowViewCommand;
+import org.springframework.richclient.util.EventListenerListHelper;
 import org.springframework.util.Assert;
 
 /**
@@ -41,10 +43,13 @@ import org.springframework.util.Assert;
 public class SimpleViewDescriptor implements ViewDescriptor {
 
     private View view;
+    private String id;
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-    public SimpleViewDescriptor(View view) {
+    public SimpleViewDescriptor(String id, View view) {
         Assert.notNull(view, "view cannot be null");
 
+        this.id = id;
         this.view = view;
     }
 
@@ -61,43 +66,43 @@ public class SimpleViewDescriptor implements ViewDescriptor {
     }
 
     public String getId() {
-        return view.getId();
+        return id;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        view.addPropertyChangeListener(listener);
+        propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        view.addPropertyChangeListener(propertyName, listener);
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        view.removePropertyChangeListener(listener);
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        view.removePropertyChangeListener(propertyName, listener);
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }
 
     public String getCaption() {
-        return view.getCaption();
+        return id;
     }
 
     public String getDescription() {
-        return view.getDescription();
+        return id;
     }
 
     public String getDisplayName() {
-        return view.getDisplayName();
+        return id;
     }
 
     public Icon getIcon() {
-        return view.getIcon();
+        return null;
     }
 
     public Image getImage() {
-        return view.getImage();
+        return null;
     }
 
 }
