@@ -46,7 +46,7 @@ import org.springframework.richclient.application.support.AbstractApplicationPag
  */
 public class FlexDockApplicationPage extends AbstractApplicationPage implements DockableFactory {
     private Viewport port;
-    private Map dockables = new HashMap();
+    private Map<String, View> dockables = new HashMap<String, View>();
     private boolean isLoadingLayout;
     private boolean creatingDockable;
 
@@ -114,8 +114,8 @@ public class FlexDockApplicationPage extends AbstractApplicationPage implements 
         return port;
     }
 
-    public View getView( String id ) {
-        return (View) dockables.get( id );
+    public View getFlexView( String id ) {
+        return dockables.get( id );
     }
 
     protected void doAddPageComponent( PageComponent pageComponent ) {
@@ -128,7 +128,7 @@ public class FlexDockApplicationPage extends AbstractApplicationPage implements 
     }
 
     protected void doRemovePageComponent( PageComponent pageComponent ) {
-        View view = getView( pageComponent.getId() );
+        View view = getFlexView( pageComponent.getId() );
         if( view != null ) {
             DockingManager.close( (Dockable) view );
 
@@ -146,7 +146,7 @@ public class FlexDockApplicationPage extends AbstractApplicationPage implements 
             return false;
         }
 
-        View view = getView( pageComponent.getId() );
+        View view = getFlexView( pageComponent.getId() );
 
         view.setActive( true );
 
@@ -154,7 +154,7 @@ public class FlexDockApplicationPage extends AbstractApplicationPage implements 
         for( Iterator iter = DockingManager.getDockableIds().iterator(); iter.hasNext(); ) {
             String id = (String) iter.next();
             if( !id.equals( pageComponent.getId() ) ) {
-                getView( id ).setActive( false );
+                getFlexView( id ).setActive( false );
             }
         }
 
@@ -182,7 +182,7 @@ public class FlexDockApplicationPage extends AbstractApplicationPage implements 
         isLoadingLayout = false;
 
         // mark the view associated with the active component as active
-        View view = getView( getActiveComponent().getId() );
+        View view = getFlexView( getActiveComponent().getId() );
         if( view != null ) {
             view.setActive( true );
         }
