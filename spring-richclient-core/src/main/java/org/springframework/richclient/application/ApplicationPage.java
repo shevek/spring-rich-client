@@ -20,7 +20,7 @@ import java.util.Set;
 import org.springframework.richclient.factory.ControlFactory;
 
 /**
- * An <code>ApplicationPage</code> is a container for <code>PageComponent</code>s.
+ * An <code>ApplicationPage</code> is a container for <code>PageComponent</code> s.
  */
 public interface ApplicationPage extends ControlFactory {
     String getId();
@@ -39,18 +39,29 @@ public interface ApplicationPage extends ControlFactory {
 
     void showView(ViewDescriptor viewDescriptor);
 
+    /**
+     * Returns the {@link View} with the given id. Returns <code>null</code> if no {@link View} with the given id is
+     * shown.
+     * 
+     * @param id
+     *            the id, cannot be <code>null</code>
+     * @return the {@link View}, or <code>null</code>
+     */
+    View getView(String id);
+
     void openEditor(Object editorInput);
 
     boolean closeAllEditors();
 
     boolean close();
-    
+
     boolean close(PageComponent pageComponent);
 
     /**
      * Returns the Set of {@link PageComponent}s on this ApplicationPage
+     * 
      * @return the page components
      */
-    public Set getPageComponents();
+    public Set<PageComponent> getPageComponents();
 
 }
