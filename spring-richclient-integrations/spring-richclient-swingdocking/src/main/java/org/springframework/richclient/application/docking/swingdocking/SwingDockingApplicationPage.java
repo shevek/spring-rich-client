@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.richclient.application.docking.swing;
+package org.springframework.richclient.application.docking.swingdocking;
 
 import javax.swing.JDesktopPane;
 
