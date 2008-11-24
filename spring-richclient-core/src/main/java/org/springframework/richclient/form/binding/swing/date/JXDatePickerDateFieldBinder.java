@@ -1,13 +1,12 @@
 package org.springframework.richclient.form.binding.swing.date;
 
-import java.util.Map;
-
-import javax.swing.JComponent;
-
 import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.util.Assert;
+
+import javax.swing.*;
+import java.util.Map;
 
 public class JXDatePickerDateFieldBinder extends AbstractDateFieldBinder {
 
