@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -108,11 +108,11 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
     protected abstract JComponent createControl();
 
     /**
-     * Template method called once when this view is initialized; allows
-     * subclasses to register local executors for shared commands with the view
-     * context.
-     *
-     * @param context the view context
+     * Template method called once when this view is initialized; allows subclasses to register local executors for
+     * shared commands with the view context.
+     * 
+     * @param context
+     *            the view context
      */
     protected void registerLocalCommandExecutors(PageComponentContext context) {
 
@@ -137,12 +137,21 @@ public abstract class AbstractView extends AbstractControlFactory implements Vie
     public void dispose() {
 
     }
-    
+
     public boolean canClose() {
         return true;
     }
-    
+
     public void close() {
-    	context.getPage().close(this);
+        context.getPage().close(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * This implementation does nothing.
+     */
+    public void setInput(Object input) {
+
     }
 }

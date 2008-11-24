@@ -36,6 +36,7 @@
         <ref bean="conversionMenu" />
         <ref bean="validationMenu" />
         <ref bean="wizardMenu" />
+        <ref bean="viewMenu" />
         <ref bean="helpMenu" />
       </list>
     </property>
@@ -137,6 +138,14 @@
     <property name="members">
       <list>
         <ref bean="installWizardDialogCommand" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="viewMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+      	<bean class="org.springframework.richclient.samples.showcase.view.ShowViewWithInputCommand"/>
       </list>
     </property>
   </bean>

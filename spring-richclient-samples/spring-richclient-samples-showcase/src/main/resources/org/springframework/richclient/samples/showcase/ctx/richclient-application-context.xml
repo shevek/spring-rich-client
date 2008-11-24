@@ -301,6 +301,10 @@
     <property name="viewClass" value="org.springframework.richclient.samples.showcase.InitialView" />
   </bean>
 
+  <bean id="viewWithInput" class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+    <property name="viewClass" value="org.springframework.richclient.samples.showcase.view.ViewWithInput" />
+  </bean>
+
   <bean id="binderSelectionStrategy"
     class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
     <property name="bindersForPropertyTypes">

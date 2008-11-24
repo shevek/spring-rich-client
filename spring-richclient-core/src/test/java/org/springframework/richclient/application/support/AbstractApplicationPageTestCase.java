@@ -20,7 +20,9 @@ import javax.swing.JLabel;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.springframework.richclient.application.ApplicationPage;
+import org.springframework.richclient.application.View;
 
 /**
  * Abstract base testcase for {@link ApplicationPage} implementations.
@@ -75,7 +77,28 @@ public abstract class AbstractApplicationPageTestCase extends TestCase {
         applicationPage.close(view);
         assertNull(applicationPage.getView("testView1"));
     }
+
+    public void testShowViewWithInput() {
+        Object input = "the input";
+
+        applicationPage.showView("testView1", input);
+
+        TestView view = applicationPage.getView("testView1");
+        assertNotNull(view);
+
+        assertTrue(view.isSetInputCalled());
+        assertEquals(input, view.getInput());
+    }
     
+    public void testShowViewWithoutInput() {
+        applicationPage.showView("testView1");
+
+        TestView view = applicationPage.getView("testView1");
+        assertNotNull(view);
+
+        assertFalse(view.isSetInputCalled());
+    }
+
     public void testGetView() {
         assertNull(applicationPage.getView("testView1"));
 
@@ -93,6 +116,8 @@ public abstract class AbstractApplicationPageTestCase extends TestCase {
     private static class TestView extends AbstractView {
 
         private String label;
+        private Object input;
+        private boolean setInputCalled;
 
         public TestView(String label) {
             this.label = label;
@@ -101,6 +126,20 @@ public abstract class AbstractApplicationPageTestCase extends TestCase {
         @Override
         protected JComponent createControl() {
             return new JLabel(label);
+        }
+
+        @Override
+        public void setInput(Object input) {
+            this.input = input;
+            setInputCalled = true;
+        }
+
+        public Object getInput() {
+            return input;
+        }
+        
+        public boolean isSetInputCalled() {
+            return setInputCalled;
         }
 
     }

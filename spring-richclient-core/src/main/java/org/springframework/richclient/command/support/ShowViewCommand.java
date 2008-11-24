@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -88,7 +88,7 @@ public class ShowViewCommand extends ApplicationWindowAwareCommand implements In
         //FIXME getApplicationWindow can potentially return null. This should probably be 
         //made an invariant on the ApplicationWindowAwareCommand, that it never returns null.
         //Same applies to ApplicationWindow.getPage(), can also return null
-        getApplicationWindow().getPage().showView(this.viewDescriptor);
+        getApplicationWindow().getPage().showView(this.viewDescriptor.getId());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -35,18 +35,40 @@ public interface ApplicationPage extends ControlFactory {
 
     void setActiveComponent(PageComponent pageComponent);
 
-    void showView(String viewDescriptorId);
+    /**
+     * Shows the {@link View} with the given id.
+     * <p>
+     * If the {@link View} is already opened, the view will be reused.
+     * <p>
+     * NOTE: this is NOT the same as calling <code>this.showView(id, null)</code>.
+     * 
+     * @param id
+     *            the view id, cannot be empty
+     */
+    void showView(String id);
 
-    void showView(ViewDescriptor viewDescriptor);
+    /**
+     * Shows the {@link View} with the given id, and passes the input to the {@link View}, by calling
+     * {@link View#setInput(Object)}.
+     * <p>
+     * If the {@link View} is already opened, the view will be reused.
+     * 
+     * @param id
+     *            the view id, cannot be empty
+     * @param input
+     *            the input, can be <code>null</code>
+     */
+    void showView(String id, Object input);
 
     /**
      * Returns the {@link View} with the given id. Returns <code>null</code> if no {@link View} with the given id is
      * shown.
      * <p>
      * This method is "generified" to avoid extra casts when calling this method:
+     * 
      * <pre>
      * ApplicationPage page = ...; // get a reference to the ApplicationPage
-     * InitialView initialView = page.getView("initialView");
+     * InitialView initialView = page.getView(&quot;initialView&quot;);
      * </pre>
      * 
      * @param id

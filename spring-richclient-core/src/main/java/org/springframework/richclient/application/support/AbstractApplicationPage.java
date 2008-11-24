@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -40,7 +40,6 @@ import org.springframework.richclient.application.ViewDescriptor;
 import org.springframework.richclient.application.ViewDescriptorRegistry;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.util.EventListenerListHelper;
-import org.springframework.rules.constraint.AbstractConstraint;
 import org.springframework.util.Assert;
 
 /**
@@ -101,15 +100,13 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
     }
 
     protected PageComponent findPageComponent(final String viewDescriptorId) {
-        return (PageComponent) new AbstractConstraint() {
-
-            public boolean test(Object arg) {
-                if (arg instanceof View) {
-                    return ((View) arg).getId().equals(viewDescriptorId);
-                }
-                return false;
+        for (PageComponent component : pageComponents) {
+            if (component.getId().equals(viewDescriptorId)) {
+                return component;
             }
-        }.findFirst(pageComponents);
+        }
+
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -291,22 +288,39 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         return true;
     }
 
-    public void showView(String viewDescriptorId) {
-        Assert.hasText(viewDescriptorId, "id cannot be empty");
+    public void showView(String id) {
+        Assert.hasText(id, "id cannot be empty");
 
-        showView(getViewDescriptor(viewDescriptorId));
+        showView(getViewDescriptor(id), false, null);
     }
 
-    public void showView(ViewDescriptor viewDescriptor) {
+    public void showView(String id, Object input) {
+        Assert.hasText(id, "id cannot be empty");
+
+        showView(getViewDescriptor(id), true, input);
+    }
+
+    private void showView(ViewDescriptor viewDescriptor, boolean setInput, Object input) {
         Assert.notNull(viewDescriptor, "viewDescriptor cannot be null");
 
-        PageComponent component = findPageComponent(viewDescriptor.getId());
-        if (component == null) {
-            component = createPageComponent(viewDescriptor);
+        View view = (View) findPageComponent(viewDescriptor.getId());
+        if (view == null) {
+            view = (View) createPageComponent(viewDescriptor);
 
-            addPageComponent(component);
+            if (setInput) {
+                // trigger control creation before input is set to avoid npe
+                view.getControl();
+                
+                view.setInput(input);
+            }
+
+            addPageComponent(view);
+        } else {
+            if (setInput) {
+                view.setInput(input);
+            }
         }
-        setActiveComponent(component);
+        setActiveComponent(view);
     }
 
     public void openEditor(Object editorInput) {
