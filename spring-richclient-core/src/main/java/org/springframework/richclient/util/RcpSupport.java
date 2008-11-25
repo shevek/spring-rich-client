@@ -80,9 +80,6 @@ public class RcpSupport
         return keys;
     }
 
-    /**
-     * Gets a message based on the keys.
-     */
     public static String getMessage(String id, String name, String type)
     {
         String[] messageKeys = getMessageKeys(id, name, type);
@@ -112,10 +109,6 @@ public class RcpSupport
         return messageSourceAccessor.getMessage(id, "");
     }
 
-    /**
-     * Haalt message via {@link #getMessage(String, String, String)} en formateert de {i:type} daarin met de
-     * opgegeven params.
-     */
     public static String getMessage(String id, String name, String type, Object[] params)
     {
         String message = getMessage(id, name, type);
@@ -224,10 +217,6 @@ public class RcpSupport
                 Thread.currentThread(), t);
     }
 
-    /**
-     * Toon een errordialoog. Check eerst of er een message aanwezig is om eventueel een standaard foutmelding
-     * te tonen.
-     */
     public static void showErrorDialog(Throwable t)
     {
         String title = RcpSupport.getMessage(null, RcpSupport.ERROR_KEY, RcpSupport.TITLE);
@@ -244,10 +233,6 @@ public class RcpSupport
                 null, t, Level.SEVERE, null));
     }
 
-    /**
-     * Toon een errordialoog voor SQL exceptions. Check eerst of er een message aanwezig is om eventueel een
-     * standaard foutmelding te tonen.
-     */
     public static void showSQLExceptionErrorDialog(SQLException sqlException)
     {
         String title = RcpSupport.getMessage(null, RcpSupport.ERROR_KEY, RcpSupport.TITLE);
@@ -257,7 +242,7 @@ public class RcpSupport
         {
             shortMessage = RcpSupport
                     .getMessage(sqlException.getClass().getName() + "." + RcpSupport.MESSAGE);
-            shortMessage += "\nSQL fout " + sqlException.getErrorCode();
+            shortMessage += "\nSQL error " + sqlException.getErrorCode();
         }
         if (shortMessage == null || "".equals(shortMessage))
         {
@@ -271,9 +256,6 @@ public class RcpSupport
                 sqlException), null, sqlException, Level.SEVERE, null));
     }
 
-    /**
-     * Toon een errordialoog. Gebruik het gegeven id om label/text uit de messages te halen.
-     */
     public static void showErrorDialogResolveMessages(String id)
     {
         String title = RcpSupport.getMessage(id, RcpSupport.ERROR_KEY, RcpSupport.TITLE);
@@ -283,29 +265,16 @@ public class RcpSupport
         showErrorDialog(title, message, detail);
     }
 
-    /**
-     * Toon een errordialoog met de gegeven message.
-     */
     public static void showErrorDialog(String message)
     {
         showErrorDialog(message, (String) null);
     }
 
-    /**
-     * Toon een errordialoog met de gegeven message en detail.
-     */
     public static void showErrorDialog(String message, String detail)
     {
         showErrorDialog(RcpSupport.getMessage(null, RcpSupport.ERROR_KEY, RcpSupport.TITLE), message, detail);
     }
 
-    /**
-     * Toon een errordialoog, gebruik het id om de title en message op te halen. De throwable cause zal als
-     * detail worden gebruikt.
-     *
-     * @param id    gebruikt om de title en message op te halen.
-     * @param cause throwable met stacktrace te tonen in detail.
-     */
     public static void showErrorDialog(String id, Throwable cause)
     {
         String title = RcpSupport.getMessage(id, RcpSupport.ERROR_KEY, RcpSupport.TITLE);
@@ -314,9 +283,6 @@ public class RcpSupport
                 null, cause, Level.SEVERE, null));
     }
 
-    /**
-     * Toon een errordialoog met de gegeven title en message.
-     */
     public static void showErrorDialog(String title, String message, String detail)
     {
         showErrorDialog(null, new ErrorInfo(title, message, detail, null, null, Level.SEVERE, null));
@@ -336,7 +302,6 @@ public class RcpSupport
             }
         }
 
-        // errorpane with emailnotifier
         JXErrorPane pane = new JXErrorPane();
         pane.setErrorInfo(errorInfo);
         pane.setErrorReporter(new EmailNotifierErrorReporter());
@@ -360,15 +325,6 @@ public class RcpSupport
         return showWarningDialog(parent, id, null, optionType);
     }
 
-    /**
-     * Toon een dialog waarbij de message en title uit de message resources komen.
-     *
-     * @param parent     Parent voor deze dialog
-     * @param id         Id gebruikt voor het ophalen van de messages (id.title en id.message)
-     * @param parameters Parameters die in de text moeten worden gezet.
-     * @param optionType JOptionPane optionType
-     * @return int Resultaat(JOptionPane.OK_OPTION ...) na tonen confirmDialog.
-     */
     public static int showWarningDialog(Component parent, String id, Object[] parameters, int optionType)
     {
         String message = getMessage(null, id, TEXT, parameters);
@@ -385,17 +341,6 @@ public class RcpSupport
                 initialValue);
     }
 
-    /**
-     * Toon een dialog waarbij de message en title uit de message resources komen.
-     *
-     * @param parent       Parent voor deze dialog
-     * @param id           Id gebruikt voor het ophalen van de messages (id.title en id.message)
-     * @param parameters   Parameters die in de text moeten worden gezet.
-     * @param optionType   JOptionPane optionType
-     * @param initialValue De waarde die initieel de focus moet hebben (RcpSupport.YES_OPTION, RcpSupport.NO_OPTION,
-     *                     RcpSupport.OK_OPTION, RcpSupport.CANCEL_OPTION)
-     * @return int Resultaat(JOptionPane.OK_OPTION ...) na tonen optionDialog.
-     */
     public static int showWarningDialog(Component parent, String id, Object[] parameters, int optionType,
                                         int initialValue)
     {
@@ -403,8 +348,6 @@ public class RcpSupport
         String message = getMessage(null, id, TEXT, parameters);
         String title = getMessage(null, id, TITLE);
 
-        // De CANCEL_OPTION is 2, als het gaat om het OK_CANCEL-optionType, dan
-        // moeten we hiermee rekening houden, anders krijgen we een foutmelding.
         if (optionType == JOptionPane.OK_CANCEL_OPTION && initialValue == CANCEL_OPTION)
             initialValue = 1;
 
@@ -426,13 +369,6 @@ public class RcpSupport
         showWarningDialog(parent, id, null);
     }
 
-    /**
-     * Toon een dialog waarbij de message en title uit de message resources komen.
-     *
-     * @param parent     Parent voor deze dialog
-     * @param id         Id gebruikt voor het ophalen van de messages (id.title en id.message)
-     * @param parameters Parameters die in de text moeten worden gezet.
-     */
     public static void showWarningDialog(Component parent, String id, Object[] parameters)
     {
         String message = getMessage(null, id, TEXT, parameters);
@@ -450,25 +386,11 @@ public class RcpSupport
         return showConfirmationDialog(parent, id, null);
     }
 
-    /**
-     * Toon een confirmation dialog waarbij de message en title uit de message resources komen.
-     *
-     * @param parent     Parent voor deze dialog
-     * @param id         Id gebruikt voor het ophalen van de messages (id.title en id.message)
-     * @param parameters Parameters die in de text moeten worden gezet.
-     */
     public static int showConfirmationDialog(Component parent, String id, Object[] parameters)
     {
         return showConfirmationDialog(parent, id, parameters, JOptionPane.YES_NO_CANCEL_OPTION);
     }
 
-    /**
-     * Toon een confirmation dialog waarbij de message en title uit de message resources komen.
-     *
-     * @param parent     Parent voor deze dialog
-     * @param id         Id gebruikt voor het ophalen van de messages (id.title en id.message)
-     * @param parameters Parameters die in de text moeten worden gezet.
-     */
     public static int showConfirmationDialog(Component parent, String id, Object[] parameters, int optionType)
     {
         String message = getMessage(null, id, TEXT, parameters);
@@ -476,14 +398,6 @@ public class RcpSupport
         return JOptionPane.showConfirmDialog(parent, message, title, optionType);
     }
 
-    /**
-     * tonen van een messagedialog.
-     *
-     * @param parent
-     * @param id
-     * @param parameters
-     * @param optionType
-     */
     public static void showMessageDialog(Component parent, String id, Object[] parameters, int optionType)
     {
         String message = getMessage(null, id, TEXT, parameters);

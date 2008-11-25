@@ -954,11 +954,11 @@
         <version>2.1.4</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.jdesktop.xswingx</groupId>
-        <artifactId>xswingx</artifactId>
-        <version>0.2</version>
-      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.jdesktop.xswingx</groupId>-->
+        <!--<artifactId>xswingx</artifactId>-->
+        <!--<version>0.2</version>-->
+      <!--</dependency>-->
       <dependency>
         <groupId>org.swinglabs</groupId>
         <artifactId>swingx</artifactId>

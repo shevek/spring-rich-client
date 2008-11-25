@@ -202,11 +202,11 @@
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-      <groupId>org.jdesktop.xswingx</groupId>
-      <artifactId>xswingx</artifactId>
-      <optional>true</optional>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jdesktop.xswingx</groupId>-->
+      <!--<artifactId>xswingx</artifactId>-->
+      <!--<optional>true</optional>-->
+    <!--</dependency>-->
   </dependencies>
 
   <profiles>
