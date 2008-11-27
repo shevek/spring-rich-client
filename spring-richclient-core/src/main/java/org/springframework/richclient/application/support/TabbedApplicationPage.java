@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,8 +17,6 @@ package org.springframework.richclient.application.support;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -29,19 +27,16 @@ import javax.swing.event.ChangeListener;
 
 import org.springframework.richclient.application.PageComponent;
 import org.springframework.richclient.application.PageLayoutBuilder;
-import org.springframework.richclient.application.support.AbstractApplicationPage;
 import org.springframework.richclient.util.PopupMenuMouseListener;
 
 /**
- * <code>ApplicationPage</code> implementation that puts the <code>PageComponent</code>s
- * in a <code>JTabbedPane</code>.
+ * <code>ApplicationPage</code> implementation that puts the <code>PageComponent</code>s in a <code>JTabbedPane</code>.
  * 
  * @author Peter De Bruycker
  */
 public class TabbedApplicationPage extends AbstractApplicationPage implements PageLayoutBuilder {
 
     private JTabbedPane tabbedPane;
-    private List components = new ArrayList();
     private int tabPlacement = -1;
     private int tabLayoutPolicy = -1;
 
@@ -49,86 +44,85 @@ public class TabbedApplicationPage extends AbstractApplicationPage implements Pa
 
     protected JComponent createControl() {
         tabbedPane = new JTabbedPane();
-        if( tabPlacement != -1 ) {
-            tabbedPane.setTabPlacement( tabPlacement );
+        if (tabPlacement != -1) {
+            tabbedPane.setTabPlacement(tabPlacement);
         }
-        if( tabLayoutPolicy != -1 ) {
-            tabbedPane.setTabLayoutPolicy( tabLayoutPolicy );
+        if (tabLayoutPolicy != -1) {
+            tabbedPane.setTabLayoutPolicy(tabLayoutPolicy);
         }
 
-        tabbedPane.addChangeListener( new ChangeListener() {
-            public void stateChanged( ChangeEvent e ) {
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
                 // if we're adding a component, ignore change of active component
-                if( !addingComponent && tabbedPane.getSelectedIndex() >= 0 ) {
-                    setActiveComponent( getComponent( tabbedPane.getSelectedIndex() ) );
+                if (!addingComponent && tabbedPane.getSelectedIndex() >= 0) {
+                    setActiveComponent(getComponent(tabbedPane.getSelectedIndex()));
                 }
             }
-        } );
+        });
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem close = new JMenuItem( "Close" );
-        close.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
-                close( getComponent( tabbedPane.getSelectedIndex() ) );
+        JMenuItem close = new JMenuItem("Close");
+        close.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                close(getComponent(tabbedPane.getSelectedIndex()));
             }
-        } );
-        popup.add( close );
-        tabbedPane.addMouseListener( new PopupMenuMouseListener( popup ) );
+        });
+        popup.add(close);
+        tabbedPane.addMouseListener(new PopupMenuMouseListener(popup));
 
-        this.getPageDescriptor().buildInitialLayout( this );
+        this.getPageDescriptor().buildInitialLayout(this);
 
         return tabbedPane;
     }
 
-    protected void updatePageComponentProperties( PageComponent pageComponent ) {
-        int index = indexOf( pageComponent );
+    protected void updatePageComponentProperties(PageComponent pageComponent) {
+        int index = indexOf(pageComponent);
 
-        tabbedPane.setIconAt( index, pageComponent.getIcon() );
-        tabbedPane.setTitleAt( index, pageComponent.getDisplayName() );
-        tabbedPane.setToolTipTextAt( index, pageComponent.getCaption() );
+        tabbedPane.setIconAt(index, pageComponent.getIcon());
+        tabbedPane.setTitleAt(index, pageComponent.getDisplayName());
+        tabbedPane.setToolTipTextAt(index, pageComponent.getCaption());
     }
 
-    public void addView( String viewDescriptorId ) {
-        showView( viewDescriptorId );
+    public void addView(String viewDescriptorId) {
+        showView(viewDescriptorId);
     }
 
-    protected void doAddPageComponent( PageComponent pageComponent ) {
+    protected void doAddPageComponent(PageComponent pageComponent) {
         try {
             addingComponent = true;
-            components.add( pageComponent );
-            tabbedPane.addTab( pageComponent.getDisplayName(), pageComponent.getIcon(), pageComponent.getContext()
-                    .getPane().getControl(), pageComponent.getCaption() );
+            tabbedPane.addTab(pageComponent.getDisplayName(), pageComponent.getIcon(), pageComponent.getContext()
+                    .getPane().getControl(), pageComponent.getCaption());
         } finally {
             addingComponent = false;
         }
     }
 
-    protected void doRemovePageComponent( PageComponent pageComponent ) {
-        tabbedPane.removeTabAt( indexOf( pageComponent ) );
-        components.remove( pageComponent );
+    protected void doRemovePageComponent(PageComponent pageComponent) {
+        tabbedPane.removeTabAt(indexOf(pageComponent));
     }
 
-    protected boolean giveFocusTo( PageComponent pageComponent ) {
-        if( !components.contains( pageComponent ) ) {
+    protected boolean giveFocusTo(PageComponent pageComponent) {
+        int componentIndex = indexOf(pageComponent);
+        if (componentIndex < 0) {
             return false;
         }
 
-        tabbedPane.setSelectedIndex( indexOf( pageComponent ) );
+        tabbedPane.setSelectedIndex(componentIndex);
         return true;
     }
 
-    private int indexOf( PageComponent component ) {
-        return components.indexOf( component );
+    private int indexOf(PageComponent component) {
+        return getPageComponents().indexOf(component);
     }
 
-    private PageComponent getComponent( int index ) {
-        return (PageComponent) components.get( index );
+    private PageComponent getComponent(int index) {
+        return (PageComponent) getPageComponents().get(index);
     }
 
-    public void setTabPlacement( int tabPlacement ) {
+    public void setTabPlacement(int tabPlacement) {
         this.tabPlacement = tabPlacement;
     }
 
-    public void setTabLayoutPolicy( int tabLayoutPolicy ) {
+    public void setTabLayoutPolicy(int tabLayoutPolicy) {
         this.tabLayoutPolicy = tabLayoutPolicy;
     }
 }
