@@ -20,9 +20,7 @@ import javax.swing.JLabel;
 
 import junit.framework.TestCase;
 
-import org.easymock.EasyMock;
 import org.springframework.richclient.application.ApplicationPage;
-import org.springframework.richclient.application.View;
 
 /**
  * Abstract base testcase for {@link ApplicationPage} implementations.
@@ -88,6 +86,14 @@ public abstract class AbstractApplicationPageTestCase extends TestCase {
 
         assertTrue(view.isSetInputCalled());
         assertEquals(input, view.getInput());
+    }
+    
+    public void testShowView() {
+        assertSame(testView1, applicationPage.showView("testView1"));
+        assertSame(testView1, applicationPage.getActiveComponent());
+        
+        assertSame(testView2, applicationPage.showView("testView2"));
+        assertSame(testView2, applicationPage.getActiveComponent());
     }
     
     public void testShowViewWithoutInput() {

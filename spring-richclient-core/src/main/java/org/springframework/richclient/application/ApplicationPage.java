@@ -15,7 +15,7 @@
  */
 package org.springframework.richclient.application;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.richclient.factory.ControlFactory;
 
@@ -44,8 +44,10 @@ public interface ApplicationPage extends ControlFactory {
      * 
      * @param id
      *            the view id, cannot be empty
+     * 
+     * @return the {@link View} that is shown
      */
-    void showView(String id);
+    View showView(String id);
 
     /**
      * Shows the {@link View} with the given id, and passes the input to the {@link View}, by calling
@@ -57,8 +59,10 @@ public interface ApplicationPage extends ControlFactory {
      *            the view id, cannot be empty
      * @param input
      *            the input, can be <code>null</code>
+     * 
+     * @return the {@link View} that is shown
      */
-    void showView(String id, Object input);
+    View showView(String id, Object input);
 
     /**
      * Returns the {@link View} with the given id. Returns <code>null</code> if no {@link View} with the given id is
@@ -86,10 +90,10 @@ public interface ApplicationPage extends ControlFactory {
     boolean close(PageComponent pageComponent);
 
     /**
-     * Returns the Set of {@link PageComponent}s on this ApplicationPage
+     * Returns the list of {@link PageComponent}s on this {@link ApplicationPage}.
      * 
      * @return the page components
      */
-    public Set<PageComponent> getPageComponents();
+    public List<PageComponent> getPageComponents();
 
 }

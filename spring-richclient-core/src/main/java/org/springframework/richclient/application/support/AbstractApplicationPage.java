@@ -17,11 +17,11 @@ package org.springframework.richclient.application.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
@@ -56,7 +56,7 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
 
     private PageComponentPaneFactory pageComponentPaneFactory;
 
-    private final Set<PageComponent> pageComponents = new LinkedHashSet<PageComponent>();
+    private final List<PageComponent> pageComponents = new ArrayList<PageComponent>();
 
     private PageComponent activeComponent;
 
@@ -132,9 +132,12 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         pageComponentListeners.fire("componentFocusGained", component);
     }
 
+    /**
+     * Sets the first {@link PageComponent} as the active one.
+     */
     protected void setActiveComponent() {
         if (pageComponents.size() > 0) {
-            setActiveComponent((PageComponent) pageComponents.iterator().next());
+            setActiveComponent((PageComponent) pageComponents.get(0));
         }
     }
 
@@ -288,19 +291,19 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         return true;
     }
 
-    public void showView(String id) {
+    public View showView(String id) {
         Assert.hasText(id, "id cannot be empty");
 
-        showView(getViewDescriptor(id), false, null);
+        return showView(getViewDescriptor(id), false, null);
     }
 
-    public void showView(String id, Object input) {
+    public View showView(String id, Object input) {
         Assert.hasText(id, "id cannot be empty");
 
-        showView(getViewDescriptor(id), true, input);
+        return showView(getViewDescriptor(id), true, input);
     }
 
-    private void showView(ViewDescriptor viewDescriptor, boolean setInput, Object input) {
+    private View showView(ViewDescriptor viewDescriptor, boolean setInput, Object input) {
         Assert.notNull(viewDescriptor, "viewDescriptor cannot be null");
 
         View view = (View) findPageComponent(viewDescriptor.getId());
@@ -321,6 +324,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
             }
         }
         setActiveComponent(view);
+        
+        return view;
     }
 
     public void openEditor(Object editorInput) {
@@ -364,8 +369,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         return pageComponent;
     }
 
-    public Set<PageComponent> getPageComponents() {
-        return Collections.unmodifiableSet(pageComponents);
+    public List<PageComponent> getPageComponents() {
+        return Collections.unmodifiableList(pageComponents);
     }
 
     public final void setApplicationWindow(ApplicationWindow window) {
