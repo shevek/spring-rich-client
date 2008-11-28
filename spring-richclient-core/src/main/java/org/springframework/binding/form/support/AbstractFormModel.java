@@ -87,6 +87,8 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 
 	private boolean oldReadOnly = false;
 
+	private boolean authorized = true;
+	
 	private boolean oldDirty;
 
 	private boolean oldCommittable = true;
@@ -669,9 +671,28 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 	}
 
 	public boolean isReadOnly() {
-		return readOnly || (parent != null && parent.isReadOnly());
+		return readOnly || !authorized || (parent != null && parent.isReadOnly());
+	}
+	
+	/**
+	 * Check if the form has the correct authorization and can be edited.
+	 * 
+	 * @return <code>true</code> if this form is authorized and may be edited.
+	 */
+	public boolean isAuthorized() {
+		return authorized;
 	}
 
+	/**
+	 * Set whether or not the form is authorized and can be edited.
+	 * 
+	 * @param authorized <code>true</code> if this form may be edited.
+	 */
+	public void setAuthorized(boolean authorized) {
+		this.authorized = authorized;
+		readOnlyUpdated();
+	}
+	
 	/**
 	 * Fires the necessary property change event for changes to the readOnly
 	 * property. Must be called whenever the value of readOnly is changed.

@@ -21,6 +21,7 @@ import org.springframework.beans.InvalidPropertyException;
 import org.springframework.binding.convert.Converter;
 import org.springframework.binding.value.PropertyChangePublisher;
 import org.springframework.binding.value.ValueModel;
+import org.springframework.richclient.core.Authorizable;
 
 /**
  * <p>
@@ -54,7 +55,7 @@ import org.springframework.binding.value.ValueModel;
  * @author Keith Donald
  * @author Oliver Hutchison
  */
-public interface FormModel extends PropertyChangePublisher {
+public interface FormModel extends PropertyChangePublisher, Authorizable {
 
 	/** The name of the bound property <em>dirty</em>. */
 	static final String DIRTY_PROPERTY = "dirty";
