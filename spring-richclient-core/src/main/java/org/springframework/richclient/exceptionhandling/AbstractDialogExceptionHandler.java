@@ -85,7 +85,9 @@ public abstract class AbstractDialogExceptionHandler extends AbstractLoggingExce
                 || shutdownPolicy == ShutdownPolicy.OBLIGATE) {
             logger.info("Shutting down due to uncaught exception.");
             try {
-                Application.instance().close(true, 1);
+                if (Application.isLoaded()) {
+                    Application.instance().close(true, 1);
+                }
             } finally {
                 // In case the instance() method throws an exception and an exit didn't occur
                 System.exit(2);
@@ -94,7 +96,7 @@ public abstract class AbstractDialogExceptionHandler extends AbstractLoggingExce
     }
 
     protected JFrame resolveParentFrame() {
-        ApplicationWindow activeWindow = Application.instance().getActiveWindow();
+        ApplicationWindow activeWindow = Application.isLoaded() ? Application.instance().getActiveWindow() : null;
         return (activeWindow == null) ? null : activeWindow.getControl();
     }
 
