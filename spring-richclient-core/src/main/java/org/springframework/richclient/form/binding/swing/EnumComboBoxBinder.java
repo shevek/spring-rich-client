@@ -38,7 +38,7 @@ import org.springframework.util.Assert;
  */
 public class EnumComboBoxBinder extends ComboBoxBinder {
 
-    protected EnumComboBoxBinder() {
+    public EnumComboBoxBinder() {
         super();
     }
 
