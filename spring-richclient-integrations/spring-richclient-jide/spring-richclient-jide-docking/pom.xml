@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>spring-richclient-jide</artifactId>
+    <groupId>org.springframework.richclient</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.springframework.richclient</groupId>
+  <artifactId>spring-richclient-jide-docking</artifactId>
+  <packaging>jar</packaging>
+  <name>Spring Rich Client integrations : JIDE Docking</name>
+  <description>
+    This modules uses the JIDE docking framework to provide an implementation
+  	of the multipage per application and multiview per page concept within
+  	Spring RCP. In addition, there is an implementation of the editor/document
+  	concept and perspectives.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.jidesoft</groupId>
+      <artifactId>jide-dock</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jidesoft</groupId>
+      <artifactId>jide-components</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean id="htmlPaneEditor" class="org.springframework.richclient.application.docking.jide.editor.EditorDescriptor" >
+		<property name="editorClass">
+			<value>com.jidesoft.spring.richclient.googledemo.editor.HtmlPaneEditor</value>
+		</property>
+	</bean>
+	
+	<bean id="webBrowserEditor" class="org.springframework.richclient.application.docking.jide.editor.EditorDescriptor" >
+		<property name="editorClass">
+			<value>com.jidesoft.spring.richclient.googledemo.editor.WebBrowserEditor</value>
+		</property>
+	</bean>
+	
+	<!-- 
+		Example of an editor factory that chooses an editor based on the Class of the
+		object to be opened in that editor
+	 -->
+	<bean id="editorFactory" class="org.springframework.richclient.application.docking.jide.editor.DefaultEditorRegistry">
+		<property name="editorMap">
+			<map>
+				<entry value-ref="htmlPaneEditor">
+					<key>
+						<value type="java.lang.Class">java.net.URL</value>
+					</key>
+				</entry>
+				<entry value-ref="webBrowserEditor">
+					<key>
+						<value type="java.lang.Class">com.google.soap.search.GoogleSearchResultElement</value>
+					</key>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+	<!--
+		JIDE specific page descriptor. Give a unique page id and a list of views
+		for the page. This page contains one workspace and one other view.
+	-->
+	<bean name="mainPage" class="org.springframework.richclient.application.docking.jide.JidePageDescriptor">
+		<property name="viewDescriptors">
+			<list>
+				<value>workspaceView</value>
+				<value>searchResultsView</value>
+				<value>detailsView</value>
+			</list>
+		</property>
+		<property name="editorFactory">
+			<ref bean="editorFactory" />
+		</property>
+		<property name="initialEditorContents">
+			<value type="java.net.URL">com/jidesoft/spring/richclient/googledemo/welcome.html</value>
+		</property>
+		<property name="perspectives">
+			<list>
+				<ref bean="fullPerspective" />
+				<ref bean="limitedPerspective" />
+			</list>
+		</property>	
+	</bean>
+	
+	<bean id="fullPerspective" class="com.jidesoft.spring.richclient.googledemo.FullPerspective" />
+	<bean id="limitedPerspective" class="com.jidesoft.spring.richclient.googledemo.LimitedPerspective" />
+	
+	<bean id="workspaceView" 
+		class="org.springframework.richclient.application.docking.jide.view.JideViewDescriptor">
+		<property name="isWorkspace">
+			<value>true</value>
+		</property>
+		<property name="viewClass">
+			<value>org.springframework.richclient.application.docking.jide.editor.WorkspaceView</value>
+		</property>
+		<property name="viewProperties">
+			<map>
+				<entry key="heavyweightComponentEnabled">
+					<value>true</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="searchResultsView" 
+		class="org.springframework.richclient.application.docking.jide.view.JideViewDescriptor">
+		
+		<property name="initMode">
+			<ref bean="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"/>
+		</property>
+		<property name="initSide">
+			<ref bean="com.jidesoft.docking.DockContext.DOCK_SIDE_WEST"/>
+		</property>
+		<property name="initIndex">
+			<value>1</value>
+		</property>
+		<property name="viewClass">
+			<value>com.jidesoft.spring.richclient.googledemo.view.SearchResultsView</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="detailsView" 
+		class="org.springframework.richclient.application.docking.jide.view.JideViewDescriptor">
+		
+		<property name="initMode">
+			<ref bean="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"/>
+		</property>
+		<property name="initSide">
+			<ref bean="com.jidesoft.docking.DockContext.DOCK_SIDE_WEST"/>
+		</property>
+		<property name="initIndex">
+			<value>2</value>
+		</property>
+		<property name="viewClass">
+			<value>com.jidesoft.spring.richclient.googledemo.view.DetailsView</value>
+		</property>
+	</bean>
+	
+	<bean id="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.STATE_AUTOHIDE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.STATE_HIDDEN"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.STATE_FLOATING"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+				 
+	<bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_NORTH"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_SOUTH"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_EAST"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	<bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_WEST"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+</beans>

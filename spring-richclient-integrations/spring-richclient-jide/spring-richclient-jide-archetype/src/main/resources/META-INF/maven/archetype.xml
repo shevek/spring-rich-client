@@ -1,0 +1,29 @@
+<archetype>
+  <id>archetype-spring-rcp-jide</id>
+  <sources>
+    <source>src/main/java/command/ExitCommand.java</source>
+    <source>src/main/java/command/RestoreDefaultLayoutCommand.java</source>
+    <source>src/main/java/editor/StringEditor.java</source>
+    <source>src/main/java/view/InitialView.java</source>
+    <source>src/main/java/view/OtherView.java</source>
+    <source>src/main/java/JideApplication.java</source>
+  </sources>
+
+  <resources>
+    <resource>src/main/resources/ctx/jideApplicationContext.xml</resource>
+    <resource>src/main/resources/ctx/pagesApplicationContext.xml</resource>
+    <resource>src/main/resources/ctx/richclient-startup-context.xml</resource>
+
+    <resource filtered="false">src/main/resources/images/splash-screen.jpg</resource>
+
+    <resource>src/main/resources/ui/commandsContext.xml</resource>
+    <resource>src/main/resources/ui/images.properties</resource>
+    <resource>src/main/resources/ui/messages.properties</resource>
+
+    <resource>src/main/resources/commons-logging.properties</resource>
+    <resource>src/main/resources/log4j.properties</resource>
+  </resources>
+
+  <testSources>
+  </testSources>
+</archetype>

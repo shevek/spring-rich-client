@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean id="windowCommandManager" 
+		class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+		
+		<property name="sharedCommandIds">
+			<list>
+				<value>printCommand</value>
+				<!--  View and editor specific commands -->
+				<value>webBrowserEditor.refreshCommand</value>
+				<value>searchResultsView.clearCommand</value>
+				<value>searchResultsView.nextPageCommand</value>
+				<value>searchResultsView.previousPageCommand</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="menuBar" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean" >
+		<property name="members">
+			<list>
+				<ref bean="fileMenu"/>
+				<ref bean="searchMenu" />
+				<ref bean="layoutMenu" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="toolBar" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<value>printCommand</value>
+				<value>separator</value>
+				<value>searchGoogleCommand</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="layoutMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<bean class="org.springframework.richclient.application.docking.jide.view.ShowViewMenu"/>
+				<ref bean="restoreDefaultLayoutCommand" />
+				<ref bean="switchPerspectiveMenu" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 
+		This needs to be dynamic because of the page differences, much like the
+		view list.
+	-->
+	<bean id="switchPerspectiveMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+			 	<ref bean="switchFullPerspectiveCommand" />
+			 	<ref bean="switchLimitedPerspectiveCommand" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="switchFullPerspectiveCommand" 
+		class="org.springframework.richclient.application.docking.jide.perspective.SwitchPerspectiveCommand" >
+		<property name="perspective">
+			<ref bean="fullPerspective" />
+		</property>
+	</bean>
+	
+	<bean id="switchLimitedPerspectiveCommand" 
+		class="org.springframework.richclient.application.docking.jide.perspective.SwitchPerspectiveCommand" >
+		<property name="perspective">
+			<ref bean="limitedPerspective" />
+		</property>
+	</bean>
+	
+	<bean id="fileMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<value>preferencesCommand</value>
+				<value>separator</value>
+				<value>printCommand</value>
+				<value>separator</value>
+				<ref bean="exitCommand" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="searchMenu" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean">
+		<property name="members">
+			<list>
+				<value>searchGoogleCommand</value>
+			</list>
+		</property>
+	</bean>	
+		
+	<bean id="preferencesCommand" class="com.jidesoft.spring.richclient.googledemo.command.PreferencesCommand" />
+	
+	<bean id="exitCommand" 
+	 	class="com.jidesoft.spring.richclient.googledemo.command.ExitCommand"/>
+				
+	<bean id="restoreDefaultLayoutCommand" 
+		class="com.jidesoft.spring.richclient.googledemo.command.RestoreDefaultLayoutCommand" /> 
+	
+	<bean id="searchGoogleCommand"
+		class="com.jidesoft.spring.richclient.googledemo.command.SearchGoogleCommand"  />
+	
+	<!-- 
+		Defines a view specific toolbar using default magic bean ids.
+	 -->
+	<bean id="searchResultsView.viewToolBar" 
+		class="org.springframework.richclient.command.CommandGroupFactoryBean" >
+		
+		<property name="members">
+			<list>
+				<value>searchResultsView.clearCommand</value>
+				<value>searchResultsView.nextPageCommand</value>
+				<value>searchResultsView.previousPageCommand</value>
+			</list>
+		</property>
+	</bean> 
+		
+	<!--
+	  The next bean specifies a editor specific
+		toolbar for the webBrowserEditor using
+		the default magic bean ids.
+	 -->
+	 
+	<bean id="webBrowserEditor.editorToolBar"
+		class="org.springframework.richclient.command.CommandGroupFactoryBean" >
+		
+		<property name="members">
+			<list>
+				<value>webBrowserEditor.refreshCommand</value>
+			</list>
+		</property>
+	</bean> 
+</beans>

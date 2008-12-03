@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<!-- $Id: jideApplicationContext.xml,v 1.4 2008/06/02 21:32:07 jwray Exp $ -->
+<beans>
+	
+	
+	<bean id="application" 
+		class="org.springframework.richclient.application.Application">
+		<constructor-arg index="0" ref="applicationDescriptor"/>
+		<constructor-arg index="1" ref="lifecycleAdvisor"/>
+	</bean>
+	
+	 
+	<bean id="applicationDescriptor" 
+		class="org.springframework.richclient.application.support.DefaultApplicationDescriptor" >
+		<property name="version" value="0.2"/>
+		<property name="buildId" value="2006-10"/>
+	</bean>
+	
+	<!--
+		JIDE specific replacement of the ApplicationLifecycleAdvisor.
+		
+		Specifies the JIDE implementation of the status bar, and so is not
+		needed (ie use the Spring version) unless the JIDE status bar is 
+		required. 
+	-->
+	<bean id="lifecycleAdvisor" 
+		class="org.springframework.richclient.application.docking.jide.JideApplicationLifecycleAdvisor" >
+		<property name="windowCommandBarDefinitions" value="com/jidesoft/spring/richclient/googledemo/config/commandsContext.xml" />
+		<property name="startingPageId" value="mainPage" />
+		<property name="statusBar" ref="statusBar" />
+		<property name="registerableExceptionHandler" ref="exceptionHandler" /> 
+		<property name="windowCommandManagerBeanName" value="windowCommandManager" />
+        <property name="menubarBeanName" value="menuBar" />
+        <property name="toolbarBeanName" value="toolBar" />
+	</bean>
+	
+    <bean id="exceptionHandler" class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler" >
+        <property name="logLevel" value="ERROR"/>
+    	<property name="shutdownPolicy" value="NONE"/>
+    </bean>
+	
+	<!-- 
+		Event multicaster used in Spring
+	 -->
+	<bean id="applicationEventMulticaster" 
+		class="org.springframework.context.event.SimpleApplicationEventMulticaster"/>
+		
+	<!--
+		Replacement of the Spring RCP status bar by the JIDE version. In addition to
+		replacing the message and progress parts of the Spring RCP status bar, it also
+		allows a list of additional status bar items to be added to the bar. They are added in the
+		order listed, after the message and progress items.
+		
+		Note that is dependent on the JIDE look and feel configurer for static init
+		reasons.
+	 -->
+	<bean name="statusBar" class="org.springframework.richclient.components.jide.IconProgressStatusBar"
+		depends-on="iconSource">
+		<property name="cancelEnabled" value="true" />
+		<property name="statusBarItems">
+			<list>
+				<ref bean="memoryStatusBarItem" />
+				<ref bean="resizeStatusBarItem" />
+			</list> 
+		</property> 
+	</bean>
+	<!--
+		Definition of some provided status bar items that are added to the status bar
+		in the statusBar definition
+	-->
+	<bean name="memoryStatusBarItem" class="com.jidesoft.status.MemoryStatusBarItem" />
+	<bean name="timeStatusBarItem" class="com.jidesoft.status.TimeStatusBarItem" />
+	<bean name="resizeStatusBarItem" class="com.jidesoft.status.ResizeStatusBarItem" />
+	
+	<bean name="statusBarListener" class="com.jidesoft.spring.richclient.googledemo.view.StatusBarListener">
+		<property name="statusBar" ref="statusBar" />
+	</bean>
+	
+	<!--
+		Look and feel configurator that allows the specification of different
+		look and feels for different platforms.
+	-->
+	<bean id="com.jidesoft.plaf.LookAndFeelFactory.OFFICE2003_STYLE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+				 
+	<bean id="com.jidesoft.plaf.LookAndFeelFactory.XERTO_STYLE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+		
+	<bean id="com.jidesoft.plaf.LookAndFeelFactory.WINDOWS_LNF"
+			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+			
+	<bean id="com.jidesoft.plaf.LookAndFeelFactory.PLASTIC3D_LNF"
+			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+			
+	<bean id="com.jidesoft.plaf.LookAndFeelFactory.PLASTIC3D_LNF_1_3"
+			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+			
+	<bean id="lookAndFeelConfigurer" 
+		class="org.springframework.richclient.components.jide.JideLookAndFeelConfigurer">
+		
+		<property name="linuxLNF" ref="com.jidesoft.plaf.LookAndFeelFactory.PLASTIC3D_LNF_1_3" />
+		<property name="windowsLNF" ref="com.jidesoft.plaf.LookAndFeelFactory.WINDOWS_LNF" />
+		<property name="windowsStyle" ref="com.jidesoft.plaf.LookAndFeelFactory.XERTO_STYLE" />
+		<property name="windowsXPStyle" ref="com.jidesoft.plaf.LookAndFeelFactory.OFFICE2003_STYLE" />
+	</bean>
+	
+	<bean id="serviceLocator" class="org.springframework.richclient.application.ApplicationServicesLocator">
+        <property name="applicationServices" ref="applicationServices"/>
+    </bean>
+    
+    <bean id="applicationServices"
+        class="org.springframework.richclient.application.support.DefaultApplicationServices">
+        <property name="applicationObjectConfigurerId"><idref bean="applicationObjectConfigurer" /></property>
+        <property name="formComponentInterceptorFactoryId"><idref bean="formComponentInterceptorFactory"/></property>
+        <property name="imageSourceId"><idref bean="imageSource"/></property>
+        <property name="rulesSourceId"><idref bean="rulesSource"/></property>
+        <property name="messageSourceId"><idref bean="messageSource"/></property>
+        <property name="applicationWindowFactoryId"><idref bean="applicationWindowFactory" /></property>
+        <property name="applicationPageFactoryId"><idref bean="applicationPageFactory" /></property>
+        <property name="registryEntries">
+        	<!-- 
+        		Map of class name to idref to include application specific services into the
+        		service locator. Another option would be to override the DefaultApplicationServices
+        		implementation
+        	 -->
+        	<map>
+        		<entry key="com.jidesoft.spring.richclient.googledemo.preferences.GoogleSettingsManager" value="googleSettingsManager" />
+        	</map>
+        </property>
+    </bean>
+	
+	<bean id="applicationObjectConfigurer" depends-on="serviceLocator"
+		class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer" />
+		
+	<bean id="messageSource" 
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>org.springframework.richclient.application.messages</value>
+				<value>com.jidesoft.spring.richclient.googledemo.config.messages</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="imageResourcesFactory" 
+		class="org.springframework.context.support.ResourceMapFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:org/springframework/richclient/image/images.properties</value>
+				<value>classpath:com/jidesoft/spring/richclient/googledemo/config/images.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
+  	  <constructor-arg index="0" ref="imageResourcesFactory" />
+   	  <property name="brokenImageIndicator" value="/org/springframework/richclient/images/alert/error_obj.gif" />
+    </bean>
+  
+	<bean id="iconSource" 
+		class="org.springframework.richclient.image.DefaultIconSource">
+		<constructor-arg index="0" ref="imageSource" />
+	</bean>
+	
+	<bean id="applicationWindowFactory" class="org.springframework.richclient.application.docking.jide.JideApplicationWindowFactory" >
+	
+		<property name="profileKey" value="GoogleDemoApplication" />
+		<property name="saveLayoutOnClose" value="true" />
+		<property name="doubleClickAction" ref="com.jidesoft.docking.DockingManager.DOUBLE_CLICK_TO_MAXIMIZE" />
+		<property name="heavyweightComponentEnabled" value="true" />
+		<property name="showWorkspace" value="true" /> 
+		<property name="layoutVersion" value="2" />
+	</bean>
+	
+	<bean id="applicationPageFactory" class="org.springframework.richclient.application.docking.jide.JideApplicationPageFactory" />
+	
+	<bean id="com.jidesoft.docking.DockingManager.DOUBLE_CLICK_NONE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+		
+	<bean id="com.jidesoft.docking.DockingManager.DOUBLE_CLICK_TO_FLOAT"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+		
+	<bean id="com.jidesoft.docking.DockingManager.DOUBLE_CLICK_TO_MAXIMIZE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+		
+	
+	<bean id="formComponentInterceptorFactory" 
+		class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+		<property name="interceptorFactories">
+			<list>
+				<bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+					<property name="errorColor">
+						<value>255,245,245</value>
+					</property>
+				</bean>
+				<bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
+				<bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
+				<bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="rulesSource" class="com.jidesoft.spring.richclient.googledemo.command.ValidationRulesSource"/>
+	
+	<bean id="errorDialogListener" class="com.jidesoft.spring.richclient.googledemo.ErrorDialogListener"  />
+	
+	<bean name="workspaceListener"
+		class="org.springframework.richclient.application.docking.jide.editor.WorkspaceListener" />
+		
+	<!-- 
+		This is my interpretation on how to use the Spring RCP
+		settings managers. Not sure if this is how it was intended.
+	  -->
+	<bean id="googleSettingsManager" class="com.jidesoft.spring.richclient.googledemo.preferences.GoogleSettingsManager">
+		<property name="settingsStoreManager" ref="googleSettingsStoreManager" />
+	</bean>
+	
+	<bean id="googleSettingsStoreManager" class="org.springframework.richclient.settings.SettingsManager">
+        <property name="settingsFactory">
+            <bean class="org.springframework.richclient.settings.j2seprefs.PreferencesSettingsFactory">
+                <property name="id" value="com.jidesoft.spring.richclient.googledemo.JIDEDemo" />
+            </bean>
+        </property>
+    </bean>
+</beans>
