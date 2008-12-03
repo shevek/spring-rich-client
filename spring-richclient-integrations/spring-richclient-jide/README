@@ -1,0 +1,125 @@
+The JIDE integration project requires you to have the JIDE libraries in your
+Maven repository in order to compile the code.
+
+If you want to compile this code, you can take one of the following steps:
+
+- buy a license for the libraries
+
+- download the evaluation libraries
+
+You'll need to install them manually into your repository (replace jide-library
+and version by the appropriate values):
+
+mvn install:install-file
+   -Dfile=jide-library.jar
+   -DgroupId=com.jidesoft
+   -DartifactId=jide-library
+   -Dversion=x.y.z
+   -Dpackaging=jar
+
+As an alternative, you can opt to create a POM for each library. For Spring Rich Client,
+the following POMs can be used (version 2.4.5 is used here):
+
+jide-common
+===========
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-common</artifactId>
+    <version>2.4.5</version>
+</project>
+
+jide-action
+===========
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-action</artifactId>
+    <version>2.4.5</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+
+jide-components
+===============
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-components</artifactId>
+    <version>2.4.5</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+
+jide-dialogs
+============
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-dialogs</artifactId>
+    <version>2.4.5</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+
+jide-grids
+==========
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-grids</artifactId>
+    <version>2.4.5</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+
+jide-dock
+=========
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jidesoft</groupId>
+    <artifactId>jide-dock</artifactId>
+    <version>2.4.5</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+
+
+
+You can then use the following Maven 2 command (ie. for jide-action):
+
+mvn install:install-file -Dfile=jide-action.jar -DpomFile=jide-action.pom
+
+This approach is recommended, as transitive dependencies are included (as stated
+in Jide's readme file).
