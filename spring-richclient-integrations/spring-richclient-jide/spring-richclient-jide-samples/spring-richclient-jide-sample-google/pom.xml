@@ -44,8 +44,8 @@
       <version>2002-08-30</version>
     </dependency>
     <dependency>
-      <groupId>org.jdesktop</groupId>
-      <artifactId>jdic</artifactId>
+      <groupId>org.jdesktop.jdic</groupId>
+      <artifactId>jdic-shared</artifactId>
       <version>0.9.3</version>
     </dependency>
     <dependency>
@@ -60,4 +60,43 @@
       <version>2.2.0</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>nix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.jdesktop.jdic</groupId>
+          <artifactId>jdic-native-linux</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jdesktop.jdic</groupId>
+          <artifactId>jdic-stub-linux</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>win</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.jdesktop.jdic</groupId>
+          <artifactId>jdic-native-windows</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jdesktop.jdic</groupId>
+          <artifactId>jdic-stub-windows</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
