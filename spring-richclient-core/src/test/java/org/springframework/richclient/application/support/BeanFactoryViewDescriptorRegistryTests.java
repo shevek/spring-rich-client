@@ -17,10 +17,12 @@ package org.springframework.richclient.application.support;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.richclient.application.ViewDescriptor;
+
+import javax.swing.*;
 
 
 /**
@@ -40,9 +42,11 @@ public class BeanFactoryViewDescriptorRegistryTests extends TestCase {
         BeanFactoryViewDescriptorRegistry registry = new BeanFactoryViewDescriptorRegistry();
         StaticApplicationContext appCtx = new StaticApplicationContext();
         registry.setApplicationContext(appCtx);
-        
-        appCtx.registerSingleton("view1", DefaultViewDescriptor.class);
-        appCtx.registerSingleton("view2", DefaultViewDescriptor.class);
+
+        MutablePropertyValues mpv = new MutablePropertyValues();
+        mpv.addPropertyValue("viewClass", NullView.class);
+        appCtx.registerSingleton("view1", DefaultViewDescriptor.class, mpv);
+        appCtx.registerSingleton("view2", DefaultViewDescriptor.class, mpv);
         appCtx.registerSingleton("bogusView", String.class);
         
         Assert.assertNotNull(registry.getViewDescriptor("view1"));
@@ -81,8 +85,10 @@ public class BeanFactoryViewDescriptorRegistryTests extends TestCase {
         Assert.assertNotNull("View descriptor array should never be null", viewDescriptors);
         Assert.assertEquals("Should be no view descriptors in the array", 0, viewDescriptors.length);
 
-        appCtx.registerSingleton("view1", DefaultViewDescriptor.class);
-        appCtx.registerSingleton("view2", DefaultViewDescriptor.class);
+        MutablePropertyValues mpv = new MutablePropertyValues();
+        mpv.addPropertyValue("viewClass", NullView.class);
+        appCtx.registerSingleton("view1", DefaultViewDescriptor.class, mpv);
+        appCtx.registerSingleton("view2", DefaultViewDescriptor.class, mpv);
         
         viewDescriptors = registry.getViewDescriptors();
         Assert.assertEquals("Should be 2 view descriptors in the array", 2, viewDescriptors.length);
@@ -103,6 +109,15 @@ public class BeanFactoryViewDescriptorRegistryTests extends TestCase {
             //do nothing, test succeeded
         }
         
+    }
+
+    private class NullView extends AbstractView
+    {
+
+        protected JComponent createControl()
+        {
+            return new JPanel();
+        }
     }
 
 }
