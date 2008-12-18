@@ -261,8 +261,8 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
             activeComponent = null;
         }
 
-        pageComponents.remove(pageComponent);
         doRemovePageComponent(pageComponent);
+        pageComponents.remove(pageComponent);
         pageComponent.removePropertyChangeListener(pageComponentUpdater);
         if (pageComponent instanceof ApplicationListener && getApplicationEventMulticaster() != null) {
             getApplicationEventMulticaster().removeApplicationListener((ApplicationListener) pageComponent);
