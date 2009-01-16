@@ -317,6 +317,12 @@
           </key>
           <bean class="org.springframework.richclient.selection.binding.ListSelectionDialogBinder" />
         </entry>
+			  <entry>
+					<key>
+						<value type="java.lang.Class">java.util.Date</value>
+					</key>
+					<bean class="org.springframework.richclient.form.binding.swing.date.NachoCalendarDateFieldBinder" />
+				</entry>
       </map>
     </property>
     <property name="bindersForControlTypes">

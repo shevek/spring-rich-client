@@ -81,6 +81,7 @@
         <ref bean="parentChildFormDialogCommand" />
         <ref bean="radioButtonEnumDialogCommand" />
         <ref bean="shuttleListBindingDialogCommand" />
+         <ref bean="calendarBindingDialogCommand" />
       </list>
     </property>
   </bean>
@@ -291,6 +292,14 @@
     <property name="dialog">
       <bean id="parentChildFormDialog"
         class="org.springframework.richclient.samples.showcase.binding.ParentChildFormDialog" />
+    </property>
+  </bean>
+
+  <bean id="calendarBindingDialogCommand"
+    class="org.springframework.richclient.command.support.DialogCommand">
+    <property name="dialog">
+      <bean id="calendarBindingDialog"
+        class="org.springframework.richclient.samples.showcase.binding.CalendarBindingDialog" />
     </property>
   </bean>
 
