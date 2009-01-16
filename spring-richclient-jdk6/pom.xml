@@ -9,9 +9,9 @@
 
     <artifactId>spring-richclient-jdk6</artifactId>
     <packaging>jar</packaging>
-    <name>Spring richclient jdk6</name>
+    <name>Spring Rich Client JDK6</name>
     <description>
-        Code needs java 1.6 (AKA Mustang).
+        Java 6 extensions for Spring Rich Client.
     </description>
 
     <build>

@@ -10,7 +10,7 @@
 
     <artifactId>spring-richclient-resources</artifactId>
     <packaging>jar</packaging>
-    <name>Spring richclient resources</name>
+    <name>Spring Rich Client resources</name>
     <description>
         Most resources kept separate from the rest due to its size.
     </description>

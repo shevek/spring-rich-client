@@ -10,7 +10,7 @@
 
     <artifactId>spring-richclient-sandbox</artifactId>
     <packaging>jar</packaging>
-    <name>Spring richclient sandbox</name>
+    <name>Spring Rich Client sandbox</name>
     <description>
         Sandbox with code in development.
         The code contained in the sandbox is very volatile.

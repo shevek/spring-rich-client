@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.richclient</groupId>
     <artifactId>spring-richclient</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>spring-richclient-full</artifactId>
@@ -16,8 +16,8 @@
     Specifing it jar probably won't work as an empty jar would replace the assembly jar in the repo.
   -->
   <packaging>pom</packaging>
-  <name>Spring richclient full (all modules)</name>
-  <description>A convenience union of all of the modules (except sandbox and tiger).</description>
+  <name>Spring Rich Client full library (all modules)</name>
+  <description>A convenience union of all of the modules (except sandbox and jdk6).</description>
 
   <build>
     <plugins>
@@ -51,18 +51,6 @@
     <dependency>
       <groupId>org.springframework.richclient</groupId>
       <artifactId>spring-richclient-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-binding</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-form</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.richclient</groupId>
-      <artifactId>spring-richclient-support</artifactId>
     </dependency>
   </dependencies>
 

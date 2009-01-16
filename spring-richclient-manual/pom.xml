@@ -8,8 +8,8 @@
     </parent>
 
     <artifactId>spring-richclient-manual</artifactId>
-    <name>Spring richclient manual</name>
-    <description>Refence manual.</description>
+    <name>Spring Rich Client manual</name>
+    <description>Reference manual.</description>
 
     <build>
         <plugins>

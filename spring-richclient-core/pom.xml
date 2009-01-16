@@ -10,7 +10,7 @@
 
   <artifactId>spring-richclient-core</artifactId>
   <packaging>jar</packaging>
-  <name>Spring richclient core</name>
+  <name>Spring Rich Client core</name>
   <description>Core and basic classes.</description>
 
   <dependencies>

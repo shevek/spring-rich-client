@@ -11,7 +11,7 @@
   <groupId>org.springframework.richclient.samples</groupId>
   <artifactId>spring-richclient-samples-simple</artifactId>
   <packaging>jar</packaging>
-  <name>Spring richclient simple sample</name>
+  <name>Spring Rich Client samples: Simple</name>
   <description>
     This application provides a very simple example of how to use the basic features of the Spring Rich Client
     platform.

@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.richclient.samples</groupId>
   <artifactId>spring-richclient-samples-vldocking</artifactId>
-  <name>Spring richclient vldocking sample application</name>
+  <name>Spring Rich Client samples: VLDocking</name>
   <packaging>jar</packaging>
   <description>
     This application provides a example of how to use the vldocking features of the Spring Rich Client

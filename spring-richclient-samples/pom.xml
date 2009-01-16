@@ -10,8 +10,8 @@
   <groupId>org.springframework.richclient.samples</groupId>
   <artifactId>spring-richclient-samples</artifactId>
   <packaging>pom</packaging>
-  <name>Spring richclient samples</name>
-  <description>Spring richclient samples.</description>
+  <name>Spring Rich Client samples</name>
+  <description>Spring Rich Client samples</description>
 
   <modules>
     <!--<module>spring-richclient-samples-petclinic</module>-->

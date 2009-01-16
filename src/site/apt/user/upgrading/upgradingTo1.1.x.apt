@@ -6,4 +6,13 @@
 
 Upgrading from 1.0.x to 1.1.x
 
-    * None yet
+    * Module merge
+
+    Some modules have been merged to make Spring Rich client homogenous. The core, support, forms, binding and jdk5 module
+    have been merged into the core module.
+
+    * Upgrade to Java 5
+
+    The baseline for the codebase is now Java 5. Please take this into account when upgrading your applications.
+
+    
