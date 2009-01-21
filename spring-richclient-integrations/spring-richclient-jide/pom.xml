@@ -28,7 +28,7 @@
   </modules>
 
   <properties>
-    <jide.version>2.4.5</jide.version>
+    <jide.version>[2.2.0, 3.0.0)</jide.version>
   </properties>
 
   <dependencyManagement>
