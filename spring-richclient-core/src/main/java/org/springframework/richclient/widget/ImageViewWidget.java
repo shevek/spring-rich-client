@@ -1,7 +1,5 @@
 package org.springframework.richclient.widget;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 
 import javax.swing.*;
@@ -17,8 +15,6 @@ import java.io.IOException;
  */
 public class ImageViewWidget extends AbstractWidget
 {
-    Log log = LogFactory.getLog(ImageViewWidget.class);
-
     private JLabel imageHolder;
     private JComponent mainComponent;
     private boolean hasContent;
@@ -63,7 +59,7 @@ public class ImageViewWidget extends AbstractWidget
             }
             catch (IOException e)
             {
-                log.warn("Error reading resource: " + resource);
+                logger.warn("Error reading resource: " + resource);
                 throw new RuntimeException("Error reading resource " + resource, e);
             }
         }
