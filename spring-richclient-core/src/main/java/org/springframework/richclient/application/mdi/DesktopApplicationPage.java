@@ -15,27 +15,18 @@
  */
 package org.springframework.richclient.application.mdi;
 
-import java.beans.PropertyVetoException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-
-import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.PageComponent;
-import org.springframework.richclient.application.PageDescriptor;
-import org.springframework.richclient.application.PageLayoutBuilder;
-import org.springframework.richclient.application.ViewDescriptor;
+import org.springframework.richclient.application.*;
 import org.springframework.richclient.application.mdi.contextmenu.DesktopCommandGroupFactory;
 import org.springframework.richclient.application.support.AbstractApplicationPage;
 import org.springframework.richclient.util.Assert;
 import org.springframework.richclient.util.PopupMenuMouseListener;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import java.beans.PropertyVetoException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Peter De Bruycker
@@ -111,7 +102,7 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 
 		configureFrame(pageComponent, internalFrame);
 
-		frames.put(pageComponent, internalFrame);
+		keepFrameDetails(pageComponent, internalFrame);
 
 		internalFrame.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
@@ -130,7 +121,14 @@ public class DesktopApplicationPage extends AbstractApplicationPage implements P
 		return internalFrame;
 	}
 
-	protected void configureFrame(PageComponent component, JInternalFrame frame) {
+    /**
+     * Having this method allows subclasses to enrich/wrap the internal frame, for instance with a visible resizer.
+     */
+    protected void keepFrameDetails(final PageComponent pageComponent, JInternalFrame internalFrame) {
+        frames.put(pageComponent, internalFrame);
+    }
+
+    protected void configureFrame(PageComponent component, JInternalFrame frame) {
 		if (component.getIcon() != null) {
 			frame.setFrameIcon(component.getIcon());
 		}
