@@ -15,6 +15,7 @@
  */
 package org.springframework.richclient.samples.simple.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -55,6 +56,8 @@ public class Contact {
 	private String emailAddress;
 
     private String memo;
+
+    private BigDecimal monthlyIncome;
 
 	/**
 	 * Default constructor.
@@ -211,6 +214,16 @@ public class Contact {
     public void setMemo(String memo)
     {
         this.memo = memo;
+    }
+
+    public BigDecimal getMonthlyIncome()
+    {
+        return monthlyIncome;
+    }
+
+    public void setMonthlyIncome(BigDecimal monthlyIncome)
+    {
+        this.monthlyIncome = monthlyIncome;
     }
 
     /**

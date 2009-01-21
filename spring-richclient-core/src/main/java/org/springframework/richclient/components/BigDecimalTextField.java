@@ -1,5 +1,13 @@
 package org.springframework.richclient.components;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
+
+import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.math.BigDecimal;
@@ -11,15 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -381,6 +380,11 @@ public class BigDecimalTextField extends JTextField {
 				}
 				return;
 			}
+            else if (isShortCut(str))
+            {
+                handleShortCut(str, offset, a);
+                return;
+            }
 			// check decimal signs
 			else if ((str.length() == 1)
 					&& ((this.alternativeSeparator == str.charAt(0)) || (this.decimalSeparator == str.charAt(0)))) {
@@ -454,6 +458,58 @@ public class BigDecimalTextField extends JTextField {
 			super.insertString(offset, str, a);
 			fireUserInputChange();
 		}
+
+        private void handleShortCut(String str, int offset, AttributeSet a) throws BadLocationException
+        {
+            log.debug("handing shortcut " + str);
+            if (getLength() == 0)
+            {
+                if (str.equals("k"))
+                {
+                    super.insertString(0, "1000", a);
+                }
+                else if (str.equals("m"))
+                {
+                    super.insertString(0, "1000000", a);
+                }
+                else if (str.equals("b"))
+                {
+                    super.insertString(0, "1000000000", a);
+                }
+            }
+            else if (getLength() == 1 && (getText(0, 1).equals("-") || getText(0, 1).equals("+")))
+            {
+            }
+            else
+            {
+                String text = getText(0, offset);
+                text = text.replace(',', '.');
+                BigDecimal dec = new BigDecimal(text);
+                if (str.equals("k"))
+                {
+                    dec = dec.scaleByPowerOfTen(3);
+                }
+                else if (str.equals("m"))
+                {
+                    dec = dec.scaleByPowerOfTen(6);
+                }
+                else if (str.equals("b"))
+                {
+                    dec = dec.scaleByPowerOfTen(9);
+                }
+                super.remove(0, offset);
+                String outcome = dec.toBigIntegerExact().toString();
+                outcome = outcome.replace('.', decimalSeparator);
+                super.insertString(0, outcome, a);
+                fireUserInputChange();
+            }
+
+        }
+
+        private boolean isShortCut(String str)
+        {
+            return str.equals("k") || str.equals("m") || str.equals("b");
+        }
 
 		/**
 		 * Will trigger the UserInputListeners once after removing.

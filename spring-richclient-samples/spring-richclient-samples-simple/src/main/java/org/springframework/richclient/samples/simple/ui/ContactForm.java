@@ -18,11 +18,13 @@ package org.springframework.richclient.samples.simple.ui;
 import com.jgoodies.forms.layout.FormLayout;
 import org.springframework.richclient.form.AbstractFocussableForm;
 import org.springframework.richclient.form.FormModelHelper;
+import org.springframework.richclient.form.binding.swing.NumberBinder;
 import org.springframework.richclient.form.builder.FormLayoutFormBuilder;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.samples.simple.domain.Contact;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 /**
  * Form to handle the properties of a Contact object. It uses a {@link TableFormBuilder} to construct the layout of the
@@ -56,6 +58,11 @@ public class ContactForm extends AbstractFocussableForm
 		formBuilder.addPropertyAndLabel("emailAddress");
 		formBuilder.nextRow();
 		formBuilder.addPropertyAndLabel("contactType");
+		formBuilder.nextRow();
+        NumberBinder binder = new NumberBinder();
+        binder.setLeftDecoration("€");
+        formBuilder.addLabel("monthlyIncome");
+        formBuilder.addBinding(binder.bind(getFormModel(), "monthlyIncome", new HashMap()), 3);
 		formBuilder.nextRow();
 		formBuilder.addHorizontalSeparator("Address", 7);
 		formBuilder.nextRow();
