@@ -1,0 +1,648 @@
+package org.springframework.richclient.form.binding.swing;
+
+import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.components.Focussable;
+import org.springframework.richclient.dialog.ApplicationDialog;
+import org.springframework.richclient.dialog.TitledApplicationDialog;
+import org.springframework.richclient.form.AbstractFocussableForm;
+import org.springframework.richclient.form.AbstractForm;
+import org.springframework.richclient.form.binding.support.AbstractCRUDBinding;
+import org.springframework.richclient.util.RcpSupport;
+import org.springframework.richclient.widget.table.TableDescription;
+import org.springframework.richclient.widget.table.TableWidget;
+import org.springframework.richclient.widget.table.glazedlists.GlazedListTableWidget;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.*;
+
+public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
+{
+
+    /**
+     * List on screen, has to be a cloned one to be able to detect differences.
+     */
+    protected Object viewControllerObject;
+
+    /**
+     * Add mode: form is used to add an object.
+     */
+    private static final int ADD_MODE = 1;
+
+    /**
+     * Edit mode: form is used to display and edit an object.
+     */
+    private static final int EDIT_MODE = 2;
+
+    /**
+     * Edit mode: form is used to display and edit an object.
+     */
+    private static final int DETAIL_MODE = 3;
+
+    /**
+     * Current mode of the form/dialog.
+     */
+    protected int currentMode = ADD_MODE;
+
+    /**
+     * Table used to show the list.
+     */
+    protected GlazedListTableWidget table;
+
+    /**
+     * Dialog used to add/create rowObjects.
+     */
+    protected ApplicationDialog formDialog;
+
+    /**
+     * Form used to add/create rowObjects.
+     */
+    protected AbstractForm form;
+
+    /**
+     * Id to configure the dialog.
+     */
+    protected String dialogId;
+
+    /**
+     * Use the original sort order of the provided data
+     */
+    protected boolean useOriginalSortOrder;
+
+    /**
+     * Form used to show rowObjects.
+     */
+    private AbstractForm detailForm;
+
+    /**
+     * Dialog used to show rowObjects.
+     */
+    private ApplicationDialog detailFormDialog;
+
+    /**
+     * Constructor.
+     *
+     * @param formModel           formModel met de property.
+     * @param formPropertyPath    pad naar de property.
+     * @param requiredSourceClass TODO Deze wordt niet meer gebruikt en moet verwijderd worden
+     *                            Momenteel zit deze er nog in omdat er heel wat bindings gebruik maken van deze constructor
+     */
+    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass)
+    {
+        this(formModel, formPropertyPath, null, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param formModel            formModel met de property.
+     * @param formPropertyPath     pad naar de property.
+     * @param requiredSourceClass  TODO Deze wordt niet meer gebruikt en moet verwijderd worden
+     *                             Momenteel zit deze er nog in omdat er heel wat bindings gebruik maken van deze constructor
+     * @param useOriginalSortOrder gebruik de originele sorteervolgorde van de lijst
+     */
+    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass,
+                                      boolean useOriginalSortOrder)
+    {
+        super(formModel, formPropertyPath, null);
+        this.useOriginalSortOrder = useOriginalSortOrder;
+    }
+
+    /**
+     * Wanneer het valueModel verandert, moet het dit weer gecloned worden en
+     * als viewControllerObject gezet worden. Daarna wordt deze laatste gebruikt
+     * om in de tabel te tonen.
+     */
+    @Override
+    protected final void valueModelChanged(Object newValue)
+    {
+        this.viewControllerObject = RcpSupport.getClone(newValue);
+        this.table.setRows(getList(this.viewControllerObject));
+        onValueModelChanged();
+        readOnlyChanged();
+    }
+
+    /**
+     * Hook opgeroepen na een valueModelChange
+     */
+    protected void onValueModelChanged()
+    {
+    }
+
+    protected final void listChanged()
+    {
+        controlValueChanged(RcpSupport.getClone(this.viewControllerObject));
+        this.table.setRows(getList(this.viewControllerObject));
+    }
+
+    @Override
+    protected JComponent doBindControl()
+    {
+        getTable();
+        JPanel editor = new JPanel(new BorderLayout())
+        {
+
+            private static final long serialVersionUID = 853322345395517384L;
+
+            @Override
+            public void setEnabled(boolean enable)
+            {
+                table.getTable().setEnabled(enable);
+                for (AbstractCommand command : getCommands())
+                {
+                    command.setEnabled(false);
+                }
+            }
+        };
+        JTable tableComponent = table.getTable();
+        if (isEditSupported() && getEditCommand().isAuthorized())
+        {
+            tableComponent.addMouseListener(new MouseAdapter()
+            {
+
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    if (e.getClickCount() > 1 && SwingUtilities.isLeftMouseButton(e))
+                    {
+                        edit(table.getSelectedRows());
+                    }
+                }
+            });
+        }
+        else if (isShowDetailSupported() && getDetailCommand().isAuthorized())
+        {
+            tableComponent.addMouseListener(new MouseAdapter()
+            {
+
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    if (e.getClickCount() > 1 && SwingUtilities.isLeftMouseButton(e))
+                    {
+                        showDetail(table.getSelectedRows());
+                    }
+                }
+            });
+        }
+        editor.add(table.getComponent(), BorderLayout.CENTER);
+        java.util.List<AbstractCommand> commands = getCommands();
+        if ((commands != null) && (commands.size() > 0))
+        {
+            JPanel buttons = RcpSupport.createIconButtonPanel(commands);
+            editor.add(buttons, BorderLayout.SOUTH);
+        }
+        valueModelChanged(getValue());
+        return editor;
+    }
+
+    /**
+     * @return de tabel met de rijen.
+     */
+    protected TableWidget getTable()
+    {
+        if (table == null)
+        {
+            if (useOriginalSortOrder)
+                this.table = new GlazedListTableWidget(null, getTableDescription(), null);
+            else
+                this.table = new GlazedListTableWidget(null, getTableDescription());
+        }
+        return this.table;
+    }
+
+    /**
+     * @return de geselecteerde rijen.
+     */
+    public Object[] getSelection()
+    {
+        return this.table.getSelectedRows();
+    }
+
+    /**
+     * Enable/disable the commands on readOnly change or valueModelChange
+     */
+    @Override
+    protected void readOnlyChanged()
+    {
+        for (AbstractCommand abstractCommand : getCommands())
+        {
+            if (isShowDetailSupported() && abstractCommand == getDetailCommand())
+                (abstractCommand).setEnabled(isEnabled());
+            else
+                (abstractCommand).setEnabled(isEnabled() && !isReadOnly());
+
+        }
+    }
+
+    @Override
+    protected void enabledChanged()
+    {
+        this.table.getTable().setEnabled(isEnabled());
+        readOnlyChanged();
+    }
+
+    /**
+     * @return AbstractCommand dat een rij toevoegd aan de tabel
+     */
+    @Override
+    protected AbstractCommand createAddCommand()
+    {
+        AbstractCommand addRow = new ActionCommand("addrow")
+        {
+
+            @Override
+            protected void doExecuteCommand()
+            {
+                add(viewControllerObject);
+            }
+        };
+        addRow.setSecurityControllerId(getAddCommandSecurityControllerId());
+        RcpSupport.configure(addRow);
+        return addRow;
+    }
+
+    /**
+     * Returns the securityControllerId for the add command. Default returns <code>null</code>, provide
+     * your own id to enable security.
+     */
+    protected String getAddCommandSecurityControllerId()
+    {
+        return null;
+    }
+
+    /**
+     * @return AbstractCommand dat een rij verwijdert uit de tabel
+     */
+    @Override
+    protected AbstractCommand createRemoveCommand()
+    {
+        AbstractCommand removeRow = new ActionCommand("removerow")
+        {
+
+            @Override
+            protected void doExecuteCommand()
+            {
+                remove(viewControllerObject, table.getSelectedRows());
+            }
+        };
+        removeRow.setSecurityControllerId(getRemoveCommandSecurityControllerId());
+        RcpSupport.configure(removeRow);
+        return removeRow;
+    }
+
+    /**
+     * Returns the securityControllerId for the remove command. Default returns <code>null</code>, provide
+     * your own id to enable security.
+     */
+    protected String getRemoveCommandSecurityControllerId()
+    {
+        return null;
+    }
+
+    /**
+     * @return AbstractCommand dat meer info laat zien van de rij
+     */
+    @Override
+    protected AbstractCommand createDetailCommand()
+    {
+        AbstractCommand detail = new ActionCommand("detailrow")
+        {
+
+            @Override
+            protected void doExecuteCommand()
+            {
+                Object[] selection = table.getSelectedRows();
+                if (selection.length > 0)
+                    showDetail(selection);
+            }
+        };
+        RcpSupport.configure(detail);
+        return detail;
+    }
+
+    /**
+     * @return AbstractCommand dat een rij verandert uit de tabel
+     */
+    @Override
+    protected AbstractCommand createEditCommand()
+    {
+        ActionCommand editRow = new ActionCommand("editrow")
+        {
+
+            @Override
+            protected void doExecuteCommand()
+            {
+                edit(table.getSelectedRows());
+            }
+        };
+        editRow.setSecurityControllerId(getEditCommandSecurityControllerId());
+        RcpSupport.configure(editRow);
+        return editRow;
+    }
+
+    /**
+     * Returns the securityControllerId for the remove command. Default returns <code>null</code>, provide
+     * your own id to enable security.
+     */
+    protected String getEditCommandSecurityControllerId()
+    {
+        return null;
+    }
+
+    /**
+     * Na veranderen wordt de lijst terug opgehaald uit het formObject
+     *
+     * @param rows Selectie
+     */
+    public void edit(Object[] rows)
+    {
+        if (rows != null)
+        {
+            currentMode = EDIT_MODE;
+            getOrCreateAddEditForm();
+            for (Object row : rows)
+            {
+                form.setFormObject(row);
+                getOrCreateFormDialog().showDialog();
+            }
+        }
+    }
+
+    /**
+     * Override deze method om zelf op \u00e9\u00e9n of andere manier een object
+     * aan te maken en toe te voegen aan de tabel.
+     *
+     * @return Oject to add to table
+     */
+    protected void add(Object list)
+    {
+        this.currentMode = ADD_MODE;
+        getOrCreateAddEditForm().setFormObject(getNewFormObject());
+        getOrCreateFormDialog().showDialog();
+    }
+
+    /**
+     * Als er een remove gebeurd, wordt de selectie eerst via deze functie naar
+     * de backend gestuurd
+     *
+     * @param selection De geselecteerde rijen.
+     */
+    protected void remove(Object list, Object[] selection)
+    {
+        if (list instanceof Collection)
+        {
+            if (selection.length > 0)
+            {
+                ((Collection) list).removeAll(Arrays.asList(selection));
+                listChanged();
+            }
+        }
+        else
+            throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @param rows De rijen die in het detail moeten worden getoond, kan
+     *             eventueel beperkt worden tot \u00e9\u00e9n rij, maar kan ook
+     *             samenvatting geven van meerdere selecties
+     */
+    public void showDetail(Object[] rows)
+    {
+        if (rows != null)
+        {
+            getOrCreateDetailForm();
+            for (Object row : rows)
+            {
+                detailForm.setFormObject(row);
+                getOrCreateDetailFormDialog().showDialog();
+            }
+        }
+    }
+
+    protected AbstractForm getOrCreateAddEditForm()
+    {
+        if (this.form == null)
+            this.form = createAddEditForm();
+        return this.form;
+    }
+
+    protected AbstractForm getOrCreateDetailForm()
+    {
+        if (this.detailForm == null)
+            this.detailForm = createDetailForm();
+        return this.form;
+    }
+
+    /**
+     * Deze moet overschreven worden door subclassen om het correcte formobject
+     * in de dialoog te krijgen.
+     *
+     * @return form gebruikt voor add/edit
+     */
+    protected AbstractForm createDetailForm()
+    {
+        throw new UnsupportedOperationException("Need a Form for adding/editing");
+    }
+
+    /**
+     * Deze moet overschreven worden door subclassen om het correcte formobject
+     * in de dialoog te krijgen.
+     *
+     * @return form gebruikt voor add/edit
+     */
+    protected AbstractForm createAddEditForm()
+    {
+        throw new UnsupportedOperationException("Need a Form for adding/editing");
+    }
+
+    /**
+     * @return een tabledescription om de tabel op te maken
+     */
+    protected abstract TableDescription getTableDescription();
+
+    /**
+     * @param value de property waarvoor deze editor dient
+     * @return de lijst die uit de property wordt gehaald
+     */
+    protected Collection getList(Object value)
+    {
+        if (value instanceof Collection)
+        {
+            return (Collection) value;
+        }
+        else if (value == null)
+        {
+            return Collections.emptyList();
+        }
+        else
+        {
+            throw new IllegalArgumentException("getList 's argument is not a Collection: " + value.getClass());
+        }
+    }
+
+    /**
+     * Geef een nieuw object om in de add dialoog te gebruiken
+     *
+     * @return
+     */
+    protected Object getNewFormObject()
+    {
+        return null;
+    }
+
+    public void setDialogId(String dialogId)
+    {
+        this.dialogId = dialogId;
+    }
+
+    public String getDialogId()
+    {
+        if (dialogId == null)
+            return "listBindingDialog";
+        return dialogId;
+    }
+
+    private ApplicationDialog getOrCreateFormDialog()
+    {
+        if (this.formDialog == null)
+        {
+            this.formDialog = createFormDialog();
+            this.formDialog.setParentComponent(table.getComponent());
+            RcpSupport.configure(this.formDialog, getDialogId());
+        }
+        return this.formDialog;
+    }
+
+    private ApplicationDialog getOrCreateDetailFormDialog()
+    {
+        if (this.detailFormDialog == null)
+        {
+            this.detailFormDialog = createDetailFormDialog();
+            this.detailFormDialog.setParentComponent(table.getComponent());
+            RcpSupport.configure(this.detailFormDialog, getDialogId());
+        }
+        return this.detailFormDialog;
+    }
+
+    private ApplicationDialog createDetailFormDialog()
+    {
+        return new TitledApplicationDialog()
+        {
+            protected Object[] getCommandGroupMembers()
+            {
+                return new AbstractCommand[]{getFinishCommand()};
+            }
+
+            @Override
+            protected JComponent createTitledDialogContentPane()
+            {
+                return detailForm.getControl();
+            }
+
+            @Override
+            public void setTitle(String title)
+            {
+                super.setTitle(title);
+                setTitlePaneTitle(title);
+            }
+
+            protected boolean onFinish()
+            {
+                return true;
+            }
+        };
+    }
+
+    private ApplicationDialog createFormDialog()
+    {
+        return new TitledApplicationDialog()
+        {
+
+            @Override
+            protected JComponent createTitledDialogContentPane()
+            {
+                form.newSingleLineResultsReporter(this);
+                form.addGuarded(this);
+                return form.getControl();
+            }
+
+            @Override
+            public void setTitle(String title)
+            {
+                super.setTitle(title);
+                setTitlePaneTitle(title);
+            }
+
+            @Override
+            protected void onAboutToShow()
+            {
+                form.getFormModel().validate();
+                if (form instanceof Focussable)
+                    ((AbstractFocussableForm) form).grabFocus();
+            }
+
+            @Override
+            protected boolean onFinish()
+            {
+                if (form.hasErrors())
+                    return false;
+                form.commit();
+                final Object formObject;
+                if (currentMode == ADD_MODE)
+                    formObject = onFinishAdd(viewControllerObject, form.getFormObject());
+                else
+                    formObject = onFinishEdit(viewControllerObject, form.getFormObject());
+
+                if (formObject != null)
+                {
+                    listChanged();
+                    SwingUtilities.invokeLater(new Runnable()
+                    {
+                        public void run()
+                        {
+                            getTable().selectRowObject(formObject, null);
+                        }
+                    });
+                }
+                return formObject != null;
+            }
+        };
+    }
+
+    /**
+     * Als collection dan wordt nieuw item gewoon toegevoegd, anders moet deze
+     * functie overschreven worden.
+     *
+     * @param list
+     * @param newItem
+     * @return
+     */
+    protected Object onFinishAdd(Object list, Object newItem)
+    {
+        if (list instanceof Collection)
+        {
+            ((Collection) list).add(newItem);
+            return newItem;
+        }
+
+        throw new UnsupportedOperationException(
+                "onFinishAdd received a non Collection object, needs alternate implementation");
+    }
+
+    /**
+     * Edit wordt gecommit, eventueel kan een bijkomende actie gedaan worden.
+     *
+     * @param list
+     * @param newItem
+     * @return True als alles ok is en dialoog mag verdwijnen
+     */
+    protected Object onFinishEdit(Object list, Object newItem)
+    {
+        return newItem;
+    }
+}

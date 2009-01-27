@@ -15,7 +15,10 @@
  */
 package org.springframework.richclient.samples.simple.domain;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * This class provides a trivial in-memory datastore to hold all the contacts. In a real application, this would
@@ -87,6 +90,13 @@ public class ContactDataStore {
 				ContactType.PERSONAL, "Lorem ipsum..."));
 	}
 
+    private List<TodoItem> getTodoItemList()
+    {
+        List<TodoItem> l = new ArrayList<TodoItem>();
+        l.add(new TodoItem("test", "test", new Date()));
+        return l;
+    }
+
 	/**
 	 * Make a Contact object with the given data.
 	 * @return Contact object
@@ -106,6 +116,8 @@ public class ContactDataStore {
 		address.setCity(city);
 		address.setState(state);
 		address.setZip(zip);
+
+        contact.setTodoItems(getTodoItemList());
 
 		return contact;
 	}

@@ -22,6 +22,7 @@ import org.springframework.richclient.form.binding.swing.NumberBinder;
 import org.springframework.richclient.form.builder.FormLayoutFormBuilder;
 import org.springframework.richclient.form.builder.TableFormBuilder;
 import org.springframework.richclient.samples.simple.domain.Contact;
+import org.springframework.richclient.samples.simple.ui.binding.TodoItemListBinding;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -36,12 +37,12 @@ import java.util.HashMap;
 public class ContactForm extends AbstractFocussableForm
 {
 	public ContactForm(Contact contact) {
-		super(FormModelHelper.createFormModel(contact, "contact"));
+		super(FormModelHelper.createFormModel(contact, "contactForm"));
 	}
 
 	protected JComponent createFormControl()
     {
-        FormLayout layout = new FormLayout("right:pref, 4dlu, default, 6dlu, right:pref, 4dlu, default", "default");
+        FormLayout layout = new FormLayout("right:pref, 4dlu, fill:pref:grow, 6dlu, right:pref, 4dlu, fill:pref:grow", "default");
         FormLayoutFormBuilder formBuilder = new FormLayoutFormBuilder(getBindingFactory(), layout);
         
         formBuilder.setLabelAttributes("r, c");
@@ -83,6 +84,11 @@ public class ContactForm extends AbstractFocussableForm
 		formBuilder.addHorizontalSeparator("Memo", 7);
 		formBuilder.nextRow("fill:default:grow");
         formBuilder.addTextArea("memo", 1, formBuilder.getRow(), 7, 1);
+         formBuilder.nextRow();
+        formBuilder.addHorizontalSeparator("Todo items", 7);
+		formBuilder.nextRow("fill:default:grow");
+        TodoItemListBinding todoItemListBinding = new TodoItemListBinding(getFormModel(), "todoItems");
+        formBuilder.addBinding(todoItemListBinding, 1, formBuilder.getRow(), 7, 1);
 
         /*
 		TableFormBuilder formBuilder = new TableFormBuilder(getBindingFactory());

@@ -1,29 +1,39 @@
 package org.springframework.richclient.util;
 
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.ApplicationContext;
-import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.richclient.application.Application;
-import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.support.DefaultApplicationServices;
-import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
-import org.springframework.richclient.command.config.CommandConfigurer;
-import org.springframework.richclient.command.AbstractCommand;
-import org.springframework.richclient.image.IconSource;
-import org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter;
-import org.springframework.util.StringUtils;
-import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
+import org.springframework.binding.form.FormModel;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.richclient.application.Application;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.config.ApplicationObjectConfigurer;
+import org.springframework.richclient.application.support.DefaultApplicationServices;
+import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandButtonConfigurer;
+import org.springframework.richclient.command.config.CommandConfigurer;
+import org.springframework.richclient.command.config.CommandFaceDescriptor;
+import org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter;
+import org.springframework.richclient.factory.ButtonFactory;
+import org.springframework.richclient.factory.DefaultButtonFactory;
+import org.springframework.richclient.image.IconSource;
+import org.springframework.util.StringUtils;
 
 import javax.swing.*;
-import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.Map;
-import java.util.HashMap;
-import java.sql.SQLException;
 import java.awt.*;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.List;
+import java.util.logging.Level;
 
 public class RcpSupport
 {
@@ -359,6 +369,21 @@ public class RcpSupport
                 null, options, options[initialValue]);
     }
 
+    public static ActionCommand createDummyCommand(final String id, final String msg)
+    {
+        ActionCommand newCommand = new ActionCommand(id)
+        {
+
+            protected void doExecuteCommand()
+            {
+                System.out.println(msg);
+            }
+        };
+        ((CommandConfigurer) ApplicationServicesLocator.services().getService(CommandConfigurer.class))
+                .configure(newCommand);
+        return newCommand;
+    }
+
     public static void showWarningDialog(String id)
     {
         showWarningDialog(Application.instance().getActiveWindow().getControl(), id);
@@ -403,5 +428,127 @@ public class RcpSupport
         String message = getMessage(null, id, TEXT, parameters);
         String title = getMessage(null, id, TITLE);
         JOptionPane.showMessageDialog(parent, message, title, optionType);
+    }
+
+    /**
+     * This method tries to map the values of the given object on the valueModels of the formModel. Instead of
+     * setting the object as a backing object, all valueModels are processed one by one and the corresponding
+     * property value is fetched from the objectToMap and set on that valueModel. This triggers the usual
+     * buffering etc. just as if the user entered the values.
+     *
+     * @param formModel
+     * @param objectToMap
+     */
+    public static void mapObjectOnFormModel(FormModel formModel, Object objectToMap)
+    {
+        BeanWrapper beanWrapper = new BeanWrapperImpl(objectToMap);
+        for (String fieldName : (Set<String>) formModel.getFieldNames())
+        {
+            try
+            {
+                formModel.getValueModel(fieldName).setValue(beanWrapper.getPropertyValue(fieldName));
+            }
+            catch (BeansException be)
+            {
+                // silently ignoring, just mapping values, so if there's one missing, don't bother
+            }
+        }
+    }
+
+    private static Object clonePublicCloneableObject(Object value)
+    {
+        try
+        {
+            return ((PublicCloneable) value).clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            throw new RuntimeException("Clone not support for object " + value.getClass());
+        }
+    }
+
+    public static Object getClone(Object value)
+    {
+        if (value instanceof PublicCloneable)
+        {
+            return clonePublicCloneableObject(value);
+        }
+        else if (value instanceof Collection)
+        {
+            Collection valueCollection = (Collection) value;
+            Collection clonedCollection;
+            if (valueCollection instanceof java.util.List)
+            {
+                clonedCollection = (valueCollection instanceof LinkedList)
+                        ? new LinkedList()
+                        : new ArrayList();
+            }
+            else if (valueCollection instanceof Set)
+            {
+                clonedCollection = (valueCollection instanceof SortedSet)
+                        ? new TreeSet()
+                        : (valueCollection instanceof LinkedHashSet) ? new LinkedHashSet() : new HashSet();
+            }
+            else
+            {
+                clonedCollection = (Collection) BeanUtils.instantiateClass(value.getClass());
+            }
+            for (Object valueElement : valueCollection)
+            {
+                if (valueElement instanceof PublicCloneable)
+                {
+                    clonedCollection.add(clonePublicCloneableObject(valueElement));
+                }
+                else
+                {
+                    // there isn't much else we can do?
+                    clonedCollection.add(valueElement);
+                }
+            }
+            return clonedCollection;
+        }
+        else if (value instanceof Map)
+        {
+            Map valueMap = (Map) value;
+            Map clonedMap = (valueMap instanceof SortedMap)
+                    ? new TreeMap()
+                    : (valueMap instanceof LinkedHashMap) ? new LinkedHashMap() : new HashMap();
+            for (Iterator entryIter = valueMap.entrySet().iterator(); entryIter.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) entryIter.next();
+                if (entry.getValue() instanceof PublicCloneable)
+                {
+                    clonedMap.put(entry.getKey(), clonePublicCloneableObject(entry.getValue()));
+                }
+                else
+                {
+                    // there isn't much else we can do?
+                    clonedMap.put(entry.getKey(), entry.getValue());
+                }
+            }
+            return clonedMap;
+        }
+        return value;
+    }
+
+    public static JPanel createIconButtonPanel(List<? extends AbstractCommand> commands)
+    {
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        ButtonFactory factory = new DefaultButtonFactory();
+        CommandButtonConfigurer configurer = new CommandButtonConfigurer()
+        {
+
+            public void configure(AbstractButton button, AbstractCommand command,
+                    CommandFaceDescriptor faceDescriptor)
+            {
+                faceDescriptor.configureIcon(button);
+                button.setToolTipText(faceDescriptor.getCaption());
+            }
+        };
+        for (AbstractCommand command : commands)
+        {
+                buttons.add(command.createButton(factory, configurer));
+        }
+        return buttons;
     }
 }

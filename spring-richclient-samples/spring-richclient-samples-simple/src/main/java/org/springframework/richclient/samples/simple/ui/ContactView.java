@@ -15,15 +15,11 @@
  */
 package org.springframework.richclient.samples.simple.ui;
 
-import java.awt.BorderLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.TextFilterator;
+import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -42,11 +38,8 @@ import org.springframework.richclient.list.ListSingleSelectionGuard;
 import org.springframework.richclient.samples.simple.domain.Contact;
 import org.springframework.richclient.samples.simple.domain.ContactDataStore;
 
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.TextFilterator;
-import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class provides the main view of the contacts. It provides a table showing the contact objects and a quick filter
@@ -112,7 +105,25 @@ public class ContactView extends AbstractView implements ApplicationListener {
 	 * the surrounding window and page.
 	 * @return component holding this view
 	 */
-	protected JComponent createControl() {
+	protected JComponent createControl()
+    {
+//        PropertyColumnTableDescription desc = new PropertyColumnTableDescription("contactViewTable", Contact.class);
+//        desc.addPropertyColumn("lastName").withFixedWidth(100);
+//        desc.addPropertyColumn("firstName").withFixedWidth(100);
+//        desc.addPropertyColumn("address.address1").withFixedWidth(200);
+//        desc.addPropertyColumn("address.city").withFixedWidth(50);
+//        desc.addPropertyColumn("address.state").withFixedWidth(10);
+//        desc.addPropertyColumn("address.zip").withFixedWidth(50);
+//        GlazedListTableWidget widget = new GlazedListTableWidget(Arrays.asList(contactDataStore.getAllContacts()), desc);
+//
+//        JPanel view = new JPanel(new BorderLayout());
+//        view.add(widget.getTextFilterField(), BorderLayout.NORTH);
+//		view.add(widget.getComponent(), BorderLayout.CENTER);
+//        return view;
+
+
+        //"lastName", "firstName", "address.address1", "address.city", "address.state", "address.zip"
+//
 		JPanel filterPanel = new JPanel(new BorderLayout());
 		JLabel filterLabel = getComponentFactory().createLabel("nameAddressFilter.label");
 		filterPanel.add(filterLabel, BorderLayout.WEST);
@@ -144,7 +155,7 @@ public class ContactView extends AbstractView implements ApplicationListener {
 
 	/**
 	 * Prepare the table holding all the Contact objects. This table provides pretty much all the functional operations
-	 * within this view. Prior to calling this method the {@link #setContactTable(ContactTable)} will have already been
+	 * within this view. Prior to calling this method the setContactTable(ContactTable) will have already been
 	 * called as part of the context bean creation.
 	 */
 	private class ContactTableFactory {

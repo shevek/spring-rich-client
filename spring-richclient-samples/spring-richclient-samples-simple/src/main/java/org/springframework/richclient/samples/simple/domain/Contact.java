@@ -17,6 +17,8 @@ package org.springframework.richclient.samples.simple.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This class provides a trivial domain object for the sample application. It represents a simple Contact entry in a
@@ -33,7 +35,8 @@ import java.util.Date;
  * @author Larry Streepy
  * @see SimpleValidationRulesSource
  */
-public class Contact {
+public class Contact implements Comparable<Contact>
+{
 
 	private int id;
 
@@ -59,11 +62,14 @@ public class Contact {
 
     private BigDecimal monthlyIncome;
 
+    private List<TodoItem> todoItems;
+
 	/**
 	 * Default constructor.
 	 */
 	public Contact() {
 		setAddress(new Address()); // Avoid null sub-object
+        todoItems = new ArrayList<TodoItem>();
 	}
 
 	/**
@@ -226,6 +232,16 @@ public class Contact {
         this.monthlyIncome = monthlyIncome;
     }
 
+    public List<TodoItem> getTodoItems()
+    {
+        return todoItems;
+    }
+
+    public void setTodoItems(List<TodoItem> todoItems)
+    {
+        this.todoItems = todoItems;
+    }
+
     /**
 	 * Compare two objects for equality. Just test their ids.
 	 * @param o object to compare
@@ -243,4 +259,9 @@ public class Contact {
 	public int hashCode() {
 		return id;
 	}
+
+    public int compareTo(Contact o)
+    {
+        return getId() - o.getId();
+    }
 }

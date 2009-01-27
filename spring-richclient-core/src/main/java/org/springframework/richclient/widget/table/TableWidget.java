@@ -1,6 +1,7 @@
-package org.springframework.richclient.widget;
+package org.springframework.richclient.widget.table;
 
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.widget.Widget;
 
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
