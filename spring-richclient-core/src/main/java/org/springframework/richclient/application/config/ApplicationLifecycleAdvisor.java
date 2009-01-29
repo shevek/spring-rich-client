@@ -20,6 +20,7 @@ import org.springframework.richclient.application.Application;
 import org.springframework.richclient.application.ApplicationServices;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.application.ApplicationWindow;
+import org.springframework.richclient.application.session.ApplicationSessionInitializer;
 import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.application.statusbar.support.DefaultStatusBar;
 import org.springframework.richclient.application.support.ApplicationWindowCommandManager;
@@ -82,6 +83,8 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 
 	/** Initial page to show. */
 	private String startingPageId;
+
+    private ApplicationSessionInitializer applicationSessionInitializer;
 
 	/** ExceptionHandler to catch all uncaught exceptions. */
 	private RegisterableExceptionHandler registerableExceptionHandler;
@@ -290,6 +293,13 @@ public abstract class ApplicationLifecycleAdvisor implements InitializingBean {
 		this.application = application;
 	}
 
+    public ApplicationSessionInitializer getApplicationSessionInitializer()
+    {
+        return applicationSessionInitializer;
+    }
 
-
+    public void setApplicationSessionInitializer(ApplicationSessionInitializer applicationSessionInitializer)
+    {
+        this.applicationSessionInitializer = applicationSessionInitializer;
+    }
 }

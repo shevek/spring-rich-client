@@ -35,6 +35,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -46,10 +48,14 @@ import java.util.List;
  */
 public final class GlazedListTableWidget extends AbstractWidget implements TableWidget
 {
-    /** De visuele tabel. Component van swingx library. */
+    /**
+     * De visuele tabel. Component van swingx library.
+     */
     private JXTable theTable = new JXTable();
 
-    /** Scrollpane die rond de tabel staat. */
+    /**
+     * Scrollpane die rond de tabel staat.
+     */
     private JScrollPane tableScroller;
 
     /**
@@ -58,19 +64,29 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      */
     private ValueMonitor selectionMonitor = new ValueMonitor();
 
-    /** Achterliggend TableModel van glazedLists. */
+    /**
+     * Achterliggend TableModel van glazedLists.
+     */
     private EventTableModel<Object> tableModel;
 
-    /** Achterliggend selectieModel van glazedLists. */
+    /**
+     * Achterliggend selectieModel van glazedLists.
+     */
     private EventSelectionModel<Object> selectionModel;
 
-    /** De volledige datalijst. */
+    /**
+     * De volledige datalijst.
+     */
     private EventList<Object> dataList;
 
-    /** De getoonde lijst na sortering, filtering... */
+    /**
+     * De getoonde lijst na sortering, filtering...
+     */
     private EventList<Object> shownList;
 
-    /** De gesorteerde lijst, null indien geen sortering (niet comparable). */
+    /**
+     * De gesorteerde lijst, null indien geen sortering (niet comparable).
+     */
     private SortedList<Object> sortedList;
 
     /**
@@ -79,10 +95,14 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      */
     private JTextField textFilterField;
 
-    /** De navigatieCommando's als array. */
+    /**
+     * De navigatieCommando's als array.
+     */
     private AbstractCommand[] navigationCommands;
 
-    /** CommandGroup met navigatieCommando's. */
+    /**
+     * CommandGroup met navigatieCommando's.
+     */
     private CommandGroup navigationCommandGroup;
 
     /**
@@ -91,13 +111,18 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      */
     private CommandGroup selectColumnCommandGroup;
 
-    /** Een specifieke configurer voor de navigatie en selectiecommands. */
+    /**
+     * Een specifieke configurer voor de navigatie en selectiecommands.
+     */
     private CommandConfigurer commandConfigurer;
 
-    /** countLabel geeft het aantal records en de geselecteerde rij weer : record / aantal */
+    /**
+     * countLabel geeft het aantal records en de geselecteerde rij weer : record / aantal
+     */
     private JLabel countLabel;
 
-    static {
+    static
+    {
         UIManager.put("JXTable.column.horizontalScroll", RcpSupport.getMessage("JXTable.horizontalScroll.label"));
         UIManager.put("JXTable.column.packAll", RcpSupport.getMessage("JXTable.packAll.label"));
         UIManager.put("JXTable.column.packSelected", RcpSupport.getMessage("JXTable.packSelected.label"));
@@ -122,7 +147,8 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
 
     private Set dirtyRows = new HashSet();
 
-    private CellEditorListener dirtyRowCellEditorListener = new CellEditorListener(){
+    private CellEditorListener dirtyRowCellEditorListener = new CellEditorListener()
+    {
 
         public void editingCanceled(ChangeEvent e)
         {
@@ -132,7 +158,8 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         public void editingStopped(ChangeEvent e)
         {
             dirtyRows.add(getSelectedRows()[0]);
-        }};
+        }
+    };
 
     /**
      * De listeners geregistreerd op de selectiekolom, getriggerd door
@@ -146,7 +173,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     }
 
     public GlazedListTableWidget(List<? extends Object> rows, TableDescription tableDesc,
-            Comparator comparator)
+                                 Comparator comparator)
     {
         this(tableDesc.getDataType(), rows, GlazedListsSupport.makeTableFormat(tableDesc), GlazedListsSupport
                 .makeFilterProperties(tableDesc), comparator, tableDesc.hasSelectColumn());
@@ -193,13 +220,13 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
                     int align = ((DefaultTableCellRenderer) renderer).getHorizontalAlignment();
                     switch (align)
                     {
-                        case SwingConstants.CENTER :
+                        case SwingConstants.CENTER:
                             column.setHeaderRenderer(wrapInSortArrowHeaderRenderer(TableCellRenderers.CENTER_ALIGNED_HEADER_RENDERER));
                             break;
-                        case SwingConstants.RIGHT :
+                        case SwingConstants.RIGHT:
                             column.setHeaderRenderer(wrapInSortArrowHeaderRenderer(TableCellRenderers.RIGHT_ALIGNED_HEADER_RENDERER));
                             break;
-                        default :
+                        default:
                             break;
                     }
                 }
@@ -220,13 +247,13 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     }
 
     public GlazedListTableWidget(Class dataType, List<? extends Object> rows, TableFormat format,
-            String[] filterProperties)
+                                 String[] filterProperties)
     {
         this(dataType, rows, format, filterProperties, null, false);
     }
 
     public GlazedListTableWidget(Class dataType, List<? extends Object> rows, TableFormat format,
-            String[] filterProperties, Comparator comparator, boolean addHighlightSelectColumn)
+                                 String[] filterProperties, Comparator comparator, boolean addHighlightSelectColumn)
     {
         // eventTableSelectionModel van glazedLists werkt niet goed samen met
         // SelectionMapper
@@ -245,20 +272,20 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         if (filterProperties != null)
         {
             textFilterField = new JXSearchField(RcpSupport.getMessage("glazedListTableWidget.textFilterField.prompt"));
-            textFilterField.addFocusListener(new FocusAdapter() {
+            textFilterField.addFocusListener(new FocusAdapter()
+            {
                 @Override
                 public void focusGained(FocusEvent e)
                 {
                     textFilterField.selectAll();
                 }
             });
-            FilterList<Object> textFilteredList = new FilterList<Object>(shownList,
+            shownList = new FilterList<Object>(shownList,
                     new TextComponentMatcherEditor(textFilterField, GlazedLists.textFilterator(dataType,
                             filterProperties)));
-            shownList = textFilteredList;
         }
 
-        tableModel = new EventJXTableModel<Object>(shownList, format);
+        tableModel = new EventTableModel<Object>(shownList, format);
         theTable.setModel(tableModel);
 
         if (addHighlightSelectColumn)
@@ -272,17 +299,37 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
             setHighlighters(HighlighterFactory.createSimpleStriping());
         }
 
+        selectionModel = new EventSelectionModel<Object>(shownList);
+        selectionModel.addListSelectionListener(new SelectionNavigationListener());
+        theTable.setSelectionModel(selectionModel);
+
         if (sortedList != null)
         {
             theTable.setSortable(false);
             theTable.getTableHeader().setDefaultRenderer(TableCellRenderers.LEFT_ALIGNED_HEADER_RENDERER);
             tableComparatorChooser = TableComparatorChooser
                     .install(theTable, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE_WITH_UNDO);
-        }
-
-        selectionModel = new EventSelectionModel<Object>(shownList);
-        selectionModel.addListSelectionListener(new SelectionNavigationListener());
-        theTable.setSelectionModel(selectionModel);
+            // the following is a fix for the selection sort and navigation problem
+            tableComparatorChooser.addSortActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    EventList<Object> selected = selectionModel.getSelected();
+                    int[] indexes = new int[selected.size()];
+                    int i = 0;
+                    for (Object o : selected)
+                    {
+                        indexes[i++] = shownList.indexOf(o);
+                    }
+                    selectionModel.clearSelection();
+                    for (int index : indexes)
+                    {
+                        selectionModel.addSelectionInterval(index, index);
+                    }
+                }
+            });
+        }       
+        
         theTable.setPreferredScrollableViewportSize(new Dimension(50, 50));
         tableScroller = new JScrollPane(theTable);
         theTable.setHorizontalScrollEnabled(true);
@@ -291,7 +338,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
 
     /**
      * Enable the row height to diverge from the default height.
-     *
+     * <p/>
      * NOTE: this is experimental as there is a problem with glazedlists and jxtable.
      * (see note on ExtendedJXTable above)
      */
@@ -366,8 +413,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      * Zet een pipeline van highlighters om de rijen een verschillende kleur te
      * geven wanneer bepaalde voorwaarden voldaan zijn.
      *
-     * @param highlighters
-     *            highlighters die gebruikt moet worden bij deze table.
+     * @param highlighters highlighters die gebruikt moet worden bij deze table.
      */
     public void setHighlighters(Highlighter... highlighters)
     {
@@ -554,8 +600,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Vervang de datalijst objecten met de gegeven objecten.
      *
-     * @param newRows
-     *            de lijst van nieuwe dataobjecten.
+     * @param newRows de lijst van nieuwe dataobjecten.
      */
     public final void setRows(Collection newRows)
     {
@@ -606,8 +651,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Toevoegen van een object aan de dataLijst.
      *
-     * @param newObject
-     *            het nieuwe lijstObject.
+     * @param newObject het nieuwe lijstObject.
      */
     public void addRowObject(Object newObject)
     {
@@ -625,8 +669,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Een collectie toevoegen aan de datalijst.
      *
-     * @param rows
-     *            de collection met de toe te voegen objecten.
+     * @param rows de collection met de toe te voegen objecten.
      */
     public void addRows(Collection rows)
     {
@@ -644,8 +687,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Verwijder een object uit de dataLijst.
      *
-     * @param objectToRemove
-     *            het te verwijderen object.
+     * @param objectToRemove het te verwijderen object.
      */
     public void removeRowObject(Object objectToRemove)
     {
@@ -664,12 +706,10 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Selecteer het gegeven object in de tabel.
      *
-     * @param toPointTo
-     *            het object dat moet geselecteerd worden.
-     * @param originatingObserver
-     *            observer geregistreerd op selectieEvents die het event dat zal
-     *            gestuurd worden bij oproepen van deze functie niet meer mag
-     *            krijgen. (tegengaan van circulaire oproepen)
+     * @param toPointTo           het object dat moet geselecteerd worden.
+     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
+     *                            gestuurd worden bij oproepen van deze functie niet meer mag
+     *                            krijgen. (tegengaan van circulaire oproepen)
      * @return int de index van het object in de getoonde lijst.
      */
     public int selectRowObject(Object toPointTo, Observer originatingObserver)
@@ -682,14 +722,12 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Selecteer het object op de gegeven index (van de getoonde lijst).
      *
-     * @param index
-     *            de index van het object in de getoonde lijst dat moet
-     *            geselecteerd worden. Indien index -1 is zal er een
-     *            deselectAll() gebeuren.
-     * @param originatingObserver
-     *            observer geregistreerd op selectieEvents die het event dat zal
-     *            gestuurd worden bij oproepen van deze functie niet meer mag
-     *            krijgen. (tegengaan van circulaire oproepen)
+     * @param index               de index van het object in de getoonde lijst dat moet
+     *                            geselecteerd worden. Indien index -1 is zal er een
+     *                            deselectAll() gebeuren.
+     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
+     *                            gestuurd worden bij oproepen van deze functie niet meer mag
+     *                            krijgen. (tegengaan van circulaire oproepen)
      */
     public void selectRowObject(final int index, final Observer originatingObserver)
     {
@@ -733,12 +771,10 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Voeg de gegeven rijen toe aan de selectie.
      *
-     * @param rows
-     *            de rijen die aan de selectie moeten worden toegevoegd.
-     * @param originatingObserver
-     *            observer geregistreerd op selectieEvents die het event dat zal
-     *            gestuurd worden bij oproepen van deze functie niet meer mag
-     *            krijgen. (tegengaan van circulaire oproepen)
+     * @param rows                de rijen die aan de selectie moeten worden toegevoegd.
+     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
+     *                            gestuurd worden bij oproepen van deze functie niet meer mag
+     *                            krijgen. (tegengaan van circulaire oproepen)
      */
     public void addSelection(final Object[] rows, final Observer originatingObserver)
     {
@@ -786,7 +822,8 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      */
     public synchronized void scrollToSelectedRow()
     {
-        Runnable doScrollToSelectedRow = new Runnable() {
+        Runnable doScrollToSelectedRow = new Runnable()
+        {
             public void run()
             {
                 if (theTable.isVisible())
@@ -829,17 +866,14 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      * Vervang een object in de datalijst. Indien het object geselecteerd was,
      * zal deze selectie overgenomen worden op het nieuwe object.
      *
-     * @param oldObject
-     *            het te vervangen object.
-     * @param newObject
-     *            het nieuwe object dat in de plaats komt, ook toegevoegd aan de
-     *            selectie indien het oude object geselecteerd was.
-     * @param originatingObserver
-     *            optionele observer die geen events meer mag ontvangen van de
-     *            selectie veranderingen die gebeuren tijdens een replace. Als
-     *            de te vervangen rij geselecteerd was, krijg je een event
-     *            wanneer het oude object wordt verwijderd en wanneer het nieuwe
-     *            wordt gezet.
+     * @param oldObject           het te vervangen object.
+     * @param newObject           het nieuwe object dat in de plaats komt, ook toegevoegd aan de
+     *                            selectie indien het oude object geselecteerd was.
+     * @param originatingObserver optionele observer die geen events meer mag ontvangen van de
+     *                            selectie veranderingen die gebeuren tijdens een replace. Als
+     *                            de te vervangen rij geselecteerd was, krijg je een event
+     *                            wanneer het oude object wordt verwijderd en wanneer het nieuwe
+     *                            wordt gezet.
      */
     public void replaceRowObject(Object oldObject, Object newObject, Observer originatingObserver)
     {
@@ -883,14 +917,13 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      * andere collectie toevoegen. Is meer een shortcut van multiple object
      * toevoegen en verwijderen in 1 beweging.
      *
-     * @param oldObject
-     *            de lijst met te verwijderen objecten.
-     * @param newObject
-     *            de lijst met toe te voegen objecten.
+     * @param oldObject de lijst met te verwijderen objecten.
+     * @param newObject de lijst met toe te voegen objecten.
      */
     public void replaceRows(final Collection oldObject, final Collection newObject)
     {
-        Runnable doReplaceRows = new Runnable() {
+        Runnable doReplaceRows = new Runnable()
+        {
             public void run()
             {
                 dataList.getReadWriteLock().writeLock().lock();
@@ -974,8 +1007,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     /**
      * Voeg een observer toe die selectie events moet krijgen.
      *
-     * @param observer
-     *            de observer die selectie events moet krijgen.
+     * @param observer de observer die selectie events moet krijgen.
      */
     public void addSelectionObserver(Observer observer)
     {
@@ -1086,7 +1118,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
          *   de ListEventListener wordt niet altijd geactiveerd wanneer een item uit de lijst wordt geselecteerd.
          *   of de geselecteerde index is pas aangepast na de ListEventListener is uitgevoerd.
          */
-        selectionModel.addListSelectionListener(new ListSelectionListener()
+        theTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
         {
             public void valueChanged(ListSelectionEvent e)
             {
@@ -1103,21 +1135,28 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         return label;
     }
 
-    private void setTextForListSummaryLabel(JLabel label)
+    private void setTextForListSummaryLabel(final JLabel label)
     {
-        Integer index = 0;
-        Integer selectedCount = 0;
-        Integer totalCount = shownList.size();
-
-        if (getSelectedRows() != null && getSelectedRows().length > 0)
+        SwingUtilities.invokeLater(new Runnable()
         {
-            index = shownList.indexOf(getSelectedRows()[0]);
-            index++;
-            selectedCount = getSelectedRows().length;
-        }
+            public void run()
+            {
+                Integer index = 0;
+                Integer selectedCount = 0;
+                Integer totalCount = shownList.size();
 
-        label.setText(RcpSupport.getMessage("glazedListTableWidget", "listSummary", "label", new Object[] {index , selectedCount, totalCount }));
+                if (getSelectedRows() != null && getSelectedRows().length > 0)
+                {
+                    index = shownList.indexOf(getSelectedRows()[0]);
+                    index++;
+                    selectedCount = getSelectedRows().length;
+                }
+
+                label.setText(RcpSupport.getMessage("glazedListTableWidget", "listSummary", "label", new Object[]{index, selectedCount, totalCount}));
+            }
+        });
     }
+
 
     @Override
     public void onAboutToShow()
@@ -1130,4 +1169,5 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     {
         return dirtyRows;
     }
+
 }
