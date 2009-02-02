@@ -17,27 +17,16 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
 
     private final String id;
 
-    /**
-     * Constructor zonder specifieke id.
-     */
     public AbstractDataProvider()
     {
         this("abstractDataProvider");
     }
 
-    /**
-     * Constructor met specifieke id.
-     * 
-     * @param id
-     */
     public AbstractDataProvider(String id)
     {
         this.id = id;
     }
 
-    /**
-     * @return id van deze dataProvider.
-     */
     public String getId()
     {
         return id;
@@ -110,23 +99,11 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
         throw new UnsupportedOperationException("getDetailObject(object) not implemented for " + baseObject);
     }
 
-    /**
-     * Basisimplementat die een foutmelding opgooit wanneer deze niet is overschreven.
-     * 
-     * @throws UnsupportedOperationException
-     */
     public Object clone(Object sampleData)
     {
         throw new UnsupportedOperationException("clone(object) not implemented for " + sampleData);
     }
 
-    /**
-     * Algemene afhandeling van save functionaliteit. Zet de changed markering, roept de specifieke
-     * implementatie van {@link #doUpdate(Object)} op en zend een event naar alle observers.
-     * 
-     * @param updatedData
-     *            het object met de nieuwe data dat moet worden bewaard.
-     */
     public final Object update(Object updatedData)
     {
         setChanged();
@@ -135,25 +112,12 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
         return newEntity;
     }
 
-    /**
-     * Specifieke afhandeling van de save. Changes en notify worden elders afgehandelt.
-     * 
-     * @param updatedData
-     *            het object met de nieuwe data dat moet worden bewaard.
-     * @return Het vernieuwde object.
-     */
     public Object doUpdate(Object updatedData)
     {
         throw new UnsupportedOperationException("doUpdate(object) not implemented for " + updatedData);
     };
 
-    /**
-     * Algemene afhandeling van delete functionaliteit. Zet de changed markering, roept de specifieke
-     * implementatie van {@link #doDelete(Object)} op en zend een event naar alle observers.
-     * 
-     * @param dataToRemove
-     *            het object dat moet worden verwijderd.
-     */
+
     public final void delete(Object dataToRemove)
     {
         setChanged();
@@ -161,24 +125,11 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
         notifyObservers(DataProviderEvent.deleteEntityEvent(dataToRemove));
     }
 
-    /**
-     * Specifieke afhandeling van de delete. Changes en notify worden elders afgehandelt.
-     * 
-     * @param dataToRemove
-     *            het object dat moet worden verwijderd.
-     */
     public void doDelete(Object dataToRemove)
     {
         throw new UnsupportedOperationException("doDelete(object) not implemented for " + dataToRemove);
     }
 
-    /**
-     * Algemene afhandeling van create functionaliteit. Zet de changed markering, roept de specifieke
-     * implementatie van {@link #doCreate(Object)} op en zend een event naar alle observers.
-     * 
-     * @param newData
-     *            nieuw object dat moet worden aangemaakt.
-     */
     public final Object create(Object newData)
     {
         setChanged();
@@ -187,13 +138,6 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
         return newEntity;
     }
 
-    /**
-     * Specifieke afhandeling van de create. Changes en notify worden elders afgehandelt.
-     * 
-     * @param newData
-     *            nieuw object dat moet worden aangemaakt.
-     * @return Het nieuwe object.
-     */
     public Object doCreate(Object newData)
     {
         throw new UnsupportedOperationException("doCreate(object) not implemented for " + newData);
@@ -228,11 +172,6 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
         return false;
     }
 
-    /**
-     * Basisimplementat die een foutmelding opgooit wanneer deze niet is overschreven.
-     * 
-     * @throws UnsupportedOperationException
-     */
     public void setBaseCriteria(Object criteria)
     {
         throw new UnsupportedOperationException("setBaseCriteria(object) not implemented for " + criteria);

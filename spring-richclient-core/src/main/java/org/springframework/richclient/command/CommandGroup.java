@@ -15,22 +15,9 @@
  */
 package org.springframework.richclient.command;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.border.Border;
-import javax.swing.event.EventListenerList;
-
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.Size;
 import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
@@ -47,9 +34,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.layout.Size;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.EventListenerList;
+import java.awt.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation of an {@link AbstractCommand} that groups a collection of
@@ -149,6 +140,17 @@ public class CommandGroup extends AbstractCommand {
 	 */
 	public static CommandGroup createCommandGroup(String groupId, Object[] members) {
 		return createCommandGroup(groupId, members, false, null);
+	}
+
+    /**
+	 * Create a command group which holds all the given members.
+	 *
+	 * @param groupId the id to configure the group.
+	 * @param members members to add to the group.
+	 * @return a {@link CommandGroup} which contains all the members.
+	 */
+	public static CommandGroup createCommandGroup(String groupId, List<? extends AbstractCommand> members) {
+		return createCommandGroup(groupId, members.toArray(), false, null);
 	}
 
 	/**

@@ -19,6 +19,7 @@
     <module>spring-richclient-samples-vldocking</module>
     <module>spring-richclient-samples-swingdocking</module>
     <module>spring-richclient-samples-showcase</module>
+    <module>spring-richclient-samples-dataeditor</module>
   </modules>
 
   <dependencies />

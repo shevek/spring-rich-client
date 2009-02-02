@@ -4,16 +4,6 @@
  */
 package org.springframework.richclient.widget.editor.provider;
 
-/**
- * <p>Event dat doorgeeft welke veranderingen er gebeurd zijn op de achtergrond.
- * Mogelijks kan dit zijn:</p>
- * 
- *  <ul>
- *  <li>Aanmaken van nieuw object: {@link #newEntityEvent(Object)}</li>
- *  <li>Updaten van object: {@link #updateEntityEvent(Object, Object)}</li>
- *  <li>Verwijderen van object: {@link #deleteEntityEvent(Object)}</li>
- *  </ul>
- */
 public class DataProviderEvent
 {
 
@@ -66,59 +56,31 @@ public class DataProviderEvent
         this.newEntity = newEntity;
     }
 
-    /**
-     * @return het nieuwe object. Kan <code>null</code> zijn.
-     */
     public Object getNewEntity()
     {
         return this.newEntity;
     }
 
-    /**
-     * @return het oude Object. Kan <code>null</code> zijn.
-     */
     public Object getOldEntity()
     {
         return oldEntity;
     }
 
-    /**
-     * @return het Type van event.
-     */
     public int getEventType()
     {
         return this.eventType;
     }
-    
-    /**
-     * Shortcut functie voor het aanmaken van een New Object event.
-     * 
-     * @param newEntity Het nieuwe object.
-     * @return DataProviderEvent.
-     */
+
     public static final DataProviderEvent newEntityEvent(Object newEntity)
     {
         return new DataProviderEvent(EVENT_TYPE_NEW, null, newEntity);
     }
-    
-    /**
-     * Shortcut functie voor het aanmaken van een Update Object event.
-     * 
-     * @param oldEntity Het oude object.
-     * @param newEntity Het nieuwe object.
-     * @return DataProviderEvent.
-     */
+
     public static final DataProviderEvent updateEntityEvent(Object oldEntity, Object newEntity)
     {
         return new DataProviderEvent(EVENT_TYPE_UPDATE, oldEntity, newEntity);
     }
     
-    /**
-     * Shortcut functie voor het aanmaken van een Delete Object event.
-     * 
-     * @param oldEntity Het verwijderde object.
-     * @return DataProviderEvent.
-     */
     public static final DataProviderEvent deleteEntityEvent(Object oldEntity)
     {
         return new DataProviderEvent(EVENT_TYPE_DELETE, oldEntity, null);

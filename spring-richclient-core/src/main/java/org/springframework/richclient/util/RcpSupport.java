@@ -21,10 +21,12 @@ import org.springframework.richclient.command.ActionCommand;
 import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
+import org.springframework.richclient.command.support.DataEditorWidgetViewCommand;
 import org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.DefaultButtonFactory;
 import org.springframework.richclient.image.IconSource;
+import org.springframework.richclient.widget.editor.DefaultDataEditorWidget;
 import org.springframework.util.StringUtils;
 
 import javax.swing.*;
@@ -550,5 +552,38 @@ public class RcpSupport
                 buttons.add(command.createButton(factory, configurer));
         }
         return buttons;
+    }
+
+    public static JComponent createDummyPanel(String vakske)
+    {
+        JPanel dummy = new JPanel();
+        dummy.add(new JLabel(vakske));
+        return dummy;
+    }
+
+        /**
+     * Toon een dataeditor in de huidige applicationwindow op basis van een command
+     *
+     * @param command
+     *            De command die de dataeditor toont (mag niet null zijn)
+     * @param filter
+     *            Eventueel initieel filterobject voor de dataeditor
+     * @param defaultSelectedObject
+     *            Eventueel initieel geselecteerd item in de lijst
+     * 
+     * @author ldo
+     * @since 0.4.4
+     */
+    public static void executeViewDataEditorCommand(DataEditorWidgetViewCommand command, Object filter,
+            Object defaultSelectedObject)
+    {
+        org.springframework.util.Assert.notNull(command, "Command mag niet null zijn!");
+        Map<String, Object> dataEditorParameters = new HashMap<String, Object>(2);
+        dataEditorParameters.put(DefaultDataEditorWidget.PARAMETER_FILTER, filter);
+        dataEditorParameters.put(DefaultDataEditorWidget.PARAMETER_DEFAULT_SELECTED_OBJECT,
+                defaultSelectedObject);
+        Map<String, Object> commandParameters = new HashMap<String, Object>(1);
+        commandParameters.put(DefaultDataEditorWidget.PARAMETER_MAP, dataEditorParameters);
+        command.execute(commandParameters);
     }
 }

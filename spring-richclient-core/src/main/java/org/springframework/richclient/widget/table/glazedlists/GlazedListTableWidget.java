@@ -285,7 +285,11 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
                             filterProperties)));
         }
 
-        tableModel = new EventTableModel<Object>(shownList, format);
+        selectionModel = new EventSelectionModel<Object>(shownList);
+        selectionModel.addListSelectionListener(new SelectionNavigationListener());
+        theTable.setSelectionModel(selectionModel);
+
+        tableModel = new EventJXTableModel<Object>(shownList, format);
         theTable.setModel(tableModel);
 
         if (addHighlightSelectColumn)
@@ -297,11 +301,7 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         else
         {
             setHighlighters(HighlighterFactory.createSimpleStriping());
-        }
-
-        selectionModel = new EventSelectionModel<Object>(shownList);
-        selectionModel.addListSelectionListener(new SelectionNavigationListener());
-        theTable.setSelectionModel(selectionModel);
+        }  
 
         if (sortedList != null)
         {

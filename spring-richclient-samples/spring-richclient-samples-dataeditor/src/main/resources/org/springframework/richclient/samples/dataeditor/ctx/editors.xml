@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean name="supplierDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.SupplierDataEditor">
+     <constructor-arg ref="supplierDataProvider" />
+  </bean>
+
+  <bean name="supplierDataProvider" class="org.springframework.richclient.samples.dataeditor.ui.SupplierDataProvider">
+      <constructor-arg ref="supplierService"/>
+  </bean>
+
+  <bean name="itemDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.ItemDataEditor">
+     <constructor-arg ref="itemDataProvider" />
+  </bean>
+
+  <bean name="itemDataProvider" class="org.springframework.richclient.samples.dataeditor.ui.ItemDataProvider">
+      <constructor-arg ref="itemService"/>
+  </bean>
+
+</beans>
