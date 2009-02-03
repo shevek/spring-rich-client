@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean name="supplierDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.SupplierDataEditor">
+  <bean name="supplierDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.SupplierDataEditor" scope="prototype">
      <constructor-arg ref="supplierDataProvider" />
   </bean>
 
@@ -10,7 +10,7 @@
       <constructor-arg ref="supplierService"/>
   </bean>
 
-  <bean name="itemDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.ItemDataEditor">
+  <bean name="itemDataEditor" class="org.springframework.richclient.samples.dataeditor.ui.ItemDataEditor" scope="prototype">
      <constructor-arg ref="itemDataProvider" />
   </bean>
 

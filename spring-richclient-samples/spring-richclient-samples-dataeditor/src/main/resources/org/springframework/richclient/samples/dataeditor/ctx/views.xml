@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-  <bean name="supplierView" class="org.springframework.richclient.application.support.WidgetViewDescriptor">
+
+  <bean name="supplierView" class="org.springframework.richclient.application.support.WidgetViewDescriptor" scope="prototype">
     <constructor-arg index="0" value="supplierView"/>
     <constructor-arg index="1" ref="supplierDataEditor"/>
     <property name="viewClass" value="org.springframework.richclient.widget.WidgetView"/>
   </bean>
 
 
-  <bean name="itemView" class="org.springframework.richclient.application.support.WidgetViewDescriptor">
+  <bean name="itemView" class="org.springframework.richclient.application.support.WidgetViewDescriptor" scope="prototype">
     <constructor-arg index="0" value="itemView"/>
     <constructor-arg index="1" ref="itemDataEditor"/>
     <property name="viewClass" value="org.springframework.richclient.widget.WidgetView"/>
   </bean>
+  
 </beans>

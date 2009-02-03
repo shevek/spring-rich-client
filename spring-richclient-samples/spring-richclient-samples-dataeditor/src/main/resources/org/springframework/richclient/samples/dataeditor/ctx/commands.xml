@@ -52,11 +52,12 @@
 
   <bean id="aboutCommand" class="org.springframework.richclient.command.support.AboutCommand" />
 
+
   <bean id="itemCommand" class="org.springframework.richclient.command.support.WidgetViewCommand">
-    <property name="widgetViewDescriptorId" value="itemView"/>
+     <property name="widgetViewDescriptorId" value="itemView" />
   </bean>
 
   <bean id="supplierCommand" class="org.springframework.richclient.command.support.WidgetViewCommand">
-    <property name="widgetViewDescriptorId" value="supplierView"/>
+    <property name="widgetViewDescriptorId" value="supplierView" />
   </bean>
 </beans>

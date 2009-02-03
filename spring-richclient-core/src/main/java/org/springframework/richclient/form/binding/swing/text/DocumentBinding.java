@@ -1,12 +1,15 @@
 package org.springframework.richclient.form.binding.swing.text;
 
-import javax.swing.JComponent;
+import org.jdesktop.xswingx.PromptSupport;
+import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.form.binding.support.CustomBinding;
+import org.springframework.richclient.util.RcpSupport;
+import org.springframework.util.StringUtils;
+
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import org.springframework.binding.form.FormModel;
-import org.springframework.richclient.form.binding.support.CustomBinding;
-import org.springframework.util.StringUtils;
 
 /**
  * A binding using a {@link javax.swing.text.JTextComponent}.
@@ -25,6 +28,8 @@ public class DocumentBinding  extends CustomBinding implements DocumentListener 
 
     /** Convert empty strings to null? */
     private boolean convertEmptyStringToNull;
+
+    private String promptKey;
 
     /**
      *  This binding will listen to changes of the Document of the JTextComponent. A specific conversion between <code>null</code> and the empty string can be configured.
@@ -49,6 +54,8 @@ public class DocumentBinding  extends CustomBinding implements DocumentListener 
     protected JComponent doBindControl() {
         textComponent.getDocument().addDocumentListener(this);
         valueModelChanged(getValue());
+        if(promptKey != null)
+            PromptSupport.setPrompt(RcpSupport.getMessage(promptKey), textComponent);
         return textComponent;
     }
 
@@ -88,5 +95,15 @@ public class DocumentBinding  extends CustomBinding implements DocumentListener 
         else {
             controlValueChanged(textFieldValue);
         }
+    }
+
+    public String getPromptKey()
+    {
+        return promptKey;
+    }
+
+    public void setPromptKey(String promptKey)
+    {
+        this.promptKey = promptKey;
     }
 }

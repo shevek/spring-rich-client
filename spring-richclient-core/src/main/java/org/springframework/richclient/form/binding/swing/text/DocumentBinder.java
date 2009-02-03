@@ -43,6 +43,10 @@ public class DocumentBinder extends AbstractBinder {
     /** Convert the value to <code>null</code> when the Document contains an empty string. */
     private boolean convertEmptyToNull = true;
 
+    private boolean readOnly = false;
+
+    private String promptKey;
+
     /** Default constructor. */
     public DocumentBinder() {
         super(String.class);
@@ -98,6 +102,29 @@ public class DocumentBinder extends AbstractBinder {
 
     /** {@inheritDoc} */
     protected Binding doBind(JComponent control, FormModel formModel, String formPropertyPath, Map context) {
-        return new DocumentBinding((JTextComponent) control, formModel, formPropertyPath, isConvertEmptyToNull());
+        DocumentBinding documentBinding = new DocumentBinding((JTextComponent) control, formModel, formPropertyPath, isConvertEmptyToNull());
+        documentBinding.setReadOnly(isReadOnly());
+        documentBinding.setPromptKey(getPromptKey());
+        return documentBinding;
+    }
+
+    public String getPromptKey()
+    {
+        return promptKey;
+    }
+
+    public void setPromptKey(String promptKey)
+    {
+        this.promptKey = promptKey;
+    }
+
+    public boolean isReadOnly()
+    {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly)
+    {
+        this.readOnly = readOnly;
     }
 }

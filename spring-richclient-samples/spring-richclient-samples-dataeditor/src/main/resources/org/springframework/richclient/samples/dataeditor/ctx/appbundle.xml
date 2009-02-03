@@ -4,8 +4,8 @@
 
   <import resource="application.xml"/>
   <import resource="editors.xml"/>
-  <import resource="bindings.xml"/>
-  <import resource="views.xml"/>
+  <import resource="binders.xml"/>
   <import resource="services.xml"/>
+  <import resource="views.xml"/>
 
 </beans>

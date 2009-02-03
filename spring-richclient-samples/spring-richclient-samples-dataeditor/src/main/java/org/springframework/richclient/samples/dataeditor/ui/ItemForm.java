@@ -21,9 +21,7 @@ public class ItemForm extends TabbedForm
         builder.nextRow();
         builder.addPropertyAndLabel("description");
         builder.nextRow();
-        builder.addLabel("supplier");
-        builder.addBinding(new SupplierBinder().bind(getFormModel(), "supplier", null), 3);
-        builder.addNestedPropertyReadOnly("supplier", "contactName", 5);
+        builder.addPropertyAndLabel("supplier");//, "supplierBinder");
 
         return new Tab[] { new Tab("detail", builder.getPanel())};
     }

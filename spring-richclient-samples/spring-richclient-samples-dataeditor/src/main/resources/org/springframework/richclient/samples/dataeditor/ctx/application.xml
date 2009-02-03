@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
   <bean id="application" class="org.springframework.richclient.application.Application">
     <constructor-arg index="0" ref="applicationDescriptor" />
@@ -8,11 +11,11 @@
   </bean>
 
   <bean id="lifecycleAdvisor"
-    class="org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor">
+    class="org.springframework.richclient.samples.dataeditor.app.DataEditorApplicationLifecycleAdvisor">
     <property name="windowCommandBarDefinitions"
       value="org/springframework/richclient/samples/dataeditor/ctx/commands.xml" />
-    <property name="startingPageId" value="supplierView" />
     <property name="windowCommandManagerBeanName" value="windowCommandManager" />
+    <property name="startingPageId" value="supplierView"/>
     <property name="menubarBeanName" value="menuBar" />
   </bean>
 
@@ -21,7 +24,9 @@
   </bean>
 
   <bean id="applicationServices"
-    class="org.springframework.richclient.application.support.DefaultApplicationServices" />
+    class="org.springframework.richclient.application.support.DefaultApplicationServices">
+    <property name="binderSelectionStrategy" ref="binderSelectionStrategy"/>  
+  </bean>
 
   <bean id="applicationEventMulticaster"
     class="org.springframework.context.event.SimpleApplicationEventMulticaster" />

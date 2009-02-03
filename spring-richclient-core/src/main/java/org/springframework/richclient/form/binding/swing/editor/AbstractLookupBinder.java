@@ -1,6 +1,7 @@
 package org.springframework.richclient.form.binding.swing.editor;
 
 import org.springframework.binding.form.FormModel;
+import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.Binding;
 import org.springframework.richclient.util.RcpSupport;
 import org.springframework.richclient.widget.editor.DefaultDataEditorWidget;
@@ -9,7 +10,7 @@ import org.springframework.util.Assert;
 import javax.swing.*;
 import java.util.Map;
 
-public abstract class AbstractLookupBinder
+public abstract class AbstractLookupBinder implements Binder
 {
     private int autoPopupDialog = AbstractLookupBinding.AUTOPOPUPDIALOG_NO_UNIQUE_MATCH;
     private boolean revertValueOnFocusLost = true;

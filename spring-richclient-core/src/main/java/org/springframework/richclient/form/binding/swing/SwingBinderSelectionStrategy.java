@@ -15,23 +15,14 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.text.JTextComponent;
-
 import org.springframework.core.enums.LabeledEnum;
-import org.springframework.richclient.form.binding.support.AbstractBinderSelectionStrategy;
 import org.springframework.richclient.form.binding.Binder;
+import org.springframework.richclient.form.binding.support.AbstractBinderSelectionStrategy;
 
-import java.util.Map;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Oliver Hutchison
@@ -83,7 +74,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
         if (binder == null) //  try to locate the binder bean
         {
             Object binderBean = getApplicationContext().getBean(id);
-            if (binder instanceof Binder)
+            if (binderBean instanceof Binder)
             {
                 if (binderBean != null)
                 {
@@ -93,7 +84,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
             }
             else
             {
-                throw new IllegalArgumentException("Bean was found, but was not a binder");
+                throw new IllegalArgumentException("Bean '" + id + "' was found, but was not a binder");
             }
         }
         return binder;
