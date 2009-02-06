@@ -3,6 +3,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="splashScreen" class="org.springframework.richclient.samples.dataeditor.ui.DataEditorSplash">
+    <property name="image" value="classpath:/org/springframework/richclient/samples/dataeditor/images/splash-screen.jpg" />
   </bean>
 
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">

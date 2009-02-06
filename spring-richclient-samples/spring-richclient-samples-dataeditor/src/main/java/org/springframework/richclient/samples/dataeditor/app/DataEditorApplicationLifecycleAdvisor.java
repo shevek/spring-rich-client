@@ -35,7 +35,7 @@ public class DataEditorApplicationLifecycleAdvisor extends DefaultApplicationLif
         jxLoginDialog.getPanel().setServers(Arrays.asList("Server1", "Server2"));
         jxLoginDialog.setModal(true);
         jxLoginDialog.setVisible(true);
-        if(jxLoginDialog.getStatus() == JXLoginPane.Status.CANCELLED)
+        if(jxLoginDialog.getStatus() != JXLoginPane.Status.SUCCEEDED)
         {
             System.exit(1);
         }

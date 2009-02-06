@@ -2,17 +2,21 @@ package org.springframework.richclient.samples.dataeditor.ui;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
 import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.icon.EmptyIcon;
 import org.jdesktop.swingx.painter.BusyPainter;
+import org.springframework.core.io.Resource;
 import org.springframework.richclient.application.splash.MonitoringSplashScreen;
 import org.springframework.richclient.progress.ProgressMonitor;
 import org.springframework.richclient.util.WindowUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
 
 public class DataEditorSplash implements MonitoringSplashScreen
 {
@@ -21,6 +25,8 @@ public class DataEditorSplash implements MonitoringSplashScreen
     private JProgressBar progressBar = new JProgressBar();
     private JXLabel progressLabel = new JXLabel();
     private JXFrame frame;
+
+    private Resource image;
 
     public DataEditorSplash()
     {
@@ -34,9 +40,10 @@ public class DataEditorSplash implements MonitoringSplashScreen
         busyLabel.setPreferredSize(new Dimension(100,100));
         busyLabel.setIcon(new EmptyIcon(100,100));
         busyLabel.setBusyPainter(painter);
+        busyLabel.setDelay(75);
 
         titleLabel.setFont(titleLabel.getFont().deriveFont(30f));
-        titleLabel.setForeground(Color.white);
+        titleLabel.setForeground(Color.BLACK);
         progressBar.setStringPainted(true);
         progressBar.setPreferredSize(new Dimension(170,20));
 //        titleLabel.setBackground(new Color(0x425DA9));
@@ -89,13 +96,25 @@ public class DataEditorSplash implements MonitoringSplashScreen
     protected Component createContentPane()
     {
         JXPanel panel = new JXPanel(new FormLayout("center:200px:nogrow, left:3dlu:nogrow, fill:200px:nogrow", "center:200px:nogrow, center:20px:nogrow"));
-        panel.setBackground(new Color(0x425DA9));
+        JXImagePanel ip = new JXImagePanel();
+        try
+        {
+            ip.setImage(ImageIO.read(image.getInputStream()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace(); 
+        }
+        ip.setStyle(JXImagePanel.Style.SCALED);
+        //panel.setBackground(new Color(0x425DA9));
         panel.add(busyLabel, new CellConstraints(1,1));
         JXPanel panel2 = new JXPanel(new FormLayout("center:195px:nogrow", "center:98px:nogrow, center:4dlu:nogrow, center:98px:nogrow"));
-        panel2.setBackground(new Color(0x425DA9));
+        //panel2.setBackground(new Color(0x425DA9));
         panel2.add(titleLabel, new CellConstraints(1, 1));
+        panel2.setOpaque(false);
         panel.add(progressBar, new CellConstraints(1, 2, 3, 1));
         panel.add(panel2, new CellConstraints(3,1));
+        panel.add(ip, new CellConstraints(1, 1, 3, 1, CellConstraints.FILL, CellConstraints.FILL));
         panel.setBorder(BorderFactory.createLineBorder(Color.black, 4));
         return panel;
     }
@@ -112,7 +131,18 @@ public class DataEditorSplash implements MonitoringSplashScreen
 	    frame.getContentPane().add(createContentPane());
 		frame.pack();
 		WindowUtils.centerOnScreen(frame);
-		frame.setVisible(true);
+        try
+        {
+            NimbusLookAndFeel feel = new NimbusLookAndFeel();
+
+            UIManager.setLookAndFeel(feel);
+        }
+        catch (UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
+        }
+        SwingUtilities.updateComponentTreeUI(frame);
+        frame.setVisible(true);
     }
 
     public void dispose()
@@ -121,5 +151,10 @@ public class DataEditorSplash implements MonitoringSplashScreen
 			frame.dispose();
 			frame = null;
 		}
+    }
+
+    public void setImage(Resource image)
+    {
+        this.image = image;
     }
 }
