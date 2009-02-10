@@ -10,9 +10,23 @@ public class PromptTextFieldFormComponentInterceptorFactory implements FormCompo
 {
     private MessageSource messageSource;
 
+    private String promptKey;
+
+    public String getPromptKey()
+    {
+        return promptKey;
+    }
+
+    public void setPromptKey(String promptKey)
+    {
+        this.promptKey = promptKey;
+    }
+
     public FormComponentInterceptor getInterceptor(FormModel formModel)
     {
-        return new PromptTextFieldFormComponentInterceptor(formModel, messageSource);
+        PromptTextFieldFormComponentInterceptor interceptor = new PromptTextFieldFormComponentInterceptor(formModel, messageSource);
+        interceptor.setPromptKey(getPromptKey());
+        return interceptor;
     }
 
     public void setMessageSource(MessageSource messageSource)

@@ -15,7 +15,20 @@ public class PromptTextFieldFormComponentInterceptor extends TextComponentInterc
 {
     private MessageSource messageSource;
     private FormModel formModel;
-    private static final String PROMPT_KEY = "prompt";
+    private static final String DEFAULT_PROMPT_KEY = "prompt";
+    private String promptKey;
+
+    public String getPromptKey()
+    {
+        if(promptKey == null)
+            return DEFAULT_PROMPT_KEY;
+        return promptKey;
+    }
+
+    public void setPromptKey(String promptKey)
+    {
+        this.promptKey = promptKey;
+    }
 
     public PromptTextFieldFormComponentInterceptor(FormModel formModel, MessageSource messageSource) {
         this.formModel = formModel;
@@ -33,7 +46,7 @@ public class PromptTextFieldFormComponentInterceptor extends TextComponentInterc
     }
 
     protected String[] getMessageKeys(FormModel formModel, String propertyName) {
-        return new String[] { formModel.getId() + "." + propertyName + "." + PROMPT_KEY,
-                              propertyName + "." + PROMPT_KEY };
+        return new String[] { formModel.getId() + "." + propertyName + "." + getPromptKey(),
+                              propertyName + "." + getPromptKey()};
     }
 }
