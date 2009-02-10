@@ -238,7 +238,7 @@ public abstract class AbstractLookupBinding extends CustomBinding
                     new ColumnSpec(ColumnSpec.LEFT, Sizes.MINIMUM, FormSpec.NO_GROW),
                     FormFactory.RELATED_GAP_COLSPEC,
                     new ColumnSpec(ColumnSpec.LEFT, Sizes.MINIMUM, FormSpec.NO_GROW)},
-                    new RowSpec[]{new RowSpec(RowSpec.FILL, Sizes.PREFERRED, FormSpec.DEFAULT_GROW)});
+                    new RowSpec[]{new RowSpec(RowSpec.FILL, Sizes.DEFAULT, FormSpec.DEFAULT_GROW)});
         }
         else
         {
@@ -246,7 +246,7 @@ public abstract class AbstractLookupBinding extends CustomBinding
                     new ColumnSpec(ColumnSpec.FILL, Sizes.DEFAULT, FormSpec.DEFAULT_GROW),
                     FormFactory.RELATED_GAP_COLSPEC,
                     new ColumnSpec(ColumnSpec.LEFT, Sizes.MINIMUM, FormSpec.NO_GROW)},
-                    new RowSpec[]{new RowSpec(RowSpec.FILL, Sizes.PREFERRED, FormSpec.DEFAULT_GROW)});
+                    new RowSpec[]{new RowSpec(RowSpec.FILL, Sizes.DEFAULT, FormSpec.DEFAULT_GROW)});
         }
         JPanel editor = new PanelWithValidationComponent(layout)
         {
@@ -531,6 +531,8 @@ public abstract class AbstractLookupBinding extends CustomBinding
         return dataEditorCommand;
     }
 
+
+
     /**
      * Create the dataEditorCommand.
      */
@@ -571,7 +573,6 @@ public abstract class AbstractLookupBinding extends CustomBinding
                                 if (getDataEditor().canClose())
                                     super.onCancel();
                             }
-
                         };
                         dataEditorDialog.setParentComponent(getDataEditorButton());
                         getDataEditor().setSelectMode(AbstractDataEditorWidget.ON);
@@ -579,6 +580,10 @@ public abstract class AbstractLookupBinding extends CustomBinding
                     }
                     if (getParameter(NO_INITIALIZE_DATA_EDITOR) != ON)
                         initializeDataEditor();
+                    if(getDialogSize() != null)
+                    {
+                        dataEditorDialog.getDialog().setMinimumSize(getDialogSize());
+                    }
                     dataEditorDialog.showDialog();
                 }
             }
@@ -761,5 +766,10 @@ public abstract class AbstractLookupBinding extends CustomBinding
                 onShiftTabKey(e.getComponent());
             }
         }
+    }
+
+    public Dimension getDialogSize()
+    {
+        return null;
     }
 }

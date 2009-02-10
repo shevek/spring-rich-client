@@ -10,6 +10,7 @@ import org.springframework.richclient.application.session.ApplicationSession;
 import org.springframework.richclient.application.statusbar.StatusBar;
 import org.springframework.richclient.application.statusbar.support.StatusBarProgressMonitor;
 import org.springframework.richclient.command.AbstractCommand;
+import org.springframework.richclient.core.DefaultMessage;
 import org.springframework.richclient.core.Severity;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.FilterForm;
@@ -19,6 +20,7 @@ import org.springframework.richclient.widget.Widget;
 import org.springframework.richclient.widget.editor.provider.DataProvider;
 import org.springframework.richclient.widget.editor.provider.DataProviderEvent;
 import org.springframework.richclient.widget.editor.provider.DataProviderListener;
+import org.springframework.richclient.widget.editor.provider.MaximumRowsExceededException;
 import org.springframework.richclient.widget.table.TableDescription;
 import org.springframework.richclient.widget.table.TableWidget;
 import org.springframework.richclient.widget.table.glazedlists.GlazedListTableWidget;
@@ -92,7 +94,7 @@ public class DefaultDataEditorWidget extends AbstractDataEditorWidget
 
         public MaximumRowsExceededMessage()
         {
-            super("maximumRowsExceeded", Severity.INFO, "maximumRowsExceeded");
+            super("maximumRowsExceeded", Severity.WARNING, "maximumRowsExceeded");
         }
 
         @Override
@@ -148,7 +150,22 @@ public class DefaultDataEditorWidget extends AbstractDataEditorWidget
             }
             catch (ExecutionException e)
             {
-                throw new RuntimeException(e);
+                if (e.getCause() instanceof MaximumRowsExceededException)
+                {
+                    MaximumRowsExceededException mre = (MaximumRowsExceededException) e.getCause();
+                    setRows(Collections.EMPTY_LIST);
+                    validationResultsModel.removeMessage(maximumRowsExceededMessage);
+                    maximumRowsExceededMessage.setMessage(getMessage("MaximumRowsExceededException.notice", new Object[] {mre.getNumberOfRows(), mre.getMaxRows()}));
+                    validationResultsModel.addMessage(maximumRowsExceededMessage);
+                    if (getToggleFilterCommand() != null)
+                    {
+                        getToggleFilterCommand().doShow();
+                    }
+                }
+                else
+                {
+                    throw new RuntimeException(e);
+                }
             }
             finally
             {
@@ -512,10 +529,23 @@ public class DefaultDataEditorWidget extends AbstractDataEditorWidget
         {
             this.dataProvider.setBaseCriteria(getBaseCriteria());
         }
-        List dataSet = this.dataProvider.getList(criteria);
-        setRows(dataSet);
-        setMessage(null);
-        return dataSet;
+        try
+        {
+            List dataSet = this.dataProvider.getList(criteria);
+            setRows(dataSet);
+            setMessage(null);
+            return dataSet;
+        }
+        catch (MaximumRowsExceededException mre)
+        {
+            setRows(Collections.EMPTY_LIST);
+            setMessage(new DefaultMessage(getMessage("MaximumRowsExceededException.notice", new Object[] {mre.getNumberOfRows(), mre.getMaxRows()}), Severity.WARNING));
+            if (getToggleFilterCommand() != null)
+            {
+                getToggleFilterCommand().doShow();
+            }
+            return null;
+        }
     }
 
     /**

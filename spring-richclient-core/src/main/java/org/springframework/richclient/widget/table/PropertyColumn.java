@@ -5,6 +5,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.richclient.form.binding.BindingFactory;
 import org.springframework.richclient.form.binding.swing.SwingBindingFactory;
 import org.springframework.richclient.util.RcpSupport;
+import org.springframework.richclient.widget.editor.AbstractDataEditorWidget;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -327,13 +328,13 @@ public class PropertyColumn
         return withEditor(new SwingBindingFactory(formModel));
     }
     
-//    public PropertyColumn withEditor(AbstractDataEditorWidget dataEditor)
-//    {
-//        FormModel formModel = dataEditor.getDetailForm().getFormModel();
-//        BindingFactory bindingFactory = dataEditor.getDetailForm().getBindingFactory();
-//        return addEditor(new ValueModelTableCellEditor(formModel, getPropertyName(),
-//                bindingFactory.createBinding(getType(), getPropertyName()).getControl(), dataEditor.getUpdateCommand()));
-//    }
+    public PropertyColumn withEditor(AbstractDataEditorWidget dataEditor)
+    {
+        FormModel formModel = dataEditor.getDetailForm().getFormModel();
+        BindingFactory bindingFactory = dataEditor.getDetailForm().getBindingFactory();
+        return withEditor(new ValueModelTableCellEditor(formModel, getPropertyName(),
+                bindingFactory.createBinding(getType(), getPropertyName()).getControl(), dataEditor.getUpdateCommand()));
+    }
     
     public void setEditor(TableCellEditor editor)
     {

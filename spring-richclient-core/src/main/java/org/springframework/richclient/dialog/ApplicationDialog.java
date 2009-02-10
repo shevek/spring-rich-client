@@ -15,30 +15,6 @@
  */
 package org.springframework.richclient.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.Point;
-import java.awt.Window;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.application.support.ApplicationServicesAccessor;
@@ -51,6 +27,13 @@ import org.springframework.richclient.util.GuiStandardUtils;
 import org.springframework.richclient.util.WindowUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 /**
  * <p>
@@ -413,6 +396,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 			onAboutToShow();
 			if (getLocation() != null) {
 				dialog.setLocation(getLocation());
+                dialog.setPreferredSize(getPreferredSize());
 			}
 			else {
 				WindowUtils.centerOnParent(dialog, getLocationRelativeTo());
@@ -812,7 +796,7 @@ public abstract class ApplicationDialog extends ApplicationServicesAccessor impl
 	 * Register the provided button as the default dialog button. The button
 	 * must be present on the dialog.
 	 *
-	 * @param button The button to become the default.
+	 * @param command The button to become the default.
 	 */
 	protected final void registerDefaultCommand(ActionCommand command) {
 		if (isControlCreated()) {

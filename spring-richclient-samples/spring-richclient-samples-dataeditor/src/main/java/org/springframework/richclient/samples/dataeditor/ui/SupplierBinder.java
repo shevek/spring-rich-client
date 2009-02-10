@@ -7,6 +7,7 @@ import org.springframework.richclient.samples.dataeditor.domain.Supplier;
 import org.springframework.richclient.samples.dataeditor.domain.SupplierFilter;
 
 import java.util.Map;
+import java.awt.*;
 
 public class SupplierBinder extends AbstractLookupBinder
 {
@@ -29,6 +30,12 @@ public class SupplierBinder extends AbstractLookupBinder
                 SupplierFilter s = new SupplierFilter();
                 s.setNameContains(textFieldValue);
                 return s;
+            }
+
+            @Override
+            public Dimension getDialogSize()
+            {
+                return new Dimension(800,600);
             }
         };
     }

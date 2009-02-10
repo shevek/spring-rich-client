@@ -82,6 +82,8 @@
         <bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory" />
         <bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory" />
         <bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory" />
+        <bean class="org.springframework.richclient.text.SelectAllFormComponentInterceptorFactory" />
+        <bean class="org.springframework.richclient.form.builder.support.PromptTextFieldFormComponentInterceptorFactory" />
       </list>
     </property>
   </bean>

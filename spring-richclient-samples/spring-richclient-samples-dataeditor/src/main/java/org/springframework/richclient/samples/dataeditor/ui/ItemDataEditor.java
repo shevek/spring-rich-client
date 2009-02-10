@@ -6,18 +6,18 @@ import org.springframework.richclient.widget.table.PropertyColumnTableDescriptio
 
 public class ItemDataEditor extends DefaultDataEditorWidget
 {
-    private static final PropertyColumnTableDescription TABLE_DESCRIPTION;
-
-    static
-    {
-        TABLE_DESCRIPTION = new PropertyColumnTableDescription("itemDataEditor", Item.class);
-        TABLE_DESCRIPTION.addPropertyColumn("name");
-        TABLE_DESCRIPTION.addPropertyColumn("description");
-        TABLE_DESCRIPTION.addPropertyColumn("supplier.name");
-    }
-
     public ItemDataEditor(ItemDataProvider itemDataProvider)
     {
-         super("itemDataEditor", itemDataProvider, new ItemForm(), TABLE_DESCRIPTION, new ItemFilterForm());
+        super("itemDataEditor", itemDataProvider);
+        setDetailForm(new ItemForm());
+        setFilterForm(new ItemFilterForm());
+
+        PropertyColumnTableDescription tableDescription = new PropertyColumnTableDescription("itemDataEditor", Item.class);
+        tableDescription.addPropertyColumn("name");
+        tableDescription.addPropertyColumn("description");
+        tableDescription.addPropertyColumn("supplier.name");
+        setTableWidget(tableDescription);
     }
+
+
 }
