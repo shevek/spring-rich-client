@@ -212,6 +212,12 @@
       <artifactId>xswingx</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>com.l2fprod</groupId>
+      <artifactId>l2fprod-common-all</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <profiles>

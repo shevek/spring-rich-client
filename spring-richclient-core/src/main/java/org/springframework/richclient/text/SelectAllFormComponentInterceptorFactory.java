@@ -15,16 +15,15 @@
  */
 package org.springframework.richclient.text;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
-
 import org.springframework.binding.form.FormModel;
 import org.springframework.richclient.form.builder.FormComponentInterceptor;
 import org.springframework.richclient.form.builder.FormComponentInterceptorFactory;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * Implements "select all" behaviour for form components. If the form component is a text
@@ -48,6 +47,19 @@ public class SelectAllFormComponentInterceptorFactory implements FormComponentIn
                     SwingUtilities.invokeLater( new Runnable() {
                         public void run() {
                             textComponent.selectAll();
+                        }
+                    } );
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e)
+            {
+                if( !e.isTemporary() ) {
+                    final JTextComponent textComponent = (JTextComponent) e.getComponent();
+                    SwingUtilities.invokeLater( new Runnable() {
+                        public void run() {
+                            textComponent.select(0,0);
                         }
                     } );
                 }

@@ -4,12 +4,12 @@ import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 import org.springframework.richclient.application.ApplicationWindow;
-import org.springframework.richclient.application.config.DefaultApplicationLifecycleAdvisor;
+import org.springframework.richclient.taskpane.TaskPaneNavigatorApplicationLifecycleAdvisor;
 
 import java.awt.*;
 import java.util.Arrays;
 
-public class DataEditorApplicationLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor
+public class DataEditorApplicationLifecycleAdvisor extends TaskPaneNavigatorApplicationLifecycleAdvisor
 {
     private JXLoginDialog jxLoginDialog;
 

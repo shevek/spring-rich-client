@@ -977,6 +977,12 @@
         <version>1.1</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.l2fprod</groupId>
+        <artifactId>l2fprod-common-all</artifactId>
+        <version>7.3</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
