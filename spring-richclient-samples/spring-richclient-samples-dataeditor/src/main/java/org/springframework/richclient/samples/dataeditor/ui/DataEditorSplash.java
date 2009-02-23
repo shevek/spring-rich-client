@@ -1,9 +1,25 @@
 package org.springframework.richclient.samples.dataeditor.ui;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
-import org.jdesktop.swingx.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXImagePanel;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXRootPane;
 import org.jdesktop.swingx.icon.EmptyIcon;
 import org.jdesktop.swingx.painter.BusyPainter;
 import org.springframework.core.io.Resource;
@@ -11,12 +27,8 @@ import org.springframework.richclient.application.splash.MonitoringSplashScreen;
 import org.springframework.richclient.progress.ProgressMonitor;
 import org.springframework.richclient.util.WindowUtils;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.RoundRectangle2D;
-import java.io.IOException;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class DataEditorSplash implements MonitoringSplashScreen
 {
@@ -103,7 +115,7 @@ public class DataEditorSplash implements MonitoringSplashScreen
         }
         catch (IOException e)
         {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
         ip.setStyle(JXImagePanel.Style.SCALED);
         //panel.setBackground(new Color(0x425DA9));
@@ -133,11 +145,9 @@ public class DataEditorSplash implements MonitoringSplashScreen
 		WindowUtils.centerOnScreen(frame);
         try
         {
-            NimbusLookAndFeel feel = new NimbusLookAndFeel();
-
-            UIManager.setLookAndFeel(feel);
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         }
-        catch (UnsupportedLookAndFeelException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
