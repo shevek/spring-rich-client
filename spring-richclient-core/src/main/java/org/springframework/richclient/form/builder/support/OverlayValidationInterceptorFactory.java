@@ -38,12 +38,6 @@ import org.springframework.richclient.dialog.Messagable;
 
 public class OverlayValidationInterceptorFactory implements FormComponentInterceptorFactory
 {
-    private int textCompHeight;
-
-    public OverlayValidationInterceptorFactory() {
-        textCompHeight = new JTextField().getPreferredSize().height;
-    }
-
     public FormComponentInterceptor getInterceptor(FormModel formModel) {
         return new OverlayValidationInterceptor(formModel);
     }
@@ -84,7 +78,7 @@ public class OverlayValidationInterceptorFactory implements FormComponentInterce
                 componentToOverlay = hasParentScrollPane(component) ? getParentScrollPane(component) : component;
             int yOffset = componentToOverlay.getPreferredSize().height;
             OverlayHelper.attachOverlay(overlay, componentToOverlay, SwingConstants.NORTH_WEST, 0, Math.min(yOffset,
-                    textCompHeight));
+                    new JTextField().getPreferredSize().height));
         }
 
         private JScrollPane getParentScrollPane(JComponent component) {

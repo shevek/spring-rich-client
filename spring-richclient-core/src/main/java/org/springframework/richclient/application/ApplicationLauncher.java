@@ -338,7 +338,11 @@ public class ApplicationLauncher {
 		if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
 			this.splashScreen = (SplashScreen) beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
 			logger.debug("Displaying application splash screen...");
-			this.splashScreen.splash();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    ApplicationLauncher.this.splashScreen.splash();
+                }
+            });
 		}
 		else {
 			logger.info("No splash screen bean found to display. Continuing...");
