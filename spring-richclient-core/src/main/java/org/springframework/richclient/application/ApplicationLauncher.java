@@ -15,10 +15,6 @@
  */
 package org.springframework.richclient.application;
 
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.SwingUtilities;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -32,6 +28,9 @@ import org.springframework.richclient.application.splash.SplashScreen;
 import org.springframework.richclient.progress.ProgressMonitor;
 import org.springframework.richclient.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The main driver for a Spring Rich Client application.
@@ -338,11 +337,18 @@ public class ApplicationLauncher {
 		if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
 			this.splashScreen = (SplashScreen) beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
 			logger.debug("Displaying application splash screen...");
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    ApplicationLauncher.this.splashScreen.splash();
-                }
-            });
+            try
+            {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        ApplicationLauncher.this.splashScreen.splash();
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException("EDT threading issue while showing splash screen");
+            }
 		}
 		else {
 			logger.info("No splash screen bean found to display. Continuing...");
