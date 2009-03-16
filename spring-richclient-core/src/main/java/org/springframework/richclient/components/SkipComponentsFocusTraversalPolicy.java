@@ -5,9 +5,11 @@ import javax.swing.text.JTextComponent;
 import java.util.List;
 import java.awt.*;
 
+/**
+ * Traversal policy designed to skip certain components
+ */
 public class SkipComponentsFocusTraversalPolicy extends LayoutFocusTraversalPolicy
 {
-
     List<JComponent> componentsToSkip;
 
     public static final SkipComponentsFocusTraversalPolicy skipJTextComponentTraversalPolicy = new SkipComponentsFocusTraversalPolicy();
@@ -26,13 +28,11 @@ public class SkipComponentsFocusTraversalPolicy extends LayoutFocusTraversalPoli
         if( !super.accept(aComponent))
             return false;
 
-        // instanties van JTextComponent moeten editeerbaar zijn.
         if (aComponent instanceof JTextComponent && ((JTextComponent)aComponent).isEditable() == false)
             return false;
 
         if (componentsToSkip != null)
         {
-            // nakijken of component niet in de toSkip lijst zit.
             for (JComponent component : componentsToSkip)
             {
                 if (component == aComponent || component.isAncestorOf(aComponent))

@@ -3,26 +3,17 @@ package org.springframework.richclient.command.support;
 import org.springframework.richclient.application.support.WidgetViewDescriptor;
 
 /**
- * WidgetViewCommand toont een specifieke widget in een view. Deze command vergt
- * een widget/widgetId of een widgetViewDescriptorId om de view correct te openen.
+ * Widget command that shows a widget in a view
  */
 public class WidgetViewCommand extends AbstractWidgetCommand
 {
 
-    /**
-     * ViewDescriptor die bij dit commando hoort.
-     */
     protected WidgetViewDescriptor widgetViewDescriptor;
 
-    /**
-     * Id van de descriptor indien geen widget aanwezig.
-     */
     protected String widgetViewDescriptorId;
 
     /**
-     * {@inheritDoc}
-     *
-     * Open de view.
+     * Shows the widget in the view
      */
     protected void doExecuteCommand()
     {
@@ -33,19 +24,11 @@ public class WidgetViewCommand extends AbstractWidgetCommand
 
     }
 
-    /**
-     * Gebruik de gegeven widgetViewDescriptorId in plaats van een widget.
-     *
-     * @param widgetViewDescriptorId
-     */
     public void setWidgetViewDescriptorId(String widgetViewDescriptorId)
     {
         this.widgetViewDescriptorId = widgetViewDescriptorId;
     }
 
-    /**
-     * Aanmaken van de ViewDescriptor.
-     */
     protected WidgetViewDescriptor createWidgetViewDescriptor()
     {
         if (this.widgetViewDescriptorId != null)

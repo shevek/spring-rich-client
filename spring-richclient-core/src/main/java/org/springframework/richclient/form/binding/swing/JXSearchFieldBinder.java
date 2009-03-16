@@ -7,6 +7,11 @@ import org.springframework.richclient.text.SelectAllFocusListener;
 import javax.swing.*;
 import java.util.Map;
 
+/**
+ * Binder that shows a JXSearchField
+ *
+ * @author Lieven Doclo
+ */
 public class JXSearchFieldBinder extends DocumentBinder
 {
     protected JXSearchFieldBinder()

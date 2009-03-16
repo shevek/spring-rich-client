@@ -15,24 +15,6 @@
  */
 package org.springframework.richclient.form.builder.support;
 
-import java.awt.BorderLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Locale;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.value.ValueChangeDetector;
 import org.springframework.binding.value.support.ValueHolder;
@@ -41,6 +23,14 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 import org.springframework.richclient.factory.AbstractControlFactory;
 import org.springframework.richclient.image.IconSource;
 import org.springframework.richclient.util.OverlayHelper;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Locale;
 
 /**
  * Adds a "dirty overlay" to a component that is triggered by user editing. The

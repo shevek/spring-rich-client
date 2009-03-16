@@ -347,7 +347,7 @@ public class ApplicationLauncher {
             }
             catch (Exception e)
             {
-                throw new RuntimeException("EDT threading issue while showing splash screen");
+                throw new RuntimeException("EDT threading issue while showing splash screen", e);
             }
 		}
 		else {

@@ -18,6 +18,7 @@ package org.springframework.richclient.form.binding.swing;
 import org.springframework.core.enums.LabeledEnum;
 import org.springframework.richclient.form.binding.Binder;
 import org.springframework.richclient.form.binding.support.AbstractBinderSelectionStrategy;
+import org.springframework.richclient.form.binding.swing.text.DocumentBinder;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -103,7 +104,7 @@ public class SwingBinderSelectionStrategy extends AbstractBinderSelectionStrateg
 
     protected void registerDefaultBinders()
     {
-        registerBinderForPropertyType(String.class, new TextComponentBinder());
+        registerBinderForPropertyType(String.class, new DocumentBinder());
         registerBinderForPropertyType(boolean.class, new CheckBoxBinder());
         registerBinderForPropertyType(Boolean.class, new CheckBoxBinder());
         registerBinderForPropertyType(LabeledEnum.class, new LabeledEnumComboBoxBinder());

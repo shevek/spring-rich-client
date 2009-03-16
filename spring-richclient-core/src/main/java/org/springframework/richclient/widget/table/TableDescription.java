@@ -11,87 +11,87 @@ import java.util.Comparator;
 public interface TableDescription
 {
     /**
-     * @return Type van rijobjecten die in de tabel worden gezet. Gebruikt voor property access.
+     * @return Type van row objects
      */
     Class getDataType();
 
     /**
-     * De properties die mee in de textFilter (indien gesupporteerd) moeten worden opgenomen.
+     * De properties to be included in the text filter
      */
     String[] getPropertiesInTextFilter();
 
     /**
-     * Datatype voor de betrokken kolom.
+     * Datatype for a column
      */
     Class getType(int propertyIndex);
 
     /**
-     * Kolom header.
+     * Column header.
      */
     String getHeader(int propertyIndex);
 
     /**
-     * Waarde voor de kolom uit het meegeleverde (rij-) object.
+     * Value of a columnn for a certain row object
      */
     Object getValue(Object rowObject, int propertyIndex);
 
     /**
-     * Zet de waarde newValue in het rij-object.
+     * Sets the value of a column of a certain row object
      */
     void setValue(Object rowObject, int propertyIndex, Object newValue);
 
     /**
-     * Maximumbreedte voor deze kolom.
+     * Maximum width for a column
      */
     int getMaxColumnWidth(int propertyIndex);
 
     /**
-     * Minimumbreedte voor deze kolom.
+     * Minimum width for a column
      */
     int getMinColumnWidth(int propertyIndex);
 
     /**
-     * Kolom resizable of niet.
+     * If the column is resizable
      */
     boolean isResizable(int propertyIndex);
 
     /**
-     * Geef de specifieke customrenderer voor deze kolom.
+     * The column renderer for a column
      */
     TableCellRenderer getColumnRenderer(int propertyIndex);
 
     /**
-     * Geef de specifieke customeditor voor deze kolom.
+     * The cell editorr for a column
      */
     TableCellEditor getColumnEditor(int propertyIndex);
 
     /**
-     * Is deze kolom de selecteer kolom.
+     * Whether this column is a selection column
      */
     boolean isSelectColumn(int propertyIndex);
 
     /**
-     * Geef de specifieke comparator voor deze kolom.
+     * The comparator for a column
      */
     Comparator getColumnComparator(int propertyIndex);
 
     /**
-     * Geef de defaultComparator terug, null in geval van originele volgorde.
+     * The default comparator
      */
     Comparator getDefaultComparator();
 
     /**
-     * Aantal kolommen.
+     * Returns the column count
      */
     int getColumnCount();
 
     /**
-     * @return TRUE indien deze tabel een selectiekolom met editeerbare checkboxen heeft.
+     * @return TRUE if the table has a selection column
      */
     boolean hasSelectColumn();
 
     /**
-     * Initieel zichtbaar of niet
+     * Whether the column is initially visible or not
      */
     boolean isVisible(int propertyIndex);
 

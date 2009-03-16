@@ -9,29 +9,14 @@ import java.util.ArrayList;
 public abstract class AbstractCRUDBinding extends CustomBinding
 {
 
-    /**
-     * Commando voor verwijderen.
-     */
     private AbstractCommand removeCommand;
 
-    /**
-     * Commando voor toevoegen.
-     */
     private AbstractCommand addCommand;
 
-    /**
-     * Commando voor tonen van een detail.
-     */
     private AbstractCommand detailCommand;
 
-    /**
-     * Commando voor editeren.
-     */
     private AbstractCommand editCommand;
 
-    /**
-     * Alle beschikbare commando's.
-     */
     private List<AbstractCommand>  commands;
 
     private boolean addSupported;
@@ -42,43 +27,11 @@ public abstract class AbstractCRUDBinding extends CustomBinding
 
     private boolean showDetailSupported;
 
-    /**
-     * Constructor.
-     *
-     * @param formModel
-     *            Het formModel waarop deze binding werkt.
-     * @param formPropertyPath
-     *            Het pad naar de property.
-     * @param requiredSourceClass
-     *            Vereiste Type van object.
-     */
     protected AbstractCRUDBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass)
     {
         super(formModel, formPropertyPath, requiredSourceClass);
     }
 
-//    @Override
-//    protected ValueModel getValueModel()
-//    {
-//        // hack, formModel should have some pluggable valuemodel
-//        // selection/creation
-//        if (valueModel == null)
-//        {
-//            if (formModel.isBuffered())
-//            {
-//                DefaultFormModel defaultFormModel = (DefaultFormModel) formModel;
-//                valueModel = new CloneBufferedValueModel(defaultFormModel
-//                        .getFormObjectPropertyAccessStrategy().getPropertyValueModel(formPropertyPath));
-//                defaultFormModel.add(formPropertyPath, valueModel);
-//            }
-//            valueModel = formModel.getValueModel(formPropertyPath);
-//        }
-//        return valueModel;
-//    }
-
-    /**
-     * @return de commando's die je op het scherm wilt zien
-     */
     protected List<AbstractCommand> getCommands()
     {
         if (this.commands == null)
@@ -86,11 +39,6 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.commands;
     }
 
-    /**
-     * Aanmaken van de verschillende commando's.
-     *
-     * @return een array met de beschikbare commando's.
-     */
     protected List<AbstractCommand> createCommands()
     {
         int i = isAddSupported() ? 1 : 0;
@@ -109,9 +57,6 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.commands;
     }
 
-    /**
-     * @return AbstractCommand dat een rij toevoegd aan de tabel
-     */
     protected AbstractCommand getAddCommand()
     {
         if (this.addCommand == null)
@@ -119,14 +64,8 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.addCommand;
     }
 
-    /**
-     * @return AbstractCommand dat een rij toevoegd aan de tabel
-     */
     abstract protected AbstractCommand createAddCommand();
 
-    /**
-     * @return AbstractCommand dat een rij verwijdert uit de tabel
-     */
     protected AbstractCommand getRemoveCommand()
     {
         if (this.removeCommand == null)
@@ -134,14 +73,8 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.removeCommand;
     }
 
-    /**
-     * @return AbstractCommand dat een rij verwijdert uit de tabel
-     */
     abstract protected AbstractCommand createRemoveCommand();
 
-    /**
-     * @return AbstractCommand dat meer info laat zien van de rij
-     */
     protected AbstractCommand getDetailCommand()
     {
         if (this.detailCommand == null)
@@ -149,14 +82,8 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.detailCommand;
     }
 
-    /**
-     * @return AbstractCommand dat meer info laat zien van de rij
-     */
     abstract protected AbstractCommand createDetailCommand();
 
-    /**
-     * @return AbstractCommand dat een rij verandert uit de tabel.
-     */
     protected AbstractCommand getEditCommand()
     {
         if (this.editCommand == null)
@@ -164,9 +91,6 @@ public abstract class AbstractCRUDBinding extends CustomBinding
         return this.editCommand;
     }
 
-    /**
-     * @return AbstractCommand dat een rij verandert uit de tabel
-     */
     abstract protected AbstractCommand createEditCommand();
 
     public boolean isAddSupported()

@@ -15,10 +15,10 @@ import java.util.Collections;
  */
 public abstract class AbstractWidgetForm extends AbstractForm implements Widget
 {
-    /** Id voor het "ongedaan maken" command. */
+    /** Id for the undo command. */
     public static final String UNDO_CMD_ID = "undo";
 
-    /** Id voor het "opslaan van wijzigingen" command. */
+    /** Id for the save command. */
     public static final String SAVE_CMD_ID = "save";
 
     protected boolean showing = false;

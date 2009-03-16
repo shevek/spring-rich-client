@@ -88,12 +88,10 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
      *
      * @param formModel           formModel met de property.
      * @param formPropertyPath    pad naar de property.
-     * @param requiredSourceClass TODO Deze wordt niet meer gebruikt en moet verwijderd worden
-     *                            Momenteel zit deze er nog in omdat er heel wat bindings gebruik maken van deze constructor
      */
-    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass)
+    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath)
     {
-        this(formModel, formPropertyPath, null, false);
+        this(formModel, formPropertyPath, false);
     }
 
     /**
@@ -101,22 +99,15 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
      *
      * @param formModel            formModel met de property.
      * @param formPropertyPath     pad naar de property.
-     * @param requiredSourceClass  TODO Deze wordt niet meer gebruikt en moet verwijderd worden
-     *                             Momenteel zit deze er nog in omdat er heel wat bindings gebruik maken van deze constructor
      * @param useOriginalSortOrder gebruik de originele sorteervolgorde van de lijst
      */
-    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath, Class requiredSourceClass,
+    public AbstractGlazedListsBinding(FormModel formModel, String formPropertyPath,
                                       boolean useOriginalSortOrder)
     {
         super(formModel, formPropertyPath, null);
         this.useOriginalSortOrder = useOriginalSortOrder;
     }
 
-    /**
-     * Wanneer het valueModel verandert, moet het dit weer gecloned worden en
-     * als viewControllerObject gezet worden. Daarna wordt deze laatste gebruikt
-     * om in de tabel te tonen.
-     */
     @Override
     protected final void valueModelChanged(Object newValue)
     {
@@ -126,9 +117,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         readOnlyChanged();
     }
 
-    /**
-     * Hook opgeroepen na een valueModelChange
-     */
     protected void onValueModelChanged()
     {
     }
@@ -200,9 +188,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return editor;
     }
 
-    /**
-     * @return de tabel met de rijen.
-     */
     protected TableWidget getTable()
     {
         if (table == null)
@@ -215,9 +200,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return this.table;
     }
 
-    /**
-     * @return de geselecteerde rijen.
-     */
     public Object[] getSelection()
     {
         return this.table.getSelectedRows();
@@ -246,9 +228,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         readOnlyChanged();
     }
 
-    /**
-     * @return AbstractCommand dat een rij toevoegd aan de tabel
-     */
     @Override
     protected AbstractCommand createAddCommand()
     {
@@ -275,9 +254,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return null;
     }
 
-    /**
-     * @return AbstractCommand dat een rij verwijdert uit de tabel
-     */
     @Override
     protected AbstractCommand createRemoveCommand()
     {
@@ -304,9 +280,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return null;
     }
 
-    /**
-     * @return AbstractCommand dat meer info laat zien van de rij
-     */
     @Override
     protected AbstractCommand createDetailCommand()
     {
@@ -325,9 +298,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return detail;
     }
 
-    /**
-     * @return AbstractCommand dat een rij verandert uit de tabel
-     */
     @Override
     protected AbstractCommand createEditCommand()
     {
@@ -354,11 +324,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return null;
     }
 
-    /**
-     * Na veranderen wordt de lijst terug opgehaald uit het formObject
-     *
-     * @param rows Selectie
-     */
     public void edit(Object[] rows)
     {
         if (rows != null)
@@ -373,12 +338,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         }
     }
 
-    /**
-     * Override deze method om zelf op \u00e9\u00e9n of andere manier een object
-     * aan te maken en toe te voegen aan de tabel.
-     *
-     * @return Oject to add to table
-     */
     protected void add(Object list)
     {
         this.currentMode = ADD_MODE;
@@ -386,12 +345,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         getOrCreateFormDialog().showDialog();
     }
 
-    /**
-     * Als er een remove gebeurd, wordt de selectie eerst via deze functie naar
-     * de backend gestuurd
-     *
-     * @param selection De geselecteerde rijen.
-     */
     protected void remove(Object list, Object[] selection)
     {
         if (list instanceof Collection)
@@ -406,11 +359,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
             throw new UnsupportedOperationException();
     }
 
-    /**
-     * @param rows De rijen die in het detail moeten worden getoond, kan
-     *             eventueel beperkt worden tot \u00e9\u00e9n rij, maar kan ook
-     *             samenvatting geven van meerdere selecties
-     */
     public void showDetail(Object[] rows)
     {
         if (rows != null)
@@ -438,37 +386,18 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         return this.form;
     }
 
-    /**
-     * Deze moet overschreven worden door subclassen om het correcte formobject
-     * in de dialoog te krijgen.
-     *
-     * @return form gebruikt voor add/edit
-     */
     protected AbstractForm createDetailForm()
     {
         throw new UnsupportedOperationException("Need a Form for adding/editing");
     }
 
-    /**
-     * Deze moet overschreven worden door subclassen om het correcte formobject
-     * in de dialoog te krijgen.
-     *
-     * @return form gebruikt voor add/edit
-     */
     protected AbstractForm createAddEditForm()
     {
         throw new UnsupportedOperationException("Need a Form for adding/editing");
     }
 
-    /**
-     * @return een tabledescription om de tabel op te maken
-     */
     protected abstract TableDescription getTableDescription();
 
-    /**
-     * @param value de property waarvoor deze editor dient
-     * @return de lijst die uit de property wordt gehaald
-     */
     protected Collection getList(Object value)
     {
         if (value instanceof Collection)
@@ -485,11 +414,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         }
     }
 
-    /**
-     * Geef een nieuw object om in de add dialoog te gebruiken
-     *
-     * @return
-     */
     protected Object getNewFormObject()
     {
         return null;
@@ -614,14 +538,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
         };
     }
 
-    /**
-     * Als collection dan wordt nieuw item gewoon toegevoegd, anders moet deze
-     * functie overschreven worden.
-     *
-     * @param list
-     * @param newItem
-     * @return
-     */
     protected Object onFinishAdd(Object list, Object newItem)
     {
         if (list instanceof Collection)
@@ -634,13 +550,6 @@ public abstract class AbstractGlazedListsBinding extends AbstractCRUDBinding
                 "onFinishAdd received a non Collection object, needs alternate implementation");
     }
 
-    /**
-     * Edit wordt gecommit, eventueel kan een bijkomende actie gedaan worden.
-     *
-     * @param list
-     * @param newItem
-     * @return True als alles ok is en dialoog mag verdwijnen
-     */
     protected Object onFinishEdit(Object list, Object newItem)
     {
         return newItem;

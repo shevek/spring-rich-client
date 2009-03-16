@@ -22,12 +22,10 @@ import java.awt.*;
 import java.beans.PropertyChangeListener;
 
 /**
- * Laat toe om een applicationDialog aan te maken waaraan de widget die getoond
- * moet worden, kan meegegeven worden.
+ * Allows to create an applicationDialog in which a given widget can be shown
  *
  * <p>
- * Niet vergeten om de parentComponent ({@link #setParentComponent(java.awt.Component)})
- * mee te geven indien het niet je applicatiewindow zelf is!
+ * Don't forget to set the parent component if the parent isn't the application window
  * </p>
  */
 public class TitledWidgetApplicationDialog extends ApplicationDialog
@@ -36,53 +34,47 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
             Messagable
 {
 
-    /** Default Id voor ok command. */
+    /** Default Id for ok command. */
     public static final String OK_COMMAND_ID = "okCommand";
 
-    /** Default Id voor cancel command. */
+    /** Default Id for cancel command. */
     public static final String CANCEL_COMMAND_ID = "cancelCommand";
 
-    /** Default Id voor exit command. */
+    /** Default Id for exit command. */
     public static final String EXIT_COMMAND_ID = "exit";
 
-    /** Default Id voor select command. */
+    /** Default Id for select command. */
     public static final String SELECT_COMMAND_ID = "select";
 
-    /** Default Id voor select command. */
+    /** Default Id for select command. */
     public static final String SELECT_NONE_COMMAND_ID = "selectNoneCommand";
 
-    /** Ok-mode: enkel ok knop met finish command. */
+    /** Ok-mode: OK + Finish button. */
     public static final int OK_MODE = 1;
 
-    /** Cancel-mode: enkel cancel knop met cancel command. */
+    /** Cancel-mode: Cancel button. */
     public static final int CANCEL_MODE = 2;
 
-    /** Select-mode: select en cancel knop met beide: finish en cancel command. */
+    /** Select-mode: Select + Cancel button. */
     public static final int SELECT_CANCEL_MODE = 3;
 
-    /** Widget dat als content in deze dialoog wordt weergegeven. */
     private final Widget widget;
 
-    /** De mode voor deze dialoog (<code>OK_MODE, CANCEL_MODE of SELECT_CANCEL_MODE</code>) */
     private final int mode;
 
-    /** Specifiek Id voor finish command. */
     private final String finishId;
 
-    /** Specifiek Id voor cancel command. */
     private final String cancelId;
 
-    /** Id voor het configureren van de dialoog. */
     private final String titledWidgetId;
 
-    /** Selecteer niets commando. */
     private ActionCommand selectNoneCommand;
 
     /**
-     * Aanmaken dialoog met enkel een ok-knop.
+     * Create dialog with only OK button
      *
      * @param widget
-     *            te tonen widget.
+     *            The widget to show in the dialog
      */
     public TitledWidgetApplicationDialog(Widget widget)
     {
@@ -90,33 +82,31 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
     }
 
     /**
-     * Aanmaak dialoog met gegeven mode.
+     * Create dialog in specified mode
      *
      * @param widget
-     *            te tonen widget.
+     *            The widget to show in the dialog
      * @param mode
-     *            de mode van deze dialoog:
+     *            The mode of the dialog:
      *            <code>OK_MODE, CANCEL_MODE of SELECT_CANCEL_MODE</code>.
      */
     public TitledWidgetApplicationDialog(Widget widget, int mode)
     {
-        // 1 knop geeft exit alleen, twee knoppen geeft select/exit, kan
-        // aangepast worden met andere constructor
         this(widget, mode, mode == SELECT_CANCEL_MODE ? SELECT_COMMAND_ID : EXIT_COMMAND_ID, EXIT_COMMAND_ID);
     }
 
     /**
-     * Aanmaak van dialoog met volledige configuratie.
+     * Creation of dialog with full configuration
      *
      * @param widget
-     *            te tonen wigdet.
+     *            The widget to show in the dialog
      * @param mode
-     *            de mode van deze dialoog:
+     *            The mode of the dialog:
      *            <code>OK_MODE, CANCEL_MODE of SELECT_CANCEL_MODE</code>.
      * @param finishId
-     *            specifiek id voor het finish commando.
+     *            specific id for the finish command
      * @param cancelId
-     *            specifiek id voor het cancel commando.
+     *            specific id for the cancel command.
      */
     public TitledWidgetApplicationDialog(Widget widget, int mode, String finishId, String cancelId)
     {
@@ -130,17 +120,11 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
             this.titledWidgetId = null;
     }
 
-    /**
-     * @return widget van deze dialoog.
-     */
     public Widget getWidget()
     {
         return this.widget;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected JComponent createButtonBar()
     {
         CommandGroup widgetCommands = CommandGroup.createCommandGroup(null, widget.getCommands());
@@ -155,11 +139,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
         return panel;
     }
 
-    /**
-     * Aantal en welke commando's hangt af van mode.
-     *
-     * {@inheritDoc}
-     */
     protected Object[] getCommandGroupMembers()
     {
         if (this.mode == SELECT_CANCEL_MODE)
@@ -171,11 +150,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
         return new Object[]{getCancelCommand()};
     }
 
-    /**
-     * Specific command to de-select all and return a <code>null</code> selection.
-     *
-     * @return an {@link ActionCommand}.
-     */
     protected ActionCommand getSelectNoneCommand()
     {
     	if (selectNoneCommand == null)
@@ -194,9 +168,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
 		return SELECT_NONE_COMMAND_ID;
 	}
 
-	/**
-     * {@inheritDoc}
-     */
     protected void addDialogComponents()
     {
         JComponent dialogContentPane = createDialogContentPane();
@@ -215,9 +186,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
                     ApplicationObjectConfigurer.class)).configure(this.widget, this.titledWidgetId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void onAboutToShow()
     {
         super.onAboutToShow();
@@ -226,9 +194,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
         widget.onAboutToShow();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void onWindowClosing()
     {
         widget.onAboutToHide();
@@ -237,9 +202,6 @@ public class TitledWidgetApplicationDialog extends ApplicationDialog
         super.onWindowClosing();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected boolean onFinish()
     {
         return true;

@@ -15,16 +15,15 @@
  */
 package org.springframework.richclient.application.config;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 import org.springframework.richclient.application.ApplicationException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Configuerer for specifying global UIManager defaults.
@@ -133,9 +132,10 @@ public class UIManagerConfigurer {
             }
             else {
                 LookAndFeelInfo[] feels = UIManager.getInstalledLookAndFeels();
-                for (int i = 0; i < feels.length; i++) {
-                    LookAndFeelInfo feel = feels[i];
-                    if (feel.getName().equalsIgnoreCase(lookAndFeelName)) {
+                for (LookAndFeelInfo feel : feels)
+                {
+                    if (feel.getName().equalsIgnoreCase(lookAndFeelName))
+                    {
                         UIManager.setLookAndFeel(feel.getClassName());
                         break;
                     }

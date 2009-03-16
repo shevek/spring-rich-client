@@ -84,12 +84,11 @@ public abstract class AbstractTitledWidget extends AbstractWidget implements Tit
 
     public void setCaption(String shortDescription)
     {
-        // TODO needed to comply to interface DescriptionConfigurable where will
-        // this end up?
+        // TODO needed to comply to interface DescriptionConfigurable where will this end up?
     }
 
     /**
-     * Lazy aanmaken van component.
+     * Lazy creation of component
      * <p/>
      * {@inheritDoc}
      */
@@ -102,18 +101,7 @@ public abstract class AbstractTitledWidget extends AbstractWidget implements Tit
     }
 
     /**
-     * Tijdelijk opvangen van verdwenen interface hasDialogWidget en method getDialogParent()
-     *
-     * @deprecated Please use {@link #getComponent()}
-     */
-    @Deprecated
-    public final JComponent getDialogParent()
-    {
-        return getComponent();
-    }
-
-    /**
-     * @return JComponent met titlePane, widgetContent en border.
+     * @return JComponent with titlePane, widgetContent and border.
      */
     private JComponent createComponent()
     {

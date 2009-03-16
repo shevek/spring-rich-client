@@ -11,24 +11,6 @@ What is spring-richclient?
     GUI-standards-following rich-client applications faster by leveraging the Spring
     Framework, and a rich library of UI factories and support classes.
 
-Spring Richclient's Future
-
-    The current codebase of Spring Richclient was started a few years ago. Although the code is quite stable,
-    we realise that it's not state-of-the-art anymore. Several technologies and ideas have emerged that should be
-    embraced in the Spring Richclient code (eg JSR Application Framework) and the need for refactoring and revising
-    of the codebase has grown. We opted to start a new project called Spring Desktop that allows us to do this without
-    having our hands tied to the current codebase. This does not mean that Spring Richclient will be abandoned.
-    The current project will be maintained and fixes will be deployed as needed.
-    We're aiming to release the first version of Spring Desktop in October as part of the Spring release train.
-
-Where are the docs?
-
-    As you've read in the previous paragraph, we're starting a new project. It's quite obvious that we want
-    to dedicate as much time as we can into Spring Desktop. We therefore opted to switch to a document-as-needed approach.
-    If at any point you need some help or some documentation, please post this need on the {{{http://forum.springframework.org/forumdisplay.php?f=28}Spring Richclient Forum}}.
-    We'll try to help you out and any docs created in the process will be added to the reference manual and/or posted on the
-    {{{http://spring-rich.blogspot.com/}Spring Richclient Developer Blog}}.
-
 News
 
     * <<2008-03-17>>: Release 1.0.0 available: see {{{download.html}download}}

@@ -182,6 +182,9 @@ public class PropertyColumnTableDescription implements TableDescription
         {
             Accessor accessorForProperty = ClassUtils.getAccessorForProperty(entityClass, propertyColumn.getPropertyName());
             propertyColumn.setAccessor(accessorForProperty);
+            if(propertyColumn.getComparator() == null)
+                propertyColumn.setComparator(getDefaultComparator());
+            propertyColumn.setHeaderKeys(RcpSupport.getMessageKeys(this.id, propertyColumn.getPropertyName(), RcpSupport.HEADER));
         }
     }
 
@@ -432,95 +435,33 @@ public class PropertyColumnTableDescription implements TableDescription
                         isInTextFilter);
     }
 
-    /**
-     * Voeg een kolom toe met Booleans die een selectie voorstellen uit de lijst. Deze zullen editeerbaar zijn
-     * in de tabel zodat de gebruiker een selectie kan maken.
-     *
-     * @param propertyName
-     *            Propertynaam
-     */
     public void addSelectPropertyColumn(String propertyName)
     {
         addSelectPropertyColumn(propertyName, PropertyColumn.UNSPECIFIED_WIDTH);
     }
 
-    /**
-     * Voeg een kolom toe met Booleans die een selectie voorstellen uit de lijst. Deze zullen editeerbaar zijn
-     * in de tabel zodat de gebruiker een selectie kan maken.
-     *
-     * @param propertyName
-     *            Propertynaam
-     * @param comparator
-     *            Comparator voor de kolom.
-     */
     public void addSelectPropertyColumn(String propertyName, Comparator<?> comparator)
     {
         addSelectPropertyColumn(propertyName, PropertyColumn.UNSPECIFIED_WIDTH,
                 PropertyColumn.UNSPECIFIED_WIDTH, comparator);
     }
 
-    /**
-     * @see #addSelectPropertyColumn(String)
-     *
-     * @param propertyName
-     *            Propertynaam.
-     * @param width
-     *            Vaste breedte voor kolom.
-     */
     public void addSelectPropertyColumn(String propertyName, int width)
     {
         addSelectPropertyColumn(propertyName, width, width);
     }
 
-    /**
-     * @see #addSelectPropertyColumn(String)
-     *
-     * @param propertyName
-     *            Propertynaam.
-     * @param minWidth
-     *            Variabele breedte: minimum.
-     * @param maxWidth
-     *            Variabele breedte: maximum.
-     */
     public void addSelectPropertyColumn(String propertyName, int minWidth, int maxWidth)
     {
         addSelectPropertyColumn(propertyName, minWidth, maxWidth, null);
     }
 
-    /**
-     * @see #addSelectPropertyColumn(String)
-     *
-     * @param propertyName
-     *            Propertynaam.
-     * @param minWidth
-     *            Variabele breedte: minimum.
-     * @param maxWidth
-     *            Variabele breedte: maximum.
-     * @param comparator
-     *            Comparator voor de kolom.
-     */
     public void addSelectPropertyColumn(String propertyName, int minWidth, int maxWidth, Comparator comparator)
     {
         addSelectPropertyColumn(propertyName, RcpSupport.getMessageKeys(this.id, propertyName,
                 RcpSupport.HEADER), minWidth, maxWidth, true, comparator);
     }
 
-    /**
-     * @see #addSelectPropertyColumn(String)
-     *
-     * @param propertyName
-     *            Propertynaam.
-     * @param headerKeys
-     *            Keys voor het ophalen van de headerlabels.
-     * @param minWidth
-     *            Variabele breedte: minimum.
-     * @param maxWidth
-     *            Variabele breedte: maximum.
-     * @param resizable
-     *            Resizing mogelijk.
-     * @param comparator
-     *            Comparator voor de kolom.
-     */
     public void addSelectPropertyColumn(String propertyName, String[] headerKeys, int minWidth, int maxWidth,
             boolean resizable, Comparator comparator)
     {
@@ -536,24 +477,6 @@ public class PropertyColumnTableDescription implements TableDescription
                 true, true));
     }
 
-    /**
-     * @see #addSelectPropertyColumn(String)
-     *
-     * @param propertyName
-     *            Propertynaam.
-     * @param headerKeys
-     *            Keys voor het ophalen van de headerlabels.
-     * @param minWidth
-     *            Variabele breedte: minimum.
-     * @param maxWidth
-     *            Variabele breedte: maximum.
-     * @param resizable
-     *            Resizing mogelijk.
-     * @param visible
-     *            Initieel visible.
-     * @param comparator
-     *            Comparator voor de kolom.
-     */
     public void addSelectPropertyColumn(String propertyName, String[] headerKeys, int minWidth, int maxWidth,
             boolean resizable, Comparator comparator, boolean visible)
     {
@@ -646,7 +569,7 @@ public class PropertyColumnTableDescription implements TableDescription
         }
         catch (Exception e)
         {
-            log.warn("Fout bij het lezen van property " + propertyIndex + " van het object " + rowObject, e);
+            log.warn("Error reading property " + propertyIndex + " from object " + rowObject, e);
             throw new RuntimeException("Error reading property " + propertyIndex + " from object "
                     + rowObject, e);
         }
@@ -665,8 +588,8 @@ public class PropertyColumnTableDescription implements TableDescription
         }
         catch (Exception e)
         {
-            log.warn("Fout bij het schrijven van property " + propertyIndex + " van het object " + rowObject
-                    + ", nieuwe waarde: " + newValue, e);
+            log.warn("Error writing property " + propertyIndex + " to object " + rowObject
+                    + " new value: " + newValue, e);
             throw new RuntimeException("Error writing property " + propertyIndex + " to object " + rowObject
                     + " new value: " + newValue, e);
         }
@@ -679,8 +602,6 @@ public class PropertyColumnTableDescription implements TableDescription
 
     /**
      * {@inheritDoc}
-     *
-     * Type wordt ingesteld of via introspectie bepaald.
      */
     public Class getType(int propertyIndex)
     {

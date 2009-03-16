@@ -18,6 +18,9 @@ package org.springframework.binding.form.support;
 import org.springframework.binding.form.CommitListener;
 import org.springframework.binding.form.FormModel;
 
+/**
+ * Adapter for the CommitListener interface
+ */
 public abstract class CommitListenerAdapter implements CommitListener {
     public void preCommit(FormModel formModel) {
     }

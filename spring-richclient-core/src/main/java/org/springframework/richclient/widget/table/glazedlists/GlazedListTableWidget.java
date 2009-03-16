@@ -42,83 +42,34 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
-/**
- * ListTableWidget is een factory voor sorteerbare, filterbare tabellen op basis
- * van het glazedlists project.
- */
 public final class GlazedListTableWidget extends AbstractWidget implements TableWidget
 {
-    /**
-     * De visuele tabel. Component van swingx library.
-     */
     private JXTable theTable = new JXTable();
 
-    /**
-     * Scrollpane die rond de tabel staat.
-     */
     private JScrollPane tableScroller;
 
-    /**
-     * Monitor die de selectie events zal doorsturen de geregistreerde
-     * listeners.
-     */
     private ValueMonitor selectionMonitor = new ValueMonitor();
 
-    /**
-     * Achterliggend TableModel van glazedLists.
-     */
     private EventTableModel<Object> tableModel;
 
-    /**
-     * Achterliggend selectieModel van glazedLists.
-     */
     private EventSelectionModel<Object> selectionModel;
 
-    /**
-     * De volledige datalijst.
-     */
     private EventList<Object> dataList;
 
-    /**
-     * De getoonde lijst na sortering, filtering...
-     */
     private EventList<Object> shownList;
 
-    /**
-     * De gesorteerde lijst, null indien geen sortering (niet comparable).
-     */
     private SortedList<Object> sortedList;
 
-    /**
-     * Het textField dat een filtering op de datalijst verzorgt, weerspiegelt in
-     * de getoonde lijst.
-     */
     private JTextField textFilterField;
 
-    /**
-     * De navigatieCommando's als array.
-     */
     private AbstractCommand[] navigationCommands;
 
-    /**
-     * CommandGroup met navigatieCommando's.
-     */
     private CommandGroup navigationCommandGroup;
 
-    /**
-     * De commando's specifiek voor de selectiekolom (unselect all, select all,
-     * reverse selection).
-     */
     private CommandGroup selectColumnCommandGroup;
 
-    /**
-     * Een specifieke configurer voor de navigatie en selectiecommands.
-     */
     private CommandConfigurer commandConfigurer;
 
-    /**
-     * countLabel geeft het aantal records en de geselecteerde rij weer : record / aantal
-     */
     private JLabel countLabel;
 
     static
@@ -255,17 +206,11 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     public GlazedListTableWidget(Class dataType, List<? extends Object> rows, TableFormat format,
                                  String[] filterProperties, Comparator comparator, boolean addHighlightSelectColumn)
     {
-        // eventTableSelectionModel van glazedLists werkt niet goed samen met
-        // SelectionMapper
-        // https://glazedlists.dev.java.net/issues/show_bug.cgi?id=363
         theTable.setColumnControlVisible(true);
         theTable.getSelectionMapper().setEnabled(false);
         commandConfigurer = (CommandConfigurer) Application.services().getService(CommandConfigurer.class);
-
-        // -jh- vertrekken van lege lijst (= null) mag ook
         dataList = rows == null ? new BasicEventList<Object>() : GlazedLists.eventList(rows);
 
-        // eventueel sortering toepassen (bij null : originele volgorde).
         sortedList = new SortedList<Object>(dataList, comparator);
         this.shownList = sortedList;
 
@@ -344,13 +289,9 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
      */
     public void setRowHeightEnabled(boolean rowHeightEnabled)
     {
-        // toelaten de rowheight aan te passen, zodat er meerdere lijnen per cell kunnen gerenderd worden.
         theTable.setRowHeightEnabled(true);
     }
 
-    /**
-     * SelectionListener die de navigatieknoppen aan en af zet.
-     */
     private class SelectionNavigationListener implements ListSelectionListener
     {
 
@@ -387,21 +328,9 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
 
     private TableComparatorChooser tableComparatorChooser;
 
-    /**
-     * Deze class is een extensie op ConditionalHighlighter die er voor zorgt
-     * dat de rijen/cellen die voldoen aan de test kunnen worden opgelicht.
-     *
-     * @author jh
-     */
     static class HighlightSelectColumn implements HighlightPredicate
     {
 
-        /**
-         * Test op de rij of de rij geselecteerd was met behulp van de checkbox
-         * in de eerste kolom.
-         *
-         * @return boolean TRUE indien getrouwd.
-         */
         public boolean isHighlighted(Component renderer, ComponentAdapter adapter)
         {
             Object selectedValue = adapter.getValueAt(adapter.row, 0);
@@ -409,12 +338,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Zet een pipeline van highlighters om de rijen een verschillende kleur te
-     * geven wanneer bepaalde voorwaarden voldaan zijn.
-     *
-     * @param highlighters highlighters die gebruikt moet worden bij deze table.
-     */
     public void setHighlighters(Highlighter... highlighters)
     {
         this.theTable.setHighlighters(highlighters);
@@ -436,9 +359,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         return this.tableModel.getRowCount();
     }
 
-    /**
-     * Initializatie en configuratie van de navigatiecommando's.
-     */
     private void initializeNavigationCommands()
     {
         this.navigationCommands = new AbstractCommand[4];
@@ -497,9 +417,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         this.navigationCommandGroup = CommandGroup.createCommandGroup(this.navigationCommands);
     }
 
-    /**
-     * Verandering in selectiekolom.
-     */
     private void fireUserSelectionChangedEvent()
     {
         if (userSelectionListeners != null)
@@ -512,12 +429,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Indien de tabel een selectiekolom bevat (met checkboxjes) kan je hierop
-     * een listener registreren.
-     *
-     * @param listener
-     */
     public void addUserSelectionListener(PropertyChangeListener listener)
     {
         if (userSelectionListeners == null)
@@ -527,10 +438,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         userSelectionListeners.add(listener);
     }
 
-    /**
-     * Aanmaken en configureren van selectieCommando's. (select all, select
-     * inverse, select none)
-     */
     private void initializeSelectColumnCommands()
     {
         final WritableTableFormat writableTableFormat = (WritableTableFormat) this.tableModel
@@ -597,11 +504,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
                 selectInverse});
     }
 
-    /**
-     * Vervang de datalijst objecten met de gegeven objecten.
-     *
-     * @param newRows de lijst van nieuwe dataobjecten.
-     */
     public final void setRows(Collection newRows)
     {
         this.dataList.getReadWriteLock().writeLock().lock();
@@ -620,39 +522,16 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Geef alle rijen in de dataLijst terug. Inclusief rijen die momenteel niet
-     * zichtbaar zijn door de textFithis.viewControllerObjectlter. De sortering kan ook afwijken van die
-     * in de tabel. Indien je een lijst van de momenteel zichtbare items wilt,
-     * gebruik dan {@ link #getVisibleRows()}.
-     *
-     * @return een lijst met alle dataObjecten in (zonder sortering en zonder de
-     *         lokale filter).
-     * @see #getVisibleRows()
-     */
     public final List getRows()
     {
         return new ArrayList<Object>(this.dataList);
     }
 
-    /**
-     * Geef de rijen terug zoals getoond in de tabel: dwz rekening houdend met
-     * de lokale filter en de sortering. Indien je de volledige lijst wilt,
-     * gebruik dan {@link #getRows()}.
-     *
-     * @return de lijst zoals getoond in de tabel.
-     * @see #getRows()
-     */
     public final List getVisibleRows()
     {
         return new ArrayList<Object>(this.shownList);
     }
 
-    /**
-     * Toevoegen van een object aan de dataLijst.
-     *
-     * @param newObject het nieuwe lijstObject.
-     */
     public void addRowObject(Object newObject)
     {
         this.dataList.getReadWriteLock().writeLock().lock();
@@ -666,11 +545,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Een collectie toevoegen aan de datalijst.
-     *
-     * @param rows de collection met de toe te voegen objecten.
-     */
     public void addRows(Collection rows)
     {
         this.dataList.getReadWriteLock().writeLock().lock();
@@ -684,11 +558,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Verwijder een object uit de dataLijst.
-     *
-     * @param objectToRemove het te verwijderen object.
-     */
     public void removeRowObject(Object objectToRemove)
     {
         this.dataList.getReadWriteLock().writeLock().lock();
@@ -703,15 +572,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Selecteer het gegeven object in de tabel.
-     *
-     * @param toPointTo           het object dat moet geselecteerd worden.
-     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
-     *                            gestuurd worden bij oproepen van deze functie niet meer mag
-     *                            krijgen. (tegengaan van circulaire oproepen)
-     * @return int de index van het object in de getoonde lijst.
-     */
     public int selectRowObject(Object toPointTo, Observer originatingObserver)
     {
         int index = this.shownList.indexOf(toPointTo);
@@ -719,16 +579,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         return index;
     }
 
-    /**
-     * Selecteer het object op de gegeven index (van de getoonde lijst).
-     *
-     * @param index               de index van het object in de getoonde lijst dat moet
-     *                            geselecteerd worden. Indien index -1 is zal er een
-     *                            deselectAll() gebeuren.
-     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
-     *                            gestuurd worden bij oproepen van deze functie niet meer mag
-     *                            krijgen. (tegengaan van circulaire oproepen)
-     */
     public void selectRowObject(final int index, final Observer originatingObserver)
     {
         Runnable doSelectRowObject = new Runnable()
@@ -768,14 +618,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
 
     }
 
-    /**
-     * Voeg de gegeven rijen toe aan de selectie.
-     *
-     * @param rows                de rijen die aan de selectie moeten worden toegevoegd.
-     * @param originatingObserver observer geregistreerd op selectieEvents die het event dat zal
-     *                            gestuurd worden bij oproepen van deze functie niet meer mag
-     *                            krijgen. (tegengaan van circulaire oproepen)
-     */
     public void addSelection(final Object[] rows, final Observer originatingObserver)
     {
         Runnable doAddSelection = new Runnable()
@@ -807,19 +649,11 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Check of de huidig getoonde lijst een selectie bevat.
-     *
-     * @return <code>true</code> als er een selectie bestaat.
-     */
     public boolean hasSelection()
     {
         return !this.selectionModel.isSelectionEmpty();
     }
 
-    /**
-     * Scroll naar het eerste element dat is geselecteerd
-     */
     public synchronized void scrollToSelectedRow()
     {
         Runnable doScrollToSelectedRow = new Runnable()
@@ -862,19 +696,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Vervang een object in de datalijst. Indien het object geselecteerd was,
-     * zal deze selectie overgenomen worden op het nieuwe object.
-     *
-     * @param oldObject           het te vervangen object.
-     * @param newObject           het nieuwe object dat in de plaats komt, ook toegevoegd aan de
-     *                            selectie indien het oude object geselecteerd was.
-     * @param originatingObserver optionele observer die geen events meer mag ontvangen van de
-     *                            selectie veranderingen die gebeuren tijdens een replace. Als
-     *                            de te vervangen rij geselecteerd was, krijg je een event
-     *                            wanneer het oude object wordt verwijderd en wanneer het nieuwe
-     *                            wordt gezet.
-     */
     public void replaceRowObject(Object oldObject, Object newObject, Observer originatingObserver)
     {
         this.dataList.getReadWriteLock().writeLock().lock();
@@ -884,8 +705,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
             int index = this.dataList.indexOf(oldObject);
             if (index != -1)
             {
-                // oppassen hier: selectionModel werkt op getoonde lijst met
-                // andere indexen als dataList
                 boolean wasSelected = this.selectionModel.isSelectedIndex(this.shownList.indexOf(oldObject));
 
                 if (wasSelected && (originatingObserver != null))
@@ -912,14 +731,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * 'Vervang' een aantal rijen: zal een collectie rijen verwijderen en een
-     * andere collectie toevoegen. Is meer een shortcut van multiple object
-     * toevoegen en verwijderen in 1 beweging.
-     *
-     * @param oldObject de lijst met te verwijderen objecten.
-     * @param newObject de lijst met toe te voegen objecten.
-     */
     public void replaceRows(final Collection oldObject, final Collection newObject)
     {
         Runnable doReplaceRows = new Runnable()
@@ -949,9 +760,6 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Deselecteer alles.
-     */
     public void unSelectAll()
     {
         Runnable doUnselectAll = new Runnable()
@@ -971,44 +779,21 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
         }
     }
 
-    /**
-     * Geef de selectie terug.
-     *
-     * @return een collectie met de huidige geselecteerde rijen.
-     */
     public Object[] getSelectedRows()
     {
         return this.selectionModel.getSelected().toArray();
     }
 
-    /**
-     * Geeft de component van deze widget terug, in dit geval een scrollpane met
-     * een tabel in.
-     *
-     * @return JComponent, de scrollPane met de tabel.
-     */
     public JComponent getComponent()
     {
         return this.tableScroller;
     }
 
-    /**
-     * Als je de tabel wilt raadplegen, kan je niet op {@link #getComponent()}
-     * vertrouwen. Daarom hier een method om specifiek de tabel terug te
-     * krijgen.
-     *
-     * @return JTable met de getoonde lijst.
-     */
     public JTable getTable()
     {
         return this.theTable;
     }
 
-    /**
-     * Voeg een observer toe die selectie events moet krijgen.
-     *
-     * @param observer de observer die selectie events moet krijgen.
-     */
     public void addSelectionObserver(Observer observer)
     {
         this.selectionMonitor.addObserver(observer);
@@ -1098,11 +883,8 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
     {
         final JLabel label = new JLabel("");
 
-        // aangepaste text invullen:
         setTextForListSummaryLabel(label);
 
-        /* Deze listener is nodig om de veranderingen van de lijst de detecteren
-         * bv. boven aan in de quick-filter wat text toevoegen */
         shownList.addListEventListener(new ListEventListener<Object>()
         {
             public void listChanged(ListEvent<Object> evt)
@@ -1114,18 +896,12 @@ public final class GlazedListTableWidget extends AbstractWidget implements Table
             }
         });
 
-        /*
-         *   de ListEventListener wordt niet altijd geactiveerd wanneer een item uit de lijst wordt geselecteerd.
-         *   of de geselecteerde index is pas aangepast na de ListEventListener is uitgevoerd.
-         */
         theTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
         {
             public void valueChanged(ListSelectionEvent e)
             {
                 if (!e.getValueIsAdjusting())
                 {
-                    // index :
-                    // Integer.toString(e.getFirstIndex() + 1) dit kan de index zijn van een item dat gedeselecteerd wordt.
                     setTextForListSummaryLabel(label);
                 }
             }

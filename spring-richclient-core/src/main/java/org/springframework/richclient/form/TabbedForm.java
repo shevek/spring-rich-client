@@ -129,7 +129,7 @@ public abstract class TabbedForm extends AbstractFocussableForm implements Chang
         }
 
         /**
-         * Bijhouden parent voor markeringen/enablen.
+         * Set parent for overlays and enabling
          *
          * @param parentPane
          */
@@ -140,11 +140,6 @@ public abstract class TabbedForm extends AbstractFocussableForm implements Chang
                 setVisible(visible);
         }
 
-        /**
-         * Tab verwijderen/toevoegen aan de tabbedpane.
-         *
-         * @param visible
-         */
         public void setVisible(boolean visible)
         {
             if (parentPane != null)
@@ -164,11 +159,6 @@ public abstract class TabbedForm extends AbstractFocussableForm implements Chang
             this.visible = visible;
         }
 
-        /**
-         * Enabled aan/uitzetten, zal ook de visuele tab enablen indien aangemaakt.
-         *
-         * @param enabled
-         */
         public void setEnabled(boolean enabled)
         {
             if ((parentPane != null) && (tabIndex > -1))
@@ -178,43 +168,28 @@ public abstract class TabbedForm extends AbstractFocussableForm implements Chang
         }
 
         /**
-         * Geef de index van de component op de tabbedPane.
+         * Gets the index of the tab on the tabbedpane
          *
-         * @return index van het tabblad. -1 indien niet visible.
+         * @return index of the tab, -1 if not visible
          */
         public int getTabIndex()
         {
             return tabIndex;
         }
 
-        /**
-         * @return <code>true</code> indien enabled.
-         */
         public boolean isEnabled()
         {
             return this.enabled;
         }
 
-        /**
-         * Aanduiden of het tabblad gemarkeerd moet worden of niet. Dit zal meestal het geval zijn als er nog
-         * in te vullen verplichte velden op het tabblad staan.
-         *
-         * @param enable
-         */
         public void setMarked(boolean enable)
         {
-            // tabbladen met verplichte velden aanduiden met een icoontje
             Icon icon = RcpSupport.getIcon(tabId + ".icon");
             if ((parentPane != null) && (tabIndex > -1))
                 parentPane.setIconAt(getTabIndex(), enable ? icon : null);
 
         }
 
-        /**
-         * Elke tab kan een specifieke focusTraversalPolicy hebben.
-         *
-         * @param focusTraversalPolicy
-         */
         public void setFocusTraversalPolicy(FocusTraversalPolicy focusTraversalPolicy)
         {
             this.focusTraversalPolicy = focusTraversalPolicy;
@@ -238,10 +213,6 @@ public abstract class TabbedForm extends AbstractFocussableForm implements Chang
         super.commit();
     }
 
-    /**
-     * Opgeroepen wanneer er iets aan het tabbedPane verandert. Overschrijven indien er moet gereageerd worden
-     * op deze veranderingen.
-     */
     public void stateChanged(ChangeEvent e)
     {
     }

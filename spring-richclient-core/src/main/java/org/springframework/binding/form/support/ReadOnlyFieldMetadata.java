@@ -1,14 +1,17 @@
 package org.springframework.binding.form.support;
 
+import org.springframework.binding.form.FieldMetadata;
+import org.springframework.binding.form.FormModel;
+import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.binding.form.FieldMetadata;
-import org.springframework.binding.form.FormModel;
-import org.springframework.binding.value.support.AbstractPropertyChangePublisher;
-
+/**
+ * FieldMetadata implementation for read-only properties
+ */
 public class ReadOnlyFieldMetadata extends AbstractPropertyChangePublisher implements FieldMetadata {
 
 	private Class propertyType;

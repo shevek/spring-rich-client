@@ -30,28 +30,21 @@ public class ButtonSwitcherWidget extends AbstractWidget
         this.panel.add(alternButton, ALTERNATIVE);
     }
 
-    /** Het paneel met de 2 buttons achter elkaar in cardlayout. */
     public JComponent getComponent()
     {
         return this.panel;
     }
 
-    /** Toont de default button. */
     public void showDefault()
     {
         this.switcher.first(this.panel);
     }
 
-    /** Toont de alternatieve button. */
     public void showAlternative()
     {
         this.switcher.last(this.panel);
     }
 
-    /** Toont de aangegeven button, voor modes:
-     * @see #ALTERNATIVE
-     * @see #DEFAULT
-     */
     public void show(String mode)
     {
         this.switcher.show(this.panel, mode);

@@ -90,11 +90,9 @@ public class DocumentBinder extends AbstractBinder {
 
     /** {@inheritDoc} */
     protected JComponent createControl(Map context) {
-        JTextComponent textComponent;
+        JTextComponent textComponent = getComponentFactory().createTextField();
         if (getDocumentFactory() != null) {
-            textComponent = new JTextField(getDocumentFactory().createDocument(), null, 0);
-        } else {
-            textComponent = new JTextField();
+            textComponent.setDocument(getDocumentFactory().createDocument());
         }
         textComponent.addFocusListener(new SelectAllFocusListener(textComponent));
         return textComponent;

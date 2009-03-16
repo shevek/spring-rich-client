@@ -59,45 +59,16 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
     /**
      * Load the detailed object from the back-end. Note that although the baseObject can be detailed, you MUST
      * fetch the object from the back-end in any case in this method.
-     * 
+     *
      * @param baseObject
      *            object containing enough information to fetch a detailed object from the back-end.
      * @return the detailed object retrieved from the back-end.
      */
     protected Object loadDetailObject(Object baseObject)
     {
-        if (!hasSpecificDetail())
-        {
-            return baseObject;
-        }
-        return getDetailObject(baseObject);
-    }
-
-    /**
-     * For backwards compatibility, this method is deprecated and is used in the default implementation of
-     * {@link #loadDetailObject(Object)}. Please refactor your code and use {@link #loadDetailObject(Object)}
-     * and {@link #isDetailObject(Object)}. These methods provide the necessary logic for the new
-     * {@link #getDetailObject(Object, boolean)} method.
-     */
-    @Deprecated
-    public boolean hasSpecificDetail()
-    {
-        return false;
-    }
-
-    /**
-     * For backwards compatibility, this method is deprecated and is used in the default implementation of
-     * {@link #loadDetailObject(Object)}. Please refactor your code and use {@link #loadDetailObject(Object)}
-     * and {@link #isDetailObject(Object)}. These methods provide the necessary logic for the new
-     * {@link #getDetailObject(Object, boolean)} method.
-     * 
-     * @throws UnsupportedOperationException
-     */
-    @Deprecated
-    public Object getDetailObject(Object baseObject)
-    {
         throw new UnsupportedOperationException("getDetailObject(object) not implemented for " + baseObject);
     }
+
 
     public Object clone(Object sampleData)
     {

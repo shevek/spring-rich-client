@@ -313,10 +313,10 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
     {
         ColumnSpec[] columnSpecs = new ColumnSpec[]{FILL_COLUMN_SPEC};
         RowSpec[] rowSpecs = new RowSpec[]{FormFactory.LINE_GAP_ROWSPEC, // gap
-                FormFactory.DEFAULT_ROWSPEC, // buttons voor detailpaneel
+                FormFactory.DEFAULT_ROWSPEC, // buttons for detailpanel
                 FormFactory.LINE_GAP_ROWSPEC, // gap
                 FILL_ROW_SPEC
-                // detailpaneel zelf (form)
+                // detailpanel itself (form)
         };
         JPanel detailPanel = new JPanel(new FormLayout(columnSpecs, rowSpecs));
 
@@ -591,27 +591,27 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
 
     protected JComponent createQuickAddCheckBox()
     {
-        snelToevoegenCheckBox = new JCheckBox(RcpSupport.getMessage(getId(), QUICKADD, RcpSupport.TITLE));
-        snelToevoegenCheckBox.setFocusable(false);
+        quickAddCheckBox = new JCheckBox(RcpSupport.getMessage(getId(), QUICKADD, RcpSupport.TITLE));
+        quickAddCheckBox.setFocusable(false);
 
         getCreateCommand().addCommandInterceptor(new ActionCommandInterceptor()
         {
 
             public boolean preExecution(ActionCommand command)
             {
-                return true; // doorgaan
+                return true; // proceed
             }
 
             public void postExecution(ActionCommand command)
             {
-                if (snelToevoegenCheckBox.isSelected())
+                if (quickAddCheckBox.isSelected())
                 {
                     getAddRowCommand().execute();
                 }
             }
         });
 
-        snelToevoegenCheckBox.setEnabled(getAddRowCommand().isEnabled());
+        quickAddCheckBox.setEnabled(getAddRowCommand().isEnabled());
         getAddRowCommand().addPropertyChangeListener(AbstractCommand.ENABLED_PROPERTY_NAME,
                 new PropertyChangeListener()
                 {
@@ -619,20 +619,20 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
                     public void propertyChange(PropertyChangeEvent evt)
                     {
                         Object newValue = evt.getNewValue();
-                        snelToevoegenCheckBox.setEnabled(((Boolean) newValue).booleanValue());
+                        quickAddCheckBox.setEnabled(((Boolean) newValue).booleanValue());
                     }
                 });
 
-        return snelToevoegenCheckBox;
+        return quickAddCheckBox;
     }
 
     protected JComponent getTableFilterPanel()
     {
         ColumnSpec[] columnSpecs = new ColumnSpec[]{FILL_COLUMN_SPEC};
         RowSpec[] rowSpecs = new RowSpec[]{
-                // buttons voor list en filter
+                // buttons for list and filter
                 FormFactory.DEFAULT_ROWSPEC, FormFactory.LINE_GAP_ROWSPEC,
-                // splitpane met list en filter
+                // splitpane with list and filter
                 FILL_ROW_SPEC};
         JPanel top = new JPanel(new FormLayout(columnSpecs, rowSpecs));
 
@@ -750,7 +750,7 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
         return controlCommands.createButtonBar((Size) null, (Border) null);
     }
 
-    private JCheckBox snelToevoegenCheckBox;
+    private JCheckBox quickAddCheckBox;
 
     private ActionCommand copySelectedRowsCommand;
 
@@ -970,7 +970,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
     {
         Object[] selectedRows = getTableWidget().getSelectedRows();
 
-        // als er niets geselecteerd is, uit method stappen
         if (selectedRows.length == 0)
         {
             return;
@@ -978,7 +977,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
 
         int answer = RcpSupport.showWarningDialog(getComponent(), REMOVE_CONFIRMATION_ID,
                 new Object[]{Integer.valueOf(selectedRows.length)}, JOptionPane.YES_NO_OPTION);
-        // selectionIndex voor na remove klaarzetten
         int nextSelectionIndex = getTableWidget().getTable().getSelectionModel().getMinSelectionIndex();
 
         for (int i = 0; i < selectedRows.length && (answer == JOptionPane.YES_OPTION); i++)
@@ -987,8 +985,7 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
 
             try
             {
-                removeEntity(objectToRemove); // naar backend toe
-                // verwijderen
+                removeEntity(objectToRemove);
             }
             catch (RuntimeException e)
             {
@@ -1008,7 +1005,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
                 }
             }
         }
-        // selectie maken indien mogelijk
         int nrOfRows = getTableWidget().nrOfRows();
         if (nrOfRows > 0 && (getTableWidget().getSelectedRows().length == 0))
         {
@@ -1179,7 +1175,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
             {
                 java.util.List<java.util.List<String>> formattedRowList = new ArrayList<java.util.List<String>>();
                 JXTable jxTable = (JXTable) getTableWidget().getTable();
-                // Header toevoegen
                 java.util.List<String> headerList = new ArrayList<String>();
                 for (TableColumn tableColumn : jxTable.getColumns())
                 {
@@ -1187,7 +1182,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
                     headerList.add(headerValue == null ? "" : headerValue.toString());
                 }
                 formattedRowList.add(headerList);
-                // rijen toevoegen
                 for (int rowIndex : jxTable.getSelectedRows())
                 {
                     java.util.List<String> columnList = new ArrayList<String>();
@@ -1504,7 +1498,6 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
             }
             else if (detailedObject != rowObject)
             {
-                // replace van rijObject moet op eventQueue gebeuren
                 replaceRowObject(rowObject, detailedObject);
                 rowObject = detailedObject;
             }

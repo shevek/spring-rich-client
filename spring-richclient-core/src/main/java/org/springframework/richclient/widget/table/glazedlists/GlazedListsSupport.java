@@ -34,7 +34,6 @@ public class GlazedListsSupport
     {
         return new AdvancedWritableTableFormat()
         {
-
             public Class getColumnClass(int i)
             {
                 return desc.getType(i);
@@ -85,7 +84,7 @@ public class GlazedListsSupport
         };
     }
 
-    public static final Comparator getLowerCaseStringComparator()
+    public static Comparator getLowerCaseStringComparator()
     {
         if (lowerCaseStringComparator == null)
             lowerCaseStringComparator = createLowerCaseStringComparator();
