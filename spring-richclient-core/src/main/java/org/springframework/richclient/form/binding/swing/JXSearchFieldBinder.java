@@ -1,33 +1,25 @@
 package org.springframework.richclient.form.binding.swing;
 
 import org.jdesktop.xswingx.JXSearchField;
-import org.springframework.richclient.form.binding.swing.text.DocumentBinder;
-import org.springframework.richclient.text.SelectAllFocusListener;
 
-import javax.swing.*;
-import java.util.Map;
+import javax.swing.text.JTextComponent;
 
 /**
- * Binder that shows a JXSearchField
+ * Binder that shows a JXSearchField instead of a simple JTextField
  *
  * @author Lieven Doclo
  */
-public class JXSearchFieldBinder extends DocumentBinder
+public class JXSearchFieldBinder extends TextComponentBinder
 {
     protected JXSearchFieldBinder()
     {
         super();
+        setSelectAllOnFocus(true);
     }
 
     @Override
-    protected JComponent createControl(Map context)
+    protected JTextComponent createTextComponent()
     {
-        JXSearchField field = new JXSearchField();
-        if (getDocumentFactory() != null)
-        {
-            field.setDocument(getDocumentFactory().createDocument());
-        }
-        field.addFocusListener(new SelectAllFocusListener(field));
-        return field;
+        return new JXSearchField();
     }
 }

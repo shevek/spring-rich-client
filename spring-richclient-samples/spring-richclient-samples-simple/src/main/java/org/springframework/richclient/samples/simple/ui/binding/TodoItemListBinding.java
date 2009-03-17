@@ -8,13 +8,11 @@ import org.springframework.richclient.samples.simple.ui.TodoForm;
 import org.springframework.richclient.widget.table.PropertyColumnTableDescription;
 import org.springframework.richclient.widget.table.TableDescription;
 
-import java.util.List;
-
 public class TodoItemListBinding extends AbstractGlazedListsBinding
 {
     public TodoItemListBinding(FormModel formModel, String formPropertyPath)
     {
-        super(formModel, formPropertyPath, List.class);
+        super(formModel, formPropertyPath);
         setDialogId("todoItemListBindingDialog");
         setAddSupported(true);
         setEditSupported(true);

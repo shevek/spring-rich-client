@@ -1,24 +1,22 @@
 package org.springframework.richclient.samples.showcase.binding;
 
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import org.springframework.richclient.application.ApplicationServicesLocator;
+import org.springframework.richclient.command.ActionCommand;
+import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.dialog.TitledApplicationDialog;
 import org.springframework.richclient.form.AbstractForm;
 import org.springframework.richclient.form.FormModelHelper;
-import org.springframework.richclient.form.binding.swing.text.DocumentBinder;
+import org.springframework.richclient.form.binding.swing.TextComponentBinder;
 import org.springframework.richclient.form.binding.swing.text.RegExDocumentFactory;
 import org.springframework.richclient.form.builder.TableFormBuilder;
-import org.springframework.richclient.command.ActionCommand;
-import org.springframework.richclient.command.config.CommandConfigurer;
-import org.springframework.richclient.application.ApplicationServicesLocator;
 
 import javax.swing.*;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.CellConstraints;
-
 import java.util.Collections;
 
 /**
- * This dialog shows how the {@link org.springframework.richclient.form.binding.swing.text.DocumentBinder} can be used to create
+ * This dialog shows how the {@link org.springframework.richclient.form.binding.swing.TextComponentBinder} can be used to create
  * a binding with a specific {@link javax.swing.text.Document} as model behind the {@link javax.swing.JTextField}.
  *
  * @author Jan Hoskens
@@ -112,7 +110,7 @@ public class DocumentBindingDialog extends TitledApplicationDialog {
 
             protected JComponent createFormControl() {
                 TableFormBuilder builder = new TableFormBuilder(getBindingFactory());
-                DocumentBinder binder = new DocumentBinder();
+                TextComponentBinder binder = new TextComponentBinder();
                 binder.setDocumentFactory(new RegExDocumentFactory(pattern, upperCaseOnly));
                 builder.add(binder.bind(getFormModel(), "value", Collections.emptyMap()), "rowSpec=fill:default:grow");
                 return builder.getForm();

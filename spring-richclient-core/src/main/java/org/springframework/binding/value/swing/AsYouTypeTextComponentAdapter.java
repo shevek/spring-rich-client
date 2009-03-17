@@ -15,55 +15,77 @@
  */
 package org.springframework.binding.value.swing;
 
+import org.springframework.binding.value.ValueModel;
+import org.springframework.binding.value.support.AbstractValueModelAdapter;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-import org.springframework.binding.value.ValueModel;
-import org.springframework.binding.value.support.AbstractValueModelAdapter;
-import org.springframework.util.Assert;
-
-public class AsYouTypeTextComponentAdapter extends AbstractValueModelAdapter implements DocumentListener {
+public class AsYouTypeTextComponentAdapter extends AbstractValueModelAdapter implements DocumentListener
+{
 
     private final JTextComponent control;
 
+    private boolean convertEmptyStringToNull;
+
     private boolean settingText;
 
-    public AsYouTypeTextComponentAdapter(JTextComponent control, ValueModel valueModel) {
+    public AsYouTypeTextComponentAdapter(JTextComponent control, ValueModel valueModel)
+    {
+        this(control, valueModel, false);
+    }
+
+    public AsYouTypeTextComponentAdapter(JTextComponent control, ValueModel valueModel, boolean convertEmptyStringToNull)
+    {
         super(valueModel);
         Assert.notNull(control);
         this.control = control;
         this.control.getDocument().addDocumentListener(this);
+        this.convertEmptyStringToNull = convertEmptyStringToNull;
         initalizeAdaptedValue();
     }
 
-    public void removeUpdate(DocumentEvent e) {
+    public void removeUpdate(DocumentEvent e)
+    {
         controlTextValueChanged();
     }
 
-    public void insertUpdate(DocumentEvent e) {
+    public void insertUpdate(DocumentEvent e)
+    {
         controlTextValueChanged();
     }
 
-    public void changedUpdate(DocumentEvent e) {
+    public void changedUpdate(DocumentEvent e)
+    {
         controlTextValueChanged();
     }
 
-    private void controlTextValueChanged() {
-        if (!settingText) {
-            adaptedValueChanged(control.getText());
+    private void controlTextValueChanged()
+    {
+        if (!settingText)
+        {
+            if (!StringUtils.hasText(control.getText()) && convertEmptyStringToNull)
+                adaptedValueChanged(null);
+            else
+                adaptedValueChanged(control.getText());
         }
     }
 
-    protected void valueModelValueChanged(Object value) {
+    protected void valueModelValueChanged(Object value)
+    {
         // this try block will coalesce the 2 DocumentEvents that
         // JTextComponent.setText() fires into 1 call to
         // componentValueChanged()
-        try {
+        try
+        {
             settingText = true;
-            control.setText((String)value);
+            control.setText((String) value);
         }
-        finally {
+        finally
+        {
             settingText = false;
         }
     }
