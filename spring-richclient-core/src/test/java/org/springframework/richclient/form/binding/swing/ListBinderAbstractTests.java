@@ -15,28 +15,19 @@
  */
 package org.springframework.richclient.form.binding.swing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JList;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.binding.form.FieldMetadata;
 import org.springframework.richclient.list.BeanPropertyValueListRenderer;
+
+import javax.swing.*;
+import java.util.*;
 /**
  * Tests for ListBinder and ListBinding
  * 
  * @author  Oliver Hutchison
  * @author  Andy DePue 
  */
-public class ListBinderAbstractTests extends BindingAbstractTests {
+public abstract class ListBinderAbstractTests extends BindingAbstractTests {
     private ListBinder lb;
 
     private Map context;

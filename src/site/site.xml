@@ -1,91 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <skin>
-        <groupId>org.springframework.maven.skins</groupId>
-        <artifactId>maven-spring-skin</artifactId>
-        <version>1.0.4</version>
-    </skin>
-    <bannerLeft>
-        <name>${project.name}</name>
-        <href>${project.url}</href>
-    </bannerLeft>
-    <!--<bannerRight>
-        <name>Spring framework</name>
-        <src>http://www.springframework.org/buttons/spring_clear.png</src>
-        <href>http://www.springframework.org</href>
-    </bannerRight>-->
-    <publishDate format="yyyy-MM-dd HH:mm"/>
+  <skin>
+    <groupId>org.springframework.maven.skins</groupId>
+    <artifactId>maven-spring-skin</artifactId>
+    <version>1.0.4</version>
+  </skin>
+  <bannerLeft>
+    <name>${project.name}</name>
+    <href>${project.url}</href>
+  </bannerLeft>
+  <!--<bannerRight>
+      <name>Spring framework</name>
+      <src>http://www.springframework.org/buttons/spring_clear.png</src>
+      <href>http://www.springframework.org</href>
+  </bannerRight>-->
+  <publishDate format="yyyy-MM-dd HH:mm"/>
 
-    <poweredBy>
-        <logo name="Spring Framework" href="http://www.springframework.org/"
-            img="http://www.springframework.org/buttons/spring_small.png"/>
-        <logo name="Hosted on SourceForge.net" href="http://sourceforge.net"
-            img="http://sflogo.sourceforge.net/sflogo.php?group_id=113660&amp;type=2"/>
-        <logo name="Build with Maven 2" href="http://maven.apache.org/"
-            img="images/logos/maven-feather.png"/>
-    </poweredBy>
+  <menu ref="parent" inherit="top"/>
 
-    <body>
-        <links>
-            <item name="Blog" href="http://spring-rich.blogspot.com/"/>
-            <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
-            <item name="JIRA" href="http://jira.springframework.org/browse/RCP"/>
-            <item name="SF project" href="http://sourceforge.net/projects/spring-rich-c"/>
-            <item name="Spring framework" href="http://www.springframework.org/"/>
-        </links>
+  <menu name="Overview">
+    <item name="Home" href="/index.html"/>
+    <item name="Download" href="/download.html"/>
+    <item name="Getting started" href="/gettingStarted.html"/>
+    <item name="Screenshots" href="/screenshots.html"/>
+  </menu>
 
-        <menu ref="parent" inherit="top"/>
+  <menu name="User">
+    <item name="Upgrading" href="/user/upgrading/index.html" collapse="true">
+      <item name="To 1.1.x (svn)" href="/user/upgrading/upgradingTo1.1.x.html"/>
+      <item name="To 1.0.x" href="/user/upgrading/upgradingTo1.0.x.html"/>
+      <item name="To 0.2.x" href="/user/upgrading/upgradingTo0.2.x.html"/>
+      <item name="To 0.1.x" href="/user/upgrading/upgradingTo0.1.x.html"/>
+    </item>
+    <item name="Support" href="/user/support.html"/>
+    <item name="Powered by" href="/user/poweredBy.html"/>
+    <item name="Articles" href="/user/articles.html"/>
+    <item name="Related projects" href="/user/relatedProjects.html"/>
+    <item name="FAQ" href="/user/faq.html"/>
+    <item name="Blog" href="http://spring-rich.blogspot.com/"/>
+    <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
+  </menu>
 
-        <menu name="Overview">
-            <item name="Home" href="/index.html"/>
-            <item name="Download" href="/download.html"/>
-            <item name="Getting started" href="/gettingStarted.html"/>
-            <item name="Screenshots" href="/screenshots.html"/>
-        </menu>
+  <menu name="Development">
+    <item name="Development setup" href="/development/developmentSetup.html"/>
+    <item name="Architecture" href="/development/architecture.html"/>
+    <item name="Conventions" href="/development/conventions.html"/>
+    <item name="Help out" href="/development/helpOut.html"/>
+    <item name="Release checklist" href="/development/releaseChecklist.html"/>
+    <item name="FAQ" href="/development/faq.html"/>
+    <item name="JIRA" href="http://jira.springframework.org/browse/RCP"/>
+  </menu>
 
-        <menu name="User">
-	        <item name="Reference manual" href="/spring-richclient-manual/reference/html/index.html"/>
-            <item name="User Guide" href="/user/userGuide.html" collapse="true">
-                <item name="Master-detail" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Master-Detail+Forms"/>
-                <item name="Spring security" href="http://opensource.atlassian.com/confluence/spring/display/RCP/Security"/>
-                <item name="Command Framework" href="/user/commandFramework.html"/>
-                <item name="Form Framework" href="/user/formFramework.html" collapse="false">
-	                <item name="Form Component Interceptors" href="/user/interceptors.html"/>
-                </item>
-            </item>
-            <item name="Support" href="/user/support.html"/>
-            <item name="Upgrading" href="/user/upgrading/index.html" collapse="true">
-                <item name="To 1.1.x (svn)" href="/user/upgrading/upgradingTo1.1.x.html"/>
-                <item name="To 1.0.x" href="/user/upgrading/upgradingTo1.0.x.html"/>
-                <item name="To 0.2.x" href="/user/upgrading/upgradingTo0.2.x.html"/>
-                <item name="To 0.1.x" href="/user/upgrading/upgradingTo0.1.x.html"/>
-            </item>
-            <item name="Powered by" href="/user/poweredBy.html"/>
-            <item name="Articles" href="/user/articles.html"/>
-            <item name="Related projects" href="/user/relatedProjects.html"/>
-            <item name="FAQ" href="/user/faq.html"/>
-            <item name="Blog" href="http://spring-rich.blogspot.com/"/>
-            <item name="Forum" href="http://forum.springframework.org/forumdisplay.php?f=28"/>
-        </menu>
-        
-        <menu name="Development">
-            <item name="Development setup" href="/development/developmentSetup.html"/>
-            <item name="Architecture" href="/development/architecture.html"/>
-            <item name="Conventions" href="/development/conventions.html"/>
-            <item name="Help out" href="/development/helpOut.html"/>
-            <item name="Release checklist" href="/development/releaseChecklist.html"/>
-            <item name="FAQ" href="/development/faq.html"/>
-            <item name="Maven2ization (TMP)" href="/development/maven2ization.html"/> <!-- TODO deleteme -->
-            <item name="JIRA" href="http://jira.springframework.org/browse/RCP"/>
-        </menu>
+  <!--<menu name="Archived website">-->
+  <!--<item name="0.1.0" href="/archive/0.1.0/index.html"/>-->
+  <!--</menu>-->
 
-        <!--<menu name="Archived website">-->
-            <!--<item name="0.1.0" href="/archive/0.1.0/index.html"/>-->
-        <!--</menu>-->
+  <menu ref="modules" inherit="bottom"/>
 
-        <menu ref="modules" inherit="bottom"/>
+  <menu ref="reports" inherit="bottom"/>
 
-        <menu ref="reports" inherit="bottom"/>
-
-    </body>
 </project>

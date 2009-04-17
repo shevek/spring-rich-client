@@ -9,15 +9,12 @@
   <dependencySets>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
-      <outputFileNameMapping></outputFileNameMapping>
+      <outputFileNameMapping/>
       <unpack>true</unpack>
       <scope>runtime</scope>
       <includes>
         <include>org.springframework.richclient:spring-richclient-resources</include>
         <include>org.springframework.richclient:spring-richclient-core</include>
-        <include>org.springframework.richclient:spring-richclient-binding</include>
-        <include>org.springframework.richclient:spring-richclient-form</include>
-        <include>org.springframework.richclient:spring-richclient-support</include>
       </includes>
     </dependencySet>
   </dependencySets>

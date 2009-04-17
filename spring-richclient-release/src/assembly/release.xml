@@ -8,7 +8,7 @@
   <fileSets>
     <fileSet>
       <directory>..</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
       <includes>
         <include>LICENSE.txt</include>
         <!-- TODO include release notes from JIRA -->
@@ -17,7 +17,7 @@
     </fileSet>
     <fileSet>
       <directory>src/assembly/bin</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
       <includes>
         <include>README.txt</include>
         <include>CHANGES.txt</include>
@@ -37,14 +37,10 @@
       <outputDirectory>modules</outputDirectory>
       <scope>runtime</scope>
       <includes>
-        <include>org.springframework.richclient:spring-richclient-binding</include>
         <include>org.springframework.richclient:spring-richclient-core</include>
-        <include>org.springframework.richclient:spring-richclient-form</include>
-        <include>org.springframework.richclient:spring-richclient-jdk5</include>
         <include>org.springframework.richclient:spring-richclient-jdk6</include>
         <include>org.springframework.richclient:spring-richclient-resources</include>
         <include>org.springframework.richclient:spring-richclient-sandbox</include>
-        <include>org.springframework.richclient:spring-richclient-support</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -60,7 +56,6 @@
       <includes>
         <include>org.springframework.richclient.samples:spring-richclient-samples-simple</include>
         <include>org.springframework.richclient.samples:spring-richclient-samples-vldocking</include>
-        <include>org.springframework.richclient.samples.petclinic:petclinic-standalone</include>
       </includes>
     </dependencySet>
     <!-- dependencySet>

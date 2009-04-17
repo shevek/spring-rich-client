@@ -37,7 +37,7 @@ import java.beans.PropertyChangeListener;
  * 
  * @author Oliver Hutchison
  */
-public class AbstractFormModelTests extends SpringRichTestCase {
+public abstract class AbstractFormModelTests extends SpringRichTestCase {
 
 	protected AbstractFormModel getFormModel(Object formObject) {
 		return new TestAbstractFormModel(formObject);

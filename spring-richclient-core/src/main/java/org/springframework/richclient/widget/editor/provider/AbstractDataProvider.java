@@ -53,7 +53,7 @@ public abstract class AbstractDataProvider extends Observable implements DataPro
      */
     protected boolean isDetailObject(Object objectToCheck)
     {
-        return false;
+        return true;
     }
 
     /**

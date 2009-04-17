@@ -15,8 +15,6 @@
  */
 package org.springframework.richclient.form;
 
-import javax.swing.JComponent;
-
 import org.springframework.binding.form.FormModel;
 import org.springframework.binding.form.HierarchicalFormModel;
 import org.springframework.binding.form.ValidatingFormModel;
@@ -25,11 +23,13 @@ import org.springframework.binding.support.TestBean;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.test.SpringRichTestCase;
 
+import javax.swing.*;
+
 /**
  * @author Mathias Broekelmann
  * 
  */
-public class AbstractFormTests extends SpringRichTestCase {
+public abstract class AbstractFormTests extends SpringRichTestCase {
 
     /**
      * Test method for

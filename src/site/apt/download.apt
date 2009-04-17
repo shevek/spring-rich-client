@@ -38,31 +38,6 @@ Maven 2 releases
         <artifactId>spring-richclient-core</artifactId>
         <version>${springRichclient.version}</version>
     </dependency>
-    <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-binding</artifactId>
-        <version>${springRichclient.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-form</artifactId>
-        <version>${springRichclient.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-support</artifactId>
-        <version>${springRichclient.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-tiger</artifactId>
-        <version>${springRichclient.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.richclient</groupId>
-        <artifactId>spring-richclient-sandbox</artifactId>
-        <version>${springRichclient.version}</version>
-    </dependency>
 </dependencies>
 +--
 

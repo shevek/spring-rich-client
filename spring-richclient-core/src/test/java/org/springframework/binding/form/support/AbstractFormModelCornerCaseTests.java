@@ -24,7 +24,7 @@ import org.springframework.binding.value.ValueModel;
 import org.springframework.binding.value.support.ValueHolder;
 import org.springframework.binding.value.support.ValueModelWrapper;
 
-public class AbstractFormModelCornerCaseTests extends TestCase {
+public abstract class AbstractFormModelCornerCaseTests extends TestCase {
 
     protected AbstractFormModel getFormModel(BeanPropertyAccessStrategy pas, boolean buffering) {
         return new TestAbstractFormModel(pas, buffering);

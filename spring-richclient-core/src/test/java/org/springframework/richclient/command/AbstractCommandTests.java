@@ -15,16 +15,16 @@
  */
 package org.springframework.richclient.command;
 
+import junit.framework.TestCase;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import junit.framework.TestCase;
 
 /**
  * @author Mathias Broekelmann
  * 
  */
-public class AbstractCommandTests extends TestCase {
+public abstract class AbstractCommandTests extends TestCase {
 
     private TestListener testListener;
 

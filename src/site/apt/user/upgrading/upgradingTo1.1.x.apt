@@ -1,7 +1,7 @@
  -----
  Upgrading
  -----
- Geoffrey De Smet
+ Lieven Doclo
  -----
 
 Upgrading from 1.0.x to 1.1.x
@@ -14,5 +14,14 @@ Upgrading from 1.0.x to 1.1.x
     * Upgrade to Java 5
 
     The baseline for the codebase is now Java 5. Please take this into account when upgrading your applications.
+
+    * JIDE integration pulled into project
+
+    To facilitate keeping up with the changes in RCP, the JIDE integration project has been included into the Spring RCP project.
+    However, it's not included in the main RCP build cycle due to licensing restrictions.
+
+    * Dependency upgrades
+
+    A lot of the dependencies have been updated to the latest version. Please check your dependencies before upgrading.
 
     

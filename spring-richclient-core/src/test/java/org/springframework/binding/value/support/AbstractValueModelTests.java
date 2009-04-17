@@ -15,20 +15,20 @@
  */
 package org.springframework.binding.value.support;
 
-import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.springframework.binding.support.TestPropertyChangeListener;
 import org.springframework.binding.value.ValueModel;
 import org.springframework.richclient.test.SpringRichTestCase;
+
+import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Tests class {@link AbstractValueModel}.
  *  
  * @author Oliver Hutchison
  */
-public class AbstractValueModelTests extends SpringRichTestCase {
+public abstract class AbstractValueModelTests extends SpringRichTestCase {
 
     private TestAbstractValueModel vm;
 

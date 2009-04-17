@@ -2,28 +2,17 @@
  Screenshots
  -----
  Geoffrey De Smet
+ Lieven Doclo
  -----
 
-Simple sample screenshots
+Sample screenshots
 
-[screenshots/simple1.png] Simple
+[screenshots/contactform.png] Simple form
 
-[screenshots/simple2.png] Simple
+[screenshots/dataeditor.png] Data Editor
 
-Petclinic sample screenshots
+Integration
 
-[screenshots/petclinic1.png] Petclinic
+[screenshots/docking.png] VL Docking integration
 
-[screenshots/petclinic2.png] Petclinic
 
-[screenshots/petclinic3.png] Petclinic
-
-[screenshots/petclinic4.png] Petclinic
-
-[screenshots/petclinic5.png] Petclinic
-
-[screenshots/petclinic6.png] Petclinic
-
-Related projects screenshots
-
-    * {{{https://jide-springrcp.dev.java.net/servlets/ProjectDocumentList}Jide-springrcp}}
