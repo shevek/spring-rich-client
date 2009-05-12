@@ -215,12 +215,13 @@ public final class ApplicationSession implements ApplicationListener
      *
      * @param key
      *            a unique string code.
-     * @param value
+     * @param newValue
      *            the associated value.
      */
-    public void setUserAttribute(String key, Object value)
+    public void setUserAttribute(String key, Object newValue)
     {
-        this.userAttributes.put(key, value);
+        Object oldValue = userAttributes.put(key, newValue);
+        propertyChangeSupport.firePropertyChange(key, oldValue, newValue);
         propertyChangeSupport.firePropertyChange(USER_ATTRIBUTES, null, userAttributes);
     }
 
@@ -232,7 +233,7 @@ public final class ApplicationSession implements ApplicationListener
      */
     public void setUserAttributes(Map<String, Object> attributes)
     {
-        this.userAttributes.putAll(attributes);
+        userAttributes.putAll(attributes);
         propertyChangeSupport.firePropertyChange(USER_ATTRIBUTES, null, userAttributes);
     }
 
@@ -277,12 +278,13 @@ public final class ApplicationSession implements ApplicationListener
      *
      * @param key
      *            a unique string code.
-     * @param value
+     * @param newValue
      *            the associated value.
      */
-    public void setSessionAttribute(String key, Object value)
+    public void setSessionAttribute(String key, Object newValue)
     {
-        this.sessionAttributes.put(key, value);
+        Object oldValue = sessionAttributes.put(key, newValue);
+        propertyChangeSupport.firePropertyChange(key, oldValue, newValue);
         propertyChangeSupport.firePropertyChange(SESSION_ATTRIBUTES, null, sessionAttributes);
     }
 
