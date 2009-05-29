@@ -41,11 +41,18 @@ public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterab
      * Logs an exception and shows it to the user.
      */
     public final void uncaughtException(Thread thread, Throwable throwable) {
-        if (exceptionPurger != null) {
-            throwable = exceptionPurger.purge(throwable);
+        try {
+            if (exceptionPurger != null) {
+                throwable = exceptionPurger.purge(throwable);
+            }
+            logException(thread, throwable);
+            notifyUserAboutException(thread, throwable);
+        } catch (Throwable t) {
+            // An exception handler must never throw a throwable itself
+            // because if it (directly or transitively) handles that throwable it can create an infinite loop
+            t.printStackTrace();
+            // No logging because that could throw an exception
         }
-        logException(thread, throwable);
-        notifyUserAboutException(thread, throwable);
     }
 
     /**
