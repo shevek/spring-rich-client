@@ -121,6 +121,10 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab
             {
             	if (oldIcon == null) oldIcon = getIconAt(tabIndex);
             	if (oldToolTipText == null) oldToolTipText = getToolTipTextAt(tabIndex);
+            	if (oldIcon == getIcon(Severity.ERROR.getLabel())) {
+            		oldIcon = null;
+            		oldToolTipText = null;
+            	}
                 setIconAt(tabIndex, getIcon(Severity.ERROR.getLabel()));
                 setToolTipTextAt(tabIndex, tabMessages.getFirstMessage());
             }
