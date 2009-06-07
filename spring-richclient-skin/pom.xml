@@ -1,7 +1,7 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.richclient</groupId>
-	<artifactId>spring-richclient-maven-skin</artifactId>
+	<artifactId>spring-richclient-skin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>1.0.0</version>
 	<name>Spring Rich Client maven skin</name>
