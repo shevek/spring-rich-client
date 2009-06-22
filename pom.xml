@@ -7,7 +7,7 @@
   <artifactId>spring-richclient</artifactId>
   <packaging>pom</packaging>
   <name>Spring Rich Client</name>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
   <description>
     Spring-rich adds value for people needing to develop Swing applications and do so in a way that promotes
     consistent, well-designed, configurable Swing applications. The spring-rich developers strongly feel the
