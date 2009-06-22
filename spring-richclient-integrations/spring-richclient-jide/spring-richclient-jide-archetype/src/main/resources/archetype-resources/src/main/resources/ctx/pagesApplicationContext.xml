@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <bean id="stringEditor" class="com.jidesoft.spring.richclient.docking.editor.EditorDescriptor">
+    <property name="editorClass">
+      <value>editor.StringEditor</value>
+    </property>
+  </bean>
+
+  <!--
+     Example of an editor factory that chooses an editor based on the Class of the
+     object to be opened in that editor
+    -->
+  <bean id="editorFactory" class="com.jidesoft.spring.richclient.docking.editor.DefaultEditorRegistry">
+    <property name="editorMap">
+      <map>
+        <entry value-ref="stringEditor">
+          <key>
+            <value type="java.lang.Class">java.lang.String</value>
+          </key>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <!--
+     JIDE specific page descriptor. Give a unique page id and a list of views
+     for the page. This page contains one workspace and one other view.
+   -->
+  <bean name="mainPage" class="com.jidesoft.spring.richclient.docking.JidePageDescriptor">
+    <property name="viewDescriptors">
+      <list>
+        <value>workspaceView</value>
+        <value>initialView</value>
+        <value>otherView</value>
+      </list>
+    </property>
+    <property name="editorFactory">
+      <ref bean="editorFactory"/>
+    </property>
+
+    <property name="initialEditorContents">
+      <value type="java.lang.String">Hello World</value>
+    </property>
+  </bean>
+
+
+  <bean id="workspaceView" class="com.jidesoft.spring.richclient.docking.view.JideViewDescriptor">
+    <property name="isWorkspace">
+      <value>true</value>
+    </property>
+    <property name="viewClass">
+      <value>com.jidesoft.spring.richclient.docking.editor.WorkspaceView</value>
+    </property>
+    <property name="viewProperties">
+      <map>
+        <!--
+            <entry key="dropTargetListener">
+              <ref bean="demoDropTargetListener" />
+            </entry>
+           -->
+        <entry key="heavyweightComponentEnabled">
+          <value>true</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="initialView" class="com.jidesoft.spring.richclient.docking.view.JideViewDescriptor">
+    <property name="initMode">
+      <ref bean="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"/>
+    </property>
+    <property name="initSide">
+      <ref bean="com.jidesoft.docking.DockContext.DOCK_SIDE_EAST"/>
+    </property>
+    <property name="initIndex">
+      <value>1</value>
+    </property>
+    <property name="viewClass">
+      <value>view.InitialView</value>
+    </property>
+  </bean>
+
+  <bean id="otherView" class="com.jidesoft.spring.richclient.docking.view.JideViewDescriptor">
+    <property name="initMode">
+      <ref bean="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"/>
+    </property>
+    <property name="initSide">
+      <ref bean="com.jidesoft.docking.DockContext.DOCK_SIDE_WEST"/>
+    </property>
+    <property name="initIndex">
+      <value>1</value>
+    </property>
+    <property name="viewClass">
+      <value>view.OtherView</value>
+    </property>
+  </bean>
+
+
+  <bean id="com.jidesoft.docking.DockContext.STATE_FRAMEDOCKED"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.STATE_AUTOHIDE"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.STATE_HIDDEN"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.STATE_FLOATING"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+
+  <bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_NORTH"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_SOUTH"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_EAST"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+  <bean id="com.jidesoft.docking.DockContext.DOCK_SIDE_WEST"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+</beans>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <bean id="windowCommandManager"
+        class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+
+    <property name="sharedCommandIds">
+      <list>
+        <value>printCommand</value>
+      </list>
+    </property>
+  </bean>
+
+
+  <bean id="menuBar"
+        class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <ref bean="fileMenu"/>
+        <ref bean="layoutMenu"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="toolBar"
+        class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <value>printCommand</value>
+        <value>separator</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="layoutMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <bean class="com.jidesoft.spring.richclient.docking.view.ShowViewMenu"/>
+        <ref bean="restoreDefaultLayoutCommand"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="fileMenu"
+        class="org.springframework.richclient.command.CommandGroupFactoryBean">
+    <property name="members">
+      <list>
+        <value>separator</value>
+        <value>printCommand</value>
+        <value>separator</value>
+        <ref bean="exitCommand"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="exitCommand"
+        class="command.ExitCommand"/>
+
+  <bean id="restoreDefaultLayoutCommand"
+        class="command.RestoreDefaultLayoutCommand"/>
+
+  <!--
+     Defines a view specific toolbar using default magic bean ids.
+    -->
+  <bean id="initialView.viewToolBar"
+        class="org.springframework.richclient.command.CommandGroupFactoryBean">
+
+    <property name="members">
+      <list>
+        <value>printCommand</value>
+      </list>
+    </property>
+  </bean>
+
+  <!--
+     The next bean specifies a editor specific
+     toolbar for the webBrowserEditor using
+     the default magic bean ids.
+    -->
+
+  <bean id="stringEditor.editorToolBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+
+    <property name="members">
+      <list>
+        <value>printCommand</value>
+      </list>
+    </property>
+  </bean>
+</beans>
