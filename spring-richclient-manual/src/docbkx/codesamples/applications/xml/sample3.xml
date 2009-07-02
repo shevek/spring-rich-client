@@ -1,0 +1,21 @@
+<bean id="toolBar" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+  <property name="members">
+    <list>
+      <value>newCommand</value>
+      <value>saveCommand</value>
+      <value>printCommand</value>
+      <value>propertiesCommand</value>
+    </list>
+  </property>
+</bean>
+
+<bean id="toolBarCopy" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+  <property name="members">
+    <list>
+      <value>newCommand</value>
+      <value>saveCommand</value>
+      <value>printCommand</value>
+      <value>propertiesCommand</value>
+    </list>
+  </property>
+</bean>

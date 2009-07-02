@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+        "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-
-<chapter id="applications">
+<chapter id="applications" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Applications</title>
 
   <section id="applications:lifecycle">
@@ -58,22 +57,7 @@
     <para>Assuming our handler will show a login screen and handle the login logic, we only need to hook it into the
       application lifecycle advisor:
     </para>
-    <programlisting>
-public class LoginLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor
-{
-    private LoginHandler handler;
-
-    public void setHandler(final LoginHandler handler)
-    {
-        this.handler = handler;
-    }
-
-    public void onCommandsCreated(final ApplicationWindow window)
-    {
-        super.onCommandsCreated(window);
-        handler.doLogin();
-    }
-}</programlisting>
+    <programlisting><xi:include href="../codesamples/applications/java/sample1.java" parse="text"/></programlisting>
     <para>
       As you can see, this is quite easy. Of course you’d want to know when a user is already logged in and just creates
       a new application window (which also triggers this method), so it doesn’t show this login window again, something
@@ -84,48 +68,15 @@ public class LoginLifecycleAdvisor extends DefaultApplicationLifecycleAdvisor
   <section id="applications:other-uses">
     <title>Other possible uses</title>
     <para>
-    Lifecycle advisor subclassing can also be handy in other aspects. Any Spring Rich Client application knows which lifecycle advisor is used for its execution. You can obtain this by calling
+      Lifecycle advisor subclassing can also be handy in other aspects. Any Spring Rich Client application knows which
+      lifecycle advisor is used for its execution. You can obtain this by calling
     </para>
-    <programlisting>
-Application.instance().getLifecycleAdvisor()</programlisting>
+    <programlisting><xi:include href="../codesamples/applications/java/sample2.java" parse="text"/></programlisting>
     <para>
-    You could for example create an application window factory that delivers different application window applications based on which lifecycle advisor was used:
+      You could for example create an application window factory that delivers different application window applications
+      based on which lifecycle advisor was used:
     </para>
-    <programlisting>
-public class DefaultApplicationWindowFactory implements ApplicationWindowFactory
-{
-    private static final Log logger = LogFactory.getLog(DefaultApplicationWindowFactory.class);
-
-    public ApplicationWindow createApplicationWindow()
-    {
-        ApplicationLifecycleAdvisor lifecycleAdvisor = Application.instance().getLifecycleAdvisor();
-        if (lifecycleAdvisor instanceof OutlookNavigatorApplicationLifecycleAdvisor)
-        {
-             return OutlookNavigatorApplicationWindowFactory.create();
-        }
-        else if (lifecycleAdvisor instanceof TaskPaneNavigatorApplicationLifecycleAdvisor)
-        {
-             return TaskPaneNavigatorApplicationWindowFactory.create();
-        }
-        return new DefaultApplicationWindow();
-    }
-
-    static class TaskPaneNavigatorApplicationWindowFactory
-    {
-        public static ApplicationWindow create(boolean onlyOneExpanded)
-        {
-            ...
-        }
-    }
-
-    static class OutlookNavigatorApplicationWindowFactory
-    {
-        public static ApplicationWindow create()
-        {
-            ...
-        }
-    }
-}</programlisting>
+    <programlisting><xi:include href="../codesamples/applications/java/sample3.java" parse="text"/></programlisting>
   </section>
 
   <section id="applications:statusbar">
@@ -133,9 +84,10 @@ public class DefaultApplicationWindowFactory implements ApplicationWindowFactory
     <para>
       Changing the status bar can be done by calling the statusbar through the lifecycle advisor:
     </para>
-    <programlisting>Application.instance().getLifecycleAdvisor().getStatusBar();</programlisting>
+    <programlisting><xi:include href="../codesamples/applications/java/sample4.java" parse="text"/></programlisting>
     <para>
-      Again, if you’re creating your own lifecycle advisor, you’re able to override this method and perhaps supply your own status bar implementation.
+      Again, if you’re creating your own lifecycle advisor, you’re able to override this method and perhaps supply your
+      own status bar implementation.
     </para>
     <para>
       The standard status bar supports:
@@ -143,7 +95,7 @@ public class DefaultApplicationWindowFactory implements ApplicationWindowFactory
     <itemizedlist>
       <listitem>
         <para>
-           Displaying messages, normal messages as well as errors
+          Displaying messages, normal messages as well as errors
         </para>
       </listitem>
       <listitem>
@@ -156,74 +108,69 @@ public class DefaultApplicationWindowFactory implements ApplicationWindowFactory
       Your status bar may hold a clock, the current logged in user, the connected server, …
     </para>
     <para>
-      For example, if you’d want to add a clock to your status bar, you could create your own status bar implementation like this:
+      For example, if you’d want to add a clock to your status bar, you could create your own status bar implementation
+      like this:
     </para>
-    <programlisting>
-public class DynamicStatusBar extends DefaultStatusBar
-{
-    protected JComponent createControl()
-    {
-        JPanel statusBar;
-
-        FormLayout layout = new FormLayout(
-                new ColumnSpec[]
-                        {
-                                FormFactory.GLUE_COLSPEC,
-                                FormFactory.RELATED_GAP_COLSPEC,
-                                FormFactory.DEFAULT_COLSPEC,
-                                FormFactory.RELATED_GAP_COLSPEC,
-                                FormFactory.DEFAULT_COLSPEC,
-                        },
-                new RowSpec[]
-                        {
-                                FormFactory.DEFAULT_ROWSPEC
-                        });
-
-        statusBar = new JPanel(layout);
-
-        StatusBarProgressMonitor progressMonitor = createStatusBarProgressMonitor();
-
-        statusBar.add(createMessageLabel(), new CellConstraints(1, 1));
-        statusBar.add(createClock(), new CellConstraints(3, 1));
-        statusBar.add(progressMonitor.getControl(), new CellConstraints(5, 1));
-
-        progressMonitor.getControl().setPreferredSize(new Dimension(200, 17));
-
-        statusBar.setBorder(new ShadowBorder());
-
-        return statusBar;
-    }
-
-    private JLabel createClock()
-    {
-        final JLabel label = new JLabel();
-        Thread t = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                while (true)
-                {
-                    DateFormatter formatter = new DateFormatter(DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                                              DateFormat.MEDIUM));
-                    final String text = formatter.formatValue(new Date());
-                    label.setText(text);
-                    try
-                    {
-                        Thread.sleep(1000);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        // ignore
-                    }
-                }
-            }
-        });
-        t.start();
-        return label;
-    }
-}</programlisting>
+    <programlisting><xi:include href="../codesamples/applications/java/sample5.java" parse="text"/></programlisting>
     <para>
       This will result in a status bar like this:
     </para>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/statusbar.png"/>
+      </imageobject>
+    </mediaobject>
+  </section>
+  <section>
+    <title>Elaborate example: Adding multiple toolbars to the screen</title>
+    <para>
+      In this example we’ll add multiple toolbar support in Spring Rich Client.
+    </para>
+    <para>
+      Management of the standard toolbar is done in three places:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          The application lifecycle advisor manages the bean name of the toolbar
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The application window puts the actual toolbar on screen
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The application window configurer manages the visibility of the toolbar
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>For this example, I’ll create the first two (and an factory for the application window).
+    </para>
+    <para>First, we’re going to extend the default lifecycle advisor with the ability to enter multiple toolbars, while
+      maintaining backwards compatibility.
+    </para>
+    <programlisting><xi:include href="../codesamples/applications/java/sample6.java" parse="text"/></programlisting>
+    <para>Next, we’re going to create an application window that is able to show the multiple toolbars</para>
+    <programlisting><xi:include href="../codesamples/applications/java/sample7.java" parse="text"/></programlisting>
+    <para>Finally, a factory to create the new application window</para>
+    <programlisting><xi:include href="../codesamples/applications/java/sample8.java" parse="text"/></programlisting>
+    <para>Now, to configure the multiple toolbars, here are the beans you need to configure. First the application
+      lifecycle in the main application context
+    </para>
+    <programlisting><xi:include href="../codesamples/applications/xml/sample1.xml" parse="text"/></programlisting>
+    <para>You also need to define the application window factory in your context, so it’ll use that one.</para>
+    <programlisting><xi:include href="../codesamples/applications/xml/sample2.xml" parse="text"/></programlisting>
+    <para>And then the toolbars in the command context</para>
+    <programlisting><xi:include href="../codesamples/applications/xml/sample3.xml" parse="text"/></programlisting>
+    <para>That’s all there is to it. I’ve started from a project created with the maven archetype, so you can try it out
+      if you want. The result will be something like this:
+    </para>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/doubletoolbars.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 </chapter>

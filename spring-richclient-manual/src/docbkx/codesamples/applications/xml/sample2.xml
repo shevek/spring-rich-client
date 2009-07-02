@@ -1,0 +1,1 @@
+<bean id="appWindowFactory" class="org.springframework.richclient.test.MultipleToolbarApplicationWindowFactory"/>

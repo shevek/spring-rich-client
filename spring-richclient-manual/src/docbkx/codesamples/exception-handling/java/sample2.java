@@ -1,0 +1,3 @@
+public void notifyUserAboutException(Thread thread, Throwable throwable) {
+    // ...
+}

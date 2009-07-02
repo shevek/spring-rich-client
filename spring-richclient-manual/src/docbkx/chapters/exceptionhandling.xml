@@ -2,7 +2,7 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
     "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="exception-handling">
+<chapter id="exception-handling" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Exception handling</title>
 
   <section id="exception-handling:why">
@@ -48,17 +48,7 @@
 
     <para>You could use try-catch during every user action:</para>
 
-    <programlisting>protected boolean onFinish() {
-      try {
-      form.getFormModel().commit();
-      // ...
-      getApplicationContext().publishEvent(new LifecycleApplicationEvent(eventType, getEditingContact()));
-      return true;
-      } catch (Throwable throwable) {
-      handleException(throwable);
-      }
-      }
-    </programlisting>
+    <programlisting><xi:include href="../codesamples/exception-handling/java/sample1.java" parse="text"/></programlisting>
 
     <para>But this is tedious and error prone:</para>
 
@@ -118,12 +108,7 @@
       RegisterableExceptionHandler:
     </para>
 
-    <programlisting>&lt;bean id="petclinicLifecycleAdvisor" class="....PetClinicLifecycleAdvisor"&gt;
-      &lt;!-- ... --&gt;
-      &lt;property name="registerableExceptionHandler" ref="exceptionHandler" /&gt;
-      &lt;/bean&gt;
-
-      &lt;bean id="exceptionHandler" class="org.springframework.richclient.exceptionhandling.SilentExceptionHandler"/&gt;</programlisting>
+    <programlisting><xi:include href="../codesamples/exception-handling/xml/sample1.xml" parse="text"/></programlisting>
 
     <para>When an exception handler is registered, it will ussually register
       itself as the
@@ -157,10 +142,7 @@
 
       <para>You can set a log level on it:</para>
 
-      <programlisting>&lt;bean class="org.springframework.richclient.exceptionhandling.SilentExceptionHandler"&gt;
-        &lt;property name="logLevel" value="WARN"/&gt;
-        &lt;!-- ... --&gt;
-        &lt;/bean&gt;</programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample2.xml" parse="text"/></programlisting>
 
       <para>This means that any exception handled by this exception handler
         will be logged at the warn level.
@@ -188,21 +170,14 @@
         thrown, it will first look for these i18n keys:
       </para>
 
-      <programlisting>java.lang.NumberFormatException.caption=Not a number
-        java.lang.NumberFormatException.description=\
-        You did not enter a a valid number.\n\
-        \n\
-        Please enter a valid number.
-      </programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/text/sample1.txt" parse="text"/></programlisting>
 
       <para>If these messages keys don't exist, it will fall back to the
         parent class of<literal>NumberFormatException</literal>, which is
         <literal>IllegalArgumentException</literal>:
       </para>
 
-      <programlisting>java.lang.IllegalArgumentException.caption=...
-        java.lang.IllegalArgumentException.description=...
-      </programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/text/sample2.txt" parse="text"/></programlisting>
 
       <para>It will continue to fall back up the chain, untill it reaches
         <literal>Throwable</literal>. This allows you to direct all unexpected
@@ -217,33 +192,7 @@
         in the description:
       </para>
 
-      <programlisting># Double quotes(") need to be escaped (\"), single quotes (') always seem to break the replacing
-        of {0}.
-        java.lang.RuntimeException.caption = Unexpected general bug
-        java.lang.RuntimeException.description = \
-        The application experienced an unexpected bug,\n\
-        due to a programming error.\n\
-        \n\
-        The application is possibly in an inconsistent state.\n\
-        It is recommended to reboot the application.\n\
-        \n\
-        The exact bug is:\n\
-        {0}\n\
-        \n\
-        Please report this bug.
-
-        java.lang.Error.caption = Unexpected serious system failure
-        java.lang.Error.description = \
-        A serious system failure occured.\n\
-        \n\
-        The application is possibly in an inconsistent state.\n\
-        Reboot the application.\n\
-        \n\
-        The exact bug is:\n\
-        {0}\n\
-        \n\
-        Please report this bug.
-      </programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/text/sample3.txt" parse="text"/></programlisting>
 
       <para>Note that, although this dynamic system is pretty powerfull and
         avoids a lot of boilerplate, it's ussually not a replacement for
@@ -255,10 +204,7 @@
         handler:
       </para>
 
-      <programlisting>&lt;bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler"&gt;
-        &lt;property name="shutdownPolicy" value="ASK" /&gt;
-        &lt;!-- ... --&gt;
-        &lt;/bean&gt;</programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample3.xml" parse="text"/></programlisting>
 
       <para>This allows you to optionally enforce or propose a
         <literal>System.exit(1)</literal>.
@@ -280,18 +226,7 @@
         backup to also configure this exception handler:
       </para>
 
-      <programlisting>&lt;!-- Inside a delage list of DelegatingExceptionHandler --&gt;
-        &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
-        &lt;property name="throwableClass"&gt;
-        &lt;value type="java.lang.Class"&gt;org.hibernate.validator.InvalidStateException&lt;/value&gt;
-        &lt;/property&gt;
-        &lt;property name="exceptionHandler"&gt;
-        &lt;bean class="org.springframework.richclient.exceptionhandling.HibernateValidatorDialogExceptionHandler"&gt;
-        &lt;property name="logLevel" value="INFO" /&gt;
-        &lt;property name="shutdownPolicy" value="NONE" /&gt;
-        &lt;/bean&gt;
-        &lt;/property&gt;
-        &lt;/bean&gt;</programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample4.xml" parse="text"/></programlisting>
     </section>
 
     <section>
@@ -303,10 +238,7 @@
         method:
       </para>
 
-      <programlisting>public void notifyUserAboutException(Thread thread, Throwable throwable) {
-        // ...
-        }
-      </programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/java/sample2.java" parse="text"/></programlisting>
     </section>
   </section>
 
@@ -331,50 +263,7 @@
       to an ERROR<literal>MessagesDialogExceptionHandler</literal>.
     </para>
 
-    <programlisting>  &lt;bean id="exceptionHandler"
-      class="org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler"&gt;
-      &lt;property name="delegateList"&gt;
-      &lt;list&gt;
-      &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
-      &lt;property name="throwableClassList"&gt;
-      &lt;list&gt;
-      &lt;value type="java.lang.Class"&gt;org.springframework.security.AuthenticationException&lt;/value&gt;
-      &lt;value type="java.lang.Class"&gt;org.springframework.security.AccessDeniedException&lt;/value&gt;
-      &lt;/list&gt;
-      &lt;/property&gt;
-      &lt;property name="exceptionHandler"&gt;
-      &lt;bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler"&gt;
-      &lt;property name="logLevel" value="WARN" /&gt;
-      &lt;property name="shutdownPolicy" value="NONE" /&gt;
-      &lt;/bean&gt;
-      &lt;/property&gt;
-      &lt;/bean&gt;
-      &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
-      &lt;property name="throwableClass"&gt;
-      &lt;value type="java.lang.Class"&gt;org.hibernate.validator.InvalidStateException&lt;/value&gt;
-      &lt;/property&gt;
-      &lt;property name="exceptionHandler"&gt;
-      &lt;bean
-      class="org.springframework.richclient.exceptionhandling.HibernateValidatorDialogExceptionHandler"&gt;
-      &lt;property name="logLevel" value="INFO" /&gt;
-      &lt;property name="shutdownPolicy" value="NONE" /&gt;
-      &lt;/bean&gt;
-      &lt;/property&gt;
-      &lt;/bean&gt;
-      &lt;!-- The order is important: if Throwable would be first then the others would be ignored --&gt;
-      &lt;bean
-      class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
-      &lt;property name="throwableClass" value="java.lang.Throwable" /&gt;
-      &lt;property name="exceptionHandler"&gt;
-      &lt;bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler"&gt;
-      &lt;property name="logLevel" value="ERROR" /&gt;
-      &lt;property name="shutdownPolicy" value="ASK" /&gt;
-      &lt;/bean&gt;
-      &lt;/property&gt;
-      &lt;/bean&gt;
-      &lt;/list&gt;
-      &lt;/property&gt;
-      &lt;/bean&gt;</programlisting>
+    <programlisting><xi:include href="../codesamples/exception-handling/xml/sample5.xml" parse="text"/></programlisting>
 
     <section>
       <title>SimpleExceptionHandlerDelegate</title>
@@ -415,26 +304,7 @@
         it's wrapped:
       </para>
 
-      <programlisting>&lt;bean
-        class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate"&gt;
-        &lt;property name="exceptionPurger"&gt;
-        &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.DefaultExceptionPurger"&gt;
-        &lt;property name="includeThrowableClassList"&gt;
-        &lt;list&gt;
-        &lt;value type="java.lang.Class"&gt;com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException&lt;/value&gt;
-        &lt;/list&gt;
-        &lt;/property&gt;
-        &lt;/bean&gt;
-        &lt;/property&gt;
-        &lt;property name="throwableClassList"&gt;
-        &lt;list&gt;
-        &lt;value type="java.lang.Class"&gt;com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException&lt;/value&gt;
-        &lt;/list&gt;
-        &lt;/property&gt;
-        &lt;property name="exceptionHandler"&gt;
-        &lt;!-- ... --&gt;
-        &lt;/property&gt;
-        &lt;/bean&gt;</programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample6.xml" parse="text"/></programlisting>
 
       <para>A chained exception of the type in the
         <literal>excludeThrowableClassList</literal>
@@ -447,21 +317,7 @@
         of it:
       </para>
 
-      <programlisting>&lt;bean id="exceptionHandler"
-        class="org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler"&gt;
-        &lt;property name="exceptionPurger"&gt;
-        &lt;bean class="org.springframework.richclient.exceptionhandling.delegation.DefaultExceptionPurger"&gt;
-        &lt;property name="excludeThrowableClassList"&gt;
-        &lt;list&gt;
-        &lt;value type="java.lang.Class"&gt;foo.bar.WrappingServiceCallException&lt;/value&gt;
-        &lt;/list&gt;
-        &lt;/property&gt;
-        &lt;/bean&gt;
-        &lt;/property&gt;
-        &lt;property name="delegateList"&gt;
-        &lt;!-- ... --&gt;
-        &lt;/property&gt;
-        &lt;/bean&gt;</programlisting>
+      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample7.xml" parse="text"/></programlisting>
     </section>
   </section>
 </chapter>

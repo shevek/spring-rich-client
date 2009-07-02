@@ -1,0 +1,4 @@
+<bean class="org.springframework.richclient.exceptionhandling.MessagesDialogExceptionHandler">
+  <property name="shutdownPolicy" value="ASK"/>
+  <!-- ... -->
+</bean>

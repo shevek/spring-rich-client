@@ -1,0 +1,2 @@
+java.lang.NumberFormatException.caption=Not a number
+java.lang.NumberFormatException.description=You did not enter a a valid number.\nPlease enter a valid number.

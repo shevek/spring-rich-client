@@ -1,0 +1,6 @@
+<bean id="petclinicLifecycleAdvisor" class="....PetClinicLifecycleAdvisor">
+  <!-- ... -->
+  <property name="registerableExceptionHandler" ref="exceptionHandler"/>
+</bean>
+
+<bean id="exceptionHandler" class="org.springframework.richclient.exceptionhandling.SilentExceptionHandler"/>

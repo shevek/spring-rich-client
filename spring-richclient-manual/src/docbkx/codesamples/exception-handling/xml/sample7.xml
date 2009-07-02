@@ -1,0 +1,15 @@
+<bean id="exceptionHandler"
+      class="org.springframework.richclient.exceptionhandling.delegation.DelegatingExceptionHandler">
+  <property name="exceptionPurger">
+    <bean class="org.springframework.richclient.exceptionhandling.delegation.DefaultExceptionPurger">
+      <property name="excludeThrowableClassList">
+        <list>
+          <value type="java.lang.Class">foo.bar.WrappingServiceCallException</value>
+        </list>
+      </property>
+    </bean>
+  </property>
+  <property name="delegateList">
+    <!-- ... -->
+  </property>
+</bean>

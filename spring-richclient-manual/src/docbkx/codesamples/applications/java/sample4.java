@@ -1,0 +1,1 @@
+Application.instance().getLifecycleAdvisor().getStatusBar();

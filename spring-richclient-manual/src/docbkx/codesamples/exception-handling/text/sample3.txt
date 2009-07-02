@@ -1,0 +1,26 @@
+# Double quotes(") need to be escaped (\"), single quotes (') always seem to break the replacing
+of {0}.
+java.lang.RuntimeException.caption = Unexpected general bug
+java.lang.RuntimeException.description = \
+The application experienced an unexpected bug,\n\
+due to a programming error.\n\
+\n\
+The application is possibly in an inconsistent state.\n\
+It is recommended to reboot the application.\n\
+\n\
+The exact bug is:\n\
+{0}\n\
+\n\
+Please report this bug.
+
+java.lang.Error.caption = Unexpected serious system failure
+java.lang.Error.description = \
+A serious system failure occured.\n\
+\n\
+The application is possibly in an inconsistent state.\n\
+Reboot the application.\n\
+\n\
+The exact bug is:\n\
+{0}\n\
+\n\
+Please report this bug.

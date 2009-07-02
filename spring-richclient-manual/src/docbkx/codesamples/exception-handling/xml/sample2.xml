@@ -1,0 +1,4 @@
+<bean class="org.springframework.richclient.exceptionhandling.SilentExceptionHandler">
+  <property name="logLevel" value="WARN"/>
+  <!-- ... -->
+</bean>

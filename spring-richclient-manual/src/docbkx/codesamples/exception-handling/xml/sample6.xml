@@ -1,0 +1,20 @@
+<bean
+        class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
+  <property name="exceptionPurger">
+    <bean class="org.springframework.richclient.exceptionhandling.delegation.DefaultExceptionPurger">
+      <property name="includeThrowableClassList">
+        <list>
+          <value type="java.lang.Class">com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException</value>
+        </list>
+      </property>
+    </bean>
+  </property>
+  <property name="throwableClassList">
+    <list>
+      <value type="java.lang.Class">com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException</value>
+    </list>
+  </property>
+  <property name="exceptionHandler">
+    <!-- ... -->
+  </property>
+</bean>

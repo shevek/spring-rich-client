@@ -1,0 +1,12 @@
+<!-- Inside a delage list of DelegatingExceptionHandler -->
+<bean class="org.springframework.richclient.exceptionhandling.delegation.SimpleExceptionHandlerDelegate">
+  <property name="throwableClass">
+    <value type="java.lang.Class">org.hibernate.validator.InvalidStateException</value>
+  </property>
+  <property name="exceptionHandler">
+    <bean class="org.springframework.richclient.exceptionhandling.HibernateValidatorDialogExceptionHandler">
+      <property name="logLevel" value="INFO"/>
+      <property name="shutdownPolicy" value="NONE"/>
+    </bean>
+  </property>
+</bean>
