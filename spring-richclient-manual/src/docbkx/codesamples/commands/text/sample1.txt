@@ -1,0 +1,1 @@
+[face descriptor id].label = The label of the command

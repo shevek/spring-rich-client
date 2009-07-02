@@ -1,0 +1,1 @@
+Application.instance().getActiveWindow().getCommandManager().getCommand(commandId);

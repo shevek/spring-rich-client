@@ -121,7 +121,8 @@
       </imageobject>
     </mediaobject>
   </section>
-  <section>
+
+  <section id="applications:elaborate-example">
     <title>Elaborate example: Adding multiple toolbars to the screen</title>
     <para>
       In this example we’ll add multiple toolbar support in Spring Rich Client.

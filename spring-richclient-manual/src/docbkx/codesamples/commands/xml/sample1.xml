@@ -1,0 +1,9 @@
+<bean id="windowMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+  <property name="members">
+    <list>
+      <bean class="org.springframework.richclient.command.support.NewWindowCommand"/>
+      <value>separator</value>
+      <bean class="org.springframework.richclient.command.support.ShowViewMenu"/>
+    </list>
+  </property>
+</bean>

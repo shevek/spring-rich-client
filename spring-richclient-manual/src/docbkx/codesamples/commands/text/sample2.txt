@@ -1,0 +1,1 @@
+[face descriptor id].caption = The caption of the command

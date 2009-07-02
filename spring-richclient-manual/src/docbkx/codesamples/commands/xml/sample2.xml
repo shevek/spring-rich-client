@@ -1,0 +1,10 @@
+<bean id="windowCommandManager"
+      class="org.springframework.richclient.application.support.ApplicationWindowCommandManager">
+  <property name="sharedCommandIds">
+    <list>
+      <value>newContactCommand</value>
+      <value>propertiesCommand</value>
+      <value>deleteCommand</value>
+    </list>
+  </property>
+</bean>

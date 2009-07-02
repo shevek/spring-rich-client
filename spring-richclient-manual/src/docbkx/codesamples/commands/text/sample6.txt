@@ -1,0 +1,7 @@
+<modifiers>* (<typedID> | <pressedReleasedID>)
+
+modifiers := shift | control | ctrl | meta | alt | button1 | button2 | button3
+typedID := typed <typedKey>
+typedKey := string of length 1 giving Unicode character.
+pressedReleasedID := (pressed | released) key
+key := KeyEvent key code name, i.e. the name following "VK_".

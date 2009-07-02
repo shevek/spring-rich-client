@@ -1,0 +1,7 @@
+<bean id="newMenu" class="org.springframework.richclient.command.CommandGroupFactoryBean">
+  <property name="members">
+    <list>
+      <value>newContactCommand</value>
+    </list>
+  </property>
+</bean>
