@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE preface PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<preface>
+    <para>Spring-RCP's mission is to provide an elegant way to build highly-configurable, GUI-standards-following rich-client applications faster by leveraging the Spring Framework, and a rich library of UI factories and support classes.</para>
+
+    <para>The Spring Rich Client Project (RCP) is a sub-project of The Spring Framework. Spring-RCP's mission is to provide an elegant way to build highly-configurable, GUI-standards-following rich-client applications faster by leveraging the Spring Framework, and a rich library of UI factories and support classes. Initial focus is on providing support for Swing applications but a goal of Spring-RCP is to be view agnostic as much as possible.</para>
+
+    <para>The goal of the Spring Rich Client Project (Spring Rich) is to provide a viable option for developers that need a platform and a best-practices guide for constructing Swing applications quickly.</para>
+
+    <para>Specifically, spring-richclient seeks to:</para>
+    <itemizedlist>
+        <listitem>
+            <para>Provide a way to build structured, highly-configurable, GUI-standards-following Swing applications faster by leveraging the Spring Framework.</para>
+        </listitem>
+        <listitem>
+            <para>Foster integration with existing rich-client-related projects where it make sense. For example, jgoodies-forms and TableLayout are two good layout managers. We don't need to develop another one.</para>
+        </listitem>
+        <listitem>
+            <para>Adhere to the principles set forth by the Spring Framework--programming to interfaces; the importance of sound OO design, documentation, and testing.</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>Some features of the platform under development include:</para>
+    <itemizedlist>
+        <listitem>
+            <para>A command framework that provides centralized configuration of Swing actions and appropriate handler registration based on the current active view. Command configuration, as well as action bar contribution policies (to menus or toolbars), can be defined centrally and externalized in Spring bean defintions.</para>
+        </listitem>
+        <listitem>
+            <para>A forms data binding and validation framework, for connecting edits made in your UI controls with your domain model automatically--with as you type feedback.</para>
+        </listitem>
+        <listitem>
+            <para>Support for multiple window management, page configuration, and view management. The concepts here are inspired by Eclipse's perspective/view constructs. Views can be defined in the Spring container, associated with one or more pages, and a default page can be configured to be loaded at startup.</para>
+        </listitem>
+        <listitem>
+            <para>Common support classes addressing various rich client requirements including: well formed dialogs, wizards, input validation (typing hints and validation results reporting), button bars, internationalization, image/icon caching, progress monitoring, UI threading (classes cleanly promoting responsive UIs), treetable/property sheet, table sorting/high-volume table updates, GUI standards builders/helpers, help/about, etc.</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>Spring-rich adds value for people needing to develop Swing applications and do so in a way that promotes consistent, well-designed, configurable Swing applications. The spring-rich developers strongly feel the old days of Swing apps not looking native and not being performant or web-accessible are gone with JDK1.4.2 and 1.5 and webstart. It is our belief the only problem with Swing is that there are a limited number of higher-level abstractions available that assist in making the toolkit simpler and easier to use, and a limited number of design best practices. The goal of spring-richclient is to provide that.</para>
+</preface>
