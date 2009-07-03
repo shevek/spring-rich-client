@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+        "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="security">
-    <title>Security</title>
+<chapter id="security" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Security</title>
+  <section id="security:integrating">
+    <title>Integration security in a GUI application</title>
+    <para>
+      TODO
+    </para>
+  </section>
+  <section id="security:spring">
+    <title>Spring Security integration</title>
+    <para>
+      TODO
+    </para>
+  </section>
+  <section id="security:security-awareness">
+    <title>Turning on security awareness of the GUI</title>
+    <para>
+      TODO
+    </para>
+  </section>
+  <section id="security:commands">
+    <title>Securing commands</title>
+    <para>
+      TODO
+    </para>
+  </section>
 </chapter>
