@@ -4,6 +4,9 @@
 
 <chapter id="validation" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Validation</title>
+
+  <toc/>
+  
   <section id="validation:why">
     <title>Why validation</title>
     <para>

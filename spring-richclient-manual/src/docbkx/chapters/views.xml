@@ -5,6 +5,8 @@
 <chapter id="views" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Views</title>
 
+  <toc/>
+
   <section id="views:what">
     <title>What is a view</title>
     <para>
@@ -38,7 +40,7 @@
       Creating a new view is done through subclassing the AbstractView class. This class mandates you to implement one
       method: createControl. In our example, the initial view class looks like this:
     </para>
-    <programlisting><xi:include href="../codesamples/views/java/sample1.java" parse="text"/></programlisting>
+    <programlisting language="java:nogutter"><xi:include href="../codesamples/views/java/sample1.java" parse="text"/></programlisting>
   </section>
 
   <section id="views:create-descriptor">
@@ -47,7 +49,7 @@
       To show a view on screen, you need to create a view descriptor. For the initial view in the example, the following
       view descriptor was used:
     </para>
-    <programlisting><xi:include href="../codesamples/views/xml/sample1.xml" parse="text"/></programlisting>
+    <programlisting language="xml"><xi:include href="../codesamples/views/xml/sample1.xml" parse="text"/></programlisting>
     <para>
       This is the standard view descriptor definition. You need to give the view class to be used to show the component.
       Additionally, you can set the properties on an instance of that view by populating the viewProperties map. These
@@ -65,7 +67,7 @@
     <para>
       To create such a command, use the following bean definition:
     </para>
-    <programlisting><xi:include href="../codesamples/views/xml/sample2.xml" parse="text"/></programlisting>
+    <programlisting language="xml"><xi:include href="../codesamples/views/xml/sample2.xml" parse="text"/></programlisting>
     <para>
       You can now use this command in your menu, or create a button in another view to switch to the defined view.
     </para>
@@ -81,10 +83,10 @@
      ‘New’ or ‘Delete’ action). This is done by registering a command executor to the shared command’s id. The view
      class supports this registration by overriding a method
    </para>
-   <programlisting><xi:include href="../codesamples/views/java/sample2.java" parse="text"/></programlisting>
+   <programlisting language="java:nogutter"><xi:include href="../codesamples/views/java/sample2.java" parse="text"/></programlisting>
    <para>
      This executor then handles the behavior of the command
    </para>
-   <programlisting><xi:include href="../codesamples/views/java/sample3.java" parse="text"/></programlisting>
+   <programlisting language="java:nogutter"><xi:include href="../codesamples/views/java/sample3.java" parse="text"/></programlisting>
   </section>
 </chapter>

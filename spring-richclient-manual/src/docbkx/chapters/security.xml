@@ -4,6 +4,9 @@
 
 <chapter id="security" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Security</title>
+
+  <toc/>
+  
   <section id="security:integrating">
     <title>Integration security in a GUI application</title>
     <para>

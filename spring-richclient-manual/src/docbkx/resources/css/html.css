@@ -297,3 +297,15 @@ div.calloutlist * td {
 .answer * p {
     font-size: 100%;
 }
+
+div.warning {
+    background-color: #ff9999;
+    border: 1px solid gray;
+    font-family: Verdana, Arial, helvetica, sans-serif;
+    padding: 2px;
+}
+
+div.warning h3
+{
+    padding-top: 0px;
+}

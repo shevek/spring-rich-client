@@ -25,6 +25,7 @@
     <xsl:param name="generate.toc">
         book toc
         qandaset toc
+        chapter toc
     </xsl:param>
     <!-- Show only Sections up to level 3 in the TOCs -->
     <xsl:param name="toc.section.depth">3</xsl:param>
@@ -210,4 +211,38 @@
             </div>
         </xsl:if>
     </xsl:template>
+
+  <xsl:template name="user.head.content">
+    <link rel="stylesheet"
+          type="text/css"
+          href="css/SyntaxHighlighter.css">
+    </link>
+    <xsl:call-template name="script">
+      <xsl:with-param name="src" select="concat('', 'script/shCore.js')"/>
+    </xsl:call-template>
+    <xsl:call-template name="script">
+      <xsl:with-param name="src" select="concat('', 'script/shBrushJava.js')"/>
+    </xsl:call-template>
+    <xsl:call-template name="script">
+      <xsl:with-param name="src" select="concat('', 'script/shBrushXml.js')"/>
+    </xsl:call-template>
+    <xsl:call-template name="script">
+      <xsl:with-param name="src" select="concat('', 'script/shBrushText.js')"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="body.attributes">
+    <xsl:attribute name="onLoad">dp.SyntaxHighlighter.HighlightAll('pre', 'programlisting', null, false);</xsl:attribute>
+  </xsl:template>
+
+  <xsl:template name="script">
+    <xsl:param name="src"></xsl:param>
+    <script>
+      <xsl:attribute name="language">JavaScript</xsl:attribute>
+      <xsl:attribute name="type">text/javascript</xsl:attribute>
+      <xsl:attribute name="src">
+        <xsl:value-of select="$src"/>
+      </xsl:attribute>
+    </script>
+  </xsl:template>
 </xsl:stylesheet>

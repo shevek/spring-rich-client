@@ -4,6 +4,9 @@
 
 <chapter id="wizards" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Wizards</title>
+
+  <toc/>
+  
   <section id="wizards:why">
     <title>Why use wizards</title>
     <para>

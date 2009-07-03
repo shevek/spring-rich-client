@@ -4,6 +4,9 @@
 
 <chapter id="integration" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Integration with other frameworks</title>
+
+  <toc/>
+  
   <section id="integration:flexibility">
     <title>Flexibility</title>
     <para>
@@ -53,11 +56,11 @@
       then inject it into the "ApplicationPageFactory" bean in your application context. The perspective factory looks
       like this
     </para>
-    <programlisting><xi:include href="../codesamples/integration/java/sample1.java" parse="text"/></programlisting>
+    <programlisting language="java:nogutter"><xi:include href="../codesamples/integration/java/sample1.java" parse="text"/></programlisting>
     <para>
       And you’ll need to add this to your application context
     </para>
-    <programlisting><xi:include href="../codesamples/integration/xml/sample1.xml" parse="text"/></programlisting>
+    <programlisting language="xml"><xi:include href="../codesamples/integration/xml/sample1.xml" parse="text"/></programlisting>
     <para>
       This will result in something like this
     </para>

@@ -2,6 +2,9 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
-<chapter id="integration" xmlns:xi="http://www.w3.org/2001/XInclude">
+<chapter id="interceptors" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Form component interceptors</title>
+
+  <toc/>
+  
 </chapter>

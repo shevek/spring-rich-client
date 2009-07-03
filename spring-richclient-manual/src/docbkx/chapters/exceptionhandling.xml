@@ -5,6 +5,8 @@
 <chapter id="exception-handling" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Exception handling</title>
 
+  <toc/>
+  
   <section id="exception-handling:why">
     <title>Why not just use try and catch?</title>
 
@@ -48,7 +50,7 @@
 
     <para>You could use try-catch during every user action:</para>
 
-    <programlisting><xi:include href="../codesamples/exception-handling/java/sample1.java" parse="text"/></programlisting>
+    <programlisting language="java:nogutter"><xi:include href="../codesamples/exception-handling/java/sample1.java" parse="text"/></programlisting>
 
     <para>But this is tedious and error prone:</para>
 
@@ -108,7 +110,7 @@
       RegisterableExceptionHandler:
     </para>
 
-    <programlisting><xi:include href="../codesamples/exception-handling/xml/sample1.xml" parse="text"/></programlisting>
+    <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample1.xml" parse="text"/></programlisting>
 
     <para>When an exception handler is registered, it will ussually register
       itself as the
@@ -142,7 +144,7 @@
 
       <para>You can set a log level on it:</para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample2.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample2.xml" parse="text"/></programlisting>
 
       <para>This means that any exception handled by this exception handler
         will be logged at the warn level.
@@ -170,14 +172,14 @@
         thrown, it will first look for these i18n keys:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/text/sample1.txt" parse="text"/></programlisting>
+      <programlisting language="text"><xi:include href="../codesamples/exception-handling/text/sample1.txt" parse="text"/></programlisting>
 
       <para>If these messages keys don't exist, it will fall back to the
         parent class of<literal>NumberFormatException</literal>, which is
         <literal>IllegalArgumentException</literal>:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/text/sample2.txt" parse="text"/></programlisting>
+      <programlisting language="text"><xi:include href="../codesamples/exception-handling/text/sample2.txt" parse="text"/></programlisting>
 
       <para>It will continue to fall back up the chain, untill it reaches
         <literal>Throwable</literal>. This allows you to direct all unexpected
@@ -192,7 +194,7 @@
         in the description:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/text/sample3.txt" parse="text"/></programlisting>
+      <programlisting language="text"><xi:include href="../codesamples/exception-handling/text/sample3.txt" parse="text"/></programlisting>
 
       <para>Note that, although this dynamic system is pretty powerfull and
         avoids a lot of boilerplate, it's ussually not a replacement for
@@ -204,7 +206,7 @@
         handler:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample3.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample3.xml" parse="text"/></programlisting>
 
       <para>This allows you to optionally enforce or propose a
         <literal>System.exit(1)</literal>.
@@ -226,7 +228,7 @@
         backup to also configure this exception handler:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample4.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample4.xml" parse="text"/></programlisting>
     </section>
 
     <section>
@@ -238,7 +240,7 @@
         method:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/java/sample2.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/exception-handling/java/sample2.java" parse="text"/></programlisting>
     </section>
   </section>
 
@@ -263,7 +265,7 @@
       to an ERROR<literal>MessagesDialogExceptionHandler</literal>.
     </para>
 
-    <programlisting><xi:include href="../codesamples/exception-handling/xml/sample5.xml" parse="text"/></programlisting>
+    <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample5.xml" parse="text"/></programlisting>
 
     <section>
       <title>SimpleExceptionHandlerDelegate</title>
@@ -304,7 +306,7 @@
         it's wrapped:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample6.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample6.xml" parse="text"/></programlisting>
 
       <para>A chained exception of the type in the
         <literal>excludeThrowableClassList</literal>
@@ -317,7 +319,7 @@
         of it:
       </para>
 
-      <programlisting><xi:include href="../codesamples/exception-handling/xml/sample7.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/exception-handling/xml/sample7.xml" parse="text"/></programlisting>
     </section>
   </section>
 </chapter>

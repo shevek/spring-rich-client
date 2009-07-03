@@ -5,6 +5,8 @@
 <chapter id="form-binding" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Forms and binding</title>
 
+  <toc/>
+
   <section id="form-binding:formmodel-valuemodel">
     <title>FormModel and ValueModel</title>
     <section id="form-binding:formmodel-valuemodel:valuemodel-what">
@@ -53,11 +55,11 @@
       <para>
         Creating a formmodel of any given object can be done through this:
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample1.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample1.java" parse="text"/></programlisting>
       <para>
          From then on, you can set the values of the object through the valueobject.
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample2.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample2.java" parse="text"/></programlisting>
       <para>
         Valuemodels in formmodels are created on-demand. After creating a formmodel on an object, no valuemodels are
         present until you start calling for them. Spring Rich Client will then make these on-demand.
@@ -69,7 +71,7 @@
         Buffering provides the necessary plumbing needed for undo functionality. When changing values of property, a
         buffered valuemodel will still hold the old values and can revert to these if necessary.
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample3.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample3.java" parse="text"/></programlisting>
       <para>
         Calling revert() before a commit on a formmodel will return all properties to their original values. Individual
         valuemodels can be reverted too by calling revert() on them.
@@ -92,11 +94,11 @@
       <para>
         For any given property you can ask the formmodel for the field metadata by calling
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample4.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample4.java" parse="text"/></programlisting>
       <para>
         Through this field metadata, you can set the read-only property of a property
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample5.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample5.java" parse="text"/></programlisting>
       <para>
         Obviously, trying to set a property that has no setter to writable will cause an exception when the valuemodels
         are committed (and the respective setters are called).
@@ -117,11 +119,11 @@
       <para>
         Setting a validator on a formmodel is done through
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample6.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample6.java" parse="text"/></programlisting>
       <para>
         After that, the validation is automatically turned on. If you needed to, you could turn it off by calling
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample7.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample7.java" parse="text"/></programlisting>
       <para>
         A model can be validated at any time. A model is aware whether it has validation errors, and if so, contains a
         collection of these.
@@ -139,7 +141,7 @@
       <para>
         For example, if you want to create a formmodel of an object, the simplest way would be:
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample8.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample8.java" parse="text"/></programlisting>
       <para>
         With the FormModelHelper, you can create:
       </para>
@@ -238,16 +240,16 @@
         We start off by creating the binder. A binder is able to bind any JComponent to a value, so we’ll use SwingX’s
         JXDatePicker class to visually represent the date.
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample9.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample9.java" parse="text"/></programlisting>
       <para>
         As you can see the class does the 2 way binding. This part
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample10.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample10.java" parse="text"/></programlisting>
       <para>
         handles the propagation of changes in the formmodel to the actual component, whereas the property change
         listener (which in this case is the binder itself, handled by
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample11.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample11.java" parse="text"/></programlisting>
       <para>
         The isSettingText flag is there to prevent cyclic calls (formmodel changes component, which change the
         formmodel, which changes, …).
@@ -259,7 +261,7 @@
       <para>
         Creating the binder is most of the time the easiest job of the two.
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample12.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample12.java" parse="text"/></programlisting>
       <para>
         The createControl() method creates the control that is to be used in bindings. Every time a binding is done, a
         new control will be created through this method.
@@ -287,11 +289,11 @@
       <para>
         Forms are created for a specific purpose and specific objects. Say we have the following object:
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample13.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample13.java" parse="text"/></programlisting>
       <para>
         If we want to make a form for this, we might be using something like this
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample14.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample14.java" parse="text"/></programlisting>
       <para>
         This will result in a panel with 2 text fields next to each other, that represent the 2 fields of the object.
         This form can then be used to show in a view or a dialog. Currently, there is no default view descriptor for
@@ -323,7 +325,7 @@
       <para>
         Building the same form with a form builder would result in
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/java/sample15.java" parse="text"/></programlisting>
+      <programlisting language="java:nogutter"><xi:include href="../codesamples/binding-forms/java/sample15.java" parse="text"/></programlisting>
       <para>
          Much simpler and easy to read, isn’t it?
       </para>
@@ -361,7 +363,7 @@
         For example, if you want to change support String, Boolean and Date fields, you can define your selection
         strategy like this
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/xml/sample1.xml" parse="text"/></programlisting>
+      <programlisting language="xml"><xi:include href="../codesamples/binding-forms/xml/sample1.xml" parse="text"/></programlisting>
     </section>
     <section id="form-binding:forms:i18n">
       <title>Internationalisation</title>
@@ -373,7 +375,7 @@
         Say your formmodel is named "personForm" and you have a field called "firstName". Then in your message bundle
         you’ll have to provide something like this:
       </para>
-      <programlisting><xi:include href="../codesamples/binding-forms/text/sample1.txt" parse="text"/></programlisting>
+      <programlisting language="text"><xi:include href="../codesamples/binding-forms/text/sample1.txt" parse="text"/></programlisting>
       <para>
         If no value is found for a key, Spring Rich Client will show the key instead. This way you can easily spot
         missing keys (and don’t need to guess how they are named).
