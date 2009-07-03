@@ -174,4 +174,21 @@
       </imageobject>
     </mediaobject>
   </section>
+
+  <section id="applications:lookandfeel">
+    <title>Changing the look and feel of you application</title>
+    <para>
+      Most companies work with a specific look-and-feel to use throughout their applications. As Spring Rich Client is a
+      Swing based framework, changing the default look-and-feel should be straightforward. Which it is. It’s as simple
+      as defining a single bean in your context. In this example, we’ll change it to one of JGoodies’ Plastic themes.
+    </para>
+    <programlisting><xi:include href="../codesamples/applications/xml/sample4.xml" parse="text"/></programlisting>
+    <para>
+      Say we would like it to Metal, one of the standard look-and-feels in Java
+    </para>
+    <programlisting><xi:include href="../codesamples/applications/xml/sample5.xml" parse="text"/></programlisting>
+    <para>
+      That's all there is to it. 
+    </para>
+  </section>
 </chapter>

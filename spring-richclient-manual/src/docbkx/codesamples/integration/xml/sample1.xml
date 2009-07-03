@@ -1,0 +1,17 @@
+<bean id="applicationPageFactory" depends-on="serviceLocator"
+      class="org.springframework.richclient.application.docking.flexdock.FlexDockApplicationPageFactory">
+  <property name="floatingEnabled" value="true"/>
+  <property name="defaultPerspective" value="defaultPerspective"/>
+  <property name="perspectiveFactory">
+    <bean class="simple.DemoPerspectiveFactory">
+      <property name="dockableIds">
+        <list>
+          <value>firstView</value>
+          <value>secondView</value>
+          <value>thirdView</value>
+          <value>fourthView</value>
+        </list>
+      </property>
+    </bean>
+  </property>
+</bean>

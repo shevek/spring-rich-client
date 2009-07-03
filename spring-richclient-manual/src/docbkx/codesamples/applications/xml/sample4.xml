@@ -1,0 +1,7 @@
+<bean id="lookAndFeelConfigurer"
+    class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
+    <property name="popupDropShadowEnabled" value="false" />
+    <property name="theme">
+      <bean class="com.jgoodies.looks.plastic.theme.ExperienceBlue" />
+    </property>
+</bean>
