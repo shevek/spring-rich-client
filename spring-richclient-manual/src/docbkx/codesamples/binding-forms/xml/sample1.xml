@@ -1,0 +1,10 @@
+<bean id="binderSelectionStrategy"
+      class="org.springframework.richclient.form.binding.swing.SwingBinderSelectionStrategy">
+  <property name="bindersForPropertyTypes" ref="propertyTypeBinders"/>
+</bean>
+
+<util:map id="propertyTypeBinders" key-type="java.lang.Class">
+  <entry key="java.lang.String" value-ref="stringBinder"/>
+  <entry key="java.util.Date" value-ref="dateBinder"/>
+  <entry key="java.lang.Boolean" value-ref="booleanBinder"/>
+</util:map>

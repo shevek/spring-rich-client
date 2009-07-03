@@ -1,0 +1,1 @@
+meta.setReadOnly(true);

@@ -1,0 +1,1 @@
+model.getValueModel("someProperty").setValue("xyz")

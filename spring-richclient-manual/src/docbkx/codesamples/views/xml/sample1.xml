@@ -1,0 +1,10 @@
+<bean id="initialView" class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+  <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView"/>
+  <property name="viewProperties">
+    <map>
+      <entry key="firstMessage" value="firstMessage.text"/>
+      <entry key="descriptionTextPath"
+             value="org/springframework/richclient/samples/simple/ui/initialViewText.html"/>
+    </map>
+  </property>
+</bean>
