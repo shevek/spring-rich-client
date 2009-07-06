@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  <bean id="application" class="org.springframework.richclient.application.Application">
+    <constructor-arg index="0" ref="applicationDescriptor" />
+    <constructor-arg index="1" ref="lifecycleAdvisor" />
+  </bean>
+
+  <bean id="lifecycleAdvisor"
+    class="org.springframework.richclient.samples.simple.app.SimpleLifecycleAdvisor">
+    <property name="windowCommandBarDefinitions"
+      value="org/springframework/richclient/samples/simple/ui/commands-context.xml" />
+    <property name="startingPageId" value="initialView" />
+    <property name="windowCommandManagerBeanName" value="windowCommandManager" />
+    <property name="menubarBeanName" value="menuBar" />
+    <property name="toolbarBeanName" value="toolBar" />
+  </bean>
+  <bean id="initialView"
+    class="org.springframework.richclient.application.support.DefaultViewDescriptor">
+    <property name="viewClass" value="org.springframework.richclient.samples.simple.ui.InitialView" />
+    <property name="viewProperties">
+      <map>
+        <entry key="firstMessage" value="firstMessage.text" />
+        <entry key="descriptionTextPath"
+          value="org/springframework/richclient/samples/simple/ui/initialViewText.html" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="serviceLocator"
+    class="org.springframework.richclient.application.ApplicationServicesLocator">
+    <property name="applicationServices" ref="applicationServices" />
+  </bean>
+
+  <bean id="applicationServices"
+    class="org.springframework.richclient.application.support.DefaultApplicationServices" />
+
+  <bean id="applicationEventMulticaster"
+    class="org.springframework.context.event.SimpleApplicationEventMulticaster" />
+
+  <bean id="applicationDescriptor"
+    class="org.springframework.richclient.application.support.DefaultApplicationDescriptor">
+    <property name="version" value="1.0" />
+  </bean>
+
+  <bean id="applicationObjectConfigurer" depends-on="serviceLocator"
+    class="org.springframework.richclient.application.config.DefaultApplicationObjectConfigurer">
+  </bean>
+
+  <bean id="lookAndFeelConfigurer"
+    class="org.springframework.richclient.application.config.JGoodiesLooksConfigurer">
+    <property name="popupDropShadowEnabled" value="false" />
+    <property name="theme">
+      <bean class="com.jgoodies.looks.plastic.theme.ExperienceBlue" />
+    </property>
+  </bean>
+
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>org.springframework.richclient.samples.simple.ui.messages</value>
+        <value>org.springframework.richclient.application.messages</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="imageResourcesFactory" class="org.springframework.context.support.ResourceMapFactoryBean">
+    <property name="locations">
+      <list>
+        <value>classpath:org/springframework/richclient/image/images.properties</value>
+        <value>classpath:org/springframework/richclient/samples/simple/ui/images.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="imageSource" class="org.springframework.richclient.image.DefaultImageSource">
+    <constructor-arg index="0" ref="imageResourcesFactory" />
+    <property name="brokenImageIndicator"
+      value="/org/springframework/richclient/images/alert/error_obj.gif" />
+  </bean>
+
+  <bean id="formComponentInterceptorFactory"
+    class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+    <property name="interceptorFactories">
+      <list>
+        <bean
+         class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+          <property name="errorColor" value="255,245,245" />
+        </bean>
+        <bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory" />
+        <bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory" />
+        <bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="rulesSource"
+    class="org.springframework.richclient.samples.simple.domain.SimpleValidationRulesSource" />
+
+  <bean id="conversionService"
+    class="org.springframework.richclient.application.DefaultConversionServiceFactoryBean">
+    <property name="formatterFactory">
+      <bean class="org.springframework.richclient.samples.simple.ui.SimpleAppFormatterFactory" />
+    </property>
+  </bean>
+</beans>

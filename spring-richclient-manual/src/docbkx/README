@@ -1,0 +1,3 @@
+This documentation needs a small change to the docbkx plugin. You need to replace the
+verbatim.xsl in the jar of the plugin by the one in the resources folder.
+This is to enable the code highlighting

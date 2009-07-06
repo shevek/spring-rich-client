@@ -10,25 +10,68 @@
   <section id="security:integrating">
     <title>Integration security in a GUI application</title>
     <para>
-      TODO
+      Integrating security into a GUI application can be cumbersome. The reason for this is:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          Adding login and logout functionality can take a lot of work
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Adjusting screens to handle with security limitations
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      Spring Rich Client integrates with Spring Security to provide a framework to handle security-based problems and
+      offers a solution for these.
     </para>
   </section>
   <section id="security:spring">
     <title>Spring Security integration</title>
     <para>
-      TODO
+      Simply integrating login functionality is easy: provide a login command in your commands context and make your
+      lifecycle advisor runs this command before showing the screen.
     </para>
+    <programlisting language="xml"><xi:include href="../codesamples/security/xml/sample1.xml" parse="text"/></programlisting>
+    <programlisting language="java:nogutter"><xi:include href="../codesamples/security/java/sample1.java" parse="text"/></programlisting>
+    <para>
+      The login command uses service location to find the application security manager. If no security manager is found
+      in the context, the default implementation will be used.
+    </para>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/login.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
   <section id="security:security-awareness">
     <title>Turning on security awareness of the GUI</title>
     <para>
-      TODO
+      Spring Rich Client has a bean post processor that can enable any class to be notified of security changes. You can
+      define this post processor as
+    </para>
+    <programlisting language="xml"><xi:include href="../codesamples/security/xml/sample2.xml" parse="text"/></programlisting>
+    <para>
+      If your classes implement either the AuthenticationAware or LoginAware interface, this bean postprocessor will
+      make sure these get notified of login changes.
     </para>
   </section>
   <section id="security:commands">
     <title>Securing commands</title>
     <para>
-      TODO
+      Securing commands is easy. AbstractCommand enables you to define a security controller (by its id), which then
+      uses a access decision manager to decide whether a command is allowed to be executed (by enabling/disabling it).
     </para>
+    <para>
+      For example, a secured command bean in the commands context may look like this:
+    </para>
+    <programlisting language="xml"><xi:include href="../codesamples/security/xml/sample3.xml" parse="text"/></programlisting>
+    <para>
+      This assumes you have a security controller named mySecurityController defined in your application context.
+    </para>
+    <warning>Rest of the text</warning>
   </section>
 </chapter>

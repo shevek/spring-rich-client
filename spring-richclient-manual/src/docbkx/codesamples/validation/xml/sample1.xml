@@ -1,0 +1,6 @@
+<bean name="testObjectValidator" class="org.springmodules.validation.valang.ValangValidator">
+        <property name="valang">
+            <value><![CDATA[
+{ field1           : (? IS NOT NULL) : 'Field 1 is required' : 'errors.required' : 'Field 1' }
+]]></value>
+</property>
