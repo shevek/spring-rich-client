@@ -51,6 +51,8 @@ public abstract class AbstractBinder extends ApplicationServicesAccessor impleme
 
     private final Set supportedContextKeys;
 
+    private boolean readOnly;
+
     protected AbstractBinder(Class requiredSourceClass) {
         this.requiredSourceClass = requiredSourceClass;
         this.supportedContextKeys = Collections.EMPTY_SET;
@@ -101,5 +103,13 @@ public abstract class AbstractBinder extends ApplicationServicesAccessor impleme
 
     protected Class getPropertyType(FormModel formModel, String formPropertyPath) {
         return formModel.getFieldMetadata(formPropertyPath).getPropertyType();
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }
