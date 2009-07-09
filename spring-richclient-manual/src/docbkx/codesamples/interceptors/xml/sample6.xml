@@ -1,0 +1,8 @@
+<!-- The login form will not show the Dirty Indicator -->
+<bean class="org.springframework.richclient.form.builder.support.DirtyIndicatorInterceptorFactory">
+        <property name="excludedFormModelIds">
+                <list>
+                        <value>loginForm</value>
+                </list>
+        </property>
+</bean>

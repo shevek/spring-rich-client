@@ -1,0 +1,14 @@
+<bean id="formComponentInterceptorFactory"
+      class="org.springframework.richclient.form.builder.support.ChainedInterceptorFactory">
+  <property name="interceptorFactories">
+    <list>
+      <bean class="org.springframework.richclient.form.builder.support.ColorValidationInterceptorFactory">
+        <property name="errorColor" value="255,200,200"/>
+      </bean>
+      <bean class="org.springframework.richclient.form.builder.support.OverlayValidationInterceptorFactory"/>
+      <bean class="org.springframework.richclient.form.builder.support.DirtyIndicatorInterceptorFactory"/>
+      <bean class="org.springframework.richclient.text.TextComponentPopupInterceptorFactory"/>
+      <bean class="org.springframework.richclient.list.ComboBoxAutoCompletionInterceptorFactory"/>
+    </list>
+  </property>
+</bean>
