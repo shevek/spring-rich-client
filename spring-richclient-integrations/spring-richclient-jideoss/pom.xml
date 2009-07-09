@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>spring-richclient-integrations</artifactId>
+    <groupId>org.springframework.richclient</groupId>
+    <version>1.1.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>spring-richclient-jideoss</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Spring Rich Client Jide OSS integration</name>
+  <description>
+    Spring Rich Client JIDE OSS integration
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.richclient</groupId>
+      <artifactId>spring-richclient-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>
