@@ -90,7 +90,7 @@ public class TabbedApplicationPage extends AbstractApplicationPage implements Pa
         try {
             addingComponent = true;
             tabbedPane.addTab(pageComponent.getDisplayName(), pageComponent.getIcon(), pageComponent.getContext()
-                    .getPane().getControl(), pageComponent.getCaption());
+                    .getPane().getPageComponent().getControl(), pageComponent.getCaption());
         } finally {
             addingComponent = false;
         }
