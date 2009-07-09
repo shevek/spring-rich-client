@@ -18,6 +18,7 @@
     <module>spring-richclient-vldocking</module>
     <module>spring-richclient-flexdock</module>
     <module>spring-richclient-swingdocking</module>
+    <module>spring-richclient-jideoss</module>
     <!-- JIDE integration isn't built automatically due to licensing  -->
     <!--<module>spring-richclient-jide</module>-->
   </modules>
