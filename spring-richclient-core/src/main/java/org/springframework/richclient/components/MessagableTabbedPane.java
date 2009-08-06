@@ -19,8 +19,8 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab
 
     private IconSource iconSource;
 
+    private boolean oldHasError = false;
     private Icon oldIcon;
-
     private String oldToolTipText;
 
     public MessagableTabbedPane()
@@ -119,21 +119,23 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab
         {
             if (tabMessages.hasErrors())
             {
-                if (oldIcon == null) oldIcon = getIconAt(tabIndex);
-                if (oldToolTipText == null) oldToolTipText = getToolTipTextAt(tabIndex);
-                if (oldIcon == getIcon(Severity.ERROR.getLabel())) {
-                    oldIcon = null;
-                    oldToolTipText = null;
+                if (!oldHasError) {
+                    oldHasError = true;
+                    oldIcon = getIconAt(tabIndex);
+                    oldToolTipText = getToolTipTextAt(tabIndex);
                 }
                 setIconAt(tabIndex, getIcon(Severity.ERROR.getLabel()));
                 setToolTipTextAt(tabIndex, tabMessages.getFirstMessage());
             }
             else
             {
-                setIconAt(tabIndex, oldIcon);
-                setToolTipTextAt(tabIndex, oldToolTipText);
-                oldIcon = null;
-                oldToolTipText = null;
+                if (oldHasError) {
+                    setIconAt(tabIndex, oldIcon);
+                    setToolTipTextAt(tabIndex, oldToolTipText);
+                    oldHasError = false;
+                    oldIcon = null;
+                    oldToolTipText = null;
+                }
             }
         }
     }
