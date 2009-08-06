@@ -1,8 +1,11 @@
 package org.springframework.richclient.exceptionhandling;
 
+import java.sql.SQLException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.richclient.exceptionhandling.delegation.ExceptionPurger;
+import org.springframework.core.ErrorCoded;
 
 /**
  * Superclass of logging exception handlers.
@@ -12,8 +15,6 @@ import org.springframework.richclient.exceptionhandling.delegation.ExceptionPurg
  * @since 0.3
  */
 public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterableExceptionHandler {
-
-    protected static final String LOG_MESSAGE = "Uncaught throwable handled";
 
     protected final transient Log logger = LogFactory.getLog(getClass());
 
@@ -55,28 +56,45 @@ public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterab
         }
     }
 
+    protected String extractErrorCode(Throwable throwable) {
+        if (throwable instanceof ErrorCoded) {
+            return ((ErrorCoded) throwable).getErrorCode();
+        } else if (throwable instanceof SQLException) {
+            return Integer.toString(((SQLException) throwable).getErrorCode());
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Log an exception
      */
     public void logException(Thread thread, Throwable throwable) {
+        String logMessage;
+        String errorCode = extractErrorCode(throwable);
+        if (errorCode != null) {
+            logMessage = "Uncaught throwable handled with errorCode (" + errorCode + ").";
+        } else {
+            logMessage = "Uncaught throwable handled.";
+        }
         switch (logLevel) {
             case TRACE:
-                logger.trace(LOG_MESSAGE, throwable);
+                logger.trace(logMessage, throwable);
                 break;
             case DEBUG:
-                logger.debug(LOG_MESSAGE, throwable);
+                logger.debug(logMessage, throwable);
                 break;
             case INFO:
-                logger.info(LOG_MESSAGE, throwable);
+                logger.info(logMessage, throwable);
                 break;
             case WARN:
-                logger.warn(LOG_MESSAGE, throwable);
+                logger.warn(logMessage, throwable);
                 break;
             case ERROR:
-                logger.error(LOG_MESSAGE, throwable);
+                logger.error(logMessage, throwable);
                 break;
             case FATAL:
-                logger.fatal(LOG_MESSAGE, throwable);
+                logger.fatal(logMessage, throwable);
                 break;
             default:
                 logger.error("Unrecognized log level (" + logLevel + ") for throwable", throwable);

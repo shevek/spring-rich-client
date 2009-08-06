@@ -82,11 +82,11 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
         }
         List<String> messageKeyList = new ArrayList<String>();
         Class clazz = throwable.getClass();
-        if(throwable instanceof ErrorCoded)
+        if (throwable instanceof ErrorCoded)
         {
-            messageKeyList.add(((ErrorCoded) throwable).getErrorCode() +  keySuffix);
+            messageKeyList.add(((ErrorCoded) throwable).getErrorCode() + keySuffix);
         }
-        if(throwable instanceof SQLException)
+        if (throwable instanceof SQLException)
         {
             messageKeyList.add(SQLException.class.getName() + "." + ((SQLException) throwable).getErrorCode() + keySuffix);
         }
