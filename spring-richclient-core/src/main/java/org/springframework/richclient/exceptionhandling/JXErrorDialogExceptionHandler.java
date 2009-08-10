@@ -40,8 +40,9 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
 	 */
 	public void notifyUserAboutException(Thread thread, Throwable throwable) {
 		ErrorInfo errorInfo = new ErrorInfo(resolveExceptionCaption(throwable),
-				(String) createExceptionContent(throwable), getDetailsAsHTML(throwable.getMessage(), resolveMessageType(),
-						throwable), null, throwable, resolveMessageType(), null);
+				(String) createExceptionContent(throwable),
+                getDetailsAsHTML(throwable.getMessage(), resolveMessageType(), throwable),
+                null, throwable, resolveMessageType(), null);
 		JXErrorPane pane = new JXErrorPane();
 		pane.setErrorInfo(errorInfo);
 		if (errorReporter != null) {
