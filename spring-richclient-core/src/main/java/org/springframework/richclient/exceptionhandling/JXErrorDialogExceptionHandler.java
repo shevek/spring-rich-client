@@ -15,109 +15,110 @@ import org.jdesktop.swingx.error.ErrorReporter;
  */
 public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandler {
 
-	private ErrorReporter errorReporter;
+    private ErrorReporter errorReporter;
 
-	/**
-	 * No shutDownPolicy can be used in conjunction with the {@link JXErrorPane}.
-	 */
-	public void setShutdownPolicy(ShutdownPolicy shutdownPolicy) {
-		throw new UnsupportedOperationException(
-				"JXErrorDialogExceptionHandler does not support setting of ShutdownPolicy");
-	}
+    /**
+     * No shutDownPolicy can be used in conjunction with the {@link JXErrorPane}.
+     */
+    public void setShutdownPolicy(ShutdownPolicy shutdownPolicy) {
+        throw new UnsupportedOperationException(
+                "JXErrorDialogExceptionHandler does not support setting of ShutdownPolicy");
+    }
 
-	/**
-	 * Add an {@link ErrorReporter} to the {@link JXErrorPane}.
-	 *
-	 * @param errorReporter error reporter to add.
-	 */
-	public void setErrorReporter(ErrorReporter errorReporter) {
-		this.errorReporter = errorReporter;
-	}
+    /**
+     * Add an {@link ErrorReporter} to the {@link JXErrorPane}.
+     *
+     * @param errorReporter error reporter to add.
+     */
+    public void setErrorReporter(ErrorReporter errorReporter) {
+        this.errorReporter = errorReporter;
+    }
 
-	/**
-	 * Shows the {@link JXErrorPane} to the user.
-	 */
-	public void notifyUserAboutException(Thread thread, Throwable throwable) {
-		ErrorInfo errorInfo = new ErrorInfo(resolveExceptionCaption(throwable),
-				(String) createExceptionContent(throwable),
+    /**
+     * Shows the {@link JXErrorPane} to the user.
+     */
+    public void notifyUserAboutException(Thread thread, Throwable throwable) {
+        ErrorInfo errorInfo = new ErrorInfo(resolveExceptionCaption(throwable),
+                (String) createExceptionContent(throwable),
                 getDetailsAsHTML(throwable.getMessage(), resolveMessageType(), throwable),
                 null, throwable, resolveMessageType(), null);
-		JXErrorPane pane = new JXErrorPane();
-		pane.setErrorInfo(errorInfo);
-		if (errorReporter != null) {
-			pane.setErrorReporter(errorReporter);
-		}
+        JXErrorPane pane = new JXErrorPane();
+        pane.setErrorInfo(errorInfo);
+        if (errorReporter != null) {
+            pane.setErrorReporter(errorReporter);
+        }
 
-		JXErrorPane.showDialog(resolveParentFrame(), pane);
-	}
+        JXErrorPane.showDialog(resolveParentFrame(), pane);
+    }
 
-	/**
-	 * Resolve the Spring logLevel to java Level.
-	 */
-	 private Level resolveMessageType() {
-	        switch (logLevel) {
-	            case TRACE:
-	            	return Level.FINEST;
-	            case DEBUG:
-	            	return Level.FINER;
-	            case INFO:
-	                return Level.INFO;
-	            case WARN:
-	                return Level.WARNING;
-	            case ERROR:
-	            case FATAL:
-	            default:
-	                return Level.SEVERE;
-	        }
-	    }
+    /**
+     * Resolve the Spring logLevel to java Level.
+     */
+     private Level resolveMessageType() {
+        switch (logLevel) {
+            case TRACE:
+                return Level.FINEST;
+            case DEBUG:
+                return Level.FINER;
+            case INFO:
+                return Level.INFO;
+            case WARN:
+                return Level.WARNING;
+            case ERROR:
+            case FATAL:
+            default:
+                return Level.SEVERE;
+        }
+    }
 
-	/**
-	 * Converts the incoming string to an escaped output string. This method is
-	 * far from perfect, only escaping &lt;, &gt; and &amp; characters
-	 */
-	private static String escapeXml(String input) {
-		return input == null ? "" : input.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-	}
+    /**
+     * Converts the incoming string to an escaped output string. This method is
+     * far from perfect, only escaping &lt;, &gt; and &amp; characters
+     */
+    private static String escapeXml(String input) {
+        return input == null ? "" : input.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
 
-	/**
-	 * Creates and returns HTML representing the details of this incident info.
-	 * This method is only called if the details needs to be generated: ie: the
-	 * detailed error message property of the incident info is null.
-	 */
-	private static String getDetailsAsHTML(String title, Level level, Throwable e) {
-		if (e != null) {
-			// convert the stacktrace into a more pleasent bit of HTML
-			StringBuilder html = new StringBuilder("<html>");
+    /**
+     * Creates and returns HTML representing the details of this incident info.
+     * This method is only called if the details needs to be generated: ie: the
+     * detailed error message property of the incident info is null.
+     */
+    private static String getDetailsAsHTML(String title, Level level, Throwable e) {
+        if (e != null) {
+            // convert the stacktrace into a more pleasent bit of HTML
+            StringBuilder html = new StringBuilder("<html>");
             html.append("<h2>").append(escapeXml(title)).append("</h2>");
-			html.append("<HR size='1' noshade>");
-			html.append("<div></div>");
-			html.append("<b>Message:</b>");
-			html.append("<pre>");
+            html.append("<HR size='1' noshade>");
+            html.append("<div></div>");
+            html.append("<b>Message:</b>");
+            html.append("<pre>");
             html.append("    ").append(escapeXml(e.toString()));
-			html.append("</pre>");
-			html.append("<b>Level:</b>");
-			html.append("<pre>");
+            html.append("</pre>");
+            html.append("<b>Level:</b>");
+            html.append("<pre>");
             html.append("    ").append(level);
-			html.append("</pre>");
-			html.append("<b>Stack Trace:</b>");
-			html.append("<pre>");
-			for (StackTraceElement el : e.getStackTrace()) {
+            html.append("</pre>");
+            html.append("<b>Stack Trace:</b>");
+            html.append("<pre>");
+            for (StackTraceElement el : e.getStackTrace()) {
                 html.append("    ").append(el.toString().replace("<init>", "&lt;init&gt;")).append("\n");
-			}
-			if (e.getCause() != null) {
-				html.append("</pre>");
-				html.append("<b>Cause:</b>");
-				html.append("<pre>");
-				html.append(e.getCause().getMessage());
-				html.append("</pre><pre>");
-				for (StackTraceElement el : e.getCause().getStackTrace()) {
+            }
+            if (e.getCause() != null) {
+                html.append("</pre>");
+                html.append("<b>Cause:</b>");
+                html.append("<pre>");
+                html.append(e.getCause().getMessage());
+                html.append("</pre><pre>");
+                for (StackTraceElement el : e.getCause().getStackTrace()) {
                     html.append("    ").append(el.toString().replace("<init>", "&lt;init&gt;")).append("\n");
-				}
-			}
-			html.append("</pre></html>");
-			return html.toString();
-		} else {
-			return null;
-		}
-	}
+                }
+            }
+            html.append("</pre></html>");
+            return html.toString();
+        } else {
+            return null;
+        }
+    }
+
 }

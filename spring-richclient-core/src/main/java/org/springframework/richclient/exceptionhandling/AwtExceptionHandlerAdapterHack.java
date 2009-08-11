@@ -32,7 +32,7 @@ public class AwtExceptionHandlerAdapterHack {
     public static void registerExceptionHandler(RegisterableExceptionHandler exceptionHandlerDelegate) {
         AwtExceptionHandlerAdapterHack.exceptionHandlerDelegate = exceptionHandlerDelegate;
         // Registers this class with the system properties so Sun's JDK can pick it up.  Always sets even if previously set.
-      	System.getProperties().put(SUN_AWT_EXCEPTION_HANDLER_KEY, AwtExceptionHandlerAdapterHack.class.getName());
+        System.getProperties().put(SUN_AWT_EXCEPTION_HANDLER_KEY, AwtExceptionHandlerAdapterHack.class.getName());
     }
 
     /**

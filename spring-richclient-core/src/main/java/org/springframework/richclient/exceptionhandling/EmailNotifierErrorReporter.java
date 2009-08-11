@@ -49,73 +49,72 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
  * </p>
  *
  * @author Jan Hoskens
- *
  */
 public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware, InitializingBean {
 
-	private MessageSourceAccessor messageSourceAccessor;
+    private MessageSourceAccessor messageSourceAccessor;
 
-	private String id;
+    private String id;
 
-	public void afterPropertiesSet() {
-		if (messageSourceAccessor == null) {
-			messageSourceAccessor = (MessageSourceAccessor) ApplicationServicesLocator.services().getService(
-					MessageSourceAccessor.class);
-		}
-		if (getId() == null) {
-			setId(StringUtils.uncapitalize(getClass().getSimpleName()));
-		}
-	}
+    public void afterPropertiesSet() {
+        if (messageSourceAccessor == null) {
+            messageSourceAccessor = (MessageSourceAccessor) ApplicationServicesLocator.services().getService(
+                    MessageSourceAccessor.class);
+        }
+        if (getId() == null) {
+            setId(StringUtils.uncapitalize(getClass().getSimpleName()));
+        }
+    }
 
-	public void reportError(ErrorInfo info) throws NullPointerException {
-		Message mail = new Message();
+    public void reportError(ErrorInfo info) throws NullPointerException {
+        Message mail = new Message();
 
-		Object params[] = new Object[] { info.getBasicErrorMessage(), info.getDetailedErrorMessage() };
-		if (info.getErrorException() != null) {
-			params = new Object[] { info.getErrorException(), getStackTraceString(info.getErrorException()) };
-		}
+        Object params[] = new Object[] { info.getBasicErrorMessage(), info.getDetailedErrorMessage() };
+        if (info.getErrorException() != null) {
+            params = new Object[] { info.getErrorException(), getStackTraceString(info.getErrorException()) };
+        }
 
-		String body = messageSourceAccessor.getMessage(getId() + ".body", params, "");
-		String title = messageSourceAccessor.getMessage(getId() + ".title", "");
+        String body = messageSourceAccessor.getMessage(getId() + ".body", params, "");
+        String title = messageSourceAccessor.getMessage(getId() + ".title", "");
 
-		String adresses = messageSourceAccessor.getMessage(getId() + ".mailTo", "");
-		if (!StringUtils.isEmpty(adresses)) {
-			mail.setToAddrs(Arrays.<String> asList(adresses.split(";")));
-		}
+        String adresses = messageSourceAccessor.getMessage(getId() + ".mailTo", "");
+        if (!StringUtils.isEmpty(adresses)) {
+            mail.setToAddrs(Arrays.<String> asList(adresses.split(";")));
+        }
 
-		mail.setSubject(title);
-		mail.setBody(body);
+        mail.setSubject(title);
+        mail.setBody(body);
 
-		try {
-			Desktop.mail(mail);
-		}
-		catch (DesktopException e) {
-			String mailExceptionMessage = messageSourceAccessor.getMessage(getId() + ".mailException", "");
-			throw new RuntimeException(mailExceptionMessage, e);
-		}
+        try {
+            Desktop.mail(mail);
+        }
+        catch (DesktopException e) {
+            String mailExceptionMessage = messageSourceAccessor.getMessage(getId() + ".mailException", "");
+            throw new RuntimeException(mailExceptionMessage, e);
+        }
 
-	}
+    }
 
-	protected String getStackTraceString(Throwable t) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw, true);
-		t.printStackTrace(pw);
-		pw.flush();
-		sw.flush();
-		return sw.toString();
-	}
+    protected String getStackTraceString(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        t.printStackTrace(pw);
+        pw.flush();
+        sw.flush();
+        return sw.toString();
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setBeanName(String name) {
-		if (getId() == null) {
-			setId(name);
-		}
-	}
+    public void setBeanName(String name) {
+        if (getId() == null) {
+            setId(name);
+        }
+    }
 }
