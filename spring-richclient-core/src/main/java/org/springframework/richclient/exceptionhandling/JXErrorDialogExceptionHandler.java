@@ -12,7 +12,6 @@ import org.jdesktop.swingx.error.ErrorReporter;
  * Error handler based on the {@link JXErrorPane} found in the swingx project.
  *
  * @author Jan Hoskens
- *
  */
 public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandler {
 
@@ -88,22 +87,22 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
 	private static String getDetailsAsHTML(String title, Level level, Throwable e) {
 		if (e != null) {
 			// convert the stacktrace into a more pleasent bit of HTML
-			StringBuffer html = new StringBuffer("<html>");
-			html.append("<h2>" + escapeXml(title) + "</h2>");
+			StringBuilder html = new StringBuilder("<html>");
+            html.append("<h2>").append(escapeXml(title)).append("</h2>");
 			html.append("<HR size='1' noshade>");
 			html.append("<div></div>");
 			html.append("<b>Message:</b>");
 			html.append("<pre>");
-			html.append("    " + escapeXml(e.toString()));
+            html.append("    ").append(escapeXml(e.toString()));
 			html.append("</pre>");
 			html.append("<b>Level:</b>");
 			html.append("<pre>");
-			html.append("    " + level);
+            html.append("    ").append(level);
 			html.append("</pre>");
 			html.append("<b>Stack Trace:</b>");
 			html.append("<pre>");
 			for (StackTraceElement el : e.getStackTrace()) {
-				html.append("    " + el.toString().replace("<init>", "&lt;init&gt;") + "\n");
+                html.append("    ").append(el.toString().replace("<init>", "&lt;init&gt;")).append("\n");
 			}
 			if (e.getCause() != null) {
 				html.append("</pre>");
@@ -117,8 +116,7 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
 			}
 			html.append("</pre></html>");
 			return html.toString();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
