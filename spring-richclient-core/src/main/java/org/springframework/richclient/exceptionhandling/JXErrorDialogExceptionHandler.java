@@ -41,8 +41,8 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
         ErrorInfo errorInfo = new ErrorInfo(
                 resolveExceptionCaption(throwable),
                 (String) createExceptionContent(throwable),
-                getDetailsAsHTML(throwable.getMessage(), resolveMessageType(), throwable),
-                null, throwable, resolveMessageType(), null);
+                getDetailsAsHTML(throwable.getMessage(), logLevel, throwable),
+                null, throwable, logLevel.getJdkLogLevel(), null);
         JXErrorPane pane = new JXErrorPane();
         pane.setErrorInfo(errorInfo);
         if (errorReporter != null) {
@@ -50,26 +50,6 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
         }
 
         JXErrorPane.showDialog(resolveParentFrame(), pane);
-    }
-
-    /**
-     * Resolve the Spring logLevel to java Level.
-     */
-     private Level resolveMessageType() {
-        switch (logLevel) {
-            case TRACE:
-                return Level.FINEST;
-            case DEBUG:
-                return Level.FINER;
-            case INFO:
-                return Level.INFO;
-            case WARN:
-                return Level.WARNING;
-            case ERROR:
-            case FATAL:
-            default:
-                return Level.SEVERE;
-        }
     }
 
     /**
@@ -85,7 +65,7 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
      * This method is only called if the details needs to be generated: ie: the
      * detailed error message property of the incident info is null.
      */
-    private static String getDetailsAsHTML(String title, Level level, Throwable e) {
+    private static String getDetailsAsHTML(String title, LogLevel logLevel, Throwable e) {
         if (e != null) {
             // convert the stacktrace into a more pleasent bit of HTML
             StringBuilder html = new StringBuilder("<html>");
@@ -96,11 +76,11 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
             html.append("<pre>");
             html.append("    ").append(escapeXml(e.toString()));
             html.append("</pre>");
-            html.append("<b>Level:</b>");
+            html.append("<b>Log level:</b>");
             html.append("<pre>");
-            html.append("    ").append(level);
+            html.append("    ").append(logLevel);
             html.append("</pre>");
-            html.append("<b>Stack Trace:</b>");
+            html.append("<b>Stack trace:</b>");
             html.append("<pre>");
             for (StackTraceElement el : e.getStackTrace()) {
                 html.append("    ").append(el.toString().replace("<init>", "&lt;init&gt;")).append("\n");
