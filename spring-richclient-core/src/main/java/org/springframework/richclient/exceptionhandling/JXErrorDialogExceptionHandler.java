@@ -111,7 +111,7 @@ public class JXErrorDialogExceptionHandler extends MessagesDialogExceptionHandle
 				html.append(e.getCause().getMessage());
 				html.append("</pre><pre>");
 				for (StackTraceElement el : e.getCause().getStackTrace()) {
-					html.append("    " + el.toString().replace("<init>", "&lt;init&gt;") + "\n");
+                    html.append("    ").append(el.toString().replace("<init>", "&lt;init&gt;")).append("\n");
 				}
 			}
 			html.append("</pre></html>");
