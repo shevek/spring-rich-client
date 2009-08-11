@@ -34,7 +34,6 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
  * <li><em>jdic-native-{linux/windows}</em>: platform specific native
  * libraries.</li>
  * </ul>
- *
  * <p>
  * During development, maven can add the correct jars to your classpath by using
  * a profile that is os specific (see pom.xml of spring-richclient-jdk5). Note
@@ -69,26 +68,30 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
     public void reportError(ErrorInfo info) throws NullPointerException {
         Message mail = new Message();
 
-        Object params[] = new Object[] { info.getBasicErrorMessage(), info.getDetailedErrorMessage() };
-        if (info.getErrorException() != null) {
-            params = new Object[] { info.getErrorException(), getStackTraceString(info.getErrorException()) };
-        }
-
-        String body = messageSourceAccessor.getMessage(getId() + ".body", params, "");
-        String title = messageSourceAccessor.getMessage(getId() + ".title", "");
-
         String adresses = messageSourceAccessor.getMessage(getId() + ".mailTo", "");
         if (!StringUtils.isEmpty(adresses)) {
-            mail.setToAddrs(Arrays.<String> asList(adresses.split(";")));
+            mail.setToAddrs(Arrays.<String>asList(adresses.split(";")));
         }
 
-        mail.setSubject(title);
+        String subject = messageSourceAccessor.getMessage(getId() + ".title", ""); // TODO .title rename to .subject
+        mail.setSubject(subject);
+
+        Object params[] = new Object[] {
+            info.getBasicErrorMessage(),
+            info.getDetailedErrorMessage()
+        };
+        if (info.getErrorException() != null) {
+            params = new Object[] {
+                info.getErrorException(),
+                getStackTraceString(info.getErrorException())
+            };
+        }
+        String body = messageSourceAccessor.getMessage(getId() + ".body", params, "");
         mail.setBody(body);
 
         try {
             Desktop.mail(mail);
-        }
-        catch (DesktopException e) {
+        } catch (DesktopException e) {
             String mailExceptionMessage = messageSourceAccessor.getMessage(getId() + ".mailException", "");
             throw new RuntimeException(mailExceptionMessage, e);
         }
@@ -117,4 +120,5 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
             setId(name);
         }
     }
+
 }
