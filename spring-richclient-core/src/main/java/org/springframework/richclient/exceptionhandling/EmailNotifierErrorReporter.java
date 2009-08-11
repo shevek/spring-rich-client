@@ -18,8 +18,8 @@ import org.springframework.richclient.application.ApplicationServicesLocator;
 /**
  * <p>
  * This email reporter can be added as {@link ErrorReporter} to the
- * {@link JXErrorDialogExceptionHandler}. The email reporter uses the JDIC (
- * {@link https://jdic.dev.java.net/}) library to access your mail client. To
+ * {@link JXErrorDialogExceptionHandler}. The email reporter uses the
+ * <a href="https://jdic.dev.java.net/">JDIC</a> library to access your mail client. To
  * use and deploy this correctly, you need to have the correct native libraries
  * for your platform and have them added to your VM startup
  * (-Djava.library.path).
