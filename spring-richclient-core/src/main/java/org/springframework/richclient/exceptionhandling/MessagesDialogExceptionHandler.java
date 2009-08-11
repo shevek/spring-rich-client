@@ -71,12 +71,14 @@ public class MessagesDialogExceptionHandler extends AbstractDialogExceptionHandl
 
     public Object createExceptionContent(Throwable throwable) {
         String[] messagesKeys = getMessagesKeys(throwable, ".description");
-        String[] parameters = new String[]{formatMessage(throwable.getMessage())};
+        String[] parameters = new String[]{
+            formatMessage(throwable.getMessage())
+        };
         return messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
                 messagesKeys, parameters, messagesKeys[0]));
     }
 
-    private String[] getMessagesKeys(Throwable throwable, String keySuffix) {
+    protected String[] getMessagesKeys(Throwable throwable, String keySuffix) {
         if (messagesKey != null) {
             return new String[] {messagesKey};
         }

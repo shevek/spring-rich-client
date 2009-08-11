@@ -65,7 +65,7 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
         }
     }
 
-    public void reportError(ErrorInfo info) throws NullPointerException {
+    public void reportError(ErrorInfo info) {
         Message mail = new Message();
 
         String adresses = messageSourceAccessor.getMessage(getId() + ".mailTo", "");
@@ -95,7 +95,6 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
             String mailExceptionMessage = messageSourceAccessor.getMessage(getId() + ".mailException", "");
             throw new RuntimeException(mailExceptionMessage, e);
         }
-
     }
 
     protected String getStackTraceString(Throwable t) {
