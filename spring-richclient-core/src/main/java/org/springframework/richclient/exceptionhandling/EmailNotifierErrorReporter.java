@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.jdic.desktop.Desktop;
@@ -17,9 +16,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.context.MessageSourceResolvable;
 import org.springframework.richclient.application.ApplicationServicesLocator;
-import org.springframework.core.ErrorCoded;
 
 /**
  * <p>
@@ -85,57 +82,74 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
     public void reportError(ErrorInfo info) {
         Message mail = new Message();
 
-        String adresses = messageSourceAccessor.getMessage(getMessageSourceResolvable(".mailTo"));
-        if (!StringUtils.isEmpty(adresses)) {
-            mail.setToAddrs(Arrays.<String>asList(adresses.split(";")));
+        String mailTo = getMessageByKeySuffix(".mailTo");
+        if (!StringUtils.isEmpty(mailTo)) {
+            String[] mailToTokens = mailTo.split(";");
+            List<String> toAddrs = new ArrayList<String>(mailToTokens.length);
+            for (String mailToToken : mailToTokens)
+            {
+                String trimmedMailToToken = mailToToken.trim();
+                if (!StringUtils.isEmpty(trimmedMailToToken)) {
+                    toAddrs.add(trimmedMailToToken);
+                }
+            }
+            mail.setToAddrs(toAddrs);
         }
 
-        String subject = messageSourceAccessor.getMessage(getMessageSourceResolvable(".title")); // TODO .title rename to .subject
-        mail.setSubject(subject);
-
-        Object params[] = new Object[] {
-            info.getBasicErrorMessage(),
-            info.getDetailedErrorMessage()
-        };
-        if (info.getErrorException() != null) {
-            params = new Object[] {
-                info.getErrorException(),
-                getStackTraceString(info.getErrorException())
+        Throwable errorException = info.getErrorException();
+        Object[] messageParams;
+        if (errorException != null) {
+            messageParams = new Object[] {
+                errorException,
+                getStackTraceString(errorException)
+            };
+        } else {
+            messageParams = new Object[] {
+                info.getBasicErrorMessage(),
+                info.getDetailedErrorMessage()
             };
         }
-        String body = messageSourceAccessor.getMessage(getMessageSourceResolvable(".body", params));
+
+        String subject = getMessageByKeySuffix(".subject", messageParams);
+        mail.setSubject(subject);
+
+        String body = getMessageByKeySuffix(".body", messageParams);
         mail.setBody(body);
 
         try {
             Desktop.mail(mail);
         } catch (UnsatisfiedLinkError e) {
-            String message = messageSourceAccessor.getMessage(getMessageSourceResolvable(".noNativeJdic"));
+            String message = getMessageByKeySuffix(".noNativeJdic");
+            throw new IllegalStateException(message, e);
+        } catch (NoClassDefFoundError e) {
+            String message = getMessageByKeySuffix(".noNativeJdic");
             throw new IllegalStateException(message, e);
         } catch (DesktopException e) {
-            String message = messageSourceAccessor.getMessage(getMessageSourceResolvable(".mailException"));
+            String message = getMessageByKeySuffix(".mailException");
             throw new IllegalStateException(message, e);
         }
     }
 
-    protected MessageSourceResolvable getMessageSourceResolvable(String keySuffix) {
-        return getMessageSourceResolvable(keySuffix, null);
+    protected String getMessageByKeySuffix(String keySuffix) {
+        return getMessageByKeySuffix(keySuffix, null);
     }
 
-    protected MessageSourceResolvable getMessageSourceResolvable(String keySuffix, Object[] params) {
+    protected String getMessageByKeySuffix(String keySuffix, Object[] params) {
         List<String> messageKeyList = new ArrayList<String>();
         messageKeyList.add(getId() + keySuffix);
         messageKeyList.add("emailNotifierErrorReporter" + keySuffix);
         String[] messagesKeys = messageKeyList.toArray(new String[messageKeyList.size()]);
-        return new DefaultMessageSourceResolvable(messagesKeys, params, messagesKeys[0]);
+        return messageSourceAccessor.getMessage(new DefaultMessageSourceResolvable(
+                messagesKeys, params, messagesKeys[0]));
     }
 
     protected String getStackTraceString(Throwable t) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, true);
-        t.printStackTrace(pw);
-        pw.flush();
-        sw.flush();
-        return sw.toString();
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter, true);
+        t.printStackTrace(printWriter);
+        printWriter.flush();
+        stringWriter.flush();
+        return stringWriter.toString();
     }
 
 }

@@ -2,9 +2,10 @@
  Upgrading
  -----
  Lieven Doclo
+ Geoffrey De Smet
  -----
 
-Upgrading from 1.0.x to 1.1.x
+Upgrading from 1.0.x to 1.1.0
 
     * Module merge
 
@@ -23,5 +24,11 @@ Upgrading from 1.0.x to 1.1.x
     * Dependency upgrades
 
     A lot of the dependencies have been updated to the latest version. Please check your dependencies before upgrading.
+
+Upgrading from 1.1.0 to 1.1.1
+
+    * Exception handler improvements
+
+    In the messages the key "emailNotifierErrorReporter.title" has been renamed to "emailNotifierErrorReporter.subject"
 
     
