@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.jdic.desktop.Desktop;
@@ -118,10 +119,12 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
 
         try {
             Desktop.mail(mail);
-        } catch (UnsatisfiedLinkError e) {
+        } catch (LinkageError e) {
+            // Thrown by JDIC 0.9.3 on linux (and probably windows too) when native jars are not used properly
             String message = getMessageByKeySuffix(".noNativeJdic");
             throw new IllegalStateException(message, e);
-        } catch (NoClassDefFoundError e) {
+        } catch (NullPointerException e) {
+            // Thrown by JDIC 0.9.5 on linux (and probably windows too) when native jars are not used properly
             String message = getMessageByKeySuffix(".noNativeJdic");
             throw new IllegalStateException(message, e);
         } catch (DesktopException e) {
