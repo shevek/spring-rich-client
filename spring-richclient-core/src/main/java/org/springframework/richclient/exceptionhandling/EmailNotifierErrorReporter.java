@@ -2,10 +2,10 @@ package org.springframework.richclient.exceptionhandling;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.JOptionPane;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.jdic.desktop.Desktop;
@@ -57,7 +57,13 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
 
     private MessageSourceAccessor messageSourceAccessor;
 
+    private boolean outlookWorkaroundEnabled = true;
+    
     private String id;
+
+    public void setOutlookWorkaroundEnabled(boolean outlookWorkaroundEnabled) {
+        this.outlookWorkaroundEnabled = outlookWorkaroundEnabled;
+    }
 
     public String getId() {
         return id;
@@ -85,12 +91,31 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
 
         String mailTo = getMessageByKeySuffix(".mailTo");
         if (!StringUtils.isEmpty(mailTo)) {
+            boolean doOutlookWorkaround = false;
+            if (outlookWorkaroundEnabled) {
+                boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+                if (isWindows) {
+                    doOutlookWorkaround = JOptionPane.showConfirmDialog(null,
+                            getMessageByKeySuffix(".isOutlook.message"),
+                            getMessageByKeySuffix(".isOutlook.title"),
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)
+                            == JOptionPane.YES_OPTION;
+                }
+            }
             String[] mailToTokens = mailTo.split(";");
             List<String> toAddrs = new ArrayList<String>(mailToTokens.length);
             for (String mailToToken : mailToTokens)
             {
                 String trimmedMailToToken = mailToToken.trim();
                 if (!StringUtils.isEmpty(trimmedMailToToken)) {
+                    if (doOutlookWorkaround) {
+                        // The standard is no prefix SMTP
+                        // Outlook Express supposidly works with or without prefix SMTP
+                        // Outlook (like in Office) works only with prefix SMTP
+                        // Thunderbird works always without prefix SMTP.
+                        // Thunderbirds works sometimes with prefix SMTP: it even differs from Vista to Vista
+                        trimmedMailToToken = "SMTP:" + trimmedMailToToken;
+                    }
                     toAddrs.add(trimmedMailToToken);
                 }
             }
@@ -124,8 +149,7 @@ public class EmailNotifierErrorReporter implements ErrorReporter, BeanNameAware,
             String message = getMessageByKeySuffix(".noNativeJdic");
             throw new IllegalStateException(message, e);
         } catch (NullPointerException e) {
-            // Thrown by JDIC 0.9.5 on linux (and probably windows too) when native jars are not used properly
-            String message = getMessageByKeySuffix(".noNativeJdic");
+            String message = getMessageByKeySuffix(".noDefaultMailClient");
             throw new IllegalStateException(message, e);
         } catch (DesktopException e) {
             String message = getMessageByKeySuffix(".mailException");
