@@ -22,7 +22,7 @@ import org.springframework.richclient.command.config.CommandButtonConfigurer;
 import org.springframework.richclient.command.config.CommandConfigurer;
 import org.springframework.richclient.command.config.CommandFaceDescriptor;
 import org.springframework.richclient.command.support.DataEditorWidgetViewCommand;
-import org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter;
+import org.springframework.richclient.exceptionhandling.JdicEmailNotifierErrorReporter;
 import org.springframework.richclient.factory.ButtonFactory;
 import org.springframework.richclient.factory.DefaultButtonFactory;
 import org.springframework.richclient.image.IconSource;
@@ -316,7 +316,7 @@ public class RcpSupport
 
         JXErrorPane pane = new JXErrorPane();
         pane.setErrorInfo(errorInfo);
-        pane.setErrorReporter(new EmailNotifierErrorReporter());
+        pane.setErrorReporter(new JdicEmailNotifierErrorReporter());
 
         JXErrorPane.showDialog(parent, pane);
     }

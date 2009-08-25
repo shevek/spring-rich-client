@@ -119,7 +119,7 @@
             <bean class="org.springframework.richclient.exceptionhandling.JXErrorDialogExceptionHandler">
               <property name="logLevel" value="ERROR" />
               <property name="errorReporter">
-                <bean id="emailNotifierErrorReporter" class="org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter" />
+                <bean id="emailNotifierErrorReporter" class="org.springframework.richclient.exceptionhandling.JdicEmailNotifierErrorReporter" />
               </property>
             </bean>
           </property>

@@ -31,4 +31,8 @@ Upgrading from 1.1.0 to 1.1.1
 
     In the messages the key "emailNotifierErrorReporter.title" has been renamed to "emailNotifierErrorReporter.subject"
 
+    The class org.springframework.richclient.exceptionhandling.EmailNotifierErrorReporter
+    has been renamed to org.springframework.richclient.exceptionhandling.JdicEmailNotifierErrorReporter
+    to allow for a Java6EmailNotifierErrorReporter (RCP-607) to be created later.
+
     
