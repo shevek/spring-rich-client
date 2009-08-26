@@ -173,15 +173,18 @@ public abstract class AbstractApplicationPage extends AbstractControlFactory imp
         }
 
         settingActiveComponent = true;
-
-        if (this.activeComponent != null) {
-            fireFocusLost(this.activeComponent);
+        try {
+            if (this.activeComponent != null) {
+                fireFocusLost(this.activeComponent);
+            }
+            giveFocusTo(pageComponent);
+            this.activeComponent = pageComponent;
+            fireFocusGained(this.activeComponent);
+        } finally {
+            // If this is not done in a finally, any exception thrown in fireFocusGained
+            // will prevent the user from leaving the screen
+            settingActiveComponent = false;
         }
-        giveFocusTo(pageComponent);
-        this.activeComponent = pageComponent;
-        fireFocusGained(this.activeComponent);
-
-        settingActiveComponent = false;
     }
 
     protected void fireFocusLost(PageComponent component) {
