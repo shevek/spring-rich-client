@@ -38,6 +38,48 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab
         super(tabPlacement, tabPolicy);
     }
 
+    public void insertTab(String title, Icon icon, Component component, String tip, int index)
+    {
+        super.insertTab(title, icon, component, tip, index);
+        messages.add(index, new TabMessages());
+    }
+
+    private Icon getIcon(String severityLabel)
+    {
+        if (iconSource == null)
+            iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
+        return iconSource.getIcon("severity." + severityLabel + ".overlay");
+    }
+
+    public void setMessage(Object source, Message message, int tabIndex)
+    {
+        TabMessages tabMessages = (TabMessages)this.messages.get(tabIndex);
+        // if first error or less errors than before, update icon/tooltip
+        if (tabMessages.put(source, message))
+        {
+            if (tabMessages.hasErrors())
+            {
+                if (!oldHasError) {
+                    oldHasError = true;
+                    oldIcon = getIconAt(tabIndex);
+                    oldToolTipText = getToolTipTextAt(tabIndex);
+                }
+                setIconAt(tabIndex, getIcon(Severity.ERROR.getLabel()));
+                setToolTipTextAt(tabIndex, tabMessages.getFirstMessage());
+            }
+            else
+            {
+                if (oldHasError) {
+                    setIconAt(tabIndex, oldIcon);
+                    setToolTipTextAt(tabIndex, oldToolTipText);
+                    oldHasError = false;
+                    oldIcon = null;
+                    oldToolTipText = null;
+                }
+            }
+        }
+    }
+
     private static class TabMessages
     {
         private int numberOfErrors = 0;
@@ -95,48 +137,6 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab
                 return ((Message)messageStack.firstElement()).getMessage();
 
             return null;
-        }
-    }
-
-    public void insertTab(String title, Icon icon, Component component, String tip, int index)
-    {
-        super.insertTab(title, icon, component, tip, index);
-        messages.add(index, new TabMessages());
-    }
-
-    private Icon getIcon(String severityLabel)
-    {
-        if (iconSource == null)
-            iconSource = (IconSource) ApplicationServicesLocator.services().getService(IconSource.class);
-        return iconSource.getIcon("severity." + severityLabel + ".overlay");
-    }
-
-    public void setMessage(Object source, Message message, int tabIndex)
-    {
-        TabMessages tabMessages = (TabMessages)this.messages.get(tabIndex);
-        // if first error or less errors than before, update icon/tooltip
-        if (tabMessages.put(source, message))
-        {
-            if (tabMessages.hasErrors())
-            {
-                if (!oldHasError) {
-                    oldHasError = true;
-                    oldIcon = getIconAt(tabIndex);
-                    oldToolTipText = getToolTipTextAt(tabIndex);
-                }
-                setIconAt(tabIndex, getIcon(Severity.ERROR.getLabel()));
-                setToolTipTextAt(tabIndex, tabMessages.getFirstMessage());
-            }
-            else
-            {
-                if (oldHasError) {
-                    setIconAt(tabIndex, oldIcon);
-                    setToolTipTextAt(tabIndex, oldToolTipText);
-                    oldHasError = false;
-                    oldIcon = null;
-                    oldToolTipText = null;
-                }
-            }
         }
     }
 }
