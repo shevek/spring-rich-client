@@ -19,7 +19,7 @@ import java.awt.*;
  */
 public class MessagableTabbedPane extends JTabbedPane implements MessagableTab {
 
-    private List<MessagableTab> messagableTabs = new ArrayList<MessagableTab>();
+    private List<TabMetaData> tabMetaDatas = new ArrayList<TabMetaData>();
 
     private IconSource iconSource;
 
@@ -38,15 +38,15 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab {
     @Override
     public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
-        messagableTabs.add(index, new MessagableTab());
+        tabMetaDatas.add(index, new TabMetaData());
     }
 
     @Override
     public void setIconAt(int index, Icon icon) {
         // Hack to allow the error icon to overwrite the real icon
-        MessagableTab messagableTab = messagableTabs.get(index);
-        messagableTab.setIcon(icon);
-        if (!messagableTab.hasErrors()) {
+        TabMetaData tabMetaData = tabMetaDatas.get(index);
+        tabMetaData.setIcon(icon);
+        if (!tabMetaData.hasErrors()) {
             super.setIconAt(index, icon);
         }
     }
@@ -54,24 +54,24 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab {
     @Override
     public void setToolTipTextAt(int index, String toolTipText) {
         // Hack to allow the error toolTipText to overwrite the real toolTipText
-        MessagableTab messagableTab = messagableTabs.get(index);
-        messagableTab.setToolTipText(toolTipText);
-        if (!messagableTab.hasErrors()) {
+        TabMetaData tabMetaData = tabMetaDatas.get(index);
+        tabMetaData.setToolTipText(toolTipText);
+        if (!tabMetaData.hasErrors()) {
             super.setToolTipTextAt(index, toolTipText);
         }
     }
 
     public void setMessage(Object source, Message message, int index) {
-        MessagableTab messagableTab = messagableTabs.get(index);
-        messagableTab.put(source, message);
-        if (messagableTab.hasErrors()) {
+        TabMetaData tabMetaData = tabMetaDatas.get(index);
+        tabMetaData.put(source, message);
+        if (tabMetaData.hasErrors()) {
             // Calling super to avoid the error icon/toolTipText overwrite hack
             super.setIconAt(index, loadIcon(Severity.ERROR.getLabel()));
-            super.setToolTipTextAt(index, messagableTab.getFirstErrorMessage());
+            super.setToolTipTextAt(index, tabMetaData.getFirstErrorMessage());
         } else {
             // Calling super to avoid the error icon/toolTipText overwrite hack
-            super.setIconAt(index, messagableTab.getIcon());
-            super.setToolTipTextAt(index, messagableTab.getToolTipText());
+            super.setIconAt(index, tabMetaData.getIcon());
+            super.setToolTipTextAt(index, tabMetaData.getToolTipText());
         }
     }
 
@@ -82,7 +82,7 @@ public class MessagableTabbedPane extends JTabbedPane implements MessagableTab {
         return iconSource.getIcon("severity." + severityLabel + ".overlay");
     }
 
-    private static class MessagableTab {
+    private static class TabMetaData {
 
         private Map<Object, Message> messageMap = new HashMap<Object, Message>();
         private Stack<Message> errorMessageStack = new Stack<Message>();
