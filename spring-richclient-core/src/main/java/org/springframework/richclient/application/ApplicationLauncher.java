@@ -223,120 +223,120 @@ public class ApplicationLauncher {
                             + "]");
             }
             
-			return new ClassPathXmlApplicationContext(startupContextPath);
+            return new ClassPathXmlApplicationContext(startupContextPath);
             
-		}
-		else {
-			return null;
-		}
-        
-	}
+        }
+        else {
+            return null;
+        }
 
-	/**
-	 * Returns an {@code ApplicationContext}, loaded from the bean definition
-	 * files at the classpath-relative locations specified by
-	 * {@code configLocations}.
-	 * 
-	 * <p>
-	 * If a splash screen has been created, the application context will be
-	 * loaded with a bean post processor that will notify the splash screen's
-	 * progress monitor as each bean is initialized.
-	 * </p>
-	 * 
-	 * @param configLocations The classpath-relative locations of the files from
-	 * which the application context will be loaded.
-	 * 
-	 * @return The main application context, never null.
-	 */
-	private ApplicationContext loadRootApplicationContext(String[] configLocations, MessageSource messageSource) {
-		final ClassPathXmlApplicationContext applicationContext 
+    }
+
+    /**
+     * Returns an {@code ApplicationContext}, loaded from the bean definition
+     * files at the classpath-relative locations specified by
+     * {@code configLocations}.
+     *
+     * <p>
+     * If a splash screen has been created, the application context will be
+     * loaded with a bean post processor that will notify the splash screen's
+     * progress monitor as each bean is initialized.
+     * </p>
+     *
+     * @param configLocations The classpath-relative locations of the files from
+     * which the application context will be loaded.
+     *
+     * @return The main application context, never null.
+     */
+    private ApplicationContext loadRootApplicationContext(String[] configLocations, MessageSource messageSource) {
+        final ClassPathXmlApplicationContext applicationContext
                 = new ClassPathXmlApplicationContext(configLocations, false);
 
-		if (splashScreen instanceof MonitoringSplashScreen) {
-			final ProgressMonitor tracker = ((MonitoringSplashScreen) splashScreen).getProgressMonitor();
+        if (splashScreen instanceof MonitoringSplashScreen) {
+            final ProgressMonitor tracker = ((MonitoringSplashScreen) splashScreen).getProgressMonitor();
 
-			applicationContext.addBeanFactoryPostProcessor(
+            applicationContext.addBeanFactoryPostProcessor(
                     new ProgressMonitoringBeanFactoryPostProcessor(tracker, messageSource));
 
-		}
+        }
 
-		applicationContext.refresh();
+        applicationContext.refresh();
 
-		return applicationContext;
-	}
+        return applicationContext;
+    }
 
-	private void setRootApplicationContext(ApplicationContext context) {
-		Assert.notNull(context, "The root rich client application context is required");
-		this.rootApplicationContext = context;
-	}
+    private void setRootApplicationContext(ApplicationContext context) {
+        Assert.notNull(context, "The root rich client application context is required");
+        this.rootApplicationContext = context;
+    }
 
-	/**
-	 * Launches the rich client application. If no startup context has so far
-	 * been provided, the main application context will be searched for a splash
-	 * screen to display. The main application context will then be searched for
-	 * the {@link Application} to be launched, using the bean name
-	 * {@link #APPLICATION_BEAN_ID}. If the application is found, it will be
-	 * started.
-	 * 
-	 */
-	private void launchMyRichClient() {
+    /**
+     * Launches the rich client application. If no startup context has so far
+     * been provided, the main application context will be searched for a splash
+     * screen to display. The main application context will then be searched for
+     * the {@link Application} to be launched, using the bean name
+     * {@link #APPLICATION_BEAN_ID}. If the application is found, it will be
+     * started.
+     *
+     */
+    private void launchMyRichClient() {
         
-		if (startupContext == null) {
-			displaySplashScreen(rootApplicationContext);
-		}
-		
+        if (startupContext == null) {
+            displaySplashScreen(rootApplicationContext);
+        }
+
         final Application application;
         
-		try {
-		    application = (Application) rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
-		}
-		catch (NoSuchBeanDefinitionException e) {
-			throw new IllegalArgumentException(
-					"A single bean definition with id "
+        try {
+            application = (Application) rootApplicationContext.getBean(APPLICATION_BEAN_ID, Application.class);
+        }
+        catch (NoSuchBeanDefinitionException e) {
+            throw new IllegalArgumentException(
+                    "A single bean definition with id "
                     + APPLICATION_BEAN_ID
                     + ", of type "
                     + Application.class.getName()
                     + " must be defined in the main application context", 
                     e);
-		}
+        }
         
-		try {
-			// To avoid deadlocks when events fire during initialization of some swing components
-			// Possible to do: in theory not a single Swing component should be created (=modified) in the launcher thread...
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					application.start();
-				}
-			});
-		} 
+        try {
+            // To avoid deadlocks when events fire during initialization of some swing components
+            // Possible to do: in theory not a single Swing component should be created (=modified) in the launcher thread...
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    application.start();
+                }
+            });
+        }
         catch (InterruptedException e) {
-			logger.warn("Application start interrupted", e);
-		} 
+            logger.warn("Application start interrupted", e);
+        }
         catch (InvocationTargetException e) {
-			Throwable cause = e.getCause();
-			throw new IllegalStateException("Application start thrown an exception: " + cause.getMessage(), cause);
-		}
+            Throwable cause = e.getCause();
+            throw new IllegalStateException("Application start thrown an exception: " + cause.getMessage(), cause);
+        }
         
-		logger.debug("Launcher thread exiting...");
+        logger.debug("Launcher thread exiting...");
         
-	}
+    }
 
-	/**
-	 * Searches the given bean factory for a {@link SplashScreen} defined with
-	 * the bean name {@link #SPLASH_SCREEN_BEAN_ID} and displays it, if found.
-	 * 
-	 * @param beanFactory The bean factory that is expected to contain the
-	 * splash screen bean definition. Must not be null.
-	 * 
-	 * @throws NullPointerException if {@code beanFactory} is null.
-	 * @throws BeanNotOfRequiredTypeException if the bean found under the splash
-	 * screen bean name is not a {@link SplashScreen}.
-	 * 
-	 */
-	private void displaySplashScreen(BeanFactory beanFactory) {
-		if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
-			this.splashScreen = (SplashScreen) beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
-			logger.debug("Displaying application splash screen...");
+    /**
+     * Searches the given bean factory for a {@link SplashScreen} defined with
+     * the bean name {@link #SPLASH_SCREEN_BEAN_ID} and displays it, if found.
+     *
+     * @param beanFactory The bean factory that is expected to contain the
+     * splash screen bean definition. Must not be null.
+     *
+     * @throws NullPointerException if {@code beanFactory} is null.
+     * @throws BeanNotOfRequiredTypeException if the bean found under the splash
+     * screen bean name is not a {@link SplashScreen}.
+     *
+     */
+    private void displaySplashScreen(BeanFactory beanFactory) {
+        if (beanFactory.containsBean(SPLASH_SCREEN_BEAN_ID)) {
+            this.splashScreen = (SplashScreen) beanFactory.getBean(SPLASH_SCREEN_BEAN_ID, SplashScreen.class);
+            logger.debug("Displaying application splash screen...");
             try
             {
                 SwingUtilities.invokeAndWait(new Runnable() {
@@ -349,23 +349,23 @@ public class ApplicationLauncher {
             {
                 throw new RuntimeException("EDT threading issue while showing splash screen", e);
             }
-		}
-		else {
-			logger.info("No splash screen bean found to display. Continuing...");
-		}
-	}
+        }
+        else {
+            logger.info("No splash screen bean found to display. Continuing...");
+        }
+    }
 
-	private void destroySplashScreen() {
-		if (splashScreen != null) {
-			logger.debug("Closing splash screen...");
+    private void destroySplashScreen() {
+        if (splashScreen != null) {
+            logger.debug("Closing splash screen...");
 
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					splashScreen.dispose();
-					splashScreen = null;
-				}
-			});
-		}
-	}
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    splashScreen.dispose();
+                    splashScreen = null;
+                }
+            });
+        }
+    }
 
 }
