@@ -214,22 +214,13 @@ public class ApplicationLauncher {
 	 * {@code startupContextPath} is null or empty.
 	 */
 	private ApplicationContext loadStartupContext(String startupContextPath) {
-		
-        if (StringUtils.hasText(startupContextPath)) {
-            
-            if (logger.isInfoEnabled()) {
-                logger.info("Loading startup context from classpath resource [" 
-                            + startupContextPath
-                            + "]");
-            }
-            
-            return new ClassPathXmlApplicationContext(startupContextPath);
-            
-        }
-        else {
+        if (!StringUtils.hasText(startupContextPath)) {
             return null;
         }
-
+        logger.info("Loading startup context from classpath resource ("
+                    + startupContextPath
+                    + ")");
+        return new ClassPathXmlApplicationContext(startupContextPath);
     }
 
     /**
