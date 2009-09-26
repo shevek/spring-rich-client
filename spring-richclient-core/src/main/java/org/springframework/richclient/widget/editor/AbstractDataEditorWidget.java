@@ -81,7 +81,7 @@ public abstract class AbstractDataEditorWidget extends AbstractTitledWidget
 
     public static final String UNSAVEDCHANGES_UNCOMMITTABLE_WARNING_ID = "unsavedchanges.uncommittable.warning";
 
-    public static final RowSpec FILL_ROW_SPEC = new RowSpec(RowSpec.FILL, Sizes.DEFAULT,
+    public static final RowSpec FILL_ROW_SPEC = new RowSpec(RowSpec.FILL, Sizes.PREFERRED,
             FormSpec.DEFAULT_GROW);
 
     public static final ColumnSpec FILL_NOGROW_COLUMN_SPEC = new ColumnSpec(ColumnSpec.FILL, Sizes.DEFAULT,
