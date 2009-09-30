@@ -59,13 +59,8 @@ import java.util.Arrays;
  *
  * @author Larry Streepy
  */
-public class ContactView extends AbstractView implements ApplicationListener
+public class ContactView extends AbstractView
 {
-
-    /**
-     * The object table holding our contacts.
-     */
-    private ContactTable contactTable;
     private GlazedListTableWidget widget;
 
     /**
@@ -318,16 +313,5 @@ public class ContactView extends AbstractView implements ApplicationListener
             };
             dlg.showDialog();
         }
-    }
-
-    /**
-     * Handle an application event. This will notify us of object adds, deletes, and modifications. Forward to our
-     * object table for handling.
-     *
-     * @param e event to process
-     */
-    public void onApplicationEvent(ApplicationEvent e)
-    {
-        contactTable.onApplicationEvent(e);
     }
 }
