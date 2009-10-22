@@ -48,10 +48,11 @@ public abstract class AbstractLoggingExceptionHandler extends AbstractRegisterab
             }
             logException(thread, throwable);
             notifyUserAboutException(thread, throwable);
-        } catch (Throwable t) {
+        } catch (Throwable handlerThrowable) {
             // An exception handler must never throw a throwable itself
             // because if it (directly or transitively) handles that throwable it can create an infinite loop
-            t.printStackTrace();
+            System.err.println("The ExceptionHandler handling an exception has thrown the following exception:");
+            handlerThrowable.printStackTrace();
             // No logging because that could throw an exception
         }
     }
