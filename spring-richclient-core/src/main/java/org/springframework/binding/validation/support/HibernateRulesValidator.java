@@ -113,11 +113,12 @@ public class HibernateRulesValidator implements RichValidator, ObjectNameResolve
 	 * {@inheritDoc}
 	 */
 	public ValidationResults validate(Object object, String propertyName) {
-        // Normally ClassValidator.assertValid() checks this, but we use lower level methods of it instead
-        if (object != null && !beanClass.isInstance(object)) {
-            throw new IllegalArgumentException("The object (" + object + ") must be an instance of beanClass ("
-                    + beanClass + ").");
-        }
+        // TODO ge0ffrey: our code is not ready for our fail fast (due to usage of slices instead of hibernate-auditing)
+//        // Normally ClassValidator.assertValid() checks this, but we use lower level methods of it instead
+//        if (object != null && !beanClass.isInstance(object)) {
+//            throw new IllegalArgumentException("The object (" + object + ") must be an instance of beanClass ("
+//                    + beanClass + ").");
+//        }
         // hibernate will return InvalidValues per propertyName, remove any
 		// previous validationMessages.
 		if (propertyName == null) {
