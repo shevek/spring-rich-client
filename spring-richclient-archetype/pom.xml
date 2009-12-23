@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>spring-richclient-archetype</artifactId>
-    <packaging>maven-plugin</packaging>
+    <packaging>jar</packaging>
     <name>Spring Rich Client archetype</name>
     <description>
         Archetype for creating new Rich Client projects.
