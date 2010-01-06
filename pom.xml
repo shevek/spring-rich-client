@@ -831,11 +831,6 @@
         <artifactId>glazedlists_java15</artifactId>
         <version>1.8.0</version>
       </dependency>
-      <dependency>
-        <groupId>org.swinglabs</groupId>
-        <artifactId>swingx</artifactId>
-        <version>0.9.3</version>
-      </dependency>
       <!-- JDIC library: use a profile in maven to have the correct os specific libs added to your classpath, see jdk5 module -->
       <dependency>
         <groupId>org.jdesktop.jdic</groupId>
@@ -992,6 +987,17 @@
         <groupId>org.jdesktop.xswingx</groupId>
         <artifactId>xswingx</artifactId>
         <version>0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.swinglabs</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.9.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swing-worker</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
