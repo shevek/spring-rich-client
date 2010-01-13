@@ -32,7 +32,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimedCallable;
  * <p>
  * This version of SwingWorker extends FutureResult and implements Runnable.
  * Timeouts are supported.
+ * Deprecated in favor of javax.swing.SwingWorker.
  */
+@Deprecated
 public abstract class SwingWorker extends FutureResult implements Runnable {
     /** Worker thread. */
     protected Thread thread;
