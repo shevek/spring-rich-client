@@ -15,14 +15,15 @@
  */
 package org.springframework.richclient.progress;
 
-import javax.swing.JProgressBar;
-
+import org.springframework.richclient.util.SwingUtilitiesHelper;
 import org.springframework.util.Assert;
+
+import javax.swing.*;
 
 /**
  * <code>ProgressMonitor</code> implementation that delegates to a
  * <code>JProgressBar</code>.
- * 
+ *
  * @author Peter De Bruycker
  */
 public class ProgressBarProgressMonitor implements ProgressMonitor {
@@ -51,18 +52,35 @@ public class ProgressBarProgressMonitor implements ProgressMonitor {
         // not used
     }
 
-    public void subTaskStarted(String name) {
-        progressBar.setString(name);
+    public void subTaskStarted(final String name) {
+        SwingUtilitiesHelper.executeWithEDTCheck(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setString(name);
+            }
+        });
+
     }
 
-    public void taskStarted(String name, int totalWork) {
-        progressBar.setIndeterminate(false);
-        progressBar.setMinimum(0);
-        progressBar.setMaximum(totalWork);
-        progressBar.setString(name);
+    public void taskStarted(final String name, final int totalWork) {
+        SwingUtilitiesHelper.executeWithEDTCheck(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setIndeterminate(false);
+                progressBar.setMinimum(0);
+                progressBar.setMaximum(totalWork);
+                progressBar.setString(name);
+            }
+        });
     }
 
-    public void worked(int work) {
-        progressBar.setValue(progressBar.getValue() + work);
+    public void worked(final int work) {
+        SwingUtilitiesHelper.executeWithEDTCheck(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setValue(progressBar.getValue() + work);
+            }
+        });
+
     }
 }
