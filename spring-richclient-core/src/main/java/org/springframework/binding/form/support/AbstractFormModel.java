@@ -209,8 +209,13 @@ public abstract class AbstractFormModel extends AbstractPropertyChangePublisher 
 		for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
 			FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel) i.next();
 			valueModel.setDeliverValueChangeEvents(deliverValueChangeEvents);
-			if (clearValueModels)
+		}
+		if (clearValueModels)
+		{
+			for (Iterator i = mediatingValueModels.values().iterator(); i.hasNext();) {
+				FormModelMediatingValueModel valueModel = (FormModelMediatingValueModel) i.next();
 				valueModel.clearDirty();
+			}
 		}
 	}
 
